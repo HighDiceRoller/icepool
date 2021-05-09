@@ -1,6 +1,6 @@
+import hdroller.choose
 import numpy
 import re
-import hdroller.choose
 from scipy.special import comb, erf, factorial
 
 class DieType(type):
@@ -275,7 +275,7 @@ class Die(metaclass=DieType):
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. Computes the maximum absolute difference between CDFs. """
         a, b = Die._union_outcomes(self, other)
-        return numpy.max(numpy.abs(a.cdf(inclusive='neither') - b.cdf(inclusive='neither')))
+        return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. Computes the sum-of-squares difference between CDFs."""
@@ -343,18 +343,6 @@ class Die(metaclass=DieType):
         pmf[explode_recursive_start_index:explode_recursive_start_index+len(explode_recursive_pmf)] += explode_recursive_pmf
         
         return Die(pmf, min_outcome, name=self._name + '!')._trim()
-        
-        """
-        if len(self) <= 1:
-            raise ValueError('Only dice with more than one outcome can explode.')
-        recursive = self.explode(n-1) + self.max_outcome()
-        self_last = self._pmf[-1]
-        self_except_last = Die(self._pmf[:-1], self._min_outcome)
-        
-        self_except_last_union, recursive_union = self_except_last._union_outcomes(recursive)
-        pmf = self_except_last_union._pmf + self_last * recursive_union._pmf
-        return Die(pmf, self_except_last_union._min_outcome)
-        """
     
     def reroll(self, outcomes=None, below=None, above=None, max_rerolls=None):
         """Rerolls the given outcomes."""
@@ -514,229 +502,6 @@ class Die(metaclass=DieType):
         result = half_result + half_result
         if num_dice % 2: result += self
         return result
-    
-    def repeat_and_keep_and_sum(self, num_dice, **kwargs):
-        """
-        This allows dice to be dropped from the top and/or bottom.
-        """
-        drop_lowest = 0
-        drop_highest = 0
-        if 'drop_lowest' in kwargs:
-            drop_lowest = kwargs['drop_lowest']
-        if 'drop_highest' in kwargs:
-            drop_highest = kwargs['drop_highest']
-        if 'keep_lowest' in kwargs:
-            drop_highest = num_dice - kwargs['keep_lowest']
-        if 'keep_highest' in kwargs:
-            drop_lowest = num_dice - kwargs['keep_highest']
-        if 'keep_middle' in kwargs:
-            total_drop = num_dice - kwargs['keep_middle']
-            if total_drop % 2 != 0:
-                raise ValueError('keep_middle (%d) must have same parity as num_dice (%d)' % (kwargs['keep_middle'], num_dice))
-            drop_lowest = total_drop // 2
-            drop_highest = total_drop // 2
-            
-        num_kept = num_dice - drop_lowest - drop_highest
-        pmf_length = ((len(self) - 1) * num_kept) + 1
-        pmf = numpy.zeros((pmf_length,))
-        cdf = self.cdf()
-        ccdf = self.ccdf()
-        # How this works: We loop over all possibilities for the sorted kept dice.
-        # Then we loop over how many of the dropped dice were equal to the lowest and highest kept dice,
-        # versus how many were beyond that.
-        # After that it's just an application of multinomial coefficients.
-        for kept in hdroller.choose.iter_multichoose_sorted_outcomes(len(self), num_kept):
-            for num_below in (range(drop_lowest+1) if kept[0] > 0 else [0]):
-                low_dropped = (kept[0]-1,) * num_below + (kept[0],) * (drop_lowest-num_below)
-                for num_above in (range(drop_highest+1) if kept[-1] < len(self)-1 else [0]):
-                    high_dropped = (kept[-1],) * (drop_highest - num_above) + (kept[-1]+1,) * num_above
-                    combined = low_dropped + kept + high_dropped
-                    coef = hdroller.choose.multinom_outcomes(num_dice, combined)
-                    mass = coef
-                    for outcome in combined:
-                        if outcome < kept[0]: mass *= cdf[outcome]
-                        elif outcome > kept[-1]: mass *= ccdf[outcome]
-                        else: mass *= self._pmf[outcome]
-                    pmf[numpy.sum(kept)] += mass
-        return Die(pmf, self._min_outcome * num_kept)
-    
-    def repeat_and_keep_and_sum2(self, num_dice, **kwargs):
-        """
-        This allows dice to be dropped from the top and/or bottom.
-        """
-        drop_lowest = 0
-        drop_highest = 0
-        if 'drop_lowest' in kwargs:
-            drop_lowest = kwargs['drop_lowest']
-        if 'drop_highest' in kwargs:
-            drop_highest = kwargs['drop_highest']
-        if 'keep_lowest' in kwargs:
-            drop_highest = num_dice - kwargs['keep_lowest']
-        if 'keep_highest' in kwargs:
-            drop_lowest = num_dice - kwargs['keep_highest']
-        if 'keep_middle' in kwargs:
-            total_drop = num_dice - kwargs['keep_middle']
-            if total_drop % 2 != 0:
-                raise ValueError('keep_middle (%d) must have same parity as num_dice (%d)' % (kwargs['keep_middle'], num_dice))
-            drop_lowest = total_drop // 2
-            drop_highest = total_drop // 2
-        if 'keep_index' in kwargs:
-            keep_index = kwargs['keep_index']
-            if keep_index < 0: keep_index += num_dice
-            drop_lowest = keep_index
-            drop_highest = num_dice - drop_lowest - 1
-        
-        num_kept = num_dice - drop_lowest - drop_highest
-        result_pmf_length = ((len(self) - 1) * num_kept) + 1
-        result_pmf = numpy.zeros((result_pmf_length,))
-        # These are non-inclusive in this case.
-        cdf = self.cdf(inclusive=False)
-        ccdf = self.ccdf(inclusive=False)
-        
-        """
-        How this works:
-        
-        We consider all possible values for the lowest and highest kept dice.
-        This splits the dice into up to five groups:
-        
-        "Below": dice below the lowest kept dice.
-        "Low": dice equal to the lowest kept dice.
-        "Middle": dice between the lowest and highest kept dice.
-        "High": dice equal to the highest kept dice.
-        "Above": dice above the highest kept dice.
-        
-        "Low" and "High" may contain dropped dice as well as kept dice.
-        
-        We use convolution to compute the chances for the middle dice.
-        """
-        
-        # TODO: Revisit loop nesting order.
-        
-        # Number of dropped dice equal to the lowest kept die.
-        for num_drop_low in range(drop_lowest+1):
-            # Number of dropped dice less than the lowest kept die.
-            num_drop_below = drop_lowest - num_drop_low
-            # Number of dropped dice equal to the highest kept die.
-            for num_drop_high in range(drop_highest+1):
-                # Number of dropped dice greater than the highest kept die. 
-                num_drop_above = drop_highest - num_drop_high
-                # Value of the lowest kept die.
-                for lowest_kept in range(len(self)):
-                    prob_factor_below = numpy.power(cdf[lowest_kept], num_drop_below)
-                    for highest_kept in range(lowest_kept, len(self)):
-                        prob_factor_above = numpy.power(ccdf[highest_kept], num_drop_above)
-                        if highest_kept == lowest_kept:
-                            # Three-section case where lowest kept = highest kept.
-                            num_equal_kept = num_drop_low + num_drop_high + num_kept
-                            probability_factor = (
-                                prob_factor_below * 
-                                numpy.power(self._pmf[lowest_kept], num_equal_kept) * 
-                                prob_factor_above
-                            )
-                            comb_factor = hdroller.choose.multinom(num_dice, (num_drop_below, num_equal_kept, num_drop_above))
-                            index = lowest_kept*num_kept
-                            #print('All kept dice are %d. %d below, %d equal to kept, %d above. %f' % (lowest_kept + self._min_outcome, num_drop_below, num_equal_kept, num_drop_above, comb_factor * probability_factor))
-                            result_pmf[index] += comb_factor * probability_factor
-                        elif highest_kept == lowest_kept+1:
-                            # Four-section case where lowest and highest kept are consecutive, with no middle section.
-                            for num_kept_low in range(1, num_kept):
-                                num_kept_high = num_kept-num_kept_low
-                                num_low = num_kept_low + num_drop_low
-                                num_high = num_kept_high + num_drop_high
-                                probability_factor = (
-                                    prob_factor_below * 
-                                    numpy.power(self._pmf[lowest_kept], num_low) * 
-                                    numpy.power(self._pmf[highest_kept], num_high) * 
-                                    prob_factor_above
-                                )
-                                comb_factor = hdroller.choose.multinom(num_dice, (num_drop_below, num_low, num_high, num_drop_above))
-                                index = lowest_kept*num_kept_low + highest_kept*num_kept_high
-                                #print('Kept dice are %d and %d. %f' % (lowest_kept + self._min_outcome, highest_kept + self._min_outcome, comb_factor * probability_factor))
-                                result_pmf[index] += comb_factor * probability_factor
-                        else:
-                            # Five-section case where there is a middle region (possibly of zero size).
-                            conv_mid = numpy.array([1.0])
-                            # Number of dice strictly between the lowest and highest kept dice.
-                            for num_kept_mid in range(0, num_kept-1):
-                                # Number of dice equal to the lowest and highest kept dice.
-                                for num_kept_low in range(1, num_kept-num_kept_mid):
-                                    num_kept_high = num_kept-num_kept_mid-num_kept_low
-                                    num_low = num_kept_low + num_drop_low
-                                    num_high = num_kept_high + num_drop_high
-                                    probability_factor = (
-                                        prob_factor_below * 
-                                        numpy.power(self._pmf[lowest_kept], num_low) * 
-                                        numpy.power(self._pmf[highest_kept], num_high) * 
-                                        prob_factor_above
-                                    ) * conv_mid
-                                    comb_factor = hdroller.choose.multinom(num_dice, (num_drop_below, num_low, num_kept_mid, num_high, num_drop_above))
-                                    start_index = lowest_kept*num_kept_low + (lowest_kept+1) * num_kept_mid + highest_kept*num_kept_high
-                                    #print('Kept %d @ %d, %d @ mid, %d @ %d. Index = %d. %s' % (num_kept_low, lowest_kept + self._min_outcome, num_kept_mid, num_kept_high, highest_kept + self._min_outcome, start_index, comb_factor * probability_factor))
-                                    result_pmf[start_index:start_index+len(conv_mid)] += comb_factor * probability_factor
-                                    
-                                conv_mid = numpy.convolve(conv_mid, self._pmf[lowest_kept+1:highest_kept])
-        return Die(result_pmf, self._min_outcome * num_kept)
-        
-    def keep_and_sum(*dice, drop_lowest=0, drop_highest=0):
-        num_keep = len(dice) - drop_lowest - drop_highest
-        dice = Die._union_outcomes(*dice)
-        
-        pmf_length = (len(dice[0])-1) * num_keep + 1
-        pmf = numpy.zeros((pmf_length,))
-        min_outcome = dice[0].min_outcome() * num_keep
-        
-        pmfs = [die._pmf for die in dice]
-        cdfs = [die.cdf(inclusive='both') for die in dice] # chance of rolling < the corresponding outcome
-        ccdfs = [die.ccdf(inclusive='both') for die in dice] # chance of rolling >= the corresponding outcome
-        
-        if num_keep > 1:
-            max_counts = [drop_lowest, 1, num_keep-2, 1, drop_highest]
-            def keep_and_sum_inner(lo_outcome, hi_outcome, current_die=0, counts=[0,0,0,0,0], partial_min_outcome=0, partial_pmf=numpy.array([1.0])):
-                if current_die < len(dice):
-                    for count_index, (count, max_count) in enumerate(zip(counts, max_counts)):
-                        if count >= max_count: continue
-                        next_counts = counts.copy()
-                        next_counts[count_index] += 1
-                        
-                        if count_index == 0:  # drop_lowest
-                            next_partial_min_outcome = partial_min_outcome
-                            if counts[1] == 0:  # the lo die is later in the list, so this die is <
-                                next_partial_pmf = partial_pmf * cdfs[current_die][lo_outcome]
-                            else: # the lo die was earlier in the list, so this is <=
-                                next_partial_pmf = partial_pmf * cdfs[current_die][lo_outcome+1]
-                        elif count_index == 4:
-                            next_partial_min_outcome = partial_min_outcome
-                            if counts[3] == 0:
-                                next_partial_pmf = partial_pmf * ccdfs[current_die][hi_outcome]
-                            else:
-                                next_partial_pmf = partial_pmf * ccdfs[current_die][hi_outcome+1]
-                        elif count_index == 1:
-                            # if both outcomes are equal, the "higher" die must happen first to avoid double-counting
-                            if lo_outcome == hi_outcome and counts[3] == 0: continue
-                            next_partial_min_outcome = partial_min_outcome + lo_outcome
-                            next_partial_pmf = partial_pmf * pmfs[current_die][lo_outcome]
-                        elif count_index == 3:
-                            next_partial_min_outcome = partial_min_outcome + hi_outcome
-                            next_partial_pmf = partial_pmf * pmfs[current_die][hi_outcome]
-                        else:
-                            if counts[1] == 0: start_outcome = lo_outcome
-                            else: start_outcome = lo_outcome+1
-                            if counts[3] == 0: end_outcome = hi_outcome
-                            else: end_outcome = hi_outcome+1
-                            if start_outcome >= end_outcome: continue # no outcome for this ordering
-                            next_partial_min_outcome = partial_min_outcome + start_outcome
-                            next_partial_pmf = numpy.convolve(partial_pmf, pmfs[current_die][start_outcome:end_outcome])
-                        keep_and_sum_inner(lo_outcome, hi_outcome, current_die+1, next_counts, next_partial_min_outcome, next_partial_pmf)
-                else:
-                    #print(lo_outcome, hi_outcome, partial_min_outcome, partial_pmf)
-                    pmf[partial_min_outcome:partial_min_outcome+len(partial_pmf)] += partial_pmf
-            for lo_outcome in range(len(dice[0])):
-                for hi_outcome in range(lo_outcome, len(dice[0])):
-                    keep_and_sum_inner(lo_outcome, hi_outcome)
-        else:
-            raise NotImplementedError()
-        
-        return Die(pmf, min_outcome)._trim()
     
     def margin_of_success(self, other, base_outcome=0, win_ties=True):
         """ 

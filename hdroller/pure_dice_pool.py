@@ -124,6 +124,7 @@ class PureDicePool():
         return self._sum_convolution_cache[key]
     
     def keep_highest(self, num_keep):
+        if num_keep == 0: return hdroller.Die(0)
         num_drop = self._num_dice - num_keep
         
         pmf_length = (self.single_len()-1) * num_keep + 1
