@@ -1,4 +1,3 @@
-import hdroller.choose
 import numpy
 import re
 from scipy.special import comb, erf, factorial

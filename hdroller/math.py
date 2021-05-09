@@ -6,4 +6,3 @@ def multinom(n, ks):
         return 1
     else:
         return comb(n, ks[0]) * multinom(n-ks[0], ks[1:])
-

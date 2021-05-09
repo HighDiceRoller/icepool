@@ -1,5 +1,5 @@
 import hdroller
-import hdroller.choose
+import hdroller.math
 import numpy
 
 from functools import cached_property
@@ -13,13 +13,7 @@ class PureDicePool():
         self._single_die = single_die
         self._num_dice = num_dice
         
-        """
-        (num_sum_dice, outcome_start_index, outcome_end_index) -> array where
-        i -> chance that all num_sum_dice will be in the interval
-        [outcome_start_index, outcome_end_index)
-        with sum equal to i + outcome_start_index * num_sum_dice
-        """
-        self._sum_convolution_cache = {}
+        self._hi_sum_convolutions = []
     
     def single_len(self):
         return len(self._single_die)
@@ -94,61 +88,54 @@ class PureDicePool():
         result.setflags(write=False)
         return result
     
-    def sum_convolution(self, num_sum_dice, outcome_start_index=None, outcome_end_index=None):
+    def hi_sum_convolution(self, num_sum_dice):
         """
-        Returns an array with 
-        i -> probability that num_sum_dice will all fall within [outcome_start_index, outcome_end_index)
-        and have sum equal to num_sum_dice*outcome_start_index + i.
+        Returns an array that maps (outcome_index, sum) -> probability that num_sum_dice will all be strictly greater than outcome_index and have the given sum.
         """
-        if outcome_start_index is None: outcome_start_index = 0
-        if outcome_end_index is None: outcome_end_index = self.single_len()
-        key = (num_sum_dice, outcome_start_index, outcome_end_index)
-        if key not in self._sum_convolution_cache:
+        if num_sum_dice >= len(self._hi_sum_convolutions):
             if num_sum_dice == 0:
-                result = numpy.array([1.0])
+                result = numpy.ones((self.single_len(), 1))
             elif num_sum_dice == 1:
-                result = self._single_die.pmf()[outcome_start_index:outcome_end_index]
+                result = numpy.zeros((self.single_len(), self.single_len()))
+                for outcome_index in range(self.single_len()):
+                    result[outcome_index, outcome_index+1:] = self._single_die.pmf()[outcome_index+1:]
             else:
-                half = self.sum_convolution(num_sum_dice // 2, outcome_start_index, outcome_end_index)
-                if len(half) == 0:
-                    return numpy.zeros((0,))
-                result = numpy.convolve(half, half)
-                if num_sum_dice % 2 > 0:
-                    odd = self.sum_convolution(1, outcome_start_index, outcome_end_index)
-                    result = numpy.convolve(result, odd)
+                pmf_length = (self.single_len()-1) * num_sum_dice + 1
+                result = numpy.zeros((self.single_len(), pmf_length))
+                
+                previous = self.hi_sum_convolution(num_sum_dice-1)
+                one = self.hi_sum_convolution(1)
+                for outcome_index in range(self.single_len()):
+                    result[outcome_index, :] = numpy.convolve(previous[outcome_index, :], one[outcome_index, :])
             
             result.setflags(write=False)
-            
-            self._sum_convolution_cache[key] = result
-            
-        return self._sum_convolution_cache[key]
+            self._hi_sum_convolutions.append(result)
+        return self._hi_sum_convolutions[num_sum_dice]
     
     def keep_highest(self, num_keep):
         if num_keep == 0: return hdroller.Die(0)
-        num_drop = self._num_dice - num_keep
         
         pmf_length = (self.single_len()-1) * num_keep + 1
         pmf = numpy.zeros((pmf_length,))
         min_outcome = self.single_min_outcome() * num_keep
         
-        # lo_outcome_index is the outcome index of the lowest kept die.
-        for lo_outcome_index in range(self.single_len()):
-            # num_sum_dice is the number of dice > lo_outcome_index.
-            for num_sum_dice in range(0, num_keep):
-                # num_lo_dice is the number of dice <= lo_outcome_index.
-                num_lo_dice = self._num_dice - num_sum_dice
-                
-                # num_lo_kept_dice is the number of kept dice == lo_outcome_index.
-                num_lo_kept_dice = num_keep - num_sum_dice
-                
+        # num_sum_dice is the number of dice > lo_outcome_index.
+        for num_sum_dice in range(0, num_keep):
+            # num_lo_dice is the number of dice <= lo_outcome_index.
+            num_lo_dice = self._num_dice - num_sum_dice
+            # num_lo_kept_dice is the number of kept dice == lo_outcome_index.
+            num_lo_kept_dice = num_keep - num_sum_dice
+            
+            comb_factor = hdroller.math.multinom(self._num_dice, (num_lo_dice, num_sum_dice))
+            # lo_outcome_index is the outcome index of the lowest kept die.
+            for lo_outcome_index in range(self.single_len()):
                 # lo_factor is the chance that num_lo_dice will all roll <= lo_outcome_index,
                 # with at least num_lo_kept_dice being == lo_income_index.
-                lo_factor = numpy.sum(self.lo_convolutions[num_lo_dice, lo_outcome_index, num_lo_kept_dice])
-                sum_factor = self.sum_convolution(num_sum_dice, lo_outcome_index+1)
-                comb_factor = hdroller.choose.multinom(self._num_dice, (num_lo_dice, num_sum_dice))
+                lo_factor = self.lo_convolutions[num_lo_dice, lo_outcome_index, num_lo_kept_dice]
                 
+                sum_factor = self.hi_sum_convolution(num_sum_dice)[lo_outcome_index, :]
                 partial_pmf = lo_factor * sum_factor * comb_factor
-                partial_outcome_start_index = lo_outcome_index * num_keep + num_sum_dice
+                partial_outcome_start_index = lo_outcome_index * num_lo_kept_dice
                 pmf[partial_outcome_start_index:partial_outcome_start_index+len(partial_pmf)] += partial_pmf
         
         return hdroller.Die(pmf, min_outcome)
@@ -173,7 +160,7 @@ class PureDicePool():
         # num_long_dice is the number of dice on the long side or equal to the selected index.
         for num_long_dice in range(min_long_dice, self._num_dice+1):
             num_short_dice = self._num_dice - num_long_dice
-            comb_factor = hdroller.choose.multinom(self._num_dice, (num_long_dice, num_short_dice))
+            comb_factor = hdroller.math.multinom(self._num_dice, (num_long_dice, num_short_dice))
             short_factor = short_convolutions[num_short_dice, :]
             long_factor = long_convolutions[num_long_dice, :, num_long_dice - min_long_dice + 1]
             pmf += comb_factor * short_factor * long_factor
