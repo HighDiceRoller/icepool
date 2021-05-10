@@ -14,14 +14,20 @@ def legend_of_five_rings_test():
         pool = hdroller.pure_dice_pool.PureDicePool(10, Die.d10.explode(3))
         result = pool.keep_highest(5)
 
-cProfile.run('legend_of_five_rings_test()')
+#cProfile.run('legend_of_five_rings_test()')
+
+result = Die.d6.keep_highest(1, 0)
+print(result)
+
+
 
 start_time = time.time()
-pool = hdroller.pure_dice_pool.PureDicePool(10, Die.d10.explode(3))
-result = pool.keep_highest(5)
+result = Die.d10.explode(3).keep_highest(10, 5)
 end_time = time.time()
 print(result)
 print('L5R 10k5 explode 3 computation time:', end_time-start_time)
+
+"""
 
 start_time = time.time()
 pool = hdroller.pure_dice_pool.PureDicePool(16, Die.d10)
@@ -43,6 +49,8 @@ result = pool.keep_highest(3)
 end_time = time.time()
 print(result)
 print('L5R 5k3 explode 5 computation time:', end_time-start_time)
+
+"""
 
 """
 

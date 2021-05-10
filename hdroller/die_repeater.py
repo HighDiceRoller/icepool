@@ -25,7 +25,7 @@ class DieRepeater():
         -> probability that num_dice will all be <= or => outcome
            with EXACTLY num_eq_dice equal to outcome_index.
         """
-        conv_zero = numpy.ones((len(self._die), 0))
+        conv_zero = numpy.ones((len(self._die), 1))
         leq_one = numpy.stack((self._die.cdf(inclusive=False), self._die.pmf()), axis=1)
         geq_one = numpy.stack((self._die.ccdf(inclusive=False), self._die.pmf()), axis=1)
         
@@ -44,10 +44,10 @@ class DieRepeater():
         """
         [num_dice]
         -> [outcome]
-        -> probability that num_dice will all be < or > outcome.
+        -> probability that num_dice will all be <= or >= outcome.
         """
-        self._lts = []
-        self._gts = []
+        self._cdf_powers = []
+        self._ccdf_powers = []
         
         """
         [num_dice]
@@ -58,16 +58,15 @@ class DieRepeater():
         conv_zero = numpy.ones((len(self._die), 1))
         full_one = numpy.tile(self._die.pmf(), (len(self._die), 1))
 
-        lo_one = numpy.tril(full_one)
-        hi_one = numpy.triu(full_one)
+        lo_one = numpy.tril(full_one, k=-1)
+        hi_one = numpy.triu(full_one, k=1)
         
         self._lo_sums = [conv_zero, lo_one]
         self._hi_sums = [conv_zero, hi_one]
         
-    @staticmethod
-    def get_convolution(convolutions, num_dice):
+    def get_convolution(self, convolutions, num_dice):
         while len(convolutions) < num_dice+1:
-            next = hdroller.math.convolve_along_axis(convolutions[-1], convolutions[1], axis=-1)
+            next = hdroller.math.convolve_along_last_axis(convolutions[-1], convolutions[1])
             convolutions.append(next)
         return convolutions[num_dice]
     
@@ -77,13 +76,12 @@ class DieRepeater():
     def geq_exact(self, num_dice):
         return self.get_convolution(self._geq_exacts, num_dice)
         
-    @staticmethod
     def get_at_least(self, exacts, at_leasts, num_dice):
         while len(at_leasts) < num_dice+1:
             exact = self.get_convolution(exacts, len(at_leasts))
             next = hdroller.math.reverse_cumsum(exact, axis=1)
             at_leasts.append(next)
-        return at_leasts(num_dice)
+        return at_leasts[num_dice]
         
     def leq_at_least(self, num_dice):
         return self.get_at_least(self._leq_exacts, self._leq_at_leasts, num_dice)
@@ -91,7 +89,6 @@ class DieRepeater():
     def geq_at_least(self, num_dice):
         return self.get_at_least(self._geq_exacts, self._geq_at_leasts, num_dice)
     
-    @staticmethod
     def get_power(self, powers, base, num_dice):
         while len(powers) < num_dice+1:
             next = numpy.power(base, len(powers))
@@ -99,10 +96,16 @@ class DieRepeater():
         return powers[num_dice]
         
     def lt(self, num_dice):
-        return self.get_power(self._lts, self._die.cdf(inclusive=False), num_dice)
+        return self.get_power(self._cdf_powers, self._die.cdf(inclusive='both'), num_dice)[:-1]
     
     def gt(self, num_dice):
-        return self.get_power(self._gts, self._die.ccdf(inclusive=False), num_dice)
+        return self.get_power(self._ccdf_powers, self._die.ccdf(inclusive='both'), num_dice)[1:]
+        
+    def leq(self, num_dice):
+        return self.get_power(self._cdf_powers, self._die.cdf(inclusive='both'), num_dice)[1:]
+    
+    def geq(self, num_dice):
+        return self.get_power(self._ccdf_powers, self._die.ccdf(inclusive='both'), num_dice)[:-1]
         
     def lo_sum(self, num_dice):
         return self.get_convolution(self._lo_sums, num_dice)
@@ -110,9 +113,15 @@ class DieRepeater():
     def hi_sum(self, num_dice):
         return self.get_convolution(self._hi_sums, num_dice)
         
-    @staticmethod
     def keep_one_side(self, num_dice, num_keep, get_nonsum_at_least, get_sum):
-        pmf_length = (num_dice - 1) * num_keep + 1
+        if num_keep == 0:
+            """
+            This special case exists because we assume there exists at least one lowest kept die,
+            which isn't be the case if zero dice are kept.
+            """
+            return hdroller.Die(0)
+        
+        pmf_length = (len(self._die) - 1) * num_keep + 1
         pmf = numpy.zeros((pmf_length,))
         min_outcome = self._die.min_outcome() * num_keep
         
@@ -136,21 +145,21 @@ class DieRepeater():
         return hdroller.Die(pmf, min_outcome)
             
     def keep_highest(self, num_dice, num_keep):
-        return self.keep_one_side(num_dice, num_keep, self.lo_at_least, self.hi_sum)
+        return self.keep_one_side(num_dice, num_keep, self.leq_at_least, self.hi_sum)
         
     def keep_lowest(self, num_dice, num_keep):
-        return self.keep_one_side(num_dice, num_keep, self.hi_at_least, self.lo_sum)
+        return self.keep_one_side(num_dice, num_keep, self.geq_at_least, self.lo_sum)
         
-    def keep_index(self, index):
+    def keep_index(self, num_dice, index):
         """
         Returns the indexth lowest die.
         """
-        if index < 0: index = self._num_dice + index
+        if index < 0: index = num_dice + index
         
-        if index < self._num_dice // 2:
+        if index < num_dice // 2:
             short = self.lt
             long = self.geq_at_least
-            min_long_dice = self._num_dice - index
+            min_long_dice = num_dice - index
         else:
             short = self.gt
             long = self.leq_at_least
@@ -159,9 +168,9 @@ class DieRepeater():
         pmf = numpy.zeros_like(self._die.pmf())
         min_outcome = self._die.min_outcome()
         # num_long_dice is the number of dice on the long side or equal to the selected index.
-        for num_long_dice in range(min_long_dice, self._num_dice+1):
-            num_short_dice = self._num_dice - num_long_dice
-            comb_factor = hdroller.math.multinom(self._num_dice, (num_long_dice, num_short_dice))
+        for num_long_dice in range(min_long_dice, num_dice+1):
+            num_short_dice = num_dice - num_long_dice
+            comb_factor = hdroller.math.multinom(num_dice, (num_long_dice, num_short_dice))
             short_factor = short(num_short_dice)
             long_factor = long(num_long_dice)[:, num_long_dice - min_long_dice + 1]
             pmf += comb_factor * short_factor * long_factor

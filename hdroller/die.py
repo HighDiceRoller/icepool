@@ -1,6 +1,9 @@
+import hdroller.math
+import hdroller.die_repeater
+
 import numpy
 import re
-from scipy.special import comb, erf, factorial
+from scipy.special import erf, factorial
 
 class DieType(type):
     """
@@ -16,9 +19,6 @@ class Die(metaclass=DieType):
     """
     Immutable class representing a normalized discrete probability distribution
     with finite support.
-
-    I considered having an option for integer weights but overflow happens
-    quite quickly in many cases.
     """
 
     # Construction.
@@ -59,13 +59,15 @@ class Die(metaclass=DieType):
         # Precompute cdf, ccdf. These include both endpoints.
         self._cdf = numpy.cumsum(self._pmf)
         self._cdf = numpy.insert(self._cdf, 0, 0.0)
-        self._ccdf = numpy.flip(numpy.cumsum(numpy.flip(self._pmf)))
+        self._ccdf = hdroller.math.reverse_cumsum(self._pmf)
         self._ccdf = numpy.append(self._ccdf, 0.0)
         
         # Set immutable so we can return them safely without copying.
         self._pmf.setflags(write=False)
         self._cdf.setflags(write=False)
         self._ccdf.setflags(write=False)
+        
+        self._repeater = hdroller.die_repeater.DieRepeater(self)
 
     @staticmethod
     def from_cdf(cdf, min_outcome, inclusive=True):
@@ -277,13 +279,14 @@ class Die(metaclass=DieType):
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
-        """ Cramér-von Mises stat. Computes the sum-of-squares difference between CDFs."""
+        """ Cramér-von Mises stat. Computes the sum-of-squares difference between CDFs. """
         a, b = Die._union_outcomes(self, other)
         return numpy.linalg.norm(a.cdf() - b.cdf())
 
     # Operations that don't involve other dice.
     
     def __neg__(self):
+        """ Returns a Die with all outcomes negated. """
         return Die(numpy.flip(self._pmf), -self.max_outcome())
     
     def relabel(self, relabeling):
@@ -308,7 +311,7 @@ class Die(metaclass=DieType):
     def explode(self, n, chance=None):
         """
         n is the maximum number of times to explode.
-        chance: if supplied, this top fraction of the pmf will explode
+        chance: if supplied, this top fraction of the pmf will explode.
         """
         # TODO: binary split, other ways of defining what explodes
         if n <= 0: return self
@@ -375,7 +378,7 @@ class Die(metaclass=DieType):
         elif mode == 'reroll': return self.reroll([0])
         else: raise ValueError('Invalid tiebreak mode "%s"' % mode)
 
-    # Operations with other dice. These accept integers as well.
+    # Operations with another Die. Non-Die operands will be cast to Die.
     def _add(self, other, name):
         """
         Helper for adding two dice.
@@ -444,16 +447,12 @@ class Die(metaclass=DieType):
             start_index = outcome * self.min_outcome - result_min_outcome
             pmf[start_index:start_index+outcome*len(self.data):outcome] += self._pmf * mass
         return Die(pmf, result_min_outcome)
-        
-    # Sum and keep/drop.
     
-    def advantage(self, n=2):
-        return Die.from_cdf(numpy.power(self.cdf(), n), self._min_outcome)
-
-    def disadvantage(self, n=2):
-        return Die.from_ccdf(numpy.power(self.ccdf(), n), self._min_outcome)
-        
     def clip(self, min_outcome_or_die=None, max_outcome=None):
+        """
+        Restricts the outcomes of this die to the range [min_outcome, max_outcome].
+        A Die can be supplied instead, in which case the range is taken from that die.
+        """
         if isinstance(min_outcome_or_die, Die):
             min_outcome = min_outcome_or_die.min_outcome()
             max_outcome = min_outcome_or_die.max_outcome()
@@ -466,42 +465,7 @@ class Die(metaclass=DieType):
         pmf[0] += numpy.sum(self.pmf()[:left])
         pmf[-1] += numpy.sum(self.pmf()[right:])
         return Die(pmf, max(self.min_outcome(), min_outcome))
-    
-    def min(*dice):
-        """
-        Returns the probability distribution of the minimum of the dice.
-        """
-        dice = [Die(die) for die in dice]
-        dice_unions = Die._union_outcomes(*dice)
-        ccdf = 1.0
-        for die in dice_unions: ccdf *= die.ccdf()
-        return Die.from_ccdf(ccdf, dice_unions[0]._min_outcome)._trim()
-    
-    def max(*dice):
-        """
-        Returns the probability distribution of the maximum of the dice.
-        """
-        dice = [Die(die) for die in dice]
-        dice_unions = Die._union_outcomes(*dice)
-        cdf = 1.0
-        for die in dice_unions: cdf *= die.cdf()
-        return Die.from_cdf(cdf, dice_unions[0]._min_outcome)._trim()
-    
-    def repeat_and_sum(self, num_dice):
-        """
-        Returns the result of rolling the dice repeatedly and adding the outcomes together.
-        """
-        if num_dice < 0:
-            return (-self).repeat_and_sum(-num_dice)
-        elif num_dice == 0:
-            return Die(0)
-        elif num_dice == 1:
-            return self
-        half_result = self.repeat_and_sum(num_dice // 2)
-        result = half_result + half_result
-        if num_dice % 2: result += self
-        return result
-    
+        
     def margin_of_success(self, other, base_outcome=0, win_ties=True):
         """ 
         Returns a Die representing the margin of success versus the other die.
@@ -515,9 +479,76 @@ class Die(metaclass=DieType):
         else:
             return (self - other + base_outcome).max(base_outcome).relabel({base_outcome:0})
         """
+    
+    # Repeat, keep, and sum.
+    def advantage(self, n=2):
+        return Die.from_cdf(numpy.power(self.cdf(), n), self._min_outcome)
+
+    def disadvantage(self, n=2):
+        return Die.from_ccdf(numpy.power(self.ccdf(), n), self._min_outcome)
+    
+    def min(*dice):
+        """
+        Returns a Die representing the minimum of the all of the argument Dice.
+        """
+        dice = [Die(die) for die in dice]
+        dice_unions = Die._union_outcomes(*dice)
+        ccdf = 1.0
+        for die in dice_unions: ccdf *= die.ccdf()
+        return Die.from_ccdf(ccdf, dice_unions[0]._min_outcome)._trim()
+    
+    def max(*dice):
+        """
+        Returns a Die representing the maximum of the all of the argument Dice.
+        """
+        dice = [Die(die) for die in dice]
+        dice_unions = Die._union_outcomes(*dice)
+        cdf = 1.0
+        for die in dice_unions: cdf *= die.cdf()
+        return Die.from_cdf(cdf, dice_unions[0]._min_outcome)._trim()
+    
+    def repeat_and_sum(self, num_dice):
+        """
+        Returns a Die representing:
+        Roll this Die multiple times and sum the results.
+        """
+        if num_dice < 0:
+            return (-self).repeat_and_sum(-num_dice)
+        elif num_dice == 0:
+            return Die(0)
+        elif num_dice == 1:
+            return self
+        half_result = self.repeat_and_sum(num_dice // 2)
+        result = half_result + half_result
+        if num_dice % 2: result += self
+        return result
+        
+    def keep_highest(self, num_dice, num_keep):
+        """
+        Returns a Die representing:
+        Roll this Die `num_dice` times and sum the `num_keep` highest.
+        """
+        return self._repeater.keep_highest(num_dice, num_keep)
+        
+    def keep_lowest(self, num_dice, num_keep):
+        """
+        Returns a Die representing:
+        Roll this Die `num_dice` times and sum the `num_keep` lowest.
+        """
+        return self._repeater.keep_lowest(num_dice, num_keep)
+        
+    def keep_index(self, num_dice, index):
+        """
+        Returns a Die representing:
+        Roll this Die `num_dice` times and take the `index`th from the bottom.
+        """
+        return self._repeater.keep_index(num_dice, index)
 
     # Comparators. These return scalar floats (which can be cast to Die).
     def __lt__(self, other):
+        """
+        Returns the chance this Die will roll < the other Die.        
+        """
         other = Die(other)
         difference = self - other
         if difference._min_outcome < 0:
@@ -526,18 +557,30 @@ class Die(metaclass=DieType):
             return 0.0
 
     def __le__(self, other):
+        """
+        Returns the chance this Die will roll <= the other Die.        
+        """
         return self < other + 1
 
     def __gt__(self, other):
+        """
+        Returns the chance this Die will roll > the other Die.        
+        """
         other = Die(other)
         return other < self
 
     def __ge__(self, other):
+        """
+        Returns the chance this Die will roll >= the other Die.        
+        """
         other = Die(other)
         return other <= self
     
     # Random sampling.
     def sample(self, size=None):
+        """
+        Returns a random sample from this Die.        
+        """
         return numpy.random.choice(self.outcomes(), size=size, p=self._pmf)
 
     # String methods.
@@ -573,11 +616,10 @@ class Die(metaclass=DieType):
             result.append(Die(pmf, min_outcome))
         
         return tuple(result)
-
     
     def _trim(self):
         """
-        Returns a version of this Die with the leading and trailing zeros trimmed.
+        Returns a copy of this Die with the leading and trailing zeros trimmed.
         Shouldn't be usually necessary publically, since methods are written to stay trimmed publically.
         """
         nz = numpy.nonzero(self._pmf)[0]
@@ -587,7 +629,7 @@ class Die(metaclass=DieType):
     
     def _normalize(self):
         """
-        Returns a normalized version of this Die.
+        Returns a normalized copy of this Die.
         Shouldn't be usually necessary publically, since methods are written to stay normalized publically.
         """
         norm = numpy.sum(self._pmf)
