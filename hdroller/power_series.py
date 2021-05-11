@@ -3,6 +3,7 @@ import numpy
 class PowerSeries():
     """
     A series of arrays where array i is equal to array 1 raised to the ith power element-wise.
+    Results are cached.
     """
     def __init__(self, a1):
         self._items = [numpy.ones_like(a1), a1]

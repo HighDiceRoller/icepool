@@ -4,6 +4,7 @@ import numpy
 class ConvolutionSeries():
     """
     A series of arrays where array i is computed by convolving array i-1 with array 1 along the last axis.
+    All intermediate results are cached.
     """
     def __init__(self, a1):
         self._items = [numpy.ones_like(a1[..., 0:1]), a1]
