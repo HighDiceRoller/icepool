@@ -1,6 +1,7 @@
 import hdroller
 import hdroller.math
 import hdroller.convolution_series
+import hdroller.power_series
 import numpy
 
 class DieRepeater():
@@ -35,10 +36,10 @@ class DieRepeater():
         """
         [num_dice]
         -> [outcome]
-        -> probability that num_dice will all be <= or >= outcome.
+        -> probability that num_dice will all be < or > outcome.
         """
-        self._cdf_powers = []
-        self._ccdf_powers = []
+        self._dice_lt = hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
+        self._dice_gt = hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
         
         """
         [num_dice]
@@ -46,17 +47,13 @@ class DieRepeater():
         -> probability that num_dice will all be < or > outcome
            with the given sum.
         """
-        conv_zero = numpy.ones((len(self._die), 1))
-        full_one = numpy.tile(self._die.pmf(), (len(self._die), 1))
+        full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
 
-        lo_one = numpy.tril(full_one, k=-1)
-        hi_one = numpy.triu(full_one, k=1)
+        lo_1 = numpy.tril(full_1, k=-1)
+        hi_1 = numpy.triu(full_1, k=1)
         
-        self._lo_sums = [conv_zero, lo_one]
-        self._hi_sums = [conv_zero, hi_one]
-        
-        self._dice_lt_sum = hdroller.convolution_series.ConvolutionSeries(lo_one)
-        self._dice_gt_sum = hdroller.convolution_series.ConvolutionSeries(hi_one)
+        self._dice_lt_sum = hdroller.convolution_series.ConvolutionSeries(lo_1)
+        self._dice_gt_sum = hdroller.convolution_series.ConvolutionSeries(hi_1)
         
     def get_convolution(self, convolutions, num_dice):
         while len(convolutions) < num_dice+1:
@@ -69,18 +66,6 @@ class DieRepeater():
             next = numpy.power(base, len(powers))
             powers.append(next)
         return powers[num_dice]
-        
-    def lt(self, num_dice):
-        return self.get_power(self._cdf_powers, self._die.cdf(inclusive='both'), num_dice)[:-1]
-    
-    def gt(self, num_dice):
-        return self.get_power(self._ccdf_powers, self._die.ccdf(inclusive='both'), num_dice)[1:]
-        
-    def leq(self, num_dice):
-        return self.get_power(self._cdf_powers, self._die.cdf(inclusive='both'), num_dice)[1:]
-    
-    def geq(self, num_dice):
-        return self.get_power(self._ccdf_powers, self._die.ccdf(inclusive='both'), num_dice)[:-1]
         
     def keep_one_side(self, num_dice, num_keep, nonsum_convolutions, sum_convolutions):
         if num_keep == 0:
@@ -127,11 +112,11 @@ class DieRepeater():
         if index < 0: index = num_dice + index
         
         if index < num_dice // 2:
-            short = self.lt
+            short = self._dice_lt
             long = self._dice_gt_eq
             min_long_dice = num_dice - index
         else:
-            short = self.gt
+            short = self._dice_gt
             long = self._dice_lt_eq
             min_long_dice = index + 1
         
@@ -141,7 +126,7 @@ class DieRepeater():
         for num_long_dice in range(min_long_dice, num_dice+1):
             num_short_dice = num_dice - num_long_dice
             comb_factor = hdroller.math.multinom(num_dice, (num_long_dice, num_short_dice))
-            short_factor = short(num_short_dice)
+            short_factor = short[num_short_dice]
             long_factor = long.reverse_cumsum(num_long_dice)[:, num_long_dice - min_long_dice + 1]
             pmf += comb_factor * short_factor * long_factor
         
