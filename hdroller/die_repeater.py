@@ -14,12 +14,7 @@ class DieRepeater():
     def __init__(self, die):
         self._die = die
         
-        self.init_convolutions()
-    
-    def init_convolutions(self):
-        """
-        Fills convolutions with base cases.
-        """
+        # Initialize convolution and power series.
         
         """
         [num_dice]
@@ -35,37 +30,26 @@ class DieRepeater():
         
         """
         [num_dice]
-        -> [outcome]
-        -> probability that num_dice will all be < or > outcome.
-        """
-        self._dice_lt = hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
-        self._dice_gt = hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
-        
-        """
-        [num_dice]
         -> [outcome, sum]
         -> probability that num_dice will all be < or > outcome
            with the given sum.
         """
         full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
-
+        
+        # The initial arrays rows are equal to the pmf, with all entries outside the threshold set to 0.
         lo_1 = numpy.tril(full_1, k=-1)
         hi_1 = numpy.triu(full_1, k=1)
         
         self._dice_lt_sum = hdroller.convolution_series.ConvolutionSeries(lo_1)
         self._dice_gt_sum = hdroller.convolution_series.ConvolutionSeries(hi_1)
         
-    def get_convolution(self, convolutions, num_dice):
-        while len(convolutions) < num_dice+1:
-            next = hdroller.math.convolve_along_last_axis(convolutions[-1], convolutions[1])
-            convolutions.append(next)
-        return convolutions[num_dice]
-    
-    def get_power(self, powers, base, num_dice):
-        while len(powers) < num_dice+1:
-            next = numpy.power(base, len(powers))
-            powers.append(next)
-        return powers[num_dice]
+        """
+        [num_dice]
+        -> [outcome]
+        -> probability that num_dice will all be < or > outcome.
+        """
+        self._dice_lt = hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
+        self._dice_gt = hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
         
     def keep_one_side(self, num_dice, num_keep, nonsum_convolutions, sum_convolutions):
         if num_keep == 0:
