@@ -247,12 +247,12 @@ class Die(metaclass=DieType):
         else:
             return numpy.sum(self._pmf * transform(self.outcomes()))
     
-    def median(self):
-        """ Returns the first outcome for which the cdf exceeds 0.5."""
-        # TODO: tolerance
-        return numpy.nonzero(self.cdf() > 0.5)[0][0] + self._min_outcome
+    # TODO: median
     
     def mode(self):
+        """
+        Returns the outcome and mass of the highest single element of the PMF.
+        """
         return numpy.argmax(self._pmf) + self._min_outcome, numpy.max(self._pmf)
     
     def variance(self):
@@ -262,12 +262,6 @@ class Die(metaclass=DieType):
     
     def standard_deviation(self):
         return numpy.sqrt(self.variance())
-    
-    def mad_median(self):
-        """ Mean absolute deviation around the median. """
-        median = self.median()
-        abs_deviations = numpy.abs(self.outcomes() - median)
-        return numpy.dot(abs_deviations, self.pmf())
     
     def total_mass(self):
         """ Primarily for debugging, since externally visible dice should stay close to normalized. """
@@ -465,41 +459,12 @@ class Die(metaclass=DieType):
         pmf[0] += numpy.sum(self.pmf()[:left])
         pmf[-1] += numpy.sum(self.pmf()[right:])
         return Die(pmf, max(self.min_outcome(), min_outcome))
-        
-    def margin_of_success(self, other, base_outcome=0, win_ties=True):
-        """ 
-        Returns a Die representing the margin of success versus the other die.
-        TODO: base_outcome is added to any success.
-        """
-        return (self - other).max(0)
-        """
-        TODO:
-        if win_ties:
-            return (self - other + base_outcome).max(base_outcome-1).relabel({base_outcome-1:0})
-        else:
-            return (self - other + base_outcome).max(base_outcome).relabel({base_outcome:0})
-        """
     
     # Repeat, keep, and sum.
-    def advantage(self, n=2):
-        return Die.from_cdf(numpy.power(self.cdf(), n), self._min_outcome)
-
-    def disadvantage(self, n=2):
-        return Die.from_ccdf(numpy.power(self.ccdf(), n), self._min_outcome)
-    
-    def min(*dice):
-        """
-        Returns a Die representing the minimum of the all of the argument Dice.
-        """
-        dice = [Die(die) for die in dice]
-        dice_unions = Die._union_outcomes(*dice)
-        ccdf = 1.0
-        for die in dice_unions: ccdf *= die.ccdf()
-        return Die.from_ccdf(ccdf, dice_unions[0]._min_outcome)._trim()
-    
     def max(*dice):
         """
-        Returns a Die representing the maximum of the all of the argument Dice.
+        Returns a Die representing:
+        Roll all the dice and take the highest.
         """
         dice = [Die(die) for die in dice]
         dice_unions = Die._union_outcomes(*dice)
@@ -507,10 +472,21 @@ class Die(metaclass=DieType):
         for die in dice_unions: cdf *= die.cdf()
         return Die.from_cdf(cdf, dice_unions[0]._min_outcome)._trim()
     
+    def min(*dice):
+        """
+        Returns a Die representing:
+        Roll all the dice and take the lowest.
+        """
+        dice = [Die(die) for die in dice]
+        dice_unions = Die._union_outcomes(*dice)
+        ccdf = 1.0
+        for die in dice_unions: ccdf *= die.ccdf()
+        return Die.from_ccdf(ccdf, dice_unions[0]._min_outcome)._trim()
+    
     def repeat_and_sum(self, num_dice):
         """
         Returns a Die representing:
-        Roll this Die multiple times and sum the results.
+        Roll this Die `num_dice` times and sum the results.
         """
         if num_dice < 0:
             return (-self).repeat_and_sum(-num_dice)
