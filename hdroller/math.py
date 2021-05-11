@@ -17,10 +17,17 @@ def reverse_cumsum(a, axis=None, *args, **kwargs):
     """
     return numpy.flip(numpy.cumsum(numpy.flip(a, axis=axis), axis=axis, *args, **kwargs), axis=axis)
 
-def convolve_along_last_axis(a, v, mode='full'):
+def convolve_along_last_axis(a, v):
+    if a.shape[-1] < v.shape[-1]:
+        a, v = v, a
+    conv_count = numpy.prod(a.shape[:-1])
     conv_length = a.shape[-1] + v.shape[-1] - 1
     new_shape = a.shape[:-1] + (conv_length,)
     result = numpy.zeros(new_shape)
-    for indexes in numpy.ndindex(a.shape[:-1]):
-        result[indexes] = numpy.convolve(a[indexes], v[indexes], mode)
+    
+    # This seems to be almost always faster than convolving each slice.
+    for i in range(v.shape[-1]):
+        result[..., i:i+a.shape[-1]] += a * v[..., i:i+1]
+    
     return result
+    

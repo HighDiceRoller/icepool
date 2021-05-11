@@ -135,12 +135,13 @@ class DieRepeater():
             num_kept_threshold_dice = num_keep - num_sum_dice
             # The number of ways to assign each of num_dice to the sum or not.
             comb_factor = hdroller.math.multinom(num_dice, (num_nonsum_dice, num_sum_dice))
+            nonsum_factor = get_nonsum_at_least(num_nonsum_dice)[:, num_kept_threshold_dice]
+            sum_factor = get_sum(num_sum_dice)
+            partial_pmf = comb_factor * nonsum_factor[:, numpy.newaxis] * sum_factor
+            partial_pmf_length = partial_pmf.shape[-1]
             for threshold in range(len(self._die)):
-                nonsum_factor = get_nonsum_at_least(num_nonsum_dice)[threshold, num_kept_threshold_dice]
-                sum_factor = get_sum(num_sum_dice)[threshold, :]
-                partial_pmf = nonsum_factor * sum_factor * comb_factor
                 partial_start = threshold * num_kept_threshold_dice
-                pmf[partial_start:partial_start+len(partial_pmf)] += partial_pmf
+                pmf[partial_start:partial_start+partial_pmf_length] += partial_pmf[threshold, :]
         
         return hdroller.Die(pmf, min_outcome)
             
