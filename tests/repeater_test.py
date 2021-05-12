@@ -7,7 +7,7 @@ import pytest
 
 abs_tol = 1e-9
 
-test_dice = [Die.d6, Die.d4.explode(1)]
+test_dice = [Die.d6, Die.d3 + Die.d4]
 
 def bf_repeat_and_sum(die, num_dice):
     return bf_keep_highest(die, num_dice, num_dice)
