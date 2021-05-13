@@ -2,6 +2,8 @@ import hdroller
 import hdroller.math
 import hdroller.convolution_series
 import hdroller.power_series
+
+from functools import cached_property
 import numpy
 
 class DieRepeater():
@@ -14,42 +16,69 @@ class DieRepeater():
     def __init__(self, die):
         self._die = die
         
-        # Initialize convolution and power series.
-        
+    @cached_property
+    def _dice_lt_eq(self):
         """
         [num_dice]
         -> [outcome, num_eq_dice] 
-        -> probability that num_dice will all be <= or => outcome
-           with EXACTLY num_eq_dice equal to outcome_index.
+        -> probability that num_dice will all be <= outcome
+           with num_eq_dice equal to outcome_index.
         """
         lo_1 = numpy.stack((self._die.cdf(inclusive=False), self._die.pmf()), axis=1)
+        return hdroller.convolution_series.ConvolutionSeries(lo_1)
+        
+    @cached_property
+    def _dice_gt_eq(self):
+        """
+        [num_dice]
+        -> [outcome, num_eq_dice] 
+        -> probability that num_dice will all be >= outcome
+           with num_eq_dice equal to outcome_index.
+        """
         hi_1 = numpy.stack((self._die.ccdf(inclusive=False), self._die.pmf()), axis=1)
-        
-        self._dice_lt_eq = hdroller.convolution_series.ConvolutionSeries(lo_1)
-        self._dice_gt_eq = hdroller.convolution_series.ConvolutionSeries(hi_1)
-        
+        return hdroller.convolution_series.ConvolutionSeries(hi_1)
+    
+    @cached_property
+    def _dice_lt_sum(self):
         """
         [num_dice]
         -> [outcome, sum]
-        -> probability that num_dice will all be < or > outcome
+        -> probability that num_dice will all be < outcome
            with the given sum.
         """
         full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
-        
-        # The initial arrays rows are equal to the pmf, with all entries outside the threshold set to 0.
         lo_1 = numpy.tril(full_1, k=-1)
+        return hdroller.convolution_series.ConvolutionSeries(lo_1)
+    
+    @cached_property
+    def _dice_gt_sum(self):
+        """
+        [num_dice]
+        -> [outcome, sum]
+        -> probability that num_dice will all be > outcome
+           with the given sum.
+        """
+        full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
         hi_1 = numpy.triu(full_1, k=1)
-        
-        self._dice_lt_sum = hdroller.convolution_series.ConvolutionSeries(lo_1)
-        self._dice_gt_sum = hdroller.convolution_series.ConvolutionSeries(hi_1)
-        
+        return hdroller.convolution_series.ConvolutionSeries(hi_1)
+    
+    @cached_property
+    def _dice_lt(self):
         """
         [num_dice]
         -> [outcome]
-        -> probability that num_dice will all be < or > outcome.
+        -> probability that num_dice will all be < outcome.
         """
-        self._dice_lt = hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
-        self._dice_gt = hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
+        return hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
+        
+    @cached_property
+    def _dice_gt(self):
+        """
+        [num_dice]
+        -> [outcome]
+        -> probability that num_dice will all be > outcome.
+        """
+        return hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
         
     def keep_one_side(self, num_dice, num_keep, nonsum_convolutions, sum_convolutions):
         if num_keep == 0:
