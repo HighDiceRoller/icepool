@@ -1,6 +1,7 @@
 import hdroller.math
 import hdroller.die_repeater
 
+from functools import cached_property
 import numpy
 import re
 from scipy.special import erf, factorial
@@ -56,18 +57,28 @@ class Die(metaclass=DieType):
             self._min_outcome = min_outcome
             self._name = name
         
-        # Precompute cdf, ccdf. These include both endpoints.
-        self._cdf = numpy.cumsum(self._pmf)
-        self._cdf = numpy.insert(self._cdf, 0, 0.0)
-        self._ccdf = hdroller.math.reverse_cumsum(self._pmf)
-        self._ccdf = numpy.append(self._ccdf, 0.0)
-        
-        # Set immutable so we can return them safely without copying.
         self._pmf.setflags(write=False)
-        self._cdf.setflags(write=False)
-        self._ccdf.setflags(write=False)
-        
-        self._repeater = hdroller.die_repeater.DieRepeater(self)
+    
+    # Internal caches.
+    @cached_property
+    def _cdf(self):
+        result = numpy.cumsum(self._pmf)
+        result = numpy.insert(result, 0, 0.0)
+        result.setflags(write=False)
+        return result
+    
+    @cached_property
+    def _ccdf(self):
+        result = hdroller.math.reverse_cumsum(self._pmf)
+        result = numpy.append(result, 0.0)
+        result.setflags(write=False)
+        return result
+    
+    @cached_property
+    def _repeater(self):
+        return hdroller.die_repeater.DieRepeater(self)
+    
+    # Creation.
 
     @staticmethod
     def from_cdf(cdf, min_outcome, inclusive=True):
@@ -215,7 +226,8 @@ class Die(metaclass=DieType):
     def cdf(self, inclusive=True):
         """ 
         When zipped with outcomes(), this is the probability of rolling <= the corresponding outcome.
-        inclusive: If False, changes the comparison to <. If 'both', includes both endpoints.
+        inclusive: If False, changes the comparison to <.
+          If 'both', includes both endpoints and should be zipped with outcomes(include_one_past_end=True).
         """
         if inclusive is True:
             return self._cdf[1:]
@@ -230,6 +242,7 @@ class Die(metaclass=DieType):
         """
         When zipped with outcomes(), this is the probability of rolling >= the corresponding outcome.
         inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
+          If 'both', includes both endpoints and should be zipped with outcomes(include_one_past_end=True).
         """
         if inclusive is True:
             return self._ccdf[:-1]
@@ -241,11 +254,8 @@ class Die(metaclass=DieType):
             return self._ccdf[1:-1]
         
     # Statistics.
-    def mean(self, transform=None):
-        if transform is None:
-            return numpy.sum(self._pmf * self.outcomes())
-        else:
-            return numpy.sum(self._pmf * transform(self.outcomes()))
+    def mean(self):
+        return numpy.sum(self._pmf * self.outcomes())
     
     # TODO: median
     
@@ -262,20 +272,20 @@ class Die(metaclass=DieType):
     
     def standard_deviation(self):
         return numpy.sqrt(self.variance())
-    
-    def total_mass(self):
-        """ Primarily for debugging, since externally visible dice should stay close to normalized. """
-        return numpy.sum(self._pmf)
         
     def ks_stat(self, other):
-        """ Kolmogorov–Smirnov stat. Computes the maximum absolute difference between CDFs. """
+        """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
         a, b = Die._union_outcomes(self, other)
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
-        """ Cramér-von Mises stat. Computes the sum-of-squares difference between CDFs. """
+        """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
         a, b = Die._union_outcomes(self, other)
         return numpy.linalg.norm(a.cdf() - b.cdf())
+    
+    def total_mass(self):
+        """ Primarily for debugging, since externally visible dice should stay close to normalized. """
+        return numpy.sum(self._pmf)
 
     # Operations that don't involve other dice.
     
