@@ -13,7 +13,7 @@ class DieType(type):
     def __getattr__(self, key):
         if key[0] == 'd':
             die_size = int(key[1:])
-            return Die.d(die_size)
+            return Die.standard(die_size)
         raise AttributeError(key)
 
 class Die(metaclass=DieType):
@@ -148,9 +148,9 @@ class Die(metaclass=DieType):
         return num_dice * tail_die
     
     @staticmethod
-    def standard(faces):
-        if faces < 1: raise ValueError('Standard dice must have at least 1 face.')
-        return Die(numpy.ones((faces,)) / faces, 1, 'd%d' % faces)
+    def standard(num_faces):
+        if num_faces < 1: raise ValueError('Standard dice must have at least 1 face.')
+        return Die(numpy.ones((num_faces,)) / num_faces, 1, 'd%d' % num_faces)
         
     @staticmethod
     def coin(chance=0.5):
