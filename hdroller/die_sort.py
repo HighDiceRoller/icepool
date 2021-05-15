@@ -1,13 +1,15 @@
 import hdroller
 import hdroller.math
 
-from scipy.special import comb
+from functools import cache
 import numpy
+from scipy.special import comb
 
 """
 These deal with all sorted tuples of tuple_length whose elements are between 0 and num_values-1 inclusive.
 Tuples are indexed in lexicographic order.
 """
+
 def num_sorted_tuples(tuple_length, num_values):
     return comb(num_values, tuple_length, exact=True, repetition=True)
 
@@ -23,6 +25,7 @@ def iter_sorted_tuples(tuple_length, num_values, start_value=0):
         for tail in iter_sorted_tuples(tuple_length - 1, num_values, head_value):
             yield (head_value,) + tail
 
+@cache
 def ravel_sorted_tuple(tuple, num_values, start_value=0):
     """
     Given a sorted tuple, returns the index of that tuple.
@@ -36,17 +39,21 @@ def ravel_sorted_tuple(tuple, num_values, start_value=0):
         result += num_sorted_tuples(len(tuple) - 1, num_values - head_value)
     return result + ravel_sorted_tuple(tuple[1:], num_values, tuple[0])
 
+@cache
 def keep_transition(tuple_length, num_values, transition_slice):
     """
     [new_value, sorted_tuple_index] -> next_sorted_tuple_index
+    transition_slice is a tuple of arguments to slice().
     """
+    transition_slice = slice(*transition_slice)
     num_tuples = num_sorted_tuples(tuple_length, num_values)
     result = numpy.zeros((num_values, num_tuples), dtype=int)
     for value in range(num_values):
         for sorted_tuple_index, sorted_tuple in enumerate(iter_sorted_tuples(tuple_length, num_values)):
             next_sorted_tuple = sorted((value,) + sorted_tuple)[transition_slice]
-            next_sorted_tuple_index = ravel_sorted_tuple(next_sorted_tuple, num_values)
+            next_sorted_tuple_index = ravel_sorted_tuple(tuple(next_sorted_tuple), num_values)
             result[value, sorted_tuple_index] = next_sorted_tuple_index
+    result.setflags(write=False)
     return result
     
 def keep(num_keep, *dice, transition_slice):
@@ -71,7 +78,7 @@ def keep(num_keep, *dice, transition_slice):
         for face in range(num_values):
             indices = transition[face, :]
             masses = die.pmf()[face] * sorted_pmf
-            numpy.add.at(next_sorted_pmf, indices, masses)
+            next_sorted_pmf += numpy.bincount(indices, masses, len(next_sorted_pmf))
         sorted_pmf = next_sorted_pmf
     
     # Sum the faces.
@@ -85,7 +92,7 @@ def keep(num_keep, *dice, transition_slice):
     return hdroller.Die(sum_pmf, sum_min_outcome)._trim()
 
 def keep_highest(num_keep, *dice):
-    return keep(num_keep, *dice, transition_slice=slice(1, None))
+    return keep(num_keep, *dice, transition_slice=(1, None))
     
 def keep_lowest(num_keep, *dice):
-    return keep(num_keep, *dice, transition_slice=slice(None, -1))
+    return keep(num_keep, *dice, transition_slice=(None, -1))
