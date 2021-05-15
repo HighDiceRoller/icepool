@@ -1,13 +1,16 @@
 import hdroller
 import hdroller.math
 
-from functools import cache
 from scipy.special import comb
 import numpy
 
 """
 These deal with all sorted tuples of tuple_length whose elements are between 0 and num_values-1 inclusive.
+Tuples are indexed in lexicographic order.
 """
+def num_sorted_tuples(tuple_length, num_values):
+    return comb(num_values, tuple_length, exact=True, repetition=True)
+
 def iter_sorted_tuples(tuple_length, num_values, start_value=0):
     """
     Iterates through all sorted tuples.
@@ -19,65 +22,73 @@ def iter_sorted_tuples(tuple_length, num_values, start_value=0):
     for head_value in range(start_value, num_values):
         for tail in iter_sorted_tuples(tuple_length - 1, num_values, head_value):
             yield (head_value,) + tail
-    
-def unravel_sorted_tuple_index(indices, tuple_length, num_values, start_value=0):
-    """
-    Turns indices into their corresponding sorted tuples.
-    """
-    if tuple_length == 1:
-        return indices
-    
-    if numpy.isscalar(indices):
-        indices = numpy.array([indices])
-    else:
-        indices = numpy.copy(indices)
-    
-    result = numpy.zeros((len(indices), tuple_length))
-    
-    for head_value in range(start_value, num_values):
-        tail_size = comb(num_values - head_value, tuple_length, repeated=True)
-        mask = (indices >= 0) & (indices < tail_size)
-        result[mask][0] = head_value
-        result[mask][1:] = unravel_sorted_tuple_index(indices[mask], tuple_length - 1, head_value)
-        indices -= tail_size
-    return result
 
-def ravel_sorted_tuple(tuple, num_values):
-    if len(tuple) == 1:
-        return tuple[0]
+def ravel_sorted_tuple(tuple, num_values, start_value=0):
+    """
+    Given a sorted tuple, returns the index of that tuple.
+    """
+    if len(tuple) == 0:
+        return 0
+    elif len(tuple) == 1:
+        return tuple[0] - start_value
     result = 0
-    for head_value in range(tuple[0]):
-        result += comb(num_values - head_value, len(tuple), repeated=True)
-    return result + ravel_sorted_tuple(tuple[1:], num_values)
+    for head_value in range(start_value, tuple[0]):
+        result += num_sorted_tuples(len(tuple) - 1, num_values - head_value)
+    return result + ravel_sorted_tuple(tuple[1:], num_values, tuple[0])
 
-@cache
-def keep_transition(tuple_length, num_values, keep_slice):
+def keep_transition(tuple_length, num_values, transition_slice):
     """
     [new_value, sorted_tuple_index] -> next_sorted_tuple_index
     """
-    num_tuples = comb(num_values, tuple_length, repeated=True)
-    result = numpy.zeros((num_values, num_tuples))
-    for value in num_values:
-        for sorted_tuple_index, sorted_tuple in enumerate(hdroller.math.iter_sorted_tuples(tuple_length, num_values)):
-            next_sorted_tuple = sorted((value,) + sorted_tuple)[keep_slice]
-            next_sorted_tuple_index = hdroller.math.ravel_sorted_tuple(next_sorted_tuple, tuple_length, num_values)
+    num_tuples = num_sorted_tuples(tuple_length, num_values)
+    result = numpy.zeros((num_values, num_tuples), dtype=int)
+    for value in range(num_values):
+        for sorted_tuple_index, sorted_tuple in enumerate(iter_sorted_tuples(tuple_length, num_values)):
+            next_sorted_tuple = sorted((value,) + sorted_tuple)[transition_slice]
+            next_sorted_tuple_index = ravel_sorted_tuple(next_sorted_tuple, num_values)
             result[value, sorted_tuple_index] = next_sorted_tuple_index
-    result.setflags(write=False)
     return result
-
-def keep_highest_transition(tuple_length, num_values):
-    return keep_highest_transition(tuple_length, num_values, slice(1, None))
     
-def keep_lowest_transition(tuple_length, num_values):
-    return keep_highest_transition(tuple_length, num_values, slice(None, -1))
+def keep(num_keep, *dice, transition_slice):
+    dice = hdroller.Die._union_outcomes(*dice)
+    
+    num_values = len(dice[0])
+    sorted_pmf_length = num_sorted_tuples(num_keep, num_values)
+    sorted_pmf = numpy.zeros((sorted_pmf_length,))
+    
+    # Initial state.
+    unsorted_shape = (num_values,) * num_keep
+    for faces in numpy.ndindex(unsorted_shape):
+        mass = numpy.product([die.pmf()[face] for die, face in zip(dice[:num_keep], faces)])
+        faces = tuple(sorted(faces))
+        index = ravel_sorted_tuple(faces, num_values)
+        sorted_pmf[index] += mass
+    
+    print(sorted_pmf)
+    # Step through the remaining dice.
+    transition = keep_transition(num_keep, num_values, transition_slice)
+    print(transition)
+    for die in dice[num_keep:]:
+        next_sorted_pmf = numpy.zeros_like(sorted_pmf)
+        for face in range(num_values):
+            indices = transition[face, :]
+            masses = die.pmf()[face] * sorted_pmf
+            numpy.add.at(next_sorted_pmf, indices, masses)
+        sorted_pmf = next_sorted_pmf
+    
+    # Sum the faces.
+    sum_pmf_length = num_keep * (num_values - 1) + 1
+    sum_pmf = numpy.zeros((sum_pmf_length,))
+    sum_min_outcome = num_keep * dice[0].min_outcome()
+    
+    for faces, mass in zip(iter_sorted_tuples(num_keep, num_values), sorted_pmf):
+        sum_pmf[sum(faces)] += mass
+    
+    print(sum_pmf)
+    return hdroller.Die(sum_pmf, sum_min_outcome)._trim()
 
-def SortedDicePool():
-    def __init__(*dice):
-        dice = hdroller.Die._union_outcomes(*dice)
-        self._min_outcome = dice[0].min_outcome()
-        shape = tuple(len(die) for die in dice)
-        self._pmf = numpy.zeros(shape)
-        for outcomes in numpy.ndindex(shape):
-            mass = numpy.product(die.pmf()[outcome] for die, outcome in zip(dice, outcomes))
-            outcomes = tuple(sorted(outcomes))
-            self._pmf[outcomes] += mass
+def keep_highest(num_keep, *dice):
+    return keep(num_keep, *dice, transition_slice=slice(1, None))
+    
+def keep_lowest(num_keep, *dice):
+    return keep(num_keep, *dice, transition_slice=slice(None, -1))
