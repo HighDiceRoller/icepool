@@ -64,10 +64,8 @@ def keep(num_keep, *dice, transition_slice):
         index = ravel_sorted_tuple(faces, num_values)
         sorted_pmf[index] += mass
     
-    print(sorted_pmf)
     # Step through the remaining dice.
     transition = keep_transition(num_keep, num_values, transition_slice)
-    print(transition)
     for die in dice[num_keep:]:
         next_sorted_pmf = numpy.zeros_like(sorted_pmf)
         for face in range(num_values):
@@ -84,7 +82,6 @@ def keep(num_keep, *dice, transition_slice):
     for faces, mass in zip(iter_sorted_tuples(num_keep, num_values), sorted_pmf):
         sum_pmf[sum(faces)] += mass
     
-    print(sum_pmf)
     return hdroller.Die(sum_pmf, sum_min_outcome)._trim()
 
 def keep_highest(num_keep, *dice):
