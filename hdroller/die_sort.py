@@ -57,6 +57,8 @@ def keep_transition(tuple_length, num_values, transition_slice):
     return result
     
 def keep(num_keep, *dice, transition_slice):
+    if num_keep == 0:
+        return hdroller.Die(0)
     dice = hdroller.Die._union_outcomes(*dice)
     
     num_values = len(dice[0])
@@ -78,6 +80,7 @@ def keep(num_keep, *dice, transition_slice):
         for face in range(num_values):
             indices = transition[face, :]
             masses = die.pmf()[face] * sorted_pmf
+            # bincount appears to be faster than add.at.
             next_sorted_pmf += numpy.bincount(indices, masses, len(next_sorted_pmf))
         sorted_pmf = next_sorted_pmf
     
