@@ -56,7 +56,7 @@ def keep_transition(tuple_length, num_values, transition_slice):
     result.setflags(write=False)
     return result
     
-def keep(num_keep, *dice, transition_slice):
+def keep(num_keep, *dice, transition_slice, final_slice):
     if num_keep == 0:
         return hdroller.Die(0)
     dice = hdroller.Die._union_outcomes(*dice)
@@ -89,13 +89,14 @@ def keep(num_keep, *dice, transition_slice):
     sum_pmf = numpy.zeros((sum_pmf_length,))
     sum_min_outcome = num_keep * dice[0].min_outcome()
     
+    final_slice = slice(*final_slice)
     for faces, mass in zip(iter_sorted_tuples(num_keep, num_values), sorted_pmf):
-        sum_pmf[sum(faces)] += mass
+        sum_pmf[sum(faces[final_slice])] += mass
     
     return hdroller.Die(sum_pmf, sum_min_outcome)._trim()
 
-def keep_highest(num_keep, *dice):
-    return keep(num_keep, *dice, transition_slice=(1, None))
+def keep_highest(num_keep, *dice, drop_highest=0):
+    return keep(num_keep, *dice, transition_slice=(1, None), final_slice=(None, num_keep - drop_highest))
     
-def keep_lowest(num_keep, *dice):
-    return keep(num_keep, *dice, transition_slice=(None, -1))
+def keep_lowest(num_keep, *dice, drop_lowest=0):
+    return keep(num_keep, *dice, transition_slice=(None, -1), final_slice=(drop_lowest, None))

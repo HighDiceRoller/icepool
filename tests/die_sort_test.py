@@ -10,13 +10,13 @@ import numpy
 max_tuple_length = 5
 max_num_values = 5
 
-def bf_keep_highest(num_keep, *dice):
+def bf_keep_highest(num_keep, *dice, drop_highest=0):
     if num_keep == 0: return Die(0)
     counter = brute_force.BruteForceCounter()
     shape = tuple(len(die) for die in dice)
     min_outcome = sum(sorted(die.min_outcome() for die in dice)[-num_keep:])
     for rolls in numpy.ndindex(shape):
-        total = sum(sorted(rolls)[-num_keep:]) + min_outcome
+        total = sum(sorted(rolls)[-num_keep:len(dice)-drop_highest]) + min_outcome
         mass = numpy.product([die.pmf()[roll] for die, roll in zip(dice, rolls)])
         counter.insert(total, mass)
     return counter.die()
@@ -78,7 +78,6 @@ def test_keep_lowest_vs_repeater(num_dice, num_keep):
     assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
 
-
 @pytest.mark.parametrize('num_keep', range(4))
 def test_keep_highest_mixed(num_keep):
     dice = [Die.d4.explode(1), Die.d6, Die.d6, Die.d8]
@@ -93,6 +92,15 @@ def test_keep_lowest_mixed(num_keep):
     dice = [Die.d4.explode(1), Die.d6, Die.d6, Die.d8]
     result = hdroller.die_sort.keep_lowest(num_keep, *dice)
     expected = bf_keep_lowest(num_keep, *dice)
+    
+    assert result.total_mass() == pytest.approx(1.0)
+    assert result.ks_stat(expected) == pytest.approx(0.0)
+    
+@pytest.mark.parametrize('num_keep', range(1, 4))
+def test_keep_highest_mixed_drop_highest(num_keep):
+    dice = [Die.d4.explode(1), Die.d6, Die.d6, Die.d8]
+    result = hdroller.die_sort.keep_highest(num_keep, *dice, drop_highest=1)
+    expected = bf_keep_highest(num_keep, *dice, drop_highest=1)
     
     assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
