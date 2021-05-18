@@ -97,17 +97,26 @@ class Die(metaclass=DieType):
         return Die(pmf, min_outcome)
 
     @staticmethod
-    def from_faces(faces):
+    def mix(*args, weights=None):
         """
-        Constructs a die from a list of faces, with each facing having equal probability.
+        Constructs a Die from a mixture of the arguments.
+        The arguments can be Dice or anything castable to Dice.
+        weights: An array of one weight per argument.
+        If not provided, all arguments are mixed uniformly.
         """
-        min_outcome = numpy.min(faces)
-        max_outcome = numpy.max(faces)
-        pmf = numpy.zeros((max_outcome - min_outcome + 1,))
-        for face in faces:
-            pmf[face-min_outcome] += 1
-        pmf /= len(faces)
-        return Die(pmf, min_outcome)
+        
+        args = [Die(die) for die in args]
+        args = Die._union_outcomes(*args)
+        
+        if weights is None:
+            weights = numpy.ones((len(args),))
+        
+        weights = weights / numpy.sum(weights)
+
+        pmf = numpy.zeros_like(args[0].pmf())
+        for die, weight in zip(args, weights):
+            pmf += weight * die.pmf()
+        return Die(pmf, args[0].min_outcome())
 
     @staticmethod
     def d(*args):
@@ -296,7 +305,7 @@ class Die(metaclass=DieType):
     def relabel(self, relabeling):
         """
         relabeling can be one of the following:
-        * An array-like containing relabelings by index.
+        * An array-like containing relabelings by face.
         * A dict-like mapping old outcomes to new outcomes.
           Unmapped old outcomes stay the same.
         * A function mapping old outcomes to new outcomes.
@@ -312,17 +321,18 @@ class Die(metaclass=DieType):
             pmf[new_outcome - min_outcome] += mass
         return Die(pmf, min_outcome)
 
-    def explode(self, n, chance=None):
+    def explode(self, n, chance=None, faces=None):
         """
         n is the maximum number of times to explode.
         chance: if supplied, this top fraction of the pmf will explode.
         """
         # TODO: binary split, other ways of defining what explodes
         if n <= 0: return self
-        recursive = self.explode(n-1, chance=chance)
+        recursive = self.explode(n-1, chance=chance, faces=faces)
         
         explode_pmf = numpy.zeros_like(self._pmf)
         if chance is not None:
+            if chance == 0: return self
             remaining_chance = chance
             for index, mass in reversed(list(enumerate(self._pmf))):
                 if mass < chance:
@@ -331,6 +341,9 @@ class Die(metaclass=DieType):
                 else:
                     explode_pmf[index] = chance
                     break
+        elif faces is not None:
+            if faces == 0: return self
+            explode_pmf[-faces:] = self._pmf[-faces:]
         else:
             explode_pmf[-1] = self._pmf[-1]
         
