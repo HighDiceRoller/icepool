@@ -9,8 +9,6 @@ import numpy
 class DieRepeater():
     """
     Class for computing statistics on repeated dice and caching intermediate information.
-    In this file, "outcome"s are understood to always start from zero
-    until constructing any output Die.
     """
     
     def __init__(self, die):
@@ -20,9 +18,9 @@ class DieRepeater():
     def _dice_lt_eq(self):
         """
         [num_dice]
-        -> [outcome, num_eq_dice] 
-        -> probability that num_dice will all be <= outcome
-           with num_eq_dice equal to outcome_index.
+        -> [face, num_eq_dice] 
+        -> probability that num_dice will all be <= face
+           with num_eq_dice equal to face.
         """
         lo_1 = numpy.stack((self._die.cdf(inclusive=False), self._die.pmf()), axis=1)
         return hdroller.convolution_series.ConvolutionSeries(lo_1)
@@ -31,9 +29,9 @@ class DieRepeater():
     def _dice_gt_eq(self):
         """
         [num_dice]
-        -> [outcome, num_eq_dice] 
-        -> probability that num_dice will all be >= outcome
-           with num_eq_dice equal to outcome_index.
+        -> [face, num_eq_dice] 
+        -> probability that num_dice will all be >= face
+           with num_eq_dice equal to face.
         """
         hi_1 = numpy.stack((self._die.ccdf(inclusive=False), self._die.pmf()), axis=1)
         return hdroller.convolution_series.ConvolutionSeries(hi_1)
@@ -42,8 +40,8 @@ class DieRepeater():
     def _dice_lt_sum(self):
         """
         [num_dice]
-        -> [outcome, sum]
-        -> probability that num_dice will all be < outcome
+        -> [face, sum]
+        -> probability that num_dice will all be < face
            with the given sum.
         """
         full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
@@ -54,8 +52,8 @@ class DieRepeater():
     def _dice_gt_sum(self):
         """
         [num_dice]
-        -> [outcome, sum]
-        -> probability that num_dice will all be > outcome
+        -> [face, sum]
+        -> probability that num_dice will all be > face
            with the given sum.
         """
         full_1 = numpy.tile(self._die.pmf(), (len(self._die), 1))
@@ -66,8 +64,8 @@ class DieRepeater():
     def _dice_lt(self):
         """
         [num_dice]
-        -> [outcome]
-        -> probability that num_dice will all be < outcome.
+        -> [face]
+        -> probability that num_dice will all be < face.
         """
         return hdroller.power_series.PowerSeries(self._die.cdf(inclusive=False))
         
@@ -75,8 +73,8 @@ class DieRepeater():
     def _dice_gt(self):
         """
         [num_dice]
-        -> [outcome]
-        -> probability that num_dice will all be > outcome.
+        -> [face]
+        -> probability that num_dice will all be > face.
         """
         return hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
         
