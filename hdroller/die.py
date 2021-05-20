@@ -395,6 +395,12 @@ class Die(metaclass=DieType):
     def standard_deviation(self):
         return numpy.sqrt(self.variance())
         
+    def excess_kurtosis(self):
+        sd = self.standard_deviation()
+        mean = self.mean()
+        kurtosis = numpy.sum(self.pmf() * numpy.power((self.outcomes() - mean) / sd, 4.0))
+        return kurtosis - 3.0
+        
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
         a, b = Die._union(self, other, lcd=False)
