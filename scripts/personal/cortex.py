@@ -72,17 +72,23 @@ vs_gms = [[pool.sum_die > gm_pool for gm_pool in gm_pools] for pool in pools]
 end_time = time.perf_counter()
 print('Computation time:', end_time-start_time)
 
-result = 'Total dice,Drop,Keep,d12,d10,d8,d6,d4,>0 Hitch,>1 Hitch,>1d6,>2d6,>2d8,>2d10,>2d12'
+result = 'Total dice,Drop,Keep,d12,d10,d8,d6,d4,Mean,SD,>0 Hitch,>1 Hitch,>1d6,>2d6,>2d8,>2d10,>2d12'
 for x in range(12 * max_keep - 1): result += ',>%d' % (x+1)
 result += '\n'
 for pool, vs_gm in zip(pools, vs_gms):
     result += '%d' % pool.size
-    result += (',%d' % pool.num_drop).replace('0', '')
+    result += (',%d' % pool.num_drop).replace(',', ',')
     result += ',%d' % pool.num_keep
-    result += (',%d,%d,%d,%d,%d' % pool.pool_comp).replace('0', '')
+    result += (',%d,%d,%d,%d,%d' % pool.pool_comp).replace(',0', ',')
+
+    result += ',%0.2f' % pool.sum_die.mean()
+    result += ',%0.2f' % pool.sum_die.standard_deviation()
+    
     result += ',%0.2f%%' % (pool.hitch_chance * 100.0)
     result += ',%0.2f%%' % (pool.multi_hitch_chance * 100.0)
+    
     for x in vs_gm: result += ',%0.2f%%' % (x * 100.0)
+    
     for p in pool.sum_die.ccdf()[2:]: result += ',%0.2f%%' % (p * 100.0)
     result += ',' * (12 * max_keep + 1 - len(pool.sum_die))
     result += '\n'
