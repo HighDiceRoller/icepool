@@ -129,8 +129,6 @@ class Die(metaclass=DieType):
             mix_weights = numpy.ones((len(args),))
         elif isinstance(mix_weights, Die):
             mix_weights = mix_weights.weights()
-        
-        mix_weights = mix_weights / numpy.sum(mix_weights)
 
         weights = numpy.zeros_like(args[0].weights())
         for die, mix_weight in zip(args, mix_weights):
@@ -395,9 +393,9 @@ class Die(metaclass=DieType):
         explode_die = Die(explode_weights, self.min_outcome())._trim()
         explode_die += self.explode(max_explode-1, chance=chance, faces=faces)
         
-        explode_weight = numpy.sum(explode_weights)
+        mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
         
-        return Die.mix(non_explode_die, explode_die, mix_weights=[self.total_weight() - explode_weight, explode_weight])
+        return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
     
     def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""
@@ -618,9 +616,9 @@ class Die(metaclass=DieType):
     def __str__(self):
         result = ''
         if self.is_exact():
-            format_string = '%d, %d\n'
+            format_string = '%2d, %d\n'
         else:
-            format_string = '%d, %f\n'
+            format_string = '%2d, %f\n'
         for outcome, weight in zip(self.outcomes(), self.weights()):
             result += format_string % (outcome, weight)
         return result
