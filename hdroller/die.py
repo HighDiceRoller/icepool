@@ -12,7 +12,8 @@ outcomes: The numbers between the minimum and maximum rollable on a die (even if
   These run from die.min_outcome() to die.max_outcome() inclusive.
   len(die) is the total number of outcomes.
 faces: Equal to outcomes - die.min_outcome, so they always run from 0 to len(die) - 1.
-weights: A relative probability of each outcome. Can have arbitrary sum.
+weights: A relative probability of each outcome. This can have arbitrary positive sum, 
+  but uses values equal to integers where possible, serving as a fraction that decays gracefully.
   
 pmf: Probability mass function. The normalized version of the weights.
 """
@@ -44,45 +45,61 @@ class Die(metaclass=DieType):
             return die
         return super(Die, cls).__new__(cls)
     
-    def __init__(self, pmf, min_outcome=None):
+    def __init__(self, weights, min_outcome=None):
         """
         Constructor. Arguments can be:
-        * pmf (array) and min_outcome (integer).
+        * weights (array-like) and min_outcome (integer).
         * int: A die which always rolls that outcome.
         * float in [0, 1]: A die which has that chance of rolling 1, and rolls 0 otherwise.
         """
-        if isinstance(pmf, Die):
+        if isinstance(weights, Die):
             return # Already returned same object by __new__().
-        elif numpy.issubdtype(type(pmf), numpy.integer):
+        elif numpy.issubdtype(type(weights), numpy.integer):
             # Integer casts to die that always rolls that value.
             if min_outcome is not None: raise ValueError()
-            self._pmf = numpy.array([1.0])
-            self._min_outcome = pmf
-        elif numpy.issubdtype(type(pmf), numpy.floating):
+            self._weights = numpy.array([1.0])
+            self._min_outcome = weights
+        elif numpy.issubdtype(type(weights), numpy.floating):
             if min_outcome is not None: raise ValueError()
-            if not (pmf >= 0.0 and pmf <= 1.0):
+            if not (weights >= 0.0 and weights <= 1.0):
                 raise ValueError('Only floats between 0.0 and 1.0 can be cast to Die.')
-            self._pmf = numpy.array([1.0 - pmf, pmf])
+            self._weights = numpy.array([1.0 - weights, weights])
             self._min_outcome = 0
         else:
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
-            self._pmf = numpy.array(pmf)
+            self._weights = numpy.array(weights)
             self._min_outcome = min_outcome
         
-        self._pmf.setflags(write=False)
+        self._weights.setflags(write=False)
     
-    # Internal caches.
+    # Cached values.
+    @cached_property
+    def _total_weight(self):
+        return numpy.sum(self._weights)
+    
+    @cached_property
+    def _pmf(self):
+        result = self._weights / self._total_weight
+        result.setflags(write=False)
+        return result
+    
+    @cached_property
+    def _is_exact(self):
+        is_all_integer = numpy.all(self._weights == numpy.floor(self._weights))
+        is_sum_in_range = self._total_weight <= 2 ** 53
+        return is_all_integer and is_sum_in_range
+    
     @cached_property
     def _cdf(self):
-        result = numpy.cumsum(self._pmf)
+        result = numpy.cumsum(self.pmf())
         result = numpy.insert(result, 0, 0.0)
         result.setflags(write=False)
         return result
     
     @cached_property
     def _ccdf(self):
-        result = hdroller.math.reverse_cumsum(self._pmf)
+        result = hdroller.math.reverse_cumsum(self.pmf())
         result = numpy.append(result, 0.0)
         result.setflags(write=False)
         return result
@@ -236,18 +253,21 @@ class Die(metaclass=DieType):
         
     # Outcome information.
     def __len__(self):
-        return len(self._pmf)
+        return len(self._weights)
 
     def min_outcome(self):
         return self._min_outcome
 
     def max_outcome(self):
-        return self._min_outcome + len(self) - 1
+        return self.min_outcome() + len(self) - 1
 
     def outcomes(self, prepend=False, append=False):
-        return numpy.array(range(self._min_outcome, self._min_outcome + len(self) + (append is not False))) + (prepend is not False)
+        return numpy.array(range(self.min_outcome(), self.min_outcome() + len(self) + (append is not False))) + (prepend is not False)
 
     # Distributions.
+    def weights(self):
+        return self._weights
+    
     def pmf(self):
         return self._pmf
     
@@ -283,7 +303,7 @@ class Die(metaclass=DieType):
         
     # Statistics.
     def mean(self):
-        return numpy.sum(self._pmf * self.outcomes())
+        return numpy.sum(self.pmf() * self.outcomes())
     
     # TODO: median
     
@@ -291,11 +311,11 @@ class Die(metaclass=DieType):
         """
         Returns the outcome and mass of the highest single element of the PMF.
         """
-        return numpy.argmax(self._pmf) + self._min_outcome, numpy.max(self._pmf)
+        return numpy.argmax(self.pmf()) + self.min_outcome(), numpy.max(self.pmf())
     
     def variance(self):
         mean = self.mean()
-        mean_of_squares = numpy.sum(self._pmf * self.outcomes() * self.outcomes())
+        mean_of_squares = numpy.sum(self.pmf() * self.outcomes() * self.outcomes())
         return mean_of_squares - mean * mean
     
     def standard_deviation(self):
@@ -313,13 +333,13 @@ class Die(metaclass=DieType):
     
     def total_mass(self):
         """ Primarily for debugging, since externally visible dice should stay close to normalized. """
-        return numpy.sum(self._pmf)
+        return numpy.sum(self.pmf())
 
     # Operations that don't involve other dice.
     
     def __neg__(self):
         """ Returns a Die with all outcomes negated. """
-        return Die(numpy.flip(self._pmf), -self.max_outcome())
+        return Die(numpy.flip(self.pmf()), -self.max_outcome())
     
     def relabel(self, relabeling):
         """
@@ -346,11 +366,11 @@ class Die(metaclass=DieType):
         if max_explode == 0:
             return self
         
-        explode_pmf = numpy.zeros_like(self._pmf)
+        explode_pmf = numpy.zeros_like(self.pmf())
         if chance is not None:
             if chance == 0: return self
             remaining_chance = chance
-            for index, mass in reversed(list(enumerate(self._pmf))):
+            for index, mass in reversed(list(enumerate(self.pmf()))):
                 if mass < chance:
                     explode_pmf[index] = mass
                     remaining_chance -= mass
@@ -359,11 +379,11 @@ class Die(metaclass=DieType):
                     break
         elif faces is not None:
             if faces == 0: return self
-            explode_pmf[-faces:] = self._pmf[-faces:]
+            explode_pmf[-faces:] = self.pmf()[-faces:]
         else:
-            explode_pmf[-1] = self._pmf[-1]
+            explode_pmf[-1] = self.pmf()[-1]
         
-        non_explode_pmf = self._pmf - explode_pmf
+        non_explode_pmf = self.pmf() - explode_pmf
         
         non_explode_die = Die(non_explode_pmf, self.min_outcome())._trim()._normalize()
         explode_die = Die(explode_pmf, self.min_outcome())._trim()._normalize()
@@ -375,10 +395,10 @@ class Die(metaclass=DieType):
     
     def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""
-        pmf = numpy.copy(self._pmf)
+        pmf = numpy.copy(self.pmf())
         all_outcomes = self.outcomes()
         reroll_mask = numpy.zeros_like(all_outcomes, dtype=bool)
-        if outcomes is not None: reroll_mask[outcomes - self._min_outcome] = True
+        if outcomes is not None: reroll_mask[outcomes - self.min_outcome()] = True
         if below is not None: reroll_mask[all_outcomes < below] = True
         if above is not None: reroll_mask[all_outcomes > above] = True
         
@@ -395,7 +415,7 @@ class Die(metaclass=DieType):
         pmf[reroll_mask] *= rerollable_factor
         pmf[~reroll_mask] *= stop_factor
         
-        return Die(pmf, self._min_outcome)._trim()
+        return Die(pmf, self.min_outcome())._trim()
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
@@ -411,8 +431,8 @@ class Die(metaclass=DieType):
         Helper for adding two dice.
         other must already be a Die.
         """
-        pmf = numpy.convolve(self._pmf, other._pmf)
-        min_outcome = self._min_outcome + other._min_outcome
+        pmf = numpy.convolve(self.pmf(), other.pmf())
+        min_outcome = self.min_outcome() + other.min_outcome()
         return Die(pmf, min_outcome)
     
     def __add__(self, other):
@@ -439,7 +459,7 @@ class Die(metaclass=DieType):
         
         subresults = []
         die_count_chances = []
-        for die_count, die_count_chance in zip(self.outcomes(), self._pmf):
+        for die_count, die_count_chance in zip(self.outcomes(), self.pmf()):
             if die_count_chance <= 0.0: continue
             subresults.append(other.repeat_and_sum(die_count))
             die_count_chances.append(die_count_chance)
@@ -447,7 +467,7 @@ class Die(metaclass=DieType):
         subresults = Die._union_outcomes(*subresults)
         pmf = sum(subresult.pmf() * die_count_chance for subresult, die_count_chance in zip(subresults, die_count_chances))
         
-        return Die(pmf, subresults[0]._min_outcome)
+        return Die(pmf, subresults[0].min_outcome())
     
     def __rmul__(self, other):
         return Die(other) * self
@@ -459,13 +479,13 @@ class Die(metaclass=DieType):
         other = Die(other)
         if self.min_outcome < 0 or other.min_outcome < 0:
             raise NotImplementedError('Multiplication not implemented for non-positive outcomes.')
-        min_outcome = self._min_outcome * other._min_outcome
+        min_outcome = self.min_outcome() * other.min_outcome()
         max_outcome = self.max_outcome() * other.max_outcome()
-        pmf = numpy.zeros((result_max_outcome - result_min_outcome + 1))
-        for outcome, mass in zip(other.outcomes(), other._pmf):
-            start_index = outcome * self.min_outcome - result_min_outcome
-            pmf[start_index:start_index+outcome*len(self.data):outcome] += self._pmf * mass
-        return Die(pmf, result_min_outcome)
+        pmf = numpy.zeros((result_max_outcome - resultmin_outcome() + 1))
+        for outcome, mass in zip(other.outcomes(), other.pmf()):
+            start_index = outcome * self.min_outcome - resultmin_outcome()
+            pmf[start_index:start_index+outcome*len(self.data):outcome] += self.pmf() * mass
+        return Die(pmf, resultmin_outcome())
     
     def clip(self, min_outcome_or_die=None, max_outcome=None):
         """
@@ -495,7 +515,7 @@ class Die(metaclass=DieType):
         dice_unions = Die._union_outcomes(*dice)
         cdf = 1.0
         for die in dice_unions: cdf *= die.cdf()
-        return Die.from_cdf(cdf, dice_unions[0]._min_outcome)._trim()
+        return Die.from_cdf(cdf, dice_unions[0].min_outcome())._trim()
     
     def min(*dice):
         """
@@ -506,7 +526,7 @@ class Die(metaclass=DieType):
         dice_unions = Die._union_outcomes(*dice)
         ccdf = 1.0
         for die in dice_unions: ccdf *= die.ccdf()
-        return Die.from_ccdf(ccdf, dice_unions[0]._min_outcome)._trim()
+        return Die.from_ccdf(ccdf, dice_unions[0].min_outcome())._trim()
     
     def repeat_and_sum(self, num_dice):
         """
@@ -552,8 +572,8 @@ class Die(metaclass=DieType):
         """
         other = Die(other)
         difference = self - other
-        if difference._min_outcome < 0:
-            return numpy.sum(difference._pmf[:-difference._min_outcome])
+        if difference.min_outcome() < 0:
+            return numpy.sum(difference.pmf()[:-difference.min_outcome()])
         else:
             return 0.0
 
@@ -582,13 +602,13 @@ class Die(metaclass=DieType):
         """
         Returns a random sample from this Die.        
         """
-        return numpy.random.choice(self.outcomes(), size=size, p=self._pmf)
+        return numpy.random.choice(self.outcomes(), size=size, p=self.pmf())
 
     # String methods.
     
     def __str__(self):
         result = ''
-        for outcome, mass in zip(self.outcomes(), self._pmf):
+        for outcome, mass in zip(self.outcomes(), self.pmf()):
             result += '%d, %f\n' % (outcome, mass)
         return result
 
@@ -599,16 +619,16 @@ class Die(metaclass=DieType):
         Pads all the dice with zeros so that all have the same min and max outcome. 
         Caller is responsible for any trimming before returning dice publically.
         """
-        min_outcome = min(die._min_outcome for die in dice)
+        min_outcome = min(die.min_outcome() for die in dice)
         max_outcome = max(die.max_outcome() for die in dice)
         union_len = max_outcome - min_outcome + 1
         
         result = []
         for die in dice:
-            left_dst_index = die._min_outcome - min_outcome
+            left_dst_index = die.min_outcome() - min_outcome
             
             pmf = numpy.zeros((union_len,))
-            pmf[left_dst_index:left_dst_index + len(die._pmf)] = die._pmf
+            pmf[left_dst_index:left_dst_index + len(die.pmf())] = die.pmf()
             result.append(Die(pmf, min_outcome))
         
         return tuple(result)
@@ -618,9 +638,9 @@ class Die(metaclass=DieType):
         Returns a copy of this Die with the leading and trailing zeros trimmed.
         Shouldn't be usually necessary publically, since methods are written to stay trimmed publically.
         """
-        nz = numpy.nonzero(self._pmf)[0]
-        min_outcome = self._min_outcome + nz[0]
-        pmf = self._pmf[nz[0]:nz[-1]+1]
+        nz = numpy.nonzero(self.pmf())[0]
+        min_outcome = self.min_outcome() + nz[0]
+        pmf = self.pmf()[nz[0]:nz[-1]+1]
         return Die(pmf, min_outcome)
     
     def _normalize(self):
@@ -628,7 +648,7 @@ class Die(metaclass=DieType):
         Returns a normalized copy of this Die.
         Shouldn't be usually necessary publically, since methods are written to stay normalized publically.
         """
-        norm = numpy.sum(self._pmf)
+        norm = numpy.sum(self.pmf())
         if norm <= 0.0: raise ZeroDivisionError('Attempted to normalize die with non-positive mass')
-        pmf = self._pmf / norm
-        return Die(pmf, self._min_outcome)
+        pmf = self.pmf() / norm
+        return Die(pmf, self.min_outcome())
