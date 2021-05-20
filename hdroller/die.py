@@ -6,6 +6,17 @@ import numpy
 import re
 from scipy.special import erf, factorial
 
+"""
+Terminology:
+outcomes: The numbers between the minimum and maximum rollable on a die (even if they have zero chance).
+  These run from die.min_outcome() to die.max_outcome() inclusive.
+  len(die) is the total number of outcomes.
+faces: Equal to outcomes - die.min_outcome, so they always run from 0 to len(die) - 1.
+weights: A relative probability of each outcome. Can have arbitrary sum.
+  
+pmf: Probability mass function. The normalized version of the weights.
+"""
+
 class DieType(type):
     """
     Metaclass for Die. Used to enable shorthand for standard dice.
@@ -103,29 +114,29 @@ class Die(metaclass=DieType):
         return Die(pmf, min_outcome)
 
     @staticmethod
-    def mix(*args, weights=None):
+    def mix(*args, mix_weights=None):
         """
         Constructs a Die from a mixture of the arguments,
         equivalent to rolling a die and then choosing one of the arguments
         based on the resulting face rolled.
         The arguments can be Dice or anything castable to Dice.
-        weights: An array of one weight per argument.
+        mix_weights: An array of one weight per argument.
           If not provided, all arguments are mixed uniformly.
-          A Die can also be used, in which case its pmf determines the weights.
+          A Die can also be used, in which case its pmf determines the mix_weights.
         """
         
         args = [Die(die) for die in args]
         args = Die._union_outcomes(*args)
         
-        if weights is None:
-            weights = numpy.ones((len(args),))
-        elif isinstance(weights, Die):
-            weights = weights.pmf()
+        if mix_weights is None:
+            mix_weights = numpy.ones((len(args),))
+        elif isinstance(mix_weights, Die):
+            mix_weights = mix_weights.pmf()
         
-        weights = weights / numpy.sum(weights)
+        mix_weights = mix_weights / numpy.sum(mix_weights)
 
         pmf = numpy.zeros_like(args[0].pmf())
-        for die, weight in zip(args, weights):
+        for die, weight in zip(args, mix_weights):
             pmf += weight * die.pmf()
         return Die(pmf, args[0].min_outcome())
 
@@ -326,7 +337,7 @@ class Die(metaclass=DieType):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
         elif callable(relabeling):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
-        return Die.mix(*relabeling, weights=self.pmf())
+        return Die.mix(*relabeling, mix_weights=self.pmf())
 
     def explode(self, max_explode, chance=None, faces=None):
         """
@@ -364,7 +375,7 @@ class Die(metaclass=DieType):
         
         explode_chance = numpy.sum(explode_pmf)
         
-        return Die.mix(non_explode_die, explode_die, weights=[1.0 - explode_chance, explode_chance])
+        return Die.mix(non_explode_die, explode_die, mix_weights=[1.0 - explode_chance, explode_chance])
     
     def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""

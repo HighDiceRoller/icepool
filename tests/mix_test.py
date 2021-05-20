@@ -15,8 +15,8 @@ def test_mix_identical():
 
 def test_mix_weight():
     outcomes = range(2, 13)
-    weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
-    assert Die.mix(*outcomes, weights=weights).pmf() == pytest.approx(Die.d(2, 6).pmf())
+    mix_weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
+    assert Die.mix(*outcomes, mix_weights=weights).pmf() == pytest.approx(Die.d(2, 6).pmf())
 
 expected_d6x1 = Die([1/6] * 5 + [0] + [1/36] * 6, 1)
 
