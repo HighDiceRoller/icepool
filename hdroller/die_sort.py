@@ -59,7 +59,7 @@ def keep_transition(tuple_length, num_values, transition_slice):
 def keep(num_keep, *dice, transition_slice, final_slice):
     if num_keep == 0:
         return hdroller.Die(0)
-    dice = hdroller.Die._union_outcomes(*dice)
+    dice = hdroller.Die._union(*dice)
     
     num_values = len(dice[0])
     sorted_pmf_length = num_sorted_tuples(num_keep, num_values)

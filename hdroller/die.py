@@ -119,16 +119,16 @@ class Die(metaclass=DieType):
         The arguments can be Dice or anything castable to Dice.
         mix_weights: An array of one weight per argument.
           If not provided, all arguments are mixed uniformly.
-          A Die can also be used, in which case its pmf determines the mix_weights.
+          A Die can also be used, in which case its weights determines the mix_weights.
         """
         
         args = [Die(die) for die in args]
-        args = Die._union_outcomes(*args)
+        args = Die._union(*args)
         
         if mix_weights is None:
             mix_weights = numpy.ones((len(args),))
         elif isinstance(mix_weights, Die):
-            mix_weights = mix_weights.pmf()
+            mix_weights = mix_weights.weights()
         
         mix_weights = mix_weights / numpy.sum(mix_weights)
 
@@ -233,6 +233,7 @@ class Die(metaclass=DieType):
     
     @staticmethod
     def from_cdf(cdf, min_outcome, inclusive=True):
+        # TODO: allow weights
         if inclusive is True:
             pmf = numpy.diff(cdf, prepend=0.0)
         else:
@@ -241,6 +242,7 @@ class Die(metaclass=DieType):
 
     @staticmethod
     def from_ccdf(ccdf, min_outcome, inclusive=True):
+        # TODO: allow weights
         if inclusive is True:
             pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), prepend=0.0))
         else:
@@ -328,12 +330,12 @@ class Die(metaclass=DieType):
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = Die._union_outcomes(self, other)
+        a, b = Die._union(self, other, lcd=False)
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = Die._union_outcomes(self, other)
+        a, b = Die._union(self, other, lcd=False)
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
     def total_weight(self):
@@ -463,16 +465,16 @@ class Die(metaclass=DieType):
         other = Die(other)
         
         subresults = []
-        die_count_chances = []
-        for die_count, die_count_chance in zip(self.outcomes(), self.pmf()):
-            if die_count_chance <= 0.0: continue
+        die_count_weights = []
+        for die_count, die_count_weight in zip(self.outcomes(), self.weights()):
+            if die_count_weight <= 0.0: continue
             subresults.append(other.repeat_and_sum(die_count))
-            die_count_chances.append(die_count_chance)
+            die_count_weights.append(die_count_weight)
         
-        subresults = Die._union_outcomes(*subresults)
-        pmf = sum(subresult.pmf() * die_count_chance for subresult, die_count_chance in zip(subresults, die_count_chances))
+        subresults = Die._union(*subresults)
+        weights = sum(subresult.weights() * die_count_weight for subresult, die_count_weight in zip(subresults, die_count_weights))
         
-        return Die(pmf, subresults[0].min_outcome())
+        return Die(weights, subresults[0].min_outcome())
     
     def __rmul__(self, other):
         return Die(other) * self
@@ -486,11 +488,11 @@ class Die(metaclass=DieType):
             raise NotImplementedError('Multiplication not implemented for non-positive outcomes.')
         min_outcome = self.min_outcome() * other.min_outcome()
         max_outcome = self.max_outcome() * other.max_outcome()
-        pmf = numpy.zeros((result_max_outcome - resultmin_outcome() + 1))
-        for outcome, mass in zip(other.outcomes(), other.pmf()):
+        weights = numpy.zeros((result_max_outcome - resultmin_outcome() + 1))
+        for outcome, mass in zip(other.outcomes(), other.weights()):
             start_index = outcome * self.min_outcome - resultmin_outcome()
-            pmf[start_index:start_index+outcome*len(self.data):outcome] += self.pmf() * mass
-        return Die(pmf, resultmin_outcome())
+            weights[start_index:start_index+outcome*len(self.data):outcome] += self.weights() * mass
+        return Die(weights, resultmin_outcome())
     
     def clip(self, min_outcome_or_die=None, max_outcome=None):
         """
@@ -505,10 +507,10 @@ class Die(metaclass=DieType):
             if max_outcome is None: max_outcome = self.max_outcome()
         left = max(0, min_outcome - self.min_outcome())
         right = len(self) + min(0, max_outcome - self.max_outcome())
-        pmf = numpy.copy(self.pmf()[left:right])
-        pmf[0] += numpy.sum(self.pmf()[:left])
-        pmf[-1] += numpy.sum(self.pmf()[right:])
-        return Die(pmf, max(self.min_outcome(), min_outcome))
+        weights = numpy.copy(self.weights()[left:right])
+        weights[0] += numpy.sum(self.weights()[:left])
+        weights[-1] += numpy.sum(self.weights()[right:])
+        return Die(weights, max(self.min_outcome(), min_outcome))
     
     # Repeat, keep, and sum.
     def max(*dice):
@@ -517,7 +519,8 @@ class Die(metaclass=DieType):
         Roll all the dice and take the highest.
         """
         dice = [Die(die) for die in dice]
-        dice_unions = Die._union_outcomes(*dice)
+        # TODO: use weights
+        dice_unions = Die._union(*dice, lcd=False)
         cdf = 1.0
         for die in dice_unions: cdf *= die.cdf()
         return Die.from_cdf(cdf, dice_unions[0].min_outcome())._trim()
@@ -528,7 +531,8 @@ class Die(metaclass=DieType):
         Roll all the dice and take the lowest.
         """
         dice = [Die(die) for die in dice]
-        dice_unions = Die._union_outcomes(*dice)
+        # TODO: use weights
+        dice_unions = Die._union(*dice, lcd=False)
         ccdf = 1.0
         for die in dice_unions: ccdf *= die.ccdf()
         return Die.from_ccdf(ccdf, dice_unions[0].min_outcome())._trim()
@@ -623,22 +627,29 @@ class Die(metaclass=DieType):
 
     # Helper methods.
     
-    def _union_outcomes(*dice):
+    def _union(*dice, lcd=True):
         """ 
         Pads all the dice with zeros so that all have the same min and max outcome.
+        If lcd is True, all weights are also multiplied to the least common denominator if all dice are exact.
         Caller is responsible for any trimming before returning dice publically.
         """
         min_outcome = min(die.min_outcome() for die in dice)
         max_outcome = max(die.max_outcome() for die in dice)
         union_len = max_outcome - min_outcome + 1
         
+        result_total_weight = 1.0
+        if lcd and all(die.is_exact() for die in dice):
+            lcd = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
+            if lcd <= hdroller.math.MAX_INT_FLOAT:
+                result_total_weight = lcd
+        
         result = []
         for die in dice:
+            weight_factor = result_total_weight / die.total_weight()
             left_dst_index = die.min_outcome() - min_outcome
-            
-            pmf = numpy.zeros((union_len,))
-            pmf[left_dst_index:left_dst_index + len(die.pmf())] = die.pmf()
-            result.append(Die(pmf, min_outcome))
+            weights = numpy.zeros((union_len,))
+            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
+            result.append(Die(weights, min_outcome))
         
         return tuple(result)
     
