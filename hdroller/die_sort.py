@@ -78,12 +78,12 @@ def keep(num_keep, *dice, transition_slice, final_slice):
     for die in dice[num_keep:]:
         next_sorted_pmf = numpy.zeros_like(sorted_pmf)
         for face in range(num_values):
-            weight = die.pmf()[face]
-            if weight <= 0.0: continue
+            mass = die.pmf()[face]
+            if mass <= 0.0: continue
             indices = transition[face, :]
-            masses = weight * sorted_pmf
+            next_masses = mass * sorted_pmf
             # bincount appears to be faster than add.at.
-            next_sorted_pmf += numpy.bincount(indices, masses, len(next_sorted_pmf))
+            next_sorted_pmf += numpy.bincount(indices, next_masses, len(next_sorted_pmf))
         sorted_pmf = next_sorted_pmf
     
     # Sum the faces.
