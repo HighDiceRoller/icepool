@@ -44,14 +44,13 @@ class Die(metaclass=DieType):
             return die
         return super(Die, cls).__new__(cls)
     
-    def __init__(self, pmf, min_outcome=None, name=None):
+    def __init__(self, pmf, min_outcome=None):
         """
         Constructor. Arguments can be:
         * pmf (array) and min_outcome (integer).
         * int: A die which always rolls that outcome.
         * float in [0, 1]: A die which has that chance of rolling 1, and rolls 0 otherwise.
         """
-        if name is None: name = '?'
         if isinstance(pmf, Die):
             return # Already returned same object by __new__().
         elif numpy.issubdtype(type(pmf), numpy.integer):
@@ -59,20 +58,17 @@ class Die(metaclass=DieType):
             if min_outcome is not None: raise ValueError()
             self._pmf = numpy.array([1.0])
             self._min_outcome = pmf
-            self._name = '%d' % pmf
         elif numpy.issubdtype(type(pmf), numpy.floating):
             if min_outcome is not None: raise ValueError()
             if not (pmf >= 0.0 and pmf <= 1.0):
                 raise ValueError('Only floats between 0.0 and 1.0 can be cast to Die.')
             self._pmf = numpy.array([1.0 - pmf, pmf])
             self._min_outcome = 0
-            self._name = name
         else:
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
             self._pmf = numpy.array(pmf)
             self._min_outcome = min_outcome
-            self._name = name
         
         self._pmf.setflags(write=False)
     
@@ -182,7 +178,7 @@ class Die(metaclass=DieType):
     @cache
     def standard(num_faces):
         if num_faces < 1: raise ValueError('Standard dice must have at least 1 face.')
-        return Die(numpy.ones((num_faces,)) / num_faces, 1, 'd%d' % num_faces)
+        return Die(numpy.ones((num_faces,)) / num_faces, 1)
     
     # TODO: Apply cache to all __new__ dice created with floats?
     @staticmethod
@@ -410,34 +406,30 @@ class Die(metaclass=DieType):
         else: raise ValueError('Invalid tiebreak mode "%s"' % mode)
 
     # Operations with another Die. Non-Die operands will be cast to Die.
-    def _add(self, other, name):
+    def _add(self, other):
         """
         Helper for adding two dice.
         other must already be a Die.
         """
         pmf = numpy.convolve(self._pmf, other._pmf)
         min_outcome = self._min_outcome + other._min_outcome
-        return Die(pmf, min_outcome, name=name)
+        return Die(pmf, min_outcome)
     
     def __add__(self, other):
         other = Die(other)
-        name = '%s+%s' % (self._name, other._name)
-        return self._add(other, name)
+        return self._add(other)
     
     def __radd__(self, other):
         other = Die(other)
-        name = '%s+%s' % (other._name, self._name)
-        return other._add(self, name)
+        return other._add(self)
 
     def __sub__(self, other):
         other = Die(other)
-        name = '%s-%s' % (self._name, other._name)
-        return self._add(-other, name)
+        return self._add(-other)
     
     def __rsub__(self, other):
         other = Die(other)
-        name = '%s-%s' % (other._name, self._name)
-        return other._add(-self, name)
+        return other._add(-self)
 
     def __mul__(self, other):
         """
@@ -455,11 +447,7 @@ class Die(metaclass=DieType):
         subresults = Die._union_outcomes(*subresults)
         pmf = sum(subresult.pmf() * die_count_chance for subresult, die_count_chance in zip(subresults, die_count_chances))
         
-        if re.match(r'^d\d+$', other._name):
-            name = self._name + other._name
-        else:
-            name = '?'  # TODO
-        return Die(pmf, subresults[0]._min_outcome, name=name)
+        return Die(pmf, subresults[0]._min_outcome)
     
     def __rmul__(self, other):
         return Die(other) * self
@@ -597,11 +585,6 @@ class Die(metaclass=DieType):
         return numpy.random.choice(self.outcomes(), size=size, p=self._pmf)
 
     # String methods.
-    def name(self):
-        return self._name
-        
-    def rename(self, name):
-        return Die(self._pmf, self._min_outcome, name=name)
     
     def __str__(self):
         result = ''
@@ -638,7 +621,7 @@ class Die(metaclass=DieType):
         nz = numpy.nonzero(self._pmf)[0]
         min_outcome = self._min_outcome + nz[0]
         pmf = self._pmf[nz[0]:nz[-1]+1]
-        return Die(pmf, min_outcome, name = self._name)
+        return Die(pmf, min_outcome)
     
     def _normalize(self):
         """
@@ -648,4 +631,4 @@ class Die(metaclass=DieType):
         norm = numpy.sum(self._pmf)
         if norm <= 0.0: raise ZeroDivisionError('Attempted to normalize die with non-positive mass')
         pmf = self._pmf / norm
-        return Die(pmf, self._min_outcome, name = self._name)
+        return Die(pmf, self._min_outcome)
