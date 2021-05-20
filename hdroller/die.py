@@ -34,6 +34,12 @@ class Die(metaclass=DieType):
         return super(Die, cls).__new__(cls)
     
     def __init__(self, pmf, min_outcome=None, name=None):
+        """
+        Constructor. Arguments can be:
+        * pmf (array) and min_outcome (integer).
+        * int: A die which always rolls that outcome.
+        * float in [0, 1]: A die which has that chance of rolling 1, and rolls 0 otherwise.
+        """
         if name is None: name = '?'
         if isinstance(pmf, Die):
             return # Already returned same object by __new__().
@@ -99,10 +105,13 @@ class Die(metaclass=DieType):
     @staticmethod
     def mix(*args, weights=None):
         """
-        Constructs a Die from a mixture of the arguments.
+        Constructs a Die from a mixture of the arguments,
+        equivalent to rolling a die and then choosing one of the arguments
+        based on the resulting face rolled.
         The arguments can be Dice or anything castable to Dice.
         weights: An array of one weight per argument.
-        If not provided, all arguments are mixed uniformly.
+          If not provided, all arguments are mixed uniformly.
+          A Die can also be used, in which case its pmf determines the weights.
         """
         
         args = [Die(die) for die in args]
@@ -110,6 +119,8 @@ class Die(metaclass=DieType):
         
         if weights is None:
             weights = numpy.ones((len(args),))
+        elif isinstance(weights, Die):
+            weights = weights.pmf()
         
         weights = weights / numpy.sum(weights)
 
@@ -225,8 +236,8 @@ class Die(metaclass=DieType):
     def max_outcome(self):
         return self._min_outcome + len(self) - 1
 
-    def outcomes(self, include_one_past_end=False):
-        return numpy.array(range(self._min_outcome, self._min_outcome + len(self) + include_one_past_end))
+    def outcomes(self, prepend=False, append=False):
+        return numpy.array(range(self._min_outcome, self._min_outcome + len(self) + (append is not False))) + (prepend is not False)
 
     # Distributions.
     def pmf(self):
@@ -236,7 +247,7 @@ class Die(metaclass=DieType):
         """ 
         When zipped with outcomes(), this is the probability of rolling <= the corresponding outcome.
         inclusive: If False, changes the comparison to <.
-          If 'both', includes both endpoints and should be zipped with outcomes(include_one_past_end=True).
+          If 'both', includes both endpoints and should be zipped with outcomes(prepend=True).
         """
         if inclusive is True:
             return self._cdf[1:]
@@ -251,7 +262,7 @@ class Die(metaclass=DieType):
         """
         When zipped with outcomes(), this is the probability of rolling >= the corresponding outcome.
         inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
-          If 'both', includes both endpoints and should be zipped with outcomes(include_one_past_end=True).
+          If 'both', includes both endpoints and should be zipped with outcomes(append=True).
         """
         if inclusive is True:
             return self._ccdf[:-1]
@@ -305,7 +316,7 @@ class Die(metaclass=DieType):
     def relabel(self, relabeling):
         """
         relabeling can be one of the following:
-        * An array-like containing relabelings by face.
+        * An array-like containing relabelings, one for each face in order.
         * A dict-like mapping old outcomes to new outcomes.
           Unmapped old outcomes stay the same.
         * A function mapping old outcomes to new outcomes.
@@ -314,12 +325,7 @@ class Die(metaclass=DieType):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
         elif callable(relabeling):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
-        min_outcome = numpy.min(relabeling)
-        max_outcome = numpy.max(relabeling)
-        pmf = numpy.zeros((max_outcome - min_outcome + 1,))
-        for index, (mass, new_outcome) in enumerate(zip(self._pmf, relabeling)):
-            pmf[new_outcome - min_outcome] += mass
-        return Die(pmf, min_outcome)
+        return Die.mix(*relabeling, weights=self.pmf())
 
     def explode(self, n, chance=None, faces=None):
         """
