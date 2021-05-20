@@ -89,6 +89,20 @@ class Die(metaclass=DieType):
         is_all_integer = numpy.all(self._weights == numpy.floor(self._weights))
         is_sum_in_range = self._total_weight <= hdroller.math.MAX_INT_FLOAT
         return is_all_integer and is_sum_in_range
+        
+    @cached_property
+    def _cweights(self):
+        result = numpy.cumsum(self.weights())
+        result = numpy.insert(result, 0, 0.0)
+        result.setflags(write=False)
+        return result
+        
+    @cached_property
+    def _ccweights(self):
+        result = hdroller.math.reverse_cumsum(self.weights())
+        result = numpy.append(result, 0.0)
+        result.setflags(write=False)
+        return result
     
     @cached_property
     def _cdf(self):
@@ -228,10 +242,33 @@ class Die(metaclass=DieType):
         outcomes = numpy.arange(min_outcome, max_outcome+1)
         cdf = 0.5 * (1.0 + erf((outcomes + 0.5 - mean) / (numpy.sqrt(2) * standard_deviation)))
         return Die.from_cdf(cdf, min_outcome)
+        
+    @staticmethod
+    def from_cweights(cweights, min_outcome, total_weight_if_exclusive=None):
+        """
+        Constructs a Die from cumulative weights.
+        If cweights is exclusive, set total_weight_if_exclusive to the total weight of the die.
+        """
+        if not total_weight_if_exclusive:
+            weights = numpy.diff(cweights, prepend=0.0)
+        else:
+            weights = numpy.diff(cweights, append=total_weight_if_exclusive)
+        return Die(weights, min_outcome)
+    
+    @staticmethod
+    def from_ccweights(ccweights, min_outcome, total_weight_if_exclusive=None):
+        """
+        Constructs a Die from reversed cumulative weights.
+        If ccweights is exclusive, set total_weight_if_exclusive to the total weight of the die.
+        """
+        if not total_weight_if_exclusive:
+            weights = numpy.flip(numpy.diff(numpy.flip(ccweights), prepend=0.0))
+        else:
+            weights = numpy.flip(numpy.diff(numpy.flip(ccweights), append=total_weight_if_exclusive))
+        return Die(weights, min_outcome)
     
     @staticmethod
     def from_cdf(cdf, min_outcome, inclusive=True):
-        # TODO: allow weights
         if inclusive is True:
             pmf = numpy.diff(cdf, prepend=0.0)
         else:
@@ -240,7 +277,6 @@ class Die(metaclass=DieType):
 
     @staticmethod
     def from_ccdf(ccdf, min_outcome, inclusive=True):
-        # TODO: allow weights
         if inclusive is True:
             pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), prepend=0.0))
         else:
@@ -269,6 +305,36 @@ class Die(metaclass=DieType):
     
     def pmf(self):
         return self._pmf
+        
+    def cweights(self, inclusive=True):
+        """ 
+        When zipped with outcomes(), this is the weight of rolling <= the corresponding outcome.
+        inclusive: If False, changes the comparison to <.
+          If 'both', includes both endpoints and should be zipped with outcomes(prepend=True).
+        """
+        if inclusive is True:
+            return self._cweights[1:]
+        elif inclusive is False:
+            return self._cweights[:-1]
+        elif inclusive == 'both':
+            return self._cweights
+        elif inclusive == 'neither':
+            return self._cweights[1:-1]
+            
+    def ccweights(self, inclusive=True):
+        """
+        When zipped with outcomes(), this is the weight of rolling >= the corresponding outcome.
+        inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
+          If 'both', includes both endpoints and should be zipped with outcomes(append=True).
+        """
+        if inclusive is True:
+            return self._ccweights[:-1]
+        elif inclusive is False:
+            return self._ccweights[1:]
+        elif inclusive == 'both':
+            return self._ccweights
+        elif inclusive == 'neither':
+            return self._ccweights[1:-1]
     
     def cdf(self, inclusive=True):
         """ 
@@ -303,12 +369,15 @@ class Die(metaclass=DieType):
     # Statistics.
     def mean(self):
         return numpy.sum(self.pmf() * self.outcomes())
-    
-    # TODO: median
+        
+    def median(self):
+        score = numpy.minimum(self.cweights(), self.ccweights())
+        mask = (score == numpy.max(score))
+        return numpy.mean(self.outcomes()[mask])
     
     def mode(self):
         """
-        Returns the outcome with the highest single weight.
+        Returns an outcome with the highest single weight.
         """
         return numpy.argmax(self.weights()) + self.min_outcome()
     
@@ -517,11 +586,10 @@ class Die(metaclass=DieType):
         Roll all the dice and take the highest.
         """
         dice = [Die(die) for die in dice]
-        # TODO: use weights
-        dice_unions = Die._union(*dice, lcd=False)
-        cdf = 1.0
-        for die in dice_unions: cdf *= die.cdf()
-        return Die.from_cdf(cdf, dice_unions[0].min_outcome())._trim()
+        dice_unions = Die._union(*dice)
+        cweights = 1.0
+        for die in dice_unions: cweights *= die.cweights()
+        return Die.from_cweights(cweights, dice_unions[0].min_outcome(), total_weight = None)._trim()
     
     def min(*dice):
         """
@@ -530,10 +598,10 @@ class Die(metaclass=DieType):
         """
         dice = [Die(die) for die in dice]
         # TODO: use weights
-        dice_unions = Die._union(*dice, lcd=False)
-        ccdf = 1.0
-        for die in dice_unions: ccdf *= die.ccdf()
-        return Die.from_ccdf(ccdf, dice_unions[0].min_outcome())._trim()
+        dice_unions = Die._union(*dice)
+        ccweights = 1.0
+        for die in dice_unions: ccweights *= die.ccweights()
+        return Die.from_ccweights(ccweights, dice_unions[0].min_outcome(), total_weight = None)._trim()
     
     def repeat_and_sum(self, num_dice):
         """
