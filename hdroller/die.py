@@ -327,14 +327,16 @@ class Die(metaclass=DieType):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
         return Die.mix(*relabeling, weights=self.pmf())
 
-    def explode(self, n, chance=None, faces=None):
+    def explode(self, max_explode, chance=None, faces=None):
         """
-        n is the maximum number of times to explode.
-        chance: if supplied, this top fraction of the pmf will explode.
+        chance: If supplied, this top fraction of the pmf will explode.
+        faces: If supplied, the top faces will explode.
+        If neither is supplied, the top single face will explode.
         """
-        # TODO: binary split, other ways of defining what explodes
-        if n <= 0: return self
-        recursive = self.explode(n-1, chance=chance, faces=faces)
+        if max_explode < 0:
+            raise ValueError('max_explode cannot be negative.')
+        if max_explode == 0:
+            return self
         
         explode_pmf = numpy.zeros_like(self._pmf)
         if chance is not None:
@@ -353,23 +355,17 @@ class Die(metaclass=DieType):
         else:
             explode_pmf[-1] = self._pmf[-1]
         
-        min_outcome = self._min_outcome + min(recursive._min_outcome, 0)
-        max_outcome = self.max_outcome() + max(recursive.max_outcome(), self.max_outcome())
-        
-        pmf = numpy.zeros((max_outcome - min_outcome + 1,))
-        
         non_explode_pmf = self._pmf - explode_pmf
-        non_explode_start_index = self._min_outcome - min_outcome
-        pmf[non_explode_start_index:non_explode_start_index+len(non_explode_pmf)] = non_explode_pmf
         
-        explode_recursive_pmf = numpy.convolve(explode_pmf, recursive._pmf)
-        explode_recursive_min_outcome = self._min_outcome + recursive._min_outcome
-        explode_recursive_start_index = explode_recursive_min_outcome - min_outcome
-        pmf[explode_recursive_start_index:explode_recursive_start_index+len(explode_recursive_pmf)] += explode_recursive_pmf
+        non_explode_die = Die(non_explode_pmf, self.min_outcome())._trim()._normalize()
+        explode_die = Die(explode_pmf, self.min_outcome())._trim()._normalize()
+        explode_die += self.explode(max_explode-1, chance=chance, faces=faces)
         
-        return Die(pmf, min_outcome, name=self._name + '!')._trim()
+        explode_chance = numpy.sum(explode_pmf)
+        
+        return Die.mix(non_explode_die, explode_die, weights=[1.0 - explode_chance, explode_chance])
     
-    def reroll(self, outcomes=None, below=None, above=None, max_rerolls=None):
+    def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""
         pmf = numpy.copy(self._pmf)
         all_outcomes = self.outcomes()
