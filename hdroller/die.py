@@ -87,7 +87,7 @@ class Die(metaclass=DieType):
     @cached_property
     def _is_exact(self):
         is_all_integer = numpy.all(self._weights == numpy.floor(self._weights))
-        is_sum_in_range = self._total_weight <= 2 ** 53
+        is_sum_in_range = self._total_weight <= hdroller.math.MAX_INT_FLOAT
         return is_all_integer and is_sum_in_range
     
     @cached_property
@@ -263,6 +263,9 @@ class Die(metaclass=DieType):
     # Distributions.
     def weights(self):
         return self._weights
+        
+    def is_exact(self):
+        return self._is_exact
     
     def pmf(self):
         return self._pmf
@@ -610,8 +613,12 @@ class Die(metaclass=DieType):
     
     def __str__(self):
         result = ''
-        for outcome, mass in zip(self.outcomes(), self.pmf()):
-            result += '%d, %f\n' % (outcome, mass)
+        if self.is_exact():
+            format_string = '%d, %d\n'
+        else:
+            format_string = '%d, %f\n'
+        for outcome, weight in zip(self.outcomes(), self.weights()):
+            result += format_string % (outcome, weight)
         return result
 
     # Helper methods.

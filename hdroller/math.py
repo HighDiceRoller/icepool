@@ -1,6 +1,8 @@
 import numpy
 from scipy.special import comb, factorial
 
+MAX_INT_FLOAT = 2 ** 53
+
 def multinom(n, ks):
     """
     Multinomial coefficient.
