@@ -63,7 +63,6 @@ def test_keep_highest_vs_repeater(num_dice, num_keep):
     result = hdroller.die_sort.keep_highest(num_keep, *dice)
     expected = die.keep_highest(num_dice, num_keep)
 
-    assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
 
 @pytest.mark.parametrize('num_dice', range(1, max_tuple_length + 1))
@@ -75,7 +74,6 @@ def test_keep_lowest_vs_repeater(num_dice, num_keep):
     result = hdroller.die_sort.keep_lowest(num_keep, *dice)
     expected = die.keep_lowest(num_dice, num_keep)
 
-    assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
 
 @pytest.mark.parametrize('num_keep', range(4))
@@ -84,7 +82,6 @@ def test_keep_highest_mixed(num_keep):
     result = hdroller.die_sort.keep_highest(num_keep, *dice)
     expected = bf_keep_highest(num_keep, *dice)
     
-    assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
 
 @pytest.mark.parametrize('num_keep', range(4))
@@ -93,7 +90,6 @@ def test_keep_lowest_mixed(num_keep):
     result = hdroller.die_sort.keep_lowest(num_keep, *dice)
     expected = bf_keep_lowest(num_keep, *dice)
     
-    assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)
     
 @pytest.mark.parametrize('num_keep', range(1, 4))
@@ -102,5 +98,4 @@ def test_keep_highest_mixed_drop_highest(num_keep):
     result = hdroller.die_sort.keep_highest(num_keep, *dice, drop_highest=1)
     expected = bf_keep_highest(num_keep, *dice, drop_highest=1)
     
-    assert result.total_mass() == pytest.approx(1.0)
     assert result.ks_stat(expected) == pytest.approx(0.0)

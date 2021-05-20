@@ -4,7 +4,10 @@ from hdroller import Die
 import pytest
 
 def test_d_syntax():
-    assert Die.d6.ks_stat(Die([1/6] * 6, 1)) == pytest.approx(0.0)
+    assert Die.d6.weights() == pytest.approx([1.0] * 6)
+    
+def test_d_multiple():
+    assert Die.d(1, 2, 2).weights() == pytest.approx([2, 3, 2, 1])
 
 def test_coin():
     b = Die.bernoulli()

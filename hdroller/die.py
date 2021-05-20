@@ -20,12 +20,12 @@ pmf: Probability mass function. The normalized version of the weights.
 
 class DieType(type):
     """
-    Metaclass for Die. Used to enable shorthand for standard dice.
+    Metaclass for Die. Used to enable shorthand for ordinary dice.
     """
     def __getattr__(self, key):
         if key[0] == 'd':
             die_size = int(key[1:])
-            return Die.standard(die_size)
+            return Die.ordinary(die_size)
         raise AttributeError(key)
 
 class Die(metaclass=DieType):
@@ -111,22 +111,6 @@ class Die(metaclass=DieType):
     # Creation.
 
     @staticmethod
-    def from_cdf(cdf, min_outcome, inclusive=True):
-        if inclusive is True:
-            pmf = numpy.diff(cdf, prepend=0.0)
-        else:
-            pmf = numpy.diff(cdf, append=1.0)
-        return Die(pmf, min_outcome)
-
-    @staticmethod
-    def from_ccdf(ccdf, min_outcome, inclusive=True):
-        if inclusive is True:
-            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), prepend=0.0))
-        else:
-            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), append=1.0))
-        return Die(pmf, min_outcome)
-
-    @staticmethod
     def mix(*args, mix_weights=None):
         """
         Constructs a Die from a mixture of the arguments,
@@ -148,54 +132,16 @@ class Die(metaclass=DieType):
         
         mix_weights = mix_weights / numpy.sum(mix_weights)
 
-        pmf = numpy.zeros_like(args[0].pmf())
-        for die, weight in zip(args, mix_weights):
-            pmf += weight * die.pmf()
-        return Die(pmf, args[0].min_outcome())
-
-    @staticmethod
-    def d(*args):
-        """
-        Standard dice and dice chaining.
-        Last argument becomes a standard die if it is an integer.
-        Otherwise it is cast to a die.
-        Other arguments also become standard dice if they are integers, unless they are the first argument.
-        They then roll what's behind them a number of times equal to their own roll, and sum the results together.
-        Examples:
-        d(6) = d6
-        d(6, 6) = 6d6 = roll d6 six times and add them up
-        d(1, 6, 6) = 1d6d6 = roll a d6, and then roll that many d6s and add them up
-        """
-        return Die._d(*args, treat_leading_integer_as_standard_die=False)
-    
-    @staticmethod
-    def _d(*args, treat_leading_integer_as_standard_die=False):
-        """
-        Implementation of Die.d().
-        """
-        if len(args) == 1:
-            single_die = args[0]
-            if numpy.issubdtype(type(single_die), numpy.integer):
-                return Die.standard(single_die)
-            else:
-                single_die = Die(single_die)
-            return single_die
-        
-        tail_die = Die._d(*args[1:], treat_leading_integer_as_standard_die=True)
-        
-        num_dice = args[0]
-        if treat_leading_integer_as_standard_die and numpy.issubdtype(type(num_dice), numpy.integer):
-            num_dice = Die.standard(num_dice)
-        else:
-            num_dice = Die(args[0])
-
-        return num_dice * tail_die
+        weights = numpy.zeros_like(args[0].weights())
+        for die, mix_weight in zip(args, mix_weights):
+            weights += mix_weight * die.weights()
+        return Die(weights, args[0].min_outcome())
     
     @staticmethod
     @cache
-    def standard(num_faces):
-        if num_faces < 1: raise ValueError('Standard dice must have at least 1 face.')
-        return Die(numpy.ones((num_faces,)) / num_faces, 1)
+    def ordinary(num_faces):
+        if num_faces < 1: raise ValueError('Ordinary dice must have at least 1 face.')
+        return Die(numpy.ones((num_faces,)), 1)
     
     # TODO: Apply cache to all __new__ dice created with floats?
     @staticmethod
@@ -204,6 +150,40 @@ class Die(metaclass=DieType):
         return Die(chance)
 
     coin = bernoulli
+    
+    @staticmethod
+    def d(*args):
+        """
+        Dice chaining, with integers other than the first argument treated as ordinary dice (rather than ).
+        Exception: If there is only a single argument, a 1 is implicitly prepended to the argument list.
+        Each argument is rolled, and that many of the outcome is rolled on whatever is behind it.
+        
+        Examples:
+        d(6) = d6
+        d(6, 6) = 6d6 = roll d6 six times and add them up
+        d(1, 6, 6) = 1d6d6 = roll a d6, then roll that many d6s and add them up
+        """
+        if len(args) == 1:
+            args = [1] + args
+        return args[0] * Die._d(*args[1:])
+    
+    @staticmethod
+    def _d(*args):
+        """
+        Implementation of Die.d().
+        """
+        if len(args) == 0:
+            return Die(1)
+        
+        tail_die = Die._d(*args[1:])
+        
+        num_dice = args[0]
+        if numpy.issubdtype(type(num_dice), numpy.integer):
+            num_dice = Die.ordinary(num_dice)
+        else:
+            num_dice = Die(args[0])
+
+        return num_dice * tail_die
 
     @staticmethod
     def geometric(max_outcome=100, **kwargs):
@@ -250,7 +230,23 @@ class Die(metaclass=DieType):
         outcomes = numpy.arange(min_outcome, max_outcome+1)
         cdf = 0.5 * (1.0 + erf((outcomes + 0.5 - mean) / (numpy.sqrt(2) * standard_deviation)))
         return Die.from_cdf(cdf, min_outcome)
-        
+    
+    @staticmethod
+    def from_cdf(cdf, min_outcome, inclusive=True):
+        if inclusive is True:
+            pmf = numpy.diff(cdf, prepend=0.0)
+        else:
+            pmf = numpy.diff(cdf, append=1.0)
+        return Die(pmf, min_outcome)
+
+    @staticmethod
+    def from_ccdf(ccdf, min_outcome, inclusive=True):
+        if inclusive is True:
+            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), prepend=0.0))
+        else:
+            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), append=1.0))
+        return Die(pmf, min_outcome)
+    
     # Outcome information.
     def __len__(self):
         return len(self._weights)
@@ -309,9 +305,15 @@ class Die(metaclass=DieType):
     
     def mode(self):
         """
-        Returns the outcome and mass of the highest single element of the PMF.
+        Returns the outcome with the highest single weight.
         """
-        return numpy.argmax(self.pmf()) + self.min_outcome(), numpy.max(self.pmf())
+        return numpy.argmax(self.weights()) + self.min_outcome()
+    
+    def mode_weight(self):
+        return numpy.max(self.weights())
+    
+    def mode_mass(self):
+        return numpy.max(self.pmf())
     
     def variance(self):
         mean = self.mean()
@@ -331,15 +333,14 @@ class Die(metaclass=DieType):
         a, b = Die._union_outcomes(self, other)
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
-    def total_mass(self):
-        """ Primarily for debugging, since externally visible dice should stay close to normalized. """
-        return numpy.sum(self.pmf())
+    def total_weight(self):
+        return self._total_weight
 
     # Operations that don't involve other dice.
     
     def __neg__(self):
         """ Returns a Die with all outcomes negated. """
-        return Die(numpy.flip(self.pmf()), -self.max_outcome())
+        return Die(numpy.flip(self.weights()), -self.max_outcome())
     
     def relabel(self, relabeling):
         """
@@ -353,7 +354,7 @@ class Die(metaclass=DieType):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
         elif callable(relabeling):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
-        return Die.mix(*relabeling, mix_weights=self.pmf())
+        return Die.mix(*relabeling, mix_weights=self.weights())
 
     def explode(self, max_explode, chance=None, faces=None):
         """
@@ -366,32 +367,32 @@ class Die(metaclass=DieType):
         if max_explode == 0:
             return self
         
-        explode_pmf = numpy.zeros_like(self.pmf())
+        explode_weights = numpy.zeros_like(self.weights())
         if chance is not None:
             if chance == 0: return self
-            remaining_chance = chance
-            for index, mass in reversed(list(enumerate(self.pmf()))):
+            remaining_explode_weight = chance * self.total_weight()
+            for index, mass in reversed(list(enumerate(self.weights()))):
                 if mass < chance:
-                    explode_pmf[index] = mass
-                    remaining_chance -= mass
+                    explode_weights[index] = mass
+                    remaining_explode_weight -= mass
                 else:
-                    explode_pmf[index] = chance
+                    explode_weights[index] = chance
                     break
         elif faces is not None:
             if faces == 0: return self
-            explode_pmf[-faces:] = self.pmf()[-faces:]
+            explode_weights[-faces:] = self.weights()[-faces:]
         else:
-            explode_pmf[-1] = self.pmf()[-1]
+            explode_weights[-1] = self.weights()[-1]
         
-        non_explode_pmf = self.pmf() - explode_pmf
+        non_explode_weights = self.weights() - explode_weights
         
-        non_explode_die = Die(non_explode_pmf, self.min_outcome())._trim()._normalize()
-        explode_die = Die(explode_pmf, self.min_outcome())._trim()._normalize()
+        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
+        explode_die = Die(explode_weights, self.min_outcome())._trim()
         explode_die += self.explode(max_explode-1, chance=chance, faces=faces)
         
-        explode_chance = numpy.sum(explode_pmf)
+        explode_weight = numpy.sum(explode_weights)
         
-        return Die.mix(non_explode_die, explode_die, mix_weights=[1.0 - explode_chance, explode_chance])
+        return Die.mix(non_explode_die, explode_die, mix_weights=[self.total_weight() - explode_weight, explode_weight])
     
     def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""
@@ -431,9 +432,9 @@ class Die(metaclass=DieType):
         Helper for adding two dice.
         other must already be a Die.
         """
-        pmf = numpy.convolve(self.pmf(), other.pmf())
+        weights = numpy.convolve(self.weights(), other.weights())
         min_outcome = self.min_outcome() + other.min_outcome()
-        return Die(pmf, min_outcome)
+        return Die(weights, min_outcome)
     
     def __add__(self, other):
         other = Die(other)
@@ -454,6 +455,7 @@ class Die(metaclass=DieType):
     def __mul__(self, other):
         """
         This computes the result of rolling the dice on the left, and then rolling that many dice on the right and summing them.
+        Note that this is NOT commutative; a * b is not in general the same as b * a.
         """
         other = Die(other)
         
@@ -616,7 +618,7 @@ class Die(metaclass=DieType):
     
     def _union_outcomes(*dice):
         """ 
-        Pads all the dice with zeros so that all have the same min and max outcome. 
+        Pads all the dice with zeros so that all have the same min and max outcome.
         Caller is responsible for any trimming before returning dice publically.
         """
         min_outcome = min(die.min_outcome() for die in dice)
@@ -638,17 +640,7 @@ class Die(metaclass=DieType):
         Returns a copy of this Die with the leading and trailing zeros trimmed.
         Shouldn't be usually necessary publically, since methods are written to stay trimmed publically.
         """
-        nz = numpy.nonzero(self.pmf())[0]
+        nz = numpy.nonzero(self.weights())[0]
         min_outcome = self.min_outcome() + nz[0]
-        pmf = self.pmf()[nz[0]:nz[-1]+1]
-        return Die(pmf, min_outcome)
-    
-    def _normalize(self):
-        """
-        Returns a normalized copy of this Die.
-        Shouldn't be usually necessary publically, since methods are written to stay normalized publically.
-        """
-        norm = numpy.sum(self.pmf())
-        if norm <= 0.0: raise ZeroDivisionError('Attempted to normalize die with non-positive mass')
-        pmf = self.pmf() / norm
-        return Die(pmf, self.min_outcome())
+        weights = self.weights()[nz[0]:nz[-1]+1]
+        return Die(weights, min_outcome)
