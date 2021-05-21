@@ -58,7 +58,7 @@ class Die(metaclass=DieType):
         elif numpy.issubdtype(type(weights), numpy.integer):
             # Integer casts to die that always rolls that value.
             if min_outcome is not None: raise ValueError()
-            self._weights = numpy.array([1])
+            self._weights = numpy.array([1.0])
             self._min_outcome = weights
         elif numpy.issubdtype(type(weights), numpy.floating):
             if min_outcome is not None: raise ValueError()
@@ -70,11 +70,9 @@ class Die(metaclass=DieType):
             # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
-            self._min_outcome = min_outcome
             self._weights = numpy.array(weights)
+            self._min_outcome = min_outcome
         
-        if not numpy.issubdtype(self._weights.dtype, numpy.number):
-            self._weights = self._weights.astype(numpy.float64)
         self._weights.setflags(write=False)
     
     # Cached values.
@@ -87,6 +85,12 @@ class Die(metaclass=DieType):
         result = self._weights / self._total_weight
         result.setflags(write=False)
         return result
+    
+    @cached_property
+    def _is_exact(self):
+        is_all_integer = numpy.all(self._weights == numpy.floor(self._weights))
+        is_sum_in_range = self._total_weight < hdroller.math.MAX_INT_FLOAT
+        return is_all_integer and is_sum_in_range
         
     @cached_property
     def _cweights(self):
@@ -138,20 +142,20 @@ class Die(metaclass=DieType):
         args = Die._union(*args)
         
         if mix_weights is None:
-            mix_weights = numpy.ones((len(args),), dtype='uint64')
+            mix_weights = numpy.ones((len(args),))
         elif isinstance(mix_weights, Die):
             mix_weights = mix_weights.weights()
 
         weights = numpy.zeros_like(args[0].weights())
         for die, mix_weight in zip(args, mix_weights):
-            weights = weights + mix_weight * die.weights()
+            weights += mix_weight * die.weights()
         return Die(weights, args[0].min_outcome())
     
     @staticmethod
     @cache
     def ordinary(num_faces):
         if num_faces < 1: raise ValueError('Ordinary dice must have at least 1 face.')
-        return Die(numpy.ones((num_faces,), dtype='uint64'), 1)
+        return Die(numpy.ones((num_faces,)), 1)
     
     # TODO: Apply cache to all __new__ dice created with floats?
     @staticmethod
@@ -297,6 +301,9 @@ class Die(metaclass=DieType):
     # Distributions.
     def weights(self):
         return self._weights
+        
+    def is_exact(self):
+        return self._is_exact
     
     def pmf(self):
         return self._pmf
@@ -553,6 +560,21 @@ class Die(metaclass=DieType):
     def __rmul__(self, other):
         return Die(other) * self
     
+    def product(self, other):
+        """
+        This multiplies the outcome of the dice. It does not roll additional dice.
+        """
+        other = Die(other)
+        if self.min_outcome < 0 or other.min_outcome < 0:
+            raise NotImplementedError('Multiplication not implemented for non-positive outcomes.')
+        min_outcome = self.min_outcome() * other.min_outcome()
+        max_outcome = self.max_outcome() * other.max_outcome()
+        weights = numpy.zeros((result_max_outcome - resultmin_outcome() + 1))
+        for outcome, mass in zip(other.outcomes(), other.weights()):
+            start_index = outcome * self.min_outcome - resultmin_outcome()
+            weights[start_index:start_index+outcome*len(self.data):outcome] += self.weights() * mass
+        return Die(weights, resultmin_outcome())
+    
     def clip(self, min_outcome_or_die=None, max_outcome=None):
         """
         Restricts the outcomes of this die to the range [min_outcome, max_outcome].
@@ -688,8 +710,12 @@ class Die(metaclass=DieType):
     
     def __str__(self):
         result = ''
+        if self.is_exact():
+            format_string = '%2d, %d\n'
+        else:
+            format_string = '%2d, %f\n'
         for outcome, weight in zip(self.outcomes(), self.weights()):
-            result += '%d, %s\n' % (outcome, weight)
+            result += format_string % (outcome, weight)
         return result
 
     # Helper methods.
@@ -704,22 +730,18 @@ class Die(metaclass=DieType):
         max_outcome = max(die.max_outcome() for die in dice)
         union_len = max_outcome - min_outcome + 1
         
-        if lcd and all(numpy.issubdtype(die.weights().dtype, numpy.integer) for die in dice):
-            result_total_weight = numpy.lcm.reduce([die.total_weight() for die in dice])
-        else:
-            lcd = False
-            result_total_weight = 1.0
+        result_total_weight = 1.0
+        if lcd and all(die.is_exact() for die in dice):
+            lcd = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
+            if lcd <= hdroller.math.MAX_INT_FLOAT:
+                result_total_weight = lcd
         
         result = []
         for die in dice:
-            if lcd:
-                weight_factor = result_total_weight // die.total_weight()
-            else:
-                weight_factor = result_total_weight / die.total_weight()
-            left_pad = die.min_outcome() - min_outcome
-            right_pad = max_outcome - die.max_outcome()
-            weights = die.weights() * weight_factor
-            weights = numpy.pad(weights, (left_pad, right_pad))
+            weight_factor = result_total_weight / die.total_weight()
+            left_dst_index = die.min_outcome() - min_outcome
+            weights = numpy.zeros((union_len,))
+            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
             result.append(Die(weights, min_outcome))
         
         return tuple(result)
