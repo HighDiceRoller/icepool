@@ -67,6 +67,7 @@ class Die(metaclass=DieType):
             self._weights = numpy.array([1.0 - weights, weights])
             self._min_outcome = 0
         else:
+            # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
             self._weights = numpy.array(weights)
@@ -654,6 +655,19 @@ class Die(metaclass=DieType):
         return self._repeater.keep_index(num_dice, index)
 
     # Comparators. These return scalar floats (which can be cast to Die).
+    # TODO: Return a fraction instead?
+    
+    def __eq__(self, other):
+        """
+        Returns the chance this die will roll exactly equal to the other Die.
+        """
+        other = Die(other)
+        a, b = Die._union(self, other, lcd=False)
+        return numpy.sum(a.pmf() * b.pmf())
+    
+    def __ne__(self, other):
+        return 1.0 - (self == other)
+    
     def __lt__(self, other):
         """
         Returns the chance this Die will roll < the other Die.        
