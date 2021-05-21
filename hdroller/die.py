@@ -174,7 +174,7 @@ class Die(metaclass=DieType):
         d(1, 6, 6) = 1d6d6 = roll a d6, then roll that many d6s and add them up
         """
         if len(args) == 1:
-            args = [1] + args
+            args = (1,) + args
         return args[0] * Die._d(*args[1:])
     
     @staticmethod
