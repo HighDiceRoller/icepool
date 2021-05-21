@@ -52,6 +52,7 @@ class Die(metaclass=DieType):
         * int: A die which always rolls that outcome.
         * float in [0, 1]: A die which has that chance of rolling 1, and rolls 0 otherwise.
         """
+        # TODO: Decide whether to check for exactness and reduce fractions here.
         if isinstance(weights, Die):
             return # Already returned same object by __new__().
         elif numpy.issubdtype(type(weights), numpy.integer):
@@ -87,7 +88,7 @@ class Die(metaclass=DieType):
     @cached_property
     def _is_exact(self):
         is_all_integer = numpy.all(self._weights == numpy.floor(self._weights))
-        is_sum_in_range = self._total_weight <= hdroller.math.MAX_INT_FLOAT
+        is_sum_in_range = self._total_weight < hdroller.math.MAX_INT_FLOAT
         return is_all_integer and is_sum_in_range
         
     @cached_property
@@ -395,11 +396,17 @@ class Die(metaclass=DieType):
     def standard_deviation(self):
         return numpy.sqrt(self.variance())
         
-    def excess_kurtosis(self):
+    def standardized_moment(self, k):
         sd = self.standard_deviation()
         mean = self.mean()
-        kurtosis = numpy.sum(self.pmf() * numpy.power((self.outcomes() - mean) / sd, 4.0))
-        return kurtosis - 3.0
+        ev = numpy.sum(self.pmf() * numpy.power((self.outcomes() - mean), k))
+        return ev / numpy.power(sd, k)
+    
+    def skewness(self):
+        return self.standardized_moment(3.0)
+    
+    def excess_kurtosis(self):
+        return self.standardized_moment(4.0) - 3.0
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
