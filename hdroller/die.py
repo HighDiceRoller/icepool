@@ -215,8 +215,25 @@ class Die(metaclass=DieType):
     
     @staticmethod
     def laplace(**kwargs):
+        # TODO: odd or even
         geometric = Die.geometric(**kwargs)
         return geometric - geometric
+    
+    @staticmethod
+    def sech(max_outcome=100, half_life=None):
+        # TODO: odd or even, overflow weights
+        x = numpy.arange(-max_outcome, max_outcome+1)
+        weights = 2.0 / (numpy.power(2.0, x / half_life) + numpy.power(2.0, -x / half_life))
+        return Die(weights, -max_outcome)
+    
+    @staticmethod
+    def logistic(mean, max_abs_deviation=100, half_life=None):
+        # TODO: odd or even, overflow weights
+        min_outcome = int(numpy.floor(mean - max_abs_deviation))
+        max_outcome = int(numpy.ceil(mean + max_abs_deviation))
+        outcomes = numpy.arange(min_outcome, max_outcome+1)
+        cdf = 1.0 / (1.0 + numpy.power(2.0, -(outcomes + 0.5 - mean) / half_life))
+        return Die.from_cdf(cdf, min_outcome)
     
     @staticmethod
     def poisson(mean, max_outcome=20):
@@ -442,10 +459,11 @@ class Die(metaclass=DieType):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
         return Die.mix(*relabeling, mix_weights=self.weights())
 
-    def explode(self, max_explode, chance=None, faces=None):
+    def explode(self, max_explode, chance=None, faces=None, outcomes=None):
         """
         chance: If supplied, this top fraction of the pmf will explode.
         faces: If supplied, the top faces will explode.
+        outcomes: If suppled, these outcomes will explode.
         If neither is supplied, the top single face will explode.
         """
         if max_explode < 0:
@@ -467,6 +485,9 @@ class Die(metaclass=DieType):
         elif faces is not None:
             if faces == 0: return self
             explode_weights[-faces:] = self.weights()[-faces:]
+        elif outcomes is not None:
+            explode_faces = numpy.array(outcomes) - self.min_outcome()
+            explode_weights[explode_faces] = self.weights()[explode_faces]
         else:
             explode_weights[-1] = self.weights()[-1]
         
@@ -474,7 +495,7 @@ class Die(metaclass=DieType):
         
         non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
         explode_die = Die(explode_weights, self.min_outcome())._trim()
-        explode_die += self.explode(max_explode-1, chance=chance, faces=faces)
+        explode_die += self.explode(max_explode-1, chance=chance, faces=faces, outcomes=outcomes)
         
         mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
         
@@ -603,7 +624,7 @@ class Die(metaclass=DieType):
         dice_unions = Die._union(*dice)
         cweights = 1.0
         for die in dice_unions: cweights *= die.cweights()
-        return Die.from_cweights(cweights, dice_unions[0].min_outcome(), total_weight = None)._trim()
+        return Die.from_cweights(cweights, dice_unions[0].min_outcome())._trim()
     
     def min(*dice):
         """
@@ -615,7 +636,7 @@ class Die(metaclass=DieType):
         dice_unions = Die._union(*dice)
         ccweights = 1.0
         for die in dice_unions: ccweights *= die.ccweights()
-        return Die.from_ccweights(ccweights, dice_unions[0].min_outcome(), total_weight = None)._trim()
+        return Die.from_ccweights(ccweights, dice_unions[0].min_outcome())._trim()
     
     def repeat_and_sum(self, num_dice):
         """

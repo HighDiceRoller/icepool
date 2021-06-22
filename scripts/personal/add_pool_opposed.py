@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -117,7 +119,7 @@ plt.savefig('output/add_pool_opposed_5plus.png', dpi = dpi, bbox_inches = "tight
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-plot_opposed_fixed_side(ax, Die.from_faces([0]*6 + [1]*3 + [2]), die_counts_simple, 'Exalted2e')
+plot_opposed_fixed_side(ax, Die.mix([0]*6 + [1]*3 + [2]), die_counts_simple, 'Exalted2e')
 
 ax.set_xlim(left = left, right = right)
 plt.savefig('output/add_pool_opposed_exalted2e.png', dpi = dpi, bbox_inches = "tight")

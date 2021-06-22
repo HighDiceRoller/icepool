@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -56,6 +58,32 @@ ax.set_xlim(left=0, right=20)
 ax.set_ylim(top=1, bottom=1e-2)
 ax.legend(legend, loc = 'lower left')
 plt.savefig('output/explode_non_opposed_actual.png', dpi = dpi, bbox_inches = "tight")
+
+# wild
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+ax.set_xlabel('Target number')
+ax.set_ylabel('Chance of hitting')
+ax.grid(which = "both")
+ax.set_title('With wild die')
+
+legend = []
+
+for die_size in die_sizes:
+    die = Die.d(die_size).explode(10)
+    wild = Die.d6.explode(10)
+    die = die.max(wild)
+    y = [die >= t for t in x]
+    ax.semilogy(x, y)
+    legend.append('max(d%d!, d6!)' % die_size)
+
+ax.set_xticks(xticks)
+ax.set_xlim(left=0, right=20)
+ax.set_ylim(top=1, bottom=1e-2)
+ax.legend(legend, loc = 'lower left')
+plt.savefig('output/explode_non_opposed_wild.png', dpi = dpi, bbox_inches = "tight")
 
 # big-small
 
@@ -127,3 +155,69 @@ ax.set_xticks(xticks)
 ax.set_ylim(top=1, bottom=1e-2)
 ax.legend(legend, loc = 'lower left')
 plt.savefig('output/explode_non_opposed_smoothed.png', dpi = dpi, bbox_inches = "tight")
+
+# double
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+ax.set_xlabel('Target number')
+ax.set_ylabel('Chance of hitting')
+ax.grid(which = "both")
+
+legend = []
+
+for die_size in [3, 4, 5, 6, 8, 10, 12]:
+    die = 2 * Die.d(die_size).explode(10)
+    y = [die >= t for t in x]
+    ax.semilogy(x, y)
+    legend.append('2d%d!' % (die_size,))
+
+ax.set_xticks(xticks)
+ax.set_ylim(top=1, bottom=1e-2)
+ax.legend(legend, loc = 'lower left')
+plt.savefig('output/explode_non_opposed_double.png', dpi = dpi, bbox_inches = "tight")
+
+# advantage
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+ax.set_xlabel('Target number')
+ax.set_ylabel('Chance of hitting')
+ax.grid(which = "both")
+
+legend = []
+
+for die_size in [3, 4, 5, 6, 8, 10, 12]:
+    die = Die.d(die_size).explode(10).keep_highest(2, 1)
+    y = [die >= t for t in x]
+    ax.semilogy(x, y)
+    legend.append('2d%dkh' % (die_size,))
+
+ax.set_xticks(xticks)
+ax.set_ylim(top=1, bottom=1e-2)
+ax.legend(legend, loc = 'lower left')
+plt.savefig('output/explode_non_opposed_adv.png', dpi = dpi, bbox_inches = "tight")
+
+# plus d6
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+ax.set_xlabel('Target number')
+ax.set_ylabel('Chance of hitting')
+ax.grid(which = "both")
+
+legend = []
+
+for die_size in [4, 6, 8, 10, 12]:
+    die = Die.d(die_size).explode(10) + Die.d6
+    y = [die >= t for t in x]
+    ax.semilogy(x, y)
+    legend.append('d%d + d6' % (die_size,))
+
+ax.set_xticks(xticks)
+ax.set_ylim(top=1, bottom=1e-2)
+ax.legend(legend, loc = 'lower left')
+plt.savefig('output/explode_non_opposed_plus_d6.png', dpi = dpi, bbox_inches = "tight")
