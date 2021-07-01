@@ -20,12 +20,12 @@ pmf: Probability mass function. The normalized version of the weights.
 
 class DieType(type):
     """
-    Metaclass for Die. Used to enable shorthand for ordinary dice.
+    Metaclass for Die. Used to enable shorthand for standard dice.
     """
     def __getattr__(self, key):
         if key[0] == 'd':
             die_size = int(key[1:])
-            return Die.ordinary(die_size)
+            return Die.standard(die_size)
         raise AttributeError(key)
 
 class Die(metaclass=DieType):
@@ -137,6 +137,8 @@ class Die(metaclass=DieType):
           If not provided, all arguments are mixed uniformly.
           A Die can also be used, in which case its weights determines the mix_weights.
         """
+        if len(args) == 1 and not isinstance(args[0], Die):
+            args = args[0]
         
         args = [Die(die) for die in args]
         args = Die._union(*args)
@@ -153,8 +155,8 @@ class Die(metaclass=DieType):
     
     @staticmethod
     @cache
-    def ordinary(num_faces):
-        if num_faces < 1: raise ValueError('Ordinary dice must have at least 1 face.')
+    def standard(num_faces):
+        if num_faces < 1: raise ValueError('Standard dice must have at least 1 face.')
         return Die(numpy.ones((num_faces,)), 1)
     
     # TODO: Apply cache to all __new__ dice created with floats?
@@ -168,7 +170,7 @@ class Die(metaclass=DieType):
     @staticmethod
     def d(*args):
         """
-        Dice chaining, with integers other than the first argument treated as ordinary dice (rather than ).
+        Dice chaining, with integers other than the first argument treated as standard dice (rather than integers).
         Exception: If there is only a single argument, a 1 is implicitly prepended to the argument list.
         Each argument is rolled, and that many of the outcome is rolled on whatever is behind it.
         
@@ -193,7 +195,7 @@ class Die(metaclass=DieType):
         
         num_dice = args[0]
         if numpy.issubdtype(type(num_dice), numpy.integer):
-            num_dice = Die.ordinary(num_dice)
+            num_dice = Die.standard(num_dice)
         else:
             num_dice = Die(args[0])
 
@@ -459,10 +461,10 @@ class Die(metaclass=DieType):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
         return Die.mix(*relabeling, mix_weights=self.weights())
 
-    def explode(self, max_explode, chance=None, faces=None, outcomes=None):
+    def explode(self, max_explode, *, chance=None, faces=None, outcomes=None):
         """
         chance: If supplied, this top fraction of the pmf will explode.
-        faces: If supplied, the top faces will explode.
+        faces: If supplied, this many of the top faces will explode.
         outcomes: If suppled, these outcomes will explode.
         If neither is supplied, the top single face will explode.
         """
@@ -476,11 +478,11 @@ class Die(metaclass=DieType):
             if chance == 0: return self
             remaining_explode_weight = chance * self.total_weight()
             for index, mass in reversed(list(enumerate(self.weights()))):
-                if mass < chance:
+                if mass < remaining_explode_weight:
                     explode_weights[index] = mass
                     remaining_explode_weight -= mass
                 else:
-                    explode_weights[index] = chance
+                    explode_weights[index] = remaining_explode_weight
                     break
         elif faces is not None:
             if faces == 0: return self
@@ -501,7 +503,7 @@ class Die(metaclass=DieType):
         
         return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
     
-    def reroll(self, outcomes=None, below=None, above=None, max_reroll=None):
+    def reroll(self, *, outcomes=None, below=None, above=None, max_reroll=None):
         """Rerolls the given outcomes."""
         pmf = numpy.copy(self.pmf())
         all_outcomes = self.outcomes()
