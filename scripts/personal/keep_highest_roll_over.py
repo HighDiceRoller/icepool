@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -6,12 +8,12 @@ import matplotlib.pyplot as plt
 figsize = (8, 4.5)
 dpi = 120
 
-die = Die.d10.explode(3) + Die.d12
-offset = 12
+die = 2 * Die.d10.explode(3)
+offset = 11.5
 
 legend = [
-    'Transformed keep-highest',
-    'd10! + d12 - 12',
+    'Gumbel',
+    'd10! + d10! - 11.5',
     ]
 
 left = -10
@@ -33,7 +35,7 @@ ax.legend(legend)
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0)
-plt.savefig('output/keep_highest_roll_over_pmf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gumbel_pmf.png', dpi = dpi, bbox_inches = "tight")
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
@@ -51,4 +53,4 @@ ax.legend(legend)
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0, top=100.0)
-plt.savefig('output/keep_highest_roll_over_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gumbel_cdf.png', dpi = dpi, bbox_inches = "tight")

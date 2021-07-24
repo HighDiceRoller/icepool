@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -88,7 +90,7 @@ plot_pmf(ax, Die.coin(), die_counts_simple, '(d6>=4)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_4plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_4plus.png', dpi = dpi, bbox_inches = "tight")
 
 # 2 plus on d6
 
@@ -99,7 +101,7 @@ plot_pmf(ax, Die.coin(5/6), die_counts_simple, '(d6>=2)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_2plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_2plus.png', dpi = dpi, bbox_inches = "tight")
 
 # 3 plus on d6
 
@@ -110,7 +112,7 @@ plot_pmf(ax, Die.coin(2/3), die_counts_simple, '(d6>=3)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_3plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_3plus.png', dpi = dpi, bbox_inches = "tight")
 
 # 5 plus on d6
 
@@ -121,7 +123,7 @@ plot_pmf(ax, Die.coin(1/3), die_counts_simple, '(d6>=5)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_5plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_5plus.png', dpi = dpi, bbox_inches = "tight")
 
 # 6 plus on d6
 
@@ -132,40 +134,40 @@ plot_pmf(ax, Die.coin(1/6), die_counts_simple, '(d6>=6)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_6plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_6plus.png', dpi = dpi, bbox_inches = "tight")
 
 # exalted 2e
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-plot_pmf(ax, Die.from_faces([0]*6 + [1]*3 + [2]), die_counts_simple, 'dExalted2e')
+plot_pmf(ax, Die.mix(*([0]*6 + [1]*3 + [2])), die_counts_simple, 'dExalted2e')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_exalted2e.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_exalted2e.png', dpi = dpi, bbox_inches = "tight")
 
 # owod
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-plot_pmf(ax, Die.from_faces([-1] + [0]*5 + [1]*4), die_counts_simple, 'dOWoD')
+plot_pmf(ax, Die.mix(*([-1] + [0]*5 + [1]*4)), die_counts_simple, 'dOWoD')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_owod.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_owod.png', dpi = dpi, bbox_inches = "tight")
 
 # nwod
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-plot_pmf(ax, Die.from_faces([0]*7 + [1]*3).explode(100, chance=0.1), die_counts_simple, 'dNWoD')
+plot_pmf(ax, Die.mix(*([0]*7 + [1]*3)).explode(100, chance=0.1), die_counts_simple, 'dNWoD')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_nwod.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_nwod.png', dpi = dpi, bbox_inches = "tight")
 
 # d6
 
@@ -176,7 +178,7 @@ plot_pmf(ax, Die.d(6), die_counts_standard, 'd6')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_d6.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_d6.png', dpi = dpi, bbox_inches = "tight")
 
 # half-life
 
@@ -187,7 +189,7 @@ plot_pmf(ax, Die.d(3,2)-3, die_counts_standard, '(3d2-3)')
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_3c.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_3c.png', dpi = dpi, bbox_inches = "tight")
 
 # weg
 
@@ -198,4 +200,4 @@ plot_pmf_weg(ax, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
 ax.set_xlim(left = left, right = right)
 ax.set_ylim(bottom = 0)
-plt.savefig('output/sum_pool_weg.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_weg.png', dpi = dpi, bbox_inches = "tight")

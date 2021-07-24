@@ -92,7 +92,7 @@ ax = plt.subplot(111)
 plot_opposed_fixed_side(ax, Die.coin(2/3), die_counts_simple, '(d6>=3)')
 
 ax.set_xlim(left = left, right = right)
-plt.savefig('output/add_pool_opposed_3plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_opposed_3plus.png', dpi = dpi, bbox_inches = "tight")
 
 # coin
 
@@ -102,7 +102,7 @@ ax = plt.subplot(111)
 plot_opposed_fixed_side(ax, Die.coin(), die_counts_simple, '(d6>=4)')
 
 ax.set_xlim(left = left, right = right)
-plt.savefig('output/add_pool_opposed_4plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_opposed_4plus.png', dpi = dpi, bbox_inches = "tight")
 
 # 5+ on d6
 
@@ -112,17 +112,17 @@ ax = plt.subplot(111)
 plot_opposed_fixed_side(ax, Die.coin(1/3), die_counts_simple, '(d6>=5)')
 
 ax.set_xlim(left = left, right = right)
-plt.savefig('output/add_pool_opposed_5plus.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_opposed_5plus.png', dpi = dpi, bbox_inches = "tight")
 
 # exalted 2e
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-plot_opposed_fixed_side(ax, Die.mix([0]*6 + [1]*3 + [2]), die_counts_simple, 'Exalted2e')
+plot_opposed_fixed_side(ax, Die.mix(*([0]*6 + [1]*3 + [2])), die_counts_simple, 'Exalted2e')
 
 ax.set_xlim(left = left, right = right)
-plt.savefig('output/add_pool_opposed_exalted2e.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_opposed_exalted2e.png', dpi = dpi, bbox_inches = "tight")
 
 # coin
 
@@ -132,4 +132,4 @@ ax = plt.subplot(111)
 plot_opposed_fixed_side(ax, Die.d(6), die_counts_simple, '6')
 
 ax.set_xlim(left = left, right = right)
-plt.savefig('output/add_pool_opposed_d6.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/success_pool_opposed_d6.png', dpi = dpi, bbox_inches = "tight")

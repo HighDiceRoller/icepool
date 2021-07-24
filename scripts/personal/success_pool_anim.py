@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -41,7 +43,7 @@ def make_anim(die, name):
         x_pmf = []
         x_ccdf = []
         ccdf = []
-        for outcome, p in zip(pool.outcomes(include_one_past_end=True), pool.ccdf(inclusive='both')):
+        for outcome, p in zip(pool.outcomes(append=True), pool.ccdf(inclusive='both')):
             sqrt_arg = outcome / die.mean() + offset
             outcome_modifier = coef * numpy.sqrt(numpy.abs(sqrt_arg)) * numpy.sign(sqrt_arg)
             x_pmf.append(outcome_modifier - die_modifier)
@@ -100,15 +102,15 @@ def make_anim(die, name):
         plt.savefig(ccdf_frame_path % frame_index,
                     dpi = dpi, bbox_inches = "tight")
         plt.close()
-    make_webm(pmf_frame_path, 'output/success_pool_roe_%s_pmf.webm' % name)
-    make_webm(ccdf_frame_path, 'output/success_pool_roe_%s_ccdf.webm' % name)
+    make_webm(pmf_frame_path, 'output/success_pool_fde_%s_pmf.webm' % name)
+    make_webm(ccdf_frame_path, 'output/success_pool_fde_%s_ccdf.webm' % name)
 
 #make_anim(Die.coin(1/6), 'd6_2plus')
 #make_anim(Die.coin(2/6), 'd6_3plus')
 make_anim(Die.coin(3/6), 'd6_4plus')
 #make_anim(Die.coin(4/6), 'd6_5plus')
 #make_anim(Die.coin(5/6), 'd6_6plus')
-exalted2e = Die.from_faces([0]*6 + [1]*3 + [2])
+#exalted2e = Die.mix(*([0]*6 + [1]*3 + [2]))
 owod = Die.from_faces([-1] + [0]*5 + [1]*4)
 nwod = Die.from_faces([0]*7 + [1]*3).explode(10, chance=0.1)
 #make_anim(exalted2e, 'exalted2e')

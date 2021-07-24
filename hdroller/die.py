@@ -656,14 +656,14 @@ class Die(metaclass=DieType):
         if num_dice % 2: result += self
         return result
         
-    def keep_highest(self, num_dice, num_keep):
+    def keep_highest(self, num_dice, num_keep=1):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` highest.
         """
         return self._repeater.keep_highest(num_dice, num_keep)
         
-    def keep_lowest(self, num_dice, num_keep):
+    def keep_lowest(self, num_dice, num_keep=1):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` lowest.

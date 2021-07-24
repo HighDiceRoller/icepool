@@ -30,13 +30,13 @@ two_exploding = 2 * Die.d(10).explode(3)
 opposed_two_exploding = two_exploding - two_exploding - Die.coin(0.5)
 
 legend = [
-   #'Laplace, half-life = 3',
-    #'Opposed d10!',
+   'Laplace, half-life = 3',
+    'Opposed d10!',
     #'Hyperbolic secant, half-life = 3',
     #'Opposed ?',
     'Logistic, half-life = 3',
-    'Opposed d10! + d12',
-    'Opposed 2d(d10!)',
+    #'Opposed d10! + d12',
+    'Opposed d10! + d10!',
 ]
 
 # ccdf
@@ -48,20 +48,20 @@ ax.set_xlabel('Difference in modifiers')
 ax.set_ylabel('Chance to hit (%)')
 ax.grid()
 
-#ax.plot(laplace.outcomes(), 100.0 * laplace.ccdf(), linestyle='--')
-#ax.plot(opposed_simple.outcomes(), 100.0 * opposed_simple.ccdf())
+ax.plot(laplace.outcomes(), 100.0 * laplace.ccdf(), linestyle='--')
+ax.plot(opposed_simple.outcomes(), 100.0 * opposed_simple.ccdf())
 
 #ax.plot(sech.outcomes(), 100.0 * sech.ccdf(), linestyle='--')
 #ax.plot(sech_approx.outcomes(), 100.0 * sech_approx.ccdf())
 
 ax.plot(okh.outcomes(), 100.0 * okh.ccdf(), linestyle='--')
-ax.plot(opposed_exploding.outcomes(), 100.0 * opposed_exploding.ccdf())
+#ax.plot(opposed_exploding.outcomes(), 100.0 * opposed_exploding.ccdf())
 ax.plot(opposed_two_exploding.outcomes(), 100.0 * opposed_two_exploding.ccdf())
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0,top=100.0)
 ax.legend(legend, loc = 'upper right')
-plt.savefig('output/opposed_keep_highest_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/laplace_logistic_ccdf.png', dpi = dpi, bbox_inches = "tight")
 
 # pdf
 
@@ -72,17 +72,17 @@ ax.set_xlabel('Difference in rolls')
 ax.set_ylabel('Chance (%)')
 ax.grid()
 
-#ax.plot(laplace.outcomes() + 0.5, 100.0 * laplace.pmf(), linestyle='--')
-#ax.plot(opposed_simple.outcomes() + 0.5, 100.0 * opposed_simple.pmf())
+ax.plot(laplace.outcomes() + 0.5, 100.0 * laplace.pmf(), linestyle='--')
+ax.plot(opposed_simple.outcomes() + 0.5, 100.0 * opposed_simple.pmf())
 
 #ax.plot(sech.outcomes() + 0.5, 100.0 * sech.pmf(), linestyle='--')
 #ax.plot(sech_approx.outcomes() + 0.5, 100.0 * sech_approx.pmf())
 
 ax.plot(okh.outcomes() + 0.5, 100.0 * okh.pmf(), linestyle='--')
-ax.plot(opposed_exploding.outcomes() + 0.5, 100.0 * opposed_exploding.pmf())
+#ax.plot(opposed_exploding.outcomes() + 0.5, 100.0 * opposed_exploding.pmf())
 ax.plot(opposed_two_exploding.outcomes() + 0.5, 100.0 * opposed_two_exploding.pmf())
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0)
 ax.legend(legend, loc = 'upper right')
-plt.savefig('output/opposed_keep_highest_pmf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/laplace_logistic_pmf.png', dpi = dpi, bbox_inches = "tight")

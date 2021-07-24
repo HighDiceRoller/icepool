@@ -1,3 +1,5 @@
+import _context
+
 from hdroller import Die
 import numpy
 import matplotlib as mpl
@@ -28,7 +30,7 @@ def make_pmf_plot(die, offset=0, sd=None):
         gaussian = Die.gaussian(die.mean(), sd)
 
     print('Var:', die.variance())
-    print('MAD median:', die.mad_median())
+    #print('MAD median:', die.mad_median())
 
     fig = plt.figure(figsize=figsize)
     ax = plt.subplot(111)
@@ -55,8 +57,8 @@ def make_mos_plot(die, offset=0, sd=None):
     ax.grid()
 
     x = numpy.arange(min(0, die.min_outcome()), die.max_outcome() + 1)
-    y_die = [die.margin_of_success(t).mean() for t in x]
-    y_gaussian = [gaussian.margin_of_success(t).mean() for t in x]
+    y_die = [(die - t).max(0).mean() for t in x]
+    y_gaussian = [(gaussian - t).max(0).mean() for t in x]
 
     ax.plot(x + offset, y_die, marker='.')
     ax.plot(x + offset, y_gaussian, marker='.')
@@ -106,19 +108,19 @@ ax.set_xlabel('Number')
 ax.legend(['d20', 'Gaussian with same SD'])
 ax.set_aspect(4)
 ax.set_xlim(-10, 30)
-plt.savefig('output/gaussian_vs_uniform_pmf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_d20_pmf.png', dpi = dpi, bbox_inches = "tight")
 
 ax = make_mos_plot(d20)
 ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same SD'])
-plt.savefig('output/gaussian_vs_uniform_mos.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_d20_mos.png', dpi = dpi, bbox_inches = "tight")
 
 ax = make_ccdf_plot(d20)
 ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same SD'])
 ax.set_aspect(0.2)
 ax.set_xlim(-10, 30)
-plt.savefig('output/gaussian_vs_uniform_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_d20_ccdf.png', dpi = dpi, bbox_inches = "tight")
 
 print('\nSD 8')
 
@@ -253,7 +255,7 @@ for coin_count in range(1, 11):
     gaussian = Die.gaussian(coins)
     ks = coins.ks_stat(gaussian) * 100.0
     print('KS %d: %0.2f%%' % (coin_count, ks))
-    ax.plot((coins.outcomes(include_one_past_end=True) - 0.5 - coins.mean()) / coins.standard_deviation(),
+    ax.plot((coins.outcomes(append=True) - 0.5 - coins.mean()) / coins.standard_deviation(),
             coins.ccdf(inclusive='both') * 100.0, marker='.')
 
     ax.set_xlim(-3, 3)

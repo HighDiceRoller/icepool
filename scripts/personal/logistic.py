@@ -28,7 +28,7 @@ legend = [
     'Logistic',
     'Opposed d10! + d10',
     'Opposed d10! + d12',
-    'Opposed 2d(d10!)',
+    'Opposed d10! + d10!',
 ]
 
 fig = plt.figure(figsize=figsize)
@@ -62,7 +62,7 @@ opposed_d6_explode = plus_d6_explode - plus_d6_explode - Die.coin()
 legend = [
     'Logistic',
     'Opposed d6! + 2d6',
-    'Opposed 2d(d6!)',
+    'Opposed d6! + d6!',
 ]
 
 fig = plt.figure(figsize=figsize)
@@ -91,7 +91,7 @@ opposed_d05_explode = plus_d05_explode - plus_d05_explode - Die.coin()
 
 legend = [
     'Logistic',
-    'Opposed 2d((d6-1)!)',
+    'Opposed (d6-1)! + (d6-1)!',
 ]
 
 fig = plt.figure(figsize=figsize)
