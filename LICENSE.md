@@ -1,4 +1,4 @@
-# hdroller (https://github.com/ajul/hdroller)
+# hdroller (https://gitlab.com/highdiceroller/hdroller)
 
 Copyright © 2021, Albert Julius Liu.
 All rights reserved.
