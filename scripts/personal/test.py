@@ -8,9 +8,26 @@ import time
 import cProfile
 import pstats
 
+die_4d6 = Die.d6.keep_highest(4, 3)
+print(die_4d6.mean())
+
+die_3d6 = Die.d(3, 6)
+method2 = die_3d6.keep_highest(12, 6)
+print(method2.mean() / 6)
+print(die_3d6.keep_highest(2, 1).mean())
+
 def legend_of_five_rings_test():
     for i in range(100):
         result = Die.d10.explode(5).keep_highest(10, 5)
+
+import scipy.stats
+
+gaussian_param = scipy.stats.norm.ppf(0.75)
+print(scipy.stats.norm.cdf(gaussian_param * 2))
+
+x = scipy.stats.cauchy.ppf(0.75)
+print(scipy.stats.cauchy.cdf(x * 2))
+
 
 cProfile.run('legend_of_five_rings_test()')
 
