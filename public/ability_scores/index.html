@@ -5,6 +5,7 @@
     <title>hdroller ability score calculator</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
@@ -12,21 +13,13 @@
     
     <div id="inputs">
         <form>
-            <input id="num_dice" type="number" min="3" max="12" value="4" required>d6, keep 3 highest<br/>
-            <input id="num_abilities" type="number" min="6" max="24" value="6" required> scores, keep 6 highest
+            <input id="num_dice" type="number" min="3" max="12" value="4" required />d6, keep 3 highest<br/>
+            <input id="num_abilities" type="number" min="6" max="24" value="6" required /> scores, keep 6 highest
         </form>
     </div>
     
     <div id="outputs">
-        Mean ranked scores:
-        <ol>
-            <li><p id="output0">Loading...</p></li>
-            <li><p id="output1">Loading...</p></li>
-            <li><p id="output2">Loading...</p></li>
-            <li><p id="output3">Loading...</p></li>
-            <li><p id="output4">Loading...</p></li>
-            <li><p id="output5">Loading...</p></li>
-        </ol>
+        <div id="rank_graph"></div>
     </div>
     
     <script type="text/javascript">
@@ -43,18 +36,106 @@
         }
         let pyodideReadyPromise = init_pyodide();
         
+        var rank_svg = d3.select("#rank_graph")
+            .append("svg")
+                .attr("width", 1280)
+                .attr("height", 640)
+            .append("g")
+                .attr("transform",
+                      "translate(40, 20)");
+        
+        var loadingText = rank_svg
+            .append("text")
+                .attr("class", "loadingText")
+                .attr("x", 600)
+                .attr("y", 320)
+                .text("Loading..."); 
+        
+        var rank_scale_x = d3.scaleLinear()
+            .domain([3, 18])
+            .range([0, 1200]);
+        var rank_axis_x = d3.axisBottom().scale(rank_scale_x);
+        rank_svg.append("g")
+            .attr("transform", "translate(0, 600)")
+            .attr("class", "rank_axis_x");
+            
+        var rank_scale_y = d3.scaleLinear()
+            .domain([0, 20])
+            .range([600, 0]);
+        var rank_axis_y = d3.axisLeft().scale(rank_scale_y);
+        rank_svg.append("g")
+            .attr("class", "rank_axis_y");
+        
+        var rankColors = [
+            "#df0000",
+            "#dfbf00",
+            "#00bf00",
+            "#00bfff",
+            "#0000ff",
+            "#df00ff"
+        ];
+        var rankData = [];
+        var rankLines = [];
+        var maxProb = 1.0;
+        for (let i = 0; i < 6; i++) {
+            let data = [];
+            for (let j = 3; j < 19; j++) {
+                data.push([j, 1.0]);
+            }
+            let line = rank_svg.append("g").append("path")
+                .datum(data)
+                .attr("d", d3.line()
+                    .x(function(d) { return rank_scale_x(d[0]) })
+                    .y(function(d) { return rank_scale_y(d[1]) })
+                )
+                .attr("stroke", rankColors[i])
+                .style("stroke-width", 4)
+                .style("fill", "none");
+            rankData.push(data);
+            rankLines.push(line);
+        }
+        
         async function updateRoll() {
             let pyodide = await pyodideReadyPromise;
+            
             pyodide.runPython(`
             import js
+            import numpy
+            import pyodide
             from hdroller import Die
             num_dice = int(js.document.getElementById('num_dice').value);
             num_abilities = int(js.document.getElementById('num_abilities').value);
             single_ability = Die.d6.keep_highest(num_dice, 3)
+            max_prob = 0.0
             for i in range(6):
-                ranked_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
-                js.document.getElementById('output%d' % i).innerHTML = '%0.2f' % ranked_ability.mean()
+                rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
+                js.rankData[i] = pyodide.to_js([[float(outcome), p * 100.0] for outcome, p in zip(rank_ability.outcomes(), rank_ability.pmf())])
+                max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
+            js.maxProb = max_prob * 100.0
             `)
+            
+            rank_scale_y.domain([0, maxProb]);
+            
+            rank_svg.selectAll(".rank_axis_x").transition()
+                .duration(500)
+                .call(rank_axis_x);
+            
+            rank_svg.selectAll(".rank_axis_y").transition()
+                .duration(500)
+                .call(rank_axis_y);
+                
+            for (let i = 0; i < 6; i++) {
+                rankLines[i]
+                    .datum(rankData[i])
+                    .transition()
+                    .duration(500)
+                    .attr("d", d3.line()
+                        .x(function(d) { return rank_scale_x(d[0]) })
+                        .y(function(d) { return rank_scale_y(d[1]) })
+                    );
+            }
+            
+            rank_svg.selectAll(".loadingText").text("");
         }
         
         updateRoll();
