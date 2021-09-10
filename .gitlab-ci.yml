@@ -1,0 +1,9 @@
+pages:
+    stage: deploy
+    script:
+        - echo "No script operations."
+    artifacts:
+        paths:
+        - public
+    only:
+    - master
