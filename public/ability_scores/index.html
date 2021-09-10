@@ -2,14 +2,34 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
 </head>
 
 <body>
     Ability scores
     
+    <div id="input_col">
+        <form>
+            <input id="num_dice" type="number" min="3" max="6" value="4" required>d6, keep 3 highest<br/>
+            <input id="num_abilities" type="number" min="6" max="12" value="6" required> scores, keep 6 highest
+        </form>
+    </div>
+    
+    <div id="output_col">
+        Mean ranked scores:
+        <ol>
+            <li><p id="output0">Loading...</p></li>
+            <li><p id="output1">Loading...</p></li>
+            <li><p id="output2">Loading...</p></li>
+            <li><p id="output3">Loading...</p></li>
+            <li><p id="output4">Loading...</p></li>
+            <li><p id="output5">Loading...</p></li>
+        </ol>
+    </div>
+    
     <script type="text/javascript">
-        async function main(){
+        async function init_pyodide(){
             let pyodide = await loadPyodide({
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/"
             });
@@ -17,14 +37,30 @@
             await pyodide.runPythonAsync(`
                 import micropip
                 await micropip.install('hdroller')
-                from hdroller import Die
-                print(Die.d6)
             `);
+            return pyodide;
         }
-        main();
+        let pyodideReadyPromise = init_pyodide();
+        
+        async function updateRoll() {
+            let pyodide = await pyodideReadyPromise;
+            pyodide.runPython(`
+            import js
+            from hdroller import Die
+            num_dice = int(js.document.getElementById('num_dice').value);
+            num_abilities = int(js.document.getElementById('num_abilities').value);
+            single_ability = Die.d6.keep_highest(num_dice, 3)
+            for i in range(6):
+                ranked_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
+                js.document.getElementById('output%d' % i).innerHTML = '%0.2f' % ranked_ability.mean()
+            `)
+        }
+        
+        updateRoll();
+        
+        let form = document.querySelector('form');
+        form.addEventListener('change', updateRoll);
     </script>
-    
-    <div id="numbers"></div>
 </body>
 
 </html>
