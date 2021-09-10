@@ -2,21 +2,22 @@
 <html>
 
 <head>
+    <title>hdroller ability score calculator</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
 </head>
 
 <body>
-    Ability scores
+    <h2>Ability scores</h2>
     
-    <div id="input_col">
+    <div id="inputs">
         <form>
-            <input id="num_dice" type="number" min="3" max="6" value="4" required>d6, keep 3 highest<br/>
-            <input id="num_abilities" type="number" min="6" max="12" value="6" required> scores, keep 6 highest
+            <input id="num_dice" type="number" min="3" max="12" value="4" required>d6, keep 3 highest<br/>
+            <input id="num_abilities" type="number" min="6" max="24" value="6" required> scores, keep 6 highest
         </form>
     </div>
     
-    <div id="output_col">
+    <div id="outputs">
         Mean ranked scores:
         <ol>
             <li><p id="output0">Loading...</p></li>
