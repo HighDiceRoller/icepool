@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
+</head>
+
+<body>
+    Ability scores
+    
+    <script type="text/javascript">
+        async function main(){
+            let pyodide = await loadPyodide({
+                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/"
+            });
+            await pyodide.loadPackage("micropip");
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('hdroller')
+                from hdroller import Die
+                print(Die.d6)
+            `);
+        }
+        main();
+    </script>
+    
+    <div id="numbers"></div>
+</body>
+
+</html>
