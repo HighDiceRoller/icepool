@@ -13,13 +13,17 @@
     
     <div id="inputs">
         <form>
-            <input id="num_dice" type="number" min="3" max="12" value="4" required />d6, keep 3 highest<br/>
-            <input id="num_abilities" type="number" min="6" max="24" value="6" required /> scores, keep 6 highest
+            Generate each ability score by rolling
+            <input id="num_dice" type="number" min="1" max="9" value="4" required onwheel="" />d<input id="die_size" type="number" min="4" max="20" value="6" required onwheel="" />,
+            keeping the <input id="num_keep" type="number" min="1" max="9" value="3" required onwheel="" /> highest dice, then adding
+            <input id="modifier" type="number" min="-9" max="9" value="0" required onwheel="" />.<br/>
+            Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.
         </form>
     </div>
     
     <div id="outputs">
         <div id="rank_graph"></div>
+        <p id="mean_array"></p>
     </div>
     
     <script type="text/javascript">
@@ -54,7 +58,7 @@
         var rank_scale_x = d3.scaleLinear()
             .domain([3, 18])
             .range([0, 1200]);
-        var rank_axis_x = d3.axisBottom().scale(rank_scale_x);
+        var rank_axis_x = d3.axisBottom().scale(rank_scale_x).ticks(15);
         rank_svg.append("g")
             .attr("transform", "translate(0, 600)")
             .attr("class", "rank_axis_x");
@@ -67,12 +71,12 @@
             .attr("class", "rank_axis_y");
         
         var rankColors = [
-            "#df0000",
-            "#dfbf00",
-            "#00bf00",
-            "#00bfff",
+            "#df00ff",
             "#0000ff",
-            "#df00ff"
+            "#00bfff",
+            "#00bf00",
+            "#dfbf00",
+            "#df0000"
         ];
         var rankData = [];
         var rankLines = [];
@@ -104,16 +108,25 @@
             import pyodide
             from hdroller import Die
             num_dice = int(js.document.getElementById('num_dice').value);
+            die_size = int(js.document.getElementById('die_size').value);
+            num_keep = int(js.document.getElementById('num_keep').value);
+            num_keep = min(num_keep, num_dice);
+            modifier = int(js.document.getElementById('modifier').value);
             num_abilities = int(js.document.getElementById('num_abilities').value);
-            single_ability = Die.d6.keep_highest(num_dice, 3)
+            single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
             max_prob = 0.0
+            ranks = []
             for i in range(6):
                 rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
+                ranks.append(rank_ability)
                 js.rankData[i] = pyodide.to_js([[float(outcome), p * 100.0] for outcome, p in zip(rank_ability.outcomes(), rank_ability.pmf())])
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
-            js.maxProb = max_prob * 100.0
-            `)
             
+            js.maxProb = max_prob * 100.0
+            js.document.getElementById('mean_array').innerHTML = 'Mean array: ' + ', '.join('%0.2f' % rank.mean() for rank in ranks)
+            `);
+            
+            rank_scale_x.domain([rankData[5][0][0], rankData[5][rankData[5].length-1][0]]);
             rank_scale_y.domain([0, maxProb]);
             
             rank_svg.selectAll(".rank_axis_x").transition()
