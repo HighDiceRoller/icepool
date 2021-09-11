@@ -10,6 +10,7 @@
 
 <body>
     <h2>Ability scores</h2>
+    
     <div>
         <form id="single_array_inputs">
             Generate each ability score by rolling
@@ -52,6 +53,15 @@
                 <td id="sd_pf" style="text-align: right;"></td>
             </tr>
         </table>
+    </div>
+    
+    <h3>How does it work?</h3>
+    
+    <div>
+    This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://d3js.org/">D3.js</a>, 
+    and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+    <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">The use of repeated convolutions</a> 
+    rather than brute-force enumeration or Monto Carlo allows this to deliver precise results at an interactive rate.
     </div>
     
     <script type="text/javascript">
