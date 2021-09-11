@@ -2,67 +2,64 @@
 <html>
 
 <head>
-    <title>hdroller ability score calculator</title>
+    <title>Ability scores by hdroller</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
-    <h2>Ability scores</h2>
+    <h2>Ability score rolling method calculator by hdroller</h2>
     
-    <div>
-        <form id="single_array_inputs">
-            Generate each ability score by rolling
-            <input id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
-            keeping the <input id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
-            <input id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
-            Generate each ability score <input id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
-            Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
-            Any scores less than 3 are set to 3 and any scores greater than 18 are set to 18.
-        </form>
-        <div id="rank_graph"></div>
-        <p>Mean single array: <span id="mean_array"></span></p>
-    </div>
+    <form id="single_array_inputs">
+        Generate each ability score by rolling
+        <input id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+        keeping the <input id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
+        <input id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
+        Generate each ability score <input id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
+        Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
+        Any scores less than 3 are set to 3 and any scores greater than 18 are set to 18.
+    </form>
+        
+    <h3>Probability distribution of the 6 ranked ability scores</h3>
+    
+    <div id="rank_graph"></div>
+    <p>Mean single array: <span id="mean_array"></span></p>
     
     <h3>Multiple arrays</h3>
     
-    <div>
-        <form id="multiple_array_inputs">
-            Roll <input id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
-        </form>
-        <table>
-            <tr>
-                <th style="text-align: left;">Pricing method</th>
-                <th style="width: 4em; text-align: right;">Mean</th>
-                <th style="width: 4em; text-align: right;">SD</th>
-            </tr>
-            <tr>
-                <td>Raw total</td>
-                <td id="mean_raw" style="text-align: right;"></td>
-                <td id="sd_raw" style="text-align: right;"></td>
-            </tr>
-            <tr>
-                <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
-                <td id="mean_5e" style="text-align: right;"></td>
-                <td id="sd_5e" style="text-align: right;"></td>
-            </tr>
-            <tr>
-                <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
-                <td id="mean_pf" style="text-align: right;"></td>
-                <td id="sd_pf" style="text-align: right;"></td>
-            </tr>
-        </table>
-    </div>
+    <form id="multiple_array_inputs">
+        Roll <input id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
+    </form>
+    <table>
+        <tr>
+            <th style="text-align: left;">Pricing method</th>
+            <th style="width: 4em; text-align: right;">Mean</th>
+            <th style="width: 4em; text-align: right;">SD</th>
+        </tr>
+        <tr>
+            <td>Raw total</td>
+            <td id="mean_raw" style="text-align: right;"></td>
+            <td id="sd_raw" style="text-align: right;"></td>
+        </tr>
+        <tr>
+            <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
+            <td id="mean_5e" style="text-align: right;"></td>
+            <td id="sd_5e" style="text-align: right;"></td>
+        </tr>
+        <tr>
+            <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
+            <td id="mean_pf" style="text-align: right;"></td>
+            <td id="sd_pf" style="text-align: right;"></td>
+        </tr>
+    </table>
     
     <h3>How does it work?</h3>
     
-    <div>
     This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://d3js.org/">D3.js</a>, 
     and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
     <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">The use of repeated convolutions</a> 
     rather than brute-force enumeration or Monto Carlo allows this to deliver precise results at an interactive rate.
-    </div>
     
     <script type="text/javascript">
         async function init_pyodide(){
@@ -188,7 +185,7 @@
             output_multiple_arrays(single_ability_pf, 'pf')
             `);
             
-            rank_scale_x.domain([rankData[5][0][0], rankData[5][rankData[5].length-1][0]]);
+            // rank_scale_x.domain([rankData[5][0][0], rankData[5][rankData[5].length-1][0]]);
             rank_scale_y.domain([0, maxProb]);
             
             rank_svg.selectAll(".rank_axis_x").transition()
@@ -216,10 +213,10 @@
         updateRoll();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
-        single_array_inputs.addEventListener('change', updateRoll);
+        single_array_inputs.addEventListener('input', updateRoll);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
-        multiple_array_inputs.addEventListener('change', updateRoll);
+        multiple_array_inputs.addEventListener('input', updateRoll);
     </script>
 </body>
 
