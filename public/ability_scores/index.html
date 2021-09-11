@@ -10,20 +10,48 @@
 
 <body>
     <h2>Ability scores</h2>
-    
-    <div id="inputs">
-        <form>
+    <div>
+        <form id="single_array_inputs">
             Generate each ability score by rolling
-            <input id="num_dice" type="number" min="1" max="9" value="4" required onwheel="" />d<input id="die_size" type="number" min="4" max="20" value="6" required onwheel="" />,
-            keeping the <input id="num_keep" type="number" min="1" max="9" value="3" required onwheel="" /> highest dice, then adding
-            <input id="modifier" type="number" min="-9" max="9" value="0" required onwheel="" />.<br/>
-            Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.
+            <input id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+            keeping the <input id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
+            <input id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
+            Generate each ability score <input id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
+            Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
+            Any scores less than 3 are set to 3 and any scores greater than 18 are set to 18.
         </form>
+        <div id="rank_graph"></div>
+        <p>Mean single array: <span id="mean_array"></span></p>
     </div>
     
-    <div id="outputs">
-        <div id="rank_graph"></div>
-        <p id="mean_array"></p>
+    <h3>Multiple arrays</h3>
+    
+    <div>
+        <form id="multiple_array_inputs">
+            Roll <input id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
+        </form>
+        <table>
+            <tr>
+                <th style="text-align: left;">Pricing method</th>
+                <th style="width: 4em; text-align: right;">Mean</th>
+                <th style="width: 4em; text-align: right;">SD</th>
+            </tr>
+            <tr>
+                <td>Raw total</td>
+                <td id="mean_raw" style="text-align: right;"></td>
+                <td id="sd_raw" style="text-align: right;"></td>
+            </tr>
+            <tr>
+                <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
+                <td id="mean_5e" style="text-align: right;"></td>
+                <td id="sd_5e" style="text-align: right;"></td>
+            </tr>
+            <tr>
+                <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
+                <td id="mean_pf" style="text-align: right;"></td>
+                <td id="sd_pf" style="text-align: right;"></td>
+            </tr>
+        </table>
     </div>
     
     <script type="text/javascript">
@@ -107,13 +135,24 @@
             import numpy
             import pyodide
             from hdroller import Die
+            
+            point_buy_5e = numpy.array([-20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19])
+            point_buy_pf = numpy.array([-30, -25, -20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17])
+            
             num_dice = int(js.document.getElementById('num_dice').value);
             die_size = int(js.document.getElementById('die_size').value);
             num_keep = int(js.document.getElementById('num_keep').value);
             num_keep = min(num_keep, num_dice);
             modifier = int(js.document.getElementById('modifier').value);
+            num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value);
             num_abilities = int(js.document.getElementById('num_abilities').value);
+            num_arrays = int(js.document.getElementById('num_arrays').value);
+            
             single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
+            single_ability = single_ability.max(3)
+            single_ability = single_ability.min(18)
+            single_ability = single_ability.keep_highest(num_ability_repeat)
+            
             max_prob = 0.0
             ranks = []
             for i in range(6):
@@ -123,7 +162,20 @@
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
             
             js.maxProb = max_prob * 100.0
-            js.document.getElementById('mean_array').innerHTML = 'Mean array: ' + ', '.join('%0.2f' % rank.mean() for rank in ranks)
+            
+            js.document.getElementById('mean_array').innerHTML = ', '.join('%0.2f' % rank.mean() for rank in ranks)
+            
+            def output_multiple_arrays(points, name):
+                total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
+                js.document.getElementById('mean_' + name).innerHTML = '%0.2f' % total.mean()
+                js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
+            
+            single_ability_5e = single_ability.relabel(point_buy_5e[single_ability.outcomes()])
+            single_ability_pf = single_ability.relabel(point_buy_pf[single_ability.outcomes()])
+            
+            output_multiple_arrays(single_ability, 'raw')
+            output_multiple_arrays(single_ability_5e, '5e')
+            output_multiple_arrays(single_ability_pf, 'pf')
             `);
             
             rank_scale_x.domain([rankData[5][0][0], rankData[5][rankData[5].length-1][0]]);
@@ -153,8 +205,11 @@
         
         updateRoll();
         
-        let form = document.querySelector('form');
-        form.addEventListener('change', updateRoll);
+        let single_array_inputs = document.querySelector('#single_array_inputs');
+        single_array_inputs.addEventListener('change', updateRoll);
+        
+        let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
+        multiple_array_inputs.addEventListener('change', updateRoll);
     </script>
 </body>
 

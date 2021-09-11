@@ -1,11 +1,10 @@
 body {
+    color: #0f0f0f;
+    background-color: #efefef;
     font-size: 150%;
 }
 
-input {
-    font-size: 100%;
-}
-
 input[type='number']{
+    font-size: 100%;
     width: 2em;
-} 
+}
