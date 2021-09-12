@@ -4,9 +4,10 @@ A library for computing dice probabilities.
 
 * Dice are assumed to have integer faces and finite range.
 * **Not** Monte-Carlo-based, though this does provide a sample() function.
-* Computations are done using float64. I considered exact fractions but I didn't want to deal with the possibility of integer overflow. I might revisit this in the future.
 
 ## Example
+
+[Try this in your browser using a Starboard notebook.](https://starboard.gg/nb/nfmQTSp)
 
 ```python
 from hdroller import Die
