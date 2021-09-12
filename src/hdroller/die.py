@@ -597,16 +597,16 @@ class Die(metaclass=DieType):
             weights[start_index:start_index+outcome*len(self.data):outcome] += self.weights() * mass
         return Die(weights, resultmin_outcome())
     
-    def clip(self, min_outcome_or_die=None, max_outcome=None):
+    def clip(self, min_outcome=None, max_outcome=None):
         """
         Restricts the outcomes of this die to the range [min_outcome, max_outcome].
         A Die can be supplied instead, in which case the range is taken from that die.
         """
-        if isinstance(min_outcome_or_die, Die):
-            min_outcome = min_outcome_or_die.min_outcome()
-            max_outcome = min_outcome_or_die.max_outcome()
+        if isinstance(min_outcome, Die):
+            min_outcome = min_outcome.min_outcome()
+            max_outcome = min_outcome.max_outcome()
         else:
-            if min_outcome_or_die is None: min_outcome = self.min_outcome()
+            if min_outcome is None: min_outcome = self.min_outcome()
             if max_outcome is None: max_outcome = self.max_outcome()
         left = max(0, min_outcome - self.min_outcome())
         right = len(self) + min(0, max_outcome - self.max_outcome())

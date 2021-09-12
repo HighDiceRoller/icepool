@@ -79,3 +79,9 @@ def test_die_die_sub(a, b):
     expected = die_die_op(lambda x, y: x - y, a, b)
     assert result.min_outcome() == expected.min_outcome()
     assert result.weights() == pytest.approx(expected.weights())
+    
+def test_clip():
+    result = Die.d6
+    result = result.clip(2, 5)
+    assert result.min_outcome() == 2
+    assert result.weights() == pytest.approx([2, 1, 1, 2])
