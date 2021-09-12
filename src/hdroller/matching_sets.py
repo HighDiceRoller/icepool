@@ -1,10 +1,10 @@
 import hdroller.math
 
-from functools import cache
+from functools import lru_cache
 from scipy.special import comb
 import numpy
 
-@cache
+@lru_cache(maxsize=None)
 def largest_matching_set(num_dice, num_faces):
     """
     The result is an array of length num_dice where the ith element is the chance of the largest matching set being at least i+1 dice.

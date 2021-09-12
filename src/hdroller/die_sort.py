@@ -1,7 +1,7 @@
 import hdroller
 import hdroller.math
 
-from functools import cache
+from functools import lru_cache
 import numpy
 from scipy.special import comb
 
@@ -25,7 +25,7 @@ def iter_sorted_tuples(tuple_length, num_values, start_value=0):
         for tail in iter_sorted_tuples(tuple_length - 1, num_values, head_value):
             yield (head_value,) + tail
 
-@cache
+@lru_cache(maxsize=None)
 def ravel_sorted_tuple(tuple, num_values, start_value=0):
     """
     Given a sorted tuple, returns the index of that tuple.
@@ -39,7 +39,7 @@ def ravel_sorted_tuple(tuple, num_values, start_value=0):
         result += num_sorted_tuples(len(tuple) - 1, num_values - head_value)
     return result + ravel_sorted_tuple(tuple[1:], num_values, tuple[0])
 
-@cache
+@lru_cache(maxsize=None)
 def keep_transition(tuple_length, num_values, transition_slice):
     """
     [new_value, sorted_tuple_index] -> next_sorted_tuple_index

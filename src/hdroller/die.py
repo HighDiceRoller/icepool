@@ -1,7 +1,7 @@
 import hdroller.math
 import hdroller.die_repeater
 
-from functools import cache, cached_property
+from functools import cached_property, lru_cache
 import numpy
 import re
 from scipy.special import erf, factorial
@@ -154,14 +154,13 @@ class Die(metaclass=DieType):
         return Die(weights, args[0].min_outcome())
     
     @staticmethod
-    @cache
+    @lru_cache(maxsize=None)
     def standard(num_faces):
         if num_faces < 1: raise ValueError('Standard dice must have at least 1 face.')
         return Die(numpy.ones((num_faces,)), 1)
     
     # TODO: Apply cache to all __new__ dice created with floats?
     @staticmethod
-    @cache
     def bernoulli(chance=0.5):
         return Die(chance)
 
