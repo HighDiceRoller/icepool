@@ -168,8 +168,7 @@
             num_arrays = int(js.document.getElementById('num_arrays').value);
             
             single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
-            single_ability = single_ability.max(3)
-            single_ability = single_ability.min(18)
+            single_ability = single_ability.clip(3, 18)
             single_ability = single_ability.keep_highest(num_ability_repeat)
             
             max_prob = 0.0

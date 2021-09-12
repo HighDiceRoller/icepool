@@ -1,4 +1,10 @@
-A library for computing dice probabilities.
+A Python library for computing dice probabilities.
+
+## Installing
+
+```
+pip install hdroller
+```
 
 ## Basic objectives
 
