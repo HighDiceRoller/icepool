@@ -2,22 +2,23 @@
 <html>
 
 <head>
-    <title>Ability scores by hdroller</title>
+    <title>Ability scores</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
 </head>
 
 <body>
-    <h2>Ability score rolling method calculator by hdroller</h2>
+    <h2>Ability score rolling method calculator</h2>
     
     <form id="single_array_inputs">
         Generate each ability score by rolling
-        <input id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
-        keeping the <input id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
-        <input id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
-        Generate each ability score <input id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
-        Generate <input id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
+        <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+        keeping the <input name="num_keep" id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
+        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
+        Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
+        Generate <input name="num_abilities" id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
         Any scores less than 3 are set to 3 and any scores greater than 18 are set to 18.
     </form>
         
@@ -29,7 +30,7 @@
     <h3>Multiple arrays</h3>
     
     <form id="multiple_array_inputs">
-        Roll <input id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
+        Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
     </form>
     <table>
         <tr>
@@ -62,7 +63,18 @@
     rather than brute-force enumeration or Monto Carlo allows this to deliver precise results at an interactive rate.
     
     <script type="text/javascript">
-        async function init_pyodide(){
+        // Populate form.
+        let searchParams = new URLSearchParams(window.location.search);
+        searchParams.forEach(function(value, key) {
+            let n = parseInt(value);
+            let field = $("#" + key);
+            if (!(n >= field.attr('min') && n <= field.attr('max'))) {
+                return;
+            }
+            field.val(value);
+        });
+        
+        async function initPyodide(){
             let pyodide = await loadPyodide({
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/"
             });
@@ -73,7 +85,7 @@
             `);
             return pyodide;
         }
-        let pyodideReadyPromise = init_pyodide();
+        let pyodideReadyPromise = initPyodide();
         
         var rank_svg = d3.select("#rank_graph")
             .append("svg")
@@ -210,13 +222,21 @@
             rank_svg.selectAll(".loadingText").text("");
         }
         
+        async function updateSearchQuery() {
+            let searchParams = $("form").serialize();
+            history.replaceState(null, "", "?" + searchParams);
+        }
+        
         updateRoll();
+        updateSearchQuery();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('input', updateRoll);
+        single_array_inputs.addEventListener('input', updateSearchQuery);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('input', updateRoll);
+        multiple_array_inputs.addEventListener('input', updateSearchQuery);
     </script>
 </body>
 
