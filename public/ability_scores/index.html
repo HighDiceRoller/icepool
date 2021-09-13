@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Ability scores</title>
+    <title>Ability score calculator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" type="image/png" href="../die.png">
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
@@ -131,6 +131,9 @@
             },
             options: {
                 responsive: true,
+                interaction: {
+                    intersect: false,
+                },
                 scales: {
                     x: {
                         title: {
