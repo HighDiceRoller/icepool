@@ -1,6 +1,9 @@
 body {
     color: #0f0f0f;
     background-color: #efefef;
+}
+
+form {
     font-size: 150%;
 }
 
@@ -10,6 +13,14 @@ input[type='number']{
 }
 
 canvas {
-    width: 100%;
-    max-width: 1920px;
+    background-color: #ffffff;
+}
+
+th, td {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+td {
+    text-align: right;
 }

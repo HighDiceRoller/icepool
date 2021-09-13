@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <h2>Ability score rolling method calculator</h2>
+    <h1>Ability score rolling method calculator</h1>
     
     <form id="single_array_inputs">
         Generate each ability score by rolling
@@ -22,14 +22,27 @@
         Any scores less than 3 are set to 3 and any scores greater than 18 are set to 18.
     </form>
         
-    <h3>Probability distribution of the 6 ranked ability scores</h3>
+    <h2>Probability distribution of the 6 ranked ability scores</h2>
     
-    <div>
+    <div style="width: 80%; margin: auto;">
         <canvas id="rankChart"></canvas>
     </div>
-    <p>Mean single array: <span id="mean_array"></span></p>
+
+    <table id="rankTable">
+        <tr id="rankTableHeader">
+            <th style="width: 8em; text-align: right;">Rank</th>
+            <th style="width: 4em;">Mean</th>
+        </tr>
+        <tr id="rankTableRow0"><td>Top 6 overall</td></tr>
+        <tr id="rankTableRow1"><td>Rank 1</td></tr>
+        <tr id="rankTableRow2"><td>Rank 2</td></tr>
+        <tr id="rankTableRow3"><td>Rank 3</td></tr>
+        <tr id="rankTableRow4"><td>Rank 4</td></tr>
+        <tr id="rankTableRow5"><td>Rank 5</td></tr>
+        <tr id="rankTableRow6"><td>Rank 6</td></tr>
+    </table>
     
-    <h3>Multiple arrays</h3>
+    <h2>Multiple arrays</h2>
     
     <form id="multiple_array_inputs">
         Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
@@ -37,27 +50,27 @@
     <table>
         <tr>
             <th style="text-align: left;">Pricing method</th>
-            <th style="width: 4em; text-align: right;">Mean</th>
-            <th style="width: 4em; text-align: right;">SD</th>
+            <th style="width: 4em;">Mean</th>
+            <th style="width: 4em;">SD</th>
         </tr>
         <tr>
             <td>Raw total</td>
-            <td id="mean_raw" style="text-align: right;"></td>
-            <td id="sd_raw" style="text-align: right;"></td>
+            <td id="mean_raw"></td>
+            <td id="sd_raw"></td>
         </tr>
         <tr>
             <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
-            <td id="mean_5e" style="text-align: right;"></td>
-            <td id="sd_5e" style="text-align: right;"></td>
+            <td id="mean_5e"></td>
+            <td id="sd_5e"></td>
         </tr>
         <tr>
             <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
-            <td id="mean_pf" style="text-align: right;"></td>
-            <td id="sd_pf" style="text-align: right;"></td>
+            <td id="mean_pf"></td>
+            <td id="sd_pf"></td>
         </tr>
     </table>
     
-    <h3>How does it work?</h3>
+    <h2>How does it work?</h2>
     
     This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
     and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
@@ -131,7 +144,7 @@
         for (let i = 0; i < 7; i++) {
             let label = 'Rank ' + i;
             if (i == 0) {
-                label = 'Single score';
+                label = 'Top 6 overall';
             }
             rankChart.data.datasets.push({
                 label: label,
@@ -141,6 +154,14 @@
         }
         
         rankChart.update();
+        
+        // Build rank data table.
+        for (let a = 3; a <= 18; a++) {
+            $("<th>")
+                .css('width', '4em')
+                .text(a)
+                .appendTo("#rankTableHeader");
+        }
         
         async function updateRoll() {
             let pyodide = await pyodideReadyPromise;
@@ -169,18 +190,29 @@
             
             max_prob = 0.0
             ranks = []
+            
+            def set_rank_data(rank, die):
+                data = numpy.zeros((16,))
+                data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
+                js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
+                if rank == 0:
+                    name = 'Top 6 overall'
+                else:
+                    name = 'Rank %d' % rank
+                table_text = '<td>%s</td><td>%0.2f</td>' % (name, die.mean())
+                table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
+                js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
+            
             for i in range(1, 7):
                 rank_ability = single_ability.keep_index(num_abilities, num_abilities - i)
                 ranks.append(rank_ability)
-                data = numpy.zeros((16,))
-                data[(rank_ability.min_outcome()-3):(rank_ability.max_outcome()-2)] = rank_ability.pmf() * 100.0
+                set_rank_data(i, rank_ability)
                 
-                js.rankChart.data.datasets[i].data = pyodide.to_js([float(x) for x in data])
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
+                
+            set_rank_data(0, Die.mix(*ranks))
             
             js.maxProb = max_prob * 100.0
-            
-            js.document.getElementById('mean_array').innerHTML = ', '.join('%0.2f' % rank.mean() for rank in ranks)
             
             def output_multiple_arrays(points, name):
                 total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
