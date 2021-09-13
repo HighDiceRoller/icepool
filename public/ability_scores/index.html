@@ -4,9 +4,9 @@
 <head>
     <title>Ability scores</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 
 <body>
@@ -24,7 +24,9 @@
         
     <h3>Probability distribution of the 6 ranked ability scores</h3>
     
-    <div id="rank_graph"></div>
+    <div>
+        <canvas id="rankChart"></canvas>
+    </div>
     <p>Mean single array: <span id="mean_array"></span></p>
     
     <h3>Multiple arrays</h3>
@@ -57,7 +59,7 @@
     
     <h3>How does it work?</h3>
     
-    This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://d3js.org/">D3.js</a>, 
+    This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
     and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
     <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">The use of repeated convolutions</a> 
     rather than brute-force enumeration or Monto Carlo allows this to deliver precise results at an interactive rate.
@@ -87,64 +89,58 @@
         }
         let pyodideReadyPromise = initPyodide();
         
-        var rank_svg = d3.select("#rank_graph")
-            .append("svg")
-                .attr("width", 1280)
-                .attr("height", 640)
-            .append("g")
-                .attr("transform",
-                      "translate(40, 20)");
-        
-        var loadingText = rank_svg
-            .append("text")
-                .attr("class", "loadingText")
-                .attr("x", 600)
-                .attr("y", 320)
-                .text("Loading..."); 
-        
-        var rank_scale_x = d3.scaleLinear()
-            .domain([3, 18])
-            .range([0, 1200]);
-        var rank_axis_x = d3.axisBottom().scale(rank_scale_x).ticks(15);
-        rank_svg.append("g")
-            .attr("transform", "translate(0, 600)")
-            .attr("class", "rank_axis_x");
-            
-        var rank_scale_y = d3.scaleLinear()
-            .domain([0, 20])
-            .range([600, 0]);
-        var rank_axis_y = d3.axisLeft().scale(rank_scale_y);
-        rank_svg.append("g")
-            .attr("class", "rank_axis_y");
-        
-        var rankColors = [
-            "#df00ff",
-            "#0000ff",
-            "#00bfff",
-            "#00bf00",
-            "#dfbf00",
-            "#df0000"
-        ];
-        var rankData = [];
-        var rankLines = [];
         var maxProb = 1.0;
-        for (let i = 0; i < 6; i++) {
-            let data = [];
-            for (let j = 3; j < 19; j++) {
-                data.push([j, 1.0]);
+        
+        var rankChartContext = document.getElementById('rankChart').getContext('2d');
+        var rankChart = new Chart(rankChartContext, {
+            type: 'line',
+            data: {
+                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                datasets: [],
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Ability score',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+            },
+        });
+        
+        let rankColors = [
+            'rgba(120, 120, 120, 1.0)',
+            'rgba(220, 0, 240, 1.0)',
+            'rgba(0, 0, 240, 1.0)',
+            'rgba(0, 200, 240, 1.0)',
+            'rgba(0, 200, 0, 1.0)',
+            'rgba(220, 200, 0, 1.0)',
+            'rgba(220, 0, 0, 1.0)',
+        ];
+        
+        for (let i = 0; i < 7; i++) {
+            let label = 'Rank ' + i;
+            if (i == 0) {
+                label = 'Single score';
             }
-            let line = rank_svg.append("g").append("path")
-                .datum(data)
-                .attr("d", d3.line()
-                    .x(function(d) { return rank_scale_x(d[0]) })
-                    .y(function(d) { return rank_scale_y(d[1]) })
-                )
-                .attr("stroke", rankColors[i])
-                .style("stroke-width", 4)
-                .style("fill", "none");
-            rankData.push(data);
-            rankLines.push(line);
+            rankChart.data.datasets.push({
+                label: label,
+                borderColor: rankColors[i],
+                data: rankChart.data.labels.map(x => 0.0),
+            });
         }
+        
+        rankChart.update();
         
         async function updateRoll() {
             let pyodide = await pyodideReadyPromise;
@@ -173,10 +169,13 @@
             
             max_prob = 0.0
             ranks = []
-            for i in range(6):
-                rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
+            for i in range(1, 7):
+                rank_ability = single_ability.keep_index(num_abilities, num_abilities - i)
                 ranks.append(rank_ability)
-                js.rankData[i] = pyodide.to_js([[float(outcome), p * 100.0] for outcome, p in zip(rank_ability.outcomes(), rank_ability.pmf())])
+                data = numpy.zeros((16,))
+                data[(rank_ability.min_outcome()-3):(rank_ability.max_outcome()-2)] = rank_ability.pmf() * 100.0
+                
+                js.rankChart.data.datasets[i].data = pyodide.to_js([float(x) for x in data])
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
             
             js.maxProb = max_prob * 100.0
@@ -196,29 +195,7 @@
             output_multiple_arrays(single_ability_pf, 'pf')
             `);
             
-            // rank_scale_x.domain([rankData[5][0][0], rankData[5][rankData[5].length-1][0]]);
-            rank_scale_y.domain([0, maxProb]);
-            
-            rank_svg.selectAll(".rank_axis_x").transition()
-                .duration(500)
-                .call(rank_axis_x);
-            
-            rank_svg.selectAll(".rank_axis_y").transition()
-                .duration(500)
-                .call(rank_axis_y);
-                
-            for (let i = 0; i < 6; i++) {
-                rankLines[i]
-                    .datum(rankData[i])
-                    .transition()
-                    .duration(500)
-                    .attr("d", d3.line()
-                        .x(function(d) { return rank_scale_x(d[0]) })
-                        .y(function(d) { return rank_scale_y(d[1]) })
-                    );
-            }
-            
-            rank_svg.selectAll(".loadingText").text("");
+            rankChart.update();
         }
         
         async function updateSearchQuery() {

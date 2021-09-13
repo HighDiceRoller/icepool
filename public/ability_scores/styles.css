@@ -8,3 +8,8 @@ input[type='number']{
     font-size: 100%;
     width: 2em;
 }
+
+canvas {
+    width: 100%;
+    max-width: 1920px;
+}
