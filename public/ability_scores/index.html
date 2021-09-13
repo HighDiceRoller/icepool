@@ -56,7 +56,7 @@
         <tr id="rankTableRow4"><td>Rank 4</td></tr>
         <tr id="rankTableRow5"><td>Rank 5</td></tr>
         <tr id="rankTableRow6"><td>Rank 6</td></tr>
-        <tr id="rankTableRow0"><td>Top 6 overall</td></tr>
+        <tr id="rankTableRow0"><td>Mean</td></tr>
     </table>
     
     <h2>Multiple arrays</h2>
@@ -93,6 +93,7 @@
         <h2>Notes</h2>
         
         <ul>
+            <li>The mean of the six kept scores (grey line) is equal to picking one of the six scores uniformly at random.</li>
             <li>The six ranked dice are not independent; for example, if you roll a 14 as your highest score, you certainly can't have rolled a 15 as your second-highest score.</li>
             <li>Odd die sizes can be used to do things like "3d6, reroll all 1s", which is the same as 3d5+3.</li>
             <li><i>Pathfinder</i> point values are mostly equal to 2 less than <i>D&#38;D</i> 5e (per score); however, even beyond this, the references I used assign different values to scores below 8.</li>
@@ -198,7 +199,7 @@
         for (let i = 0; i < 7; i++) {
             let label = 'Rank ' + i;
             if (i == 0) {
-                label = 'Top 6 overall';
+                label = 'Mean';
             }
             rankChart.data.datasets.push({
                 label: label,
@@ -242,7 +243,7 @@
                 data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
                 js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
                 if rank == 0:
-                    name = 'Top 6 overall'
+                    name = 'Mean'
                 else:
                     name = 'Rank %d' % rank
                 table_text = '<td>%s</td><td>%0.2f</td>' % (name, die.mean())
