@@ -33,6 +33,22 @@
         <tr id="rankTableHeader">
             <th style="width: 8em; text-align: right;">Rank</th>
             <th style="width: 4em;">Mean</th>
+            <th style="width: 4em;">3</th>
+            <th style="width: 4em;">4</th>
+            <th style="width: 4em;">5</th>
+            <th style="width: 4em;">6</th>
+            <th style="width: 4em;">7</th>
+            <th style="width: 4em;">8</th>
+            <th style="width: 4em;">9</th>
+            <th style="width: 4em;">10</th>
+            <th style="width: 4em;">11</th>
+            <th style="width: 4em;">12</th>
+            <th style="width: 4em;">13</th>
+            <th style="width: 4em;">14</th>
+            <th style="width: 4em;">15</th>
+            <th style="width: 4em;">16</th>
+            <th style="width: 4em;">17</th>
+            <th style="width: 4em;">18</th>
         </tr>
         <tr id="rankTableRow1"><td>Rank 1</td></tr>
         <tr id="rankTableRow2"><td>Rank 2</td></tr>
@@ -44,6 +60,8 @@
     </table>
     
     <h2>Multiple arrays</h2>
+    
+    <p>(The preceding chart and table are for a single array.)</p>
     
     <form id="multiple_array_inputs">
         Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
@@ -83,9 +101,9 @@
         <h2>How does it work?</h2>
         
         <p>
-            This webpage was built using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
             and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
-            <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">A polynomial-time keep-highest algorithm</a> 
+            <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">A polynomial-time algorithm for keep-highest</a> 
             allows this calculator to deliver precise results at an interactive rate.
         </p>
         
@@ -190,14 +208,6 @@
         }
         
         rankChart.update();
-        
-        // Build rank data table.
-        for (let a = 3; a <= 18; a++) {
-            $("<th>")
-                .css('width', '4em')
-                .text(a)
-                .appendTo("#rankTableHeader");
-        }
         
         async function updateRoll() {
             let pyodide = await pyodideReadyPromise;
