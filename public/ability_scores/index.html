@@ -139,10 +139,84 @@
             await pyodide.runPythonAsync(`
                 import micropip
                 await micropip.install('hdroller')
+                
+                import js
+                import numpy
+                import pyodide
+                from hdroller import Die
+                
+                def set_rank_data(rank, die):
+                    data = numpy.zeros((16,))
+                    data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
+                    js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
+                    table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
+                    table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
+                    js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
+                    
+                def output_multiple_arrays(points, name):
+                    total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
+                    js.document.getElementById('mean_' + name).innerHTML = '%0.2f' % total.mean()
+                    js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
             `);
             return pyodide;
         }
         let pyodideReadyPromise = initPyodide();
+        
+        async function updateRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+
+            point_buy_5e = numpy.array([-20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19])
+            point_buy_pf = numpy.array([-30, -25, -20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17])
+            
+            num_dice = int(js.document.getElementById('num_dice').value);
+            die_size = int(js.document.getElementById('die_size').value);
+            num_keep = int(js.document.getElementById('num_keep').value);
+            num_keep = min(num_keep, num_dice);
+            modifier = int(js.document.getElementById('modifier').value);
+            num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value);
+            num_abilities = int(js.document.getElementById('num_abilities').value);
+            num_arrays = int(js.document.getElementById('num_arrays').value);
+            
+            single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
+            single_ability = single_ability.clip(3, 18)
+            single_ability = single_ability.keep_highest(num_ability_repeat)
+            
+            max_prob = 0.0
+            ranks = []
+            
+            for i in range(6):
+                rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
+                ranks.append(rank_ability)
+                set_rank_data(i, rank_ability)
+                
+                max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
+                
+            set_rank_data(6, Die.mix(*ranks))
+            
+            js.maxProb = max_prob * 100.0
+            
+            single_ability_5e = single_ability.relabel(point_buy_5e[single_ability.outcomes()])
+            single_ability_pf = single_ability.relabel(point_buy_pf[single_ability.outcomes()])
+            
+            output_multiple_arrays(single_ability, 'raw')
+            output_multiple_arrays(single_ability_5e, '5e')
+            output_multiple_arrays(single_ability_pf, 'pf')
+            `);
+            
+            rankChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            rankChart.update();
+        }
+        
+        async function updateSearchQuery() {
+            let searchParams = $("form").serialize();
+            history.replaceState(null, "", "?" + searchParams);
+        }
         
         var maxProb = 1.0;
         
@@ -215,80 +289,7 @@
         }
         
         rankChart.update();
-        
-        async function updateRoll() {
-            let pyodide = await pyodideReadyPromise;
-            
-            pyodide.runPython(`
-            import js
-            import numpy
-            import pyodide
-            from hdroller import Die
-            
-            point_buy_5e = numpy.array([-20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19])
-            point_buy_pf = numpy.array([-30, -25, -20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17])
-            
-            num_dice = int(js.document.getElementById('num_dice').value);
-            die_size = int(js.document.getElementById('die_size').value);
-            num_keep = int(js.document.getElementById('num_keep').value);
-            num_keep = min(num_keep, num_dice);
-            modifier = int(js.document.getElementById('modifier').value);
-            num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value);
-            num_abilities = int(js.document.getElementById('num_abilities').value);
-            num_arrays = int(js.document.getElementById('num_arrays').value);
-            
-            single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
-            single_ability = single_ability.clip(3, 18)
-            single_ability = single_ability.keep_highest(num_ability_repeat)
-            
-            max_prob = 0.0
-            ranks = []
-            
-            def set_rank_data(rank, die):
-                data = numpy.zeros((16,))
-                data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
-                js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
-                table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
-                table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
-                js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
-            
-            for i in range(6):
-                rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
-                ranks.append(rank_ability)
-                set_rank_data(i, rank_ability)
-                
-                max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
-                
-            set_rank_data(6, Die.mix(*ranks))
-            
-            js.maxProb = max_prob * 100.0
-            
-            def output_multiple_arrays(points, name):
-                total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
-                js.document.getElementById('mean_' + name).innerHTML = '%0.2f' % total.mean()
-                js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
-            
-            single_ability_5e = single_ability.relabel(point_buy_5e[single_ability.outcomes()])
-            single_ability_pf = single_ability.relabel(point_buy_pf[single_ability.outcomes()])
-            
-            output_multiple_arrays(single_ability, 'raw')
-            output_multiple_arrays(single_ability_5e, '5e')
-            output_multiple_arrays(single_ability_pf, 'pf')
-            `);
-            
-            rankChart.options.plugins.title = {
-                text: "",
-                fullSize: false,
-                display : false,
-            };
-            rankChart.update();
-        }
-        
-        async function updateSearchQuery() {
-            let searchParams = $("form").serialize();
-            history.replaceState(null, "", "?" + searchParams);
-        }
-        
+
         updateRoll();
         updateSearchQuery();
         
