@@ -50,13 +50,13 @@
             <th style="width: 4em;">17</th>
             <th style="width: 4em;">18</th>
         </tr>
-        <tr id="rankTableRow1"><td style="text-align: left;">Highest</td></tr>
-        <tr id="rankTableRow2"><td style="text-align: left;">2nd highest</td></tr>
-        <tr id="rankTableRow3"><td style="text-align: left;">3rd highest</td></tr>
-        <tr id="rankTableRow4"><td style="text-align: left;">4th highest</td></tr>
-        <tr id="rankTableRow5"><td style="text-align: left;">5th highest</td></tr>
-        <tr id="rankTableRow6"><td style="text-align: left;">6th highest</td></tr>
-        <tr id="rankTableRow0"><td style="text-align: left;">Mean</td></tr>
+        <tr id="rankTableRow0"><td style="text-align: left;">Highest</td></tr>
+        <tr id="rankTableRow1"><td style="text-align: left;">2nd highest</td></tr>
+        <tr id="rankTableRow2"><td style="text-align: left;">3rd highest</td></tr>
+        <tr id="rankTableRow3"><td style="text-align: left;">4th highest</td></tr>
+        <tr id="rankTableRow4"><td style="text-align: left;">5th highest</td></tr>
+        <tr id="rankTableRow5"><td style="text-align: left;">6th highest</td></tr>
+        <tr id="rankTableRow6"><td style="text-align: left;">Mean</td></tr>
     </table>
     
     <h2>Multiple arrays</h2>
@@ -187,23 +187,23 @@
         });
         
         let rankColors = [
-            'rgba(120, 120, 120, 1.0)',
             'rgba(220, 0, 240, 1.0)',
             'rgba(0, 0, 240, 1.0)',
             'rgba(0, 200, 240, 1.0)',
             'rgba(0, 200, 0, 1.0)',
             'rgba(220, 200, 0, 1.0)',
             'rgba(220, 0, 0, 1.0)',
+            'rgba(120, 120, 120, 1.0)',
         ];
         
         var rankLabels = [
-            'Mean',
             'Highest',
             '2nd highest',
             '3rd highest',
             '4th highest',
             '5th highest',
             '6th highest',
+            'Mean',
         ];
         
         for (let i = 0; i < 7; i++) {
@@ -252,14 +252,14 @@
                 table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
                 js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
             
-            for i in range(1, 7):
-                rank_ability = single_ability.keep_index(num_abilities, num_abilities - i)
+            for i in range(6):
+                rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
                 ranks.append(rank_ability)
                 set_rank_data(i, rank_ability)
                 
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
                 
-            set_rank_data(0, Die.mix(*ranks))
+            set_rank_data(6, Die.mix(*ranks))
             
             js.maxProb = max_prob * 100.0
             
