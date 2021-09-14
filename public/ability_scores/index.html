@@ -31,7 +31,7 @@
 
     <table id="rankTable" style="margin: auto;">
         <tr id="rankTableHeader">
-            <th style="width: 8em; text-align: right;">Rank</th>
+            <th style="width: 8em; text-align: left;">Rank</th>
             <th style="width: 4em;">Mean</th>
             <th style="width: 4em;">3</th>
             <th style="width: 4em;">4</th>
@@ -50,13 +50,13 @@
             <th style="width: 4em;">17</th>
             <th style="width: 4em;">18</th>
         </tr>
-        <tr id="rankTableRow1"><td>Rank 1</td></tr>
-        <tr id="rankTableRow2"><td>Rank 2</td></tr>
-        <tr id="rankTableRow3"><td>Rank 3</td></tr>
-        <tr id="rankTableRow4"><td>Rank 4</td></tr>
-        <tr id="rankTableRow5"><td>Rank 5</td></tr>
-        <tr id="rankTableRow6"><td>Rank 6</td></tr>
-        <tr id="rankTableRow0"><td>Mean</td></tr>
+        <tr id="rankTableRow1"><td style="text-align: left;">Highest</td></tr>
+        <tr id="rankTableRow2"><td style="text-align: left;">2nd highest</td></tr>
+        <tr id="rankTableRow3"><td style="text-align: left;">3rd highest</td></tr>
+        <tr id="rankTableRow4"><td style="text-align: left;">4th highest</td></tr>
+        <tr id="rankTableRow5"><td style="text-align: left;">5th highest</td></tr>
+        <tr id="rankTableRow6"><td style="text-align: left;">6th highest</td></tr>
+        <tr id="rankTableRow0"><td style="text-align: left;">Mean</td></tr>
     </table>
     
     <h2>Multiple arrays</h2>
@@ -196,13 +196,19 @@
             'rgba(220, 0, 0, 1.0)',
         ];
         
+        var rankLabels = [
+            'Mean',
+            'Highest',
+            '2nd highest',
+            '3rd highest',
+            '4th highest',
+            '5th highest',
+            '6th highest',
+        ];
+        
         for (let i = 0; i < 7; i++) {
-            let label = 'Rank ' + i;
-            if (i == 0) {
-                label = 'Mean';
-            }
             rankChart.data.datasets.push({
-                label: label,
+                label: rankLabels[i],
                 borderColor: rankColors[i],
                 data: rankChart.data.labels.map(x => 0.0),
             });
@@ -242,11 +248,7 @@
                 data = numpy.zeros((16,))
                 data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
                 js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
-                if rank == 0:
-                    name = 'Mean'
-                else:
-                    name = 'Rank %d' % rank
-                table_text = '<td>%s</td><td>%0.2f</td>' % (name, die.mean())
+                table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                 table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
                 js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
             
