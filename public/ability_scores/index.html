@@ -66,28 +66,42 @@
     <form id="multiple_array_inputs">
         Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
     </form>
-    <table>
-        <tr>
-            <th style="text-align: left;">Pricing method</th>
-            <th style="width: 4em;">Mean</th>
-            <th style="width: 4em;">SD</th>
-        </tr>
-        <tr>
-            <td>Raw total</td>
-            <td id="mean_raw"></td>
-            <td id="sd_raw"></td>
-        </tr>
-        <tr>
-            <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
-            <td id="mean_5e"></td>
-            <td id="sd_5e"></td>
-        </tr>
-        <tr>
-            <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
-            <td id="mean_pf"></td>
-            <td id="sd_pf"></td>
-        </tr>
-    </table>
+    
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Chart pricing method: 
+            <select id="multiViewSelect">
+                <option value="raw">Raw</option>
+                <option value="5e"><i>D&#38;D</i> 5e point buy</option>
+                <option value="pf"><i>Pathfinder</i> point buy</option>
+            </select>
+        </div>
+        <canvas id="multiChart"></canvas>
+        <table style="margin: auto;">
+            <tr>
+                <th style="text-align: left;">Pricing method</th>
+                <th style="width: 4em;">Mean</th>
+                <th style="width: 4em;">SD</th>
+            </tr>
+            <tr>
+                <td>Raw total</td>
+                <td id="mean_raw"></td>
+                <td id="sd_raw"></td>
+            </tr>
+            <tr>
+                <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
+                <td id="mean_5e"></td>
+                <td id="sd_5e"></td>
+            </tr>
+            <tr>
+                <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
+                <td id="mean_pf"></td>
+                <td id="sd_pf"></td>
+            </tr>
+        </table>
+    </div>
+    
+    
     
     <div style="max-width:1280px;">
         <h2>Notes</h2>
@@ -157,6 +171,7 @@
                     total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
                     js.document.getElementById('mean_' + name).innerHTML = '%0.2f' % total.mean()
                     js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
+                    return total
             `);
             return pyodide;
         }
@@ -200,9 +215,9 @@
             single_ability_5e = single_ability.relabel(point_buy_5e[single_ability.outcomes()])
             single_ability_pf = single_ability.relabel(point_buy_pf[single_ability.outcomes()])
             
-            output_multiple_arrays(single_ability, 'raw')
-            output_multiple_arrays(single_ability_5e, '5e')
-            output_multiple_arrays(single_ability_pf, 'pf')
+            total_raw = output_multiple_arrays(single_ability, 'raw')
+            total_5e = output_multiple_arrays(single_ability_5e, '5e')
+            total_pf = output_multiple_arrays(single_ability_pf, 'pf')
             `);
             
             rankChart.options.plugins.title = {
@@ -211,6 +226,30 @@
                 display : false,
             };
             rankChart.update();
+        }
+        
+        async function updateMulti() {
+            let pyodide = await pyodideReadyPromise;
+            let rollReady = await rollReadyPromise;
+            
+            pyodide.runPython(`
+                selected_view = js.document.getElementById('multiViewSelect').value
+                if selected_view == '5e':
+                    total_select = total_5e
+                elif selected_view == 'pf':
+                    total_select = total_pf
+                else:
+                    total_select = total_raw
+                
+                js.multiChart.data.labels = pyodide.to_js([float(x) for x in total_select.outcomes()])
+                js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.pmf()])
+            `)
+            multiChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            multiChart.update();
         }
         
         async function updateSearchQuery() {
@@ -289,17 +328,74 @@
         }
         
         rankChart.update();
+        
+        var multiChartContext = document.getElementById('multiChart').getContext('2d');
+        var multiChart = new Chart(multiChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Chance',
+                        borderColor: 'rgba(0, 120, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        text: "Loading...",
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 144,
+                        },
+                    },
+                    legend : {
+                        display: false,
+                    },
+                },
+            },
+        });
+        
+        multiChart.update();
 
-        updateRoll();
+        let rollReadyPromise = updateRoll();
         updateSearchQuery();
+        updateMulti();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('input', updateRoll);
+        single_array_inputs.addEventListener('input', updateMulti);
         single_array_inputs.addEventListener('input', updateSearchQuery);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('input', updateRoll);
+        multiple_array_inputs.addEventListener('input', updateMulti);
         multiple_array_inputs.addEventListener('input', updateSearchQuery);
+        
+        let multiple_view_select = document.querySelector('#multiViewSelect');
+        multiple_view_select.addEventListener('input', updateMulti);
     </script>
 </body>
 

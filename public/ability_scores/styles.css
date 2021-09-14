@@ -10,9 +10,13 @@ form {
     font-size: 150%;
 }
 
-input[type='number']{
+input[type='number'] {
     font-size: 100%;
     width: 2em;
+}
+
+select {
+    font-size: 100%;
 }
 
 canvas {
