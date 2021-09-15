@@ -182,7 +182,7 @@
                         fullSize: true,
                         display : true,
                         font: {
-                            size: 96,
+                            size: 36,
                         },
                     },
                 },
@@ -255,7 +255,7 @@
                         fullSize: true,
                         display : true,
                         font: {
-                            size: 96,
+                            size: 36,
                         },
                     },
                     legend : {
@@ -266,6 +266,9 @@
         });
         
         function setLoadingText(text) {
+            if (!text.includes("Loading")) {
+                return;
+            }
             rankChart.options.plugins.title.text = text;
             multiChart.options.plugins.title.text = text;
             rankChart.update();
@@ -273,24 +276,14 @@
         }
         
         async function initPyodide(){
-            setLoadingText('Loading pyodide...')
+            setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
             });
             
-            setLoadingText('Loading micropip...')
-            await pyodide.loadPackage("micropip");
+            await pyodide.loadPackage(["micropip", "numpy", "scipy"], setLoadingText);
             
-            setLoadingText('Loading clapack...')
-            await pyodide.loadPackage("clapack");
-            
-            setLoadingText('Loading numpy...')
-            await pyodide.loadPackage("numpy");
-            
-            setLoadingText('Loading scipy...')
-            await pyodide.loadPackage("scipy");
-            
-            setLoadingText('Loading hdroller...')
+            setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
                 await micropip.install('hdroller')
