@@ -148,11 +148,149 @@
             field.val(value);
         });
         
-        async function initPyodide(){
-            let pyodide = await loadPyodide({
-                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/"
+        var maxProb = 1.0;
+        
+        var rankChartContext = document.getElementById('rankChart').getContext('2d');
+        var rankChart = new Chart(rankChartContext, {
+            type: 'line',
+            data: {
+                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                datasets: [],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Ability score',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 96,
+                        },
+                    },
+                },
+            },
+        });
+        
+        let rankColors = [
+            'rgba(220, 0, 240, 1.0)',
+            'rgba(0, 0, 240, 1.0)',
+            'rgba(0, 200, 240, 1.0)',
+            'rgba(0, 200, 0, 1.0)',
+            'rgba(220, 200, 0, 1.0)',
+            'rgba(220, 0, 0, 1.0)',
+            'rgba(120, 120, 120, 1.0)',
+        ];
+        
+        var rankLabels = [
+            'Highest',
+            '2nd highest',
+            '3rd highest',
+            '4th highest',
+            '5th highest',
+            '6th highest',
+            'Mean',
+        ];
+        
+        for (let i = 0; i < 7; i++) {
+            rankChart.data.datasets.push({
+                label: rankLabels[i],
+                borderColor: rankColors[i],
+                data: rankChart.data.labels.map(x => 0.0),
             });
+        }
+        
+        var multiChartContext = document.getElementById('multiChart').getContext('2d');
+        var multiChart = new Chart(multiChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Chance',
+                        borderColor: 'rgba(0, 120, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 96,
+                        },
+                    },
+                    legend : {
+                        display: false,
+                    },
+                },
+            },
+        });
+        
+        function setLoadingText(text) {
+            rankChart.options.plugins.title.text = text;
+            multiChart.options.plugins.title.text = text;
+            rankChart.update();
+            multiChart.update();
+        }
+        
+        async function initPyodide(){
+            setLoadingText('Loading pyodide...')
+            let pyodide = await loadPyodide({
+                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
+            });
+            
+            setLoadingText('Loading micropip...')
             await pyodide.loadPackage("micropip");
+            
+            setLoadingText('Loading clapack...')
+            await pyodide.loadPackage("clapack");
+            
+            setLoadingText('Loading numpy...')
+            await pyodide.loadPackage("numpy");
+            
+            setLoadingText('Loading scipy...')
+            await pyodide.loadPackage("scipy");
+            
+            setLoadingText('Loading hdroller...')
             await pyodide.runPythonAsync(`
                 import micropip
                 await micropip.install('hdroller')
@@ -176,6 +314,18 @@
                     js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
                     return total
             `);
+            
+            rankChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            
+            multiChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
             return pyodide;
         }
         let pyodideReadyPromise = initPyodide();
@@ -223,11 +373,6 @@
             total_pf = output_multiple_arrays(single_ability_pf, 'pf')
             `);
             
-            rankChart.options.plugins.title = {
-                text: "",
-                fullSize: false,
-                display : false,
-            };
             rankChart.update();
         }
         
@@ -247,11 +392,7 @@
                 js.multiChart.data.labels = pyodide.to_js([float(x) for x in total_select.outcomes()])
                 js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.pmf()])
             `)
-            multiChart.options.plugins.title = {
-                text: "",
-                fullSize: false,
-                display : false,
-            };
+
             multiChart.update();
         }
         
@@ -260,128 +401,7 @@
             history.replaceState(null, "", "?" + searchParams);
         }
         
-        var maxProb = 1.0;
         
-        var rankChartContext = document.getElementById('rankChart').getContext('2d');
-        var rankChart = new Chart(rankChartContext, {
-            type: 'line',
-            data: {
-                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-                datasets: [],
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    intersect: false,
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Ability score',
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Chance (%)',
-                        },
-                    },
-                },
-                plugins: {
-                    title: {
-                        text: "Loading...",
-                        fullSize: true,
-                        display : true,
-                        font: {
-                            size: 144,
-                        },
-                    },
-                },
-            },
-        });
-        
-        let rankColors = [
-            'rgba(220, 0, 240, 1.0)',
-            'rgba(0, 0, 240, 1.0)',
-            'rgba(0, 200, 240, 1.0)',
-            'rgba(0, 200, 0, 1.0)',
-            'rgba(220, 200, 0, 1.0)',
-            'rgba(220, 0, 0, 1.0)',
-            'rgba(120, 120, 120, 1.0)',
-        ];
-        
-        var rankLabels = [
-            'Highest',
-            '2nd highest',
-            '3rd highest',
-            '4th highest',
-            '5th highest',
-            '6th highest',
-            'Mean',
-        ];
-        
-        for (let i = 0; i < 7; i++) {
-            rankChart.data.datasets.push({
-                label: rankLabels[i],
-                borderColor: rankColors[i],
-                data: rankChart.data.labels.map(x => 0.0),
-            });
-        }
-        
-        rankChart.update();
-        
-        var multiChartContext = document.getElementById('multiChart').getContext('2d');
-        var multiChart = new Chart(multiChartContext, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [
-                    {
-                        label: 'Chance',
-                        borderColor: 'rgba(0, 120, 0, 1.0)',
-                        data: [],
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    intersect: false,
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Total',
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Chance (%)',
-                        },
-                    },
-                },
-                plugins: {
-                    title: {
-                        text: "Loading...",
-                        fullSize: true,
-                        display : true,
-                        font: {
-                            size: 144,
-                        },
-                    },
-                    legend : {
-                        display: false,
-                    },
-                },
-            },
-        });
-        
-        multiChart.update();
 
         let rollReadyPromise = updateRoll();
         updateSearchQuery();
