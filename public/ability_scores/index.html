@@ -266,11 +266,12 @@
         });
         
         function setLoadingText(text) {
-            if (!text.includes("Loading")) {
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
                 return;
             }
-            rankChart.options.plugins.title.text = text;
-            multiChart.options.plugins.title.text = text;
+            rankChart.options.plugins.title.text = loadingText[0];
+            multiChart.options.plugins.title.text = loadingText[0];
             rankChart.update();
             multiChart.update();
         }
