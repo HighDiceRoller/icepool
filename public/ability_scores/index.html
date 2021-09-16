@@ -29,7 +29,7 @@
         <canvas id="rankChart"></canvas>
     </div>
 
-    <table id="rankTable" style="margin: auto;">
+    <table id="rankTable" style="margin: auto; font-size:75%">
         <tr id="rankTableHeader">
             <th style="width: 8em; text-align: left;">Rank</th>
             <th style="width: 4em;">Mean</th>
@@ -120,9 +120,9 @@
         
         <p>
             I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
-            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library, itself powered by <a href="https://numpy.org/">numpy</a>.
             <a href="https://gitlab.com/highdiceroller/hdroller/-/wikis/roll%20and%20keep%20computing">A polynomial-time algorithm for keep-highest</a> 
-            allows this calculator to deliver precise results at an interactive rate.
+            allows this calculator to deliver precise results at an interactive rate. It runs in your own browser, not requiring a server once loaded.
         </p>
         
         <p>
