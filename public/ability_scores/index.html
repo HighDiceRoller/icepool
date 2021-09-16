@@ -283,7 +283,7 @@
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
             });
             
-            await pyodide.loadPackage(["micropip", "numpy", "scipy"], setLoadingText);
+            await pyodide.loadPackage(["micropip", "numpy"], setLoadingText);
             
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
