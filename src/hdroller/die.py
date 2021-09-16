@@ -69,7 +69,12 @@ class Die(metaclass=DieType):
             # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
+            if numpy.any(numpy.isinf(weights)):
+                raise ValueError('Weights must be finite.')
             self._weights = numpy.array(weights)
+            total_weight = numpy.sum(self._weights)
+            if total_weight >= hdroller.math.MAX_INT_FLOAT:
+                self._weights /= total_weight
             self._min_outcome = min_outcome
         
         self._weights.setflags(write=False)
@@ -198,21 +203,7 @@ class Die(metaclass=DieType):
             num_dice = Die(args[0])
 
         return num_dice * tail_die
-
-    @staticmethod
-    def geometric(max_outcome=100, **kwargs):
-        """
-        A truncated geometric distribution.
-        Any remaining probability is placed on max_outcome.
-        """
-        if 'half_life' in kwargs:
-            factor = 0.5 ** (1.0 / kwargs['half_life'])
-        else:
-            raise RuntimeError('Geometric distribution requires a scaling parameter.')
-        pmf = numpy.power(factor, numpy.arange(max_outcome+1)) * (1.0 - factor)
-        pmf[-1] = 1.0 - numpy.sum(pmf[:-1])
-        return Die(pmf, 0)
-        
+     
     @staticmethod
     def from_cweights(cweights, min_outcome, total_weight_if_exclusive=None):
         """
@@ -252,6 +243,26 @@ class Die(metaclass=DieType):
         else:
             pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), append=1.0))
         return Die(pmf, min_outcome)
+    
+    @staticmethod
+    def from_rv(rv, min_outcome, max_outcome, **kwargs):
+        """
+        Constructs a die by discretizing a supplied rv object (as scipy.stats).
+        Any additional arguments are provided to rv.cdf().
+        
+        For example,
+        Die.from_rv(scipy.stats.norm, -40, 40, scale=10)
+        would discretize a normal distribution with a standard deviation of 10.
+        
+        Values beyond min/max outcome are clipped.
+        """
+        x = numpy.arange(min_outcome, max_outcome)
+        if hasattr(rv, 'pdf'):
+            # Continuous distributions get rounded.
+            x = x + 0.5
+        cdf = rv.cdf(x, **kwargs)
+        cdf = numpy.append(cdf, 1.0)
+        return Die.from_cdf(cdf, min_outcome)
     
     # Outcome information.
     def __len__(self):
