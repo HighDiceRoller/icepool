@@ -1,7 +1,6 @@
 import hdroller.math
 
 from functools import lru_cache
-from scipy.special import comb
 import numpy
 
 @lru_cache(maxsize=None)
@@ -17,7 +16,7 @@ def largest_matching_set(num_dice, num_faces):
     
     ccdf = numpy.zeros((num_dice,))
     num_rolled_ones = numpy.arange(num_dice+1)
-    weights = comb(num_dice, num_rolled_ones) * numpy.power(float(num_faces), -num_rolled_ones) * numpy.power(num_faces / (num_faces-1), (num_rolled_ones - num_dice))
+    weights = hdroller.math.comb(num_dice, num_rolled_ones) * numpy.power(float(num_faces), -num_rolled_ones) * numpy.power(num_faces / (num_faces-1), (num_rolled_ones - num_dice))
     for num_rolled_one in num_rolled_ones:
         num_rolled_other = num_dice - num_rolled_one
         partial_ccdf = numpy.pad(largest_matching_set(num_rolled_other, num_faces - 1), (0, num_rolled_one))

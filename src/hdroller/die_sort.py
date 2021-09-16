@@ -3,7 +3,6 @@ import hdroller.math
 
 from functools import lru_cache
 import numpy
-from scipy.special import comb
 
 """
 These deal with all sorted tuples of tuple_length whose elements are between 0 and num_values-1 inclusive.
@@ -11,7 +10,7 @@ Tuples are indexed in lexicographic order.
 """
 
 def num_sorted_tuples(tuple_length, num_values):
-    return comb(num_values, tuple_length, exact=True, repetition=True)
+    return hdroller.math.comb(num_values, tuple_length, exact=True, repetition=True)
 
 def iter_sorted_tuples(tuple_length, num_values, start_value=0):
     """

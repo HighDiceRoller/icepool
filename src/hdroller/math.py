@@ -1,7 +1,16 @@
 import numpy
-from scipy.special import comb, factorial
+import math
 
 MAX_INT_FLOAT = 2 ** 53
+
+factorial = math.factorial
+
+# Same signature as scipy.comb with exact = True; only accepts integers.
+def comb(n, k, exact=True, repetition=False):
+    if repetition:
+        return math.comb(n + k - 1, k)
+    else:
+        return math.comb(n, k)
 
 def multinom(n, ks):
     """

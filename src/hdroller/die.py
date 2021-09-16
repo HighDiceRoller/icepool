@@ -4,7 +4,6 @@ import hdroller.die_repeater
 from functools import cached_property, lru_cache
 import numpy
 import re
-from scipy.special import erf, factorial
 
 """
 Terminology:
