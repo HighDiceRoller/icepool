@@ -213,55 +213,6 @@ class Die(metaclass=DieType):
         pmf = numpy.power(factor, numpy.arange(max_outcome+1)) * (1.0 - factor)
         pmf[-1] = 1.0 - numpy.sum(pmf[:-1])
         return Die(pmf, 0)
-    
-    @staticmethod
-    def laplace(**kwargs):
-        # TODO: odd or even
-        geometric = Die.geometric(**kwargs)
-        return geometric - geometric
-    
-    @staticmethod
-    def sech(max_outcome=100, half_life=None):
-        # TODO: odd or even, overflow weights
-        x = numpy.arange(-max_outcome, max_outcome+1)
-        weights = 2.0 / (numpy.power(2.0, x / half_life) + numpy.power(2.0, -x / half_life))
-        return Die(weights, -max_outcome)
-    
-    @staticmethod
-    def logistic(mean, max_abs_deviation=100, half_life=None):
-        # TODO: odd or even, overflow weights
-        min_outcome = int(numpy.floor(mean - max_abs_deviation))
-        max_outcome = int(numpy.ceil(mean + max_abs_deviation))
-        outcomes = numpy.arange(min_outcome, max_outcome+1)
-        cdf = 1.0 / (1.0 + numpy.power(2.0, -(outcomes + 0.5 - mean) / half_life))
-        return Die.from_cdf(cdf, min_outcome)
-    
-    @staticmethod
-    def poisson(mean, max_outcome=20):
-        """
-        A truncated Poisson distribution.
-        Any remaining probability is placed on max_outcome.
-        """
-        pmf = numpy.power(mean, numpy.arange(0.0, max_outcome)) * numpy.exp(-mean) / factorial(numpy.arange(0, max_outcome))
-        pmf = numpy.append(pmf, 1.0 - numpy.sum(pmf))
-        return Die(pmf, 0)
-    
-    @staticmethod
-    def gaussian(mean_or_die, standard_deviation=None, min_outcome=None, max_outcome=None, standard_deviations_of_outcomes=4):
-        """
-        A Gaussian distribution, discretized from the continuous version by rounding-to-nearest.
-        The standard deviation of the result will therefore not match the specified standard deviation exactly.
-        """
-        if isinstance(mean_or_die, Die):
-            standard_deviation = mean_or_die.standard_deviation()
-            mean = mean_or_die.mean()
-        else:
-            mean = mean_or_die
-        if min_outcome is None: min_outcome = int(numpy.floor(mean - standard_deviations_of_outcomes * standard_deviation))
-        if max_outcome is None: max_outcome = int(numpy.ceil(mean + standard_deviations_of_outcomes * standard_deviation))
-        outcomes = numpy.arange(min_outcome, max_outcome+1)
-        cdf = 0.5 * (1.0 + erf((outcomes + 0.5 - mean) / (numpy.sqrt(2) * standard_deviation)))
-        return Die.from_cdf(cdf, min_outcome)
         
     @staticmethod
     def from_cweights(cweights, min_outcome, total_weight_if_exclusive=None):
