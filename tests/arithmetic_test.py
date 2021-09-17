@@ -1,35 +1,21 @@
 import _context
 
-import brute_force
-
 from hdroller import Die
 import pytest
 
 test_dice = [Die.d6, Die.d8, Die.d10.explode(2)]
 
-def die_int_op(f, a, i):
-    counter = brute_force.BruteForceCounter()
-    for outcome, weight in zip(a.outcomes(), a.weights()):
-        counter.insert(f(outcome, i), weight)
-    return counter.die()
+def die_int_op(func, a, i):
+    return Die.combine(a, i, func=func)
 
-def int_die_op(f, i, a):
-    counter = brute_force.BruteForceCounter()
-    for outcome, weight in zip(a.outcomes(), a.weights()):
-        counter.insert(f(i, outcome), weight)
-    return counter.die()
+def int_die_op(func, i, a):
+    return Die.combine(i, a, func=func)
 
-def die_die_op(f, a, b):    
+def die_die_op(func, a, b):    
     """
-    Applies f to the outcomes of two dice.
+    Applies func to the outcomes of two dice.
     """
-    counter = brute_force.BruteForceCounter()
-    for outcome_a, weight_a in zip(a.outcomes(), a.weights()):
-        for outcome_b, weight_b in zip(b.outcomes(), b.weights()):
-            outcome = f(outcome_a, outcome_b)
-            weight = weight_a * weight_b
-            counter.insert(outcome, weight)
-    return counter.die()
+    return Die.combine(a, b, func=func)
 
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('i', range(-5, 5))

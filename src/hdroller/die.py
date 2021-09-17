@@ -1,6 +1,7 @@
 import hdroller.math
 import hdroller.die_repeater
 
+from collections import defaultdict
 from functools import cached_property, lru_cache
 import numpy
 import re
@@ -65,6 +66,13 @@ class Die(metaclass=DieType):
                 raise ValueError('Only floats between 0.0 and 1.0 can be cast to Die.')
             self._weights = numpy.array([1.0 - weights, weights])
             self._min_outcome = 0
+        elif isinstance(weights, dict):
+            # A dict mapping outcomes to weights.
+            self._min_outcome = min(weights.keys())
+            max_outcome = max(weights.keys())
+            self._weights = numpy.zeros((max_outcome - self._min_outcome + 1,))
+            for outcome, weight in weights.items():
+                self._weights[outcome - self._min_outcome] = weight
         else:
             # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
@@ -72,10 +80,11 @@ class Die(metaclass=DieType):
             if numpy.any(numpy.isinf(weights)):
                 raise ValueError('Weights must be finite.')
             self._weights = numpy.array(weights)
-            total_weight = numpy.sum(self._weights)
-            if total_weight >= hdroller.math.MAX_INT_FLOAT:
-                self._weights /= total_weight
             self._min_outcome = min_outcome
+        
+        total_weight = numpy.sum(self._weights)
+        if total_weight >= hdroller.math.MAX_INT_FLOAT:
+            self._weights /= total_weight
         
         self._weights.setflags(write=False)
     
@@ -129,33 +138,6 @@ class Die(metaclass=DieType):
         return hdroller.die_repeater.DieRepeater(self)
     
     # Creation.
-
-    @staticmethod
-    def mix(*args, mix_weights=None):
-        """
-        Constructs a Die from a mixture of the arguments,
-        equivalent to rolling a die and then choosing one of the arguments
-        based on the resulting face rolled.
-        The arguments can be Dice or anything castable to Dice.
-        mix_weights: An array of one weight per argument.
-          If not provided, all arguments are mixed uniformly.
-          A Die can also be used, in which case its weights determines the mix_weights.
-        """
-        if len(args) == 1 and not isinstance(args[0], Die):
-            args = args[0]
-        
-        args = [Die(die) for die in args]
-        args = Die._union(*args)
-        
-        if mix_weights is None:
-            mix_weights = numpy.ones((len(args),))
-        elif isinstance(mix_weights, Die):
-            mix_weights = mix_weights.weights()
-
-        weights = numpy.zeros_like(args[0].weights())
-        for die, mix_weight in zip(args, mix_weights):
-            weights += mix_weight * die.weights()
-        return Die(weights, args[0].min_outcome())
     
     @staticmethod
     @lru_cache(maxsize=None)
@@ -407,86 +389,6 @@ class Die(metaclass=DieType):
         """ Returns a Die with all outcomes negated. """
         return Die(numpy.flip(self.weights()), -self.max_outcome())
     
-    def relabel(self, relabeling):
-        """
-        relabeling can be one of the following:
-        * An array-like containing relabelings, one for each face in order.
-        * A dict-like mapping old outcomes to new outcomes.
-          Unmapped old outcomes stay the same.
-        * A function mapping old outcomes to new outcomes.
-        """
-        if hasattr(relabeling, 'items'):
-            relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
-        elif callable(relabeling):
-            relabeling = [relabeling(outcome) for outcome in self.outcomes()]
-        return Die.mix(*relabeling, mix_weights=self.weights())
-
-    def explode(self, max_explode, *, chance=None, faces=None, outcomes=None):
-        """
-        chance: If supplied, this top fraction of the pmf will explode.
-        faces: If supplied, this many of the top faces will explode.
-        outcomes: If suppled, these outcomes will explode.
-        If neither is supplied, the top single face will explode.
-        """
-        if max_explode < 0:
-            raise ValueError('max_explode cannot be negative.')
-        if max_explode == 0:
-            return self
-        
-        explode_weights = numpy.zeros_like(self.weights())
-        if chance is not None:
-            if chance == 0: return self
-            remaining_explode_weight = chance * self.total_weight()
-            for index, mass in reversed(list(enumerate(self.weights()))):
-                if mass < remaining_explode_weight:
-                    explode_weights[index] = mass
-                    remaining_explode_weight -= mass
-                else:
-                    explode_weights[index] = remaining_explode_weight
-                    break
-        elif faces is not None:
-            if faces == 0: return self
-            explode_weights[-faces:] = self.weights()[-faces:]
-        elif outcomes is not None:
-            explode_faces = numpy.array(outcomes) - self.min_outcome()
-            explode_weights[explode_faces] = self.weights()[explode_faces]
-        else:
-            explode_weights[-1] = self.weights()[-1]
-        
-        non_explode_weights = self.weights() - explode_weights
-        
-        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
-        explode_die = Die(explode_weights, self.min_outcome())._trim()
-        explode_die += self.explode(max_explode-1, chance=chance, faces=faces, outcomes=outcomes)
-        
-        mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
-        
-        return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
-    
-    def reroll(self, *, outcomes=None, below=None, above=None, max_reroll=None):
-        """Rerolls the given outcomes."""
-        pmf = numpy.copy(self.pmf())
-        all_outcomes = self.outcomes()
-        reroll_mask = numpy.zeros_like(all_outcomes, dtype=bool)
-        if outcomes is not None: reroll_mask[outcomes - self.min_outcome()] = True
-        if below is not None: reroll_mask[all_outcomes < below] = True
-        if above is not None: reroll_mask[all_outcomes > above] = True
-        
-        reroll_chance_single = numpy.sum(pmf[reroll_mask])
-        stop_chance_single = numpy.sum(pmf[~reroll_mask])
-        
-        if max_rerolls is None:
-            rerollable_factor = 0.0
-            stop_factor = 1.0 / stop_chance_single
-        else:
-            rerollable_factor = numpy.power(reroll_chance_single, max_rerolls)
-            stop_factor = (1.0 - numpy.power(reroll_chance_single, max_rerolls+1)) / stop_chance_single
-        
-        pmf[reroll_mask] *= rerollable_factor
-        pmf[~reroll_mask] *= stop_factor
-        
-        return Die(pmf, self.min_outcome())._trim()
-    
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
         if mode == 'win': return self
@@ -681,6 +583,141 @@ class Die(metaclass=DieType):
         """
         other = Die(other)
         return other <= self
+        
+    # Mixtures.
+    
+    @staticmethod
+    def mix(*args, mix_weights=None):
+        """
+        Constructs a Die from a mixture of the arguments,
+        equivalent to rolling a die and then choosing one of the arguments
+        based on the resulting face rolled.
+        The arguments can be Dice or anything castable to Dice.
+        mix_weights: An array of one weight per argument.
+          If not provided, all arguments are mixed uniformly.
+          A Die can also be used, in which case its weights determines the mix_weights.
+        """
+        if len(args) == 1 and not isinstance(args[0], Die):
+            args = args[0]
+        
+        args = [Die(die) for die in args]
+        args = Die._union(*args)
+        
+        if mix_weights is None:
+            mix_weights = numpy.ones((len(args),))
+        elif isinstance(mix_weights, Die):
+            mix_weights = mix_weights.weights()
+
+        weights = numpy.zeros_like(args[0].weights())
+        for die, mix_weight in zip(args, mix_weights):
+            weights += mix_weight * die.weights()
+        return Die(weights, args[0].min_outcome())
+    
+    def relabel(self, relabeling):
+        """
+        relabeling can be one of the following:
+        * An array-like containing relabelings, one for each face in order.
+        * A dict-like mapping old outcomes to new outcomes.
+          Unmapped old outcomes stay the same.
+        * A function mapping old outcomes to new outcomes.
+        """
+        if hasattr(relabeling, 'items'):
+            relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
+        elif callable(relabeling):
+            relabeling = [relabeling(outcome) for outcome in self.outcomes()]
+        return Die.mix(*relabeling, mix_weights=self.weights())
+
+    def explode(self, max_explode, *, chance=None, faces=None, outcomes=None):
+        """
+        chance: If supplied, this top fraction of the pmf will explode.
+        faces: If supplied, this many of the top faces will explode.
+        outcomes: If suppled, these outcomes will explode.
+        If neither is supplied, the top single face will explode.
+        """
+        if max_explode < 0:
+            raise ValueError('max_explode cannot be negative.')
+        if max_explode == 0:
+            return self
+        
+        explode_weights = numpy.zeros_like(self.weights())
+        if chance is not None:
+            if chance == 0: return self
+            remaining_explode_weight = chance * self.total_weight()
+            for index, mass in reversed(list(enumerate(self.weights()))):
+                if mass < remaining_explode_weight:
+                    explode_weights[index] = mass
+                    remaining_explode_weight -= mass
+                else:
+                    explode_weights[index] = remaining_explode_weight
+                    break
+        elif faces is not None:
+            if faces == 0: return self
+            explode_weights[-faces:] = self.weights()[-faces:]
+        elif outcomes is not None:
+            explode_faces = numpy.array(outcomes) - self.min_outcome()
+            explode_weights[explode_faces] = self.weights()[explode_faces]
+        else:
+            explode_weights[-1] = self.weights()[-1]
+        
+        non_explode_weights = self.weights() - explode_weights
+        
+        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
+        explode_die = Die(explode_weights, self.min_outcome())._trim()
+        explode_die += self.explode(max_explode-1, chance=chance, faces=faces, outcomes=outcomes)
+        
+        mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
+        
+        return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
+    
+    def reroll(self, *, outcomes=None, below=None, above=None, max_reroll=None):
+        """Rerolls the given outcomes."""
+        pmf = numpy.copy(self.pmf())
+        all_outcomes = self.outcomes()
+        reroll_mask = numpy.zeros_like(all_outcomes, dtype=bool)
+        if outcomes is not None: reroll_mask[outcomes - self.min_outcome()] = True
+        if below is not None: reroll_mask[all_outcomes < below] = True
+        if above is not None: reroll_mask[all_outcomes > above] = True
+        
+        reroll_chance_single = numpy.sum(pmf[reroll_mask])
+        stop_chance_single = numpy.sum(pmf[~reroll_mask])
+        
+        if max_rerolls is None:
+            rerollable_factor = 0.0
+            stop_factor = 1.0 / stop_chance_single
+        else:
+            rerollable_factor = numpy.power(reroll_chance_single, max_rerolls)
+            stop_factor = (1.0 - numpy.power(reroll_chance_single, max_rerolls+1)) / stop_chance_single
+        
+        pmf[reroll_mask] *= rerollable_factor
+        pmf[~reroll_mask] *= stop_factor
+        
+        return Die(pmf, self.min_outcome())._trim()
+    
+    def combine(*dice, func=None):
+        """
+        func should be a function that takes in one outcome for each of the dice
+        and outputs an outcome (int).
+        """
+        
+        if func is None:
+            raise TypeError('func must be provided')
+        
+        dice = [Die(die) for die in dice]
+        
+        pmf_dict = defaultdict(float)
+        
+        def inner(partial_outcomes, partial_weight, dice):
+            if len(dice) == 0:
+                outcome = func(*partial_outcomes)
+                pmf_dict[outcome] += partial_weight
+            else:
+                for outcome, weight in zip(dice[0].outcomes(), dice[0].weights()):
+                    inner(partial_outcomes + [outcome], partial_weight * weight, dice[1:])
+        
+        inner([], 1.0, dice)
+        
+        return Die(pmf_dict)
+        
     
     # Random sampling.
     def sample(self, size=None):
