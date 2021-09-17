@@ -86,13 +86,15 @@ def keep(num_keep, *dice, transition_slice, final_slice):
         sorted_pmf = next_sorted_pmf
     
     # Sum the faces.
+    final_slice = slice(*final_slice)
+    
     sum_pmf_length = num_keep * (num_values - 1) + 1
     sum_pmf = numpy.zeros((sum_pmf_length,))
-    sum_min_outcome = num_keep * dice[0].min_outcome()
     
-    final_slice = slice(*final_slice)
     for faces, mass in zip(iter_sorted_tuples(num_keep, num_values), sorted_pmf):
         sum_pmf[sum(faces[final_slice])] += mass
+        
+    sum_min_outcome = len(faces[final_slice]) * dice[0].min_outcome()
     
     return hdroller.Die(sum_pmf, sum_min_outcome)._trim()
 

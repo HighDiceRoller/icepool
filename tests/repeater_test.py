@@ -1,5 +1,4 @@
 import _context
-import brute_force
 
 from hdroller import Die
 import numpy
@@ -14,30 +13,20 @@ def bf_repeat_and_sum(die, num_dice):
 
 def bf_keep_highest(die, num_dice, num_keep):
     if num_keep == 0: return Die(0)
-    counter = brute_force.BruteForceCounter()
-    for rolls in numpy.ndindex((len(die),) * num_dice):
-        total = sum(sorted(rolls)[-num_keep:]) + num_keep * die.min_outcome()
-        mass = numpy.product(die.pmf()[numpy.array(rolls)])
-        counter.insert(total, mass)
-    return counter.die()
+    def func(*outcomes):
+        return sum(sorted(outcomes)[-num_keep:])
+    return Die.combine(*([die] * num_dice), func=func)
     
 def bf_keep_lowest(die, num_dice, num_keep):
     if num_keep == 0: return Die(0)
-    pmf_length = (len(die) - 1) * num_keep + 1
-    counter = brute_force.BruteForceCounter()
-    for rolls in numpy.ndindex((len(die),) * num_dice):
-        total = sum(sorted(rolls)[:num_keep]) + num_keep * die.min_outcome()
-        mass = numpy.product(die.pmf()[numpy.array(rolls)])
-        counter.insert(total, mass)
-    return counter.die()
+    def func(*outcomes):
+        return sum(sorted(outcomes)[:num_keep])
+    return Die.combine(*([die] * num_dice), func=func)
 
 def bf_keep_index(die, num_dice, index):
-    counter = brute_force.BruteForceCounter()
-    for rolls in numpy.ndindex((len(die),) * num_dice):
-        picked = sorted(rolls)[index] + die.min_outcome()
-        mass = numpy.product(die.pmf()[numpy.array(rolls)])
-        counter.insert(picked, mass)
-    return counter.die()
+    def func(*outcomes):
+        return sorted(outcomes)[index]
+    return Die.combine(*([die] * num_dice), func=func)
 
 @pytest.mark.parametrize('num_dice', range(6))
 @pytest.mark.parametrize('die', test_dice)

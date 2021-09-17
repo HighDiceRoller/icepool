@@ -1,5 +1,4 @@
 import _context
-import brute_force
 
 from hdroller import Die
 import hdroller.die_sort
@@ -11,26 +10,16 @@ max_tuple_length = 5
 max_num_values = 5
 
 def bf_keep_highest(num_keep, *dice, drop_highest=0):
-    if num_keep == 0: return Die(0)
-    counter = brute_force.BruteForceCounter()
-    shape = tuple(len(die) for die in dice)
-    min_outcome = sum(sorted(die.min_outcome() for die in dice)[-num_keep:])
-    for rolls in numpy.ndindex(shape):
-        total = sum(sorted(rolls)[-num_keep:len(dice)-drop_highest]) + min_outcome
-        mass = numpy.product([die.pmf()[roll] for die, roll in zip(dice, rolls)])
-        counter.insert(total, mass)
-    return counter.die()
+    if num_keep == drop_highest: return Die(0)
+    def func(*outcomes):
+        return sum(sorted(outcomes)[-num_keep:len(outcomes)-drop_highest])
+    return Die.combine(*dice, func=func)
     
 def bf_keep_lowest(num_keep, *dice):
     if num_keep == 0: return Die(0)
-    counter = brute_force.BruteForceCounter()
-    shape = tuple(len(die) for die in dice)
-    min_outcome = sum(sorted(die.min_outcome() for die in dice)[:num_keep])
-    for rolls in numpy.ndindex(shape):
-        total = sum(sorted(rolls)[:num_keep]) + min_outcome
-        mass = numpy.product([die.pmf()[roll] for die, roll in zip(dice, rolls)])
-        counter.insert(total, mass)
-    return counter.die()
+    def func(*outcomes):
+        return sum(sorted(outcomes)[:num_keep])
+    return Die.combine(*dice, func=func)
 
 @pytest.mark.parametrize('tuple_length', range(max_tuple_length + 1))
 @pytest.mark.parametrize('num_values', range(1, max_num_values + 1))
