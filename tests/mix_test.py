@@ -9,6 +9,7 @@ Tests Die.mix() and its derivatives.
 
 def test_mix_d6_faces():
     assert Die.mix(1, 2, 3, 4, 5, 6).pmf() == pytest.approx(Die.d6.pmf())
+    assert Die.mix([1, 2, 3, 4, 5, 6]).pmf() == pytest.approx(Die.d6.pmf())
 
 def test_mix_identical():
     assert Die.mix(Die.d6, Die.d6, Die.d6, Die.d6).pmf() == pytest.approx(Die.d6.pmf())

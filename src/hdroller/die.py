@@ -372,12 +372,12 @@ class Die(metaclass=DieType):
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = Die._align(self, other, lcd=False)
+        a, b = Die._align([self, other], lcd=False)
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = Die._align(self, other, lcd=False)
+        a, b = Die._align([self, other], lcd=False)
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
     def total_weight(self):
@@ -437,7 +437,7 @@ class Die(metaclass=DieType):
             subresults.append(other.repeat_and_sum(die_count))
             die_count_weights.append(die_count_weight)
         
-        subresults = Die._align(*subresults)
+        subresults = Die._align(subresults)
         weights = sum(subresult.weights() * die_count_weight for subresult, die_count_weight in zip(subresults, die_count_weights))
         
         return Die(weights, subresults[0].min_outcome())
@@ -481,23 +481,23 @@ class Die(metaclass=DieType):
     # Repeat, keep, and sum.
     def max(*dice):
         """
-        Returns a Die representing:
         Roll all the dice and take the highest.
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
-        dice = [Die(die) for die in dice]
-        dice_aligned = Die._align(*dice)
+        dice = Die._listify_dice(dice)
+        dice_aligned = Die._align(dice)
         cweights = 1.0
         for die in dice_aligned: cweights *= die.cweights()
         return Die.from_cweights(cweights, dice_aligned[0].min_outcome())._trim()
     
     def min(*dice):
         """
-        Returns a Die representing:
         Roll all the dice and take the lowest.
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
-        dice = [Die(die) for die in dice]
+        dice = Die._listify_dice(dice)
         # TODO: use weights
-        dice_aligned = Die._align(*dice)
+        dice_aligned = Die._align(dice)
         ccweights = 1.0
         for die in dice_aligned: ccweights *= die.ccweights()
         return Die.from_ccweights(ccweights, dice_aligned[0].min_outcome())._trim()
@@ -547,7 +547,7 @@ class Die(metaclass=DieType):
         Returns the chance this die will roll exactly equal to the other Die.
         """
         other = Die(other)
-        a, b = Die._align(self, other, lcd=False)
+        a, b = Die._align([self, other], lcd=False)
         return numpy.sum(a.pmf() * b.pmf())
     
     def __ne__(self, other):
@@ -587,31 +587,28 @@ class Die(metaclass=DieType):
     # Mixtures.
     
     @staticmethod
-    def mix(*args, mix_weights=None):
+    def mix(*dice, mix_weights=None):
         """
         Constructs a Die from a mixture of the arguments,
         equivalent to rolling a die and then choosing one of the arguments
         based on the resulting face rolled.
-        The arguments can be Dice or anything castable to Dice.
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         mix_weights: An array of one weight per argument.
           If not provided, all arguments are mixed uniformly.
           A Die can also be used, in which case its weights determines the mix_weights.
         """
-        if len(args) == 1 and not isinstance(args[0], Die):
-            args = args[0]
-        
-        args = [Die(die) for die in args]
-        args = Die._align(*args)
+        dice = Die._listify_dice(dice)
+        dice = Die._align(dice)
         
         if mix_weights is None:
-            mix_weights = numpy.ones((len(args),))
+            mix_weights = numpy.ones((len(dice),))
         elif isinstance(mix_weights, Die):
             mix_weights = mix_weights.weights()
 
-        weights = numpy.zeros_like(args[0].weights())
-        for die, mix_weight in zip(args, mix_weights):
+        weights = numpy.zeros_like(dice[0].weights())
+        for die, mix_weight in zip(dice, mix_weights):
             weights += mix_weight * die.weights()
-        return Die(weights, args[0].min_outcome())
+        return Die(weights, dice[0].min_outcome())
     
     def relabel(self, relabeling):
         """
@@ -680,6 +677,7 @@ class Die(metaclass=DieType):
     
     def combine(*dice, func=None):
         """
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         func should be a function that takes in one outcome for each of the dice
         and outputs an integer outcome.
         """
@@ -687,7 +685,7 @@ class Die(metaclass=DieType):
         if func is None:
             raise TypeError('func must be provided')
         
-        dice = [Die(die) for die in dice]
+        dice = Die._listify_dice(dice)
         
         pmf_dict = defaultdict(float)
         
@@ -725,6 +723,13 @@ class Die(metaclass=DieType):
 
     # Helper methods.
     
+    @staticmethod
+    def _listify_dice(args):
+        if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], Die):
+            args = args[0]
+        
+        return [Die(arg) for arg in args]
+    
     def _select_weights(self, outcomes):
         """
         Returns an array of weights chosen by the argument.
@@ -744,7 +749,7 @@ class Die(metaclass=DieType):
         
         return factors * self.weights()
     
-    def _align(*dice, lcd=True):
+    def _align(dice, lcd=True):
         """ 
         Pads all the dice with zeros so that all have the same min and max outcome.
         If lcd is True, all weights are also multiplied to the least common denominator if all dice are exact.
