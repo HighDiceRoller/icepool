@@ -258,6 +258,15 @@ class Die(metaclass=DieType):
 
     def outcomes(self, prepend=False, append=False):
         return numpy.array(range(self.min_outcome(), self.min_outcome() + len(self) + (append is not False))) + (prepend is not False)
+        
+    def probability(self, outcome):
+        """
+        Returns the probability of a single outcome.
+        """
+        if outcome < self.min_outcome() or outcome > self.max_outcome():
+            return 0.0
+        else:
+            return self.pmf()[outcome - self.min_outcome()]
 
     # Distributions.
     def weights(self):
@@ -709,7 +718,7 @@ class Die(metaclass=DieType):
         """
         return numpy.random.choice(self.outcomes(), size=size, p=self.pmf())
 
-    # String methods.
+    # Out conversions.
     
     def __str__(self):
         result = ''
