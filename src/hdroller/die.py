@@ -66,7 +66,7 @@ class Die(metaclass=DieType):
                 raise ValueError('Only floats between 0.0 and 1.0 can be cast to Die.')
             self._weights = numpy.array([1.0 - weights, weights])
             self._min_outcome = 0
-        elif isinstance(weights, dict):
+        elif hasattr(weights, 'items'):
             # A dict mapping outcomes to weights.
             self._min_outcome = min(weights.keys())
             max_outcome = max(weights.keys())
@@ -618,7 +618,7 @@ class Die(metaclass=DieType):
         relabeling can be one of the following:
         * An array-like containing relabelings, one for each face in order.
         * A dict-like mapping old outcomes to new outcomes.
-          Unmapped old outcomes stay the same.
+            Unmapped old outcomes stay the same.
         * A function mapping old outcomes to new outcomes.
         """
         if hasattr(relabeling, 'items'):
@@ -627,76 +627,61 @@ class Die(metaclass=DieType):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
         return Die.mix(*relabeling, mix_weights=self.weights())
 
-    def explode(self, max_explode, *, chance=None, faces=None, outcomes=None):
+    def explode(self, max_times, outcomes=None):
         """
-        chance: If supplied, this top fraction of the pmf will explode.
-        faces: If supplied, this many of the top faces will explode.
-        outcomes: If suppled, these outcomes will explode.
-        If neither is supplied, the top single face will explode.
+        outcomes: This chooses which outcomes to explode. Options:
+            * A single integer outcome to explode.
+            * A dict whose keys are outcomes and values are chances for that outcome to explode.
+            * An iterable containing outcomes to explode.
+            * If not supplied, the top single outcome will explode.
         """
-        if max_explode < 0:
-            raise ValueError('max_explode cannot be negative.')
-        if max_explode == 0:
+        if max_times < 0:
+            raise ValueError('max_times cannot be negative.')
+        if max_times == 0:
             return self
         
-        explode_weights = numpy.zeros_like(self.weights())
-        if chance is not None:
-            if chance == 0: return self
-            remaining_explode_weight = chance * self.total_weight()
-            for index, mass in reversed(list(enumerate(self.weights()))):
-                if mass < remaining_explode_weight:
-                    explode_weights[index] = mass
-                    remaining_explode_weight -= mass
-                else:
-                    explode_weights[index] = remaining_explode_weight
-                    break
-        elif faces is not None:
-            if faces == 0: return self
-            explode_weights[-faces:] = self.weights()[-faces:]
-        elif outcomes is not None:
-            explode_faces = numpy.array(outcomes) - self.min_outcome()
-            explode_weights[explode_faces] = self.weights()[explode_faces]
-        else:
-            explode_weights[-1] = self.weights()[-1]
+        if outcomes is None:
+            outcomes = self.max_outcome()
+        
+        explode_weights = self._select_weights(outcomes)
         
         non_explode_weights = self.weights() - explode_weights
         
         non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
         explode_die = Die(explode_weights, self.min_outcome())._trim()
-        explode_die += self.explode(max_explode-1, chance=chance, faces=faces, outcomes=outcomes)
+        explode_die += self.explode(max_times-1, outcomes=outcomes)
         
         mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
         
         return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
     
-    def reroll(self, *, outcomes=None, below=None, above=None, max_reroll=None):
-        """Rerolls the given outcomes."""
-        pmf = numpy.copy(self.pmf())
-        all_outcomes = self.outcomes()
-        reroll_mask = numpy.zeros_like(all_outcomes, dtype=bool)
-        if outcomes is not None: reroll_mask[outcomes - self.min_outcome()] = True
-        if below is not None: reroll_mask[all_outcomes < below] = True
-        if above is not None: reroll_mask[all_outcomes > above] = True
+    def reroll(self, *, outcomes=None, max_times=None):
+        """
+        Rerolls the given outcomes.
+        outcomes: Selects which outcomes to reroll. Options:
+            * A single integer outcome to reroll.
+            * A dict whose keys are outcomes and values are chances for that outcome to reroll.
+            * An iterable containing outcomes to reroll.
+        """
+        if outcomes is None:
+            raise TypeError('outcomes to reroll must be provided.')
+        reroll_weights = self._select_weights(outcomes)
+        non_reroll_weights = self.weights() - reroll_weights
         
-        reroll_chance_single = numpy.sum(pmf[reroll_mask])
-        stop_chance_single = numpy.sum(pmf[~reroll_mask])
-        
-        if max_rerolls is None:
-            rerollable_factor = 0.0
-            stop_factor = 1.0 / stop_chance_single
+        if max_times is None:
+            weights = non_reroll_weights
         else:
-            rerollable_factor = numpy.power(reroll_chance_single, max_rerolls)
-            stop_factor = (1.0 - numpy.power(reroll_chance_single, max_rerolls+1)) / stop_chance_single
-        
-        pmf[reroll_mask] *= rerollable_factor
-        pmf[~reroll_mask] *= stop_factor
-        
-        return Die(pmf, self.min_outcome())._trim()
+            total_reroll_weight = numpy.sum(reroll_weights)
+            reroll_chance_single = total_reroll_weight / self.total_weight()
+            rerollable_factor = numpy.power(reroll_chance_single, max_times)
+            stop_factor = (1.0 - numpy.power(reroll_chance_single, max_times+1)) / (1.0 - reroll_chance_single)
+            weights = rerollable_factor * reroll_weights + stop_factor * non_reroll_weights
+        return Die(weights, self.min_outcome())._trim()
     
     def combine(*dice, func=None):
         """
         func should be a function that takes in one outcome for each of the dice
-        and outputs an outcome (int).
+        and outputs an integer outcome.
         """
         
         if func is None:
@@ -739,6 +724,25 @@ class Die(metaclass=DieType):
         return result
 
     # Helper methods.
+    
+    def _select_weights(self, outcomes):
+        """
+        Returns an array of weights chosen by the argument.
+        """
+        factors = numpy.zeros_like(self.weights())
+        if numpy.issubdtype(type(outcomes), numpy.integer):
+            factors[outcomes - self._min_outcome] = 1.0 
+        elif hasattr(outcomes, 'items'):
+            # Dict-like.
+            for outcome, factor in outcomes.items():
+                factors[outcome - self._min_outcome] = factor
+        elif hasattr(outcomes, '__iter__'):
+            for outcome in outcomes:
+                factors[outcome - self._min_outcome] = 1.0
+        else:
+            raise TypeError('Invalid type for selecting outcomes.')
+        
+        return factors * self.weights()
     
     def _align(*dice, lcd=True):
         """ 

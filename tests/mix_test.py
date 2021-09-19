@@ -35,28 +35,3 @@ def test_relabel_dict():
 def test_relabel_func():
     die = Die.d6.relabel(lambda x: Die.d6 + 6 if x == 6 else 6 - x)
     assert die.pmf() == pytest.approx(expected_d6x1.pmf())
-
-def test_explode_basic():
-    result = Die.d10.explode(2)
-    expected = Die([0.1]*9  + [0] +
-                   [0.01]*9 + [0] +
-                   [0.001]*10, 1)
-    assert result.ks_stat(expected) == pytest.approx(0.0)
-
-def test_explode_chance():
-    result = Die(Die.d10 >= 8).explode(3, chance=0.1)
-    expected = Die([1.0 - 0.3,
-                    0.3 - 0.03,
-                    0.03 - 0.003,
-                    0.003 - 0.0003,
-                    0.0003], 0)
-    assert result.ks_stat(expected) == pytest.approx(0.0)
-
-def test_explode_chance_weights():
-    result = Die.mix([0]*7 + [1]*3).explode(3, chance=0.1)
-    expected = Die([1.0 - 0.3,
-                    0.3 - 0.03,
-                    0.03 - 0.003,
-                    0.003 - 0.0003,
-                    0.0003], 0)
-    assert result.ks_stat(expected) == pytest.approx(0.0)
