@@ -603,16 +603,13 @@ class Die(metaclass=DieType):
         based on the resulting face rolled.
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         mix_weights: An array of one weight per argument.
-          If not provided, all arguments are mixed uniformly.
-          A Die can also be used, in which case its weights determines the mix_weights.
+            If not provided, all arguments are mixed uniformly.
         """
         dice = Die._listify_dice(dice)
         dice = Die._align(dice)
         
         if mix_weights is None:
             mix_weights = numpy.ones((len(dice),))
-        elif isinstance(mix_weights, Die):
-            mix_weights = mix_weights.weights()
 
         weights = numpy.zeros_like(dice[0].weights())
         for die, mix_weight in zip(dice, mix_weights):

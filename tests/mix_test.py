@@ -20,7 +20,7 @@ def test_mix_weight():
     assert Die.mix(*outcomes, mix_weights=mix_weights).pmf() == pytest.approx(Die.d(2, 6).pmf())
     
 def test_mix_mixed():
-    die = Die.mix(Die.d4, Die.d6, mix_weights=Die.coin())
+    die = Die.mix(Die.d4, Die.d6)
     assert die.pmf() == pytest.approx([5/24] * 4 + [2/24] * 2)
 
 expected_d6x1 = Die([1/6] * 5 + [0] + [1/36] * 6, 1)
