@@ -372,12 +372,12 @@ class Die(metaclass=DieType):
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = Die._union(self, other, lcd=False)
+        a, b = Die._align(self, other, lcd=False)
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = Die._union(self, other, lcd=False)
+        a, b = Die._align(self, other, lcd=False)
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
     def total_weight(self):
@@ -437,7 +437,7 @@ class Die(metaclass=DieType):
             subresults.append(other.repeat_and_sum(die_count))
             die_count_weights.append(die_count_weight)
         
-        subresults = Die._union(*subresults)
+        subresults = Die._align(*subresults)
         weights = sum(subresult.weights() * die_count_weight for subresult, die_count_weight in zip(subresults, die_count_weights))
         
         return Die(weights, subresults[0].min_outcome())
@@ -485,10 +485,10 @@ class Die(metaclass=DieType):
         Roll all the dice and take the highest.
         """
         dice = [Die(die) for die in dice]
-        dice_unions = Die._union(*dice)
+        dice_aligned = Die._align(*dice)
         cweights = 1.0
-        for die in dice_unions: cweights *= die.cweights()
-        return Die.from_cweights(cweights, dice_unions[0].min_outcome())._trim()
+        for die in dice_aligned: cweights *= die.cweights()
+        return Die.from_cweights(cweights, dice_aligned[0].min_outcome())._trim()
     
     def min(*dice):
         """
@@ -497,10 +497,10 @@ class Die(metaclass=DieType):
         """
         dice = [Die(die) for die in dice]
         # TODO: use weights
-        dice_unions = Die._union(*dice)
+        dice_aligned = Die._align(*dice)
         ccweights = 1.0
-        for die in dice_unions: ccweights *= die.ccweights()
-        return Die.from_ccweights(ccweights, dice_unions[0].min_outcome())._trim()
+        for die in dice_aligned: ccweights *= die.ccweights()
+        return Die.from_ccweights(ccweights, dice_aligned[0].min_outcome())._trim()
     
     def repeat_and_sum(self, num_dice):
         """
@@ -547,7 +547,7 @@ class Die(metaclass=DieType):
         Returns the chance this die will roll exactly equal to the other Die.
         """
         other = Die(other)
-        a, b = Die._union(self, other, lcd=False)
+        a, b = Die._align(self, other, lcd=False)
         return numpy.sum(a.pmf() * b.pmf())
     
     def __ne__(self, other):
@@ -601,7 +601,7 @@ class Die(metaclass=DieType):
             args = args[0]
         
         args = [Die(die) for die in args]
-        args = Die._union(*args)
+        args = Die._align(*args)
         
         if mix_weights is None:
             mix_weights = numpy.ones((len(args),))
@@ -740,7 +740,7 @@ class Die(metaclass=DieType):
 
     # Helper methods.
     
-    def _union(*dice, lcd=True):
+    def _align(*dice, lcd=True):
         """ 
         Pads all the dice with zeros so that all have the same min and max outcome.
         If lcd is True, all weights are also multiplied to the least common denominator if all dice are exact.
@@ -748,7 +748,7 @@ class Die(metaclass=DieType):
         """
         min_outcome = min(die.min_outcome() for die in dice)
         max_outcome = max(die.max_outcome() for die in dice)
-        union_len = max_outcome - min_outcome + 1
+        len_align = max_outcome - min_outcome + 1
         
         result_total_weight = 1.0
         if lcd and all(die.is_exact() for die in dice):
@@ -760,7 +760,7 @@ class Die(metaclass=DieType):
         for die in dice:
             weight_factor = result_total_weight / die.total_weight()
             left_dst_index = die.min_outcome() - min_outcome
-            weights = numpy.zeros((union_len,))
+            weights = numpy.zeros((len_align,))
             weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
             result.append(Die(weights, min_outcome))
         
