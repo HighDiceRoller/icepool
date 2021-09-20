@@ -269,11 +269,15 @@ class Die(metaclass=DieType):
             return self.pmf()[outcome - self.min_outcome()]
 
     # Distributions.
-    def weights(self):
-        return self._weights
         
     def is_exact(self):
         return self._is_exact
+    
+    def is_bernoulli(self):
+        return self.min_outcome() >= 0 and self.max_outcome() <= 1
+        
+    def weights(self):
+        return self._weights
     
     def pmf(self):
         return self._pmf
@@ -612,6 +616,48 @@ class Die(metaclass=DieType):
         """
         other = Die(other)
         return other <= self
+    
+    # Logical operators.
+    # ~ returns a die, while the others return floats.
+    
+    def __invert__(self):
+        if not self.is_bernoulli():
+            raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
+        return 1 - self
+        
+    def _and(self, other):
+        if not self.is_bernoulli() or not other.bernoulli():
+            raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
+        return (self + other) == 2
+        
+    def __and__(self, other):
+        return self._and(Die(other))
+    
+    def __rand__(self, other):
+        return self._and(Die(other))
+        
+    def _or(self, other):
+        if not self.is_bernoulli() or not other.bernoulli():
+            raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
+        return (self + other) >= 1
+        
+    def __or__(self, other):
+        return self._or(Die(other))
+    
+    def __ror__(self, other):
+        return self._or(Die(other))
+    
+    def _xor(self, other):
+        if not self.is_bernoulli() or not other.bernoulli():
+            raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
+        return (self + other) == 1
+        
+    def __xor__(self, other):
+        return self._xor(Die(other))
+    
+    def __rxor__(self, other):
+        return self._xor(Die(other))
+    
         
     # Mixtures.
     
