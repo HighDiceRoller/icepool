@@ -477,21 +477,6 @@ class Die(metaclass=DieType):
     def __rmul__(self, other):
         return Die(other) * self
     
-    def product(self, other):
-        """
-        This multiplies the outcome of the dice. It does not roll additional dice.
-        """
-        other = Die(other)
-        if self.min_outcome < 0 or other.min_outcome < 0:
-            raise NotImplementedError('Multiplication not implemented for non-positive outcomes.')
-        min_outcome = self.min_outcome() * other.min_outcome()
-        max_outcome = self.max_outcome() * other.max_outcome()
-        weights = numpy.zeros((result_max_outcome - resultmin_outcome() + 1))
-        for outcome, mass in zip(other.outcomes(), other.weights()):
-            start_index = outcome * self.min_outcome - resultmin_outcome()
-            weights[start_index:start_index+outcome*len(self.data):outcome] += self.weights() * mass
-        return Die(weights, resultmin_outcome())
-    
     def clip(self, min_outcome=None, max_outcome=None):
         """
         Restricts the outcomes of this die to the range [min_outcome, max_outcome].
