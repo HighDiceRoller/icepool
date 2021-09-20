@@ -71,3 +71,23 @@ def test_clip():
     result = result.clip(2, 5)
     assert result.min_outcome() == 2
     assert result.weights() == pytest.approx([2, 1, 1, 2])
+
+def test_abs_positive():
+    result = Die.d6.abs()
+    assert result.outcomes() == pytest.approx(Die.d6.outcomes())
+    assert result.weights() == pytest.approx(Die.d6.weights())
+
+def test_abs_negative():
+    result = (-Die.d6).abs()
+    assert result.outcomes() == pytest.approx(Die.d6.outcomes())
+    assert result.weights() == pytest.approx(Die.d6.weights())
+
+def test_abs_cross_zero():
+    result = (Die.d6 - 3).abs()
+    assert result.outcomes() == pytest.approx([0, 1, 2, 3])
+    assert result.weights() == pytest.approx([1, 2, 2, 1])
+
+def test_abs_cross_zero_nonuniform():
+    result = (Die.d6 + Die.d6 - 7).abs()
+    assert result.outcomes() == pytest.approx([0, 1, 2, 3, 4, 5])
+    assert result.weights() == pytest.approx([6, 10, 8, 6, 4, 2])

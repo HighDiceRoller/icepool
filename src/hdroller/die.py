@@ -397,6 +397,26 @@ class Die(metaclass=DieType):
     def __neg__(self):
         """ Returns a Die with all outcomes negated. """
         return Die(numpy.flip(self.weights()), -self.max_outcome())
+        
+    def __abs__(self):
+        """ Take the absolute value of all outcomes. """
+        if self.min_outcome() >= 0: return self
+        if self.max_outcome() <= 0: return -self
+        
+        # If the die doesn't fall into either of the simple cases above,
+        # it crosses zero.
+        max_outcome = max(-self.min_outcome(), self.max_outcome())
+        weights = numpy.zeros((max_outcome + 1,))
+        
+        zero_index = -self.min_outcome()
+        num_non_negative = len(self.outcomes()) - zero_index
+        weights[:num_non_negative] += self.weights()[zero_index:]
+        weights[1:zero_index+1] += numpy.flip(self.weights()[:zero_index])
+        
+        return Die(weights, 0)
+    
+    def abs(self):
+        return self.__abs__()
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
@@ -628,6 +648,7 @@ class Die(metaclass=DieType):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
         elif callable(relabeling):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
+
         return Die.mix(*relabeling, mix_weights=self.weights())
 
     def explode(self, max_times, outcomes=None):
@@ -684,8 +705,10 @@ class Die(metaclass=DieType):
     def combine(*dice, func=None):
         """
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
-        func should be a function that takes in one outcome for each of the dice
-        and outputs an integer outcome.
+        func should be a function that takes in one outcome for each of the dice and outputs an integer outcome.
+        
+        This method is very flexible but has poor performance since it enumerates all possible joint outcomes.
+        Other methods should be preferred when performance is a concern.
         """
         
         if func is None:
