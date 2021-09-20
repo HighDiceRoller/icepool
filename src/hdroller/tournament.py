@@ -17,6 +17,6 @@ def round_robin_score(*dice, tiebreaker='coin'):
                 pass
             elif tiebreaker == 'lose':
                 difference = difference - 1
-            wins += (difference >= 0)
+            wins += float(difference >= 0)
         result.append(wins / len(dice))
     return result

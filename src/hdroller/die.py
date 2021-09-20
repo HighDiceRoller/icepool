@@ -60,12 +60,6 @@ class Die(metaclass=DieType):
             if min_outcome is not None: raise ValueError()
             self._weights = numpy.array([1.0])
             self._min_outcome = weights
-        elif numpy.issubdtype(type(weights), numpy.floating):
-            if min_outcome is not None: raise ValueError()
-            if not (weights >= 0.0 and weights <= 1.0):
-                raise ValueError('Only floats between 0.0 and 1.0 can be cast to Die.')
-            self._weights = numpy.array([1.0 - weights, weights])
-            self._min_outcome = 0
         elif hasattr(weights, 'items'):
             # A dict mapping outcomes to weights.
             self._min_outcome = min(weights.keys())
@@ -74,12 +68,16 @@ class Die(metaclass=DieType):
             for outcome, weight in weights.items():
                 self._weights[outcome - self._min_outcome] = weight
         else:
+            if min_outcome is None:
+                raise TypeError('When Die is constructed with a weights array, min_outcome must be provided.')
             # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
                 raise ValueError('min_outcome must be of integer type')
             if numpy.any(numpy.isinf(weights)):
                 raise ValueError('Weights must be finite.')
-            self._weights = numpy.array(weights)
+            self._weights = numpy.array(weights, dtype=float)
+            if self._weights.ndim != 1:
+                raise ValueError('Weights must have exactly one dimension.')
             self._min_outcome = min_outcome
         
         total_weight = numpy.sum(self._weights)
@@ -147,8 +145,8 @@ class Die(metaclass=DieType):
     
     # TODO: Apply cache to all __new__ dice created with floats?
     @staticmethod
-    def bernoulli(chance=0.5):
-        return Die(chance)
+    def bernoulli(chance=0.5, denominator=1.0):
+        return Die([denominator - chance, chance], 0)
 
     coin = bernoulli
     
@@ -275,6 +273,8 @@ class Die(metaclass=DieType):
     
     def is_bernoulli(self):
         return self.min_outcome() >= 0 and self.max_outcome() <= 1
+    
+    is_coin = is_bernoulli
         
     def weights(self):
         return self._weights
@@ -419,8 +419,7 @@ class Die(metaclass=DieType):
         
         return Die(weights, 0)
     
-    def abs(self):
-        return self.__abs__()
+    abs = __abs__
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
@@ -572,53 +571,62 @@ class Die(metaclass=DieType):
         """
         return self._repeater.keep_index(num_dice, index)
 
-    # Comparators. These return scalar floats (which can be cast to Die).
-    # TODO: Return a fraction instead?
+    # Comparators. These return a Die.
     
     def __eq__(self, other):
         """
         Returns the chance this die will roll exactly equal to the other Die.
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
         a, b = Die._align([self, other], lcd=False)
-        return numpy.sum(a.pmf() * b.pmf())
+        n = numpy.dot(a.weights(), b.weights())
+        d = a.total_weight() * b.total_weight()
+        return Die.bernoulli(n, d)
     
     def __ne__(self, other):
         return 1.0 - (self == other)
     
     def __lt__(self, other):
         """
-        Returns the chance this Die will roll < the other Die.        
+        Returns the chance this Die will roll < the other Die.     
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
         difference = self - other
         if difference.min_outcome() < 0:
-            return numpy.sum(difference.pmf()[:-difference.min_outcome()])
+            n = numpy.sum(difference.weights()[:-difference.min_outcome()])
+            d = difference.total_weight()
+            return Die.bernoulli(n, d)
         else:
-            return 0.0
+            return Die(0)
 
     def __le__(self, other):
         """
-        Returns the chance this Die will roll <= the other Die.        
+        Returns the chance this Die will roll <= the other Die.
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.        
         """
         return self < other + 1
 
     def __gt__(self, other):
         """
-        Returns the chance this Die will roll > the other Die.        
+        Returns the chance this Die will roll > the other Die.
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
         return other < self
 
     def __ge__(self, other):
         """
-        Returns the chance this Die will roll >= the other Die.        
+        Returns the chance this Die will roll >= the other Die.
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
         return other <= self
     
     # Logical operators.
-    # ~ returns a die, while the others return floats.
+    # These are only applicable to Bernoulli distributions, i.e. Die that have no outcomes other than 0 and 1.
+    # These return a Die.
     
     def __invert__(self):
         if not self.is_bernoulli():
@@ -658,7 +666,6 @@ class Die(metaclass=DieType):
     def __rxor__(self, other):
         return self._xor(Die(other))
     
-        
     # Mixtures.
     
     @staticmethod
@@ -795,6 +802,11 @@ class Die(metaclass=DieType):
         for outcome, weight in zip(self.outcomes(), self.weights()):
             result += format_string % (outcome, weight)
         return result
+        
+    def __float__(self):
+        if not self.is_bernoulli():
+            raise ValueError('Only Bernoulli distributions may be cast to float.')
+        return float(self.probability(1))
 
     # Helper methods.
     
