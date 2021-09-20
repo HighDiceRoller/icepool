@@ -780,12 +780,11 @@ class Die(metaclass=DieType):
     
     def __str__(self):
         result = ''
-        if self.is_exact():
-            format_string = '%2d, %d\n'
-        else:
-            format_string = '%2d, %f\n'
-        for outcome, weight in zip(self.outcomes(), self.weights()):
-            result += format_string % (outcome, weight)
+        for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
+            if self.is_exact():
+                result += '%d, %d/%d, %f\n' % (outcome, weight, self.total_weight(), p)
+            else:
+                result += '%d, %f\n' % (outcome, p)
         return result
         
     def __float__(self):
