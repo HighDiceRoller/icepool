@@ -26,6 +26,13 @@
     <h2>Probability distribution of the 6 highest ability scores</h2>
     
     <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="rankDistSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling at least</option>
+            </select>
+        </div>
         <canvas id="rankChart"></canvas>
     </div>
 
@@ -74,6 +81,11 @@
                 <option value="raw">Raw total</option>
                 <option value="5e"><i>D&#38;D</i> 5e point buy</option>
                 <option value="pf"><i>Pathfinder</i> point buy</option>
+            </select><br/>
+            Show:
+            <select id="multiViewDistSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling at least</option>
             </select>
         </div>
         <canvas id="multiChart"></canvas>
@@ -297,7 +309,11 @@
                 
                 def set_rank_data(rank, die):
                     data = numpy.zeros((16,))
-                    data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
+                    selected_dist = js.document.getElementById('rankDistSelect').value
+                    if selected_dist == 'pmf':
+                        data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
+                    else:
+                        data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = numpy.minimum(die.ccdf(), 1.0) * 100.0
                     js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
@@ -352,11 +368,10 @@
             for i in range(6):
                 rank_ability = single_ability.keep_index(num_abilities, num_abilities - 1 - i)
                 ranks.append(rank_ability)
-                set_rank_data(i, rank_ability)
                 
                 max_prob = max(max_prob, numpy.max(rank_ability.pmf()))
                 
-            set_rank_data(6, Die.mix(*ranks))
+            ranks.append(Die.mix(*ranks))
             
             js.maxProb = max_prob * 100.0
             
@@ -367,7 +382,15 @@
             total_5e = output_multiple_arrays(single_ability_5e, '5e')
             total_pf = output_multiple_arrays(single_ability_pf, 'pf')
             `);
+        }
+        
+        async function updateRankChart() {
+            let pyodide = await pyodideReadyPromise;
             
+            pyodide.runPython(`
+                for i, rank_die in enumerate(ranks):
+                    set_rank_data(i, rank_die)
+                `);
             rankChart.update();
         }
         
@@ -384,8 +407,13 @@
                 else:
                     total_select = total_raw
                 
+                selected_dist = js.document.getElementById('multiViewDistSelect').value
+                
                 js.multiChart.data.labels = pyodide.to_js([float(x) for x in total_select.outcomes()])
-                js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.pmf()])
+                if selected_dist == 'pmf':
+                    js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.pmf()])
+                else:
+                    js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in numpy.minimum(total_select.ccdf(), 1.0)])
             `)
 
             multiChart.update();
@@ -396,24 +424,32 @@
             history.replaceState(null, "", "?" + searchParams);
         }
         
-        
 
         let rollReadyPromise = updateRoll();
         updateSearchQuery();
+        updateRankChart();
         updateMulti();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('input', updateRoll);
+        single_array_inputs.addEventListener('input', updateRankChart);
         single_array_inputs.addEventListener('input', updateMulti);
         single_array_inputs.addEventListener('input', updateSearchQuery);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('input', updateRoll);
+        multiple_array_inputs.addEventListener('input', updateRankChart);
         multiple_array_inputs.addEventListener('input', updateMulti);
         multiple_array_inputs.addEventListener('input', updateSearchQuery);
         
+        let rank_view_select = document.querySelector('#rankDistSelect');
+        rank_view_select.addEventListener('input', updateRankChart);
+        
         let multiple_view_select = document.querySelector('#multiViewSelect');
         multiple_view_select.addEventListener('input', updateMulti);
+        
+        let multiple_view_dist_select = document.querySelector('#multiViewDistSelect');
+        multiple_view_dist_select.addEventListener('input', updateMulti);
     </script>
 </body>
 
