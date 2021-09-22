@@ -61,3 +61,7 @@ def test_reroll_limit():
     result = Die.d4.reroll(outcomes=1, max_times=1)
     expected = [1/16, 5/16, 5/16, 5/16]
     assert result.pmf() == pytest.approx(expected, abs=abs_tol)
+    
+def test_infinite_reroll_exception():
+    with pytest.raises(ZeroDivisionError): 
+        result = Die.d4.reroll(outcomes=[1, 2, 3, 4])

@@ -729,6 +729,8 @@ class Die(metaclass=DieType):
         non_reroll_weights = self.weights() - reroll_weights
         
         if max_times is None:
+            if numpy.sum(non_reroll_weights) <= 0.0:
+                raise ZeroDivisionError('This reroll would never terminate.')
             weights = non_reroll_weights
         else:
             total_reroll_weight = numpy.sum(reroll_weights)
