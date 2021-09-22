@@ -16,6 +16,7 @@
     <form id="single_array_inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
         Generate each ability score by rolling
         <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+        rerolling <input name="reroll_dice" id="reroll_dice" type="number" min="0" max="19" value="0" required onwheel="" />s and below, 
         keeping the <input name="num_keep" id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
         <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
         Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
@@ -121,11 +122,12 @@
         <ul>
             <li>The mean of the six kept scores (grey line) is equal to picking one of those six scores uniformly at random.</li>
             <li>The six ranked dice are not independent; for example, if you roll a 14 as your highest score, you certainly can't have rolled a 15 as your second-highest score.</li>
-            <li>Odd die sizes can be used to do things like "3d6, reroll all 1s", which is the same as 3d5+3.</li>
             <li><i>Pathfinder</i> point values are mostly equal to 2 less than <i>D&#38;D</i> 5e (per score); however, even beyond this, the references I used assign different values to scores below 8.</li>
             <li>Spikes are normal in the <i>D&#38;D</i> 5e and <i>Pathfinder</i> total point values, especially at the high end;
                 this is because costs jump more than one point at a time, so some totals may have more or less possible/likely combinations of ability scores that add up to that total.
                 In particular, this calculator uses a direct calculation; the spikes are real and <i>not</i> due to any sort of sample size phenomenon.</li>
+            <li>If you specify to keep more dice than were rolled, the excess kept dice don't count.</li>
+            <li>The highest possible number on a die will never be rerolled, since you can't hope for a better result.</li>
         </ul>
         
         <h2>How does it work?</h2>
@@ -354,6 +356,7 @@
             point_buy_pf = numpy.array([-30, -25, -20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17])
             
             num_dice = int(js.document.getElementById('num_dice').value);
+            reroll_dice = int(js.document.getElementById('reroll_dice').value);
             die_size = int(js.document.getElementById('die_size').value);
             num_keep = int(js.document.getElementById('num_keep').value);
             num_keep = min(num_keep, num_dice);
@@ -362,7 +365,11 @@
             num_abilities = int(js.document.getElementById('num_abilities').value);
             num_arrays = int(js.document.getElementById('num_arrays').value);
             
-            single_ability = Die.d(die_size).keep_highest(num_dice, num_keep) + modifier
+            if reroll_dice >= die_size:
+                reroll_dice = die_size - 1
+            
+            single_die = Die.d(die_size).reroll(outcomes=numpy.arange(1, reroll_dice+1))
+            single_ability = single_die.keep_highest(num_dice, num_keep) + modifier
             single_ability = single_ability.clip(3, 18)
             single_ability = single_ability.keep_highest(num_ability_repeat)
             
@@ -423,7 +430,7 @@
             multiChart.update();
         }
         
-        async function updateSearchQuery() {
+        function updateSearchQuery() {
             let searchParams = $("form").serialize();
             history.replaceState(null, "", "?" + searchParams);
         }
