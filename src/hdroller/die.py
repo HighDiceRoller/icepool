@@ -119,15 +119,13 @@ class Die(metaclass=DieType):
     
     @cached_property
     def _cdf(self):
-        result = numpy.cumsum(self.pmf())
-        result = numpy.insert(result, 0, 0.0)
+        result = self._cweights / self.total_weight()
         result.setflags(write=False)
         return result
     
     @cached_property
     def _ccdf(self):
-        result = hdroller.math.reverse_cumsum(self.pmf())
-        result = numpy.append(result, 0.0)
+        result = self._ccweights / self.total_weight()
         result.setflags(write=False)
         return result
     
