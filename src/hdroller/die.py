@@ -719,7 +719,7 @@ class Die(metaclass=DieType):
         
         return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
     
-    def reroll(self, *, outcomes=None, max_times=None):
+    def reroll(self, outcomes=None, max_times=None):
         """
         Rerolls the given outcomes.
         outcomes: Selects which outcomes to reroll. Options:
