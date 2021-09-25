@@ -319,6 +319,7 @@
                     if selected_dist == 'pmf':
                         data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = die.pmf() * 100.0
                     else:
+                        data[:(single_ability.min_outcome()-3)] = 100.0
                         data[(single_ability.min_outcome()-3):(single_ability.max_outcome()-2)] = numpy.minimum(die.ccdf(), 1.0) * 100.0
                     js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
