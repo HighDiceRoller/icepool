@@ -307,7 +307,7 @@
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller')
+                await micropip.install('hdroller==0.1.1')
                 
                 import js
                 import numpy
