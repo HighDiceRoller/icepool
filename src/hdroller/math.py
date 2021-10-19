@@ -5,8 +5,10 @@ MAX_INT_FLOAT = 2 ** 53
 
 factorial = math.factorial
 
-# Same signature as scipy.comb with exact = True; only accepts integers.
 def comb(n, k, exact=True, repetition=False):
+    """
+    Same signature as scipy.comb with exact = True; only accepts integers.
+    """
     if repetition:
         return math.comb(n + k - 1, k)
     else:
@@ -41,4 +43,14 @@ def convolve_along_last_axis(a, v):
         result[..., i:i+a.shape[-1]] += a * v[..., i:i+1]
     
     return result
+
+def product_of_total_weights_is_exact(weight_arrays):
+    total_prod = 1.0
+    for weights in weight_arrays:
+        if not numpy.all(weights == numpy.floor(weights)):
+            return False
+        total_prod *= numpy.cumsum(weights)[-1]
+        if total_prod >= MAX_INT_FLOAT:
+            return False
+    return True
     
