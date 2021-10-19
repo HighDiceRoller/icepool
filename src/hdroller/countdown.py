@@ -19,20 +19,21 @@ def _countdown(die_sizes, keep_mask, weights=None):
     num_keep = numpy.count_nonzero(keep_mask)
     num_dice = len(die_sizes)
     
-    max_face = numpy.max(die_sizes) - 1
+    die_sizes_desc = numpy.flip(numpy.sort(die_sizes))
+    max_face = die_sizes_desc[0] - 1
+    max_totals = numpy.insert(numpy.cumsum((die_sizes_desc-1) * keep_mask_desc), 0, 0.0)
     if weights is None:
         weights = numpy.ones((max_face + 1,))
     if not hdroller.math.product_of_total_weights_is_exact(weights[:die_size] for die_size in die_sizes):
-        weights /= numpy.cumsum(weights)[-1]
+        weights = weights / numpy.cumsum(weights)[-1]
     weights_below = numpy.insert(numpy.cumsum(weights), 0, 0.0)
         
     # (number of consumed dice, running total) -> weight of having this running total. Denominator is equal to product of weights of the remaining dice and sizes.
-    state = numpy.zeros((num_dice + 1, num_keep * max_face + 1))
+    state = numpy.zeros((num_dice + 1, max_totals[-1] + 1))
     state[0, 0] = 1.0
     
     prev_num_dice = 0
     for curr_face in range(max_face, -1, -1):
-        print('curr_face:', curr_face)
         next_state = numpy.zeros_like(state)
         # The total number of dice that are large enough to roll the current face.
         curr_num_dice = numpy.count_nonzero(die_sizes > curr_face)
@@ -40,13 +41,12 @@ def _countdown(die_sizes, keep_mask, weights=None):
         weight_below = weights_below[curr_face]
         for prev_num_consumed_dice in range(0, prev_num_dice+1):
             num_active_dice = curr_num_dice - prev_num_consumed_dice
+            prev_max_total = max_totals[prev_num_consumed_dice]
             for new_num_consumed_dice in range(0, num_active_dice+1):
                 next_num_consumed_dice = prev_num_consumed_dice + new_num_consumed_dice
-                num_non_consumed_dice = num_active_dice - new_num_consumed_dice
-                comb = hdroller.math.comb(num_active_dice, new_num_consumed_dice) * numpy.power(weight, new_num_consumed_dice) # * numpy.power(weight_below, num_non_consumed_dice)
-                print('  prev_num_consumed_dice:', prev_num_consumed_dice, 'new_num_consumed_dice:', new_num_consumed_dice, 'comb:', comb)
+                comb = hdroller.math.comb(num_active_dice, new_num_consumed_dice) * numpy.power(weight, new_num_consumed_dice)
                 increase = numpy.count_nonzero(keep_mask_desc[prev_num_consumed_dice:next_num_consumed_dice]) * curr_face
-                prev_dist = state[prev_num_consumed_dice, :prev_num_consumed_dice*max_face+1]
+                prev_dist = state[prev_num_consumed_dice, :prev_max_total+1]
                 next_state[next_num_consumed_dice, increase:len(prev_dist)+increase] += prev_dist * comb
         state = next_state
         prev_num_dice = curr_num_dice
@@ -77,11 +77,12 @@ def _countdown(die_sizes, keep_mask, weights=None):
                 what does state represent? conditioned on this many dice used/remaining, weight of running total? final denominator = remaining weight ** number of eligible dice?
     """
 
-def _keep_pure_pool(die, num_dice, keep_mask):
-    die_sizes = numpy.array([len(die)] * num_dice)
+def _keep_pool(die, num_dice, keep_mask, die_sizes=None):
+    if die_sizes is None:
+        die_sizes = numpy.array([len(die)] * num_dice)
     min_outcome = numpy.count_nonzero(keep_mask) * die.min_outcome()
     return hdroller.Die(_countdown(die_sizes, keep_mask, weights=die.weights()), min_outcome)
 
-def _keep_mixed_standard(die_sizes, keep_mask):
+def _keep_standard(die_sizes, keep_mask):
     min_outcome = numpy.count_nonzero(keep_mask)
     return hdroller.Die(_countdown(die_sizes, keep_mask), min_outcome)
