@@ -44,13 +44,11 @@ def convolve_along_last_axis(a, v):
     
     return result
 
-def product_of_total_weights_is_exact(weight_arrays):
+def should_normalize_weight_product(weight_arrays):
     total_prod = 1.0
     for weights in weight_arrays:
-        if not numpy.all(weights == numpy.floor(weights)):
-            return False
         total_prod *= numpy.cumsum(weights)[-1]
         if total_prod >= MAX_INT_FLOAT:
-            return False
-    return True
+            return True
+    return False
     

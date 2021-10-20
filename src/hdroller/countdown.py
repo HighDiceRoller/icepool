@@ -7,6 +7,7 @@ import hdroller.math
 
 import numpy
 
+# TODO: faces vs. outcomes
 def countdown(keep_mask, die_sizes=None, die=None):
     """
     keep_mask: A mask of one boolean per die from lowest to highest, denoting whether to keep that sorted die.
@@ -16,7 +17,6 @@ def countdown(keep_mask, die_sizes=None, die=None):
         Individual dice will have faces equal to the first die_size faces of the reference die.
         If omitted, every die will have size equal to the reference die.
     """
-    
     if die is None and die_sizes is None:
         raise ValueError('At least one of die and die_sizes must be provided.')
     
@@ -31,6 +31,7 @@ def countdown(keep_mask, die_sizes=None, die=None):
         die_sizes = numpy.array([len(die)] * num_dice)
         die_sizes_desc = die_sizes
     else:
+        die_sizes = numpy.array(die_sizes)
         if len(die_sizes) != len(keep_mask):
             raise ValueError('die_sizes must have same len as keep_mask.')
         die_sizes_desc = numpy.flip(numpy.sort(die_sizes))
@@ -43,7 +44,7 @@ def countdown(keep_mask, die_sizes=None, die=None):
     
     weights = die.weights()
     
-    if not hdroller.math.product_of_total_weights_is_exact(weights[:die_size] for die_size in die_sizes):
+    if hdroller.math.should_normalize_weight_product(weights[:die_size] for die_size in die_sizes):
         weights = weights / numpy.cumsum(weights)[-1]
         
     # TODO: terminate early if there are no more dice to keep.
