@@ -7,7 +7,7 @@ import hdroller.math
 
 import numpy
 
-def countdown(keep_mask, die=None, die_sizes=None):
+def countdown(keep_mask, die_sizes=None, die=None):
     """
     keep_mask: A mask of one boolean per die from lowest to highest, denoting whether to keep that sorted die.
     die: A reference Die which weights each possible outcome of each individual die.
@@ -22,7 +22,7 @@ def countdown(keep_mask, die=None, die_sizes=None):
     
     num_keep = numpy.count_nonzero(keep_mask)
     if num_keep == 0:
-        return Die(0)
+        return hdroller.Die(0)
     
     keep_mask_desc = numpy.flip(keep_mask)
     num_dice = len(keep_mask)
@@ -31,6 +31,8 @@ def countdown(keep_mask, die=None, die_sizes=None):
         die_sizes = numpy.array([len(die)] * num_dice)
         die_sizes_desc = die_sizes
     else:
+        if len(die_sizes) != len(keep_mask):
+            raise ValueError('die_sizes must have same len as keep_mask.')
         die_sizes_desc = numpy.flip(numpy.sort(die_sizes))
         
     max_face = die_sizes_desc[0] - 1

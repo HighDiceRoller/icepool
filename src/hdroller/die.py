@@ -1,5 +1,5 @@
+import hdroller.countdown
 import hdroller.math
-import hdroller.die_repeater
 
 from collections import defaultdict
 from functools import cached_property, lru_cache
@@ -132,10 +132,6 @@ class Die(metaclass=DieType):
         result = self._ccweights / self.total_weight()
         result.setflags(write=False)
         return result
-    
-    @cached_property
-    def _repeater(self):
-        return hdroller.die_repeater.DieRepeater(self)
     
     # Creation.
     
@@ -542,21 +538,26 @@ class Die(metaclass=DieType):
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` highest.
         """
-        return self._repeater.keep_highest(num_dice, num_keep)
+        keep_mask = [False] * (num_dice - num_keep) + [True] * num_keep
+        return hdroller.countdown.countdown(keep_mask, die=self)
         
     def keep_lowest(self, num_dice, num_keep=1):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` lowest.
         """
-        return self._repeater.keep_lowest(num_dice, num_keep)
+        keep_mask = [True] * num_keep + [False] * (num_dice - num_keep)
+        return hdroller.countdown.countdown(keep_mask, die=self)
         
     def keep_index(self, num_dice, index):
         """
         Returns a Die representing:
-        Roll this Die `num_dice` times and take the `index`th from the bottom.
+        Roll this Die `num_dice` times and take the `index`th (starting from 0 at the bottom).
+        Negative values count from the top as Python indexing.
         """
-        return self._repeater.keep_index(num_dice, index)
+        keep_mask = [False] * num_dice
+        keep_mask[index] = True
+        return hdroller.countdown.countdown(keep_mask, die=self)
 
     # Comparators. These return a Die.
     
