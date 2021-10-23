@@ -533,8 +533,8 @@ class Die(metaclass=DieType):
         if num_dice % 2: result += self
         return result
     
-    def keep(self, num_dice, keep):
-        return hdroller.countdown.countdown(num_dice, keep, die=self)
+    def keep(self, num_dice, keep_indexes, max_outcomes=None):
+        return hdroller.countdown.keep(num_dice, keep_indexes, max_outcomes=max_outcomes, die=self)
         
     def keep_highest(self, num_dice, num_keep=1, num_drop=None):
         """
@@ -544,7 +544,7 @@ class Die(metaclass=DieType):
         if num_keep == 0:
             return Die(0)
         keep = slice(-(num_keep + (num_drop or 0)), num_drop)
-        return hdroller.countdown.countdown(num_dice, keep, die=self)
+        return hdroller.countdown.keep(num_dice, keep, die=self)
         
     def keep_lowest(self, num_dice, num_keep=1, num_drop=0):
         """
@@ -554,7 +554,7 @@ class Die(metaclass=DieType):
         if num_keep == 0:
             return Die(0)
         keep = slice(num_drop, (num_keep + (num_drop or 0)))
-        return hdroller.countdown.countdown(num_dice, keep, die=self)
+        return hdroller.countdown.keep(num_dice, keep, die=self)
         
     def keep_index(self, num_dice, index):
         """
@@ -562,7 +562,7 @@ class Die(metaclass=DieType):
         Roll this Die `num_dice` times and take the `index`th (in ascending order).
         Negative values count from the top as Python indexing.
         """
-        return hdroller.countdown.countdown(num_dice, index, die=self)
+        return hdroller.countdown.keep(num_dice, index, die=self)
 
     # Comparators. These return a Die.
     
