@@ -25,6 +25,7 @@ def countdown(keep_mask, die_sizes=None, die=None):
         return hdroller.Die(0)
     
     keep_mask_desc = numpy.flip(keep_mask)
+    keep_mask_desc_cumsum = numpy.insert(numpy.cumsum(keep_mask_desc), 0, 0.0)
     num_dice = len(keep_mask)
     
     if die_sizes is None:
@@ -60,15 +61,18 @@ def countdown(keep_mask, die_sizes=None, die=None):
         # The total number of dice that are large enough to roll the current face.
         curr_num_dice = numpy.count_nonzero(die_sizes > curr_face)
         weight = weights[curr_face]
-        for prev_num_consumed_dice in range(0, prev_num_dice+1):
-            num_active_dice = curr_num_dice - prev_num_consumed_dice
+        # The number of ways to roll exactly new_num_consumed_dice of the current face on num_active_dice.
+        conv = numpy.array([1.0])
+        for num_active_dice in range(0, curr_num_dice+1):
+            prev_num_consumed_dice = curr_num_dice - num_active_dice
+            prev_min_total = keep_mask_desc_cumsum[prev_num_consumed_dice] * (curr_face+1)
             prev_max_total = max_totals[prev_num_consumed_dice]
+            prev_dist = state[prev_num_consumed_dice, prev_min_total:prev_max_total+1]
             for new_num_consumed_dice in range(0, num_active_dice+1):
                 next_num_consumed_dice = prev_num_consumed_dice + new_num_consumed_dice
-                comb = hdroller.math.comb(num_active_dice, new_num_consumed_dice) * numpy.power(weight, new_num_consumed_dice)
-                increase = numpy.count_nonzero(keep_mask_desc[prev_num_consumed_dice:next_num_consumed_dice]) * curr_face
-                prev_dist = state[prev_num_consumed_dice, :prev_max_total+1]
-                next_state[next_num_consumed_dice, increase:len(prev_dist)+increase] += prev_dist * comb
+                increase = (keep_mask_desc_cumsum[next_num_consumed_dice] - keep_mask_desc_cumsum[prev_num_consumed_dice]) * curr_face
+                next_state[next_num_consumed_dice, prev_min_total+increase:prev_max_total+increase+1] += prev_dist * conv[new_num_consumed_dice]
+            conv = numpy.convolve(conv, [1.0, weight])
         state = next_state
         prev_num_dice = curr_num_dice
     
