@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cortex Prime calculator</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="shortcut icon" type="image/png" href="../die.png">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Cortex Prime calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
+    
+    <form id="inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+        Player pool:<br/>
+        <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
+        <input name="p6" id="p6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
+        <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
+        <input name="p10" id="p10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
+        <input name="p12" id="p12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
+        <input name="pd" id="pd" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
+        <input name="pk" id="pk" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
+        <br/>
+        Opposition pool:<br/>
+        <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
+        <input name="o6" id="o6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
+        <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
+        <input name="o10" id="o10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
+        <input name="o12" id="o12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
+        <input name="od" id="od" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
+        <input name="ok" id="ok" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
+    </form>
+    
+    <h2>Probability distribution of the total results</h2>
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="distSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling at least</option>
+            </select>
+        </div>
+        <canvas id="totalChart"></canvas>
+        <div style="font-size: 200%;">
+            Chance of success: <span id="successChance"></span>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        var totalChartContext = document.getElementById('totalChart').getContext('2d');
+        var totalChart = new Chart(totalChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Player',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        data: [],
+                    },
+                    {
+                        label: 'Opposition',
+                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                },
+            },
+        });
+        
+        function setLoadingText(text) {
+            console.log(text);
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
+                return;
+            }
+            totalChart.options.plugins.title.text = loadingText[0];
+            totalChart.update();
+        }
+        
+        async function initPyodide(){
+            setLoadingText('Loading pyodide')
+            let pyodide = await loadPyodide({
+                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
+            });
+            
+            await pyodide.loadPackage(["micropip", "numpy"], setLoadingText);
+            
+            setLoadingText('Loading hdroller')
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('hdroller==0.2.0')
+                
+                import js
+                import numpy
+                import pyodide
+                from hdroller import Die
+                
+                reference_die = Die.d12.relabel({1: 0})
+                die_sizes = [4, 6, 8, 10, 12]
+                
+                def calc_pool(prefix):
+                    pool = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
+                    num_drop = int(js.document.getElementById(prefix + 'd').value)
+                    num_keep = int(js.document.getElementById(prefix + 'k').value)
+                    return reference_die.keep_highest(num_dice=len(pool), num_keep=num_keep, num_drop=num_drop, max_outcomes=pool)
+            `);
+            
+            totalChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            return pyodide;
+        }
+        let pyodideReadyPromise = initPyodide();
+        
+        async function updateRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            die_player = calc_pool('p')
+            die_opposition = calc_pool('o')
+            die_player, die_opposition = Die._align([die_player, die_opposition])
+            
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
+            `);
+        }
+        
+        async function updateTotalChart() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            
+            js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
+            
+            selected_dist = js.document.getElementById('distSelect').value
+            
+            if selected_dist == 'pmf':
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.pmf() * 100.0])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.pmf() * 100.0])
+            else:
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf() * 100.0])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf() * 100.0])
+            
+            
+            `);
+            
+            totalChart.update();
+        }
+        
+        function updateAll() {
+            updateRoll();
+            updateTotalChart();
+        }
+        
+        function validateInputsAndUpdate() {
+            let changed = false;
+            $("input").each(function() {
+                let originalVal = parseInt($(this).val());
+                let maxVal = parseInt($(this).attr('max'));
+                let minVal = parseInt($(this).attr('min'));
+                if (originalVal > maxVal) {
+                    $(this).val(maxVal);
+                    changed = true;
+                } else if (originalVal < minVal) {
+                    $(this).val(minVal);
+                    changed = true;
+                }
+            });
+            
+            if (changed) {
+                updateAll();
+            }
+        }
+        
+        let rollReadyPromise = updateRoll();
+        updateAll();
+        
+        let inputs = document.querySelector('#inputs');
+        inputs.addEventListener('change', validateInputsAndUpdate);
+        inputs.addEventListener('input', updateAll);
+        
+        let dist_select = document.querySelector('#distSelect');
+        dist_select.addEventListener('input', updateTotalChart);
+    </script>
+</body>
