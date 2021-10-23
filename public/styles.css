@@ -1,0 +1,33 @@
+body {
+    color: #0f0f0f;
+    background-color: #efefef;
+    max-width: 1920px;
+    margin: auto;
+    font-family: Helvetica, sans-serif;
+}
+
+form {
+    font-size: 150%;
+}
+
+input[type='number'] {
+    font-size: 100%;
+    width: 2em;
+}
+
+select {
+    font-size: 100%;
+}
+
+canvas {
+    background-color: #f7f7f7;
+}
+
+th, td {
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+
+td {
+    text-align: right;
+}
