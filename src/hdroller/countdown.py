@@ -8,9 +8,10 @@ import hdroller.math
 import numpy
 
 # TODO: faces vs. outcomes
-def countdown(keep_mask, die_sizes=None, die=None):
+def countdown(num_dice, keep, die_sizes=None, die=None):
     """
-    keep_mask: A mask of one boolean per die from lowest to highest, denoting whether to keep that sorted die.
+    num_dice: The number of dice to roll.
+    keep: A specification of which dice to keep from lowest to highest. This can be any way of indexing an array of num_dice elements.
     die: A reference Die which weights each possible outcome of each individual die.
         If omitted, outcomes will be 1 ... max(die_sizes) inclusive with a weight of 1 per outcome.
     die_sizes: An array of integers, one per die.
@@ -20,20 +21,22 @@ def countdown(keep_mask, die_sizes=None, die=None):
     if die is None and die_sizes is None:
         raise ValueError('At least one of die and die_sizes must be provided.')
     
+    keep_mask = numpy.zeros((num_dice,), dtype=bool)
+    keep_mask[keep] = True
+    
     num_keep = numpy.count_nonzero(keep_mask)
     if num_keep == 0:
         return hdroller.Die(0)
     
     keep_mask_desc = numpy.flip(keep_mask)
     keep_mask_desc_cumsum = numpy.insert(numpy.cumsum(keep_mask_desc), 0, 0.0)
-    num_dice = len(keep_mask)
     
     if die_sizes is None:
         die_sizes = numpy.array([len(die)] * num_dice)
         die_sizes_desc = die_sizes
     else:
         die_sizes = numpy.array(die_sizes)
-        if len(die_sizes) != len(keep_mask):
+        if len(die_sizes) != num_dice:
             raise ValueError('die_sizes must have same len as keep_mask.')
         die_sizes_desc = numpy.flip(numpy.sort(die_sizes))
         

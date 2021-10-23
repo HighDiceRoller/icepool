@@ -532,32 +532,37 @@ class Die(metaclass=DieType):
         result = half_result + half_result
         if num_dice % 2: result += self
         return result
+    
+    def keep(self, num_dice, keep):
+        return hdroller.countdown.countdown(num_dice, keep, die=self)
         
-    def keep_highest(self, num_dice, num_keep=1):
+    def keep_highest(self, num_dice, num_keep=1, num_drop=None):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` highest.
         """
-        keep_mask = [False] * (num_dice - num_keep) + [True] * num_keep
-        return hdroller.countdown.countdown(keep_mask, die=self)
+        if num_keep == 0:
+            return Die(0)
+        keep = slice(-(num_keep + (num_drop or 0)), num_drop)
+        return hdroller.countdown.countdown(num_dice, keep, die=self)
         
-    def keep_lowest(self, num_dice, num_keep=1):
+    def keep_lowest(self, num_dice, num_keep=1, num_drop=0):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` lowest.
         """
-        keep_mask = [True] * num_keep + [False] * (num_dice - num_keep)
-        return hdroller.countdown.countdown(keep_mask, die=self)
+        if num_keep == 0:
+            return Die(0)
+        keep = slice(num_drop, (num_keep + (num_drop or 0)))
+        return hdroller.countdown.countdown(num_dice, keep, die=self)
         
     def keep_index(self, num_dice, index):
         """
         Returns a Die representing:
-        Roll this Die `num_dice` times and take the `index`th (starting from 0 at the bottom).
+        Roll this Die `num_dice` times and take the `index`th (in ascending order).
         Negative values count from the top as Python indexing.
         """
-        keep_mask = [False] * num_dice
-        keep_mask[index] = True
-        return hdroller.countdown.countdown(keep_mask, die=self)
+        return hdroller.countdown.countdown(num_dice, index, die=self)
 
     # Comparators. These return a Die.
     
