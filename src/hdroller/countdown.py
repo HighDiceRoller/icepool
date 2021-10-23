@@ -7,7 +7,7 @@ import hdroller.math
 
 import numpy
 
-def keep(num_dice, keep_indexes, max_outcomes=None, die=None):
+def keep(num_dice, keep_indexes, die=None, max_outcomes=None):
     """
     num_dice: The number of dice to roll.
     keep_indexes: A specification of which dice to keep from lowest to highest. This can be any way of indexing an array of num_dice elements.

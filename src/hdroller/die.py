@@ -534,35 +534,40 @@ class Die(metaclass=DieType):
         return result
     
     def keep(self, num_dice, keep_indexes, max_outcomes=None):
-        return hdroller.countdown.keep(num_dice, keep_indexes, max_outcomes=max_outcomes, die=self)
+        """
+        Returns a Die representing:
+        Roll this Die `num_dice` times, sort them (in ascending order) and sum the dice in `keep_indexes`.
+        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
+        """
+        return hdroller.countdown.keep(num_dice, keep_indexes, die=self, max_outcomes=max_outcomes)
         
-    def keep_highest(self, num_dice, num_keep=1, num_drop=None):
+    def keep_highest(self, num_dice, num_keep=1, num_drop=0, max_outcomes=None):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` highest.
+        num_drop: If provided, this many highest dice will be dropped before keeping.
+        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
         """
         if num_keep == 0:
             return Die(0)
-        keep = slice(-(num_keep + (num_drop or 0)), num_drop)
-        return hdroller.countdown.keep(num_dice, keep, die=self)
+        start = -(num_keep + (num_drop or 0))
+        stop = -num_drop if num_drop > 0 else None
+        keep = slice(start, stop)
+        return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
         
-    def keep_lowest(self, num_dice, num_keep=1, num_drop=0):
+    def keep_lowest(self, num_dice, num_keep=1, num_drop=0, max_outcomes=None):
         """
         Returns a Die representing:
         Roll this Die `num_dice` times and sum the `num_keep` lowest.
+        num_drop: If provided, this many lowest dice will be dropped before keeping.
+        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
         """
         if num_keep == 0:
             return Die(0)
-        keep = slice(num_drop, (num_keep + (num_drop or 0)))
-        return hdroller.countdown.keep(num_dice, keep, die=self)
-        
-    def keep_index(self, num_dice, index):
-        """
-        Returns a Die representing:
-        Roll this Die `num_dice` times and take the `index`th (in ascending order).
-        Negative values count from the top as Python indexing.
-        """
-        return hdroller.countdown.keep(num_dice, index, die=self)
+        start = num_drop if num_drop > 0 else None
+        stop = num_keep + (num_drop or 0)
+        keep = slice(start, stop)
+        return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
 
     # Comparators. These return a Die.
     
