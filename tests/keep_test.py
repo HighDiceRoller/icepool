@@ -1,7 +1,6 @@
 import _context
 
 from hdroller import Die
-import hdroller.die_sort
 import pytest
 
 import numpy
