@@ -383,12 +383,12 @@ class Die(metaclass=DieType):
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = Die._align([self, other], lcd=False)
+        a, b = Die.align([self, other])
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = Die._align([self, other], lcd=False)
+        a, b = Die.align([self, other])
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
     def total_weight(self):
@@ -467,7 +467,7 @@ class Die(metaclass=DieType):
             subresults.append(other.repeat_and_sum(die_count))
             die_count_weights.append(die_count_weight)
         
-        subresults = Die._align(subresults)
+        subresults = Die.align(subresults)
         weights = sum(subresult.weights() * die_count_weight for subresult, die_count_weight in zip(subresults, die_count_weights))
         
         return Die(weights, subresults[0].min_outcome())
@@ -500,10 +500,10 @@ class Die(metaclass=DieType):
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = Die._listify_dice(dice)
-        dice_aligned = Die._align(dice)
+        dicealigned = Die.align(dice)
         cweights = 1.0
-        for die in dice_aligned: cweights *= die.cweights()
-        return Die.from_cweights(cweights, dice_aligned[0].min_outcome())._trim()
+        for die in dicealigned: cweights *= die.cweights()
+        return Die.from_cweights(cweights, dicealigned[0].min_outcome()).trim()
     
     def min(*dice):
         """
@@ -512,10 +512,10 @@ class Die(metaclass=DieType):
         """
         dice = Die._listify_dice(dice)
         # TODO: use weights
-        dice_aligned = Die._align(dice)
+        dicealigned = Die.align(dice)
         ccweights = 1.0
-        for die in dice_aligned: ccweights *= die.ccweights()
-        return Die.from_ccweights(ccweights, dice_aligned[0].min_outcome())._trim()
+        for die in dicealigned: ccweights *= die.ccweights()
+        return Die.from_ccweights(ccweights, dicealigned[0].min_outcome()).trim()
     
     def repeat_and_sum(self, num_dice):
         """
@@ -577,7 +577,7 @@ class Die(metaclass=DieType):
         This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
-        a, b = Die._align([self, other], lcd=False)
+        a, b = Die.align([self, other])
         n = numpy.dot(a.weights(), b.weights())
         d = a.total_weight() * b.total_weight()
         return Die.bernoulli(n, d)
@@ -664,6 +664,45 @@ class Die(metaclass=DieType):
     def __rxor__(self, other):
         return self._xor(Die(other))
     
+    # Alignment.
+    
+    def align(*dice):
+        """ 
+        Pads all the dice with zeros so that all have the same min and max outcome.
+        Note that, unlike most methods, this may leave leading or trailing zero weights.
+        """
+        dice = Die._listify_dice(dice)
+        
+        min_outcome = min(die.min_outcome() for die in dice)
+        max_outcome = max(die.max_outcome() for die in dice)
+        lenalign = max_outcome - min_outcome + 1
+        
+        result_total_weight = 1.0
+        if all(die.is_exact() for die in dice):
+            lcd = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
+            if lcd <= hdroller.math.MAX_INT_FLOAT:
+                result_total_weight = lcd
+        
+        result = []
+        for die in dice:
+            weight_factor = result_total_weight / die.total_weight()
+            left_dst_index = die.min_outcome() - min_outcome
+            weights = numpy.zeros((lenalign,))
+            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
+            result.append(Die(weights, min_outcome))
+        
+        return tuple(result)
+    
+    def trim(self):
+        """
+        Returns a copy of this Die with the leading and trailing zeros trimmed.
+        Most methods already return a trimmed result by default.
+        """
+        nz = numpy.nonzero(self.weights())[0]
+        min_outcome = self.min_outcome() + nz[0]
+        weights = self.weights()[nz[0]:nz[-1]+1]
+        return Die(weights, min_outcome)
+    
     # Mixtures.
     
     @staticmethod
@@ -677,7 +716,7 @@ class Die(metaclass=DieType):
             If not provided, all arguments are mixed uniformly.
         """
         dice = Die._listify_dice(dice)
-        dice = Die._align(dice)
+        dice = Die.align(dice)
         
         if mix_weights is None:
             mix_weights = numpy.ones((len(dice),))
@@ -722,8 +761,8 @@ class Die(metaclass=DieType):
         
         non_explode_weights = self.weights() - explode_weights
         
-        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
-        explode_die = Die(explode_weights, self.min_outcome())._trim()
+        non_explode_die = Die(non_explode_weights, self.min_outcome()).trim()
+        explode_die = Die(explode_weights, self.min_outcome()).trim()
         explode_die += self.explode(max_times-1, outcomes=outcomes)
         
         mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
@@ -753,7 +792,7 @@ class Die(metaclass=DieType):
             rerollable_factor = numpy.power(reroll_chance_single, max_times)
             stop_factor = (1.0 - numpy.power(reroll_chance_single, max_times+1)) / (1.0 - reroll_chance_single)
             weights = rerollable_factor * reroll_weights + stop_factor * non_reroll_weights
-        return Die(weights, self.min_outcome())._trim()
+        return Die(weights, self.min_outcome()).trim()
     
     def combine(*dice, func=None):
         """
@@ -834,39 +873,3 @@ class Die(metaclass=DieType):
             raise TypeError('Invalid type for selecting outcomes.')
         
         return factors * self.weights()
-    
-    def _align(dice, lcd=True):
-        """ 
-        Pads all the dice with zeros so that all have the same min and max outcome.
-        If lcd is True, all weights are also multiplied to the least common denominator if all dice are exact.
-        Caller is responsible for any trimming before returning dice publically.
-        """
-        min_outcome = min(die.min_outcome() for die in dice)
-        max_outcome = max(die.max_outcome() for die in dice)
-        len_align = max_outcome - min_outcome + 1
-        
-        result_total_weight = 1.0
-        if lcd and all(die.is_exact() for die in dice):
-            lcd = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
-            if lcd <= hdroller.math.MAX_INT_FLOAT:
-                result_total_weight = lcd
-        
-        result = []
-        for die in dice:
-            weight_factor = result_total_weight / die.total_weight()
-            left_dst_index = die.min_outcome() - min_outcome
-            weights = numpy.zeros((len_align,))
-            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
-            result.append(Die(weights, min_outcome))
-        
-        return tuple(result)
-    
-    def _trim(self):
-        """
-        Returns a copy of this Die with the leading and trailing zeros trimmed.
-        Shouldn't be usually necessary publically, since methods are written to stay trimmed publically.
-        """
-        nz = numpy.nonzero(self.weights())[0]
-        min_outcome = self.min_outcome() + nz[0]
-        weights = self.weights()[nz[0]:nz[-1]+1]
-        return Die(weights, min_outcome)
