@@ -511,7 +511,6 @@ class Die(metaclass=DieType):
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = Die._listify_dice(dice)
-        # TODO: use weights
         dice_aligned = Die.align(dice)
         ccweights = 1.0
         for die in dice_aligned: ccweights *= die.ccweights()
@@ -548,8 +547,11 @@ class Die(metaclass=DieType):
         num_drop: If provided, this many highest dice will be dropped before keeping.
         max_outcomes: If provided, this limits the maximum outcomes of individual dice.
         """
-        if num_keep == 0:
+        if num_dice <= num_drop or num_keep == 0:
             return Die(0)
+        elif num_keep == 1 and num_drop == 0 and max_outcomes is None:
+            return Die.from_cweights(numpy.power(self.cweights(), num_dice), self.min_outcome())
+        
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         keep = slice(start, stop)
@@ -562,8 +564,11 @@ class Die(metaclass=DieType):
         num_drop: If provided, this many lowest dice will be dropped before keeping.
         max_outcomes: If provided, this limits the maximum outcomes of individual dice.
         """
-        if num_keep == 0:
+        if num_dice <= num_drop or num_keep == 0:
             return Die(0)
+        elif num_keep == 1 and num_drop == 0 and max_outcomes is None:
+            return Die.from_ccweights(numpy.power(self.ccweights(), num_dice), self.min_outcome())
+        
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         keep = slice(start, stop)
