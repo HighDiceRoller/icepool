@@ -102,19 +102,24 @@ def best_set(die, num_dice, score_func=None):
     """
     die: The die to roll.
     num_dice: The number of dice to roll.
-    score_func: A function set_size, set_outcome -> score. This should have the following properties:
-    * The maximum possible outcome should correspond to rolling the maximum possible on all dice.
-    * The minimum possible outcome should be non-negative.
+    score_func: A function set_size, set_outcome -> score.
       If not provided, a default function will be used that prioritizes set size, then outcome.
     """
     if score_func is None:
-        def score_func(set_dice, set_outcome):
-            return set_dice * len(die) + (set_outcome - die.min_outcome())
+        def score_func(set_size, set_outcome):
+            return set_size * len(die) + (set_outcome - die.min_outcome())
+            
+    min_score = None
+    max_score = None
     
-    max_score = score_func(num_dice, die.max_outcome())
+    for set_size in range(num_dice+1):
+        for outcome in die.outcomes():
+            score = score_func(set_size, outcome)
+            min_score = score if min_score is None else min(score, min_score)
+            max_score = score if max_score is None else max(score, max_score)
     
     # (number of consumed dice, running best score) -> number of ways of rolling this running score with all consumed dice before the current face.
-    state = numpy.zeros((num_dice+1, max_score+1))
+    state = numpy.zeros((num_dice+1, max_score-min_score+1))
     state[0, 0] = 1.0
     
     for outcome, weight in zip(die.outcomes(), die.weights()):
@@ -123,10 +128,10 @@ def best_set(die, num_dice, score_func=None):
         for num_remaining_dice in range(0, num_dice+1):
             prev_num_consumed_dice = num_dice - num_remaining_dice
             for set_size in range(0, num_remaining_dice+1):
-                new_score = score_func(set_size, outcome)
+                new_index = score_func(set_size, outcome) - min_score
                 next_num_consumed_dice = set_size + prev_num_consumed_dice
-                next_state[next_num_consumed_dice, new_score] += numpy.sum(state[prev_num_consumed_dice, :new_score]) * conv[set_size]
-                next_state[next_num_consumed_dice, new_score:] += state[prev_num_consumed_dice, new_score:] * conv[set_size]
+                next_state[next_num_consumed_dice, new_index] += numpy.sum(state[prev_num_consumed_dice, :new_index]) * conv[set_size]
+                next_state[next_num_consumed_dice, new_index:] += state[prev_num_consumed_dice, new_index:] * conv[set_size]
             conv = numpy.convolve(conv, [1.0, weight])
         state = next_state
-    return hdroller.Die(state[num_dice, :], 0).trim()
+    return hdroller.Die(state[num_dice, :], min_score).trim()

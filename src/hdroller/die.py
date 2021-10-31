@@ -577,9 +577,7 @@ class Die(metaclass=DieType):
     def best_set(self, num_dice, score_func=None):
         """
         num_dice: The number of dice to roll.
-        score_func: A function set_size, set_outcome -> score. This should have the following properties:
-        * The maximum possible outcome should correspond to rolling the maximum possible on all dice.
-        * The minimum possible outcome should be non-negative.
+        score_func: A function set_size, set_outcome -> score.
           If not provided, a default function will be used that prioritizes set size, then outcome.
         """
         return hdroller.countdown.best_set(self, num_dice, score_func)
