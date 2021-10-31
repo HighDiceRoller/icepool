@@ -573,6 +573,16 @@ class Die(metaclass=DieType):
         stop = num_keep + (num_drop or 0)
         keep = slice(start, stop)
         return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
+        
+    def best_set(self, num_dice, score_func=None):
+        """
+        num_dice: The number of dice to roll.
+        score_func: A function set_size, set_outcome -> score. This should have the following properties:
+        * The maximum possible outcome should correspond to rolling the maximum possible on all dice.
+        * The minimum possible outcome should be non-negative.
+          If not provided, a default function will be used that prioritizes set size, then outcome.
+        """
+        return hdroller.countdown.best_set(self, num_dice, score_func)
 
     # Comparators. These return a Die.
     
