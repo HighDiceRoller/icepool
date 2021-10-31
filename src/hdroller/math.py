@@ -29,6 +29,13 @@ def reverse_cumsum(a, axis=None, *args, **kwargs):
     Any additional arguments are sent to cumsum.
     """
     return numpy.flip(numpy.cumsum(numpy.flip(a, axis=axis), axis=axis, *args, **kwargs), axis=axis)
+    
+def reverse_cumprod(a, axis=None, *args, **kwargs):
+    """
+    Applies a cumsum in reverse direction along the specified axis.
+    Any additional arguments are sent to cumsum.
+    """
+    return numpy.flip(numpy.cumprod(numpy.flip(a, axis=axis), axis=axis, *args, **kwargs), axis=axis)
 
 def convolve_along_last_axis(a, v):
     if a.shape[-1] < v.shape[-1]:
