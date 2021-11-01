@@ -574,13 +574,18 @@ class Die(metaclass=DieType):
         keep = slice(start, stop)
         return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
         
-    def best_set(self, num_dice, score_func=None):
+    def best_set(self, num_dice, match_func=None, straight_func=None):
         """
+        die: The die to roll.
         num_dice: The number of dice to roll.
-        score_func: A function set_size, set_outcome -> score.
-          If not provided, a default function will be used that prioritizes set size, then outcome.
+        match_func: A function match_size, set_outcome -> score.
+        straight_func: A function straight_size, start_outcome -> score.
+          Increasing the length of a straight should never decrease its score.
+        
+        Returns:
+            A Die representing the highest scoring set.
         """
-        return hdroller.countdown.best_set(self, num_dice, score_func)
+        return hdroller.countdown.best_set(self, num_dice, match_func=match_func, straight_func=straight_func)
 
     # Comparators. These return a Die.
     

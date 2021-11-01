@@ -98,40 +98,65 @@ def keep(num_dice, keep_indexes, die=None, max_outcomes=None):
     result_min_outcome = num_keep * die.min_outcome()
     return hdroller.Die(result_weights, result_min_outcome)
 
-def best_set(die, num_dice, score_func=None):
+def best_set(die, num_dice, match_func=None, straight_func=None):
     """
     die: The die to roll.
     num_dice: The number of dice to roll.
-    score_func: A function set_size, set_outcome -> score.
-      If not provided, a default function will be used that prioritizes set size, then outcome.
+    match_func: A function match_size, set_outcome -> score.
+    straight_func: A function straight_size, start_outcome -> score.
+      Increasing the length of a straight should never decrease its score.
+    
+    Returns:
+        A Die representing the highest scoring set.
     """
-    if score_func is None:
-        def score_func(set_size, set_outcome):
-            return set_size * len(die) + (set_outcome - die.min_outcome())
-            
-    min_score = None
-    max_score = None
+    if not (match_func or straight_func):
+        raise ValueError('At least one of match_func or straight_func must be provided.')
     
-    for set_size in range(num_dice+1):
+    if num_dice == 0:
+        return hdroller.Die(0)
+    
+    # TODO: normalize if necessary
+    
+    min_score = (match_func or straight_func)(0, die.min_outcome())
+    max_score = (match_func or straight_func)(0, die.min_outcome())
+    
+    for size in range(1, num_dice+1):
         for outcome in die.outcomes():
-            score = score_func(set_size, outcome)
-            min_score = score if min_score is None else min(score, min_score)
-            max_score = score if max_score is None else max(score, max_score)
+            if match_func:
+                score = match_func(size, outcome)
+                min_score = min(min_score, score)
+                max_score = max(max_score, score)
+            if straight_func and size + outcome - 1 <= die.max_outcome():
+                score = straight_func(size, outcome)
+                min_score = min(min_score, score)
+                max_score = max(max_score, score)
     
-    # (number of consumed dice, running best score) -> number of ways of rolling this running score with all consumed dice before the current face.
-    state = numpy.zeros((num_dice+1, max_score-min_score+1))
-    state[0, 0] = 1.0
+    # (straight size, number of consumed dice, running best score) -> number of ways of rolling this straight size and running score with all consumed dice before the current face.
+    max_straight_size = 0 if straight_func is None else num_dice
+    state = numpy.zeros((max_straight_size+1, num_dice+1, max_score-min_score+1))
+    state[0, 0, 0] = 1.0
     
-    for outcome, weight in zip(die.outcomes(), die.weights()):
+    for outcome_index, (outcome, weight) in enumerate(zip(die.outcomes(), die.weights())):
         next_state = numpy.zeros_like(state)
         conv = numpy.array([1.0])
         for num_remaining_dice in range(0, num_dice+1):
             prev_num_consumed_dice = num_dice - num_remaining_dice
-            for set_size in range(0, num_remaining_dice+1):
-                new_index = score_func(set_size, outcome) - min_score
-                next_num_consumed_dice = set_size + prev_num_consumed_dice
-                next_state[next_num_consumed_dice, new_index] += numpy.sum(state[prev_num_consumed_dice, :new_index]) * conv[set_size]
-                next_state[next_num_consumed_dice, new_index:] += state[prev_num_consumed_dice, new_index:] * conv[set_size]
+            max_prev_straight_size = min(outcome_index, prev_num_consumed_dice, max_straight_size)
+            # No dice rolled this outcome. All straights are broken, everything else remains the same.
+            next_state[0, prev_num_consumed_dice, :] = numpy.sum(state[:outcome_index+1, prev_num_consumed_dice, :], axis=0) * conv[0]
+            # At least one die rolled this outcome.
+            for match_size in range(1, num_remaining_dice+1):
+                match_score = match_func(match_size, outcome) if match_func else min_score
+                next_num_consumed_dice = match_size + prev_num_consumed_dice
+                for prev_straight_size in range(max_prev_straight_size+1):
+                    next_straight_size = min(prev_straight_size + 1, max_straight_size) if straight_func else 0
+                    straight_score = straight_func(next_straight_size, outcome - prev_straight_size) if straight_func else min_score
+
+                    next_score = max(match_score, straight_score)
+                    next_index = next_score - min_score
+                    next_state[next_straight_size, next_num_consumed_dice, next_index] += numpy.sum(state[prev_straight_size, prev_num_consumed_dice, :next_index]) * conv[match_size]
+                    next_state[next_straight_size, next_num_consumed_dice, next_index:] += state[prev_straight_size, prev_num_consumed_dice, next_index:] * conv[match_size]
             conv = numpy.convolve(conv, [1.0, weight])
         state = next_state
-    return hdroller.Die(state[num_dice, :], min_score).trim()
+    result_weights = numpy.sum(state[:, num_dice, :], axis=0)
+    return hdroller.Die(result_weights, min_score).trim()
