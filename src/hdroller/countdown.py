@@ -117,8 +117,8 @@ def best_set(die, num_dice, match_func=None, straight_func=None):
     
     # TODO: normalize if necessary
     
-    min_score = (match_func or straight_func)(0, die.min_outcome())
-    max_score = (match_func or straight_func)(0, die.min_outcome())
+    min_score = (match_func or straight_func)(1, die.min_outcome())
+    max_score = (match_func or straight_func)(1, die.min_outcome())
     
     for size in range(1, num_dice+1):
         for outcome in die.outcomes():
