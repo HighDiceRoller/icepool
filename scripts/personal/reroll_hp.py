@@ -27,4 +27,5 @@ def opt_hp_at_max_level(die, max_level):
 
 dice = [Die.d4, Die.d6, Die.d8, Die.d10, Die.d12]
 for die in dice:
+    # First level always rolls max hp, so we add it afterwards.
     print(opt_hp_at_max_level(die, 19) + die.max_outcome())
