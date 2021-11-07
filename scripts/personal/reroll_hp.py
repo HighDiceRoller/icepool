@@ -20,7 +20,7 @@ def opt_hp_at_max_level(die, max_level):
 
         return max(hp_if_no_reroll, hp_if_reroll)
 
-    return inner(1, die.max_outcome())
+    return inner(0, 0)
 
 dice = [Die.d4, Die.d6, Die.d8, Die.d10, Die.d12]
 for die in dice:
