@@ -42,7 +42,7 @@
             Show:
             <select id="distSelect">
                 <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf"><i>Chance of rolling at least</option>
+                <option value="ccdf"><i>Chance of rolling greater than</option>
             </select>
         </div>
         <canvas id="totalChart"></canvas>
@@ -263,8 +263,8 @@
                 js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.pmf() * 100.0])
                 js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.pmf() * 100.0])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf() * 100.0])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf() * 100.0])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf(inclusive=False) * 100.0])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf(inclusive=False) * 100.0])
                 
             `);
             
@@ -353,12 +353,25 @@
         <h2>Notes</h2>
         
         <ul>
-            <li>Remember that players lose ties.</li>
+            <li>Remember that players lose ties. This is why the chart for totals has an option for "chance of rolling greater than" while the chart for hitches has an option for "chance of rolling at least".</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
         </ul>
         
+        <h3>How does it work?</h3>
+        <p>
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library, itself powered by <a href="https://numpy.org/">numpy</a>.
+        </p>
+        
         <h3>Prior work</h3>
-        Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by Casey Link</a>, which uses exponential-time enumeration of all possible die results. While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute larger pools at interactive speed due to a polynomial-time algorithm.
+        <p>
+        Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by Casey Link</a>, which uses exponential-time enumeration of all possible die results.
+        While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute larger pools at interactive speed due to a polynomial-time algorithm.
+        </p>
+        
+        <p>
+            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+        </p>
     </div>
     
     <br/>
