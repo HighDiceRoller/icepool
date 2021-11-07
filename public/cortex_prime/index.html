@@ -36,7 +36,7 @@
         </form>
     </div>
     
-    <h2>Probability distribution of the total results</h2>
+    <h2>Probability distribution of the total</h2>
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -47,8 +47,21 @@
         </div>
         <canvas id="totalChart"></canvas>
         <div style="font-size: 200%;">
+            Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br/>
             Chance of player rolling greater than opposition: <span id="successChance"></span>
         </div>
+    </div>
+    
+    <h2>Probability distribution of hitches</h2>
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="hitchDistSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling at least</option>
+            </select>
+        </div>
+        <canvas id="hitchChart"></canvas>
     </div>
     
     <script type="text/javascript">
@@ -102,6 +115,56 @@
             },
         });
         
+        var hitchChartContext = document.getElementById('hitchChart').getContext('2d');
+        var hitchChart = new Chart(hitchChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Player',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        data: [],
+                    },
+                    {
+                        label: 'Opposition',
+                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Hitches',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                },
+            },
+        });
+        
         function setLoadingText(text) {
             console.log(text);
             let loadingText = text.match(/Loading \w+/);
@@ -110,6 +173,8 @@
             }
             totalChart.options.plugins.title.text = loadingText[0];
             totalChart.update();
+            hitchChart.options.plugins.title.text = loadingText[0];
+            hitchChart.update();
         }
         
         async function initPyodide(){
@@ -133,17 +198,26 @@
                 reference_die = Die.d12.relabel({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
-                die_player_unaligned = Die(0)
-                die_opposition_unaligned = Die(0)
+                die_player_unaligned, hitch_player_unaligned = Die(0), Die(0)
+                die_opposition_unaligned, hitch_opposition_unaligned = Die(0), Die(0)
                 
                 def calc_pool(prefix):
                     pool = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
-                    return reference_die.keep_highest(num_dice=len(pool), num_keep=num_keep, num_drop=num_drop, max_outcomes=pool)
+                    die = reference_die.keep_highest(num_dice=len(pool), num_keep=num_keep, num_drop=num_drop, max_outcomes=pool)
+                    hitch = Die(0)
+                    for n in pool:
+                        hitch += Die.coin(1, n)
+                    return die, hitch
             `);
             
             totalChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            hitchChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
                 display : false,
@@ -156,8 +230,9 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
-            die_player_unaligned = calc_pool('p')
+            die_player_unaligned, hitch_player_unaligned = calc_pool('p')
             die_player, die_opposition = Die._align([die_player_unaligned, die_opposition_unaligned])
+            hitch_player, hitch_opposition = Die._align([hitch_player_unaligned, hitch_opposition_unaligned])
             `);
         }
         
@@ -165,16 +240,19 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
-            die_opposition_unaligned = calc_pool('o')
+            die_opposition_unaligned, hitch_opposition_unaligned = calc_pool('o')
             die_player, die_opposition = Die._align([die_player_unaligned, die_opposition_unaligned])
+            hitch_player, hitch_opposition = Die._align([hitch_player_unaligned, hitch_opposition_unaligned])
             `);
         }
         
-        async function updateTotalChart() {
+        async function updateTotalResults() {
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
             
+            js.document.getElementById('pmean').innerHTML = '%0.2f' % die_player.mean()
+            js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
@@ -187,12 +265,33 @@
             else:
                 js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf() * 100.0])
                 js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf() * 100.0])
-            
-            
+                
             `);
             
             totalChart.update();
         }
+                
+        async function updateHitchResults() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            
+            js.hitchChart.data.labels = pyodide.to_js([float(x) for x in hitch_player.outcomes()])
+            
+            selected_dist = js.document.getElementById('hitchDistSelect').value
+            
+            if selected_dist == 'pmf':
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) for x in hitch_player.pmf() * 100.0])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) for x in hitch_opposition.pmf() * 100.0])
+            else:
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) for x in hitch_player.ccdf() * 100.0])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) for x in hitch_opposition.ccdf() * 100.0])
+            `);
+            
+            hitchChart.update();
+        }
+        
+        
         
         function validateInputs() {
             let changed = false;
@@ -215,33 +314,39 @@
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
-                updateTotalChart();
+                updateResults();
             }
         }
         
         function validateOppositionInputsAndUpdate() {
             if (validateInputs()) {
                 updateOppositionRoll();
-                updateTotalChart();
+                updateResults();
             }
         }
         
         updatePlayerRoll();
         updateOppositionRoll();
-        updateTotalChart();
+        updateTotalResults();
+        updateHitchResults();
         
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
         pinputs.addEventListener('input', updatePlayerRoll);
-        pinputs.addEventListener('input', updateTotalChart);
+        pinputs.addEventListener('input', updateTotalResults);
+        pinputs.addEventListener('input', updateHitchResults);
         
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
         oinputs.addEventListener('input', updateOppositionRoll);
-        oinputs.addEventListener('input', updateTotalChart);
+        oinputs.addEventListener('input', updateTotalResults);
+        oinputs.addEventListener('input', updateHitchResults);
         
         let dist_select = document.querySelector('#distSelect');
-        dist_select.addEventListener('input', updateTotalChart);
+        dist_select.addEventListener('input', updateTotalResults);
+        
+        let hitch_dist_select = document.querySelector('#hitchDistSelect');
+        hitch_dist_select.addEventListener('input', updateHitchResults);
     </script>
     
     <div style="max-width:1280px;">
