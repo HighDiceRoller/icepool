@@ -13,25 +13,28 @@
 <body>
     <h1>Cortex Prime calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
     
-    <form id="inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
-        Player pool:<br/>
-        <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
-        <input name="p6" id="p6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
-        <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
-        <input name="p10" id="p10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
-        <input name="p12" id="p12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
-        <input name="pd" id="pd" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
-        <input name="pk" id="pk" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
-        <br/>
-        Opposition pool:<br/>
-        <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
-        <input name="o6" id="o6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
-        <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
-        <input name="o10" id="o10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
-        <input name="o12" id="o12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
-        <input name="od" id="od" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
-        <input name="ok" id="ok" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
-    </form>
+    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+        <form id="pinputs">
+            Player pool:<br/>
+            <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
+            <input name="p6" id="p6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
+            <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
+            <input name="p10" id="p10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
+            <input name="p12" id="p12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
+            <input name="pd" id="pd" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
+            <input name="pk" id="pk" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
+        </form>
+        <form id="oinputs">
+            Opposition pool:<br/>
+            <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" />d4,
+            <input name="o6" id="o6" type="number" min="0" max="9" value="2" required onwheel="" />d6,
+            <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" />d8,
+            <input name="o10" id="o10" type="number" min="0" max="9" value="0" required onwheel="" />d10, and
+            <input name="o12" id="o12" type="number" min="0" max="9" value="0" required onwheel="" />d12, dropping the
+            <input name="od" id="od" type="number" min="0" max="9" value="0" required onwheel="" /> highest dice, then keeping the
+            <input name="ok" id="ok" type="number" min="1" max="9" value="2" required onwheel="" /> next highest dice.
+        </form>
+    </div>
     
     <h2>Probability distribution of the total results</h2>
     <div style="width: 80%; margin: auto;">
@@ -44,7 +47,7 @@
         </div>
         <canvas id="totalChart"></canvas>
         <div style="font-size: 200%;">
-            Chance of success: <span id="successChance"></span>
+            Chance of player rolling greater than opposition: <span id="successChance"></span>
         </div>
     </div>
     
@@ -130,6 +133,9 @@
                 reference_die = Die.d12.relabel({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
+                die_player_unaligned = Die(0)
+                die_opposition_unaligned = Die(0)
+                
                 def calc_pool(prefix):
                     pool = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
@@ -146,15 +152,21 @@
         }
         let pyodideReadyPromise = initPyodide();
         
-        async function updateRoll() {
+        async function updatePlayerRoll() {
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
-            die_player = calc_pool('p')
-            die_opposition = calc_pool('o')
-            die_player, die_opposition = Die._align([die_player, die_opposition])
+            die_player_unaligned = calc_pool('p')
+            die_player, die_opposition = Die._align([die_player_unaligned, die_opposition_unaligned])
+            `);
+        }
+        
+        async function updateOppositionRoll() {
+            let pyodide = await pyodideReadyPromise;
             
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
+            pyodide.runPython(`
+            die_opposition_unaligned = calc_pool('o')
+            die_player, die_opposition = Die._align([die_player_unaligned, die_opposition_unaligned])
             `);
         }
         
@@ -162,6 +174,8 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
+            
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
@@ -180,12 +194,7 @@
             totalChart.update();
         }
         
-        function updateAll() {
-            updateRoll();
-            updateTotalChart();
-        }
-        
-        function validateInputsAndUpdate() {
+        function validateInputs() {
             let changed = false;
             $("input").each(function() {
                 let originalVal = parseInt($(this).val());
@@ -200,19 +209,47 @@
                 }
             });
             
-            if (changed) {
-                updateAll();
+            return changed;
+        }
+        
+        function validatePlayerInputsAndUpdate() {
+            if (validateInputs()) {
+                updatePlayerRoll();
+                updateTotalChart();
             }
         }
         
-        let rollReadyPromise = updateRoll();
-        updateAll();
+        function validateOppositionInputsAndUpdate() {
+            if (validateInputs()) {
+                updateOppositionRoll();
+                updateTotalChart();
+            }
+        }
         
-        let inputs = document.querySelector('#inputs');
-        inputs.addEventListener('change', validateInputsAndUpdate);
-        inputs.addEventListener('input', updateAll);
+        updatePlayerRoll();
+        updateOppositionRoll();
+        updateTotalChart();
+        
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
+        pinputs.addEventListener('input', updatePlayerRoll);
+        pinputs.addEventListener('input', updateTotalChart);
+        
+        let oinputs = document.querySelector('#oinputs');
+        oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
+        oinputs.addEventListener('input', updateOppositionRoll);
+        oinputs.addEventListener('input', updateTotalChart);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalChart);
     </script>
+    
+    <div style="max-width:1280px;">
+        <h2>Notes</h2>
+        
+        <ul>
+            <li>Remember that players lose ties.</li>
+            <li>If more dice are specified to be dropped and/or kept than there are in the pool, the extra kept dice are not counted.</li>
+        </ul>
+    </div>
 </body>
