@@ -6,9 +6,6 @@ from hdroller import Die
 import numpy
 
 def opt_hp_at_max_level(die, max_level):
-    """
-    current_hp: A Die representing the distribution of current hit points.
-    """
     @functools.lru_cache(maxsize=None)
     def inner(current_level, current_hp):
         if current_level == max_level:
