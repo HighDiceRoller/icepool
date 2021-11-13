@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="../common.js"></script>
 </head>
 
 <body>
@@ -65,6 +66,8 @@
     </div>
     
     <script type="text/javascript">
+        setInputsFromSearchQuery();
+        
         var totalChartContext = document.getElementById('totalChart').getContext('2d');
         var totalChart = new Chart(totalChartContext, {
             type: 'line',
@@ -291,26 +294,6 @@
             hitchChart.update();
         }
         
-        
-        
-        function validateInputs() {
-            let changed = false;
-            $("input").each(function() {
-                let originalVal = parseInt($(this).val());
-                let maxVal = parseInt($(this).attr('max'));
-                let minVal = parseInt($(this).attr('min'));
-                if (originalVal > maxVal) {
-                    $(this).val(maxVal);
-                    changed = true;
-                } else if (originalVal < minVal) {
-                    $(this).val(minVal);
-                    changed = true;
-                }
-            });
-            
-            return changed;
-        }
-        
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
@@ -329,18 +312,21 @@
         updateOppositionRoll();
         updateTotalResults();
         updateHitchResults();
+        updateSearchQueryFromForms();
         
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
         pinputs.addEventListener('input', updatePlayerRoll);
         pinputs.addEventListener('input', updateTotalResults);
         pinputs.addEventListener('input', updateHitchResults);
+        pinputs.addEventListener('input', updateSearchQueryFromForms);
         
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
         oinputs.addEventListener('input', updateOppositionRoll);
         oinputs.addEventListener('input', updateTotalResults);
         oinputs.addEventListener('input', updateHitchResults);
+        oinputs.addEventListener('input', updateSearchQueryFromForms);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalResults);

@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="../common.js"></script>
 </head>
 
 <body>
@@ -156,16 +157,7 @@
     </div>
     
     <script type="text/javascript">
-        // Populate form.
-        let searchParams = new URLSearchParams(window.location.search);
-        searchParams.forEach(function(value, key) {
-            let n = parseInt(value);
-            let field = $("#" + key);
-            if (!(n >= field.attr('min') && n <= field.attr('max'))) {
-                return;
-            }
-            field.val(value);
-        });
+        setInputsFromSearchQuery();
         
         var maxProb = 1.0;
         
@@ -434,49 +426,30 @@
             multiChart.update();
         }
         
-        function updateSearchQuery() {
-            let searchParams = $("form").serialize();
-            history.replaceState(null, "", "?" + searchParams);
-        }
-        
         function updateAll() {
             updateRoll();
             updateRankChart();
             updateMulti();
-            updateSearchQuery();
+            updateSearchQueryFromForms();
         }
         
-        function validateInputs() {
-            let changed = false;
-            $("input").each(function() {
-                let originalVal = parseInt($(this).val());
-                let maxVal = parseInt($(this).attr('max'));
-                let minVal = parseInt($(this).attr('min'));
-                if (originalVal > maxVal) {
-                    $(this).val(maxVal);
-                    changed = true;
-                } else if (originalVal < minVal) {
-                    $(this).val(minVal);
-                    changed = true;
-                }
-            });
-            
-            if (changed) {
+        function validateInputsAndUpdate() {
+            if (validateInputs()) {
                 updateAll();
             }
         }
 
         let rollReadyPromise = updateRoll();
-        updateSearchQuery();
+        updateSearchQueryFromForms();
         updateRankChart();
         updateMulti();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
-        single_array_inputs.addEventListener('change', validateInputs);
+        single_array_inputs.addEventListener('change', validateInputsAndUpdate);
         single_array_inputs.addEventListener('input', updateAll);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
-        multiple_array_inputs.addEventListener('change', validateInputs);
+        multiple_array_inputs.addEventListener('change', validateInputsAndUpdate);
         multiple_array_inputs.addEventListener('input', updateAll);
         
         let rank_view_select = document.querySelector('#rankDistSelect');

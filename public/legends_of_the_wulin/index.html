@@ -8,13 +8,14 @@
     <script src="https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="../common.js"></script>
 </head>
 
 <body>
     <h1>Legends of the Wulin calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
     
     <form id="inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
-        Player pool:<br/>
+        <b>Player pool:</b><br/>
         Lake: <input name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
         River:
         <input name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
@@ -28,7 +29,7 @@
         <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
         <input name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
         <br/>
-        Opposition pool:<br/>
+        <b>Opposition pool:</b><br/>
         Lake: <input name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
         River:
         <input name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
@@ -55,11 +56,12 @@
         <canvas id="totalChart"></canvas>
         <div style="font-size: 200%;">
             Chance of player rolling greater than opposition: <span id="successChance"></span><br/>
-            Chance of player rolling tying opposition: <span id="tieChance"></span>
+            Chance of player tying opposition: <span id="tieChance"></span>
         </div>
     </div>
     
     <script type="text/javascript">
+        setInputsFromSearchQuery();
         var totalChartContext = document.getElementById('totalChart').getContext('2d');
         var totalChart = new Chart(totalChartContext, {
             type: 'line',
@@ -196,31 +198,19 @@
         }
         
         function validateInputsAndUpdate() {
-            let changed = false;
-            $("input").each(function() {
-                let originalVal = parseInt($(this).val());
-                let maxVal = parseInt($(this).attr('max'));
-                let minVal = parseInt($(this).attr('min'));
-                if (originalVal > maxVal) {
-                    $(this).val(maxVal);
-                    changed = true;
-                } else if (originalVal < minVal) {
-                    $(this).val(minVal);
-                    changed = true;
-                }
-            });
-            
-            if (changed) {
+            if (validateInputs()) {
                 updateAll();
             }
         }
         
         let rollReadyPromise = updateRoll();
         updateAll();
+        updateSearchQueryFromForms();
         
         let inputs = document.querySelector('#inputs');
         inputs.addEventListener('change', validateInputsAndUpdate);
         inputs.addEventListener('input', updateAll);
+        inputs.addEventListener('input', updateSearchQueryFromForms);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalChart);
