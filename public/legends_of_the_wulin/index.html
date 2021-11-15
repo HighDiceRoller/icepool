@@ -14,35 +14,39 @@
 <body>
     <h1>Legends of the Wulin calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
     
-    <form id="inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
-        <b>Player pool:</b><br/>
-        Lake: <input name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
-        River:
-        <input name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
-        <input name="p1" id="p1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
-        <input name="p2" id="p2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
-        <input name="p3" id="p3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
-        <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
-        <input name="p5" id="p5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
-        <input name="p6" id="p6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
-        <input name="p7" id="p7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
-        <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
-        <input name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
-        <br/>
-        <b>Opposition pool:</b><br/>
-        Lake: <input name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
-        River:
-        <input name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
-        <input name="o1" id="o1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
-        <input name="o2" id="o2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
-        <input name="o3" id="o3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
-        <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
-        <input name="o5" id="o5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
-        <input name="o6" id="o6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
-        <input name="o7" id="o7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
-        <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
-        <input name="o9" id="o9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
-    </form>
+    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+        <form id="pinputs">
+            <b>Player pool:</b><br/>
+            Lake: <input name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
+            River:
+            <input name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
+            <input name="p1" id="p1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
+            <input name="p2" id="p2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
+            <input name="p3" id="p3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
+            <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
+            <input name="p5" id="p5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
+            <input name="p6" id="p6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
+            <input name="p7" id="p7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
+            <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
+            <input name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
+            <br/>
+        </form>
+        <form id="oinputs">
+            <b>Opposition pool:</b><br/>
+            Lake: <input name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
+            River:
+            <input name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
+            <input name="o1" id="o1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
+            <input name="o2" id="o2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
+            <input name="o3" id="o3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
+            <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
+            <input name="o5" id="o5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
+            <input name="o6" id="o6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
+            <input name="o7" id="o7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
+            <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
+            <input name="o9" id="o9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
+        </form>
+    </div>
     
     <h2>Probability distribution of the total results</h2>
     <div style="width: 80%; margin: auto;">
@@ -140,6 +144,9 @@
                 import pyodide
                 from hdroller import Die
                 
+                die_player_unaligned = Die(0)
+                die_opposition_unaligned = Die(0)
+                
                 def calc_pool(prefix):
                     lake = int(js.document.getElementById('%slake' % prefix).value)
                     river = numpy.array([int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10)])
@@ -157,16 +164,21 @@
         }
         let pyodideReadyPromise = initPyodide();
         
-        async function updateRoll() {
+        async function updatePlayerRoll() {
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
-            die_player = calc_pool('p')
-            die_opposition = calc_pool('o')
-            die_player, die_opposition = Die.align([die_player, die_opposition])
+            die_player_unaligned = calc_pool('p')
+            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
+            `);
+        }
+        
+        async function updateOppositionRoll() {
+            let pyodide = await pyodideReadyPromise;
             
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
-            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (float(die_player == die_opposition)  * 100.0)
+            pyodide.runPython(`
+            die_opposition_unaligned = calc_pool('o')
+            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
             `);
         }
         
@@ -174,6 +186,9 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
+            
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
+            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (float(die_player == die_opposition)  * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
@@ -197,20 +212,36 @@
             updateTotalChart();
         }
         
-        function validateInputsAndUpdate() {
+        function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
-                updateAll();
+                updatePlayerRoll();
+                updateResults();
             }
         }
         
-        let rollReadyPromise = updateRoll();
-        updateAll();
+        function validateOppositionInputsAndUpdate() {
+            if (validateInputs()) {
+                updateOppositionRoll();
+                updateResults();
+            }
+        }
+        
+        updatePlayerRoll();
+        updateOppositionRoll();
+        updateTotalChart();
         updateSearchQueryFromForms();
         
-        let inputs = document.querySelector('#inputs');
-        inputs.addEventListener('change', validateInputsAndUpdate);
-        inputs.addEventListener('input', updateAll);
-        inputs.addEventListener('input', updateSearchQueryFromForms);
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
+        pinputs.addEventListener('input', updatePlayerRoll);
+        pinputs.addEventListener('input', updateTotalChart);
+        pinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let oinputs = document.querySelector('#oinputs');
+        oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
+        oinputs.addEventListener('input', updateOppositionRoll);
+        oinputs.addEventListener('input', updateTotalChart);
+        oinputs.addEventListener('input', updateSearchQueryFromForms);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalChart);
