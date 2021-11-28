@@ -18,6 +18,7 @@ def opt_hp_at_max_level(die, max_level):
         for outcome, p in zip(reroll_die.outcomes(), reroll_die.pmf()):
             hp_if_reroll += inner(current_level + 1, outcome) * p
 
+        if hp_if_reroll > hp_if_no_reroll: print(current_level, current_hp)
         return max(hp_if_no_reroll, hp_if_reroll)
 
     return inner(0, 0)

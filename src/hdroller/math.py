@@ -58,4 +58,3 @@ def should_normalize_weight_product(weight_arrays):
         if total_prod >= MAX_INT_FLOAT:
             return True
     return False
-    
