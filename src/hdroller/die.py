@@ -88,7 +88,7 @@ class Die(metaclass=DieType):
     
     # Cached values.
     def _total_weight_no_cache(self):
-        # This is used instead of numpy.sum to ensure consistency with cweights/ccweights.
+        # This is used instead of numpy.sum to ensure consistency with cweights/sweights.
         return numpy.cumsum(self._weights)[-1]
     
     @cached_property
@@ -115,7 +115,7 @@ class Die(metaclass=DieType):
         return result
         
     @cached_property
-    def _ccweights(self):
+    def _sweights(self):
         result = hdroller.math.reverse_cumsum(self.weights())
         result = numpy.append(result, 0.0)
         result.setflags(write=False)
@@ -129,7 +129,7 @@ class Die(metaclass=DieType):
     
     @cached_property
     def _sf(self):
-        result = self._ccweights / self.total_weight()
+        result = self._sweights / self.total_weight()
         result.setflags(write=False)
         return result
     
@@ -195,15 +195,15 @@ class Die(metaclass=DieType):
         return Die(weights, min_outcome)
     
     @staticmethod
-    def from_ccweights(ccweights, min_outcome, total_weight_if_exclusive=None):
+    def from_sweights(sweights, min_outcome, total_weight_if_exclusive=None):
         """
         Constructs a Die from reversed cumulative weights.
-        If ccweights is exclusive, set total_weight_if_exclusive to the total weight of the die.
+        If sweights is exclusive, set total_weight_if_exclusive to the total weight of the die.
         """
         if not total_weight_if_exclusive:
-            weights = numpy.flip(numpy.diff(numpy.flip(ccweights), prepend=0.0))
+            weights = numpy.flip(numpy.diff(numpy.flip(sweights), prepend=0.0))
         else:
-            weights = numpy.flip(numpy.diff(numpy.flip(ccweights), append=total_weight_if_exclusive))
+            weights = numpy.flip(numpy.diff(numpy.flip(sweights), append=total_weight_if_exclusive))
         return Die(weights, min_outcome)
     
     @staticmethod
@@ -295,20 +295,20 @@ class Die(metaclass=DieType):
         elif inclusive == 'neither':
             return self._cweights[1:-1]
             
-    def ccweights(self, inclusive=True):
+    def sweights(self, inclusive=True):
         """
         When zipped with outcomes(), this is the weight of rolling >= the corresponding outcome.
         inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
           If 'both', includes both endpoints and should be zipped with outcomes(append=True).
         """
         if inclusive is True:
-            return self._ccweights[:-1]
+            return self._sweights[:-1]
         elif inclusive is False:
-            return self._ccweights[1:]
+            return self._sweights[1:]
         elif inclusive == 'both':
-            return self._ccweights
+            return self._sweights
         elif inclusive == 'neither':
-            return self._ccweights[1:-1]
+            return self._sweights[1:-1]
     
     def cdf(self, inclusive=True):
         """ 
@@ -345,7 +345,7 @@ class Die(metaclass=DieType):
         return numpy.sum(self.pmf() * self.outcomes())
         
     def median(self):
-        score = numpy.minimum(self.cweights(), self.ccweights())
+        score = numpy.minimum(self.cweights(), self.sweights())
         mask = (score == numpy.max(score))
         return numpy.mean(self.outcomes()[mask])
     
@@ -512,9 +512,9 @@ class Die(metaclass=DieType):
         """
         dice = Die._listify_dice(dice)
         dice_aligned = Die.align(dice)
-        ccweights = 1.0
-        for die in dice_aligned: ccweights *= die.ccweights()
-        return Die.from_ccweights(ccweights, dice_aligned[0].min_outcome()).trim()
+        sweights = 1.0
+        for die in dice_aligned: sweights *= die.sweights()
+        return Die.from_sweights(sweights, dice_aligned[0].min_outcome()).trim()
     
     def repeat_and_sum(self, num_dice):
         """
@@ -567,7 +567,7 @@ class Die(metaclass=DieType):
         if num_dice <= num_drop or num_keep == 0:
             return Die(0)
         elif num_keep == 1 and num_drop == 0 and max_outcomes is None:
-            return Die.from_ccweights(numpy.power(self.ccweights(), num_dice), self.min_outcome())
+            return Die.from_sweights(numpy.power(self.sweights(), num_dice), self.min_outcome())
         
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
