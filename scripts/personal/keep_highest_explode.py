@@ -21,7 +21,7 @@ top = 25
 
 def plot_die(ax, x, die):
     y = []
-    for outcome, hit_chance, mass in zip(die.outcomes(), die.ccdf(), die.pmf()):
+    for outcome, hit_chance, mass in zip(die.outcomes(), die.sf(), die.pmf()):
         y_coord = -1.0 / numpy.log2(1.0 - hit_chance)
         if mass == 0.0: continue
         if outcome == 1: continue
@@ -40,7 +40,7 @@ def find_num_dice(die, tn_die, base_tn, target_miss_chance):
         net_tn = tn_die.outcomes() + base_tn
         net_tn_indices = net_tn - die.min_outcome()
         net_tn_indices = numpy.maximum(net_tn_indices, 0)
-        single_hit_chances = die.ccdf()[net_tn_indices]
+        single_hit_chances = die.sf()[net_tn_indices]
         miss_chances = numpy.power(1.0 - single_hit_chances, num_dice)
         miss_chance = numpy.dot(tn_die.pmf(), miss_chances)
         return miss_chance - target_miss_chance

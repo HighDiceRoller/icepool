@@ -128,7 +128,7 @@ class Die(metaclass=DieType):
         return result
     
     @cached_property
-    def _ccdf(self):
+    def _sf(self):
         result = self._ccweights / self.total_weight()
         result.setflags(write=False)
         return result
@@ -215,11 +215,11 @@ class Die(metaclass=DieType):
         return Die(pmf, min_outcome)
 
     @staticmethod
-    def from_ccdf(ccdf, min_outcome, inclusive=True):
+    def from_sf(sf, min_outcome, inclusive=True):
         if inclusive is True:
-            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), prepend=0.0))
+            pmf = numpy.flip(numpy.diff(numpy.flip(sf), prepend=0.0))
         else:
-            pmf = numpy.flip(numpy.diff(numpy.flip(ccdf), append=1.0))
+            pmf = numpy.flip(numpy.diff(numpy.flip(sf), append=1.0))
         return Die(pmf, min_outcome)
     
     @staticmethod
@@ -325,20 +325,20 @@ class Die(metaclass=DieType):
         elif inclusive == 'neither':
             return self._cdf[1:-1]
 
-    def ccdf(self, inclusive=True):
+    def sf(self, inclusive=True):
         """
         When zipped with outcomes(), this is the probability of rolling >= the corresponding outcome.
         inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
           If 'both', includes both endpoints and should be zipped with outcomes(append=True).
         """
         if inclusive is True:
-            return self._ccdf[:-1]
+            return self._sf[:-1]
         elif inclusive is False:
-            return self._ccdf[1:]
+            return self._sf[1:]
         elif inclusive == 'both':
-            return self._ccdf
+            return self._sf
         elif inclusive == 'neither':
-            return self._ccdf[1:-1]
+            return self._sf[1:-1]
         
     # Statistics.
     def mean(self):

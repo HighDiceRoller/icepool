@@ -46,9 +46,9 @@ x = numpy.arange(left, right + 0.01, 0.01)
 x_hl = (x + offset) / 3.0
 y = numpy.power(2.0, -numpy.power(2.0, x_hl))
 ax.plot(x, 100.0 * y)
-ax.plot(die.outcomes(), 100.0 * die.ccdf())
+ax.plot(die.outcomes(), 100.0 * die.sf())
 ax.legend(legend)
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0, top=100.0)
-plt.savefig('output/step_dice_explode_roll_over_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/step_dice_explode_roll_over_sf.png', dpi = dpi, bbox_inches = "tight")

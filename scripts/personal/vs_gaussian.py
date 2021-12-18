@@ -70,7 +70,7 @@ def make_mos_plot(die, offset=0, sd=None):
 
     return ax
 
-def make_ccdf_plot(die, offset=0, sd=None):
+def make_sf_plot(die, offset=0, sd=None):
     if sd is None:
         gaussian = Die.gaussian(die)
     else:
@@ -79,7 +79,7 @@ def make_ccdf_plot(die, offset=0, sd=None):
     print('KS: %0.2f%%' % (die.ks_stat(gaussian) * 100.0))
     print('Above end: %0.2f%%' % ((gaussian > die.max_outcome()) * 100.0))
     gaussian_clipped = gaussian.clip(die)
-    for outcome, die_chance, gaussian_chance in zip(die.outcomes(), die.ccdf(), gaussian_clipped.ccdf()):
+    for outcome, die_chance, gaussian_chance in zip(die.outcomes(), die.sf(), gaussian_clipped.sf()):
         print('%d: %0.2f%%, %0.2f%%, %0.3f, %0.3f, %+0.2f%%' % (
             outcome,
             100.0 * die_chance,
@@ -94,8 +94,8 @@ def make_ccdf_plot(die, offset=0, sd=None):
     ax = plt.subplot(111)
     ax.grid()
 
-    ax.plot(die.outcomes() + offset, die.ccdf() * 100.0, marker='.')
-    ax.plot(gaussian.outcomes() + offset, gaussian.ccdf() * 100.0, marker='.')
+    ax.plot(die.outcomes() + offset, die.sf() * 100.0, marker='.')
+    ax.plot(gaussian.outcomes() + offset, gaussian.sf() * 100.0, marker='.')
     ax.set_ylim(bottom = 0, top = 100)
     ax.set_ylabel('Chance (%) of rolling at least')
 
@@ -115,12 +115,12 @@ ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same SD'])
 plt.savefig('output/gaussian_vs_d20_mos.png', dpi = dpi, bbox_inches = "tight")
 
-ax = make_ccdf_plot(d20)
+ax = make_sf_plot(d20)
 ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same SD'])
 ax.set_aspect(0.2)
 ax.set_xlim(-10, 30)
-plt.savefig('output/gaussian_vs_d20_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_d20_sf.png', dpi = dpi, bbox_inches = "tight")
 
 print('\nSD 8')
 
@@ -138,23 +138,23 @@ ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same median PMF'])
 plt.savefig('output/gaussian_vs_mm_uniform_mos.png', dpi = dpi, bbox_inches = "tight")
 
-ax = make_ccdf_plot(d20, sd=sd)
+ax = make_sf_plot(d20, sd=sd)
 ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with same median PMF'])
 ax.set_aspect(0.2)
 ax.set_xlim(-10, 30)
-plt.savefig('output/gaussian_vs_mm_uniform_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_mm_uniform_sf.png', dpi = dpi, bbox_inches = "tight")
 
 print('\nSD 6')
 
 sd = 6
 
-ax = make_ccdf_plot(d20, sd=sd)
+ax = make_sf_plot(d20, sd=sd)
 ax.set_xlabel('Number needed to hit')
 ax.legend(['d20', 'Gaussian with minimum vertical distance vs. d20'])
 ax.set_aspect(0.2)
 ax.set_xlim(-10, 30)
-plt.savefig('output/gaussian_vs_min_uniform_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_min_uniform_sf.png', dpi = dpi, bbox_inches = "tight")
 
 print('\nOpposed')
 
@@ -170,25 +170,25 @@ ax.set_xlabel('Difference in modifiers')
 ax.legend(['opposed d20', 'Gaussian with same SD'])
 plt.savefig('output/gaussian_vs_triangular_mos.png', dpi = dpi, bbox_inches = "tight")
 
-ax = make_ccdf_plot(opposed_d20)
+ax = make_sf_plot(opposed_d20)
 ax.set_xlabel('Difference in modifiers')
 ax.legend(['opposed d20', 'Gaussian with same SD'])
 ax.set_aspect(0.2)
 ax.set_xlim(-25, 25)
-plt.savefig('output/gaussian_vs_triangular_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/gaussian_vs_triangular_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # Adding a small die.
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 ax.grid()
-ax.plot(Die.d20.outcomes(), Die.d20.ccdf() * 100.0, marker='.')
+ax.plot(Die.d20.outcomes(), Die.d20.sf() * 100.0, marker='.')
 added_die = Die.d20 + Die.d6
-ax.plot(added_die.outcomes() - 3.5, added_die.ccdf() * 100.0, marker='.')
+ax.plot(added_die.outcomes() - 3.5, added_die.sf() * 100.0, marker='.')
 added_die = Die.d20 + Die.d12
-ax.plot(added_die.outcomes() - 6.5, added_die.ccdf() * 100.0, marker='.')
+ax.plot(added_die.outcomes() - 6.5, added_die.sf() * 100.0, marker='.')
 added_die = Die.d20 + Die.d20
-ax.plot(added_die.outcomes() - 10.5, added_die.ccdf() * 100.0, marker='.')
+ax.plot(added_die.outcomes() - 10.5, added_die.sf() * 100.0, marker='.')
 ax.set_aspect(0.2)
 ax.set_xlim(-10, 30)
 ax.set_ylim(0, 100)
@@ -198,7 +198,7 @@ ax.legend(['d20',
            'd20 + d6 - 3.5',
            'd20 + d12 - 6.5',
            'd20 + d20 - 10.5'])
-plt.savefig('output/add_small_die_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/add_small_die_sf.png', dpi = dpi, bbox_inches = "tight")
 
 
 # Coin flips.
@@ -256,7 +256,7 @@ for coin_count in range(1, 11):
     ks = coins.ks_stat(gaussian) * 100.0
     print('KS %d: %0.2f%%' % (coin_count, ks))
     ax.plot((coins.outcomes(append=True) - 0.5 - coins.mean()) / coins.standard_deviation(),
-            coins.ccdf(inclusive='both') * 100.0, marker='.')
+            coins.sf(inclusive='both') * 100.0, marker='.')
 
     ax.set_xlim(-3, 3)
     ax.set_xlabel('Deviation from mean in SDs')
@@ -276,6 +276,6 @@ ffmpeg_cmd = [
     '-b:v', '0',
     '-crf', '18',
     '-pix_fmt', 'yuv420p',
-    'output/gaussian_vs_coins_ccdf.webm',
+    'output/gaussian_vs_coins_sf.webm',
 ]
 subprocess.Popen(ffmpeg_cmd).wait()

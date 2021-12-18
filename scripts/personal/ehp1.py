@@ -7,11 +7,11 @@ def plot_pmf(ax, dist, offset=0, yscale=1.0, **kwargs):
     ax.plot(dist.faces()+offset, 100.0 * yscale * dist.data, **kwargs)
 
 def plot_ehp(ax, dist, offset=0, yscale=1.0, **kwargs):
-    ehp = 1.0 / dist.normalize().ccdf()
+    ehp = 1.0 / dist.normalize().sf()
     ax.plot(dist.faces()+offset, yscale * ehp, **kwargs)
 
 def semilogy_ehp(ax, dist, offset=0, yscale=1.0, **kwargs):
-    ehp = 1.0 / dist.normalize().ccdf()
+    ehp = 1.0 / dist.normalize().sf()
     ax.semilogy(dist.faces()+offset, yscale * ehp, **kwargs)
 
 explode_d10 = pmf.xdy(1, 10).normalize().explode(3)

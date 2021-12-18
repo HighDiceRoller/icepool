@@ -18,9 +18,9 @@ y = [numpy.zeros_like(x) for i in range(max_success+1)]
 for i, half_life in enumerate(x):
     mean = half_life * numpy.log(2)
     die = Die.poisson(mean, max_outcome=max_success+1)
-    ccdf = die.ccdf()
+    sf = die.sf()
     for num_successes in range(max_success+1):
-        y[num_successes][i] = ccdf[num_successes]
+        y[num_successes][i] = sf[num_successes]
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)

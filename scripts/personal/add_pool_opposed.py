@@ -56,7 +56,7 @@ def plot_opposed_fixed_side(ax, single_die, die_counts, die_name):
 
     for die_count_a in die_counts:
         x = []
-        ccdf = []
+        sf = []
         for die_count_b in range(0, 100):
             die_bonus_a = numpy.sqrt(numpy.maximum(die_count_a * coef - variance_b, 0.0))
             die_bonus_b = numpy.sqrt(numpy.maximum(die_count_b * coef - variance_b, 0.0))
@@ -65,10 +65,10 @@ def plot_opposed_fixed_side(ax, single_die, die_counts, die_name):
             p = opposed >= Die.coin()
             # p = (opposed > 0) / ((opposed > 0) + (opposed < 0))
             x.append(die_bonus_b - die_bonus_a)
-            ccdf.append(p)
+            sf.append(p)
 
         #pmf = (numpy.diff(cdf, prepend=0.0) + numpy.diff(cdf, append=1.0)) * 50.0
-        pmf = -numpy.diff(ccdf, prepend=1.0) * 100.0
+        pmf = -numpy.diff(sf, prepend=1.0) * 100.0
         marker = marker_map[die_count_a] if die_count_a in marker_map else '.'
         ax.plot(x + 0.5 * numpy.diff(x, append=x[-1]), pmf, marker = marker)
         legend.append('%dd%s' % (die_count_a, die_name))

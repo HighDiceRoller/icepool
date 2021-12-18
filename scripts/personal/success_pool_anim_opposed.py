@@ -38,7 +38,7 @@ def make_anim(die, name):
         die_bonus_a = coef * numpy.sqrt(pool_size_a + offset)
         pool_a = die.repeat_and_sum(pool_size_a)
         x = []
-        ccdf = []
+        sf = []
         for pool_size_b in range(0, 201):
             die_bonus_b = coef * numpy.sqrt(pool_size_b + offset)
             opposed = pool_a - die.repeat_and_sum(pool_size_b)
@@ -46,14 +46,14 @@ def make_anim(die, name):
             p = opposed >= Die.coin() # Coin flip on ties.
             # p = (opposed > 0) / ((opposed > 0) + (opposed < 0)) # Reroll ties.
             x.append(die_bonus_b - die_bonus_a)
-            ccdf.append(p)
+            sf.append(p)
         x = numpy.array(x)
-        ccdf = numpy.array(ccdf)
-        pmf = -numpy.diff(ccdf, prepend=1.0)
+        sf = numpy.array(sf)
+        pmf = -numpy.diff(sf, prepend=1.0)
 
         # compute ks
-        ks_ccdf = 0.5 * scipy.special.erfc(x / 2.0)
-        ks = numpy.max(numpy.abs(ccdf - ks_ccdf))
+        ks_sf = 0.5 * scipy.special.erfc(x / 2.0)
+        ks = numpy.max(numpy.abs(sf - ks_sf))
 
         # pmf plot
         fig = plt.figure(figsize=figsize)
@@ -73,25 +73,25 @@ def make_anim(die, name):
                     dpi = dpi, bbox_inches = "tight")
         plt.close()
 
-        # ccdf plot
+        # sf plot
         fig = plt.figure(figsize=figsize)
         ax = plt.subplot(111)
         g_x = numpy.arange(left, right+0.001, 0.001)
-        g_ccdf = 50.0 * scipy.special.erfc(g_x / 2.0)
-        ax.plot(g_x, g_ccdf, linestyle=':')
-        ax.plot(x, ccdf * 100.0, marker='.')
+        g_sf = 50.0 * scipy.special.erfc(g_x / 2.0)
+        ax.plot(g_x, g_sf, linestyle=':')
+        ax.plot(x, sf * 100.0, marker='.')
         ax.grid()
         ax.set_xlim(left, right)
         ax.set_xlabel('Side A roll-over disadvantage')
         ax.set_ylabel('Chance for side A to win (%)')
         ax.set_ylim(0, 100.0)
         ax.set_title('%d pool size for side A (KS = %0.2f%%)' % (pool_size_a, ks * 100.0))
-        ccdf_frame_path = 'output/frames/ccdf_%03d.png'
-        plt.savefig(ccdf_frame_path % frame_index,
+        sf_frame_path = 'output/frames/sf_%03d.png'
+        plt.savefig(sf_frame_path % frame_index,
                     dpi = dpi, bbox_inches = "tight")
         plt.close()
     
     make_webm(pmf_frame_path, 'output/success_pool_roe_opposed_%s_pmf.webm' % name)
-    make_webm(ccdf_frame_path, 'output/success_pool_roe_opposed_%s_ccdf.webm' % name)
+    make_webm(sf_frame_path, 'output/success_pool_roe_opposed_%s_sf.webm' % name)
 
 make_anim(Die.coin(3/6), 'd6_4plus')

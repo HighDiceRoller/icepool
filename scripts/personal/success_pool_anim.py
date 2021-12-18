@@ -41,30 +41,30 @@ def make_anim(die, name):
         sqrt_arg = pool_size + offset
         die_modifier = coef * numpy.sqrt(numpy.abs(sqrt_arg)) * numpy.sign(sqrt_arg)
         x_pmf = []
-        x_ccdf = []
-        ccdf = []
-        for outcome, p in zip(pool.outcomes(append=True), pool.ccdf(inclusive='both')):
+        x_sf = []
+        sf = []
+        for outcome, p in zip(pool.outcomes(append=True), pool.sf(inclusive='both')):
             sqrt_arg = outcome / die.mean() + offset
             outcome_modifier = coef * numpy.sqrt(numpy.abs(sqrt_arg)) * numpy.sign(sqrt_arg)
             x_pmf.append(outcome_modifier - die_modifier)
             
             sqrt_arg = (outcome - 0.5) / die.mean() + offset
             outcome_modifier = coef * numpy.sqrt(numpy.abs(sqrt_arg)) * numpy.sign(sqrt_arg)
-            x_ccdf.append(outcome_modifier - die_modifier)
+            x_sf.append(outcome_modifier - die_modifier)
             
-            ccdf.append(p)
+            sf.append(p)
         x_pmf = numpy.array(x_pmf[:-1])
-        x_ccdf = numpy.array(x_ccdf)
-        ccdf = numpy.array(ccdf)
-        pmf = -numpy.diff(ccdf)
+        x_sf = numpy.array(x_sf)
+        sf = numpy.array(sf)
+        pmf = -numpy.diff(sf)
 
         g_x = numpy.arange(left, right+0.001, 0.001)
         g_pmf = numpy.exp(-0.5 * numpy.square(g_x)) / numpy.sqrt(2 * numpy.pi)
-        g_ccdf = 0.5 * scipy.special.erfc(g_x / numpy.sqrt(2.0))
+        g_sf = 0.5 * scipy.special.erfc(g_x / numpy.sqrt(2.0))
 
         # compute ks
-        ks_ccdf = 0.5 * scipy.special.erfc(x_ccdf / numpy.sqrt(2.0))
-        ks = numpy.max(numpy.abs(ccdf - ks_ccdf))
+        ks_sf = 0.5 * scipy.special.erfc(x_sf / numpy.sqrt(2.0))
+        ks = numpy.max(numpy.abs(sf - ks_sf))
         
         # pmf plot
         fig = plt.figure(figsize=figsize)
@@ -85,12 +85,12 @@ def make_anim(die, name):
                     dpi = dpi, bbox_inches = "tight")
         plt.close()
 
-        # ccdf plot
+        # sf plot
         fig = plt.figure(figsize=figsize)
         ax = plt.subplot(111)
 
-        ax.plot(g_x, g_ccdf * 100.0, linestyle=':')
-        ax.plot(x_ccdf, ccdf * 100.0, marker='.')
+        ax.plot(g_x, g_sf * 100.0, linestyle=':')
+        ax.plot(x_sf, sf * 100.0, marker='.')
 
         ax.grid()
         ax.set_xlim(left, right)
@@ -98,12 +98,12 @@ def make_anim(die, name):
         ax.set_ylabel('Chance to hit (%)')
         ax.set_ylim(0, 100.0)
         ax.set_title('%d pool size (KS = %0.2f%%)' % (pool_size, ks * 100.0))
-        ccdf_frame_path = 'output/frames/ccdf_%03d.png'
-        plt.savefig(ccdf_frame_path % frame_index,
+        sf_frame_path = 'output/frames/sf_%03d.png'
+        plt.savefig(sf_frame_path % frame_index,
                     dpi = dpi, bbox_inches = "tight")
         plt.close()
     make_webm(pmf_frame_path, 'output/success_pool_fde_%s_pmf.webm' % name)
-    make_webm(ccdf_frame_path, 'output/success_pool_fde_%s_ccdf.webm' % name)
+    make_webm(sf_frame_path, 'output/success_pool_fde_%s_sf.webm' % name)
 
 #make_anim(Die.coin(1/6), 'd6_2plus')
 #make_anim(Die.coin(2/6), 'd6_3plus')

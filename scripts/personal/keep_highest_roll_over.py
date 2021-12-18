@@ -48,7 +48,7 @@ x = numpy.arange(left, right + 0.01, 0.01)
 x_hl = x / 3.0
 y = 1.0 - numpy.power(2.0, -numpy.power(2.0, -x_hl))
 ax.plot(x, 100.0 * y)
-ax.plot(die.outcomes() - offset, 100.0 * die.ccdf())
+ax.plot(die.outcomes() - offset, 100.0 * die.sf())
 ax.legend(legend)
 
 ax.set_xlim(left=left, right=right)

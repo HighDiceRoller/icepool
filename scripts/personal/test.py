@@ -16,7 +16,7 @@ print(die)
 #expected = Die.combine([Die.d(x) for x in die_sizes], func=lambda *outcomes: sum(sorted(outcomes)[-2:]))
 #print(expected)
 
-print(die.ccdf())
+print(die.sf())
 
 import cProfile
 

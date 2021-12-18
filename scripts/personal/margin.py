@@ -60,7 +60,7 @@ def semilogy_mean_damage_pf2e_mos(ax, die, damage_mult=1.0, x = None, **kwargs):
     ax.semilogy(x, y , **kwargs)
 
 def print_die_ratio(die):
-    for outcome, mass, success_chance in zip(die.outcomes(), die.pmf(), die.ccdf()):
+    for outcome, mass, success_chance in zip(die.outcomes(), die.pmf(), die.sf()):
         mos = die.margin_of_success(outcome-1).mean()
         ratio = success_chance * success_chance / (mass * mos)
         print(outcome, ratio)

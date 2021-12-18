@@ -34,8 +34,8 @@ def compare(exploding_kwargs={}, shrinking_kwargs={}):
         exploding = Die.d(die_size).explode(100)
         shrinking = explode_and_shrink(die_size)
         print(shrinking)
-        ax.semilogy(exploding.outcomes(), exploding.ccdf(), color=color, **exploding_kwargs)
-        ax.semilogy(shrinking.outcomes(append=True), shrinking.ccdf(inclusive='both'), color=color, **shrinking_kwargs)
+        ax.semilogy(exploding.outcomes(), exploding.sf(), color=color, **exploding_kwargs)
+        ax.semilogy(shrinking.outcomes(append=True), shrinking.sf(inclusive='both'), color=color, **shrinking_kwargs)
         legend.append('d%d exploding' % die_size)
         legend.append('d%d cascading' % die_size)
 

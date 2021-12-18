@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 def calc_ehp(dist):
-    return 1.0 / dist.normalize().ccdf()
+    return 1.0 / dist.normalize().sf()
 
 three_d6 = pmf.xdy(3, 6)
 

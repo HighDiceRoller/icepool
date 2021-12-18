@@ -10,8 +10,8 @@ dpi = 120
 
 def opposed_keep_highest(x, half_life=3):
     attack_ratio = numpy.power(0.5, x / half_life)
-    ccdf = attack_ratio / (attack_ratio + 1.0)
-    return Die.from_ccdf(ccdf, x[0])
+    sf = attack_ratio / (attack_ratio + 1.0)
+    return Die.from_sf(sf, x[0])
 
 left = -20
 right = 20
@@ -39,7 +39,7 @@ legend = [
     'Opposed d10! + d10!',
 ]
 
-# ccdf
+# sf
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
@@ -48,20 +48,20 @@ ax.set_xlabel('Difference in modifiers')
 ax.set_ylabel('Chance to hit (%)')
 ax.grid()
 
-ax.plot(laplace.outcomes(), 100.0 * laplace.ccdf(), linestyle='--')
-ax.plot(opposed_simple.outcomes(), 100.0 * opposed_simple.ccdf())
+ax.plot(laplace.outcomes(), 100.0 * laplace.sf(), linestyle='--')
+ax.plot(opposed_simple.outcomes(), 100.0 * opposed_simple.sf())
 
-#ax.plot(sech.outcomes(), 100.0 * sech.ccdf(), linestyle='--')
-#ax.plot(sech_approx.outcomes(), 100.0 * sech_approx.ccdf())
+#ax.plot(sech.outcomes(), 100.0 * sech.sf(), linestyle='--')
+#ax.plot(sech_approx.outcomes(), 100.0 * sech_approx.sf())
 
-ax.plot(okh.outcomes(), 100.0 * okh.ccdf(), linestyle='--')
-#ax.plot(opposed_exploding.outcomes(), 100.0 * opposed_exploding.ccdf())
-ax.plot(opposed_two_exploding.outcomes(), 100.0 * opposed_two_exploding.ccdf())
+ax.plot(okh.outcomes(), 100.0 * okh.sf(), linestyle='--')
+#ax.plot(opposed_exploding.outcomes(), 100.0 * opposed_exploding.sf())
+ax.plot(opposed_two_exploding.outcomes(), 100.0 * opposed_two_exploding.sf())
 
 ax.set_xlim(left=left, right=right)
 ax.set_ylim(bottom=0.0,top=100.0)
 ax.legend(legend, loc = 'upper right')
-plt.savefig('output/laplace_logistic_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/laplace_logistic_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # pdf
 

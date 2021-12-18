@@ -59,7 +59,7 @@ ax.set_xlabel('Outcome (% of single die range)')
 ax.set_ylabel('Probability density (%)')
 plt.savefig('output/keep_two_pdf.png', dpi = dpi, bbox_inches = "tight")
 
-# CCDF
+# sf
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
@@ -69,8 +69,8 @@ x = numpy.arange(0, 1+1e-6, 1e-3)
 t = 2.0 - x
 
 for n in ns:
-    ccdf = 1.0 + numpy.power(t-1, n) - 2 * numpy.power(0.5*t, n)
-    ax.plot(100 * x, 100 * numpy.sqrt(ccdf))
+    sf = 1.0 + numpy.power(t-1, n) - 2 * numpy.power(0.5*t, n)
+    ax.plot(100 * x, 100 * numpy.sqrt(sf))
 
 ax.legend(legend)
 ax.set_xticks(100.0 * numpy.arange(0, 1 + 1e-6, 0.1))
@@ -80,7 +80,7 @@ ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
 ax.set_xlabel('Distance from maximum outcome (% of single die range)')
 ax.set_ylabel('Chance of hitting (%)')
-plt.savefig('output/keep_two_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/keep_two_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # keep many expected
 
@@ -176,7 +176,7 @@ ax.set_xlim(left=0, right=100)
 ax.set_ylim(bottom=0, top=100)
 ax.set_xlabel('Distance from maximum result (% of single die range)')
 ax.set_ylabel('Hit chance (%)')
-plt.savefig('output/keep_two_ccdf_approx.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/keep_two_sf_approx.png', dpi = dpi, bbox_inches = "tight")
 
 # Exponential approximation (log)
 
@@ -208,7 +208,7 @@ ax.legend(legend, loc='lower right')
 #ax.set_ylim(bottom=0, top=100)
 ax.set_xlabel('Distance from maximum result')
 ax.set_ylabel('Hit chance')
-plt.savefig('output/keep_two_ccdf_approx_log.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/keep_two_sf_approx_log.png', dpi = dpi, bbox_inches = "tight")
 
 # Exponential roll over equivalent
 

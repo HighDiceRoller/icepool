@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 def calc_ehp(dist):
-    return 50.0 / dist.normalize().ccdf()
+    return 50.0 / dist.normalize().sf()
 
 half_life_3 = pmf.geometric(1000, half_life=3).normalize()
 

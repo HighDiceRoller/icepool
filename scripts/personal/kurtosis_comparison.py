@@ -46,7 +46,7 @@ ax.legend(legend)
 
 plt.savefig('output/symmetric_sd_pmf.png', dpi = dpi, bbox_inches = "tight")
 
-# sd ccdf
+# sd sf
 
 gaussian = 1.0 - 0.5 * (1.0 + scipy.special.erf(x * gaussian_param / numpy.sqrt(2)))
 uniform = numpy.clip(0.5 - x / numpy.sqrt(12), 0.0, 1.0)
@@ -71,7 +71,7 @@ ax.set_ylim(bottom=0, top=100)
 legend = ['Uniform', 'Gaussian', 'Logistic', 'Laplace']
 ax.legend(legend)
 
-plt.savefig('output/symmetric_sd_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/symmetric_sd_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # median absolute deviation
 
@@ -111,7 +111,7 @@ ax.legend(legend)
 
 plt.savefig('output/symmetric_mad_pmf.png', dpi = dpi, bbox_inches = "tight")
 
-# median absolute deviation ccdf
+# median absolute deviation sf
 
 gaussian = 1.0 - 0.5 * (1.0 + scipy.special.erf(x * gaussian_param / numpy.sqrt(2)))
 uniform = numpy.clip(0.5 - 0.25 * x, 0.0, 1.0)
@@ -136,7 +136,7 @@ ax.set_ylim(bottom=0, top=100)
 legend = ['Uniform', 'Gaussian', 'Logistic', 'Laplace']
 ax.legend(legend)
 
-plt.savefig('output/symmetric_mad_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/symmetric_mad_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # modal density
 
@@ -176,7 +176,7 @@ ax.legend(legend)
 
 plt.savefig('output/symmetric_median_density_pmf.png', dpi = dpi, bbox_inches = "tight")
 
-# median density ccdf
+# median density sf
 
 gaussian = 1.0 - 0.5 * (1.0 + scipy.special.erf(x * gaussian_param / numpy.sqrt(2)))
 uniform = numpy.clip(0.5 - x, 0.0, 1.0)
@@ -201,7 +201,7 @@ ax.set_ylim(bottom=0, top=100)
 legend = ['Uniform', 'Gaussian', 'Logistic', 'Laplace']
 ax.legend(legend)
 
-plt.savefig('output/symmetric_median_density_ccdf.png', dpi = dpi, bbox_inches = "tight")
+plt.savefig('output/symmetric_median_density_sf.png', dpi = dpi, bbox_inches = "tight")
 
 # asymmetric
 

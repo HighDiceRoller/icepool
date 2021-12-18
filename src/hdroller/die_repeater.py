@@ -33,7 +33,7 @@ class DieRepeater():
         -> probability that num_dice will all be >= face
            with num_eq_dice equal to face.
         """
-        hi_1 = numpy.stack((self._die.ccdf(inclusive=False), self._die.pmf()), axis=1)
+        hi_1 = numpy.stack((self._die.sf(inclusive=False), self._die.pmf()), axis=1)
         return hdroller.convolution_series.ConvolutionSeries(hi_1)
     
     @cached_property
@@ -76,7 +76,7 @@ class DieRepeater():
         -> [face]
         -> probability that num_dice will all be > face.
         """
-        return hdroller.power_series.PowerSeries(self._die.ccdf(inclusive=False))
+        return hdroller.power_series.PowerSeries(self._die.sf(inclusive=False))
         
     def keep_one_side(self, num_dice, num_keep, nonsum_convolutions, sum_convolutions):
         if num_keep == 0:

@@ -4,7 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 def plot_ehp(ax, dist, offset=0, **kwargs):
-    ehp = 1.0 / dist.normalize().ccdf()
+    ehp = 1.0 / dist.normalize().sf()
     ax.semilogy(dist.faces()+offset, ehp, **kwargs)
 
 explode_d10 = pmf.xdy(1, 10).normalize().explode(3)

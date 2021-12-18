@@ -288,18 +288,18 @@ def mixed2_keep_highest(x, ratio, decay_constant=db):
 def mixed2_keep_lowest(x, ratio, decay_constant=db):
     a = numpy.exp(-x * decay_constant) * numpy.sqrt(ratio)
     b = numpy.exp(-x * decay_constant) / numpy.sqrt(ratio)
-    ccdf = numpy.zeros_like(x, dtype=float)
+    sf = numpy.zeros_like(x, dtype=float)
 
     mask = 1.0 >= a
-    ccdf[mask] = (1/3 * b * b * b + 1/2 * b * b * (a - b))[mask]
+    sf[mask] = (1/3 * b * b * b + 1/2 * b * b * (a - b))[mask]
 
     mask = (1.0 < a) & (1.0 > b)
-    ccdf[mask] = (1/3 * b * b * b + 1/2 * (a-b) * b * b)[mask]
+    sf[mask] = (1/3 * b * b * b + 1/2 * (a-b) * b * b)[mask]
 
     mask = 1.0 <= b
-    ccdf[mask] = (1/3 + 1/2 * (b-1) + 1/2 * (a-1) + (b-1) * (a-1) )[mask]
+    sf[mask] = (1/3 + 1/2 * (b-1) + 1/2 * (a-1) + (b-1) * (a-1) )[mask]
 
-    return ccdf / (a * b)
+    return sf / (a * b)
 
 hi = 100.0 * mixed2_keep_highest(x, 2)
 lo = 100.0 * mixed2_keep_lowest(x, 2)

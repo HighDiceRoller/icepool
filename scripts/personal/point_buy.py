@@ -112,12 +112,12 @@ figsize = (16, 9)
 dpi = 120
 
 def plot_extremeness(ax, die, **kwargs):
-    extremeness = numpy.minimum(die.cdf(), die.ccdf())
+    extremeness = numpy.minimum(die.cdf(), die.sf())
     ax.plot(die.outcomes(), extremeness, **kwargs)
 
 def semilogy_extremeness(ax, die, **kwargs):
     print('%0.3f | %0.3f' % (die.mean(), die.standard_deviation()))
-    extremeness = numpy.minimum(die.cdf(), die.ccdf())
+    extremeness = numpy.minimum(die.cdf(), die.sf())
     extremeness[extremeness>0.5] = 1.0
     ax.semilogy(die.outcomes(), 1.0 / extremeness, **kwargs)
 

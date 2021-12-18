@@ -113,27 +113,39 @@ ax.set_xlabel('Difference in steps')
 plt.savefig('output/ternary_step_dice_3v1.png', dpi = dpi, bbox_inches = "tight")
 
 # keep-single
-left = -8
-right = 0
+left = -5
+right = 5
 
 x = numpy.arange(left, right + 1e-6, 1e-3)
-
 
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-hi = 100.0 * (1.0 - numpy.power(1/2, -x))
-lo = 100.0 * (1.0 - numpy.power(5/6, -x))
+def keep_single_sf(x, chance_per_die):
+    sf = numpy.zeros_like(x)
+    sf[x < 0] = 1.0 - numpy.power(chance_per_die, 1.0 - x[x < 0])
+    sf[x >= 0] = numpy.power(1.0 - chance_per_die, 1.0 + x[x >= 0])
+    return sf
+
+hi = 100.0 * keep_single_sf(x, 1/2)
+lo = 100.0 * keep_single_sf(x, 5/6)
 
 ax.fill_between(x, hi, 100.0)
 ax.fill_between(x, lo, hi)
 ax.fill_between(x, 0.0, lo)
 
 ax.legend(['Miss', 'Weak hit', 'Strong hit'])
+
+ax.plot(x, 100.0 * keep_single_sf(x, 1/6), color='white')
+ax.plot(x, 100.0 * keep_single_sf(x, 2/6), color='white')
+ax.plot(x, 100.0 * keep_single_sf(x, 3/6), color='white')
+ax.plot(x, 100.0 * keep_single_sf(x, 4/6), color='white')
+ax.plot(x, 100.0 * keep_single_sf(x, 5/6), color='white')
+
 set_ax_sf(ax)
 ax.set_xlabel('Number of dice')
-ax.set_xticks([-8, -4, 0])
-ax.set_xticklabels(['8', '4', '0'])
+ax.set_xticks([-5, 0, 5])
+ax.set_xticklabels(['6, keep highest', '1', '6, keep lowest'])
 
 plt.savefig('output/ternary_keep_single.png', dpi = dpi, bbox_inches = "tight")
 

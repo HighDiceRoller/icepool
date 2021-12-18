@@ -89,7 +89,7 @@ for pool, vs_gm in zip(pools, vs_gms):
     
     for x in vs_gm: result += ',%0.2f%%' % (x * 100.0)
     
-    for p in pool.sum_die.ccdf()[2:]: result += ',%0.2f%%' % (p * 100.0)
+    for p in pool.sum_die.sf()[2:]: result += ',%0.2f%%' % (p * 100.0)
     result += ',' * (12 * max_keep + 1 - len(pool.sum_die))
     result += '\n'
 
