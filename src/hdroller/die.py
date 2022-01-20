@@ -589,20 +589,6 @@ class Die(metaclass=DieType):
 
     # Comparators. These return a Die.
     
-    def __eq__(self, other):
-        """
-        Returns the chance this die will roll exactly equal to the other Die.
-        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
-        """
-        other = Die(other)
-        a, b = Die.align([self, other])
-        n = numpy.dot(a.weights(), b.weights())
-        d = a.total_weight() * b.total_weight()
-        return Die.bernoulli(n, d)
-    
-    def __ne__(self, other):
-        return 1.0 - (self == other)
-    
     def __lt__(self, other):
         """
         Returns the chance this Die will roll < the other Die.     
@@ -639,6 +625,17 @@ class Die(metaclass=DieType):
         """
         other = Die(other)
         return other <= self
+        
+    def equal(self, other):
+        """
+        Returns the chance this Die will roll == the other Die.
+        This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
+        """
+        other = Die(other)
+        a, b = Die.align([self, other])
+        n = numpy.dot(a.weights(), b.weights())
+        d = a.total_weight() * b.total_weight()
+        return Die.bernoulli(n, d)
     
     # Logical operators.
     # These are only applicable to Bernoulli distributions, i.e. Die that have no outcomes other than 0 and 1.
@@ -652,7 +649,7 @@ class Die(metaclass=DieType):
     def _and(self, other):
         if not self.is_bernoulli() or not other.bernoulli():
             raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
-        return (self + other) == 2
+        return (self + other).equal(2)
         
     def __and__(self, other):
         return self._and(Die(other))
@@ -674,7 +671,7 @@ class Die(metaclass=DieType):
     def _xor(self, other):
         if not self.is_bernoulli() or not other.bernoulli():
             raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
-        return (self + other) == 1
+        return (self + other).equal(1)
         
     def __xor__(self, other):
         return self._xor(Die(other))
@@ -839,7 +836,6 @@ class Die(metaclass=DieType):
         min_outcome = self.min_outcome() + nz[0]
         weights = self.weights()[nz[0]:nz[-1]+1]
         return Die(weights, min_outcome)
-        
     
     # Random sampling.
     def sample(self, size=None):
@@ -863,6 +859,26 @@ class Die(metaclass=DieType):
         if not self.is_bernoulli():
             raise ValueError('Only Bernoulli distributions may be cast to float.')
         return float(self.probability(1))
+        
+    # Hashing and equality.
+    
+    @cached_property
+    def _key_tuple(self):
+        return (self.min_outcome(),) + tuple(self.weights())
+        
+    def __eq__(self, other):
+        """
+        Returns true iff this Die has the same weights as the other Die.
+        Note that fractions are not reduced.
+        """
+        return self._key_tuple == Die(other)._key_tuple
+    
+    @cached_property
+    def _hash(self):
+        return hash(self._key_tuple)
+        
+    def __hash__(self):
+        return self._hash
 
     # Helper methods.
     
