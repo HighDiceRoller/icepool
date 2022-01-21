@@ -91,3 +91,13 @@ def test_abs_cross_zero_nonuniform():
     result = (Die.d6 + Die.d6 - 7).abs()
     assert result.outcomes() == pytest.approx([0, 1, 2, 3, 4, 5])
     assert result.weights() == pytest.approx([6, 10, 8, 6, 4, 2])
+
+def test_mod():
+    result = Die.d10 % 4
+    assert result.outcomes() == pytest.approx([0, 1, 2, 3])
+    assert result.weights() == pytest.approx([2, 3, 3, 2])
+    
+def test_div():
+    result = Die.d10 // 4
+    assert result.outcomes() == pytest.approx([0, 1, 2])
+    assert result.weights() == pytest.approx([3, 4, 3])

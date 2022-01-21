@@ -586,6 +586,22 @@ class Die(metaclass=DieType):
             A Die representing the highest scoring set.
         """
         return hdroller.countdown.best_set(self, num_dice, match_func=match_func, straight_func=straight_func)
+        
+    # Operations with integers only.
+    
+    def __mod__(self, divisor):
+        weights = numpy.zeros((divisor,))
+        for outcome, weight in zip(self.outcomes(), self.weights()):
+            weights[outcome % divisor] += weight
+        return Die(weights, 0).trim()
+    
+    def __floordiv__(self, divisor):
+        min_outcome = self.min_outcome() // divisor
+        max_outcome = self.max_outcome() // divisor
+        weights = numpy.zeros((max_outcome - min_outcome + 1,))
+        for outcome, weight in zip(self.outcomes(), self.weights()):
+            weights[outcome // divisor] += weight
+        return Die(weights, min_outcome)
 
     # Comparators. These return a Die.
     
