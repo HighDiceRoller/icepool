@@ -1,5 +1,6 @@
 import numpy
 import math
+from functools import lru_cache
 
 MAX_INT_FLOAT = 2 ** 53
 
@@ -49,6 +50,19 @@ def convolve_along_last_axis(a, v):
     for i in range(v.shape[-1]):
         result[..., i:i+a.shape[-1]] += a * v[..., i:i+1]
     
+    return result
+
+@lru_cache(maxsize=None)
+def binomial_row(n, b):
+    """
+    Returns an immutable vector of n+1 elements, where the kth element is binom(n, k) * power(b, k).
+    """
+    if n == 0:
+        result = numpy.ones((1,))
+    else:
+        prev = binomial_row(n-1, b)
+        result = numpy.append(prev, 0.0) + numpy.insert(b * prev, 0, 0.0)
+    result.setflags(write=False)
     return result
 
 def should_normalize_weight_product(weight_arrays):
