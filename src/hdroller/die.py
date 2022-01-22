@@ -81,20 +81,16 @@ class Die(metaclass=DieType):
                 raise ValueError('Weights must have exactly one dimension.')
             self._min_outcome = min_outcome
         
-        total_weight = self._total_weight_no_cache()
-        if total_weight >= hdroller.math.MAX_INT_FLOAT:
-            self._weights /= total_weight
+        if numpy.isinf(self._total_weight):
+            raise OverflowError('Total weight is not representable by a float64.')
         
         self._weights.setflags(write=False)
     
     # Cached values.
-    def _total_weight_no_cache(self):
-        # This is used instead of numpy.sum to ensure consistency with cweights/sweights.
-        return numpy.cumsum(self._weights)[-1]
     
     @cached_property
     def _total_weight(self):
-        return self._total_weight_no_cache()
+        return numpy.cumsum(self._weights)[-1]
     
     @cached_property
     def _pmf(self):
