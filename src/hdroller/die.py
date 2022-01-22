@@ -30,7 +30,7 @@ class DieType(type):
 
 class Die(metaclass=DieType):
     """
-    Immutable class representing a normalized discrete probability distribution
+    Immutable class representing a discrete probability distribution
     with finite support.
     """
 
@@ -48,9 +48,10 @@ class Die(metaclass=DieType):
     def __init__(self, weights, min_outcome=None):
         """
         Constructor. Arguments can be:
+        * A Die, which is just itself.
         * weights (array-like) and min_outcome (integer).
-        * int: A die which always rolls that outcome.
-        * float in [0, 1]: A die which has that chance of rolling 1, and rolls 0 otherwise.
+        * A dict-like mapping outcomes to weights.
+        * A integer outcome, which produces a Die that always rolls that outcome.
         """
         # TODO: Decide whether to check for exactness and reduce fractions here.
         if isinstance(weights, Die):
@@ -886,6 +887,7 @@ class Die(metaclass=DieType):
         """
         Returns true iff this Die has the same weights as the other Die.
         Note that fractions are not reduced.
+        For example a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
         """
         return self._key_tuple == Die(other)._key_tuple
     
