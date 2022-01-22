@@ -81,8 +81,11 @@ class Die(metaclass=DieType):
                 raise ValueError('Weights must have exactly one dimension.')
             self._min_outcome = min_outcome
         
-        if numpy.isinf(self._total_weight):
-            raise OverflowError('Total weight is not representable by a float64.')
+        if numpy.isinf(self._total_weight) or self._total_weight <= 0.0:
+            if numpy.all(self._weights == 0.0):
+                raise ZeroDivisionError('All outcomes have zero weight.')
+            else:
+                raise OverflowError('Total weight is not representable by a float64.')
         
         self._weights.setflags(write=False)
     
