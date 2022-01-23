@@ -121,6 +121,6 @@ class MultiPoolScorer():
                 weight = single_weight ** count
                 self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (None,), head_counts + (count,), head_weight * weight, tail_pools[1:])
             else:
-                for prev_pool, count, weight in pool.iter_pop():
+                for prev_pool, count, weight in pool.pops():
                     self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (prev_pool,), head_counts + (count,), head_weight * weight, tail_pools[1:])
                 

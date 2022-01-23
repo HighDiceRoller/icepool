@@ -104,7 +104,7 @@ class SinglePoolScorer():
             weight = single_weight ** count
             result[state] = weight
         else:
-            for prev_pool, count, weight in pool.iter_pop():
+            for prev_pool, count, weight in pool.pops():
                 prev = self._evaluate_internal(initial_state, prev_pool)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(outcome, count, prev_state)

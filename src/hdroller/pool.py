@@ -86,9 +86,9 @@ class Pool():
         """
         return self._num_max_dice
     
-    def iter_pop(self):
+    def _iter_pops(self):
         """
-        Yields for 0 to num_max_dice():
+        A tuple from 0 to num_max_dice() whose elements are:
             * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
@@ -115,6 +115,13 @@ class Pool():
                 popped_mask = popped_mask[:-1]
                 pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
                 yield pool, count, weight
+    
+    @cached_property
+    def _pops(self):
+        return tuple(self._iter_pops())
+    
+    def pops(self):
+        return self._pops
     
     @cached_property
     def _key_tuple(self):

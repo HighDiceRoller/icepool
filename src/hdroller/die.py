@@ -413,7 +413,10 @@ class Die(metaclass=DieType):
     
     abs = __abs__
     
-    @lru_cache(maxsize=None)
+    @cached_property
+    def _pop(self):
+        return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
+    
     def pop(self):
         """
         Removes the max outcome.
@@ -423,7 +426,7 @@ class Die(metaclass=DieType):
             The removed outcome.
             The weight of the removed outcome.
         """
-        return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
+        return self._pop
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
