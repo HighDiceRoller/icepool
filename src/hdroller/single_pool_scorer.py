@@ -4,14 +4,10 @@ from collections import defaultdict
 
 """
 Possible todo:
-* Specialist algorithms for add, max, keep-highest? Maybe not worth with caching.
-* Early termination?
 * Cacheable next_state?
 * Use cache module?
-* Is variadic worth it or too clever?
 * Multiple pools with different die types in each pool?
 * Pool as class?
-* Skip zero-chance outcomes entirely?
 
 Possible restrictions:
 
@@ -26,8 +22,18 @@ V5 and NCO encourage stepping through the pools in lockstep.
 """
 
 class SinglePoolScorer():
+    """
+    An abstract class for scoring a single dice pool.
+    
+    Instances cache all final and intermediate state distributions.
+    As such, unless memory is a concern, you should reuse instances when possible.
+    
+    See PoolSum below for an example concrete subclass.
+    """
     def initial_state(self, initial_pool):
         """
+        This should generate an initial state for the pool.
+        
         Arguments:
             initial_pool: A Pool object.
         Returns:
@@ -41,9 +47,13 @@ class SinglePoolScorer():
         
     def next_state(self, outcome, count, prev_state):
         """
+        This should produce a state given the previous state and `count` dice rolling `outcome`.
+        This will be called for all outcomes of the pool Die,
+        even if those outcomes have zero weight or all of the dice in the pool are capped below that outcome.
+        
         Arguments:
             outcome: The current outcome.
-            counts: An integer indicating how many counted dice rolled the current outcome.
+            counts: An integer indicating how many dice (subject to masking) rolled the current outcome.
             prev_state: A hashable object indicating the state before rolling the current outcome.
         
         Returns:
@@ -51,21 +61,27 @@ class SinglePoolScorer():
         """
         raise NotImplementedError()
         
-    def score(self, initial_pool, initial_state, state):
+    def score(self, initial_pool, initial_state, final_state):
         """
+        This should compte the final score given a final state.
+        
         Arguments:
-            initial_state
             initial_pool
-            state: A final state after all dice in the pool have been consumed.
+            initial_state
+            final_state: A final state after all dice in the pool have been consumed.
         
         Returns:
-            An integer indicating the final score for that state.
+            An integer indicating the final score for that final state.
         """
         raise NotImplementedError()
     
     def evaluate(self, pool):
         """
-        pool: A pool to evaluate this scorer on.
+        Arguments:
+            pool: A pool to evaluate this scorer on.
+        
+        Returns:
+            A Die representing the distribution of the final score.
         """
         if not hasattr(self, '_cache'):
             self._cache = {}
@@ -91,7 +107,8 @@ class SinglePoolScorer():
             A dictionary { state : weight } describing the probability distribution over states.
         """
         cache_key = (initial_state, pool)
-        if cache_key in self._cache: return self._cache[cache_key]
+        if cache_key in self._cache:
+            return self._cache[cache_key]
         
         result = defaultdict(float)
         
@@ -99,7 +116,8 @@ class SinglePoolScorer():
         single_weight = pool.max_single_weight()
         
         if len(pool.die()) == 1:
-            # There's only one possible value, so all dice roll it.
+            # There's only one possible outcome, so all dice roll it.
+            # TODO: What if the weights start with zeros?
             count = numpy.count_nonzero(pool.mask())
             state = self.next_state(outcome, count, initial_state)
             weight = single_weight ** count
@@ -113,3 +131,16 @@ class SinglePoolScorer():
 
         self._cache[cache_key] = result
         return result
+
+class PoolSum(SinglePoolScorer):
+    def initial_state(self, initial_pool):
+        # The state is the running total. This starts at 0.
+        return 0
+    
+    def next_state(self, outcome, count, prev_state):
+        # Add the dice that rolled the current outcome to the running total.
+        return prev_state + outcome * count
+    
+    def score(self, initial_pool, initial_state, final_state):
+        # Return the final total.
+        return final_state

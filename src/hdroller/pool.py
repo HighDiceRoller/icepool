@@ -40,9 +40,9 @@ class Pool():
             self._mask = tuple(temp)
     
     @classmethod
-    def _create_unsafe(cls, die, max_outcomes, mask):
+    def _create_unchecked(cls, die, max_outcomes, mask):
         """
-        Fast constructor for cases where the arguments are known to be already sorted etc.
+        Fast constructor for cases where the arguments are known to be already tuples, sorted, etc.
         """
         self = cls.__new__(cls)
         self._die = die
@@ -90,9 +90,9 @@ class Pool():
     def iter_pop(self):
         """
         Yields for 0 to num_max_dice():
-            * pool: A Pool resulting from removing that many dice from this Pool, then removing the max outcome.
+            * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
-            * weight: The weight of this many dice rolling the removed outcome.
+            * weight: A float weight of that many dice rolling the removed outcome.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
         """
         num_max_dice = self.num_max_dice()
@@ -102,7 +102,7 @@ class Pool():
         popped_mask = self.mask()
         
         # Zero dice rolling this outcome.
-        pool = Pool._create_unsafe(popped_die, popped_max_outcomes, self.mask())
+        pool = Pool._create_unchecked(popped_die, popped_max_outcomes, self.mask())
         weight = 1.0
         count = 0
         yield pool, weight, count
@@ -114,7 +114,7 @@ class Pool():
                 count += popped_mask[-1]
                 popped_max_outcomes = popped_max_outcomes[:-1]
                 popped_mask = popped_mask[:-1]
-                pool = Pool._create_unsafe(popped_die, popped_max_outcomes, popped_mask)
+                pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
                 yield pool, weight, count
     
     @cached_property
