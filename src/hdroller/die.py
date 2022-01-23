@@ -803,6 +803,7 @@ class Die(metaclass=DieType):
         
         This method is very flexible but has poor performance since it enumerates all possible joint outcomes.
         Other methods should be preferred when performance is a concern.
+        See also Pool, SinglePoolScorer, and MultiPoolScorer.
         """
         
         if func is None:
@@ -875,12 +876,19 @@ class Die(metaclass=DieType):
     # Out conversions.
     
     def __str__(self):
-        result = ''
-        for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
-            if self.is_exact():
-                result += '%d, %d/%d, %f\n' % (outcome, weight, self.total_weight(), p)
-            else:
-                result += '%d, %f\n' % (outcome, p)
+        """
+        Formats the Die as a Markdown table.
+        """
+        if self.is_exact():
+            result = f'| Outcome | Weight (out of {int(self.total_weight())}) | Probability |\n'
+            result += '|----:|----:|----:|\n'
+            for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
+                result += f'| {int(outcome)} | {int(weight)} | {p:.2%} |\n'
+        else:
+            result = '| Outcome | Probability |\n'
+            result += '|----:|----:|\n'
+            for outcome, p in zip(self.outcomes(), self.pmf()):
+                result += f'| {int(outcome)} | {p:.2%} |\n'
         return result
         
     def __float__(self):
