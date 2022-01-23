@@ -96,21 +96,25 @@ class Pool():
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
         """
         num_max_dice = self.num_max_dice()
+        num_unused_dice = self.num_dice() - num_max_dice
         popped_die, outcome, single_weight = self.die().pop()
-        popped_max_outcomes = self.max_outcomes()[:num_max_dice] + (outcome-1,) * (self.num_dice() - num_max_dice)
+        popped_max_outcomes = self.max_outcomes()[:num_max_dice] + (outcome-1,) * num_unused_dice
+        popped_mask = self.mask()
         
-        if single_weight == 0.0:
-            # Zero dice can actually roll this outcome.
-            # Yield only this result.
-            pool = Pool._create_unsafe(popped_die, popped_max_outcomes, self.mask())
-            weight = 1.0
-            count = 0
-            yield pool, weight, count
-        else:
-            for consumed_dice, weight in enumerate(hdroller.math.binom_row(num_max_dice, single_weight)):
-                index = self.num_dice() - consumed_dice
-                pool = Pool._create_unsafe(popped_die, popped_max_outcomes[:index], self.mask()[:index])
-                count = numpy.count_nonzero(self.mask()[index:])
+        # Zero dice rolling this outcome.
+        pool = Pool._create_unsafe(popped_die, popped_max_outcomes, self.mask())
+        weight = 1.0
+        count = 0
+        yield pool, weight, count
+        
+        if single_weight > 0.0:
+            # If weight is nonzero, consider different numbers of dice rolling this outcome.
+            binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
+            for weight in binom_row[1:]:
+                count += popped_mask[-1]
+                popped_max_outcomes = popped_max_outcomes[:-1]
+                popped_mask = popped_mask[:-1]
+                pool = Pool._create_unsafe(popped_die, popped_max_outcomes, popped_mask)
                 yield pool, weight, count
     
     @cached_property
