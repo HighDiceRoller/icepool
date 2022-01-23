@@ -1,6 +1,8 @@
 import hdroller
 import numpy
 from collections import defaultdict
+import math
+import itertools
 
 class MultiPoolScorer():
     """
@@ -98,29 +100,34 @@ class MultiPoolScorer():
             result[initial_state] = 1.0
         else:
             outcome = max(pool.max_outcome() for pool in pools if pool is not None)
-            self._evaluate_internal_inner(initial_state, outcome, result, (), (), 1.0, pools)
+            for p in itertools.product(*[self._iter_pool(outcome, pool) for pool in pools]):
+                prev_pools, counts, weights = zip(*p)
+                prod_weight = math.prod(weights)
+                prev = self._evaluate_internal(initial_state, prev_pools)
+                for prev_state, prev_weight in prev.items():
+                    state = self.next_state(outcome, counts, prev_state)
+                    result[state] += prev_weight * prod_weight
 
         self._cache[cache_key] = result
         return result
-
-    def _evaluate_internal_inner(self, initial_state, outcome, result, head_prev_pools, head_counts, head_weight, tail_pools):
-        if len(tail_pools) == 0:
-            prev = self._evaluate_internal(initial_state, head_prev_pools)
-            for prev_state, prev_weight in prev.items():
-                state = self.next_state(outcome, head_counts, prev_state)
-                result[state] += prev_weight * head_weight
+    
+    # TODO: should (some) of this be part of the pool itself?
+    @staticmethod
+    def _iter_pool(outcome, pool):
+        """
+        Yields:
+            prev_pool
+            count
+            weight
+        """
+        if pool is None or outcome > pool.max_outcome():
+            yield pool, None, 1.0
+        elif outcome == pool.die().min_outcome():
+            # There's only one possible outcome, so all dice roll it.
+            # TODO: What if the weights start with zeros?
+            single_weight = pool.max_single_weight()
+            count = numpy.count_nonzero(pool.mask())
+            weight = single_weight ** count
+            yield None, count, weight
         else:
-            pool = tail_pools[0]
-            if pool is None or outcome > pool.max_outcome():
-                self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (pool,), head_counts + (None,), head_weight, tail_pools[1:])
-            elif outcome == pool.die().min_outcome():
-                # There's only one possible outcome, so all dice roll it.
-                # TODO: What if the weights start with zeros?
-                single_weight = pool.max_single_weight()
-                count = numpy.count_nonzero(pool.mask())
-                weight = single_weight ** count
-                self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (None,), head_counts + (count,), head_weight * weight, tail_pools[1:])
-            else:
-                for prev_pool, count, weight in pool.pops():
-                    self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (prev_pool,), head_counts + (count,), head_weight * weight, tail_pools[1:])
-                
+            yield from pool.pops()
