@@ -32,8 +32,6 @@ class Pool():
             self._mask = mask
         elif mask is None:
             self._mask = (True,) * len(self._max_outcomes)
-        elif numpy.dtype(mask) == numpy.dtype(True):
-            self._mask = tuple(mask)
         else:
             temp = numpy.zeros_like(self._max_outcomes, dtype=bool)
             temp[mask] = True
@@ -98,7 +96,7 @@ class Pool():
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
         popped_die, outcome, single_weight = self.die().pop()
-        popped_max_outcomes = self.max_outcomes()[:num_max_dice] + (outcome-1,) * num_unused_dice
+        popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_max_dice
         popped_mask = self.mask()
         
         # Zero dice rolling this outcome.

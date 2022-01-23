@@ -144,3 +144,5 @@ class PoolSum(SinglePoolScorer):
     def score(self, initial_pool, initial_state, final_state):
         # Return the final total.
         return final_state
+
+pool_sum = PoolSum()

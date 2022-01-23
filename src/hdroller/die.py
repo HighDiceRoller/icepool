@@ -1,5 +1,7 @@
 import hdroller.countdown
 import hdroller.math
+from hdroller.pool import Pool
+from hdroller.single_pool_scorer import SinglePoolScorer, pool_sum
 
 from collections import defaultdict
 from functools import cached_property, lru_cache
@@ -535,60 +537,61 @@ class Die(metaclass=DieType):
         if num_dice % 2: result += self
         return result
     
-    def keep(self, num_dice, keep_indexes, max_outcomes=None):
+    def keep(self, max_outcomes, mask=None):
         """
-        Returns a Die representing:
-        Roll this Die `num_dice` times, sort them (in ascending order) and sum the dice in `keep_indexes`.
-        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
-        """
-        return hdroller.countdown.keep(num_dice, keep_indexes, die=self, max_outcomes=max_outcomes)
+        Roll this Die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
-    def keep_highest(self, num_dice, num_keep=1, num_drop=0, max_outcomes=None):
+        Arguments:
+            max_outcomes: Either:
+                * An iterable indicating the maximum outcome for each die in the pool.
+                * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
+            mask:
+                The pool will be sorted from lowest to highest; only dice selected by mask will be counted.
+                If omitted, all dice will be counted.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
         """
-        Returns a Die representing:
-        Roll this Die `num_dice` times and sum the `num_keep` highest.
-        num_drop: If provided, this many highest dice will be dropped before keeping.
-        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
-        """
-        if num_dice <= num_drop or num_keep == 0:
-            return Die(0)
-        elif num_keep == 1 and num_drop == 0 and max_outcomes is None:
-            return Die.from_cweights(numpy.power(self.cweights(), num_dice), self.min_outcome())
+        pool = Pool(self, max_outcomes, mask)
+        return pool_sum.evaluate(pool)
         
+    def keep_highest(self, max_outcomes, num_keep=1, num_drop=0):
+        """
+        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
+        
+        Arguments:
+            max_outcomes: Either:
+                * An iterable indicating the maximum outcome for each die in the pool.
+                * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
+            num_keep: The number of dice to keep.
+            num_drop: If provided, this many highest dice will be dropped before keeping.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
+        """
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
-        keep = slice(start, stop)
-        return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
+        mask = slice(start, stop)
+        return self.keep(max_outcomes, mask)
         
-    def keep_lowest(self, num_dice, num_keep=1, num_drop=0, max_outcomes=None):
+    def keep_lowest(self, max_outcomes, num_keep=1, num_drop=0):
         """
-        Returns a Die representing:
-        Roll this Die `num_dice` times and sum the `num_keep` lowest.
-        num_drop: If provided, this many lowest dice will be dropped before keeping.
-        max_outcomes: If provided, this limits the maximum outcomes of individual dice.
-        """
-        if num_dice <= num_drop or num_keep == 0:
-            return Die(0)
-        elif num_keep == 1 and num_drop == 0 and max_outcomes is None:
-            return Die.from_sweights(numpy.power(self.sweights(), num_dice), self.min_outcome())
+        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
+        Arguments:
+            max_outcomes: Either:
+                * An iterable indicating the maximum outcome for each die in the pool.
+                * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
+            num_keep: The number of dice to keep.
+            num_drop: If provided, this many lowest dice will be dropped before keeping.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
+        """
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
-        keep = slice(start, stop)
-        return hdroller.countdown.keep(num_dice, keep, die=self, max_outcomes=max_outcomes)
-        
-    def best_set(self, num_dice, match_func=None, straight_func=None):
-        """
-        die: The die to roll.
-        num_dice: The number of dice to roll.
-        match_func: A function match_size, set_outcome -> score.
-        straight_func: A function straight_size, start_outcome -> score.
-          Increasing the length of a straight should never decrease its score.
-        
-        Returns:
-            A Die representing the highest scoring set.
-        """
-        return hdroller.countdown.best_set(self, num_dice, match_func=match_func, straight_func=straight_func)
+        mask = slice(start, stop)
+        return self.keep(max_outcomes, mask)
         
     # Operations with integers only.
     
