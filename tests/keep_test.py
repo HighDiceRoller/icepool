@@ -64,3 +64,10 @@ def test_keep_index(keep_index):
     expected = bf_keep(die, 4, keep_index)
     
     assert result.pmf() == pytest.approx(expected.pmf())
+
+def test_max_outcomes():
+    die = Die.d12
+    result = die.keep([8, 6])
+    expected = Die.d8 + Die.d6
+    
+    assert result.pmf() == pytest.approx(expected.pmf())
