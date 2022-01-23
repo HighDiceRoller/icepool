@@ -53,7 +53,6 @@ class Die(metaclass=DieType):
         * A dict-like mapping outcomes to weights.
         * A integer outcome, which produces a Die that always rolls that outcome.
         """
-        # TODO: Decide whether to check for exactness and reduce fractions here.
         if isinstance(weights, Die):
             return # Already returned same object by __new__().
         elif numpy.issubdtype(type(weights), numpy.integer):
@@ -81,11 +80,8 @@ class Die(metaclass=DieType):
                 raise ValueError('Weights must have exactly one dimension.')
             self._min_outcome = min_outcome
         
-        if numpy.isinf(self._total_weight) or self._total_weight <= 0.0:
-            if numpy.all(self._weights == 0.0):
-                raise ZeroDivisionError('All outcomes have zero weight.')
-            else:
-                raise OverflowError('Total weight is not representable by a float64.')
+        if numpy.isinf(self._total_weight) or (self._total_weight <= 0.0 and numpy.any(self._weights > 0.0)):
+            raise OverflowError('Total weight is not representable by a float64.')
         
         self._weights.setflags(write=False)
     
@@ -418,6 +414,15 @@ class Die(metaclass=DieType):
         return Die(weights, 0)
     
     abs = __abs__
+    
+    def pop(self):
+        """
+        Removes the top outcome.
+        
+        Returns:
+            A Die with the top outcome removed, and the weight of the removed outcome.
+        """
+        return Die(self.weights()[:-1], self.min_outcome()), self.weights()[-1]
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
