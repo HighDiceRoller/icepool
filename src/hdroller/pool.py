@@ -6,8 +6,7 @@ class Pool():
     """
     Immutable class representing a non-ordered dice pool where all the dice are the same except possibly for their maximum outcomes.
     
-    This does not include scoring logic or caching.
-    Those are determined by PoolScorer.
+    This does not include scoring logic. Those are determined by PoolScorer.
     """
     def __init__(self, die, max_outcomes, mask=None):
         """
