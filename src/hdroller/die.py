@@ -417,12 +417,14 @@ class Die(metaclass=DieType):
     
     def pop(self):
         """
-        Removes the top outcome.
+        Removes the max outcome.
         
         Returns:
-            A Die with the top outcome removed, and the weight of the removed outcome.
+            A Die with the max outcome removed.
+            The removed outcome.
+            The weight of the removed outcome.
         """
-        return Die(self.weights()[:-1], self.min_outcome()), self.weights()[-1]
+        return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
@@ -893,7 +895,8 @@ class Die(metaclass=DieType):
         Note that fractions are not reduced.
         For example a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
         """
-        return self._key_tuple == Die(other)._key_tuple
+        if not isinstance(other, Die): return False
+        return self._key_tuple == other._key_tuple
     
     @cached_property
     def _hash(self):

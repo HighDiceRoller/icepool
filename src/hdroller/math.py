@@ -53,7 +53,7 @@ def convolve_along_last_axis(a, v):
     return result
 
 @lru_cache(maxsize=None)
-def binomial_row(n, b):
+def binom_row(n, b):
     """
     Returns an immutable vector of n+1 elements, where the kth element is binom(n, k) * power(b, k).
     """
