@@ -414,19 +414,19 @@ class Die(metaclass=DieType):
     abs = __abs__
     
     @cached_property
-    def _pop(self):
+    def _popped(self):
         return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
     
-    def pop(self):
+    def popped(self):
         """
-        Removes the max outcome.
+        Retruns a Die like this with the max outcome removed.
         
         Returns:
             A Die with the max outcome removed.
             The removed outcome.
             The weight of the removed outcome.
         """
-        return self._pop
+        return self._popped
     
     # Roller wins ties by default. This returns a die that effectively has the given tiebreak mode.
     def tiebreak(self, mode):
@@ -895,6 +895,9 @@ class Die(metaclass=DieType):
         if not self.is_bernoulli():
             raise ValueError('Only Bernoulli distributions may be cast to float.')
         return float(self.probability(1))
+    
+    def __bool__(self):
+        return self.total_weight() > 0.0
         
     # Hashing and equality.
     

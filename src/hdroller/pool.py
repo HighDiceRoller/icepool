@@ -11,14 +11,16 @@ class Pool():
     def __init__(self, die, max_outcomes, mask=None):
         """
         Arguments:
+            die: The fundamental Die of the Pool.
             max_outcomes: Either:
                 * An iterable indicating the maximum outcome for each die in the pool.
                 * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
             mask:
                 The pool will be sorted from lowest to highest; only dice selected by mask will be counted.
+                This can be anything that can index a numpy array, e.g. integer, array of integers, slice.
                 If omitted, all dice will be counted.
                 
-        For example, Pool(Die.d12, [6, 6, 8, 8, 8]) would mean 2d6 and 3d8.
+        For example, Pool(Die.d12, [6, 6, 8, 8, 8], slice(-2, None)) would mean 2d6 and 3d8, taking the two highest.
         """
         self._die = die
         if numpy.isscalar(max_outcomes):
@@ -87,7 +89,7 @@ class Pool():
     
     def _iter_pops(self):
         """
-        A tuple from 0 to num_max_dice() whose elements are:
+        Yields from 0 to num_max_dice() inclusive:
             * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
@@ -95,7 +97,7 @@ class Pool():
         """
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
-        popped_die, outcome, single_weight = self.die().pop()
+        popped_die, outcome, single_weight = self.die().popped()
         popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_max_dice
         popped_mask = self.mask()
         
