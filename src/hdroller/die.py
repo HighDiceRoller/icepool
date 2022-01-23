@@ -11,10 +11,8 @@ Terminology:
 outcomes: The numbers between the minimum and maximum rollable on a die (even if they have zero chance).
   These run from die.min_outcome() to die.max_outcome() inclusive.
   len(die) is the total number of outcomes.
-faces: Equal to outcomes - die.min_outcome, so they always run from 0 to len(die) - 1.
 weights: A relative probability of each outcome. This can have arbitrary positive sum, 
   but uses values equal to integers where possible, serving as a fraction that decays gracefully.
-  
 pmf: Probability mass function. The normalized version of the weights.
 """
 
@@ -248,8 +246,8 @@ class Die(metaclass=DieType):
     def max_outcome(self):
         return self.min_outcome() + len(self) - 1
 
-    def outcomes(self, prepend=False, append=False):
-        return numpy.array(range(self.min_outcome(), self.min_outcome() + len(self) + (append is not False))) + (prepend is not False)
+    def outcomes(self):
+        return numpy.arange(self.min_outcome(), self.max_outcome() + 1)
         
     def probability(self, outcome):
         """
@@ -280,7 +278,6 @@ class Die(metaclass=DieType):
         """ 
         When zipped with outcomes(), this is the weight of rolling <= the corresponding outcome.
         inclusive: If False, changes the comparison to <.
-          If 'both', includes both endpoints and should be zipped with outcomes(prepend=True).
         """
         if inclusive is True:
             return self._cweights[1:]
@@ -295,7 +292,6 @@ class Die(metaclass=DieType):
         """
         When zipped with outcomes(), this is the weight of rolling >= the corresponding outcome.
         inclusive: If False, changes the comparison to >. If 'both', includes both endpoints.
-          If 'both', includes both endpoints and should be zipped with outcomes(append=True).
         """
         if inclusive is True:
             return self._sweights[:-1]
@@ -856,6 +852,8 @@ class Die(metaclass=DieType):
         Most methods already return a trimmed result by default.
         """
         nz = numpy.nonzero(self.weights())[0]
+        if nz[0] == 0 and nz[-1] == len(self) - 1:
+            return self
         min_outcome = self.min_outcome() + nz[0]
         weights = self.weights()[nz[0]:nz[-1]+1]
         return Die(weights, min_outcome)
