@@ -100,7 +100,7 @@ class SinglePoolScorer():
         
         if len(pool.die()) == 1:
             # There's only one possible value, so all dice roll it.
-            count = numpy.sum(pool.mask())
+            count = numpy.count_nonzero(pool.mask())
             state = self.next_state(outcome, count, initial_state)
             weight = single_weight ** count
             result[state] = weight

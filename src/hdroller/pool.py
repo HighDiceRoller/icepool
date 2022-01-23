@@ -28,12 +28,27 @@ class Pool():
             # Sort the max outcomes and cap them at the die's max_outcome.
             self._max_outcomes = tuple(numpy.minimum(sorted(max_outcomes), die.max_outcome()))
         
-        if mask is None:
+        if isinstance(mask, tuple):
+            self._mask = mask
+        elif mask is None:
             self._mask = (True,) * len(self._max_outcomes)
+        elif numpy.dtype(mask) == numpy.dtype(True):
+            self._mask = tuple(mask)
         else:
             temp = numpy.zeros_like(self._max_outcomes, dtype=bool)
             temp[mask] = True
             self._mask = tuple(temp)
+    
+    @classmethod
+    def _create_unsafe(cls, die, max_outcomes, mask):
+        """
+        Fast constructor for cases where the arguments are known to be already sorted etc.
+        """
+        self = cls.__new__(cls)
+        self._die = die
+        self._max_outcomes = max_outcomes
+        self._mask = mask
+        return self
     
     def die(self):
         return self._die
@@ -82,21 +97,20 @@ class Pool():
         """
         num_max_dice = self.num_max_dice()
         popped_die, outcome, single_weight = self.die().pop()
-        popped_max_outcomes = numpy.copy(self.max_outcomes())
-        popped_max_outcomes[num_max_dice:] -= 1
+        popped_max_outcomes = self.max_outcomes()[:num_max_dice] + (outcome-1,) * (self.num_dice() - num_max_dice)
         
         if single_weight == 0.0:
             # Zero dice can actually roll this outcome.
             # Yield only this result.
-            pool = Pool(popped_die, popped_max_outcomes, self.mask())
+            pool = Pool._create_unsafe(popped_die, popped_max_outcomes, self.mask())
             weight = 1.0
             count = 0
             yield pool, weight, count
         else:
             for consumed_dice, weight in enumerate(hdroller.math.binom_row(num_max_dice, single_weight)):
                 index = self.num_dice() - consumed_dice
-                pool = Pool(popped_die, popped_max_outcomes[:index], self.mask()[:index])
-                count = numpy.sum(self.mask()[index:], dtype=int)
+                pool = Pool._create_unsafe(popped_die, popped_max_outcomes[:index], self.mask()[:index])
+                count = numpy.count_nonzero(self.mask()[index:])
                 yield pool, weight, count
     
     @cached_property
@@ -115,4 +129,4 @@ class Pool():
         return self._hash
 
     def __str__(self):
-        return str(self._key_tuple)
+        return '\n'.join(str(self.die()), str(self.max_outcomes()), str(self.mask()))
