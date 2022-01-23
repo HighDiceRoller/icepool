@@ -1,0 +1,126 @@
+import hdroller
+import numpy
+from collections import defaultdict
+
+class MultiPoolScorer():
+    """
+    An abstract class for scoring multiple dice pools.
+    
+    Instances cache all final and intermediate state distributions.
+    As such, unless memory is a concern, you should reuse instances when possible.
+    """
+    def initial_state(self, initial_pools):
+        """
+        This should generate an initial state for the pool.
+        
+        Arguments:
+            initial_pools: A tuple of Pool objects.
+        Returns:
+            A hashable object indicating the initial state.
+        
+        If you want to use information about the pools being evaluated,
+        you need to save that information to the state here.
+        This is done to avoid polluting cache keys with unused information.
+        """
+        raise NotImplementedError()
+        
+    def next_state(self, outcome, counts, prev_state):
+        """
+        This should produce a state given the previous state and `count` dice rolling `outcome`.
+        This will be called for all outcomes of each pool Die,
+        even if those outcomes have zero weight or all of the dice in the pool are capped below that outcome.
+        
+        Arguments:
+            outcome: The current outcome.
+            counts: A tuple indicating how many dice in each pool (subject to masking) rolled the current outcome.
+                If the outcome is out of range of the pool's Die, the corresponding entry will be None.
+            prev_state: A hashable object indicating the state before rolling the current outcome.
+        
+        Returns:
+            A hashable object indicating the next state.
+        """
+        raise NotImplementedError()
+        
+    def score(self, initial_pools, initial_state, final_state):
+        """
+        This should compute the final score given a final state.
+        
+        Arguments:
+            initial_pools
+            initial_state
+            final_state: A final state after all dice in the pool have been consumed.
+        
+        Returns:
+            An integer indicating the final score for that final state.
+        """
+        raise NotImplementedError()
+    
+    def evaluate(self, pools):
+        """
+        Arguments:
+            pools: An iterable of Pools to evaluate this scorer on.
+        
+        Returns:
+            A Die representing the distribution of the final score.
+        """
+        if not hasattr(self, '_cache'):
+            self._cache = {}
+            
+        pools = tuple(pools)
+        
+        initial_state = self.initial_state(pools)
+        
+        dist = self._evaluate_internal(initial_state, pools)
+        
+        score_dist = defaultdict(float)
+        for state, weight in dist.items():
+            score = self.score(pools, initial_state, state)
+            score_dist[score] += weight
+        
+        return hdroller.Die(score_dist)
+    
+    def _evaluate_internal(self, initial_state, pools):
+        """
+        Arguments:
+            initial_state: The initial state. This is passed without change recursively.
+            pools: A tuple of Pools to evaluate, or None if that pool is exhausted.
+            
+        Returns:
+            A dictionary { state : weight } describing the probability distribution over states.
+        """
+        cache_key = (initial_state, pools)
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+        
+        result = defaultdict(float)
+        
+        if all(pool is None for pool in pools):
+            result[initial_state] = 1.0
+        else:
+            outcome = max(pool.max_outcome() for pool in pools if pool is not None)
+            self._evaluate_internal_inner(initial_state, outcome, result, (), (), 1.0, pools)
+
+        self._cache[cache_key] = result
+        return result
+
+    def _evaluate_internal_inner(self, initial_state, outcome, result, head_prev_pools, head_counts, head_weight, tail_pools):
+        if len(tail_pools) == 0:
+            prev = self._evaluate_internal(initial_state, head_prev_pools)
+            for prev_state, prev_weight in prev.items():
+                state = self.next_state(outcome, head_counts, prev_state)
+                result[state] += prev_weight * head_weight
+        else:
+            pool = tail_pools[0]
+            if pool is None or outcome > pool.max_outcome():
+                self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (pool,), head_counts + (None,), head_weight, tail_pools[1:])
+            elif outcome == pool.die().min_outcome():
+                # There's only one possible outcome, so all dice roll it.
+                # TODO: What if the weights start with zeros?
+                single_weight = pool.max_single_weight()
+                count = numpy.count_nonzero(pool.mask())
+                weight = single_weight ** count
+                self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (None,), head_counts + (count,), head_weight * weight, tail_pools[1:])
+            else:
+                for prev_pool, count, weight in pool.iter_pop():
+                    self._evaluate_internal_inner(initial_state, outcome, result, head_prev_pools + (prev_pool,), head_counts + (count,), head_weight * weight, tail_pools[1:])
+                

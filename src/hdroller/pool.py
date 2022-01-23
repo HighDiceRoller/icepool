@@ -1,6 +1,6 @@
 import hdroller
 import numpy
-from functools import cached_property
+from functools import cached_property, lru_cache
             
 class Pool():
     """
@@ -38,6 +38,7 @@ class Pool():
             self._mask = tuple(temp)
     
     @classmethod
+    @lru_cache(maxsize=None)  # TODO: Is this sound?
     def _create_unchecked(cls, die, max_outcomes, mask):
         """
         Fast constructor for cases where the arguments are known to be already tuples, sorted, etc.
@@ -90,8 +91,8 @@ class Pool():
         Yields for 0 to num_max_dice():
             * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
-            * weight: A float weight of that many dice rolling the removed outcome.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
+            * weight: A float weight of that many dice rolling the removed outcome.
         """
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
@@ -103,7 +104,7 @@ class Pool():
         pool = Pool._create_unchecked(popped_die, popped_max_outcomes, self.mask())
         weight = 1.0
         count = 0
-        yield pool, weight, count
+        yield pool, count, weight
         
         if single_weight > 0.0:
             # If weight is nonzero, consider different numbers of dice rolling this outcome.
@@ -113,7 +114,7 @@ class Pool():
                 popped_max_outcomes = popped_max_outcomes[:-1]
                 popped_mask = popped_mask[:-1]
                 pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
-                yield pool, weight, count
+                yield pool, count, weight
     
     @cached_property
     def _key_tuple(self):

@@ -2,25 +2,6 @@ import hdroller
 import numpy
 from collections import defaultdict
 
-"""
-Possible todo:
-* Cacheable next_state?
-* Use cache module?
-* Multiple pools with different die types in each pool?
-* Pool as class?
-
-Possible restrictions:
-
-Systems:
-* CthulhuTech: sets and straights
-* Cortex: mixed, keep-highest
-* Vampire 5e: Pairing successes, multiple pools
-* Ability scores: keep-highest, roll-and-group
-* Neon City Overdrive: Multiple pools.
-
-V5 and NCO encourage stepping through the pools in lockstep.
-"""
-
 class SinglePoolScorer():
     """
     An abstract class for scoring a single dice pool.
@@ -39,7 +20,7 @@ class SinglePoolScorer():
         Returns:
             A hashable object indicating the initial state.
         
-        If you want to use information about the pool(s) being evaluated,
+        If you want to use information about the pool being evaluated,
         you need to save that information to the state here.
         This is done to avoid polluting cache keys with unused information.
         """
@@ -53,7 +34,7 @@ class SinglePoolScorer():
         
         Arguments:
             outcome: The current outcome.
-            counts: An integer indicating how many dice (subject to masking) rolled the current outcome.
+            count: An integer indicating how many dice (subject to masking) rolled the current outcome.
             prev_state: A hashable object indicating the state before rolling the current outcome.
         
         Returns:
@@ -63,7 +44,7 @@ class SinglePoolScorer():
         
     def score(self, initial_pool, initial_state, final_state):
         """
-        This should compte the final score given a final state.
+        This should compute the final score given a final state.
         
         Arguments:
             initial_pool
@@ -78,7 +59,7 @@ class SinglePoolScorer():
     def evaluate(self, pool):
         """
         Arguments:
-            pool: A pool to evaluate this scorer on.
+            pool: A Pool to evaluate this scorer on.
         
         Returns:
             A Die representing the distribution of the final score.
@@ -123,7 +104,7 @@ class SinglePoolScorer():
             weight = single_weight ** count
             result[state] = weight
         else:
-            for prev_pool, weight, count in pool.iter_pop():
+            for prev_pool, count, weight in pool.iter_pop():
                 prev = self._evaluate_internal(initial_state, prev_pool)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(outcome, count, prev_state)

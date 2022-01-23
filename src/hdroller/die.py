@@ -413,6 +413,7 @@ class Die(metaclass=DieType):
     
     abs = __abs__
     
+    @lru_cache(maxsize=None)
     def pop(self):
         """
         Removes the max outcome.
