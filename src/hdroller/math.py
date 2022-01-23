@@ -60,7 +60,7 @@ def binom_row(n, b):
     if n == 0:
         result = numpy.ones((1,))
     else:
-        prev = binomial_row(n-1, b)
+        prev = binom_row(n-1, b)
         result = numpy.append(prev, 0.0) + numpy.insert(b * prev, 0, 0.0)
     result.setflags(write=False)
     return result
