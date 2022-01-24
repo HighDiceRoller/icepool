@@ -679,7 +679,7 @@ class Die(metaclass=DieType):
         return 1 - self
         
     def _and(self, other):
-        if not self.is_bernoulli() or not other.bernoulli():
+        if not self.is_bernoulli() or not other.is_bernoulli():
             raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
         return (self + other).equal(2)
         
@@ -690,7 +690,7 @@ class Die(metaclass=DieType):
         return self._and(Die(other))
         
     def _or(self, other):
-        if not self.is_bernoulli() or not other.bernoulli():
+        if not self.is_bernoulli() or not other.is_bernoulli():
             raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
         return (self + other) >= 1
         
@@ -701,7 +701,7 @@ class Die(metaclass=DieType):
         return self._or(Die(other))
     
     def _xor(self, other):
-        if not self.is_bernoulli() or not other.bernoulli():
+        if not self.is_bernoulli() or not other.is_bernoulli():
             raise ValueError('Logical operators can only be applied to Bernoulli distributions.')
         return (self + other).equal(1)
         
@@ -903,7 +903,7 @@ class Die(metaclass=DieType):
         return float(self.probability(1))
     
     def __bool__(self):
-        return self.total_weight() > 0.0
+        return bool(self.total_weight() > 0.0)
         
     # Hashing and equality.
     
