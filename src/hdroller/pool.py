@@ -1,5 +1,6 @@
 import hdroller
 import numpy
+import math
 from functools import cached_property, lru_cache
             
 class Pool():
@@ -37,6 +38,10 @@ class Pool():
             temp = numpy.zeros_like(self._max_outcomes, dtype=bool)
             temp[mask] = True
             self._mask = tuple(temp)
+        
+        if not any(self._mask):
+            self._max_outcomes = ()
+            self._mask = ()
     
     @classmethod
     @lru_cache(maxsize=None)
@@ -99,7 +104,8 @@ class Pool():
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
             * weight: A float weight of that many dice rolling the removed outcome.
         """
-        
+        remaining_masked_dice = numpy.count_nonzero(self.mask())
+
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
         popped_die, outcome, single_weight = self.die().popped()
@@ -108,7 +114,15 @@ class Pool():
             # This is the last outcome with positive weight. All dice must roll this outcome.
             pool = Pool._create_unchecked(popped_die, (), ())
             weight = single_weight ** num_max_dice
-            yield pool, numpy.count_nonzero(self.mask()), weight
+            yield pool, remaining_masked_dice, weight
+            return
+        
+        if remaining_masked_dice == 0:
+            # No masked dice remain. All dice must roll somewhere below, so empty all dice in one go.
+            # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
+            pool = Pool._create_unchecked(popped_die, (), ())
+            weight = math.prod(self.die().cweights()[max_outcome - self.die().min_outcome()] for max_outcome in self.max_outcomes())
+            yield pool, 0, weight
             return
         
         popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_max_dice
@@ -116,7 +130,7 @@ class Pool():
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
-        pool = Pool._create_unchecked(popped_die, popped_max_outcomes, self.mask())
+        pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
         weight = 1.0
         count = 0
         yield pool, count, weight
