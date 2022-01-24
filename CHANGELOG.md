@@ -1,3 +1,8 @@
+## 0.3.1
+
+* Optimize `Pool.pops()` by immediately removing all the dice if there are no left in the mask.
+* `Die.reroll` now tracks weights properly.
+
 ## 0.3.0
 
 * Implemented new keep/pool algorithms, which make heavy use of caching. The `keep*()` function signatures changed.
