@@ -39,7 +39,7 @@ class Pool():
             self._mask = tuple(temp)
     
     @classmethod
-    @lru_cache(maxsize=None)  # TODO: Is this sound?
+    @lru_cache(maxsize=None)
     def _create_unchecked(cls, die, max_outcomes, mask):
         """
         Fast constructor for cases where the arguments are known to be already tuples, sorted, etc.

@@ -111,7 +111,6 @@ class MultiPoolScorer():
         self._cache[cache_key] = result
         return result
     
-    # TODO: should (some) of this be part of the pool itself?
     @staticmethod
     def _iter_pool(outcome, pool):
         """

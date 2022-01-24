@@ -71,3 +71,11 @@ def test_max_outcomes():
     expected = Die.d8 + Die.d6
     
     assert result.pmf() == pytest.approx(expected.pmf())
+
+def test_max_outcomes_untrimmed():
+    die = Die([0] + [1] * 12, 0)
+    result = die.keep([8, 6]).trim()
+    expected = Die.d8 + Die.d6
+    
+    assert result.min_outcome() == expected.min_outcome()
+    assert result.pmf() == pytest.approx(expected.pmf())
