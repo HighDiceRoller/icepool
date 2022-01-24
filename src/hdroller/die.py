@@ -80,6 +80,9 @@ class Die(metaclass=DieType):
                 raise ValueError('Weights must have exactly one dimension.')
             self._min_outcome = min_outcome
         
+        if len(self._weights) == 0:
+            raise ValueError('Die cannot have empty weights.')
+        
         if numpy.isinf(self._total_weight) or (self._total_weight <= 0.0 and numpy.any(self._weights > 0.0)):
             raise OverflowError('Total weight is not representable by a float64.')
         
@@ -415,14 +418,17 @@ class Die(metaclass=DieType):
     
     @cached_property
     def _popped(self):
-        return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
+        if len(self) == 1:
+            return None, self.max_outcome(), self.weights()[-1]
+        else:
+            return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
     
     def popped(self):
         """
         Retruns a Die like this with the max outcome removed.
         
         Returns:
-            A Die with the max outcome removed.
+            A Die with the max outcome removed, or None if the last outcome is removed.
             The removed outcome.
             The weight of the removed outcome.
         """

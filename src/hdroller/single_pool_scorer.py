@@ -82,7 +82,7 @@ class SinglePoolScorer():
         """
         Arguments:
             initial_state: The initial state. This is passed without change recursively.
-            pool: The pool to evaluate.
+            pool: The pool to evaluate, or None if all outcomes are exhausted.
             
         Returns:
             A dictionary { state : weight } describing the probability distribution over states.
@@ -93,17 +93,11 @@ class SinglePoolScorer():
         
         result = defaultdict(float)
         
-        outcome = pool.max_outcome()
-        single_weight = pool.max_single_weight()
-        
-        if len(pool.die()) == 1:
-            # There's only one possible outcome, so all dice roll it.
-            # TODO: What if the weights start with zeros?
-            count = numpy.count_nonzero(pool.mask())
-            state = self.next_state(outcome, count, initial_state)
-            weight = single_weight ** count
-            result[state] = weight
+        if pool is None:
+            result[initial_state] = 1.0
         else:
+            outcome = pool.max_outcome()
+            single_weight = pool.max_single_weight()
             for prev_pool, count, weight in pool.pops():
                 prev = self._evaluate_internal(initial_state, prev_pool)
                 for prev_state, prev_weight in prev.items():

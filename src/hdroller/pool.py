@@ -44,6 +44,8 @@ class Pool():
         """
         Fast constructor for cases where the arguments are known to be already tuples, sorted, etc.
         """
+        if die is None:
+            return None
         self = cls.__new__(cls)
         self._die = die
         self._max_outcomes = max_outcomes
@@ -91,24 +93,36 @@ class Pool():
         """
         Yields from 0 to num_max_dice() inclusive:
             * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
+                If the max outcome has all the remaining weight, only one result will be yielded, corresponding to all dice rolling that outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
+                If there are no outcomes remaining, this will be None.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
             * weight: A float weight of that many dice rolling the removed outcome.
         """
+        
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
         popped_die, outcome, single_weight = self.die().popped()
+        
+        if popped_die is None or (single_weight > 0.0 and popped_die.total_weight() == 0.0):
+            # This is the last outcome with positive weight. All dice must roll this outcome.
+            pool = Pool._create_unchecked(popped_die, (), ())
+            weight = single_weight ** num_max_dice
+            yield pool, numpy.count_nonzero(self.mask()), weight
+            return
+        
         popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_max_dice
         popped_mask = self.mask()
         
         # Zero dice rolling this outcome.
+        # If there is no weight, this is the only possibility.
         pool = Pool._create_unchecked(popped_die, popped_max_outcomes, self.mask())
         weight = 1.0
         count = 0
         yield pool, count, weight
         
+        # If there is weight remaining below, consider different numbers of dice rolling this outcome.
         if single_weight > 0.0:
-            # If weight is nonzero, consider different numbers of dice rolling this outcome.
             binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
             for weight in binom_row[1:]:
                 count += popped_mask[-1]

@@ -122,12 +122,5 @@ class MultiPoolScorer():
         """
         if pool is None or outcome > pool.max_outcome():
             yield pool, None, 1.0
-        elif outcome == pool.die().min_outcome():
-            # There's only one possible outcome, so all dice roll it.
-            # TODO: What if the weights start with zeros?
-            single_weight = pool.max_single_weight()
-            count = numpy.count_nonzero(pool.mask())
-            weight = single_weight ** count
-            yield None, count, weight
         else:
             yield from pool.pops()
