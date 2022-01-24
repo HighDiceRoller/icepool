@@ -475,14 +475,18 @@ class Die(metaclass=DieType):
         other = Die(other)
         
         subresults = []
-        die_count_weights = []
+        subresult_weights = []
+        
+        max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
+        
         for die_count, die_count_weight in zip(self.outcomes(), self.weights()):
-            if die_count_weight <= 0.0: continue
-            subresults.append(other.repeat_and_sum(die_count))
-            die_count_weights.append(die_count_weight)
+            if die_count_weight > 0.0:
+                factor = numpy.power(other.total_weight(), max_abs_die_count - abs(die_count))
+                subresults.append(other.repeat_and_sum(die_count))
+                subresult_weights.append(die_count_weight * factor)
         
         subresults = Die.align(subresults)
-        weights = sum(subresult.weights() * die_count_weight for subresult, die_count_weight in zip(subresults, die_count_weights))
+        weights = sum(subresult.weights() * subresult_weight for subresult, subresult_weight in zip(subresults, subresult_weights))
         
         return Die(weights, subresults[0].min_outcome())
     
@@ -725,12 +729,19 @@ class Die(metaclass=DieType):
         dice = Die._listify_dice(dice)
         dice = Die.align(dice)
         
+        if all(die.is_exact() for die in dice):
+            lcm = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
+            if lcm > hdroller.math.MAX_INT_FLOAT:
+                lcm = 1.0
+        else:
+            lcm = 1.0
+        
         if mix_weights is None:
             mix_weights = numpy.ones((len(dice),))
 
         weights = numpy.zeros_like(dice[0].weights())
         for die, mix_weight in zip(dice, mix_weights):
-            weights += mix_weight * die.weights()
+            weights += mix_weight * die.weights() * (lcm / die.total_weight())
         return Die(weights, dice[0].min_outcome())
     
     def relabel(self, relabeling):
@@ -833,7 +844,7 @@ class Die(metaclass=DieType):
     
     def align(*dice):
         """ 
-        Pads all the dice with zeros so that all have the same min_outcome, max_outcome, and total weight.
+        Pads all the dice with zeros so that all have the same min_outcome and max_outcome.
         Note that, unlike most methods, this may leave leading or trailing zero weights.
         """
         dice = Die._listify_dice(dice)
@@ -841,19 +852,12 @@ class Die(metaclass=DieType):
         min_outcome = min(die.min_outcome() for die in dice)
         max_outcome = max(die.max_outcome() for die in dice)
         len_align = max_outcome - min_outcome + 1
-        
-        result_total_weight = 1.0
-        if all(die.is_exact() for die in dice):
-            lcd = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
-            if lcd <= hdroller.math.MAX_INT_FLOAT:
-                result_total_weight = lcd
-        
+
         result = []
         for die in dice:
-            weight_factor = result_total_weight / die.total_weight()
             left_dst_index = die.min_outcome() - min_outcome
             weights = numpy.zeros((len_align,))
-            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights() * weight_factor
+            weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights()
             result.append(Die(weights, min_outcome))
         
         return tuple(result)
