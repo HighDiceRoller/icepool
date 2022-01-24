@@ -729,12 +729,7 @@ class Die(metaclass=DieType):
         dice = Die._listify_dice(dice)
         dice = Die.align(dice)
         
-        if all(die.is_exact() for die in dice):
-            lcm = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
-            if lcm > hdroller.math.MAX_INT_FLOAT:
-                lcm = 1.0
-        else:
-            lcm = 1.0
+        lcm = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
         
         if mix_weights is None:
             mix_weights = numpy.ones((len(dice),))
