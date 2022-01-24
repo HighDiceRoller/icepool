@@ -795,9 +795,8 @@ class Die(metaclass=DieType):
             weights = non_reroll_weights
         else:
             total_reroll_weight = numpy.sum(reroll_weights)
-            reroll_chance_single = total_reroll_weight / self.total_weight()
-            rerollable_factor = numpy.power(reroll_chance_single, max_times)
-            stop_factor = (1.0 - numpy.power(reroll_chance_single, max_times+1)) / (1.0 - reroll_chance_single)
+            rerollable_factor = numpy.power(total_reroll_weight, max_times)
+            stop_factor = (numpy.power(self.total_weight(), max_times+1) - numpy.power(total_reroll_weight, max_times+1)) / (self.total_weight() - total_reroll_weight)
             weights = rerollable_factor * reroll_weights + stop_factor * non_reroll_weights
         return Die(weights, self.min_outcome()).trim()
     
