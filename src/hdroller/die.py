@@ -1,4 +1,3 @@
-import hdroller.countdown
 import hdroller.math
 from hdroller.pool import Pool
 from hdroller.single_pool_scorer import SinglePoolScorer, pool_sum
