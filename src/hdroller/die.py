@@ -886,12 +886,12 @@ class Die(metaclass=DieType):
             result = f'| Outcome | Weight (out of {int(self.total_weight())}) | Probability |\n'
             result += '|----:|----:|----:|\n'
             for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
-                result += f'| {int(outcome)} | {int(weight)} | {p:.2%} |\n'
+                result += f'| {int(outcome)} | {int(weight)} | {p:.3%} |\n'
         else:
             result = '| Outcome | Probability |\n'
             result += '|----:|----:|\n'
             for outcome, p in zip(self.outcomes(), self.pmf()):
-                result += f'| {int(outcome)} | {p:.2%} |\n'
+                result += f'| {int(outcome)} | {p:.3%} |\n'
         return result
         
     def __float__(self):
