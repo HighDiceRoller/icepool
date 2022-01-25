@@ -32,6 +32,8 @@ class SinglePoolScorer():
         This will be called for all outcomes of the pool Die,
         even if those outcomes have zero weight or all of the dice in the pool are capped below that outcome.
         
+        If the return value is None, the state will be dropped from consideration, effectively performing a full reroll.
+        
         Arguments:
             outcome: The current outcome.
             count: An integer indicating how many dice (subject to masking) rolled the current outcome.
@@ -102,6 +104,7 @@ class SinglePoolScorer():
                 prev = self._evaluate_internal(initial_state, prev_pool)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(outcome, count, prev_state)
+                    if state is None: continue
                     result[state] += prev_weight * weight
 
         self._cache[cache_key] = result

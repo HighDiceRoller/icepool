@@ -32,6 +32,8 @@ class MultiPoolScorer():
         This will be called for all outcomes of each pool Die,
         even if those outcomes have zero weight or all of the dice in the pool are capped below that outcome.
         
+        If the return value is None, the state will be dropped from consideration, effectively performing a full reroll.
+        
         Arguments:
             outcome: The current outcome.
             counts: A tuple indicating how many dice in each pool (subject to masking) rolled the current outcome.
@@ -106,6 +108,7 @@ class MultiPoolScorer():
                 prev = self._evaluate_internal(initial_state, prev_pools)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(outcome, counts, prev_state)
+                    if state is None: continue
                     result[state] += prev_weight * prod_weight
 
         self._cache[cache_key] = result
