@@ -123,4 +123,5 @@ class PoolSum(SinglePoolScorer):
         # Return the final total.
         return final_state
 
+# Shared instance for caching the reuslts of Die.keep.
 pool_sum = PoolSum()
