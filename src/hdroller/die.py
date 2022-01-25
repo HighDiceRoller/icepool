@@ -775,12 +775,13 @@ class Die(metaclass=DieType):
         non_explode_weights = self.weights() - explode_weights
         
         non_explode_die = Die(non_explode_weights, self.min_outcome()).trim()
-        explode_die = Die(explode_weights, self.min_outcome()).trim()
-        explode_die += self.explode(max_times-1, outcomes=outcomes)
+        tail_die = self.explode(max_times-1, outcomes=outcomes)
+        explode_die = Die(explode_weights, self.min_outcome()).trim() + tail_die
         
-        mix_weights = [numpy.sum(non_explode_weights), numpy.sum(explode_weights)]
+        non_explode_die, explode_die = Die.align(non_explode_die, explode_die)
+        weights = non_explode_die.weights() * tail_die.total_weight() + explode_die.weights()
         
-        return Die.mix(non_explode_die, explode_die, mix_weights=mix_weights)
+        return Die(weights, non_explode_die.min_outcome())
     
     def reroll(self, outcomes=None, max_times=None):
         """

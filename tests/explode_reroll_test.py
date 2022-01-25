@@ -20,9 +20,9 @@ def test_explode_d6(max_times):
     result_int = Die.d6.explode(max_times, outcomes=6)
     result_list = Die.d6.explode(max_times, outcomes=[6])
     expected = bf_explode_basic(Die.d6, max_times)
-    assert result.pmf() == pytest.approx(expected.pmf(), abs=abs_tol)
-    assert result_int.pmf() == pytest.approx(expected.pmf(), abs=abs_tol)
-    assert result_list.pmf() == pytest.approx(expected.pmf(), abs=abs_tol)
+    assert result == expected
+    assert result_int == expected
+    assert result_list == expected
 
 def test_explode_chance():
     result = Die(Die.d10 >= 8).explode(3, {1 : 1/3})
