@@ -8,8 +8,8 @@ Tests Die.mix() and its derivatives.
 """
 
 def test_mix_d6_faces():
-    assert Die.mix(1, 2, 3, 4, 5, 6).pmf() == pytest.approx(Die.d6.pmf())
-    assert Die.mix([1, 2, 3, 4, 5, 6]).pmf() == pytest.approx(Die.d6.pmf())
+    assert Die.mix(1, 2, 3, 4, 5, 6) == Die.d6
+    assert Die.mix([1, 2, 3, 4, 5, 6]) == Die.d6
 
 def test_mix_identical():
     assert Die.mix(Die.d6, Die.d6, Die.d6, Die.d6).pmf() == pytest.approx(Die.d6.pmf())
@@ -17,13 +17,13 @@ def test_mix_identical():
 def test_mix_weight():
     outcomes = range(2, 13)
     mix_weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
-    assert Die.mix(*outcomes, mix_weights=mix_weights).pmf() == pytest.approx(Die.d(2, 6).pmf())
+    assert Die.mix(*outcomes, mix_weights=mix_weights) == Die.d(2, 6)
     
 def test_mix_mixed():
     die = Die.mix(Die.d4, Die.d6)
-    assert die.pmf() == pytest.approx([5/24] * 4 + [2/24] * 2)
+    assert die == Die([5, 5, 5, 5, 2, 2], 1)
 
-expected_d6x1 = Die([1/6] * 5 + [0] + [1/36] * 6, 1)
+expected_d6x1 = Die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1)
 
 def test_relabel_array():
     die = Die.d6.relabel([5, 4, 1, 2, 3, Die.d6 + 6])
