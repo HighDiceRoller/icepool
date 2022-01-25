@@ -11,7 +11,7 @@ def test_d_syntax():
     assert Die.d6.probability(7) == 0.0
     
 def test_d_multiple():
-    assert Die.d(1, 2, 2).weights() == pytest.approx([2, 3, 2, 1])
+    assert Die.d(1, 2, 2) == Die([2, 3, 2, 1], 1)
 
 def test_coin():
     b = Die.bernoulli()
