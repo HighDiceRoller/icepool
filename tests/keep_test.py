@@ -30,52 +30,44 @@ def test_keep_highest(num_keep):
     die = Die.d12
     result = die.keep_highest(4, num_keep)
     expected = bf_keep_highest(die, 4, num_keep)
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 4))
 def test_keep_highest_mixed_drop_highest(num_keep):
     die = Die.d12
     result = die.keep_highest(4, num_keep, num_drop=1)
     expected = bf_keep_highest(die, 4, num_keep, num_drop=1)
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 4))
 def test_keep_lowest(num_keep):
     die = Die.d12
     result = die.keep_lowest(4, num_keep)
     expected = bf_keep_lowest(die, 4, num_keep)
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 4))
 def test_keep_lowest_mixed_drop_highest(num_keep):
     die = Die.d12
     result = die.keep_lowest(4, num_keep, num_drop=1)
     expected = bf_keep_lowest(die, 4, num_keep, num_drop=1)
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 @pytest.mark.parametrize('keep_index', range(0, 4))
 def test_keep_index(keep_index):
     die = Die.d12
     result = die.keep(4, keep_index)
     expected = bf_keep(die, 4, keep_index)
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 def test_max_outcomes():
     die = Die.d12
     result = die.keep([8, 6])
     expected = Die.d8 + Die.d6
-    
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected
 
 def test_max_outcomes_untrimmed():
     die = Die([0] + [1] * 12, 0)
     result = die.keep([8, 6]).trim()
     expected = Die.d8 + Die.d6
-    
-    assert result.min_outcome() == expected.min_outcome()
-    assert result.pmf() == pytest.approx(expected.pmf())
+    assert result == expected

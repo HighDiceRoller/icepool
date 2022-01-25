@@ -45,12 +45,12 @@ def test_explode_chance_weights():
 def test_reroll():
     result = Die.d6.reroll(outcomes=1)
     expected = Die.d5 + 1
-    assert result.pmf() == pytest.approx(expected.pmf(), abs=abs_tol)
+    assert result == expected
     
 def test_reroll_2():
     result = Die.d6.reroll(outcomes=[1, 2])
     expected = Die.d4 + 2
-    assert result.pmf() == pytest.approx(expected.pmf(), abs=abs_tol)
+    assert result == expected
 
 def test_reroll_partial():
     result = Die.d4.reroll(outcomes={1 : 0.5})
@@ -59,8 +59,8 @@ def test_reroll_partial():
 
 def test_reroll_limit():
     result = Die.d4.reroll(outcomes=1, max_times=1)
-    expected = [1/16, 5/16, 5/16, 5/16]
-    assert result.pmf() == pytest.approx(expected, abs=abs_tol)
+    expected = Die([1, 5, 5, 5], 1)
+    assert result == expected
     
 def test_infinite_reroll_exception():
     with pytest.raises(ZeroDivisionError): 
