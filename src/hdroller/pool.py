@@ -98,7 +98,7 @@ class Pool():
         """
         Yields from 0 to num_max_dice() inclusive:
             * pool: A Pool resulting from removing that many dice from this Pool, while also removing the max outcome.
-                If the max outcome has all the remaining weight, only one result will be yielded, corresponding to all dice rolling that outcome.
+                If there is only one outcome remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
                 If the max outcome has zero weight, only one result will be yielded, corresponding to removing 0 dice from the pool.
                 If there are no outcomes remaining, this will be None.
             * count: An integer indicating the number of masked dice that rolled the removed outcome.
@@ -108,10 +108,10 @@ class Pool():
 
         num_max_dice = self.num_max_dice()
         num_unused_dice = self.num_dice() - num_max_dice
-        popped_die, outcome, single_weight = self.die().popped()
+        popped_die, outcome, single_weight = self.die()._popped
         
-        if popped_die is None or (single_weight > 0.0 and popped_die.total_weight() == 0.0):
-            # This is the last outcome with positive weight. All dice must roll this outcome.
+        if popped_die is None:
+            # This is the last outcome. All dice must roll this outcome.
             pool = Pool._create_unchecked(popped_die, (), ())
             weight = single_weight ** num_max_dice
             yield pool, remaining_masked_dice, weight
@@ -135,15 +135,13 @@ class Pool():
         count = 0
         yield pool, count, weight
         
-        # If there is weight remaining below, consider different numbers of dice rolling this outcome.
-        if single_weight > 0.0:
-            binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
-            for weight in binom_row[1:]:
-                count += popped_mask[-1]
-                popped_max_outcomes = popped_max_outcomes[:-1]
-                popped_mask = popped_mask[:-1]
-                pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
-                yield pool, count, weight
+        binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
+        for weight in binom_row[1:]:
+            count += popped_mask[-1]
+            popped_max_outcomes = popped_max_outcomes[:-1]
+            popped_mask = popped_mask[:-1]
+            pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
+            yield pool, count, weight
     
     @cached_property
     def _pops(self):

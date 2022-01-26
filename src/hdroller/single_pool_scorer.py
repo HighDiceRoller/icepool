@@ -29,8 +29,7 @@ class SinglePoolScorer():
     def next_state(self, outcome, count, prev_state):
         """
         This should produce a state given the previous state and `count` dice rolling `outcome`.
-        This will be called for all outcomes of the pool Die,
-        even if those outcomes have zero weight or all of the dice in the pool are capped below that outcome.
+        This will be called from the lowest outcome in the pool to the highest outcome in the pool.
         
         If the return value is None, the state will be dropped from consideration, effectively performing a full reroll.
         
