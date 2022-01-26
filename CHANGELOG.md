@@ -1,3 +1,13 @@
+## 0.3.2
+
+* Pool scorers can now return `None` states, which drops the state from evaluation, effectively performing a full reroll.
+* Operations that result in no remaining weight (e.g. rerolling all outcomes) now return None.
+* Dice can no longer be constructed with zero total weight.
+* The `Die()` constructor now auto-trims.
+* `Die._align()` is now private and no longer makes all the dice the same weight.
+* Fixed `Die.explode()` weighting.
+* Cleaned up unused functions.
+
 ## 0.3.1
 
 * Optimize `Pool.pops()` by immediately removing all the dice if there are no left in the mask.
