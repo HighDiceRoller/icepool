@@ -539,7 +539,7 @@ class Die(metaclass=DieType):
         dice_aligned = Die._align(dice)
         cweights = 1.0
         for die in dice_aligned: cweights *= die.cweights()
-        return Die.from_cweights(cweights, dice_aligned[0].min_outcome())._trim()
+        return Die.from_cweights(cweights, dice_aligned[0].min_outcome())
     
     def min(*dice):
         """
@@ -550,7 +550,7 @@ class Die(metaclass=DieType):
         dice_aligned = Die._align(dice)
         sweights = 1.0
         for die in dice_aligned: sweights *= die.sweights()
-        return Die.from_sweights(sweights, dice_aligned[0].min_outcome())._trim()
+        return Die.from_sweights(sweights, dice_aligned[0].min_outcome())
     
     def repeat_and_sum(self, num_dice):
         """
@@ -630,7 +630,7 @@ class Die(metaclass=DieType):
         weights = numpy.zeros((divisor,))
         for outcome, weight in zip(self.outcomes(), self.weights()):
             weights[outcome % divisor] += weight
-        return Die(weights, 0)._trim()
+        return Die(weights, 0)
     
     def __floordiv__(self, divisor):
         min_outcome = self.min_outcome() // divisor
@@ -794,9 +794,9 @@ class Die(metaclass=DieType):
         
         non_explode_weights = self.weights() - explode_weights
         
-        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
+        non_explode_die = Die(non_explode_weights, self.min_outcome())
         tail_die = self.explode(max_times-1, outcomes=outcomes)
-        explode_die = Die(explode_weights, self.min_outcome())._trim() + tail_die
+        explode_die = Die(explode_weights, self.min_outcome()) + tail_die
         
         non_explode_die, explode_die = Die._align(non_explode_die, explode_die)
         weights = non_explode_die.weights() * tail_die.total_weight() + explode_die.weights()
@@ -832,7 +832,7 @@ class Die(metaclass=DieType):
             rerollable_factor = numpy.power(total_reroll_weight, max_times)
             stop_factor = (numpy.power(self.total_weight(), max_times+1) - numpy.power(total_reroll_weight, max_times+1)) / (self.total_weight() - total_reroll_weight)
             weights = rerollable_factor * reroll_weights + stop_factor * non_reroll_weights
-        return Die(weights, self.min_outcome())._trim()
+        return Die(weights, self.min_outcome())
     
     def combine(*dice, func=None):
         """
@@ -885,18 +885,6 @@ class Die(metaclass=DieType):
             result.append(Die._create_untrimmed(weights, min_outcome))
         
         return tuple(result)
-    
-    def _trim(self):
-        """
-        Returns a copy of this Die with the leading and trailing zeros trimmed.
-        All public methods return dice that are already trimmed.
-        """
-        nz = numpy.nonzero(self.weights())[0]
-        if nz[0] == 0 and nz[-1] == len(self) - 1:
-            return self
-        min_outcome = self.min_outcome() + nz[0]
-        weights = self.weights()[nz[0]:nz[-1]+1]
-        return Die(weights, min_outcome)
     
     # Random sampling.
     def sample(self, size=None):
