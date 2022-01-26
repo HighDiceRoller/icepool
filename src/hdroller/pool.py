@@ -60,12 +60,6 @@ class Pool():
     def die(self):
         return self._die
         
-    def max_single_weight(self):
-        """
-        The weight of the maximum outcome on a single die.
-        """
-        return self.die().weights()[-1]
-        
     def max_outcomes(self):
         """
         Maximum outcomes of the dice in the pool, sorted from lowest to highest.
