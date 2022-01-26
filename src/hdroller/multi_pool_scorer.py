@@ -59,16 +59,23 @@ class MultiPoolScorer():
         raise NotImplementedError()
     
     def evaluate(self, pool):
+        """
+        Args:
+            pools: An iterable of Pools to evaluate this scorer on.
+        
+        Returns:
+            A Die representing the distribution of the final score.
+        """
         score_dist = self.evaluate_dict(pool)
         return hdroller.Die(score_dist)
     
     def evaluate_dict(self, pools):
         """
-        Arguments:
+        Args:
             pools: An iterable of Pools to evaluate this scorer on.
         
         Returns:
-            A Die representing the distribution of the final score.
+            A dict representing the distribution of the final score.
         """
         if not hasattr(self, '_cache'):
             self._cache = {}
