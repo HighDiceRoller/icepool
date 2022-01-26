@@ -65,9 +65,3 @@ def test_max_outcomes():
     result = die.keep([8, 6])
     expected = Die.d8 + Die.d6
     assert result == expected
-
-def test_max_outcomes_untrimmed():
-    die = Die([0] + [1] * 12, 0)
-    result = die.keep([8, 6]).trim()
-    expected = Die.d8 + Die.d6
-    assert result == expected

@@ -57,27 +57,36 @@ class Die(metaclass=DieType):
         elif numpy.issubdtype(type(weights), numpy.integer):
             # Integer casts to die that always rolls that value.
             if min_outcome is not None: raise ValueError()
-            self._weights = numpy.array([1.0])
-            self._min_outcome = weights
+            min_outcome = weights
+            weights = numpy.array([1.0])
         elif hasattr(weights, 'items'):
             # A dict mapping outcomes to weights.
-            self._min_outcome = min(weights.keys())
-            max_outcome = max(weights.keys())
-            self._weights = numpy.zeros((max_outcome - self._min_outcome + 1,))
-            for outcome, weight in weights.items():
-                self._weights[outcome - self._min_outcome] = weight
+            raw_weights = weights
+            min_outcome = min(raw_weights.keys())
+            max_outcome = max(raw_weights.keys())
+            weights = numpy.zeros((max_outcome - min_outcome + 1,))
+            for outcome, weight in raw_weights.items():
+                weights[outcome - min_outcome] = weight
         else:
+            # weights is an array.
             if min_outcome is None:
                 raise TypeError('When Die is constructed with a weights array, min_outcome must be provided.')
-            # weights is an array.
             if not numpy.issubdtype(type(min_outcome), numpy.integer):
-                raise ValueError('min_outcome must be of integer type')
+                raise TypeError('min_outcome must be of integer type, got ' + type(min_outcome).__name__)
             if numpy.any(numpy.isinf(weights)):
                 raise ValueError('Weights must be finite.')
-            self._weights = numpy.array(weights, dtype=float)
-            if self._weights.ndim != 1:
+            weights = numpy.array(weights, dtype=float)
+            if weights.ndim != 1:
                 raise ValueError('Weights must have exactly one dimension.')
-            self._min_outcome = min_outcome
+        
+        # Trim the Die.
+        nz = numpy.nonzero(weights)[0]
+        min_outcome += nz[0]
+        weights = numpy.array(weights[nz[0]:nz[-1]+1], dtype=float)
+        
+        self._weights = weights
+        self._weights.setflags(write=False)
+        self._min_outcome = min_outcome
         
         if len(self._weights) == 0:
             raise ValueError('Die cannot have empty weights.')
@@ -85,7 +94,16 @@ class Die(metaclass=DieType):
         if numpy.isinf(self._total_weight) or (self._total_weight <= 0.0 and numpy.any(self._weights > 0.0)):
             raise OverflowError('Total weight is not representable by a float64.')
         
+        if self._total_weight <= 0.0:
+            raise ZeroDivisionError('Die cannot be constructed with zero weight.')
+    
+    @classmethod
+    def _create_untrimmed(cls, weights, min_outcome):
+        self = cls.__new__(cls, None)
+        self._weights = numpy.array(weights, dtype=float)
         self._weights.setflags(write=False)
+        self._min_outcome = min_outcome
+        return self
     
     # Cached values.
     
@@ -379,12 +397,12 @@ class Die(metaclass=DieType):
         
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = Die.align([self, other])
+        a, b = Die._align([self, other])
         return numpy.max(numpy.abs(a.cdf() - b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = Die.align([self, other])
+        a, b = Die._align([self, other])
         return numpy.linalg.norm(a.cdf() - b.cdf())
     
     def total_weight(self):
@@ -417,7 +435,7 @@ class Die(metaclass=DieType):
     
     @cached_property
     def _popped(self):
-        if len(self) == 1:
+        if len(self) == 1 or self.cweights()[-2] == 0.0:
             return None, self.max_outcome(), self.weights()[-1]
         else:
             return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
@@ -485,7 +503,7 @@ class Die(metaclass=DieType):
                 subresults.append(other.repeat_and_sum(die_count))
                 subresult_weights.append(die_count_weight * factor)
         
-        subresults = Die.align(subresults)
+        subresults = Die._align(subresults)
         weights = sum(subresult.weights() * subresult_weight for subresult, subresult_weight in zip(subresults, subresult_weights))
         
         return Die(weights, subresults[0].min_outcome())
@@ -518,10 +536,10 @@ class Die(metaclass=DieType):
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = Die._listify_dice(dice)
-        dice_aligned = Die.align(dice)
+        dice_aligned = Die._align(dice)
         cweights = 1.0
         for die in dice_aligned: cweights *= die.cweights()
-        return Die.from_cweights(cweights, dice_aligned[0].min_outcome()).trim()
+        return Die.from_cweights(cweights, dice_aligned[0].min_outcome())._trim()
     
     def min(*dice):
         """
@@ -529,10 +547,10 @@ class Die(metaclass=DieType):
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = Die._listify_dice(dice)
-        dice_aligned = Die.align(dice)
+        dice_aligned = Die._align(dice)
         sweights = 1.0
         for die in dice_aligned: sweights *= die.sweights()
-        return Die.from_sweights(sweights, dice_aligned[0].min_outcome()).trim()
+        return Die.from_sweights(sweights, dice_aligned[0].min_outcome())._trim()
     
     def repeat_and_sum(self, num_dice):
         """
@@ -612,7 +630,7 @@ class Die(metaclass=DieType):
         weights = numpy.zeros((divisor,))
         for outcome, weight in zip(self.outcomes(), self.weights()):
             weights[outcome % divisor] += weight
-        return Die(weights, 0).trim()
+        return Die(weights, 0)._trim()
     
     def __floordiv__(self, divisor):
         min_outcome = self.min_outcome() // divisor
@@ -667,7 +685,7 @@ class Die(metaclass=DieType):
         This is in the form of a Die that rolls 1 with that chance, and 0 otherwise.
         """
         other = Die(other)
-        a, b = Die.align([self, other])
+        a, b = Die._align([self, other])
         n = numpy.dot(a.weights(), b.weights())
         d = a.total_weight() * b.total_weight()
         return Die.bernoulli(n, d)
@@ -727,7 +745,7 @@ class Die(metaclass=DieType):
             If not provided, all arguments are mixed uniformly.
         """
         dice = Die._listify_dice(dice)
-        dice = Die.align(dice)
+        dice = Die._align(dice)
         
         lcm = numpy.lcm.reduce([int(die.total_weight()) for die in dice])
         
@@ -776,22 +794,29 @@ class Die(metaclass=DieType):
         
         non_explode_weights = self.weights() - explode_weights
         
-        non_explode_die = Die(non_explode_weights, self.min_outcome()).trim()
+        non_explode_die = Die(non_explode_weights, self.min_outcome())._trim()
         tail_die = self.explode(max_times-1, outcomes=outcomes)
-        explode_die = Die(explode_weights, self.min_outcome()).trim() + tail_die
+        explode_die = Die(explode_weights, self.min_outcome())._trim() + tail_die
         
-        non_explode_die, explode_die = Die.align(non_explode_die, explode_die)
+        non_explode_die, explode_die = Die._align(non_explode_die, explode_die)
         weights = non_explode_die.weights() * tail_die.total_weight() + explode_die.weights()
         
         return Die(weights, non_explode_die.min_outcome())
     
     def reroll(self, outcomes=None, max_times=None):
-        """
-        Rerolls the given outcomes.
-        outcomes: Selects which outcomes to reroll. Options:
-            * A single integer outcome to reroll.
-            * A dict whose keys are outcomes and values are chances for that outcome to reroll.
-            * An iterable containing outcomes to reroll.
+        """Rerolls the given outcomes.
+        
+        Args:
+            outcomes: Selects which outcomes to reroll. Options:
+                * A single integer outcome to reroll.
+                * A dict whose keys are outcomes and values are chances for that outcome to reroll.
+                * An iterable containing outcomes to reroll.
+            max_times: The maximum number of times to reroll.
+                If omitted, rerolls an unlimited number of times.
+        
+        Returns:
+            A Die representing the reroll.
+            If the reroll would never terminate, the result is None.
         """
         if outcomes is None:
             raise TypeError('outcomes to reroll must be provided.')
@@ -800,14 +825,14 @@ class Die(metaclass=DieType):
         
         if max_times is None:
             if numpy.sum(non_reroll_weights) <= 0.0:
-                raise ZeroDivisionError('This reroll would never terminate.')
+                return None
             weights = non_reroll_weights
         else:
             total_reroll_weight = numpy.sum(reroll_weights)
             rerollable_factor = numpy.power(total_reroll_weight, max_times)
             stop_factor = (numpy.power(self.total_weight(), max_times+1) - numpy.power(total_reroll_weight, max_times+1)) / (self.total_weight() - total_reroll_weight)
             weights = rerollable_factor * reroll_weights + stop_factor * non_reroll_weights
-        return Die(weights, self.min_outcome()).trim()
+        return Die(weights, self.min_outcome())._trim()
     
     def combine(*dice, func=None):
         """
@@ -840,10 +865,11 @@ class Die(metaclass=DieType):
         
     # Alignment.
     
-    def align(*dice):
+    def _align(*dice):
         """ 
         Pads all the dice with zeros so that all have the same min_outcome and max_outcome.
         Note that, unlike most methods, this may leave leading or trailing zero weights.
+        This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         dice = Die._listify_dice(dice)
         
@@ -856,14 +882,14 @@ class Die(metaclass=DieType):
             left_dst_index = die.min_outcome() - min_outcome
             weights = numpy.zeros((len_align,))
             weights[left_dst_index:left_dst_index + len(die.weights())] = die.weights()
-            result.append(Die(weights, min_outcome))
+            result.append(Die._create_untrimmed(weights, min_outcome))
         
         return tuple(result)
     
-    def trim(self):
+    def _trim(self):
         """
         Returns a copy of this Die with the leading and trailing zeros trimmed.
-        Most methods already return a trimmed result by default.
+        All public methods return dice that are already trimmed.
         """
         nz = numpy.nonzero(self.weights())[0]
         if nz[0] == 0 and nz[-1] == len(self) - 1:

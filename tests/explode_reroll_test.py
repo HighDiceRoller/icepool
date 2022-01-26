@@ -62,6 +62,5 @@ def test_reroll_limit():
     expected = Die([1, 5, 5, 5], 1)
     assert result == expected
     
-def test_infinite_reroll_exception():
-    with pytest.raises(ZeroDivisionError): 
-        result = Die.d4.reroll(outcomes=[1, 2, 3, 4])
+def test_infinite_reroll():
+    assert Die.d4.reroll(outcomes=[1, 2, 3, 4]) is None
