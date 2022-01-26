@@ -135,13 +135,15 @@ class Pool():
         count = 0
         yield pool, count, weight
         
-        binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
-        for weight in binom_row[1:]:
-            count += popped_mask[-1]
-            popped_max_outcomes = popped_max_outcomes[:-1]
-            popped_mask = popped_mask[:-1]
-            pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
-            yield pool, count, weight
+        if single_weight > 0.0:
+            # If the outcome has nonzero weight, consider how many dice could roll this outcome.
+            binom_row = hdroller.math.binom_row(num_max_dice, single_weight)
+            for weight in binom_row[1:]:
+                count += popped_mask[-1]
+                popped_max_outcomes = popped_max_outcomes[:-1]
+                popped_mask = popped_mask[:-1]
+                pool = Pool._create_unchecked(popped_die, popped_max_outcomes, popped_mask)
+                yield pool, count, weight
     
     @cached_property
     def _pops(self):
