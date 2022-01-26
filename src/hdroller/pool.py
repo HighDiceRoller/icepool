@@ -49,8 +49,6 @@ class Pool():
         """
         Fast constructor for cases where the arguments are known to be already tuples, sorted, etc.
         """
-        if die is None:
-            return None
         self = cls.__new__(cls)
         self._die = die
         self._max_outcomes = max_outcomes
@@ -90,9 +88,8 @@ class Pool():
         
         if popped_die is None:
             # This is the last outcome. All dice must roll this outcome.
-            pool = Pool._create_unchecked(popped_die, (), ())
             weight = single_weight ** num_max_dice
-            yield pool, remaining_masked_dice, weight
+            yield None, remaining_masked_dice, weight
             return
         
         if remaining_masked_dice == 0:
