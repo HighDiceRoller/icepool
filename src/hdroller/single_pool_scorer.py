@@ -59,12 +59,16 @@ class SinglePoolScorer():
         raise NotImplementedError()
     
     def evaluate(self, pool):
+        score_dist = self.evaluate_dict(pool)
+        return hdroller.Die(score_dist)
+    
+    def evaluate_dict(self, pool):
         """
         Arguments:
             pool: A Pool to evaluate this scorer on.
         
         Returns:
-            A Die representing the distribution of the final score.
+            A dict representing the distribution of the final score.
         """
         if not hasattr(self, '_cache'):
             self._cache = {}
@@ -78,7 +82,7 @@ class SinglePoolScorer():
             score = self.score(pool, initial_state, state)
             score_dist[score] += weight
         
-        return hdroller.Die(score_dist)
+        return score_dist
     
     def _evaluate_internal(self, initial_state, pool):
         """

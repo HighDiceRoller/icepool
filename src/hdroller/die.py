@@ -746,6 +746,8 @@ class Die(metaclass=DieType):
         * A dict-like mapping old outcomes to new outcomes.
             Unmapped old outcomes stay the same.
         * A function mapping old outcomes to new outcomes.
+        
+        A Die may be provided instead of a single new outcome.
         """
         if hasattr(relabeling, 'items'):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]

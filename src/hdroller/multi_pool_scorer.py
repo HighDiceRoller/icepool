@@ -59,7 +59,11 @@ class MultiPoolScorer():
         """
         raise NotImplementedError()
     
-    def evaluate(self, pools):
+    def evaluate(self, pool):
+        score_dist = self.evaluate_dict(pool)
+        return hdroller.Die(score_dist)
+    
+    def evaluate_dict(self, pools):
         """
         Arguments:
             pools: An iterable of Pools to evaluate this scorer on.
@@ -81,7 +85,7 @@ class MultiPoolScorer():
             score = self.score(pools, initial_state, state)
             score_dist[score] += weight
         
-        return hdroller.Die(score_dist)
+        return score_dist
     
     def _evaluate_internal(self, initial_state, pools):
         """
