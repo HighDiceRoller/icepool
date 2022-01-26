@@ -60,12 +60,6 @@ class Pool():
     def die(self):
         return self._die
         
-    def max_outcome(self):
-        """
-        The maximum outcome of the die.
-        """
-        return self.die().max_outcome()
-        
     def max_single_weight(self):
         """
         The weight of the maximum outcome on a single die.
@@ -86,7 +80,7 @@ class Pool():
     
     @cached_property
     def _num_max_dice(self):
-        return self.num_dice() - numpy.searchsorted(self.max_outcomes(), self.max_outcome())
+        return self.num_dice() - numpy.searchsorted(self.max_outcomes(), self.die().max_outcome())
     
     def num_max_dice(self):
         """

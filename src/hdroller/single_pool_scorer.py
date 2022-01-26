@@ -101,7 +101,7 @@ class SinglePoolScorer():
         if pool is None:
             result[initial_state] = 1.0
         else:
-            outcome = pool.max_outcome()
+            outcome = pool.die().max_outcome()
             single_weight = pool.max_single_weight()
             for prev_pool, count, weight in pool.pops():
                 prev = self._evaluate_internal(initial_state, prev_pool)

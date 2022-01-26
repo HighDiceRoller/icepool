@@ -104,7 +104,7 @@ class MultiPoolScorer():
         if all(pool is None for pool in pools):
             result[initial_state] = 1.0
         else:
-            outcome = max(pool.max_outcome() for pool in pools if pool is not None)
+            outcome = max(pool.die().max_outcome() for pool in pools if pool is not None)
             for p in itertools.product(*[self._iter_pool(outcome, pool) for pool in pools]):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
@@ -125,7 +125,7 @@ class MultiPoolScorer():
             count
             weight
         """
-        if pool is None or outcome > pool.max_outcome():
+        if pool is None or outcome > pool.die().max_outcome():
             yield pool, None, 1.0
         else:
             yield from pool.pops()
