@@ -72,16 +72,6 @@ class Pool():
     def num_dice(self):
         return len(self.max_outcomes())
     
-    @cached_property
-    def _num_max_dice(self):
-        return self.num_dice() - numpy.searchsorted(self.max_outcomes(), self.die().max_outcome())
-    
-    def num_max_dice(self):
-        """
-        The number of dice in this pool that could roll the maximum outcome.
-        """
-        return self._num_max_dice
-    
     def _iter_pops(self):
         """
         Yields from 0 to num_max_dice() inclusive:
@@ -94,7 +84,7 @@ class Pool():
         """
         remaining_masked_dice = numpy.count_nonzero(self.mask())
 
-        num_max_dice = self.num_max_dice()
+        num_max_dice = self.num_dice() - numpy.searchsorted(self.max_outcomes(), self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_max_dice
         popped_die, outcome, single_weight = self.die()._popped
         
