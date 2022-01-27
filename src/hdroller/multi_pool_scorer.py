@@ -28,8 +28,9 @@ class MultiPoolScorer():
         
     def next_state(self, outcome, counts, prev_state):
         """
-        This should produce a state given the previous state and `count` dice rolling `outcome`.
-        This will be called from the lowest outcome in the pools to the highest outcome in the pools.
+        This should produce a state given the previous state and `counts` dice rolling `outcome` for each pool.
+        This will be called from the least to the greatest outcome in the pool.
+        Zero-weight outcomes will be either be skipped, or have None for their count (rather than 0).
         
         If the return value is None, the state will be dropped from consideration, effectively performing a full reroll.
         

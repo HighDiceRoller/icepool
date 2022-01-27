@@ -875,7 +875,7 @@ class Die(metaclass=DieType):
     def _popped(self):
         """A Die like self with the max outcome removed.
         
-        The result may have a zero outcome at the top.
+        Any zero-weight outcomes next to the max outcome will also be removed.
         
         Returns:
             A Die with the max outcome removed, or None if the last outcome is removed.
@@ -885,7 +885,7 @@ class Die(metaclass=DieType):
         if len(self) == 1 or self.cweights()[-2] == 0.0:
             return None, self.max_outcome(), self.weights()[-1]
         else:
-            return Die._create_untrimmed(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
+            return Die(self.weights()[:-1], self.min_outcome()), self.max_outcome(), self.weights()[-1]
     
     # Random sampling.
     def sample(self, size=None):
