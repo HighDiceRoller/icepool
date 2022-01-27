@@ -916,9 +916,6 @@ class Die(metaclass=DieType):
         if not self.is_bernoulli():
             raise ValueError('Only Bernoulli distributions may be cast to float.')
         return float(self.probability(1))
-    
-    def __bool__(self):
-        return bool(self.total_weight() > 0.0)
         
     # Hashing and equality.
     
