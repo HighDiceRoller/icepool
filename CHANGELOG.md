@@ -1,3 +1,10 @@
+## 0.3.3
+
+This will most likely be the last numpy-based version.
+
+* Pool scorers skip zero-weight outcomes.
+* Removed `__bool__` since zero-weight dice are no longer allowed.
+
 ## 0.3.2
 
 * Pool scorers can now return `None` states, which drops the state from evaluation, effectively performing a full reroll.
