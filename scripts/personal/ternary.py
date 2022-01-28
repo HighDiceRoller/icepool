@@ -26,6 +26,9 @@ def triang(x, scale):
 def beta(x, a, b, scale):
     return scipy.stats.beta.sf(x, a, b, loc=-scale, scale=2.0 * scale)
 
+def laplace_db(x):
+    return scipy.stats.laplace.sf(x, scale=1/db)
+
 def nv1_fde_keep_highest_sf(x, n, decay_constant=db):
     """
     Fixed-die equivalent for multiple step dice vs. 1.
@@ -45,6 +48,52 @@ def nv1_fde_keep_lowest_sf(x, n, decay_constant=db):
     sf[x < 0.0] = 1 / (n+1) / ratio * (1.0 - numpy.power(1 - ratio, n + 1))
     return sf
 
+# pf (uniform + modifier)
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+left = -15
+right = 25
+
+x = numpy.arange(left, right + 1e-6, 1e-3)
+
+hi = 100.0 * numpy.clip(1-x/20, 0, 1)
+lo = 100.0 * numpy.clip(1-(x+10)/20, 0, 1) 
+
+ax.fill_between(x, hi, 100.0)
+ax.fill_between(x, lo, hi)
+ax.fill_between(x, 0.0, lo)
+
+ax.legend(['Miss', 'Weak hit', 'Strong hit'])
+set_ax_sf(ax)
+ax.set_xlabel('Number needed to hit')
+
+plt.savefig('output/ternary_uniform.png', dpi = dpi, bbox_inches = "tight")
+
+# laplace + modifier
+
+fig = plt.figure(figsize=figsize)
+ax = plt.subplot(111)
+
+left = -10
+right = 10
+
+x = numpy.arange(left, right + 1e-6, 1e-3)
+
+hi = 100.0 * laplace_db(x-3)
+lo = 100.0 * laplace_db(x+3)
+
+ax.fill_between(x, hi, 100.0)
+ax.fill_between(x, lo, hi)
+ax.fill_between(x, 0.0, lo)
+
+ax.legend(['Miss', 'Weak hit', 'Strong hit'])
+set_ax_sf(ax)
+ax.set_xlabel('Opposition - player modifier')
+
+plt.savefig('output/ternary_laplace.png', dpi = dpi, bbox_inches = "tight")
+
 # pbta (triang + modifier)
 
 fig = plt.figure(figsize=figsize)
@@ -63,8 +112,9 @@ ax.fill_between(x, 0.0, lo)
 
 ax.legend(['Miss', 'Weak hit', 'Strong hit'])
 set_ax_sf(ax)
-ax.set_xlabel('Relative modifier')
-ax.set_xticks(numpy.arange(left, right + 1e-6, 4.0))
+ax.set_xlabel('Player modifier')
+ax.set_xticks(numpy.arange(left, right + 1e-6, 1.0))
+ax.set_xticklabels(['%d' % x for x in (1 - numpy.arange(left, right + 1e-6))])
 
 plt.savefig('output/ternary_triang.png', dpi = dpi, bbox_inches = "tight")
 
@@ -73,8 +123,8 @@ plt.savefig('output/ternary_triang.png', dpi = dpi, bbox_inches = "tight")
 fig = plt.figure(figsize=figsize)
 ax = plt.subplot(111)
 
-left = -9
-right = 29
+left = -5
+right = 25
 x = numpy.arange(left, right + 1e-6, 1e-3)
 
 hi = 100.0 * beta(x-10, 2, 1, scale=10.0)
@@ -108,7 +158,7 @@ ax.fill_between(x, 0.0, lo)
 
 ax.legend(['Miss', 'Weak hit', 'Strong hit'])
 set_ax_sf(ax)
-ax.set_xlabel('Difference in steps')
+ax.set_xlabel('Opposition - player steps')
 
 plt.savefig('output/ternary_step_dice_3v1.png', dpi = dpi, bbox_inches = "tight")
 
@@ -149,6 +199,8 @@ ax.set_xticklabels(['6, keep highest', '1', '6, keep lowest'])
 
 plt.savefig('output/ternary_keep_single.png', dpi = dpi, bbox_inches = "tight")
 
+"""
+
 left = 0
 right = 8
 
@@ -171,3 +223,5 @@ ax.set_xlabel('Number of dice')
 ax.set_xticks(numpy.arange(left, right + 1e-6, 4.0))
 
 plt.savefig('output/ternary_keep_single_reverse.png', dpi = dpi, bbox_inches = "tight")
+
+"""
