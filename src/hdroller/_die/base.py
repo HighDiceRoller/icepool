@@ -1,9 +1,10 @@
 import hdroller
 from hdroller.cache import cache, cached_property
-from hdroller.containers import DieDataDict
 
+import bisect
 from collections import defaultdict
 import itertools
+import math
 import operator
 
 class BaseDie():
@@ -47,54 +48,18 @@ class BaseDie():
     
     def weight(self, outcome):
         """Returns the weight of a single outcome, or 0 if not present."""
-        return self._data.get(outcome, 0)
+        return self._data[outcome]
+    
+    def probability(self, outcome):
+        return self.weight(outcome) / self.total_weight()
+    
+    p = probability
     
     def items(self):
         return self._data.items()
     
     def __len__(self):
         return len(self._data)
-    
-    # Scalar statistics.
-    
-    def min_outcome(self):
-        return self._data.peekitem(0)[0]
-    
-    def max_outcome(self):
-        return self._data.peekitem(-1)[0]
-    
-    @cached_property
-    def _total_weight(self):
-        return sum(self._data.values())
-    
-    def total_weight(self):
-        return self._total_weight
-    
-    @cached_property
-    def _mean(self):
-        return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
-    
-    def mean(self):
-        return self._mean
-    
-    # Iterable statistics.
-    
-    def cweights(self):
-        yield from itertools.accumulate(self.weights())
-    
-    def sweights(self):
-        yield from itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.total_weight())
-    
-    def pmf(self):
-        yield from (weight / self.total_weight() for weight in self.weights())
-    
-    def cdf(self):
-        yield from (weight / self.total_weight() for weight in self.cweights())
-        
-    def sf(self):
-        yield from (weight / self.total_weight() for weight in self.sweights())
-        
-    # TODO: Dict statistics.
     
     # Unary operators.
     
@@ -211,6 +176,27 @@ class BaseDie():
         return self.binary_op(other, operator.mul)
     
     # Repeat, keep, and sum.
+    def max(*dice):
+        """
+        Roll all the dice and take the highest.
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
+        """
+        dice = BaseDie._align(dice)
+
+        cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
+            
+        return hdroller.from_cweights(dice[0].outcomes(), cweights)
+    
+    def min(*dice):
+        """
+        Roll all the dice and take the lowest.
+        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
+        """
+        dice = BaseDie._align(dice)
+
+        sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
+            
+        return hdroller.from_sweights(dice[0].outcomes(), sweights)
     
     def repeat_and_sum(self, num_dice):
         """Roll this die `num_dice` times and sum the results."""
@@ -225,6 +211,110 @@ class BaseDie():
         result = half_result + half_result
         if num_dice % 2: result += self
         return result
+    
+    # Scalar(-ish) statistics.
+    
+    def min_outcome(self):
+        return self.outcomes()[0]
+    
+    def max_outcome(self):
+        return self.outcomes()[-1]
+    
+    @cached_property
+    def _total_weight(self):
+        return sum(self._data.values())
+    
+    def total_weight(self):
+        return self._total_weight
+    
+    def mean(self):
+        return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
+        
+    def median(self):
+        left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
+        right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
+        return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
+        
+    def modes(self):
+        """Returns a tuple containing the most common outcome(s) of the die.
+        
+        These are sorted from least to greatest.
+        """
+        return tuple(outcome for outcome, weight in self.items() if weight == self.modal_weight())
+    
+    def modal_weight(self):
+        return max(self.weights())
+    
+    def variance(self):
+        mean = self.mean()
+        mean_of_squares = sum(p * outcome ** 2 for outcome, p in zip(self.outcomes(), self.pmf()))
+        return mean_of_squares - mean * mean
+    
+    def standard_deviation(self):
+        return math.sqrt(self.variance())
+    
+    sd = standard_deviation
+    
+    def standardized_moment(self, k):
+        sd = self.standard_deviation()
+        mean = self.mean()
+        ev = sum(p * (outcome - mean) ** k for outcome, p in zip(self.outcomes(), self.pmf()))
+        return ev / (sd ** k)
+    
+    def skewness(self):
+        return self.standardized_moment(3.0)
+    
+    def excess_kurtosis(self):
+        return self.standardized_moment(4.0) - 3.0
+    
+    def ks_stat(self, other):
+        """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
+        a, b = BaseDie._align([self, other])
+        return max(abs(a - b) for a, b in zip(self.cdf(), other.cdf()))
+    
+    def cvm_stat(self, other):
+        """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
+        a, b = BaseDie._align([self, other])
+        return sum((a - b) ** 2 for a, b in zip(self.cdf(), other.cdf()))
+    
+    # Iterable statistics.
+    
+    @cached_property
+    def _pmf(self):
+        return tuple(weight / self.total_weight() for weight in self.weights())
+    
+    def pmf(self):
+        return self._pmf
+    
+    @cached_property
+    def _cweights(self):
+        return tuple(itertools.accumulate(self.weights()))
+    
+    def cweights(self):
+        return self._cweights
+    
+    @cached_property
+    def _sweights(self):
+        return tuple(itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.total_weight()))
+    
+    def sweights(self):
+        return self._sweights
+        
+    @cached_property
+    def _cdf(self):
+        return tuple(weight / self.total_weight() for weight in self.cweights())
+    
+    def cdf(self):
+        return self._cdf
+        
+    @cached_property
+    def _sf(self):
+        return tuple(weight / self.total_weight() for weight in self.sweights())
+    
+    def sf(self):
+        return self._sf
+        
+    # TODO: Dict statistics?
     
     # Strings.
     
