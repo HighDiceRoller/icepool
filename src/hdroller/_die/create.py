@@ -38,6 +38,8 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
     if isinstance(arg, hdroller._die.base.BaseDie):
         return arg
     
+    # TODO: check weights are int
+    
     if min_outcome is not None:
         data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}
     else:
@@ -84,3 +86,7 @@ def from_sweights(outcomes, sweights, *, force_single=False):
 
 def from_rv(rv, outcomes, d):
     raise NotImplementedError("TODO")
+
+def mix(*dice, mix_weights=None):
+    return hdroller._die.base.mix(*dice, mix_weights)
+

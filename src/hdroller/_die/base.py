@@ -1,8 +1,8 @@
 import hdroller
-from hdroller.cache import cache, cached_property
 
 import bisect
 from collections import defaultdict
+from functools import cache, cached_property
 import itertools
 import math
 import operator
@@ -11,8 +11,11 @@ class BaseDie():
     # Abstract methods.
     
     @property
-    def is_multi(self):
-        """True iff this die is multivariate, i.e. operates on outcomes elementwise."""
+    def is_single(self):
+        """True iff this die is univariate.
+        
+        This is opposed to multivariate dice, where operators apply elementwise.
+        """
         raise NotImplementedError()
     
     def unary_op(self, op, *args, **kwargs):
@@ -156,6 +159,7 @@ class BaseDie():
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
+        print(subresults)
         subresults = BaseDie._align(subresults)
         
         data = defaultdict(int)
@@ -164,7 +168,7 @@ class BaseDie():
             for outcome, weight in subresult.items():
                 data[outcome] += weight * subresult_weight
             
-        return hdroller.die(data)
+        return hdroller.die(data, force_single=other.is_single)
     
     def __rmul__(self, other):
         other = hdroller.die(other)
@@ -175,6 +179,30 @@ class BaseDie():
         other = hdroller.die(other)
         return self.binary_op(other, operator.mul)
     
+    # Mixtures.
+    
+    @staticmethod
+    def mix(*dice, mix_weights=None):
+        """
+        Constructs a die from a mixture of the arguments,
+        equivalent to rolling a die and then choosing one of the arguments
+        based on the resulting face rolled.
+        Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
+        mix_weights: An iterable of one int per argument.
+            If not provided, all dice are mixed uniformly.
+        """
+        dice = BaseDie._align(dice)
+        force_single = any(die.is_single for die in dice)
+        
+        if mix_weights is None:
+            mix_weights = (1,) * len(dice)
+        
+        data = defaultdict(int)
+        for die, mix_weight in zip(dice, mix_weights):
+            for outcome, weight in zip(die.outcomes(), die.weights()):
+                data[outcome] += mix_weight
+        return hdroller.die(data, force_single=force_single)
+    
     # Repeat, keep, and sum.
     def max(*dice):
         """
@@ -182,10 +210,9 @@ class BaseDie():
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = BaseDie._align(dice)
-
+        force_single = any(die.is_single for die in dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
-            
-        return hdroller.from_cweights(dice[0].outcomes(), cweights)
+        return hdroller.from_cweights(dice[0].outcomes(), cweights, force_single=force_single)
     
     def min(*dice):
         """
@@ -193,10 +220,9 @@ class BaseDie():
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = BaseDie._align(dice)
-
+        force_single = any(die.is_single for die in dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
-            
-        return hdroller.from_sweights(dice[0].outcomes(), sweights)
+        return hdroller.from_sweights(dice[0].outcomes(), sweights, force_single=force_single)
     
     def repeat_and_sum(self, num_dice):
         """Roll this die `num_dice` times and sum the results."""
@@ -338,21 +364,34 @@ class BaseDie():
         return [hdroller.die(arg) for arg in args]
     
     def _set_outcomes(self, outcomes):
-        """Returns a die whose outcomes are set to the argument.
+        """Returns a die whose outcomes are set to the argument, including zero weights.
         
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.die(data, remove_zero_weights=False)
+        return hdroller.die(data, remove_zero_weights=False, force_single=self.is_single)
     
+    @staticmethod
     def _align(*dice):
         """Pads all the dice with zero weights so that all have the same set of outcomes.
         
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
+        
+        Args:
+            *dice: Multiple dice or a single iterable of dice.
+        
+        Returns:
+            A tuple of aligned dice.
+        
+        Raises:
+            TypeError if the dice are of mixed singleness.
         """
         dice = BaseDie._listify_dice(dice)
+        
+        if any(die.is_single for die in dice) != all(die.is_single for die in dice):
+            raise TypeError('The passed to _align() must all be single or all multi.')
         
         union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
         
@@ -362,7 +401,7 @@ class BaseDie():
     
     @cached_property
     def _key_tuple(self):
-        return self.is_multi, tuple(self.items())
+        return self.is_single, tuple(self.items())
         
     def __eq__(self, other):
         """

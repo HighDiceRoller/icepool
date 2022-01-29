@@ -11,9 +11,9 @@ class MultiDie(hdroller._die.base.BaseDie):
     """
     
     @property
-    def is_multi(self):
-        """True iff this die is multivariate."""
-        return True
+    def is_single(self):
+        """True iff this die is univariate."""
+        return False
     
     def unary_op(self, op, *args):
         """Returns a die representing the effect of performing the operation on the outcomes."""

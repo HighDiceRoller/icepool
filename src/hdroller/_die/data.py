@@ -1,4 +1,4 @@
-from hdroller.cache import cached_property
+from functools import cached_property
 
 class DieData():
     """Immutable sorted dictionary whose values are integers.
