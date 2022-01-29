@@ -1,6 +1,9 @@
 import hdroller
 from hdroller.cache import cache, cached_property
-from hdroller.containers import WeightDict
+from hdroller.containers import DieDataDict
+
+import itertools
+import operator
 
 class DieBase():
     # Abstract methods.
@@ -15,7 +18,7 @@ class DieBase():
         raise NotImplementedError()
     
     def binary_op(self, other, op, *args):
-        """Returns a die representing the effect of performing the operation on pairs of outcomes."""
+        """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
         raise NotImplementedError()
         
     # Construction.
@@ -46,7 +49,10 @@ class DieBase():
         return self._data.get(outcome, 0)
     
     def items(self):
-        return self.items()
+        return self._data.items()
+    
+    def __len__(self):
+        return len(self._data)
     
     # Scalar statistics.
     
@@ -61,7 +67,7 @@ class DieBase():
         return sum(self._data.values())
     
     def total_weight(self):
-        return _total_weight
+        return self._total_weight
     
     @cached_property
     def _mean(self):
@@ -171,7 +177,7 @@ class DieBase():
             subresult_weights.append(die_count_weight * factor)
         
         subresults = Die._align(subresults)
-        data = WeightDict()
+        
         for subresult, subresult_weight in zip(subresults, subresult_weights):
             for outcome, weight in subresult.items():
                 data[outcome] += weight * subresult_weight
@@ -182,7 +188,66 @@ class DieBase():
         other = hdroller.die(other)
         return other.__mul__(self)
     
+    # Strings.
+    
+    def __str__(self):
+        """
+        Formats the die as a Markdown table.
+        """
+        result = f'| Outcome | Weight (out of {self.total_weight()}) | Probability |\n'
+        result += '|----:|----:|----:|\n'
+        for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
+            result += f'| {outcome} | {weight} | {p:.3%} |\n'
+        return result
+    
     # Alignment.
     
-    def _align(*dice):
+    @staticmethod
+    def _listify_dice(args):
+        if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], DieBase):
+            args = args[0]
         
+        return [hdroller.die(arg) for arg in args]
+    
+    def _set_outcomes(self, outcomes):
+        """Returns a die whose outcomes are set to the argument.
+        
+        Note that public methods are intended to have no zero-weight outcomes.
+        This should therefore not be used externally for any Die that you want to do anything with afterwards.
+        """
+        data = {x : self.weight(x) for x in outcomes}
+        return hdroller.die(data)
+    
+    def _align(*dice):
+        """Pads all the dice with zero weights so that all have the same set of outcomes.
+        
+        Note that public methods are intended to have no zero-weight outcomes.
+        This should therefore not be used externally for any Die that you want to do anything with afterwards.
+        """
+        dice = Die._listify_dice(dice)
+        
+        union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
+        
+        return tuple(die._set_outcomes(union_outcomes))
+    
+    # Hashing and equality.
+    
+    @cached_property
+    def _key_tuple(self):
+        return self.is_multi, tuple(self.items())
+        
+    def __eq__(self, other):
+        """
+        Returns true iff this Die has the same outcomes and weights as the other Die.
+        Note that fractions are not reduced.
+        For example a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
+        """
+        if not isinstance(other, DieBase): return False
+        return self._key_tuple == other._key_tuple
+    
+    @cached_property
+    def _hash(self):
+        return hash(self._key_tuple)
+        
+    def __hash__(self):
+        return self._hash
