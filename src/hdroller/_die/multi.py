@@ -39,3 +39,11 @@ class MultiDie(hdroller._die.base.BaseDie):
     def __getitem__(self, i):
         """Slices the outcomes of the die."""
         return self.unary_op(self._getitem, i)
+    
+    # Statistics.
+    
+    def covariance(self, i, j):
+        return NotImplementedError("TODO")
+    
+    def correlation(self, i, j):
+        return NotImplementedError("TODO")

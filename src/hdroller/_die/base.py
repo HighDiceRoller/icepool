@@ -191,16 +191,19 @@ class BaseDie():
         mix_weights: An iterable of one int per argument.
             If not provided, all dice are mixed uniformly.
         """
-        dice = BaseDie._align(dice)
+        dice = BaseDie._align(*dice)
         force_single = any(die.is_single for die in dice)
+        
+        weight_product = math.prod(die.total_weight() for die in dice)
         
         if mix_weights is None:
             mix_weights = (1,) * len(dice)
         
         data = defaultdict(int)
         for die, mix_weight in zip(dice, mix_weights):
+            factor = mix_weight * weight_product // die.total_weight()
             for outcome, weight in zip(die.outcomes(), die.weights()):
-                data[outcome] += mix_weight
+                data[outcome] += weight * factor
         return hdroller.die(data, force_single=force_single)
     
     # Repeat, keep, and sum.

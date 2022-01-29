@@ -86,7 +86,3 @@ def from_sweights(outcomes, sweights, *, force_single=False):
 
 def from_rv(rv, outcomes, d):
     raise NotImplementedError("TODO")
-
-def mix(*dice, mix_weights=None):
-    return hdroller._die.base.mix(*dice, mix_weights)
-
