@@ -4,6 +4,9 @@ import hdroller._die.base
 import hdroller._die.single
 import hdroller._die.multi
 
+from collections import defaultdict
+import math
+
 def _die_from_checked_dict(d, *, force_single=False):
     data = hdroller._die.data.DieData(d)
     
@@ -42,15 +45,13 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
     
     if min_outcome is not None:
         data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}
+    elif hasattr(arg, 'keys'):
+        data = { k : arg[k] for k in sorted(arg.keys()) if not remove_zero_weights or arg[k] > 0 }
+    elif hasattr(arg, '__iter__'):
+        data = { k : v for k, v in sorted(arg) if not remove_zero_weights or v > 0 }
     else:
-        try:
-            data = { k : arg[k] for k in sorted(arg.keys()) if not remove_zero_weights or arg[k] > 0 }
-        except (AttributeError, TypeError):
-            try:
-                data = { k : v for k, v in sorted(arg) if not remove_zero_weights or v > 0 }
-            except TypeError:
-                # Treat arg as the only possible value.
-                data = {arg : 1}
+        # Treat arg as the only possible value.
+        data = {arg : 1}
     
     return _die_from_checked_dict(data, force_single=force_single)
 
@@ -72,17 +73,45 @@ def from_cweights(outcomes, cweights, *, force_single=False):
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
-        d[outcome] = weight - prev
-        prev = weight
+        if weight - prev > 0:
+            d[outcome] = weight - prev
+            prev = weight
     return _die_from_checked_dict(d)
     
 def from_sweights(outcomes, sweights, *, force_single=False):
+    d = {}
     for i, outcome in enumerate(outcomes):
         if i < len(outcomes) - 1:
-            d[outcome] = sweights[i] - sweights[i+1]
+            weight = sweights[i] - sweights[i+1]
         else:
-            d[outcome] = sweights[i]
+            weight = sweights[i]
+        if weight > 0:
+            d[outcome] = weight
     return _die_from_checked_dict(d)
 
 def from_rv(rv, outcomes, d):
     raise NotImplementedError("TODO")
+
+def mix(*dice, mix_weights=None):
+    """
+    Constructs a die from a mixture of the arguments,
+    equivalent to rolling a die and then choosing one of the arguments
+    based on the resulting face rolled.
+    Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
+    mix_weights: An iterable of one int per argument.
+        If not provided, all dice are mixed uniformly.
+    """
+    dice = hdroller._die.base._align(*dice)
+    force_single = any(die.is_single for die in dice)
+    
+    weight_product = math.prod(die.total_weight() for die in dice)
+    
+    if mix_weights is None:
+        mix_weights = (1,) * len(dice)
+    
+    data = defaultdict(int)
+    for die, mix_weight in zip(dice, mix_weights):
+        factor = mix_weight * weight_product // die.total_weight()
+        for outcome, weight in zip(die.outcomes(), die.weights()):
+            data[outcome] += weight * factor
+    return hdroller.die(data, force_single=force_single)

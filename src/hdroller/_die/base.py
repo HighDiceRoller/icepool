@@ -159,8 +159,7 @@ class BaseDie():
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        print(subresults)
-        subresults = BaseDie._align(subresults)
+        subresults = _align(subresults)
         
         data = defaultdict(int)
         
@@ -180,39 +179,90 @@ class BaseDie():
         return self.binary_op(other, operator.mul)
     
     # Mixtures.
+
+    def relabel(self, relabeling):
+        """
+        relabeling can be one of the following:
+        * An array-like containing relabelings, one for each outcome in order.
+        * A map from old outcomes to new outcomes.
+            Unmapped old outcomes stay the same.
+        * A function mapping old outcomes to new outcomes.
+        
+        A die may be provided instead of a single new outcome.
+        """
+        if hasattr(relabeling, 'items'):
+            relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
+        elif callable(relabeling):
+            relabeling = [relabeling(outcome) for outcome in self.outcomes()]
+
+        return hdroller.mix(*relabeling, mix_weights=self.weights())
     
-    @staticmethod
-    def mix(*dice, mix_weights=None):
+    def explode(self, max_depth, outcomes=None):
         """
-        Constructs a die from a mixture of the arguments,
-        equivalent to rolling a die and then choosing one of the arguments
-        based on the resulting face rolled.
-        Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
-        mix_weights: An iterable of one int per argument.
-            If not provided, all dice are mixed uniformly.
+        outcomes: This chooses which outcomes to explode. Options:
+            * An iterable containing outcomes to explode.
+            * If not supplied, the top single outcome will explode with full probability.
         """
-        dice = BaseDie._align(*dice)
-        force_single = any(die.is_single for die in dice)
+        if max_depth < 0:
+            raise ValueError('max_depth cannot be negative.')
+        if max_depth == 0:
+            return self
         
-        weight_product = math.prod(die.total_weight() for die in dice)
+        if outcomes is None:
+            outcomes = set([self.max_outcome()])
         
-        if mix_weights is None:
-            mix_weights = (1,) * len(dice)
+        explode = {}
+        non_explode = {}
         
-        data = defaultdict(int)
-        for die, mix_weight in zip(dice, mix_weights):
-            factor = mix_weight * weight_product // die.total_weight()
-            for outcome, weight in zip(die.outcomes(), die.weights()):
-                data[outcome] += weight * factor
-        return hdroller.die(data, force_single=force_single)
+        for outcome, weight in self.items():
+            if outcome in outcomes:
+                explode[outcome] = weight
+            else:
+                non_explode[outcome] = weight
+        
+        non_explode_die = hdroller._die.create._die_from_checked_dict(non_explode, force_single=self.is_single)
+        tail_die = self.explode(max_depth-1, outcomes=outcomes)
+        explode_die = hdroller._die.create._die_from_checked_dict(explode, force_single=self.is_single) + tail_die
+        
+        non_explode_die, explode_die = _align(non_explode_die, explode_die)
+        data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
+        
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+    
+    def reroll(self, *outcomes, max_depth=None):
+        """Rerolls the given outcomes.
+        
+        Args:
+            outcomes: Selects which outcomes to reroll. Options:
+                * A set of outcomes to reroll.
+            max_depth: The maximum number of times to reroll.
+                If omitted, rerolls an unlimited number of times.
+        
+        Returns:
+            A Die representing the reroll.
+            If the reroll would never terminate, the result is None.
+        """
+        if outcomes is None:
+            raise TypeError('outcomes to reroll must be provided.')
+        
+        if max_depth is None:
+            data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
+        else:
+            # TODO: simplify this
+            total_reroll_weight = sum(weight for outcome, weight in self.items() if outcome in outcomes )
+            rerollable_factor = total_reroll_weight ** max_depth
+            stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
+            data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
     
     # Repeat, keep, and sum.
+    
     def max(*dice):
         """
         Roll all the dice and take the highest.
-        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
+        Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
         """
-        dice = BaseDie._align(dice)
+        dice = _align(dice)
         force_single = any(die.is_single for die in dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, force_single=force_single)
@@ -222,7 +272,7 @@ class BaseDie():
         Roll all the dice and take the lowest.
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
-        dice = BaseDie._align(dice)
+        dice = _align(dice)
         force_single = any(die.is_single for die in dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, force_single=force_single)
@@ -298,12 +348,12 @@ class BaseDie():
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = BaseDie._align([self, other])
+        a, b = _align([self, other])
         return max(abs(a - b) for a, b in zip(self.cdf(), other.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = BaseDie._align([self, other])
+        a, b = _align([self, other])
         return sum((a - b) ** 2 for a, b in zip(self.cdf(), other.cdf()))
     
     # Iterable statistics.
@@ -359,13 +409,6 @@ class BaseDie():
     
     # Alignment.
     
-    @staticmethod
-    def _listify_dice(args):
-        if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], BaseDie):
-            args = args[0]
-        
-        return [hdroller.die(arg) for arg in args]
-    
     def _set_outcomes(self, outcomes):
         """Returns a die whose outcomes are set to the argument, including zero weights.
         
@@ -373,32 +416,7 @@ class BaseDie():
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.die(data, remove_zero_weights=False, force_single=self.is_single)
-    
-    @staticmethod
-    def _align(*dice):
-        """Pads all the dice with zero weights so that all have the same set of outcomes.
-        
-        Note that public methods are intended to have no zero-weight outcomes.
-        This should therefore not be used externally for any Die that you want to do anything with afterwards.
-        
-        Args:
-            *dice: Multiple dice or a single iterable of dice.
-        
-        Returns:
-            A tuple of aligned dice.
-        
-        Raises:
-            TypeError if the dice are of mixed singleness.
-        """
-        dice = BaseDie._listify_dice(dice)
-        
-        if any(die.is_single for die in dice) != all(die.is_single for die in dice):
-            raise TypeError('The passed to _align() must all be single or all multi.')
-        
-        union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
-        
-        return tuple(die._set_outcomes(union_outcomes) for die in dice)
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
     
     # Hashing and equality.
     
@@ -421,3 +439,33 @@ class BaseDie():
         
     def __hash__(self):
         return self._hash
+
+def _align(*dice):
+    """Pads all the dice with zero weights so that all have the same set of outcomes.
+    
+    Note that public methods are intended to have no zero-weight outcomes.
+    This should therefore not be used externally for any Die that you want to do anything with afterwards.
+    
+    Args:
+        *dice: Multiple dice or a single iterable of dice.
+    
+    Returns:
+        A tuple of aligned dice.
+    
+    Raises:
+        TypeError if the dice are of mixed singleness.
+    """
+    dice = _listify_dice(dice)
+    
+    if any(die.is_single for die in dice) != all(die.is_single for die in dice):
+        raise TypeError('The passed to _align() must all be single or all multi.')
+    
+    union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
+    
+    return tuple(die._set_outcomes(union_outcomes) for die in dice)
+
+def _listify_dice(args):
+    if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], BaseDie):
+        args = args[0]
+    
+    return [hdroller.die(arg) for arg in args]
