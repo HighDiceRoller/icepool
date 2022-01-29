@@ -1,10 +1,10 @@
 import hdroller
-import hdroller.die_base
+import hdroller._die.base
 
 from collections import defaultdict
 import itertools
 
-class DieSingle(hdroller.die_base.DieBase):
+class MultiDie(hdroller._die.base.BaseDie):
     """Multivariate die.
     
     Outcomes are tuples, and operations are performed on each element of the tuples.

@@ -6,7 +6,7 @@ from collections import defaultdict
 import itertools
 import operator
 
-class DieBase():
+class BaseDie():
     # Abstract methods.
     
     @property
@@ -27,7 +27,7 @@ class DieBase():
     def __init__(self, data):
         """Users should usually not construct dice directly;
         instead they should use one of the methods defined in
-        hdroller.die_create (which are imported into the 
+        hdroller._die.create (which are imported into the 
         top-level hdroller module).
         
         Args:
@@ -191,7 +191,7 @@ class DieBase():
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = DieBase._align(subresults)
+        subresults = BaseDie._align(subresults)
         
         data = defaultdict(int)
         
@@ -242,7 +242,7 @@ class DieBase():
     
     @staticmethod
     def _listify_dice(args):
-        if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], DieBase):
+        if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], BaseDie):
             args = args[0]
         
         return [hdroller.die(arg) for arg in args]
@@ -262,7 +262,7 @@ class DieBase():
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
-        dice = DieBase._listify_dice(dice)
+        dice = BaseDie._listify_dice(dice)
         
         union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
         
@@ -280,7 +280,7 @@ class DieBase():
         Note that fractions are not reduced.
         For example a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
         """
-        if not isinstance(other, DieBase): return False
+        if not isinstance(other, BaseDie): return False
         return self._key_tuple == other._key_tuple
     
     @cached_property

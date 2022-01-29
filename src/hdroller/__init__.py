@@ -1,2 +1,2 @@
-from hdroller.die_create import *
-from hdroller.die_create import __getattr__
+from hdroller._die.create import *
+from hdroller._die.create import __getattr__

@@ -1,10 +1,10 @@
 import hdroller
-import hdroller.die_base
+import hdroller._die.base
 
 from collections import defaultdict
 import itertools
 
-class DieSingle(hdroller.die_base.DieBase):
+class SingleDie(hdroller._die.base.BaseDie):
     """Univariate die.
     
     Operations are performed directly on the outcomes.
