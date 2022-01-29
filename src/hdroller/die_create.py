@@ -53,6 +53,14 @@ def __getattr__(key):
 def bernoulli(n, d):
     return die({False : d - n, True : d})
 
+def from_cweights(data, min_outcome=None, *, force_single=False):
+    raise NotImplementedError()
+    
+def from_sweights(data, min_outcome=None, *, force_single=False):
+    raise NotImplementedError()
+
+def from_rv(rv, outcomes, d):
+    raise NotImplementedError()
 # from_cweights
 # from_sweights
 # from_rv

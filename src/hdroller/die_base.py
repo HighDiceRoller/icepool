@@ -2,6 +2,7 @@ import hdroller
 from hdroller.cache import cache, cached_property
 from hdroller.containers import DieDataDict
 
+from collections import defaultdict
 import itertools
 import operator
 
@@ -13,11 +14,11 @@ class DieBase():
         """True iff this die is multivariate, i.e. operates on outcomes elementwise."""
         raise NotImplementedError()
     
-    def unary_op(self, op, *args):
+    def unary_op(self, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on the outcomes."""
         raise NotImplementedError()
     
-    def binary_op(self, other, op, *args):
+    def binary_op(self, other, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
         raise NotImplementedError()
         
@@ -82,7 +83,7 @@ class DieBase():
         yield from itertools.accumulate(self.weights())
     
     def sweights(self):
-        yield from itertools.accumulate(self.weights(), operator.sub, self.total_weight())
+        yield from itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.total_weight())
     
     def pmf(self):
         yield from (weight / self.total_weight() for weight in self.weights())
@@ -93,7 +94,7 @@ class DieBase():
     def sf(self):
         yield from (weight / self.total_weight() for weight in self.sweights())
         
-    # Dict statistics.
+    # TODO: Dict statistics.
     
     # Unary operators.
     
@@ -104,6 +105,18 @@ class DieBase():
         return self.unary_op(operator.abs)
     
     abs = __abs__
+    
+    def __round__(self, ndigits=None):
+        return self.unary_op(round, ndigits)
+    
+    def __trunc__(self):
+        return self.unary_op(trunc)
+    
+    def __floor__(self):
+        return self.unary_op(floor)
+    
+    def __ceil__(self):
+        return self.unary_op(ceil)
     
     @staticmethod
     def _zero(x):
@@ -167,16 +180,20 @@ class DieBase():
     
     def __mul__(self, other):
         """Roll the left die, then roll the right die that many times and sum."""
+        other = hdroller.die(other)
+        
         subresults = []
         subresult_weights = []
         
         max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
         for die_count, die_count_weight in self.items():
-            factor = numpy.power(other.total_weight(), max_abs_die_count - abs(die_count))
+            factor = other.total_weight() ** (max_abs_die_count - abs(die_count))
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = Die._align(subresults)
+        subresults = DieBase._align(subresults)
+        
+        data = defaultdict(int)
         
         for subresult, subresult_weight in zip(subresults, subresult_weights):
             for outcome, weight in subresult.items():
@@ -187,6 +204,27 @@ class DieBase():
     def __rmul__(self, other):
         other = hdroller.die(other)
         return other.__mul__(self)
+    
+    def multiply(self, other):
+        """Actually multiply the outcomes of the two dice."""
+        other = hdroller.die(other)
+        return self.binary_op(other, operator.mul)
+    
+    # Repeat, keep, and sum.
+    
+    def repeat_and_sum(self, num_dice):
+        """Roll this die `num_dice` times and sum the results."""
+        if num_dice < 0:
+            return (-self).repeat_and_sum(-num_dice)
+        elif num_dice == 0:
+            return self.zero()
+        elif num_dice == 1:
+            return self
+        
+        half_result = self.repeat_and_sum(num_dice // 2)
+        result = half_result + half_result
+        if num_dice % 2: result += self
+        return result
     
     # Strings.
     
@@ -224,11 +262,11 @@ class DieBase():
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
-        dice = Die._listify_dice(dice)
+        dice = DieBase._listify_dice(dice)
         
         union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
         
-        return tuple(die._set_outcomes(union_outcomes))
+        return tuple(die._set_outcomes(union_outcomes) for die in dice)
     
     # Hashing and equality.
     
