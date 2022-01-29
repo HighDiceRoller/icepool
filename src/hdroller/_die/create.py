@@ -22,7 +22,7 @@ def _die_from_checked_dict(d, *, force_single=False):
     
     return hdroller._die.multi.MultiDie(data)
 
-def die(arg, min_outcome=None, *, force_single=False):
+def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
     """
     Args:
         arg: This can be one of the following:
@@ -39,13 +39,13 @@ def die(arg, min_outcome=None, *, force_single=False):
         return arg
     
     if min_outcome is not None:
-        data = {min_outcome + i : weight for i, weight in enumerate(arg) if weight > 0}
+        data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}
     else:
         try:
-            data = { k : arg[k] for k in sorted(arg.keys()) if arg[k] > 0 }
+            data = { k : arg[k] for k in sorted(arg.keys()) if not remove_zero_weights or arg[k] > 0 }
         except (AttributeError, TypeError):
             try:
-                data = { k : v for k, v in sorted(arg) if v > 0 }
+                data = { k : v for k, v in sorted(arg) if not remove_zero_weights or v > 0 }
             except TypeError:
                 # Treat arg as the only possible value.
                 data = {arg : 1}

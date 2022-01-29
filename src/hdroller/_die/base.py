@@ -344,7 +344,7 @@ class BaseDie():
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.die(data)
+        return hdroller.die(data, remove_zero_weights=False)
     
     def _align(*dice):
         """Pads all the dice with zero weights so that all have the same set of outcomes.
