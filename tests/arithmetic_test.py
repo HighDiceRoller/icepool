@@ -82,3 +82,8 @@ def test_div():
     result = hdroller.d10 // 4
     expected = hdroller.die([3, 4, 3], 0)
     assert result == expected
+
+def test_reduce():
+    result = hdroller.die([2, 4, 6], 0).reduce()
+    expected = hdroller.die([1, 2, 3], 0)
+    assert result == expected
