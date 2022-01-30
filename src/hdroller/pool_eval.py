@@ -57,10 +57,7 @@ class PoolEval():
             A final outcome that will be used as part of constructing a die.
             This should be hashable and comparable.
         """
-        if len(final_state) == 1:
-            return final_state[0]
-        else:
-            return final_state
+        return final_state
     
     def eval(self, *pools, force_single=False):
         """
@@ -129,10 +126,10 @@ class PoolEval():
             yield from pool.pops()
 
 class PoolSum(PoolEval):
-    def initial_state(self, *pools):
-        return (0,) * len(pools)
+    def initial_state(self, pool):
+        return 0
         
-    def next_state(self, prev_state, outcome, *counts):
-        return tuple(prev_sum + outcome * (count or 0) for prev_sum, count in zip(prev_state, counts))
+    def next_state(self, prev_state, outcome, count):
+        return prev_state + outcome * count
 
 pool_sum = PoolSum()

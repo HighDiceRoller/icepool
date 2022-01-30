@@ -92,8 +92,24 @@ def from_sweights(outcomes, sweights, *, force_single=False):
             d[outcome] = weight
     return _die_from_checked_dict(d, force_single=force_single)
 
-def from_rv(rv, outcomes, d):
-    raise NotImplementedError("TODO")
+def from_rv(rv, outcomes, denominator, **kwargs):
+    """
+    Args:
+        rv: A rv object (as scipy.stats).
+        outcomes: An iterable of ints or floats that will be the outcomes of the resulting die.
+            If the distribution is discrete, outcomes must be ints.
+        denominator: The total weight of the resulting die will be set to this.
+        **kwargs: These will be provided to rv.cdf().
+    """
+    if hasattr(rv, 'pdf'):
+        # Continuous distributions use midpoints.
+        midpoints = [(a + b) / 2 for a, b in zip(outcomes[:-1], outcomes[1:])]
+        cdf = rv.cdf(midpoints, **kwargs)
+        cweights = tuple(int(round(x * denominator)) for x in cdf) + (denominator,)
+    else:
+        cdf = rv.cdf(outcomes, **kwargs)
+        cweights = tuple(int(round(x * denominator)) for x in cdf)
+    return from_cweights(outcomes, cweights)
     
 def apply(func, *dice, force_single=False):
     dice = [die(d) for d in dice]
