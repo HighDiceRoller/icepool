@@ -96,6 +96,14 @@ class BaseDie():
     
     abs = __abs__
     
+    @staticmethod
+    def _invert(x):
+        return not bool(x)
+    
+    def __invert__(self):
+        """ This negates bool(outcome). """
+        return self.unary_op(self._invert)
+    
     def __round__(self, ndigits=None):
         return self.unary_op(round, ndigits)
     
@@ -114,7 +122,7 @@ class BaseDie():
         return type(x)()
     
     def zero(self):
-        return self.unary_op(_zero)
+        return self.unary_op(self._zero)
     
     # Binary operators.
     
@@ -165,6 +173,45 @@ class BaseDie():
     def __gt__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.gt)
+    
+    # Logical operators.
+    # These operate on bool(outcome).
+    
+    @staticmethod
+    def _and(x, y):
+        return bool(x) and bool(y)
+    
+    def __and__(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, self._and)
+    
+    def __rand__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, self._and)
+    
+    @staticmethod
+    def _or(x, y):
+        return bool(x) or bool(y)
+        
+    def __or__(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, self._or)
+    
+    def __or__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, self._or)
+    
+    @staticmethod
+    def _xor(x, y):
+        return bool(x) + bool(y) == 1
+    
+    def __xor__(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, self._xor)
+    
+    def __xor__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, self._xor)
     
     # Special operators.
     
