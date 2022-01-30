@@ -269,6 +269,8 @@ class BaseDie():
         
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
+            if len(data) == 0:
+                return None
         else:
             # TODO: simplify this
             total_reroll_weight = sum(weight for outcome, weight in self.items() if outcome in outcomes )
