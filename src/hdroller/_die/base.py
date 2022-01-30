@@ -466,12 +466,12 @@ class BaseDie():
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
         a, b = _align([self, other])
-        return max(abs(a - b) for a, b in zip(self.cdf(), other.cdf()))
+        return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
         a, b = _align([self, other])
-        return sum((a - b) ** 2 for a, b in zip(self.cdf(), other.cdf()))
+        return sum((a - b) ** 2 for a, b in zip(a.cdf(), b.cdf()))
     
     # Iterable statistics.
     

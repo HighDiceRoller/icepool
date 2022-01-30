@@ -68,7 +68,9 @@ def __getattr__(key):
     raise AttributeError(key)
 
 def bernoulli(n, d):
-    return die({False : d - n, True : d})
+    return die({False : d - n, True : n})
+
+coin = bernoulli
 
 def from_cweights(outcomes, cweights, *, force_single=False):
     prev = 0
