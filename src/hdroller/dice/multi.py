@@ -34,7 +34,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         return hdroller.indexing.select_from(outcome, select)
     
     def __getitem__(self, select):
-        """Slices the outcomes of the die."""
+        """Slices the dimensions of the die."""
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[hdroller.indexing.select_from(outcome, select)] = weight
@@ -44,7 +44,11 @@ class MultiDie(hdroller.dice.base.BaseDie):
     # Statistics.
     
     def covariance(self, i, j):
-        return NotImplementedError("TODO")
+        mean_i = self[i].mean()
+        mean_j = self[j].mean()
+        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight for outcome, weight in self.items()) / self.total_weight()
     
     def correlation(self, i, j):
-        return NotImplementedError("TODO")
+        sd_i = self[i].standard_deviation()
+        sd_j = self[j].standard_deviation()
+        return self.covariance(i, j) / (sd_i * sd_j)

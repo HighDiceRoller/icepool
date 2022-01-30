@@ -480,6 +480,7 @@ class BaseDie():
         return self._pop_max
     
     def reduce(self):
+        """ Divides all weights by their greatest common denominator. """
         gcd = math.gcd(*self.weights())
         if gcd <= 1:
             return self
@@ -500,16 +501,13 @@ class BaseDie():
     
     def total_weight(self):
         return self._total_weight
-    
-    def mean(self):
-        return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
         
     def median(self):
         left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
         right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
         return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
         
-    def modes(self):
+    def mode(self):
         """Returns a tuple containing the most common outcome(s) of the die.
         
         These are sorted from least to greatest.
@@ -518,28 +516,6 @@ class BaseDie():
     
     def modal_weight(self):
         return max(self.weights())
-    
-    def variance(self):
-        mean = self.mean()
-        mean_of_squares = sum(p * outcome ** 2 for outcome, p in zip(self.outcomes(), self.pmf()))
-        return mean_of_squares - mean * mean
-    
-    def standard_deviation(self):
-        return math.sqrt(self.variance())
-    
-    sd = standard_deviation
-    
-    def standardized_moment(self, k):
-        sd = self.standard_deviation()
-        mean = self.mean()
-        ev = sum(p * (outcome - mean) ** k for outcome, p in zip(self.outcomes(), self.pmf()))
-        return ev / (sd ** k)
-    
-    def skewness(self):
-        return self.standardized_moment(3.0)
-    
-    def excess_kurtosis(self):
-        return self.standardized_moment(4.0) - 3.0
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """

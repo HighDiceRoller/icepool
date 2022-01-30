@@ -27,6 +27,33 @@ class SingleDie(hdroller.dice.base.BaseDie):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
         return hdroller.die(data, ndim=1)
     
+    # Statistics.
+    
+    def mean(self):
+        return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
+    
+    def variance(self):
+        mean = self.mean()
+        mean_of_squares = sum(p * outcome ** 2 for outcome, p in zip(self.outcomes(), self.pmf()))
+        return mean_of_squares - mean * mean
+    
+    def standard_deviation(self):
+        return math.sqrt(self.variance())
+    
+    sd = standard_deviation
+    
+    def standardized_moment(self, k):
+        sd = self.standard_deviation()
+        mean = self.mean()
+        ev = sum(p * (outcome - mean) ** k for outcome, p in zip(self.outcomes(), self.pmf()))
+        return ev / (sd ** k)
+    
+    def skewness(self):
+        return self.standardized_moment(3.0)
+    
+    def excess_kurtosis(self):
+        return self.standardized_moment(4.0) - 3.0
+    
     def cartesian_product(*dice):
         """
         Produces a MultiDie from the cartesian product of the input SingleDie.
