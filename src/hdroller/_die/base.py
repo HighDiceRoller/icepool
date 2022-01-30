@@ -122,7 +122,8 @@ class BaseDie():
         return type(x)()
     
     def zero(self):
-        return self.unary_op(self._zero)
+        # TODO: Do we actually want to have mixed zeros?
+        return self.unary_op(self._zero).reduce()
     
     # Binary operators.
     
@@ -456,6 +457,13 @@ class BaseDie():
         If the last outcome is removed, the returned die will be None.
         """
         return self._pop_max
+    
+    def reduce(self):
+        gcd = math.gcd(*self.weights())
+        if gcd <= 1:
+            return self
+        data = { outcome : weight // gcd for outcome, weight in self.items() }
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
     
     # Scalar(-ish) statistics.
     
