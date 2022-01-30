@@ -1,19 +1,22 @@
 from functools import cached_property
 
-class FrozenSortedDict():
+class FrozenSortedWeights():
     """Immutable sorted dictionary whose values are integers.
     
     keys(), values(), and items() return tuples, which are subscriptable.
     """
-    def __init__(self, d):
-        """Constructor with no checking.
-        
-        Args:
-            d: A dictionary of integers, sorted by keys.
-                This should already be sorted.
-                This should already have zeros filtered out, if desired.
+    def __init__(self, d, remove_zero_weights=True):
         """
-        self._d = d
+        Args:
+            d: A dictionary of ints.
+            remove_zero_weights: If True, zero weights will be omitted.
+        """
+        for key, value in d.items():
+            if not isinstance(value, int):
+                raise ValueError('Values must be ints, got ' + type(value).__name__)
+            if value < 0:
+                raise ValueError('Values must not be negative.')
+        self._d = { k : d[k] for k in sorted(d.keys()) if not remove_zero_weights or d[k] > 0 }
     
     def __len__(self):
         return len(self._d)
@@ -54,7 +57,7 @@ class FrozenSortedDict():
         Returns None, None, 0 if self has no elements remaining.
         """
         if len(self) > 0:
-            return FrozenSortedDict({ k : v for k, v in zip(self._keys[1:], self._values[1:]) }), self._keys[0], self._values[0]
+            return FrozenSortedWeights({ k : v for k, v in zip(self._keys[1:], self._values[1:]) }), self._keys[0], self._values[0]
         else:
             return None, None, 0
     
@@ -64,7 +67,7 @@ class FrozenSortedDict():
         Returns None, None, 0 if self has no elements remaining.
         """
         if len(self) > 0:
-            return FrozenSortedDict({ k : v for k, v in zip(self._keys[:-1], self._values[:-1]) }), self._keys[-1], self._keys[-1]
+            return FrozenSortedWeights({ k : v for k, v in zip(self._keys[:-1], self._values[:-1]) }), self._keys[-1], self._keys[-1]
         else:
             return None, None, 0
 

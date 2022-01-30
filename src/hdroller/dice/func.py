@@ -1,5 +1,5 @@
 import hdroller
-import hdroller.collections
+from hdroller.collections import FrozenSortedWeights
 import hdroller.dice.base
 import hdroller.dice.single
 import hdroller.dice.multi
@@ -7,33 +7,6 @@ import hdroller.dice.multi
 from collections import defaultdict
 import itertools
 import math
-
-def _die_from_checked_dict(d, ndim=None):
-    data = hdroller.collections.FrozenSortedDict(d)
-    
-    if ndim is not None:
-        if not isinstance(ndim, int):
-            raise TypeError('ndim must be an integer.')
-        if ndim == 1:
-            return hdroller.dice.single.SingleDie(data, 1)
-        else:
-            return hdroller.dice.multi.MultiDie(data, ndim)
-    
-    ndim = None
-    for outcome in data.keys():
-        try:
-            if ndim is None:
-                ndim = len(outcome)
-            elif ndim != len(outcome):
-                return hdroller.dice.single.SingleDie(data, 1)
-        except TypeError:
-            return hdroller.dice.single.SingleDie(data, 1)
-
-    if ndim == 1:
-        d = { k[0] : v for k, v in data.items() }
-        return _die_from_checked_dict(d, ndim=ndim)
-    
-    return hdroller.dice.multi.MultiDie(data, ndim)
 
 def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     """
@@ -50,25 +23,71 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     """
     if isinstance(arg, hdroller.dice.base.BaseDie):
         return arg
+        
+    data = _make_data(arg, min_outcome, remove_zero_weights)
     
-    if min_outcome is not None:
-        data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}
-    elif hasattr(arg, 'keys'):
-        data = { k : arg[k] for k in sorted(arg.keys()) if not remove_zero_weights or arg[k] > 0 }
+    if len(data) == 0:
+        return None
+        
+    ndim = _calc_ndim(data, ndim)
+    
+    # TODO: Zero-dimensional dice?
+    if ndim == 1:
+        return hdroller.dice.single.SingleDie(data, 1)
+    else:
+        return hdroller.dice.multi.MultiDie(data, ndim)
+
+def _make_data(arg, min_outcome=None, remove_zero_weights=True):
+    """Creates a FrozenSortedWeights from the arguments."""
+    if isinstance(arg, FrozenSortedWeights):
+        data = arg
+    elif min_outcome is not None:
+        data = { min_outcome + i : weight for i, weight in enumerate(arg) }
+    elif hasattr(arg, 'keys') and hasattr(arg, '__getitem__'):
+        data = { k : arg[k] for k in arg.keys() }
     elif hasattr(arg, '__iter__'):
-        data = { k : v for k, v in sorted(arg) if not remove_zero_weights or v > 0 }
+        data = { k : v for k, v in arg }
     else:
         # Treat arg as the only possible value.
-        data = {arg : 1}
+        data = { arg : 1 }
+    
+    return FrozenSortedWeights(data, remove_zero_weights)
+    
+
+def _calc_ndim(data, ndim):
+    """Verifies ndim if provided, or calculates it if not.
+    
+    Args:
+        data: A FrozenSortedWeights.
+        ndim: If provided, ndims will be set to this value.
+        
+    Returns:
+        An appropriate ndim for a die.
+        
+    Raises:
+        ValueError if ndim is provided but is not consistent with the data.
+    """
+    if ndim is not None:
+        if ndim != 1:
+            for outcome in data.keys():
+                if len(outcome) != ndim:
+                    raise ValueError('Outcomes not consistent with provided ndim.')
+        return ndim
     
     if len(data) == 0:
         return None
     
-    for value in data.values():
-        if not isinstance(value, int):
-            raise TypeError('Values must be ints.')
-    
-    return _die_from_checked_dict(data, ndim=ndim)
+    for outcome in data.keys():
+        try:
+            if ndim is None:
+                ndim = len(outcome)
+            elif len(outcome) != ndim:
+                # The data has mixed dimensions.
+                return 1
+        except TypeError:
+            # The data contains a scalar.
+            return 1
+    return ndim
 
 def standard(num_sides):
     return die([1] * num_sides, min_outcome=1)
@@ -93,7 +112,7 @@ def from_cweights(outcomes, cweights, ndim=None):
         if weight - prev > 0:
             d[outcome] = weight - prev
             prev = weight
-    return _die_from_checked_dict(d, ndim=ndim)
+    return die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, ndim=None):
     d = {}
@@ -104,7 +123,7 @@ def from_sweights(outcomes, sweights, ndim=None):
             weight = sweights[i]
         if weight > 0:
             d[outcome] = weight
-    return _die_from_checked_dict(d, ndim=ndim)
+    return die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """

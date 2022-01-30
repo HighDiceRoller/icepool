@@ -1,5 +1,5 @@
 import hdroller
-from hdroller.collections import FrozenSortedDict
+from hdroller.collections import FrozenSortedWeights
 
 import bisect
 from collections import defaultdict
@@ -311,14 +311,14 @@ class BaseDie():
             else:
                 non_explode[outcome] = weight
         
-        non_explode_die = hdroller.dice.func._die_from_checked_dict(non_explode, ndim=self.ndim())
+        non_explode_die = hdroller.dice.func.die(non_explode, ndim=self.ndim())
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
-        explode_die = hdroller.dice.func._die_from_checked_dict(explode, ndim=self.ndim()) + tail_die
+        explode_die = hdroller.dice.func.die(explode, ndim=self.ndim()) + tail_die
         
         non_explode_die, explode_die = _align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
-        return hdroller.dice.func._die_from_checked_dict(data, ndim=self.ndim())
+        return hdroller.dice.func.die(data, ndim=self.ndim())
     
     def reroll(self, *outcomes, max_depth=None):
         """Rerolls the given outcomes.
@@ -346,7 +346,7 @@ class BaseDie():
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
-        return hdroller.dice.func._die_from_checked_dict(data, ndim=self.ndim())
+        return hdroller.dice.func.die(data, ndim=self.ndim())
     
     # Repeat, keep, and sum.
     
@@ -445,13 +445,13 @@ class BaseDie():
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.dice.func._die_from_checked_dict(data, ndim=self.ndim())
+        return hdroller.dice.func.die(data, ndim=self.ndim(), remove_zero_weights=False)
     
     @cached_property
     def _pop_min(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-            die = hdroller.dice.func._die_from_checked_dict(d, ndim=self.ndim())
+            die = hdroller.dice.func.die(d, ndim=self.ndim())
             return die, self.outcomes()[0], self.weights()[0]
         else:
             return None, self.outcomes()[0], self.weights()[0]
@@ -467,7 +467,7 @@ class BaseDie():
     def _pop_max(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-            die = hdroller.dice.func._die_from_checked_dict(d, ndim=self.ndim())
+            die = hdroller.dice.func.die(d, ndim=self.ndim())
             return die, self.outcomes()[-1], self.weights()[-1]
         else:
             return None, self.outcomes()[-1], self.weights()[-1]
@@ -484,7 +484,7 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
-        return hdroller.dice.func._die_from_checked_dict(data, ndim=self.ndim())
+        return hdroller.dice.func.die(data, ndim=self.ndim())
     
     # Scalar(-ish) statistics.
     
