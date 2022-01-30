@@ -4,15 +4,15 @@ import hdroller
 import pytest
 
 def test_invert():
-    assert float(~Die.coin(0.25)) == pytest.approx(0.75)
+    assert (~hdroller.coin(1, 4)).mean() == pytest.approx(0.75)
 
 def test_and():
-    assert float(Die.coin(0.25) & Die.coin(0.25)) == pytest.approx(1/16)
+    assert (hdroller.coin(1, 4) & hdroller.coin(1, 4)).mean() == pytest.approx(1/16)
     
 def test_or():
-    assert float(Die.coin(0.25) | Die.coin(0.25)) == pytest.approx(7/16)
+    assert (hdroller.coin(1, 4) | hdroller.coin(1, 4)).mean() == pytest.approx(7/16)
 
 def test_xor():
-    print(Die.coin(0.25) ^ Die.coin(0.25))
-    print((Die.coin(0.25) ^ Die.coin(0.25)).probability(1))
-    assert float(Die.coin(0.25) ^ Die.coin(0.25)) == pytest.approx(6/16)
+    print(hdroller.coin(1, 4) ^ hdroller.coin(1, 4))
+    print((hdroller.coin(1, 4) ^ hdroller.coin(1, 4)).probability(1))
+    assert (hdroller.coin(1, 4) ^ hdroller.coin(1, 4)).mean() == pytest.approx(6/16)

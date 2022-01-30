@@ -4,24 +4,24 @@ import hdroller
 import pytest
 
 """
-Tests Die.mix() and its derivatives.
+Tests hdroller.mix() and its derivatives.
 """
 
 def test_mix_d6_faces():
-    assert Die.mix(1, 2, 3, 4, 5, 6) == hdroller.d6
-    assert Die.mix([1, 2, 3, 4, 5, 6]) == hdroller.d6
+    assert hdroller.mix(1, 2, 3, 4, 5, 6) == hdroller.d6
+    assert hdroller.mix([1, 2, 3, 4, 5, 6]) == hdroller.d6
 
 def test_mix_identical():
-    assert Die.mix(hdroller.d6, hdroller.d6, hdroller.d6, hdroller.d6).pmf() == pytest.approx(hdroller.d6.pmf())
+    assert hdroller.mix(hdroller.d6, hdroller.d6, hdroller.d6, hdroller.d6).pmf() == pytest.approx(hdroller.d6.pmf())
 
 def test_mix_weight():
     outcomes = range(2, 13)
     mix_weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
-    assert Die.mix(*outcomes, mix_weights=mix_weights) == hdroller.d(2, 6)
+    assert hdroller.mix(*outcomes, mix_weights=mix_weights) == 2 * hdroller.d6
     
 def test_mix_mixed():
-    die = Die.mix(hdroller.d4, hdroller.d6)
-    assert die == hdroller.die([5, 5, 5, 5, 2, 2], 1)
+    die = hdroller.mix(hdroller.d4, hdroller.d6)
+    assert die.pmf() == hdroller.die([5, 5, 5, 5, 2, 2], 1).pmf()
 
 expected_d6x1 = hdroller.die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1)
 
