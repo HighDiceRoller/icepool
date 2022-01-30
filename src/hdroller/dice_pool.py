@@ -51,23 +51,18 @@ class DicePool():
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
     
-    @property
     def die(self):
         return self._die
         
-    @property
     def select_dice(self):
         return self._select_dice
     
-    @property
     def num_dice(self):
         return len(self._select_dice)
         
-    @property
     def min_outcomes(self):
         return self._min_outcomes
         
-    @property
     def max_outcomes(self):
         return self._max_outcomes
     
@@ -81,11 +76,11 @@ class DicePool():
             * count: An int indicating the number of selected dice that rolled the removed outcome.
             * weight: An int indicating the weight of that many dice rolling the removed outcome.
         """
-        remaining_selected_dice = sum(self.select_dice)
+        remaining_selected_dice = sum(self.select_dice())
 
-        num_possible_dice = self.num_dice - bisect.bisect_left(self.max_outcomes, self.die.max_outcome())
-        num_unused_dice = self.num_dice - num_possible_dice
-        popped_die, outcome, single_weight = self.die.pop_max()
+        num_possible_dice = self.num_dice() - bisect.bisect_left(self.max_outcomes(), self.die().max_outcome())
+        num_unused_dice = self.num_dice() - num_possible_dice
+        popped_die, outcome, single_weight = self.die().pop_max()
         
         if popped_die is None:
             # This is the last outcome. All dice must roll this outcome.
@@ -97,12 +92,12 @@ class DicePool():
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = _pool_cached_unchecked(popped_die, (), None, ())
-            weight = math.prod(self.die.weight_le(max_outcome) for max_outcome in self.max_outcomes)
+            weight = math.prod(self.die().weight_le(max_outcome) for max_outcome in self.max_outcomes())
             yield pool, 0, weight
             return
         
-        popped_max_outcomes = self.max_outcomes[:num_unused_dice] + (outcome-1,) * num_possible_dice
-        popped_select_dice = self.select_dice
+        popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_possible_dice
+        popped_select_dice = self.select_dice()
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
@@ -130,7 +125,7 @@ class DicePool():
     
     @cached_property
     def _key_tuple(self):
-        return self.die, self.min_outcomes, self.max_outcomes, self.select_dice
+        return self.die(), self.min_outcomes(), self.max_outcomes(), self.select_dice()
     
     def __eq__(self, other):
         if not isinstance(other, DicePool): return False
@@ -144,4 +139,4 @@ class DicePool():
         return self._hash
 
     def __str__(self):
-        return '\n'.join([str(self.die), str(self.min_outcomes), str(self.max_outcomes), str(self.select_dice)])
+        return '\n'.join([str(self.die()), str(self.min_outcomes()), str(self.max_outcomes()), str(self.select_dice())])

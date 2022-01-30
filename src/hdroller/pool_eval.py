@@ -99,7 +99,7 @@ class PoolEval():
         if all(pool is None for pool in pools):
             result[initial_state] = 1
         else:
-            outcome = max(pool.die.max_outcome() for pool in pools if pool is not None)
+            outcome = max(pool.die().max_outcome() for pool in pools if pool is not None)
             for p in itertools.product(*[self._iter_pool(outcome, pool) for pool in pools]):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
@@ -120,7 +120,7 @@ class PoolEval():
             count: How many dice rolled the current outcome, or None if the outcome is not in this pool.
             weight: The weight of that many dice rolling the current outcome.
         """
-        if pool is None or outcome not in pool.die:
+        if pool is None or outcome not in pool.die():
             yield pool, None, 1
         else:
             yield from pool.pops()
