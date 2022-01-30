@@ -36,8 +36,6 @@ class SingleDie(hdroller.dice.base.BaseDie):
         Raises:
             TypeError if any of the input dice are already MultiDie.
         """
-        dice = hdroller.dice.base._listify_dice(dice)
-        
         if any(die.ndim > 1 for die in dice):
             raise TypeError('cartesian_product() is only valid on SingleDie.')
         

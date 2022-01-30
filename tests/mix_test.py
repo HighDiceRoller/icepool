@@ -9,7 +9,6 @@ Tests hdroller.mix() and its derivatives.
 
 def test_mix_d6_faces():
     assert hdroller.mix(1, 2, 3, 4, 5, 6) == hdroller.d6
-    assert hdroller.mix([1, 2, 3, 4, 5, 6]) == hdroller.d6
 
 def test_mix_identical():
     assert hdroller.mix(hdroller.d6, hdroller.d6, hdroller.d6, hdroller.d6).pmf() == pytest.approx(hdroller.d6.pmf())

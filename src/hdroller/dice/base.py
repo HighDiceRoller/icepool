@@ -250,7 +250,7 @@ class BaseDie():
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = _align(subresults)
+        subresults = _align(*subresults)
         
         data = defaultdict(int)
         
@@ -543,12 +543,12 @@ class BaseDie():
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = _align([self, other])
+        a, b = _align(self, other)
         return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = _align([self, other])
+        a, b = _align(self, other)
         return sum((a - b) ** 2 for a, b in zip(a.cdf(), b.cdf()))
     
     # Iterable statistics.
@@ -637,17 +637,10 @@ def _align(*dice):
     Raises:
         TypeError if the dice are of mixed singleness.
     """
-    dice = _listify_dice(dice)
-    
+    dice = [hdroller.die(d) for d in dice]
     if any(die.ndim() > 1 for die in dice) != all(die.ndim() > 1 for die in dice):
         raise TypeError('The passed to _align() must all be single or all multi.')
     
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     
     return tuple(die._set_outcomes(union_outcomes) for die in dice)
-
-def _listify_dice(args):
-    if len(args) == 1 and hasattr(args[0], '__iter__') and not isinstance(args[0], BaseDie):
-        args = args[0]
-    
-    return [hdroller.die(arg) for arg in args]

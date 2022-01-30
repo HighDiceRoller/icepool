@@ -145,20 +145,20 @@ def mix(*dice, mix_weights=None):
     """
     dice = hdroller.dice.base._align(*dice)
     ndim = None
-    for die in dice:
+    for d in dice:
         if ndim is None:
-            ndim = die.ndim()
-        elif die.ndim() != ndim:
+            ndim = d.ndim()
+        elif d.ndim() != ndim:
             ndim = 1
     
-    weight_product = math.prod(die.total_weight() for die in dice)
+    weight_product = math.prod(d.total_weight() for d in dice)
     
     if mix_weights is None:
         mix_weights = (1,) * len(dice)
     
     data = defaultdict(int)
-    for die, mix_weight in zip(dice, mix_weights):
-        factor = mix_weight * weight_product // die.total_weight()
-        for outcome, weight in zip(die.outcomes(), die.weights()):
+    for d, mix_weight in zip(dice, mix_weights):
+        factor = mix_weight * weight_product // d.total_weight()
+        for outcome, weight in zip(d.outcomes(), d.weights()):
             data[outcome] += weight * factor
-    return hdroller.die(data, ndim=ndim)
+    return die(data, ndim=ndim)
