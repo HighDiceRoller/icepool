@@ -1,4 +1,5 @@
 import hdroller
+from hdroller._die.data import DieData
 
 import bisect
 from collections import defaultdict
@@ -48,15 +49,32 @@ class BaseDie():
     def weights(self):
         """Returns an iterable into the weights of the die in outcome order."""
         return self._data.values()
+        
+    def __contains__(self, outcome):
+        return outcome in self._data
     
     def weight(self, outcome):
         """Returns the weight of a single outcome, or 0 if not present."""
         return self._data[outcome]
     
+    def weight_le(self, outcome):
+        index = bisect.bisect_right(self.outcomes(), outcome)
+        return self.cweights()[index]
+        
+    def weight_lt(self, outcome):
+        index = bisect.bisect_left(self.outcomes(), outcome)
+        return self.cweights()[index]
+        
+    def weight_ge(self, outcome):
+        index = bisect.bisect_left(self.outcomes(), outcome)
+        return self.sweights()[index]
+        
+    def weight_gt(self, outcome):
+        index = bisect.bisect_right(self.outcomes(), outcome)
+        return self.sweights()[index]
+    
     def probability(self, outcome):
         return self.weight(outcome) / self.total_weight()
-    
-    p = probability
     
     def items(self):
         return self._data.items()
@@ -291,6 +309,49 @@ class BaseDie():
         if num_dice % 2: result += self
         return result
     
+    # Modifying outcomes.
+    
+    def _set_outcomes(self, outcomes):
+        """Returns a die whose outcomes are set to the argument, including zero weights.
+        
+        Note that public methods are intended to have no zero-weight outcomes.
+        This should therefore not be used externally for any Die that you want to do anything with afterwards.
+        """
+        data = {x : self.weight(x) for x in outcomes}
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+    
+    @cached_property
+    def _pop_min(self):
+        if len(self) > 1:
+            d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
+            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single)
+            return die, self.outcomes()[0], self.weights()[0]
+        else:
+            return None, self.outcomes()[0], self.weights()[0]
+    
+    def pop_min(self):
+        """Returns a copy of self with the min outcome removed, the popped outcome, and the popped weight.
+        
+        If the last outcome is removed, the returned die will be None.
+        """
+        return self._pop_min
+    
+    @cached_property
+    def _pop_max(self):
+        if len(self) > 1:
+            d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
+            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single)
+            return die, self.outcomes()[-1], self.weights()[-1]
+        else:
+            return None, self.outcomes()[-1], self.weights()[-1]
+    
+    def pop_max(self):
+        """Returns a copy of self with the max outcome removed, the popped outcome, and the popped weight.
+        
+        If the last outcome is removed, the returned die will be None.
+        """
+        return self._pop_max
+    
     # Scalar(-ish) statistics.
     
     def min_outcome(self):
@@ -392,8 +453,6 @@ class BaseDie():
     
     def sf(self):
         return self._sf
-        
-    # TODO: Dict statistics?
     
     # Strings.
     
@@ -406,17 +465,6 @@ class BaseDie():
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
             result += f'| {outcome} | {weight} | {p:.3%} |\n'
         return result
-    
-    # Alignment.
-    
-    def _set_outcomes(self, outcomes):
-        """Returns a die whose outcomes are set to the argument, including zero weights.
-        
-        Note that public methods are intended to have no zero-weight outcomes.
-        This should therefore not be used externally for any Die that you want to do anything with afterwards.
-        """
-        data = {x : self.weight(x) for x in outcomes}
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
     
     # Hashing and equality.
     

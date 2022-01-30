@@ -18,6 +18,9 @@ class DieData():
     def __len__(self):
         return len(self._d)
     
+    def __contains__(self, key):
+        return key in self._d
+    
     def __getitem__(self, key):
         return self._d.get(key, 0)
         
@@ -45,8 +48,8 @@ class DieData():
     def __len__(self):
         return len(self._d)
     
-    def pop_least(self):
-        """Returns a copy of self with the least key removed, the popped key, and the popped value.
+    def pop_min(self):
+        """Returns a copy of self with the min key removed, the popped key, and the popped value.
         
         Returns None, None, 0 if self has no elements remaining.
         """
@@ -55,8 +58,8 @@ class DieData():
         else:
             return None, None, 0
     
-    def pop_greatest(self):
-        """Returns a copy of self with the least key removed, the popped key, and the popped value.
+    def pop_max(self):
+        """Returns a copy of self with the max key removed, the popped key, and the popped value.
         
         Returns None, None, 0 if self has no elements remaining.
         """

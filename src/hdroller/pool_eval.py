@@ -1,4 +1,7 @@
+import hdroller
+
 from collections import defaultdict
+import itertools
 import math
 
 class PoolEval():
@@ -49,6 +52,10 @@ class PoolEval():
             final_state: A state after all outcomes have been processed.
             initial_state: The initial state of the evaluation.
             *pools: One or more DicePools.
+            
+        Returns:
+            A final outcome that will be used as part of constructing a die.
+            This should be hashable and comparable.
         """
         return final_state
     
@@ -56,9 +63,10 @@ class PoolEval():
         """
         Args:
             *pools: One or more DicePools to evaluate.
+            Most evaluators will expect a fixed number of pools.
         
         Returns:
-            A Die representing the distribution of the final score.
+            A die representing the distribution of the final score.
         """
         if not hasattr(self, '_cache'):
             self._cache = {}
@@ -91,7 +99,7 @@ class PoolEval():
         if all(pool is None for pool in pools):
             result[initial_state] = 1
         else:
-            outcome = max(pool.die().max_outcome() for pool in pools if pool is not None)
+            outcome = max(pool.die.max_outcome() for pool in pools if pool is not None)
             for p in itertools.product(*[self._iter_pool(outcome, pool) for pool in pools]):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
@@ -112,7 +120,16 @@ class PoolEval():
             count: How many dice rolled the current outcome, or None if the outcome is not in this pool.
             weight: The weight of that many dice rolling the current outcome.
         """
-        if pool is None or outcome not in pool:
+        if pool is None or outcome not in pool.die:
             yield pool, None, 1
         else:
             yield from pool.pops()
+
+class PoolSum(PoolEval):
+    def initial_state(self, *pools):
+        return (0,) * len(pools)
+        
+    def next_state(self, prev_state, outcome, *counts):
+        return tuple(prev_sum + outcome * (count or 0) for prev_sum, count in zip(prev_state, counts))
+
+sum_pool = PoolSum()
