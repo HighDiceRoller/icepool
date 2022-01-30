@@ -52,7 +52,7 @@ import _context
 import hdroller
 from hdroller import die, pool, PoolEval
 
-class NeonCityOverdriveEval(hdroller.PoolEval):
+class NeonCityOverdriveEval(PoolEval):
     def initial_state(self, action, danger):
         return 0
         
