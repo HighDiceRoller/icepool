@@ -26,12 +26,11 @@ def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=Non
         min_outcomes = (die.min_outcome(),) * num_dice
     elif min_outcomes is not None:
         raise NotImplementedError('min_outcomes not yet implemented for pools.')
-        min_outcomes = sorted(min_outcomes)
     
     if max_outcomes is True or (min_outcomes is None and max_outcomes is None):
         max_outcomes = (die.max_outcome(),) * num_dice
     else:
-        max_outcomes = sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes)
+        max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
     
     if select_dice is None:
         select_dice = (True,) * num_dice
@@ -51,7 +50,6 @@ class DicePool():
         self._select_dice = select_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
-        print(self)
     
     @property
     def die(self):

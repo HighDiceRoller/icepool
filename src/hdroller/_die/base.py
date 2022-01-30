@@ -350,7 +350,7 @@ class BaseDie():
         select_dice = slice(start, stop)
         return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         
-    def keep_lowest(self, max_outcomes, num_keep=1, num_drop=0):
+    def keep_lowest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """
         Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
@@ -364,7 +364,7 @@ class BaseDie():
         """
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
-        mask = slice(start, stop)
+        select_dice = slice(start, stop)
         return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
     
     # Modifying outcomes.

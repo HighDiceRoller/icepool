@@ -10,18 +10,18 @@ def bf_keep_highest(die, num_dice, num_keep, num_drop=0):
     if num_keep == 0: return hdroller.die(0)
     def func(*outcomes):
         return sum(sorted(outcomes)[-(num_keep+num_drop):len(outcomes)-num_drop])
-    return Die.combine([die] * num_dice, func=func)
+    return hdroller.apply(func, *([die] * num_dice))
     
 def bf_keep_lowest(die, num_dice, num_keep, num_drop=0):
     if num_keep == 0: return hdroller.die(0)
     def func(*outcomes):
         return sum(sorted(outcomes)[num_drop:num_keep+num_drop])
-    return Die.combine([die] * num_dice, func=func)
+    return hdroller.apply(func, *([die] * num_dice))
 
 def bf_keep(die, num_dice, keep_indexes):
     def func(*outcomes):
         return sorted(outcomes)[keep_indexes]
-    return Die.combine([die] * num_dice, func=func)
+    return hdroller.apply(func, *([die] * num_dice))
 
 @pytest.mark.parametrize('num_keep', range(1, 4))
 def test_keep_highest(num_keep):
@@ -60,6 +60,6 @@ def test_keep_index(keep_index):
 
 def test_max_outcomes():
     die = hdroller.d12
-    result = die.keep([8, 6])
+    result = die.keep(2, max_outcomes=[8, 6])
     expected = hdroller.d8 + hdroller.d6
     assert result == expected

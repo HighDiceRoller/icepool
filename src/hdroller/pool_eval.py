@@ -57,7 +57,10 @@ class PoolEval():
             A final outcome that will be used as part of constructing a die.
             This should be hashable and comparable.
         """
-        return final_state
+        if len(final_state) == 1:
+            return final_state[0]
+        else:
+            return final_state
     
     def eval(self, *pools, force_single=False):
         """
