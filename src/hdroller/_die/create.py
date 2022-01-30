@@ -130,7 +130,7 @@ def mix(*dice, mix_weights=None):
         If not provided, all dice are mixed uniformly.
     """
     dice = hdroller._die.base._align(*dice)
-    force_single = any(die.is_single for die in dice)
+    force_single = any(die.is_single() for die in dice)
     
     weight_product = math.prod(die.total_weight() for die in dice)
     

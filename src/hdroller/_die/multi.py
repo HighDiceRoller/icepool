@@ -12,7 +12,6 @@ class MultiDie(hdroller._die.base.BaseDie):
     Outcomes are tuples, and operations are performed on each element of the tuples.
     """
     
-    @property
     def is_single(self):
         """True iff this die is univariate."""
         return False

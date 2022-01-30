@@ -11,7 +11,6 @@ import operator
 class BaseDie():
     # Abstract methods.
     
-    @property
     def is_single(self):
         """True iff this die is univariate.
         
@@ -253,7 +252,7 @@ class BaseDie():
             for outcome, weight in subresult.items():
                 data[outcome] += weight * subresult_weight
             
-        return hdroller.die(data, force_single=other.is_single)
+        return hdroller.die(data, force_single=other.is_single())
     
     def __rmul__(self, other):
         other = hdroller.die(other)
@@ -306,14 +305,14 @@ class BaseDie():
             else:
                 non_explode[outcome] = weight
         
-        non_explode_die = hdroller._die.create._die_from_checked_dict(non_explode, force_single=self.is_single)
+        non_explode_die = hdroller._die.create._die_from_checked_dict(non_explode, force_single=self.is_single())
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
-        explode_die = hdroller._die.create._die_from_checked_dict(explode, force_single=self.is_single) + tail_die
+        explode_die = hdroller._die.create._die_from_checked_dict(explode, force_single=self.is_single()) + tail_die
         
         non_explode_die, explode_die = _align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
     
     def reroll(self, *outcomes, max_depth=None):
         """Rerolls the given outcomes.
@@ -341,7 +340,7 @@ class BaseDie():
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
     
     # Repeat, keep, and sum.
     
@@ -351,7 +350,7 @@ class BaseDie():
         Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
         """
         dice = _align(dice)
-        force_single = any(die.is_single for die in dice)
+        force_single = any(die.is_single() for die in dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, force_single=force_single)
     
@@ -361,7 +360,7 @@ class BaseDie():
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = _align(dice)
-        force_single = any(die.is_single for die in dice)
+        force_single = any(die.is_single() for die in dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, force_single=force_single)
     
@@ -440,13 +439,13 @@ class BaseDie():
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
     
     @cached_property
     def _pop_min(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single)
+            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single())
             return die, self.outcomes()[0], self.weights()[0]
         else:
             return None, self.outcomes()[0], self.weights()[0]
@@ -462,7 +461,7 @@ class BaseDie():
     def _pop_max(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single)
+            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single())
             return die, self.outcomes()[-1], self.weights()[-1]
         else:
             return None, self.outcomes()[-1], self.weights()[-1]
@@ -479,7 +478,7 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single)
+        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
     
     # Scalar(-ish) statistics.
     
@@ -599,7 +598,7 @@ class BaseDie():
     
     @cached_property
     def _key_tuple(self):
-        return self.is_single, tuple(self.items())
+        return self.is_single(), tuple(self.items())
         
     def __eq__(self, other):
         """
@@ -634,7 +633,7 @@ def _align(*dice):
     """
     dice = _listify_dice(dice)
     
-    if any(die.is_single for die in dice) != all(die.is_single for die in dice):
+    if any(die.is_single() for die in dice) != all(die.is_single() for die in dice):
         raise TypeError('The passed to _align() must all be single or all multi.')
     
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))

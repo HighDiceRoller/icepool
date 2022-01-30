@@ -12,7 +12,6 @@ class SingleDie(hdroller._die.base.BaseDie):
     Operations are performed directly on the outcomes.
     """
     
-    @property
     def is_single(self):
         """True iff this die is univariate."""
         return True
@@ -43,7 +42,7 @@ class SingleDie(hdroller._die.base.BaseDie):
         """
         dice = hdroller._die.base._listify_dice(dice)
         
-        if any(not die.is_single for die in dice):
+        if any(not die.is_single() for die in dice):
             raise TypeError('cartesian_product() is only valid on SingleDie.')
         
         data = defaultdict(int)
