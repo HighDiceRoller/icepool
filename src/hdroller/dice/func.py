@@ -8,11 +8,16 @@ from collections import defaultdict
 import itertools
 import math
 
-def _die_from_checked_dict(d, *, force_single=False):
+def _die_from_checked_dict(d, ndim=None):
     data = hdroller.dice.data.DieData(d)
     
-    if force_single:
-        return hdroller.dice.single.SingleDie(data)
+    if ndim is not None:
+        if not isinstance(ndim, int):
+            raise TypeError('ndim must be an integer.')
+        if ndim == 1:
+            return hdroller.dice.single.SingleDie(data, 1)
+        else:
+            return hdroller.dice.multi.MultiDie(data, ndim)
     
     ndim = None
     for outcome in data.keys():
@@ -20,13 +25,17 @@ def _die_from_checked_dict(d, *, force_single=False):
             if ndim is None:
                 ndim = len(outcome)
             elif ndim != len(outcome):
-                return hdroller.dice.single.SingleDie(data)
+                return hdroller.dice.single.SingleDie(data, 1)
         except TypeError:
-            return hdroller.dice.single.SingleDie(data)
-    
-    return hdroller.dice.multi.MultiDie(data)
+            return hdroller.dice.single.SingleDie(data, 1)
 
-def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
+    if ndim == 1:
+        d = { k[0] : v for k, v in data.items() }
+        return _die_from_checked_dict(d, ndim=ndim)
+    
+    return hdroller.dice.multi.MultiDie(data, ndim)
+
+def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     """
     Args:
         arg: This can be one of the following:
@@ -37,7 +46,7 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
             An iterable of pairs of outcomes and weights.
             A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight 1.
-        force_single: If True, the die is treated as univariate even if its outcomes are iterable.
+        ndim: If provided, the die will have the given number of dimensions.
     """
     if isinstance(arg, hdroller.dice.base.BaseDie):
         return arg
@@ -54,7 +63,7 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
         # Treat arg as the only possible value.
         data = {arg : 1}
     
-    return _die_from_checked_dict(data, force_single=force_single)
+    return _die_from_checked_dict(data, ndim=ndim)
 
 def standard(num_sides):
     return die([1] * num_sides, min_outcome=1)
@@ -72,16 +81,16 @@ def bernoulli(n, d):
 
 coin = bernoulli
 
-def from_cweights(outcomes, cweights, *, force_single=False):
+def from_cweights(outcomes, cweights, ndim=None):
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
         if weight - prev > 0:
             d[outcome] = weight - prev
             prev = weight
-    return _die_from_checked_dict(d, force_single=force_single)
+    return _die_from_checked_dict(d, ndim=ndim)
     
-def from_sweights(outcomes, sweights, *, force_single=False):
+def from_sweights(outcomes, sweights, ndim=None):
     d = {}
     for i, outcome in enumerate(outcomes):
         if i < len(outcomes) - 1:
@@ -90,7 +99,7 @@ def from_sweights(outcomes, sweights, *, force_single=False):
             weight = sweights[i]
         if weight > 0:
             d[outcome] = weight
-    return _die_from_checked_dict(d, force_single=force_single)
+    return _die_from_checked_dict(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """
@@ -111,14 +120,14 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         cweights = tuple(int(round(x * denominator)) for x in cdf)
     return from_cweights(outcomes, cweights)
     
-def apply(func, *dice, force_single=False):
+def apply(func, *dice, ndim=None):
     dice = [die(d) for d in dice]
     data = defaultdict(int)
     for t in itertools.product(*(d.items() for d in dice)):
         outcomes, weights = zip(*t)
         data[func(*outcomes)] += math.prod(weights)
     
-    return die(data, force_single=force_single)
+    return die(data, ndim=ndim)
 
 def mix(*dice, mix_weights=None):
     """
@@ -130,7 +139,12 @@ def mix(*dice, mix_weights=None):
         If not provided, all dice are mixed uniformly.
     """
     dice = hdroller.dice.base._align(*dice)
-    force_single = any(die.is_single() for die in dice)
+    ndim = None
+    for die in dice:
+        if ndim is None:
+            ndim = die.ndim()
+        elif die.ndim() != ndim:
+            ndim = 1
     
     weight_product = math.prod(die.total_weight() for die in dice)
     
@@ -142,4 +156,4 @@ def mix(*dice, mix_weights=None):
         factor = mix_weight * weight_product // die.total_weight()
         for outcome, weight in zip(die.outcomes(), die.weights()):
             data[outcome] += weight * factor
-    return hdroller.die(data, force_single=force_single)
+    return hdroller.die(data, ndim=ndim)

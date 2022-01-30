@@ -59,7 +59,7 @@ class PoolEval():
         """
         return final_state
     
-    def eval(self, *pools, force_single=False):
+    def eval(self, *pools, ndim=None):
         """
         Args:
             *pools: One or more DicePools to evaluate.
@@ -79,7 +79,7 @@ class PoolEval():
             outcome = self.final_outcome(state, initial_state, *pools)
             final_dist[outcome] += weight
         
-        return hdroller.die(final_dist, force_single=force_single)
+        return hdroller.die(final_dist, ndim=ndim)
     
     def _eval_internal(self, initial_state, *pools):
         """

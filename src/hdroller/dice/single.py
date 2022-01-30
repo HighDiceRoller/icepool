@@ -12,23 +12,19 @@ class SingleDie(hdroller.dice.base.BaseDie):
     Operations are performed directly on the outcomes.
     """
     
-    def is_single(self):
-        """True iff this die is univariate."""
-        return True
-    
     def unary_op(self, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on the outcomes."""
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
-        return hdroller.die(data, force_single=True)
+        return hdroller.die(data, ndim=self.ndim())
     
     def binary_op(self, other, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
-        return hdroller.die(data, force_single=True)
+        return hdroller.die(data, ndim=self.ndim())
     
     def cartesian_product(*dice):
         """
@@ -42,7 +38,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         """
         dice = hdroller.dice.base._listify_dice(dice)
         
-        if any(not die.is_single() for die in dice):
+        if any(die.ndim > 1 for die in dice):
             raise TypeError('cartesian_product() is only valid on SingleDie.')
         
         data = defaultdict(int)
