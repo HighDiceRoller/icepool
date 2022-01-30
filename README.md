@@ -18,18 +18,17 @@ pip install hdroller
 [Try this in your browser using a Starboard notebook.](https://starboard.gg/nb/nfmQTSp)
 
 ```python
-from hdroller import Die
+import hdroller
 
 # A standard d10.
-die = Die.d10
+die = hdroller.d10
 
 # A d10, exploding on highest face at most twice, similar to Legend of the Five Rings.
-die = Die.d10.explode(2)
+die = hdroller.d10.explode(2)
 
 # Roll ten L5R dice and keep the five highest.
-die = Die.d10.explode(2).keep_highest(10, 5)
+die = hdroller.d10.explode(2).keep_highest(10, 5)
 
-# Plot it.
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
@@ -60,34 +59,29 @@ Source for ability score rolling methods: [https://www.reddit.com/r/dndnext/comm
 > 3d6 are rolled sufficient times to generate the 6 ability scores, in order, for 12 characters. The player then selects the single set of scores which he or she finds most desirable and these scores are noted on the character record sheet.
 
 ```python
-import micropip
-await micropip.install('hdroller')
 
-import pkg_resources
 import hdroller
-print('hdroller version:', pkg_resources.get_distribution("hdroller").version)
 
-from hdroller import Die
 
 # Note that the * operator is not commutative:
 # it means "roll the left die, then roll that many of the right die and sum".
 # Integers are treated as a die that always rolls that number.
 # Therefore:
-# 3 * Die.d6 means 3d6.
-# Die.d6 * 3 means roll a d6 and multiply the result by 3.
-method1 = 6 * Die.d6.keep_highest(num_dice=4, num_keep=3) 
-method2 = (3 * Die.d6).keep_highest(12, 6)
+# 3 * hdroller.d6 means 3d6.
+# hdroller.d6 * 3 means roll a d6 and multiply the result by 3.
+method1 = 6 * hdroller.d6.keep_highest(num_dice=4, num_keep=3)
+method2 = (3 * hdroller.d6).keep_highest(12, 6)
 # num_keep defaults to 1.
-method3 = 6 * (3 * Die.d6).keep_highest(6)
-method4 = (6 * (3 * Die.d6)).keep_highest(12)
+method3 = 6 * (3 * hdroller.d6).keep_highest(6)
+method4 = (6 * (3 * hdroller.d6)).keep_highest(12)
 
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
-ax.plot(method1.outcomes(), method1.pmf() * 100.0)
-ax.plot(method2.outcomes(), method2.pmf() * 100.0)
-ax.plot(method3.outcomes(), method3.pmf() * 100.0)
-ax.plot(method4.outcomes(), method4.pmf() * 100.0)
+ax.plot(method1.outcomes(), numpy.array(method1.pmf()) * 100.0)
+ax.plot(method2.outcomes(), numpy.array(method2.pmf()) * 100.0)
+ax.plot(method3.outcomes(), numpy.array(method3.pmf()) * 100.0)
+ax.plot(method4.outcomes(), numpy.array(method4.pmf()) * 100.0)
 ax.set_title('AD&D 1e ability score methods')
 ax.legend(['Method I', 'Method II', 'Method III', 'Method IV'])
 ax.set_xlabel('Total of ability scores')
