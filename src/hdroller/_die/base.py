@@ -176,11 +176,18 @@ class BaseDie():
         return self.binary_op(other, operator.gt)
     
     def eq(self, other):
-        """ Note that __eq__ is taken up by the dice being equal, as opposed to the chance of their outcomes being equal. """
+        """The chance that the two dice will roll equal to each other.
+        
+        Note that __eq__ is taken up by the dice being equal, as opposed to the chance of their outcomes being equal.
+        """
         other = hdroller.die(other)
         return self.binary_op(other, operator.eq)
     
     def ne(self, other):
+        """The chance that the two dice will roll not equal to each other.
+        
+        Note that __ne__ is taken up by the dice being equal, as opposed to the chance of their outcomes being not equal.
+        """
         other = hdroller.die(other)
         return self.binary_op(other, operator.ne)
     
