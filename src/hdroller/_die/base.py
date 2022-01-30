@@ -175,6 +175,15 @@ class BaseDie():
         other = hdroller.die(other)
         return self.binary_op(other, operator.gt)
     
+    def eq(self, other):
+        """ Note that __eq__ is taken up by the dice being equal, as opposed to the chance of their outcomes being equal. """
+        other = hdroller.die(other)
+        return self.binary_op(other, operator.eq)
+    
+    def ne(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, operator.ne)
+    
     # Logical operators.
     # These operate on bool(outcome).
     
