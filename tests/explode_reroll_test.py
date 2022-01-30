@@ -1,6 +1,6 @@
 import _context
 
-from hdroller import Die
+import hdroller
 import pytest
 
 abs_tol = 1e-9
@@ -16,17 +16,17 @@ def bf_explode_basic(die, max_times):
 
 @pytest.mark.parametrize('max_times', range(6))
 def test_explode_d6(max_times):
-    result = Die.d6.explode(max_times)
-    result_int = Die.d6.explode(max_times, outcomes=6)
-    result_list = Die.d6.explode(max_times, outcomes=[6])
-    expected = bf_explode_basic(Die.d6, max_times)
+    result = hdroller.d6.explode(max_times)
+    result_int = hdroller.d6.explode(max_times, outcomes=6)
+    result_list = hdroller.d6.explode(max_times, outcomes=[6])
+    expected = bf_explode_basic(hdroller.d6, max_times)
     assert result == expected
     assert result_int == expected
     assert result_list == expected
 
 def test_explode_chance():
-    result = Die(Die.d10 >= 8).explode(3, {1 : 1/3})
-    expected = Die([1.0 - 0.3,
+    result = hdroller.die(hdroller.d10 >= 8).explode(3, {1 : 1/3})
+    expected = hdroller.die([1.0 - 0.3,
                     0.3 - 0.03,
                     0.03 - 0.003,
                     0.003 - 0.0003,
@@ -35,7 +35,7 @@ def test_explode_chance():
 
 def test_explode_chance_weights():
     result = Die.mix([0]*7 + [1]*3).explode(3, {1 : 1/3})
-    expected = Die([1.0 - 0.3,
+    expected = hdroller.die([1.0 - 0.3,
                     0.3 - 0.03,
                     0.03 - 0.003,
                     0.003 - 0.0003,
@@ -43,24 +43,24 @@ def test_explode_chance_weights():
     assert result.ks_stat(expected) == pytest.approx(0.0)
     
 def test_reroll():
-    result = Die.d6.reroll(outcomes=1)
-    expected = Die.d5 + 1
+    result = hdroller.d6.reroll(outcomes=1)
+    expected = hdroller.d5 + 1
     assert result == expected
     
 def test_reroll_2():
-    result = Die.d6.reroll(outcomes=[1, 2])
-    expected = Die.d4 + 2
+    result = hdroller.d6.reroll(outcomes=[1, 2])
+    expected = hdroller.d4 + 2
     assert result == expected
 
 def test_reroll_partial():
-    result = Die.d4.reroll(outcomes={1 : 0.5})
+    result = hdroller.d4.reroll(outcomes={1 : 0.5})
     expected = [1/7, 2/7, 2/7, 2/7]
     assert result.pmf() == pytest.approx(expected, abs=abs_tol)
 
 def test_reroll_limit():
-    result = Die.d4.reroll(outcomes=1, max_times=1)
-    expected = Die([1, 5, 5, 5], 1)
+    result = hdroller.d4.reroll(outcomes=1, max_times=1)
+    expected = hdroller.die([1, 5, 5, 5], 1)
     assert result == expected
     
 def test_infinite_reroll():
-    assert Die.d4.reroll(outcomes=[1, 2, 3, 4]) is None
+    assert hdroller.d4.reroll(outcomes=[1, 2, 3, 4]) is None

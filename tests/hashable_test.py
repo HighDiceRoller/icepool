@@ -1,9 +1,9 @@
 import _context
 
-from hdroller import Die
+import hdroller
 import pytest
 
 def test_dict():
     d = {}
-    d[Die.d6] = 100
-    assert d[Die.d6] == 100
+    d[hdroller.d6] = 100
+    assert d[hdroller.d6] == 100

@@ -1,5 +1,4 @@
 import hdroller
-from hdroller import Die
 
 def round_robin_score(*dice, tiebreaker='coin'):
     """
@@ -12,11 +11,11 @@ def round_robin_score(*dice, tiebreaker='coin'):
         for opponent in dice:
             difference = die - opponent
             if tiebreaker == 'coin':
-                difference = difference - Die.coin()
+                difference = difference - hdroller.coin(1, 2)
             elif tiebreaker == 'win':
                 pass
             elif tiebreaker == 'lose':
                 difference = difference - 1
-            wins += float(difference >= 0)
+            wins += (difference >= 0).mean()
         result.append(wins / len(dice))
     return result

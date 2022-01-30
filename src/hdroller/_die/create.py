@@ -5,6 +5,7 @@ import hdroller._die.single
 import hdroller._die.multi
 
 from collections import defaultdict
+import itertools
 import math
 
 def _die_from_checked_dict(d, *, force_single=False):
@@ -76,7 +77,7 @@ def from_cweights(outcomes, cweights, *, force_single=False):
         if weight - prev > 0:
             d[outcome] = weight - prev
             prev = weight
-    return _die_from_checked_dict(d)
+    return _die_from_checked_dict(d, force_single=force_single)
     
 def from_sweights(outcomes, sweights, *, force_single=False):
     d = {}
@@ -87,10 +88,19 @@ def from_sweights(outcomes, sweights, *, force_single=False):
             weight = sweights[i]
         if weight > 0:
             d[outcome] = weight
-    return _die_from_checked_dict(d)
+    return _die_from_checked_dict(d, force_single=force_single)
 
 def from_rv(rv, outcomes, d):
     raise NotImplementedError("TODO")
+    
+def apply(func, *dice, force_single=False):
+    dice = [die(d) for d in dice]
+    data = defaultdict(int)
+    for t in itertools.product(*(d.items() for d in dice)):
+        outcomes, weights = zip(*t)
+        data[func(*outcomes)] += math.prod(weights)
+    
+    return die(data, force_single=force_single)
 
 def mix(*dice, mix_weights=None):
     """

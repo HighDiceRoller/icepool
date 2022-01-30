@@ -1,6 +1,6 @@
 import _context
 
-from hdroller import Die
+import hdroller
 import pytest
 
 def test_invert():
