@@ -1,6 +1,7 @@
 import hdroller
 
 from collections import defaultdict
+from functools import cached_property
 import itertools
 import math
 
@@ -59,6 +60,10 @@ class PoolEval():
         """
         return final_state
     
+    @cached_property
+    def _cache(self):
+        return {}
+    
     def eval(self, *pools, ndim=None):
         """
         Args:
@@ -68,9 +73,6 @@ class PoolEval():
         Returns:
             A die representing the distribution of the final score.
         """
-        if not hasattr(self, '_cache'):
-            self._cache = {}
-        
         initial_state = self.initial_state(*pools)
         dist = self._eval_internal(initial_state, *pools)
         
