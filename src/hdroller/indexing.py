@@ -2,6 +2,32 @@
 
 import itertools
 
+def select_from(a, select):
+    if isinstance(select, slice):
+        result = []
+        for i in itertools.islice(range(n), slice.start, slice.stop, slice.step):
+            result.append(a[i])
+            return tuple(result)
+
+    try:
+        i = int(select)
+        return a[i]
+    except TypeError:
+        pass
+    
+    is_bool = False
+    for i, v in enumerate(select):
+        if v is True:
+            is_bool = True
+            result.append(a[i])
+        elif v is False:
+            is_bool = True
+        else:
+            if is_bool:
+                raise TypeError('Selection cannot mix bools and ints.')
+            result.append(a[v])
+    return tuple(result)
+    
 def select_bools(n, select):
     """
     
@@ -30,11 +56,15 @@ def select_bools(n, select):
     except TypeError:
         pass
     
+    is_bool = False
     for i, v in enumerate(select):
         if v is True:
+            is_bool = True
             result[i] = True
         elif v is False:
-            result[i] = False
+            is_bool = True
         else:
+            if is_bool:
+                raise TypeError('Selection cannot mix bools and ints.')
             result[v] = True
     return tuple(result)

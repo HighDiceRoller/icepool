@@ -1,5 +1,7 @@
 import hdroller
 import hdroller._die.base
+import hdroller._die.single
+import hdroller.indexing
 
 from collections import defaultdict
 import itertools
@@ -32,13 +34,12 @@ class MultiDie(hdroller._die.base.BaseDie):
         return hdroller.die(data)
     
     @staticmethod
-    def _getitem(self, outcome, i):
-        # TODO: Advanced indexing.
-        return outcome[i]
+    def _getitem(outcome, select):
+        return hdroller.indexing.select_from(outcome, select)
     
-    def __getitem__(self, i):
+    def __getitem__(self, select):
         """Slices the outcomes of the die."""
-        return self.unary_op(self._getitem, i)
+        return hdroller._die.single.SingleDie.unary_op(self, self._getitem, select)
     
     # Statistics.
     
