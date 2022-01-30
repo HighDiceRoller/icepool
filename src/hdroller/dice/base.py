@@ -1,5 +1,5 @@
 import hdroller
-from hdroller._die.data import DieData
+from hdroller.dice.data import DieData
 
 import bisect
 from collections import defaultdict
@@ -31,7 +31,7 @@ class BaseDie():
     def __init__(self, data):
         """Users should usually not construct dice directly;
         instead they should use one of the methods defined in
-        hdroller._die.create (which are imported into the 
+        hdroller.dice.create (which are imported into the 
         top-level hdroller module).
         
         Args:
@@ -305,14 +305,14 @@ class BaseDie():
             else:
                 non_explode[outcome] = weight
         
-        non_explode_die = hdroller._die.create._die_from_checked_dict(non_explode, force_single=self.is_single())
+        non_explode_die = hdroller.dice.create._die_from_checked_dict(non_explode, force_single=self.is_single())
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
-        explode_die = hdroller._die.create._die_from_checked_dict(explode, force_single=self.is_single()) + tail_die
+        explode_die = hdroller.dice.create._die_from_checked_dict(explode, force_single=self.is_single()) + tail_die
         
         non_explode_die, explode_die = _align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
+        return hdroller.dice.create._die_from_checked_dict(data, force_single=self.is_single())
     
     def reroll(self, *outcomes, max_depth=None):
         """Rerolls the given outcomes.
@@ -340,7 +340,7 @@ class BaseDie():
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
+        return hdroller.dice.create._die_from_checked_dict(data, force_single=self.is_single())
     
     # Repeat, keep, and sum.
     
@@ -439,13 +439,13 @@ class BaseDie():
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
+        return hdroller.dice.create._die_from_checked_dict(data, force_single=self.is_single())
     
     @cached_property
     def _pop_min(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single())
+            die = hdroller.dice.create._die_from_checked_dict(d, force_single=self.is_single())
             return die, self.outcomes()[0], self.weights()[0]
         else:
             return None, self.outcomes()[0], self.weights()[0]
@@ -461,7 +461,7 @@ class BaseDie():
     def _pop_max(self):
         if len(self) > 1:
             d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-            die = hdroller._die.create._die_from_checked_dict(d, force_single=self.is_single())
+            die = hdroller.dice.create._die_from_checked_dict(d, force_single=self.is_single())
             return die, self.outcomes()[-1], self.weights()[-1]
         else:
             return None, self.outcomes()[-1], self.weights()[-1]
@@ -478,7 +478,7 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
-        return hdroller._die.create._die_from_checked_dict(data, force_single=self.is_single())
+        return hdroller.dice.create._die_from_checked_dict(data, force_single=self.is_single())
     
     # Scalar(-ish) statistics.
     

@@ -46,13 +46,13 @@ def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
 class DicePool():
     def __init__(self, die, select_dice, min_outcomes, max_outcomes):
         """Unchecked constructor."""
-        self._die = die
+        self.dice = die
         self._select_dice = select_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
     
     def die(self):
-        return self._die
+        return self.dice
         
     def select_dice(self):
         return self._select_dice

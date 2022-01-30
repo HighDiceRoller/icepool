@@ -1,12 +1,12 @@
 import hdroller
-import hdroller._die.base
-import hdroller._die.multi
+import hdroller.dice.base
+import hdroller.dice.multi
 
 from collections import defaultdict
 import itertools
 import math
 
-class SingleDie(hdroller._die.base.BaseDie):
+class SingleDie(hdroller.dice.base.BaseDie):
     """Univariate die.
     
     Operations are performed directly on the outcomes.
@@ -40,7 +40,7 @@ class SingleDie(hdroller._die.base.BaseDie):
         Raises:
             TypeError if any of the input dice are already MultiDie.
         """
-        dice = hdroller._die.base._listify_dice(dice)
+        dice = hdroller.dice.base._listify_dice(dice)
         
         if any(not die.is_single() for die in dice):
             raise TypeError('cartesian_product() is only valid on SingleDie.')

@@ -1,12 +1,12 @@
 import hdroller
-import hdroller._die.base
-import hdroller._die.single
+import hdroller.dice.base
+import hdroller.dice.single
 import hdroller.indexing
 
 from collections import defaultdict
 import itertools
 
-class MultiDie(hdroller._die.base.BaseDie):
+class MultiDie(hdroller.dice.base.BaseDie):
     """Multivariate die.
     
     Outcomes are tuples, and operations are performed on each element of the tuples.
@@ -38,7 +38,7 @@ class MultiDie(hdroller._die.base.BaseDie):
     
     def __getitem__(self, select):
         """Slices the outcomes of the die."""
-        return hdroller._die.single.SingleDie.unary_op(self, self._getitem, select)
+        return hdroller.dice.single.SingleDie.unary_op(self, self._getitem, select)
     
     # Statistics.
     

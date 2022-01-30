@@ -1,18 +1,18 @@
 import hdroller
-import hdroller._die.data
-import hdroller._die.base
-import hdroller._die.single
-import hdroller._die.multi
+import hdroller.dice.data
+import hdroller.dice.base
+import hdroller.dice.single
+import hdroller.dice.multi
 
 from collections import defaultdict
 import itertools
 import math
 
 def _die_from_checked_dict(d, *, force_single=False):
-    data = hdroller._die.data.DieData(d)
+    data = hdroller.dice.data.DieData(d)
     
     if force_single:
-        return hdroller._die.single.SingleDie(data)
+        return hdroller.dice.single.SingleDie(data)
     
     ndim = None
     for outcome in data.keys():
@@ -20,11 +20,11 @@ def _die_from_checked_dict(d, *, force_single=False):
             if ndim is None:
                 ndim = len(outcome)
             elif ndim != len(outcome):
-                return hdroller._die.single.SingleDie(data)
+                return hdroller.dice.single.SingleDie(data)
         except TypeError:
-            return hdroller._die.single.SingleDie(data)
+            return hdroller.dice.single.SingleDie(data)
     
-    return hdroller._die.multi.MultiDie(data)
+    return hdroller.dice.multi.MultiDie(data)
 
 def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
     """
@@ -39,7 +39,7 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
                 There will be a single outcome equal to the argument, with weight 1.
         force_single: If True, the die is treated as univariate even if its outcomes are iterable.
     """
-    if isinstance(arg, hdroller._die.base.BaseDie):
+    if isinstance(arg, hdroller.dice.base.BaseDie):
         return arg
     
     # TODO: check weights are int, return None if no elements
@@ -129,7 +129,7 @@ def mix(*dice, mix_weights=None):
     mix_weights: An iterable of one int per argument.
         If not provided, all dice are mixed uniformly.
     """
-    dice = hdroller._die.base._align(*dice)
+    dice = hdroller.dice.base._align(*dice)
     force_single = any(die.is_single() for die in dice)
     
     weight_product = math.prod(die.total_weight() for die in dice)
