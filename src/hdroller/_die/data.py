@@ -70,3 +70,6 @@ class DieData():
 
     def __str__(self):
         return str(self._d)
+    
+    def __repr__(self):
+        return type(self).__name__ + f'({repr(self._d)})'

@@ -47,3 +47,6 @@ class MultiDie(hdroller._die.base.BaseDie):
     
     def correlation(self, i, j):
         return NotImplementedError("TODO")
+    
+    def __repr__(self):
+        return type(self).__name__ + f'({self._data.__repr__()})'

@@ -51,4 +51,6 @@ class SingleDie(hdroller._die.base.BaseDie):
             data[outcomes] += math.prod(weights)
         
         return hdroller.die(data)
-    
+
+    def __repr__(self):
+        return type(self).__name__ + f'({self._data.__repr__()})'
