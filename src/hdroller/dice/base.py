@@ -38,13 +38,13 @@ class BaseDie():
     def ndim(self):
         return self._ndim
         
-    def common_ndim(*dice):
+    def _check_ndim(*dice):
         ndim = None
         for die in dice:
             if ndim is None:
                 ndim = die.ndim()
             elif die.ndim() != ndim:
-                ndim = 1
+                raise ValueError('Dice have mismatched ndim.')
         return ndim
     
     def outcomes(self):
@@ -356,7 +356,7 @@ class BaseDie():
         Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
         """
         dice = _align(dice)
-        ndim = BaseDie.common_ndim(*dice)
+        ndim = BaseDie._check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
@@ -366,7 +366,7 @@ class BaseDie():
         Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
         """
         dice = _align(dice)
-        ndim = BaseDie.common_ndim(*dice)
+        ndim = BaseDie._check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
     
@@ -599,6 +599,9 @@ class BaseDie():
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
             result += f'| {outcome} | {weight} | {p:.3%} |\n'
         return result
+    
+    def __repr__(self):
+        return type(self).__name__ + f'({self._data.__repr__()}, ndim={self.ndim})'
     
     # Hashing and equality.
     

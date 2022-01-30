@@ -21,6 +21,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     def binary_op(self, other, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
+        ndim = self._check_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
@@ -45,6 +46,3 @@ class SingleDie(hdroller.dice.base.BaseDie):
             data[outcomes] += math.prod(weights)
         
         return hdroller.die(data)
-
-    def __repr__(self):
-        return type(self).__name__ + f'({self._data.__repr__()})'

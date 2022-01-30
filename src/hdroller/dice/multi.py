@@ -22,7 +22,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
     
     def binary_op(self, other, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
-        ndim = self.common_ndim(other)
+        ndim = self._check_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
@@ -48,6 +48,3 @@ class MultiDie(hdroller.dice.base.BaseDie):
     
     def correlation(self, i, j):
         return NotImplementedError("TODO")
-    
-    def __repr__(self):
-        return type(self).__name__ + f'({self._data.__repr__()})'

@@ -1,8 +1,9 @@
 import hdroller
 from hdroller.collections import FrozenSortedWeights
 import hdroller.dice.base
-import hdroller.dice.single
 import hdroller.dice.multi
+import hdroller.dice.single
+import hdroller.dice.zero
 
 from collections import defaultdict
 import itertools
@@ -31,8 +32,9 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
         
     ndim = _calc_ndim(data, ndim)
     
-    # TODO: Zero-dimensional dice?
-    if ndim == 1:
+    if ndim == 0:
+        return hdroller.dice.zero.ZeroDie(data, 0)
+    elif ndim == 1:
         return hdroller.dice.single.SingleDie(data, 1)
     else:
         return hdroller.dice.multi.MultiDie(data, ndim)
