@@ -29,10 +29,6 @@ class MultiDie(hdroller.dice.base.BaseDie):
             data[new_outcome] += weight_self * weight_other
         return hdroller.die(data, ndim=ndim)
     
-    @staticmethod
-    def _getitem(outcome, select):
-        return hdroller.indexing.select_from(outcome, select)
-    
     def __getitem__(self, select):
         """Slices the dimensions of the die."""
         data = defaultdict(int)
