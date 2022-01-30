@@ -49,29 +49,25 @@ cProfile.run('neon_city_overdrive(6, 6)')
 y = neon_city_overdrive(6, 6)
 
 import _context
-from hdroller import Die, Pool, MultiPoolScorer
+import hdroller
+from hdroller import die, pool, PoolEval
 
-print(Die(y, 0))
-
-class NeonCityOverdriveScorer(MultiPoolScorer):
-    def initial_state(self, initial_pools):
+class NeonCityOverdriveEval(hdroller.PoolEval):
+    def initial_state(self, action, danger):
         return 0
-
-    def next_state(self, outcome, counts, prev_state):
-        if counts[0] > counts[1]:
+        
+    def next_state(self, prev_state, outcome, action, danger):
+        if action > danger:
             if outcome == 6:
-                return counts[0] - counts[1] + 5
+                return action - danger + 5
             else:
                 return outcome
         else:
             return prev_state
 
-    def score(self, initial_pools, initial_state, final_state):
-        return final_state
+cProfile.run('NeonCityOverdriveEval().eval(pool(hdroller.d6, 11), pool(hdroller.d6, 11))')
 
-cProfile.run('NeonCityOverdriveScorer().evaluate([Pool(Die.d6, 11)] * 2)')
-
-y2 = NeonCityOverdriveScorer().evaluate([Pool(Die.d6, 6), Pool(Die.d6, 6)])
+y2 = NeonCityOverdriveEval().eval(pool(hdroller.d6, 6), pool(hdroller.d6, 6))
 
 print(y2)
 
