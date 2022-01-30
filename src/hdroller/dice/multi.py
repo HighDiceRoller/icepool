@@ -22,11 +22,12 @@ class MultiDie(hdroller.dice.base.BaseDie):
     
     def binary_op(self, other, op, *args):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
+        ndim = self.common_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args) for x, y in zip(outcome_self, outcome_other))
             data[new_outcome] += weight_self * weight_other
-        return hdroller.die(data, ndim=self.ndim())
+        return hdroller.die(data, ndim=ndim)
     
     @staticmethod
     def _getitem(outcome, select):
