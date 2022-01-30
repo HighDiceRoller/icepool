@@ -51,8 +51,6 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     if isinstance(arg, hdroller.dice.base.BaseDie):
         return arg
     
-    # TODO: check weights are int, return None if no elements
-    
     if min_outcome is not None:
         data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}
     elif hasattr(arg, 'keys'):
@@ -62,6 +60,13 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     else:
         # Treat arg as the only possible value.
         data = {arg : 1}
+    
+    if len(data) == 0:
+        return None
+    
+    for value in data.values():
+        if not isinstance(value, int):
+            raise TypeError('Values must be ints.')
     
     return _die_from_checked_dict(data, ndim=ndim)
 
