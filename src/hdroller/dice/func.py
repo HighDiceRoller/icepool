@@ -1,5 +1,5 @@
 import hdroller
-import hdroller.dice.data
+import hdroller.collections
 import hdroller.dice.base
 import hdroller.dice.single
 import hdroller.dice.multi
@@ -9,7 +9,7 @@ import itertools
 import math
 
 def _die_from_checked_dict(d, ndim=None):
-    data = hdroller.dice.data.DieData(d)
+    data = hdroller.collections.FrozenSortedDict(d)
     
     if ndim is not None:
         if not isinstance(ndim, int):

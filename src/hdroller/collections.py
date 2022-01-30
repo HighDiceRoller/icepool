@@ -1,6 +1,6 @@
 from functools import cached_property
 
-class DieData():
+class FrozenSortedDict():
     """Immutable sorted dictionary whose values are integers.
     
     keys(), values(), and items() return tuples, which are subscriptable.
@@ -54,7 +54,7 @@ class DieData():
         Returns None, None, 0 if self has no elements remaining.
         """
         if len(self) > 0:
-            return DieData({ k : v for k, v in zip(self._keys[1:], self._values[1:]) }), self._keys[0], self._values[0]
+            return FrozenSortedDict({ k : v for k, v in zip(self._keys[1:], self._values[1:]) }), self._keys[0], self._values[0]
         else:
             return None, None, 0
     
@@ -64,7 +64,7 @@ class DieData():
         Returns None, None, 0 if self has no elements remaining.
         """
         if len(self) > 0:
-            return DieData({ k : v for k, v in zip(self._keys[:-1], self._values[:-1]) }), self._keys[-1], self._keys[-1]
+            return FrozenSortedDict({ k : v for k, v in zip(self._keys[:-1], self._values[:-1]) }), self._keys[-1], self._keys[-1]
         else:
             return None, None, 0
 

@@ -1,5 +1,5 @@
 import hdroller
-from hdroller.dice.data import DieData
+from hdroller.collections import FrozenSortedDict
 
 import bisect
 from collections import defaultdict
