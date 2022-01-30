@@ -132,4 +132,4 @@ class PoolSum(PoolEval):
     def next_state(self, prev_state, outcome, *counts):
         return tuple(prev_sum + outcome * (count or 0) for prev_sum, count in zip(prev_state, counts))
 
-sum_pool = PoolSum()
+pool_sum = PoolSum()

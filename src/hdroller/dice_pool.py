@@ -5,7 +5,7 @@ import bisect
 from functools import cache, cached_property
 import math
 
-def pool(die, num_dice, *, min_outcomes=None, max_outcomes=None, select_dice=None):
+def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
     """
     Args:
         die: The die this pool is based on.
@@ -38,23 +38,28 @@ def pool(die, num_dice, *, min_outcomes=None, max_outcomes=None, select_dice=Non
     else:
         select_dice = hdroller.indexing.select_bools(num_dice, select_dice)
     
-    return DicePool(die, min_outcomes, max_outcomes, select_dice)
+    return DicePool(die, select_dice, min_outcomes, max_outcomes)
 
 @cache
-def _pool_cached_unchecked(die, min_outcomes, max_outcomes, select_dice):
-    return DicePool(die, min_outcomes, max_outcomes, select_dice)
+def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
+    return DicePool(die, select_dice, min_outcomes, max_outcomes)
 
 class DicePool():
-    def __init__(self, die, min_outcomes, max_outcomes, select_dice):
+    def __init__(self, die, select_dice, min_outcomes, max_outcomes):
         """Unchecked constructor."""
         self._die = die
+        self._select_dice = select_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
-        self._select_dice = select_dice
+        print(self)
     
     @property
     def die(self):
         return self._die
+        
+    @property
+    def select_dice(self):
+        return self._select_dice
     
     @property
     def num_dice(self):
@@ -67,10 +72,6 @@ class DicePool():
     @property
     def max_outcomes(self):
         return self._max_outcomes
-        
-    @property
-    def select_dice(self):
-        return self._select_dice
     
     def _iter_pops(self):
         """
@@ -97,7 +98,7 @@ class DicePool():
         if remaining_selected_dice == 0:
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
-            pool = _pool_cached_unchecked(popped_die, None, (), ())
+            pool = _pool_cached_unchecked(popped_die, (), None, ())
             weight = math.prod(self.die.weight_le(max_outcome) for max_outcome in self.max_outcomes)
             yield pool, 0, weight
             return
@@ -107,7 +108,7 @@ class DicePool():
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
-        pool = _pool_cached_unchecked(popped_die, None, popped_max_outcomes, popped_select_dice)
+        pool = _pool_cached_unchecked(popped_die, popped_select_dice, None, popped_max_outcomes)
         weight = 1
         count = 0
         yield pool, count, weight
@@ -119,7 +120,7 @@ class DicePool():
                 count += popped_select_dice[-1]
                 popped_max_outcomes = popped_max_outcomes[:-1]
                 popped_select_dice = popped_select_dice[:-1]
-                pool = _pool_cached_unchecked(popped_die, None, popped_max_outcomes, popped_select_dice)
+                pool = _pool_cached_unchecked(popped_die, popped_select_dice, None, popped_max_outcomes)
                 yield pool, count, weight
     
     @cached_property

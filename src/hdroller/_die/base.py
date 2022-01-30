@@ -59,18 +59,22 @@ class BaseDie():
     
     def weight_le(self, outcome):
         index = bisect.bisect_right(self.outcomes(), outcome)
+        if index >= len(self): return self.total_weight()
         return self.cweights()[index]
         
     def weight_lt(self, outcome):
         index = bisect.bisect_left(self.outcomes(), outcome)
+        if index >= len(self): return self.total_weight()
         return self.cweights()[index]
         
     def weight_ge(self, outcome):
         index = bisect.bisect_left(self.outcomes(), outcome)
+        if index >= len(self): return self.total_weight()
         return self.sweights()[index]
         
     def weight_gt(self, outcome):
         index = bisect.bisect_right(self.outcomes(), outcome)
+        if index >= len(self): return self.total_weight()
         return self.sweights()[index]
     
     def probability(self, outcome):
@@ -308,6 +312,58 @@ class BaseDie():
         result = half_result + half_result
         if num_dice % 2: result += self
         return result
+    
+    def keep(self, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+        """
+        Roll this Die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
+        
+        Arguments:
+            max_outcomes: Either:
+                * An iterable indicating the maximum outcome for each die in the pool.
+                * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
+            mask:
+                The pool will be sorted from lowest to highest; only dice selected by mask will be counted.
+                If omitted, all dice will be counted.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
+        """
+        pool = hdroller.dice_pool.pool(self, num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        return hdroller.pool_eval.pool_sum.eval(pool)
+        
+    def keep_highest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
+        """
+        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
+        
+        Arguments:
+            num_dice: The number of dice to roll.
+            num_keep: The number of dice to keep.
+            num_drop: If provided, this many highest dice will be dropped before keeping.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
+        """
+        start = -(num_keep + (num_drop or 0))
+        stop = -num_drop if num_drop > 0 else None
+        select_dice = slice(start, stop)
+        return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        
+    def keep_lowest(self, max_outcomes, num_keep=1, num_drop=0):
+        """
+        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
+        
+        Arguments:
+            num_dice: The number of dice to roll.
+            num_keep: The number of dice to keep.
+            num_drop: If provided, this many lowest dice will be dropped before keeping.
+                
+        Returns:
+            A Die representing the probability distribution of the sum.
+        """
+        start = num_drop if num_drop > 0 else None
+        stop = num_keep + (num_drop or 0)
+        mask = slice(start, stop)
+        return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
     
     # Modifying outcomes.
     
