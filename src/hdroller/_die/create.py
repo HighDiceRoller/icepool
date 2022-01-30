@@ -41,7 +41,7 @@ def die(arg, min_outcome=None, *, force_single=False, remove_zero_weights=True):
     if isinstance(arg, hdroller._die.base.BaseDie):
         return arg
     
-    # TODO: check weights are int
+    # TODO: check weights are int, return None if no elements
     
     if min_outcome is not None:
         data = {min_outcome + i : weight for i, weight in enumerate(arg) if not remove_zero_weights or weight > 0}

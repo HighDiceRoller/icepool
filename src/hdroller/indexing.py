@@ -1,6 +1,26 @@
 """numpy-like indexing."""
 
-import itertools
+def slice_range(n, slice):
+    if slice.start is None:
+        start = 0
+    elif slice.start < 0:
+        start = n - slice.start
+    else:
+        start = slice.start
+    
+    if slice.stop is None:
+        stop = 0
+    elif slice.stop < 0:
+        stop = n - slice.stop
+    else:
+        stop = slice.stop
+    
+    if step is None:
+        step = 1
+    else:
+        step = slice.step
+    
+    return range(start, stop, step)
 
 def select_from(a, select):
     """
@@ -18,7 +38,7 @@ def select_from(a, select):
     """
     if isinstance(select, slice):
         result = []
-        for i in itertools.islice(range(n), slice.start, slice.stop, slice.step):
+        for i in slice_range(len(a), slice):
             result.append(a[i])
             return tuple(result)
 
@@ -60,7 +80,7 @@ def select_bools(n, select):
     result = [False] * n
     
     if isinstance(select, slice):
-        for i in itertools.islice(range(n), slice.start, slice.stop, slice.step):
+        for i in slice_range(n, slice):
             result[i] = True
             return tuple(result)
     
