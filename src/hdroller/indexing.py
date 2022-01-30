@@ -34,7 +34,8 @@ def select_from(a, select):
                 or a bool stating that the current iteration index is to be selected.
     
     Returns:
-        A bool tuple of n elements which are True iff that element was selected.
+        The single selected element if the input was an integer.
+        Otherwise, a tuple of selected elements.
     """
     if isinstance(select, slice):
         result = []

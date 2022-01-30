@@ -31,13 +31,39 @@ class MultiDie(hdroller.dice.base.BaseDie):
     
     def __getitem__(self, select):
         """Slices the dimensions of the die."""
+        b = hdroller.indexing.select_bools(self.ndim(), select)
+        ndim = sum(b)
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[hdroller.indexing.select_from(outcome, select)] = weight
-        ndim = sum(hdroller.indexing.select_bools(self.ndim(), select))
-        return hdroller.die(data, ndim=ndim)
+        
+        result = hdroller.die(data, ndim=ndim)
+        return result
     
     # Statistics.
+    
+    def _apply_to_dim(self, func, i, *args, **kwargs):
+        return func(self[i], *args, **kwargs)
+        
+    def mean(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.mean, i)
+    
+    def variance(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.variance, i)
+    
+    def standard_deviation(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.standard_deviation, i)
+    
+    sd = standard_deviation
+    
+    def standardized_moment(self, i, k):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.standardized_moment, i, k)
+    
+    def skewness(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.skewness, i)
+        
+    def excess_kurtosis(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.excess_kurtosis, i)
     
     def covariance(self, i, j):
         mean_i = self[i].mean()
