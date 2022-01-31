@@ -28,12 +28,11 @@ class BaseDie():
         """ Constructor, shared by subclasses.
         
         Users should usually not construct dice directly;
-        instead they should use one of the methods defined in
-        hdroller.dice.func (which are imported into the 
-        top-level hdroller module).
+        instead they should use one of the methods defined in `hdroller.dice.func` 
+        (which are imported into the top-level `hdroller` module).
         
         Args:
-            data: A hdroller.WeightDict mapping outcomes to weights.
+            data: A `FrozenSortedWeights` mapping outcomes to weights.
         """
         self._data = data
         self._ndim = ndim
@@ -44,16 +43,16 @@ class BaseDie():
         return self._ndim
         
     def _check_ndim(*dice):
-        """ Checks that ndim matches between the dice, and returns it. 
+        """ Checks that `ndim` matches between the dice, and returns it. 
         
         Args:
             *dice: The dice to be checked.
         
         Returns:
-            The common ndim of the dice.
+            The common `ndim` of the dice.
         
         Raises:
-            ValueError if a mismatch in ndim is found.
+            ValueError if a mismatch in `ndim` is found.
         """
         ndim = None
         for die in dice:
@@ -129,7 +128,7 @@ class BaseDie():
         return not bool(x)
     
     def __invert__(self):
-        """ This negates bool(outcome). """
+        """ This negates `bool(outcome)`. """
         return self.unary_op(self._invert)
     
     def __round__(self, ndigits=None):
@@ -206,7 +205,7 @@ class BaseDie():
     def eq(self, other):
         """ The chance that the two dice will roll equal to each other.
         
-        Note that __eq__ is taken up by the dice being equal, as opposed to the chance of their outcomes being equal.
+        Note that `__eq__` is taken up by the dice being equal, as opposed to the chance of their outcomes being equal.
         """
         other = hdroller.die(other)
         return self.binary_op(other, operator.eq)
@@ -214,7 +213,7 @@ class BaseDie():
     def ne(self, other):
         """ The chance that the two dice will roll not equal to each other.
         
-        Note that __ne__ is taken up by the dice being equal, as opposed to the chance of their outcomes being not equal.
+        Note that `__ne__` is taken up by the dice being equal, as opposed to the chance of their outcomes being not equal.
         """
         other = hdroller.die(other)
         return self.binary_op(other, operator.ne)
@@ -303,7 +302,7 @@ class BaseDie():
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
-            A die may be provided instead of a single new outcome.
+                A die may be provided instead of a single new outcome.
         
         Returns:
             The relabeled die.
@@ -354,14 +353,14 @@ class BaseDie():
         """ Rerolls the given outcomes.
         
         Args:
-            outcomes: Selects which outcomes to reroll. Options:
+            *outcomes: Selects which outcomes to reroll. Options:
                 * A set of outcomes to reroll.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
         
         Returns:
             A die representing the reroll.
-            If the reroll would never terminate, the result is None.
+            If the reroll would never terminate, the result is `None`.
         """
         if outcomes is None:
             raise TypeError('outcomes to reroll must be provided.')
@@ -395,7 +394,7 @@ class BaseDie():
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
     
     def repeat_and_sum(self, num_dice):
-        """ Roll this die num_dice times and sum the results. """
+        """ Roll this die `num_dice` times and sum the results. """
         if num_dice < 0:
             return (-self).repeat_and_sum(-num_dice)
         elif num_dice == 0:
@@ -409,12 +408,12 @@ class BaseDie():
         return result
     
     def keep(self, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
-        """ Roll this Die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
+        """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
         Args:
             max_outcomes: Either:
                 * An iterable indicating the maximum outcome for each die in the pool.
-                * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
+                * An integer indicating the number of dice in the pool; all dice will have max outcome equal to `die.max_outcome()`.
             mask:
                 The pool will be sorted from lowest to highest; only dice selected by mask will be counted.
                 If omitted, all dice will be counted.
@@ -444,7 +443,7 @@ class BaseDie():
     def keep_lowest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
-        Arguments:
+        Args:
             num_dice: The number of dice to roll.
             num_keep: The number of dice to keep.
             num_drop: If provided, this many lowest dice will be dropped before keeping.
@@ -478,9 +477,9 @@ class BaseDie():
             return None, self.outcomes()[0], self.weights()[0]
     
     def pop_min(self):
-        """ Returns a copy of self with the min outcome removed, the popped outcome, and the popped weight.
+        """ Remove the min outcome and return the result, along with the popped outcome, and the popped weight.
         
-        If the last outcome is removed, the returned die will be None.
+        If the last outcome is removed, the returned die is `None`.
         """
         return self._pop_min
     
@@ -494,9 +493,9 @@ class BaseDie():
             return None, self.outcomes()[-1], self.weights()[-1]
     
     def pop_max(self):
-        """ Returns a copy of self with the max outcome removed, the popped outcome, and the popped weight.
+        """ Remove the max outcome and return the result, along with the popped outcome, and the popped weight.
         
-        If the last outcome is removed, the returned die will is None.
+        If the last outcome is removed, the returned die is `None`.
         """
         return self._pop_max
     
@@ -605,7 +604,7 @@ class BaseDie():
         return self.ndim(), tuple(self.items())
         
     def __eq__(self, other):
-        """ Returns true iff this Die has the same outcomes, weights, and ndim as the other Die.
+        """ Returns `True` iff this die has the same outcomes, weights, and `ndim` as the other die.
         
         Note that fractions are NOT reduced for this comparison.
         For example, a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
@@ -633,7 +632,7 @@ def _align(*dice):
         A tuple of aligned dice.
     
     Raises:
-        ValueError if the dice are of mixed ndims.
+        `ValueError` if the dice are of mixed ndims.
     """
     dice = [hdroller.die(d) for d in dice]
     BaseDie._check_ndim(*dice)

@@ -9,18 +9,18 @@ import itertools
 import math
 
 class PoolEval(ABC):
-    """ An abstract class for evaulating one or more dice pools.
+    """ An abstract class for evaulating one or more `DicePool`s.
     
     Instances cache all intermediate state distributions.
     
     You can pretend that evaluation occurs on individual rolls of the pool as follows:
     
-    1. First, specify the initial_state(). The state is usually some sort of running total.
+    1. First, specify the `initial_state()`. The state is usually some sort of running total.
     2. Then, you will be given one outcome at a time,
         along with how many dice in the pool rolled that outcome.
-        Update the state using next_state() using that information.
+        Update the state using `next_state()` using that information.
     3. Finally and optionally, once all outcomes have been accounted for,
-        use final_outcome() to specify the result of that roll.
+        use `final_outcome()` to specify the result of that roll.
     """
     @abstractmethod
     def initial_state(self, *pools):
@@ -29,7 +29,7 @@ class PoolEval(ABC):
         This should be a pure function with no side-effects.
         
         Arguments:
-            *pools: One or more pools being evaluated.
+            *pools: One or more `DicePool`s being evaluated.
         Returns:
             A hashable object indicating the initial state.
         
@@ -50,12 +50,12 @@ class PoolEval(ABC):
         Args:
             prev_state: A hashable object indicating the state before rolling the current outcome.
             outcome: The current outcome.
-            counts: One integer for each pool indicating how many dice in that pool rolled the current outcome.
+            counts: One `int`for each pool indicating how many dice in that pool rolled the current outcome.
         
         Returns:
             A hashable object indicating the next state.
             This should be hashable and comparable.
-            If the return value is None, the state will be dropped from consideration.
+            If the return value is `None`, the state will be dropped from consideration.
             This is equivalent to performing a full reroll with no maximum depth.
         """
     
@@ -66,7 +66,7 @@ class PoolEval(ABC):
         
         Args:
             final_state: A state after all outcomes have been processed.
-            *pools: One or more pools being evaluated.
+            *pools: One or more `DicePool`s being evaluated.
             
         Returns:
             A final outcome that will be used as part of constructing a die.
@@ -79,16 +79,16 @@ class PoolEval(ABC):
         
         The priority to determine ndim is as follows.
         
-        1. Argument to eval(), if not None.
-        2. This method, if not None.
-        3. Automatically determined by die().
+        1. The `ndim` argument to `eval()`, if not `None`.
+        2. This method, if not `None`.
+        3. Automatically determined by `die()`.
         
         Args:
-            *pools: One or more pools being evaluated.
+            *pools: One or more `DicePool`s being evaluated.
         
         Returns:
             The number of dimensions that the output die should have,
-            or None if this should be determined automatically by die().
+            or `None` if this should be determined automatically by `die()`.
         """
         return None
     
@@ -100,7 +100,7 @@ class PoolEval(ABC):
         """ Evaluates pools.
         
         Args:
-            *pools: One or more pools to evaluate.
+            *pools: One or more `DicePool`s to evaluate.
                 Most evaluators will expect a fixed number of pools.
             ndim: The number of dimensions of the resulting die.
                 If omitted, this will be determined automatically.
@@ -125,10 +125,11 @@ class PoolEval(ABC):
         """
         Arguments:
             initial_state: The initial state. This is passed without change recursively.
-            *pools: One or more DicePools to evaluate. Values of None indicate that pool is exhausted.
+            *pools: One or more `DicePool`s to evaluate.
+                Values of `None` indicate that pool has no remaining outcomes to process.
             
         Returns:
-            A dictionary { state : weight } describing the probability distribution over states.
+            A dict `{ state : weight }` describing the probability distribution over states.
         """
         cache_key = (initial_state, pools)
         if cache_key in self._cache:
@@ -158,11 +159,11 @@ class PoolEval(ABC):
         
         Args:
             outcome: The outcome under consideration.
-            pool: The pool under consideration.
+            pool: The `DicePool` under consideration.
         
         Yields:
             prev_pool: The remainder of the pool after taking out the dice that rolled the current outcome.
-            count: How many dice rolled the current outcome, or None if the outcome is not in this pool.
+            count: How many dice rolled the current outcome, or `None` if the outcome is not in this pool.
             weight: The weight of that many dice rolling the current outcome.
         """
         if pool is None or outcome not in pool.die():
@@ -171,7 +172,7 @@ class PoolEval(ABC):
             yield from pool.pops()
 
 class PoolSum(PoolEval):
-    """ A simple PoolEval that just sums the dice in a pool. """
+    """ A simple `PoolEval` that just sums the dice in a pool. """
     def initial_state(self, pool):
         return 0
         
@@ -179,4 +180,4 @@ class PoolSum(PoolEval):
         return prev_state + outcome * count
 
 pool_sum = PoolSum()
-""" A shared PoolSum object for caching results. """
+""" A shared `PoolSum` object for caching results. """

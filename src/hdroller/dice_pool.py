@@ -17,12 +17,12 @@ def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=Non
             This should be an iterable with length equal to num_dice. Each limits the min/max outcome of a single die.
             Alternatively, this can be set to True, which makes all dice span all outcomes of the die.
             This also determines the direction of the state iteration.
-            If max_outcomes is provided, PoolEval will receive outcomes in order from min to max.
-            If min_outcomes is provided, PoolEval will receive outcomes in order from max to min.
-            If neither is provided, it has the same effect as max_outcomes=True.
+            If `max_outcomes` is provided, PoolEval will receive outcomes in order from min to max.
+            If `min_outcomes` is provided, PoolEval will receive outcomes in order from max to min.
+            If neither is provided, it has the same effect as `max_outcomes=True`.
         select_dice: 
-            The select_dice applies to the dice sorted from lowest to highest (regardless of iteration direction).
-            For example, slice(-2, None) would only count the two highest dice.
+            The `select_dice` applies to the dice sorted from lowest to highest (regardless of iteration direction).
+            For example, `slice(-2, None)` would count only the two highest dice.
     """
 
     if min_outcomes is True:
@@ -48,7 +48,7 @@ def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
 
 class DicePool():
     def __init__(self, die, select_dice, min_outcomes, max_outcomes):
-        """Unchecked constructor."""
+        """ Unchecked constructor. """
         self.dice = die
         self._select_dice = select_dice
         self._min_outcomes = min_outcomes
@@ -73,12 +73,12 @@ class DicePool():
         """
         Yields: 
             From 0 to the number of dice that can roll this outcome inclusive:
-            * pool: A DicePool resulting from removing that many dice from this DicePool, while also removing the max outcome.
+            * pool: A `DicePool` resulting from removing that many dice from this `DicePool`, while also removing the max outcome.
                 If there is only one outcome remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
                 If the outcome has zero weight, only one result will be yielded, corresponding to zero dice rolling that outcome.
-                If there are no outcomes remaining, this will be None.
-            * count: An int indicating the number of selected dice that rolled the removed outcome.
-            * weight: An int indicating the weight of that many dice rolling the removed outcome.
+                If there are no outcomes remaining, this will be `None`.
+            * count: An `int` indicating the number of selected dice that rolled the removed outcome.
+            * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
         remaining_selected_dice = sum(self.select_dice())
 

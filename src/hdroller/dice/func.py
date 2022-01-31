@@ -16,12 +16,12 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     
     Args:
         arg: This can be one of the following:
-            A die, which will be returned itself.
-            An iterable of weights, with min_outcome set to an int.
-                The outcomes will be ints starting at min_outcome.
-            A mapping from outcomes to weights.
-            An iterable of pairs of outcomes and weights.
-            A single hashable and comparable value.
+            * A die, which will be returned itself.
+            * An iterable of weights, with `min_outcome` set to an `int`.
+                The outcomes will be `int`s starting at `min_outcome`.
+            * A mapping from outcomes to weights.
+            * An iterable of pairs of outcomes and weights.
+            * A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight 1.
         ndim: If provided, the die will have the given number of dimensions.
     """
@@ -43,7 +43,7 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
         return hdroller.dice.multi.MultiDie(data, ndim)
 
 def _make_data(arg, min_outcome=None, remove_zero_weights=True):
-    """ Creates a FrozenSortedWeights from the arguments. """
+    """ Creates a `FrozenSortedWeights` from the arguments. """
     if isinstance(arg, FrozenSortedWeights):
         data = arg
     elif min_outcome is not None:
@@ -60,17 +60,17 @@ def _make_data(arg, min_outcome=None, remove_zero_weights=True):
     
 
 def _calc_ndim(data, ndim):
-    """Verifies ndim if provided, or calculates it if not.
+    """Verifies `ndim` if provided, or calculates it if not.
     
     Args:
-        data: A FrozenSortedWeights.
-        ndim: If provided, ndims will be set to this value.
+        data: A `FrozenSortedWeights`.
+        ndim: If provided, `ndims` will be set to this value.
         
     Returns:
-        An appropriate ndim for a die.
+        An appropriate `ndim` for a die.
         
     Raises:
-        ValueError if ndim is provided but is not consistent with the data.
+        `ValueError` if `ndim` is provided but is not consistent with the data.
     """
     if ndim is not None:
         if ndim != 1:
@@ -95,11 +95,11 @@ def _calc_ndim(data, ndim):
     return ndim
 
 def standard(num_sides):
-    """ A die that rolls integers from 1 to num_sides inclusive with weight 1 each. """
+    """ A die that rolls `int`s from 1 to `num_sides` inclusive with weight 1 each. """
     return die([1] * num_sides, min_outcome=1)
 
 def __getattr__(key):
-    """ Implements the dX syntax. """
+    """ Implements the dX syntax, e.g. `hdroller.d6`. """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
@@ -108,7 +108,7 @@ def __getattr__(key):
     raise AttributeError(key)
 
 def bernoulli(n, d):
-    """ A die that rolls True with chance n / d, and False otherwise. """
+    """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
     return die({False : d - n, True : n})
 
 coin = bernoulli
@@ -136,13 +136,13 @@ def from_sweights(outcomes, sweights, ndim=None):
     return die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
-    """ Constructs a die from a rv object (as scipy.stats).
+    """ Constructs a die from a rv object (as `scipy.stats`).
     Args:
-        rv: A rv object (as scipy.stats).
-        outcomes: An iterable of ints or floats that will be the outcomes of the resulting die.
-            If the distribution is discrete, outcomes must be ints.
+        rv: A rv object (as `scipy.stats`).
+        outcomes: An iterable of `int`s or `float`s that will be the outcomes of the resulting die.
+            If the distribution is discrete, outcomes must be `int`s.
         denominator: The total weight of the resulting die will be set to this.
-        **kwargs: These will be provided to rv.cdf().
+        **kwargs: These will be provided to `rv.cdf()`.
     """
     if hasattr(rv, 'pdf'):
         # Continuous distributions use midpoints.
@@ -155,17 +155,17 @@ def from_rv(rv, outcomes, denominator, **kwargs):
     return from_cweights(outcomes, cweights)
     
 def apply(func, *dice, ndim=None):
-    """ Applies func(outcome0, outcome1, ...) for all possible outcomes of the dice.
+    """ Applies `func(outcome0, outcome1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient.
-    If possible, use hdroller.pool and hdroller.PoolEval instead.
+    If possible, use `hdroller.pool` and `hdroller.PoolEval` instead.
     
     Args:
         func: A function that takes one argument per input die and returns a new outcome.
         ndim: If supplied, the result will have this many dimensions.
     
     Returns:
-        A die constructed from the outputs of func and the product of the weights of the dice.
+        A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
     dice = [die(d) for d in dice]
     data = defaultdict(int)
@@ -179,11 +179,11 @@ def mix(*dice, mix_weights=None):
     """ Constructs a die from a mixture of the input dice.
     
     This is equivalent to rolling a die and then choosing one of the input dice
-    based on the resulting face rolled.
+    based on the resulting outcome rolled.
     
     Args:
         *dice: The dice to mix.
-        mix_weights: An iterable of one int per input die.
+        mix_weights: An iterable of one `int` per input die.
             If not provided, all dice are mixed uniformly.
     """
     dice = hdroller.dice.base._align(*dice)
