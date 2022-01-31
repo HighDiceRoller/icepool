@@ -6,6 +6,10 @@ A Python library for computing dice probabilities.
 pip install hdroller
 ```
 
+## API documentation
+
+[GitLab.](https://highdiceroller.gitlab.io/hdroller/apidoc/hdroller.html)
+
 ## Principles
 
 * Handles both univariate and multivariate distributions.
@@ -64,7 +68,6 @@ Source for ability score rolling methods: [https://www.reddit.com/r/dndnext/comm
 
 import hdroller
 
-
 # Note that the * operator is not commutative:
 # it means "roll the left die, then roll that many of the right die and sum".
 # Integers are treated as a die that always rolls that number.
@@ -77,6 +80,7 @@ method2 = (3 * hdroller.d6).keep_highest(12, 6)
 method3 = 6 * (3 * hdroller.d6).keep_highest(6)
 method4 = (6 * (3 * hdroller.d6)).keep_highest(12)
 
+import numpy
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()

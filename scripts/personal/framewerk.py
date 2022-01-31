@@ -1,79 +1,60 @@
 import _context
 
-import hdroller.countdown
-from hdroller import Die
+import hdroller
+
+class CthulhuTechEval(hdroller.PoolEval):
+  def initial_state(self, pool):
+    # The state consists of the best score so far and the current run length.
+    return 0, 0
+
+  def next_state(self, prev_state, outcome, count):
+    prev_score, prev_run = prev_state
+    if count > 0:
+      set_score = outcome * count
+      run_score = 0
+      run = prev_run + 1
+      if run >= 3:
+        # This could be the triangular formula, but it's clearer this way.
+      	for i in range(run): run_score += (outcome - i)
+      score = max(set_score, run_score, prev_score)
+    else:
+      # No dice rolled this number, so the score remains the same.
+      score = prev_score
+      run = 0
+    return score, run
+
+  def final_outcome(self, prev_state, pool):
+    # Return just the score.
+    return prev_state[0]
+
+import cProfile
+cProfile.run('CthulhuTechEval().eval(hdroller.pool(hdroller.d10, 10))')
+
 import numpy
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
-def match_func(size, outcome):
-    return size * outcome
-
-def straight_func(size, outcome):
-    return size * outcome + (size * (size - 1)) // 2 if size >= 3 else 0
-
-import cProfile
-cProfile.run('Die.d10.best_set(10, match_func, straight_func)')
+evaluator = CthulhuTechEval()
 
 figsize = (16, 9)
-dpi = 150
+fig, ax = plt.subplots(figsize=figsize)
 
-fig = plt.figure(figsize=figsize)
-ax = plt.subplot(111)
-ax.grid()
+for i in range(1, 11):
+  pool = hdroller.pool(hdroller.d10, i)
+  result = evaluator.eval(pool)
+  ax.plot(result.outcomes(), numpy.array(result.sf()) * 100.0)
+  marker_size = 64 if i < 10 else 128
+  ax.scatter(result.median(), 50.0,
+             marker=('$%d$' % i),
+             facecolor=default_colors[i-1],
+             s=marker_size)
 
-pools = []
-
-for num_dice in range(1, 11):
-    pool = Die.d10.best_set(num_dice, match_func, straight_func)
-    ax.plot(pool.outcomes(), pool.sf() * 100.0)
-    marker_size = 64 if num_dice < 10 else 128
-    ax.scatter(pool.median(), 50.0,
-               marker=('$%d$' % num_dice),
-               facecolor=default_colors[num_dice-1],
-               s=marker_size)
-    pools.append(pool)
-
-#ax.legend(['%d-pool' % d for d in range(1, 11)])
-ax.set_xlabel('Result')
-ax.set_ylabel('Chance of rolling at least (%)')
-ax.set_xticks(numpy.arange(0, 60.1, 5.0))
-ax.set_yticks(numpy.arange(0, 100.1, 10.0))
-ax.set_xlim(1, 60)
+ax.set_xticks(numpy.arange(0, 61, 5))
+ax.set_yticks(numpy.arange(0, 101, 10))
+ax.set_xlim(0, 60)
 ax.set_ylim(0, 100)
-
-plt.savefig('output/framewerk_sf.png', dpi = dpi, bbox_inches = "tight")
-
-aligned_pools = Die.align(pools)
-
-result = 'Result,' + ','.join(str(x) + '-pool' for x in range(1, 11)) + '\n'
-
-for i, outcome in enumerate(aligned_pools[0].outcomes()):
-    result += '%d' % outcome
-    for j, pool in enumerate(aligned_pools):
-        if outcome <= (j+1) * 10:
-            width = max(0, j-1)
-            result += ',%.*f%%' % (width, pool.pmf()[i] * 100.0)
-        else:
-            result += ','
-    result += '\n'
-
-with open('output/framewerk_pmf.csv', mode='w') as outfile:
-    outfile.write(result)
-    
-result = 'Result,' + ','.join(str(x) + '-pool' for x in range(1, 11)) + '\n'
-aligned_pools = Die.align(pools)
-for i, outcome in enumerate(aligned_pools[0].outcomes()):
-    result += '%d' % outcome
-    for j, pool in enumerate(aligned_pools):
-        if outcome <= (j+1) * 10:
-            width = max(0, j-1)
-            result += ',%.*f%%' % (width, pool.sf()[i] * 100.0)
-        else:
-            result += ','
-    result += '\n'
-
-with open('output/framewerk_sf.csv', mode='w') as outfile:
-    outfile.write(result)
+ax.set_xlabel('Result')
+ax.set_ylabel('Chance of getting at least (%)')
+ax.grid()
+plt.show()

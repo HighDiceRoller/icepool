@@ -4,6 +4,7 @@ import hdroller
 import hdroller.dice.base
 import hdroller.dice.multi
 
+import bisect
 from collections import defaultdict
 import itertools
 import math
