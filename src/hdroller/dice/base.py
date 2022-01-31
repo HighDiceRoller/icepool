@@ -299,10 +299,10 @@ class BaseDie():
         
         Args:
             relabeling: One of the following:
-            * An array-like containing relabelings, one for each outcome in order.
-            * A map from old outcomes to new outcomes.
-                Unmapped old outcomes stay the same.
-            * A function mapping old outcomes to new outcomes.
+                * An array-like containing relabelings, one for each outcome in order.
+                * A map from old outcomes to new outcomes.
+                    Unmapped old outcomes stay the same.
+                * A function mapping old outcomes to new outcomes.
             A die may be provided instead of a single new outcome.
         
         Returns:
