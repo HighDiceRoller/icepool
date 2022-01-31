@@ -14,6 +14,7 @@ import random
 
 class BaseDie():
     """ Abstract base die class. """
+    
     # Abstract methods.
     
     @abstractmethod
@@ -29,11 +30,11 @@ class BaseDie():
         
         This is used for the operators `+, -, /, //, %, **, <, <=, >=, >`.
         
-        This is used for the operators `&, |, ^` on `bool()` of the outputs.
+        This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
         Special operators:
             * The `*` operator means "roll the left die, then roll that many of the right die and sum the outcomes."
-                To actually multiply the outcomes of the two die, use the `mul` method.
+                To actually multiply the outcomes of the left and right die, use the `mul` method.
             * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
                 To get the chance of the two dice rolling the same outcome, use the `eq` method.
             * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
@@ -299,7 +300,10 @@ class BaseDie():
     # Special operators.
     
     def __mul__(self, other):
-        """ Roll the left die, then roll the right die that many times and sum. """
+        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        
+        To actually multiply the outcomes of the left and right die, use the `mul` method.
+        """
         other = hdroller.die(other)
         
         subresults = []
@@ -326,7 +330,10 @@ class BaseDie():
         return other.__mul__(self)
     
     def mul(self, other):
-        """ Actually multiply the outcomes of the two dice. """
+        """ Actually multiplies the outcomes of the left and right die. 
+        
+        Note that `__mul__` has a different meaning.
+        """
         other = hdroller.die(other)
         return self.binary_op(other, operator.mul)
     
@@ -559,6 +566,7 @@ class BaseDie():
         return sum(self._data.values())
     
     def total_weight(self):
+        """ The total weight of all outcomes. """
         return self._total_weight
         
     def mode(self):
@@ -569,6 +577,7 @@ class BaseDie():
         return tuple(outcome for outcome, weight in self.items() if weight == self.modal_weight())
     
     def modal_weight(self):
+        """ The highest weight of any single outcome. """
         return max(self.weights())
     
     def ks_stat(self, other):
@@ -588,6 +597,7 @@ class BaseDie():
         return tuple(weight / self.total_weight() for weight in self.weights())
     
     def pmf(self):
+        """ Probability mass function. The probability of rolling each outcome in order. """
         return self._pmf
     
     @cached_property
@@ -595,6 +605,7 @@ class BaseDie():
         return tuple(itertools.accumulate(self.weights()))
     
     def cweights(self):
+        """ Cumulative weights. The weight <= each outcome in order. """
         return self._cweights
     
     @cached_property
@@ -602,6 +613,7 @@ class BaseDie():
         return tuple(itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.total_weight()))
     
     def sweights(self):
+        """ Survival weights. The weight >= each outcome in order. """
         return self._sweights
         
     @cached_property
@@ -609,6 +621,7 @@ class BaseDie():
         return tuple(weight / self.total_weight() for weight in self.cweights())
     
     def cdf(self):
+        """ Cumulative distribution function. The chance of rolling <= each outcome in order. """
         return self._cdf
         
     @cached_property
@@ -616,6 +629,7 @@ class BaseDie():
         return tuple(weight / self.total_weight() for weight in self.sweights())
     
     def sf(self):
+        """ Survival function. The chance of rolling >= each outcome in order. """
         return self._sf
     
     # Rolling.
