@@ -14,16 +14,18 @@ class BaseDie():
     
     @abstractmethod
     def unary_op(self, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on the outcomes."""
+        """ Returns a die representing the effect of performing the operation on the outcomes. """
     
     @abstractmethod
     def binary_op(self, other, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
+        """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         
     # Construction.
 
     def __init__(self, data, ndim):
-        """Users should usually not construct dice directly;
+        """ Constructor, shared by subclasses.
+        
+        Users should usually not construct dice directly;
         instead they should use one of the methods defined in
         hdroller.dice.func (which are imported into the 
         top-level hdroller module).
@@ -40,6 +42,17 @@ class BaseDie():
         return self._ndim
         
     def _check_ndim(*dice):
+        """ Checks that ndim matches between the dice, and returns it. 
+        
+        Args:
+            *dice: The dice to be checked.
+        
+        Returns:
+            The common ndim of the dice.
+        
+        Raises:
+            ValueError if a mismatch in ndim is found.
+        """
         ndim = None
         for die in dice:
             if ndim is None:
@@ -49,47 +62,54 @@ class BaseDie():
         return ndim
     
     def outcomes(self):
-        """Returns an iterable into the sorted outcomes of the die."""
+        """ Returns an iterable into the sorted outcomes of the die. """
         return self._data.keys()
     
     def weights(self):
-        """Returns an iterable into the weights of the die in outcome order."""
+        """ Returns an iterable into the weights of the die in outcome order. """
         return self._data.values()
         
     def __contains__(self, outcome):
         return outcome in self._data
     
     def weight(self, outcome):
-        """Returns the weight of a single outcome, or 0 if not present."""
+        """ Returns the weight of a single outcome, or 0 if not present. """
         return self._data[outcome]
     
     def weight_le(self, outcome):
+        """ Returns the weight <= a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self): return self.total_weight()
         return self.cweights()[index]
         
     def weight_lt(self, outcome):
+        """ Returns the weight < a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= len(self): return self.total_weight()
         return self.cweights()[index]
         
     def weight_ge(self, outcome):
+        """ Returns the weight >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= len(self): return self.total_weight()
         return self.sweights()[index]
         
     def weight_gt(self, outcome):
+        """ Returns the weight > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self): return self.total_weight()
         return self.sweights()[index]
     
     def probability(self, outcome):
+        """ Returns the probability of a single outcome. """
         return self.weight(outcome) / self.total_weight()
     
     def items(self):
+        """ Returns all outcome, weight pairs. """
         return self._data.items()
     
     def __len__(self):
+        """ Returns the number of outcomes. """
         return len(self._data)
     
     # Unary operators.
@@ -124,7 +144,7 @@ class BaseDie():
     
     @staticmethod
     def _zero(x):
-        """Creates a default instance of x's type."""
+        """ Creates a default instance of x's type. """
         return type(x)()
     
     def zero(self):
@@ -182,7 +202,7 @@ class BaseDie():
         return self.binary_op(other, operator.gt)
     
     def eq(self, other):
-        """The chance that the two dice will roll equal to each other.
+        """ The chance that the two dice will roll equal to each other.
         
         Note that __eq__ is taken up by the dice being equal, as opposed to the chance of their outcomes being equal.
         """
@@ -190,7 +210,7 @@ class BaseDie():
         return self.binary_op(other, operator.eq)
     
     def ne(self, other):
-        """The chance that the two dice will roll not equal to each other.
+        """ The chance that the two dice will roll not equal to each other.
         
         Note that __ne__ is taken up by the dice being equal, as opposed to the chance of their outcomes being not equal.
         """
@@ -239,7 +259,7 @@ class BaseDie():
     # Special operators.
     
     def __mul__(self, other):
-        """Roll the left die, then roll the right die that many times and sum."""
+        """ Roll the left die, then roll the right die that many times and sum. """
         other = hdroller.die(other)
         
         subresults = []
@@ -266,21 +286,25 @@ class BaseDie():
         return other.__mul__(self)
     
     def multiply(self, other):
-        """Actually multiply the outcomes of the two dice."""
+        """ Actually multiply the outcomes of the two dice. """
         other = hdroller.die(other)
         return self.binary_op(other, operator.mul)
     
     # Mixtures.
 
     def relabel(self, relabeling):
-        """
-        relabeling can be one of the following:
-        * An array-like containing relabelings, one for each outcome in order.
-        * A map from old outcomes to new outcomes.
-            Unmapped old outcomes stay the same.
-        * A function mapping old outcomes to new outcomes.
+        """ Changes outcomes of the die to other outcomes.
         
-        A die may be provided instead of a single new outcome.
+        Args:
+            relabeling: One of the following:
+            * An array-like containing relabelings, one for each outcome in order.
+            * A map from old outcomes to new outcomes.
+                Unmapped old outcomes stay the same.
+            * A function mapping old outcomes to new outcomes.
+            A die may be provided instead of a single new outcome.
+        
+        Returns:
+            The relabeled die.
         """
         if hasattr(relabeling, 'items'):
             relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
@@ -290,10 +314,13 @@ class BaseDie():
         return hdroller.mix(*relabeling, mix_weights=self.weights())
     
     def explode(self, max_depth, outcomes=None):
-        """
-        outcomes: This chooses which outcomes to explode. Options:
-            * An iterable containing outcomes to explode.
-            * If not supplied, the top single outcome will explode with full probability.
+        """ Causes outcomes to be rolled again and added to the total.
+        
+        Args:
+            max_depth: The maximum number of additional dice to roll.
+            outcomes: Which outcomes to explode. Options:
+                * An iterable containing outcomes to explode.
+                * If not supplied, the top single outcome will explode with full probability.
         """
         if max_depth < 0:
             raise ValueError('max_depth cannot be negative.')
@@ -322,7 +349,7 @@ class BaseDie():
         return hdroller.dice.func.die(data, ndim=self.ndim())
     
     def reroll(self, *outcomes, max_depth=None):
-        """Rerolls the given outcomes.
+        """ Rerolls the given outcomes.
         
         Args:
             outcomes: Selects which outcomes to reroll. Options:
@@ -331,7 +358,7 @@ class BaseDie():
                 If omitted, rerolls an unlimited number of times.
         
         Returns:
-            A Die representing the reroll.
+            A die representing the reroll.
             If the reroll would never terminate, the result is None.
         """
         if outcomes is None:
@@ -352,27 +379,21 @@ class BaseDie():
     # Repeat, keep, and sum.
     
     def max(*dice):
-        """
-        Roll all the dice and take the highest.
-        Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
-        """
+        """ Roll all the dice and take the highest. """
         dice = _align(dice)
         ndim = BaseDie._check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def min(*dice):
-        """
-        Roll all the dice and take the lowest.
-        Dice (or anything castable to a Die) may be provided as a list or as a variable number of arguments.
-        """
+        """ Roll all the dice and take the lowest. """
         dice = _align(dice)
         ndim = BaseDie._check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
     
     def repeat_and_sum(self, num_dice):
-        """Roll this die `num_dice` times and sum the results."""
+        """ Roll this die num_dice times and sum the results. """
         if num_dice < 0:
             return (-self).repeat_and_sum(-num_dice)
         elif num_dice == 0:
@@ -386,10 +407,9 @@ class BaseDie():
         return result
     
     def keep(self, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
-        """
-        Roll this Die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
+        """ Roll this Die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
-        Arguments:
+        Args:
             max_outcomes: Either:
                 * An iterable indicating the maximum outcome for each die in the pool.
                 * An integer indicating the number of dice in the pool; all dice will have max_outcome equal to die.max_outcome().
@@ -404,16 +424,15 @@ class BaseDie():
         return hdroller.pool_eval.pool_sum.eval(pool)
         
     def keep_highest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
-        """
-        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
+        """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
         
-        Arguments:
+        Args:
             num_dice: The number of dice to roll.
             num_keep: The number of dice to keep.
             num_drop: If provided, this many highest dice will be dropped before keeping.
                 
         Returns:
-            A Die representing the probability distribution of the sum.
+            A die representing the probability distribution of the sum.
         """
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
@@ -421,8 +440,7 @@ class BaseDie():
         return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         
     def keep_lowest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
-        """
-        Roll this Die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
+        """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
         Arguments:
             num_dice: The number of dice to roll.
@@ -430,7 +448,7 @@ class BaseDie():
             num_drop: If provided, this many lowest dice will be dropped before keeping.
                 
         Returns:
-            A Die representing the probability distribution of the sum.
+            A die representing the probability distribution of the sum.
         """
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
@@ -440,7 +458,7 @@ class BaseDie():
     # Modifying outcomes.
     
     def _set_outcomes(self, outcomes):
-        """Returns a die whose outcomes are set to the argument, including zero weights.
+        """ Returns a die whose outcomes are set to the argument, including zero weights.
         
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
@@ -458,7 +476,7 @@ class BaseDie():
             return None, self.outcomes()[0], self.weights()[0]
     
     def pop_min(self):
-        """Returns a copy of self with the min outcome removed, the popped outcome, and the popped weight.
+        """ Returns a copy of self with the min outcome removed, the popped outcome, and the popped weight.
         
         If the last outcome is removed, the returned die will be None.
         """
@@ -474,9 +492,9 @@ class BaseDie():
             return None, self.outcomes()[-1], self.weights()[-1]
     
     def pop_max(self):
-        """Returns a copy of self with the max outcome removed, the popped outcome, and the popped weight.
+        """ Returns a copy of self with the max outcome removed, the popped outcome, and the popped weight.
         
-        If the last outcome is removed, the returned die will be None.
+        If the last outcome is removed, the returned die will is None.
         """
         return self._pop_max
     
@@ -509,9 +527,9 @@ class BaseDie():
         return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
         
     def mode(self):
-        """Returns a tuple containing the most common outcome(s) of the die.
+        """ Returns a tuple containing the most common outcome(s) of the die.
         
-        These are sorted from least to greatest.
+        These are sorted from lowest to highest.
         """
         return tuple(outcome for outcome, weight in self.items() if weight == self.modal_weight())
     
@@ -568,9 +586,7 @@ class BaseDie():
     # Strings.
     
     def __str__(self):
-        """
-        Formats the die as a Markdown table.
-        """
+        """ Formats the die as a Markdown table. """
         result = f'| Outcome | Weight (out of {self.total_weight()}) | Probability |\n'
         result += '|----:|----:|----:|\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
@@ -587,10 +603,10 @@ class BaseDie():
         return self.ndim(), tuple(self.items())
         
     def __eq__(self, other):
-        """
-        Returns true iff this Die has the same outcomes and weights as the other Die.
-        Note that fractions are not reduced.
-        For example a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
+        """ Returns true iff this Die has the same outcomes, weights, and ndim as the other Die.
+        
+        Note that fractions are NOT reduced for this comparison.
+        For example, a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
         """
         if not isinstance(other, BaseDie): return False
         return self._key_tuple == other._key_tuple
@@ -606,7 +622,7 @@ def _align(*dice):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
     Note that public methods are intended to have no zero-weight outcomes.
-    This should therefore not be used externally for any Die that you want to do anything with afterwards.
+    This should therefore not be used externally for any die that you want to do anything with afterwards.
     
     Args:
         *dice: Multiple dice or a single iterable of dice.
@@ -615,12 +631,9 @@ def _align(*dice):
         A tuple of aligned dice.
     
     Raises:
-        TypeError if the dice are of mixed singleness.
+        ValueError if the dice are of mixed ndims.
     """
     dice = [hdroller.die(d) for d in dice]
-    if any(die.ndim() > 1 for die in dice) != all(die.ndim() > 1 for die in dice):
-        raise TypeError('The passed to _align() must all be single or all multi.')
-    
+    BaseDie._check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
-    
     return tuple(die._set_outcomes(union_outcomes) for die in dice)
