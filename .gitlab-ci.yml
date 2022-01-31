@@ -5,7 +5,7 @@ pages:
     before_script:
         - pip install pdoc
     script:
-        - pdoc --html --output-dir public/apidoc src/hdroller
+        - pdoc -o public/apidoc src/hdroller
     artifacts:
         paths:
         - public
