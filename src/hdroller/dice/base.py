@@ -522,11 +522,6 @@ class BaseDie():
     def total_weight(self):
         return self._total_weight
         
-    def median(self):
-        left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
-        right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
-        return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
-        
     def mode(self):
         """ Returns a tuple containing the most common outcome(s) of the die.
         

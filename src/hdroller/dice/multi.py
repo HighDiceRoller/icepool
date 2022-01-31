@@ -46,6 +46,9 @@ class MultiDie(hdroller.dice.base.BaseDie):
     
     def _apply_to_dim(self, func, i, *args, **kwargs):
         return func(self[i], *args, **kwargs)
+    
+    def median(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.median, i)
         
     def mean(self, i):
         return self._apply_to_dim(hdroller.dice.single.SingleDie.mean, i)

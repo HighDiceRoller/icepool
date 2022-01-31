@@ -31,6 +31,11 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     # Statistics.
     
+    def median(self):
+        left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
+        right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
+        return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
+    
     def mean(self):
         return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
     
