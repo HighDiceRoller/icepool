@@ -1,7 +1,11 @@
+image: python:3.9
+
 pages:
     stage: deploy
+    before_script:
+        - pip install pdoc
     script:
-        - echo "No script operations."
+        - pdoc --html --output-dir public/apidoc src/hdroller
     artifacts:
         paths:
         - public
