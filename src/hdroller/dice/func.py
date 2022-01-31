@@ -130,7 +130,7 @@ def from_cweights(outcomes, cweights, ndim=None):
     return die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, ndim=None):
-    """ Constructs a die from complementary cumulative weights. """
+    """ Constructs a die from survival weights. """
     d = {}
     for i, outcome in enumerate(outcomes):
         if i < len(outcomes) - 1:
@@ -159,27 +159,6 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         cdf = rv.cdf(outcomes, **kwargs)
         cweights = tuple(int(round(x * denominator)) for x in cdf)
     return from_cweights(outcomes, cweights)
-    
-def apply(func, *dice, ndim=None):
-    """ Applies `func(outcome0, outcome1, ...)` for all possible outcomes of the dice.
-    
-    This is flexible but not very efficient.
-    If possible, use `hdroller.pool` and `hdroller.PoolEval` instead.
-    
-    Args:
-        func: A function that takes one argument per input die and returns a new outcome.
-        ndim: If supplied, the result will have this many dimensions.
-    
-    Returns:
-        A die constructed from the outputs of `func` and the product of the weights of the dice.
-    """
-    dice = [die(d) for d in dice]
-    data = defaultdict(int)
-    for t in itertools.product(*(d.items() for d in dice)):
-        outcomes, weights = zip(*t)
-        data[func(*outcomes)] += math.prod(weights)
-    
-    return die(data, ndim=ndim)
 
 def mix(*dice, mix_weights=None):
     """ Constructs a die from a mixture of the input dice.
@@ -210,4 +189,25 @@ def mix(*dice, mix_weights=None):
         factor = mix_weight * weight_product // d.total_weight()
         for outcome, weight in zip(d.outcomes(), d.weights()):
             data[outcome] += weight * factor
+    return die(data, ndim=ndim)
+
+def apply(func, *dice, ndim=None):
+    """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
+    
+    This is flexible but not very efficient for large numbers of dice.
+    In particular, for pools use `hdroller.pool` and `hdroller.PoolEval` instead if possible.
+    
+    Args:
+        func: A function that takes one argument per input die and returns a new outcome.
+        ndim: If supplied, the result will have this many dimensions.
+    
+    Returns:
+        A die constructed from the outputs of `func` and the product of the weights of the dice.
+    """
+    dice = [die(d) for d in dice]
+    data = defaultdict(int)
+    for t in itertools.product(*(d.items() for d in dice)):
+        outcomes, weights = zip(*t)
+        data[func(*outcomes)] += math.prod(weights)
+    
     return die(data, ndim=ndim)

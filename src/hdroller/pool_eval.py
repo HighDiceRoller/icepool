@@ -22,7 +22,8 @@ class PoolEval(ABC):
     3. Finally and optionally, once all outcomes have been accounted for,
         use `final_outcome()` to specify the result of that roll.
     
-    Subclasses should not modify `self` after construction.
+    After construction, subclasses should not modify `self`,
+    nor allow `self` to be modified externally.
     """
     @abstractmethod
     def initial_state(self, *pools):
