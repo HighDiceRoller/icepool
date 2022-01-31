@@ -164,11 +164,16 @@ class BaseDie():
     
     @staticmethod
     def _zero(x):
-        """ Creates a default instance of x's type. """
         return type(x)()
     
     def zero(self):
-        return self.unary_op(self._zero).reduce()
+        """ Zeros all outcomes of this die. 
+        
+        This is done by calling the constructor for each outcome's type with no arguments.
+        
+        The resulting weights are `reduce`d.
+        """
+        return self.unary_op(BaseDie._zero).reduce()
     
     # Binary operators.
     
@@ -636,7 +641,7 @@ class BaseDie():
         result =  '| ' + ' ' * (o-7) + f'Outcome | {weight_header} | Probability |\n'
         result += '|-' + '-' *  o +            ':|-' + '-' * w + ':|------------:|\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
-            result += f'| {str(outcome):>{o}} | {weight:>{w}} | {p:11.3%} |\n'
+            result += f'| {str(outcome):>{o}} | {weight:>{w}} | {p:11.6%} |\n'
         return result
     
     def __repr__(self):

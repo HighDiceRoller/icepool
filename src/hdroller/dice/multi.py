@@ -11,11 +11,11 @@ import itertools
 class MultiDie(hdroller.dice.base.BaseDie):
     """ Multivariate die with `ndim > 1`.
     
-    Outcomes are tuples, and operations are performed on each element of the tuples.
+    Outcomes are sequences, and operations are performed elementwise on the sequences.
     """
     
     def unary_op(self, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on the outcomes."""
+        """ Returns a die representing the effect of performing the operation elementwise on the outcome sequences. """
         data = defaultdict(int)
         for outcome, weight in self.items():
             new_outcome = tuple(op(x, *args, **kwargs) for x in outcome)
@@ -23,7 +23,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         return hdroller.die(data, ndim=self.ndim())
     
     def binary_op(self, other, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
+        """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
         ndim = self._check_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
@@ -32,7 +32,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         return hdroller.die(data, ndim=ndim)
     
     def __getitem__(self, select):
-        """Slices the dimensions of the die."""
+        """ Slices the dimensions of the die. """
         b = hdroller.indexing.select_bools(self.ndim(), select)
         ndim = sum(b)
         data = defaultdict(int)

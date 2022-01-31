@@ -21,6 +21,8 @@ class PoolEval(ABC):
         Update the state using `next_state()` using that information.
     3. Finally and optionally, once all outcomes have been accounted for,
         use `final_outcome()` to specify the result of that roll.
+    
+    Subclasses should not modify `self` after construction.
     """
     @abstractmethod
     def initial_state(self, *pools):
@@ -64,6 +66,8 @@ class PoolEval(ABC):
         
         If not overridden, the final state is used as the final outcome.
         
+        This should be a pure function with no side-effects.
+        
         Args:
             final_state: A state after all outcomes have been processed.
             *pools: One or more `DicePool`s being evaluated.
@@ -82,6 +86,8 @@ class PoolEval(ABC):
         1. The `ndim` argument to `eval()`, if not `None`.
         2. This method, if not `None`.
         3. Automatically determined by `die()`.
+        
+        This should be a pure function with no side-effects.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
