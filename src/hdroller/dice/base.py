@@ -588,10 +588,14 @@ class BaseDie():
     
     def __str__(self):
         """ Formats the die as a Markdown table. """
-        result = f'| Outcome | Weight (out of {self.total_weight()}) | Probability |\n'
-        result += '|----:|----:|----:|\n'
+        weight_header = f'Weight (out of {self.total_weight()})'
+        w = len(weight_header)
+        o = max(len(str(outcome)) for outcome in self.outcomes())
+        o = max(o, 7)
+        result =  '| ' + ' ' * (o-7) + f'Outcome | {weight_header} | Probability |\n'
+        result += '|-' + '-' *  o +            ':|-' + '-' * w + ':|------------:|\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
-            result += f'| {outcome} | {weight} | {p:.3%} |\n'
+            result += f'| {str(outcome):>{o}} | {weight:>{w}} | {p:11.3%} |\n'
         return result
     
     def __repr__(self):

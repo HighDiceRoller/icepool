@@ -181,3 +181,14 @@ class PoolSum(PoolEval):
 
 pool_sum = PoolSum()
 """ A shared `PoolSum` object for caching results. """
+
+class PoolMatchingSet(PoolEval):
+    """ A `PoolEval` that takes the best matching set in a pool.
+    
+    The outcomes are (set_size, outcome).
+    """
+    def initial_state(self, pool):
+        return -1, 0
+    
+    def next_state(self, prev_state, outcome, count):
+        return max(prev_state, (count, outcome))

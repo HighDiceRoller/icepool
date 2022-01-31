@@ -22,8 +22,12 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
             * A mapping from outcomes to weights.
             * An iterable of pairs of outcomes and weights.
             * A single hashable and comparable value.
-                There will be a single outcome equal to the argument, with weight 1.
+                There will be a single outcome equal to the argument, with weight `1`.
         ndim: If provided, the die will have the given number of dimensions.
+            E.g. for `str` outcomes you may want to set `ndim=1`, which will
+            treat e.g. `'abc' + 'def'` as `'abcdef'` rather than `('ad', 'be', 'cf')`.
+        remove_zero_weights: If `True`, zero weights will be filtered out.
+            This should be left at `True` for most cases.
     """
     if isinstance(arg, hdroller.dice.base.BaseDie):
         return arg
@@ -95,11 +99,13 @@ def _calc_ndim(data, ndim):
     return ndim
 
 def standard(num_sides):
-    """ A die that rolls `int`s from 1 to `num_sides` inclusive with weight 1 each. """
+    """ A standard die.
+    
+    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive with weight 1 each. """
     return die([1] * num_sides, min_outcome=1)
 
 def __getattr__(key):
-    """ Implements the dX syntax, e.g. `hdroller.d6`. """
+    """ Implements the `dX` syntax, e.g. `hdroller.d6`. """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
