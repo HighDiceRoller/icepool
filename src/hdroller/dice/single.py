@@ -109,13 +109,16 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     def cartesian_product(*dice):
         """
-        Produces a MultiDie from the cartesian product of the input SingleDie.
+        Produces a `MultiDie` from the Cartesian product of the input `SingleDie`.
+        
+        This is usually not recommended, as it takes space and time exponential in the number of dice,
+        while not actually producing any additional information.
         
         Args:
             *dice: Multiple dice or a single iterable of dice.
         
         Raises:
-            TypeError if any of the input dice are already MultiDie.
+            `TypeError` if any of the input dice are already `MultiDie`.
         """
         if any(die.ndim > 1 for die in dice):
             raise TypeError('cartesian_product() is only valid on SingleDie.')
