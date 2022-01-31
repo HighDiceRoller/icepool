@@ -77,4 +77,4 @@ class FrozenSortedWeights():
         return str(self._d)
     
     def __repr__(self):
-        return type(self).__name__ + f'({repr(self._d)})'
+        return type(self).__qualname__ + f'({repr(self._d)})'

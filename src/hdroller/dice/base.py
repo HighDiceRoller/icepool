@@ -599,7 +599,7 @@ class BaseDie():
         return result
     
     def __repr__(self):
-        return type(self).__name__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
+        return type(self).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
     
     # Hashing and equality.
     
