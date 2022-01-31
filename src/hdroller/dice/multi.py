@@ -43,12 +43,28 @@ class MultiDie(hdroller.dice.base.BaseDie):
         return result
     
     # Statistics.
+    # These apply to a single dimension `i`.
     
     def _apply_to_dim(self, func, i, *args, **kwargs):
         return func(self[i], *args, **kwargs)
     
+    def median_left(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.median_left, i)
+        
+    def median_right(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.median_right, i)
+    
     def median(self, i):
         return self._apply_to_dim(hdroller.dice.single.SingleDie.median, i)
+    
+    def ppf_left(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf_left, i)
+        
+    def ppf_right(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf_right, i)
+    
+    def ppf(self, i):
+        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf, i)
         
     def mean(self, i):
         return self._apply_to_dim(hdroller.dice.single.SingleDie.mean, i)
@@ -69,6 +85,8 @@ class MultiDie(hdroller.dice.base.BaseDie):
         
     def excess_kurtosis(self, i):
         return self._apply_to_dim(hdroller.dice.single.SingleDie.excess_kurtosis, i)
+    
+    # Joint statistics.
     
     def covariance(self, i, j):
         mean_i = self[i].mean()

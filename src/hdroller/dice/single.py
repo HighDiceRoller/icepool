@@ -32,14 +32,49 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     # Statistics.
     
-    def median(self):
-        """ Returns the median. 
+    def median_left(self):
+        """ Returns the median.
         
-        If the median lies between two outcomes, returns the sum of the two / 2.
+        If the median lies between two outcomes, returns the lower of the two. """
+        return self.ppf_left(1, 2)
+    
+    def median_right(self):
+        """ Returns the median.
+        
+        If the median lies between two outcomes, returns the higher of the two. """
+        return self.ppf_right(1, 2)
+    
+    def median(self):
+        """ Returns the median.
+        
+        If the median lies between two outcomes, returns the mean of the two.
         """
-        left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
-        right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
-        return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2
+        return self.ppf(1, 2)
+    
+    def ppf_left(self, n, d=100):
+        """ Returns a quantile, n / d of the way through the cdf.
+        
+        If the result lies between two outcomes, returns the lower of the two.
+        """
+        index = bisect.bisect_left(self.cweights(), (n * self.total_weight() + d - 1) // d)
+        if index >= len(self): return self.max_outcome()
+        return self.outcomes()[index]
+    
+    def ppf_right(self, n, d=100):
+        """ Returns a quantile, n / d of the way through the cdf.
+        
+        If the result lies between two outcomes, returns the higher of the two.
+        """
+        index = bisect.bisect_right(self.cweights(), n * self.total_weight() // d)
+        if index >= len(self): return self.max_outcome()
+        return self.outcomes()[index]
+    
+    def ppf(self, n, d=100):
+        """ Returns a quantile, n / d of the way through the cdf.
+        
+        If the result lies between two outcomes, returns the mean of the two.
+        """
+        return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
     
     def mean(self):
         return sum(outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
