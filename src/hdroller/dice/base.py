@@ -10,6 +10,7 @@ from functools import cache, cached_property
 import itertools
 import math
 import operator
+import random
 
 class BaseDie():
     """ Abstract base die class. """
@@ -611,6 +612,18 @@ class BaseDie():
     
     def sf(self):
         return self._sf
+    
+    # Rolling.
+    
+    def sample(self):
+        """ Returns a random roll of this die. 
+        
+        Do not use for security purposes.
+        """
+        # We don't use random.choices since that is based on floats rather than ints.
+        r = random.randrange(self.total_weight())
+        index = bisect.bisect_right(self.cweights(), r)
+        return self.outcomes()[index]
     
     # Strings.
     

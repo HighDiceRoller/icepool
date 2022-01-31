@@ -48,6 +48,8 @@ class SingleDie(hdroller.dice.base.BaseDie):
         """ Returns the median.
         
         If the median lies between two outcomes, returns the mean of the two.
+        This will fail if the outcomes do not support division;
+        in this case, use `median_left` or `median_right` instead.
         """
         return self.ppf(1, 2)
     
@@ -73,6 +75,8 @@ class SingleDie(hdroller.dice.base.BaseDie):
         """ Returns a quantile, n / d of the way through the cdf.
         
         If the result lies between two outcomes, returns the mean of the two.
+        This will fail if the outcomes do not support division;
+        in this case, use `ppf_left` or `ppf_right` instead.
         """
         return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
     
