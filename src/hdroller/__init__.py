@@ -1,3 +1,5 @@
+""" Package for computing dice probabilities. """
+
 __docformat__ = 'google'
 
 # Expose certain names at top-level.

@@ -9,7 +9,7 @@ from collections import defaultdict
 import itertools
 
 class MultiDie(hdroller.dice.base.BaseDie):
-    """Multivariate die.
+    """ Multivariate die with `ndim > 1`.
     
     Outcomes are tuples, and operations are performed on each element of the tuples.
     """

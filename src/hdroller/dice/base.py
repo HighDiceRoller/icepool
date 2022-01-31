@@ -12,15 +12,32 @@ import math
 import operator
 
 class BaseDie():
+    """ Abstract base die class. """
     # Abstract methods.
     
     @abstractmethod
     def unary_op(self, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation on the outcomes. """
+        """ Returns a die representing the effect of performing the operation on the outcomes.
+        
+        This is used for the operators `-, abs, ~, round, trunc, floor, ceil`.
+        """
     
     @abstractmethod
     def binary_op(self, other, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
+        """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.
+        
+        This is used for the operators `+, -, /, //, %, **, <, <=, >=, >`.
+        
+        This is used for the operators `&, |, ^` on `bool()` of the outputs.
+        
+        Special operators:
+            * The `*` operator means "roll the left die, then roll that many of the right die and sum the outcomes."
+                To actually multiply the outcomes of the two die, use the `mul` method.
+            * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
+                To get the chance of the two dice rolling the same outcome, use the `eq` method.
+            * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
+                To get the chance of the two dice rolling the same outcome, use the `ne` method.
+        """
         
     # Construction.
 
@@ -33,6 +50,7 @@ class BaseDie():
         
         Args:
             data: A `FrozenSortedWeights` mapping outcomes to weights.
+            ndim: The number of dimensions of the outcomes.
         """
         self._data = data
         self._ndim = ndim
@@ -149,7 +167,6 @@ class BaseDie():
         return type(x)()
     
     def zero(self):
-        # TODO: Do we actually want to have mixed zeros?
         return self.unary_op(self._zero).reduce()
     
     # Binary operators.
@@ -169,10 +186,22 @@ class BaseDie():
     def __rsub__(self, other):
         other = hdroller.die(other)
         return other.binary_op(self, operator.sub)
+        
+    def __truediv__(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, operator.truediv)
+    
+    def __rtruediv__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, operator.truediv)
     
     def __floordiv__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.floordiv)
+    
+    def __rfloordiv__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, operator.floordiv)
     
     def __pow__(self, other):
         other = hdroller.die(other)
@@ -185,6 +214,10 @@ class BaseDie():
     def __mod__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.mod)
+    
+    def __rmod__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, operator.mod)
     
     def __lt__(self, other):
         other = hdroller.die(other)
@@ -286,7 +319,7 @@ class BaseDie():
         other = hdroller.die(other)
         return other.__mul__(self)
     
-    def multiply(self, other):
+    def mul(self, other):
         """ Actually multiply the outcomes of the two dice. """
         other = hdroller.die(other)
         return self.binary_op(other, operator.mul)

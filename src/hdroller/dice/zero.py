@@ -4,7 +4,10 @@ import hdroller
 import hdroller.dice.base
 
 class ZeroDie(hdroller.dice.base.BaseDie):
-    """Die with zero dimensions."""
+    """ Die with with `ndim == 0`.
+    
+    The only possible outcome is the empty tuple `()`.
+    """
     
     def unary_op(self, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on the outcomes."""

@@ -10,20 +10,20 @@ import itertools
 import math
 
 class SingleDie(hdroller.dice.base.BaseDie):
-    """Univariate die.
+    """ Univariate die with `ndim == 1`.
     
     Operations are performed directly on the outcomes.
     """
     
     def unary_op(self, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on the outcomes."""
+        """ Returns a die representing the effect of performing the operation on the outcomes. """
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
         return hdroller.die(data, ndim=1)
     
     def binary_op(self, other, op, *args, **kwargs):
-        """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
+        """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         ndim = self._check_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
@@ -33,6 +33,10 @@ class SingleDie(hdroller.dice.base.BaseDie):
     # Statistics.
     
     def median(self):
+        """ Returns the median. 
+        
+        If the median lies between two outcomes, returns the sum of the two / 2.
+        """
         left_index = bisect.bisect_left(self.cweights(), self.total_weight() / 2)
         right_index = bisect.bisect_right(self.cweights(), self.total_weight() / 2)
         return (self.outcomes()[left_index] + self.outcomes()[right_index]) / 2

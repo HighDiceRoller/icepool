@@ -30,6 +30,7 @@ class PoolEval(ABC):
         
         Arguments:
             *pools: One or more `DicePool`s being evaluated.
+        
         Returns:
             A hashable object indicating the initial state.
         
@@ -54,7 +55,6 @@ class PoolEval(ABC):
         
         Returns:
             A hashable object indicating the next state.
-            This should be hashable and comparable.
             If the return value is `None`, the state will be dropped from consideration.
             This is equivalent to performing a full reroll with no maximum depth.
         """
@@ -185,7 +185,7 @@ pool_sum = PoolSum()
 class PoolMatchingSet(PoolEval):
     """ A `PoolEval` that takes the best matching set in a pool.
     
-    The outcomes are (set_size, outcome).
+    The outcomes are `(set_size, outcome)`.
     """
     def initial_state(self, pool):
         return -1, 0
