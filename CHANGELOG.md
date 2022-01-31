@@ -1,3 +1,12 @@
+## 0.4.0
+
+No longer numpy-based. Major changes:
+
+* API completely reworked.
+* Weights are Python `int`s. This decreases performance but produces all exact results.
+* New `MultiDie` class representing multivariate distributions.
+* `PoolScorer` classes merged to a single `PoolEval` class.
+
 ## 0.3.3
 
 This will most likely be the last numpy-based version.
