@@ -6,19 +6,20 @@ from functools import cache, cached_property
 import math
 
 def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
-    """
+    """ Constructor for dice pools.
+    
     Args:
         die: The die this pool is based on.
         num_dice: The number of dice in the pool.
         min_outcomes, max_outcomes: At most one of these must be provided.
-            If neither is provided, it has the same effect as max_outcomes=True.
             This should be an iterable with length equal to num_dice. Each limits the min/max outcome of a single die.
-            Alternatively, this can be set to True, which makes all dice span all outcomes of die.
+            Alternatively, this can be set to True, which makes all dice span all outcomes of the die.
             This also determines the direction of the state iteration.
             If max_outcomes is provided, PoolEval will receive outcomes in order from min to max.
             If min_outcomes is provided, PoolEval will receive outcomes in order from max to min.
+            If neither is provided, it has the same effect as max_outcomes=True.
         select_dice: 
-            The select_dice applies to the dice sorted from lowest to highest (regardless of direction).
+            The select_dice applies to the dice sorted from lowest to highest (regardless of iteration direction).
             For example, slice(-2, None) would only count the two highest dice.
     """
 
@@ -68,7 +69,8 @@ class DicePool():
     
     def _iter_pops(self):
         """
-        Yields from 0 to the number of dice that can roll this outcome inclusive:
+        Yields: 
+            From 0 to the number of dice that can roll this outcome inclusive:
             * pool: A DicePool resulting from removing that many dice from this DicePool, while also removing the max outcome.
                 If there is only one outcome remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
                 If the outcome has zero weight, only one result will be yielded, corresponding to zero dice rolling that outcome.

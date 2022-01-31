@@ -10,12 +10,13 @@ import itertools
 import math
 
 def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
-    """
+    """ General-purpose constructor for a die.
+    
     Args:
         arg: This can be one of the following:
             A die, which will be returned itself.
-            An iterable of weights, with min_outcome set to an integer.
-                The outcomes will be integers starting at min_outcome.
+            An iterable of weights, with min_outcome set to an int.
+                The outcomes will be ints starting at min_outcome.
             A mapping from outcomes to weights.
             An iterable of pairs of outcomes and weights.
             A single hashable and comparable value.
@@ -40,7 +41,7 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
         return hdroller.dice.multi.MultiDie(data, ndim)
 
 def _make_data(arg, min_outcome=None, remove_zero_weights=True):
-    """Creates a FrozenSortedWeights from the arguments."""
+    """ Creates a FrozenSortedWeights from the arguments. """
     if isinstance(arg, FrozenSortedWeights):
         data = arg
     elif min_outcome is not None:
@@ -92,9 +93,11 @@ def _calc_ndim(data, ndim):
     return ndim
 
 def standard(num_sides):
+    """ A die that rolls integers from 1 to num_sides inclusive with weight 1 each. """
     return die([1] * num_sides, min_outcome=1)
 
 def __getattr__(key):
+    """ Implements the dX syntax. """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
@@ -103,11 +106,13 @@ def __getattr__(key):
     raise AttributeError(key)
 
 def bernoulli(n, d):
+    """ A die that rolls True with chance n / d, and False otherwise. """
     return die({False : d - n, True : n})
 
 coin = bernoulli
 
 def from_cweights(outcomes, cweights, ndim=None):
+    """ Constructs a die from cumulative weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
@@ -117,6 +122,7 @@ def from_cweights(outcomes, cweights, ndim=None):
     return die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, ndim=None):
+    """ Constructs a die from complementary cumulative weights. """
     d = {}
     for i, outcome in enumerate(outcomes):
         if i < len(outcomes) - 1:
@@ -128,7 +134,7 @@ def from_sweights(outcomes, sweights, ndim=None):
     return die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
-    """
+    """ Constructs a die from a rv object (as scipy.stats).
     Args:
         rv: A rv object (as scipy.stats).
         outcomes: An iterable of ints or floats that will be the outcomes of the resulting die.
@@ -147,6 +153,18 @@ def from_rv(rv, outcomes, denominator, **kwargs):
     return from_cweights(outcomes, cweights)
     
 def apply(func, *dice, ndim=None):
+    """ Applies func(outcome0, outcome1, ...) for all possible outcomes of the dice.
+    
+    This is flexible but not very efficient.
+    If possible, use hdroller.pool and hdroller.PoolEval instead.
+    
+    Args:
+        func: A function that takes one argument per input die and returns a new outcome.
+        ndim: If supplied, the result will have this many dimensions.
+    
+    Returns:
+        A die constructed from the outputs of func and the product of the weights of the dice.
+    """
     dice = [die(d) for d in dice]
     data = defaultdict(int)
     for t in itertools.product(*(d.items() for d in dice)):
@@ -156,13 +174,15 @@ def apply(func, *dice, ndim=None):
     return die(data, ndim=ndim)
 
 def mix(*dice, mix_weights=None):
-    """
-    Constructs a die from a mixture of the arguments,
-    equivalent to rolling a die and then choosing one of the arguments
+    """ Constructs a die from a mixture of the input dice.
+    
+    This is equivalent to rolling a die and then choosing one of the input dice
     based on the resulting face rolled.
-    Dice (or anything castable to a die) may be provided as a list or as a variable number of arguments.
-    mix_weights: An iterable of one int per argument.
-        If not provided, all dice are mixed uniformly.
+    
+    Args:
+        *dice: The dice to mix.
+        mix_weights: An iterable of one int per input die.
+            If not provided, all dice are mixed uniformly.
     """
     dice = hdroller.dice.base._align(*dice)
     ndim = None
