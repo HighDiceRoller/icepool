@@ -1,6 +1,7 @@
 import hdroller
 from hdroller.collections import FrozenSortedWeights
 
+from abc import ABC, abstractmethod
 import bisect
 from collections import defaultdict
 from functools import cache, cached_property
@@ -11,13 +12,13 @@ import operator
 class BaseDie():
     # Abstract methods.
     
+    @abstractmethod
     def unary_op(self, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on the outcomes."""
-        raise NotImplementedError()
     
+    @abstractmethod
     def binary_op(self, other, op, *args, **kwargs):
         """Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice."""
-        raise NotImplementedError()
         
     # Construction.
 

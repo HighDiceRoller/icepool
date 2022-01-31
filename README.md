@@ -6,10 +6,12 @@ A Python library for computing dice probabilities.
 pip install hdroller
 ```
 
-## Basic objectives
+## Principles
 
-* Dice are assumed to have integer faces and finite range.
-* **Not** Monte-Carlo-based, though this does provide a sample() function.
+* Handles both univariate and multivariate distributions.
+* Weights are Python `int`s, providing exact results.
+* Combinatorics and caching allow for asymptotically efficient solutions to common problems.
+* Constant-factor optimizations are not a priority.
 
 ## Examples
 

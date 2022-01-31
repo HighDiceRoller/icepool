@@ -1,17 +1,19 @@
 import hdroller
 
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from functools import cached_property
 import itertools
 import math
 
-class PoolEval():
+class PoolEval(ABC):
     """An abstract class for evaulating one or more dice pools.
     
     Instances cache all intermediate state distributions.
     
     
     """
+    @abstractmethod
     def initial_state(self, *pools):
         """
         
@@ -26,8 +28,8 @@ class PoolEval():
         you need to save that information to the state here.
         This is done to avoid polluting cache keys with unused information.
         """
-        raise NotImplementedError()
-        
+    
+    @abstractmethod
     def next_state(self, prev_state, outcome, *counts):
         """State transition function.
         
