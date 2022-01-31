@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 from functools import cached_property
 
 class FrozenSortedWeights():

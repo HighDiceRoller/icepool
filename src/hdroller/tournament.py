@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 import hdroller
 
 def round_robin_score(*dice, tiebreaker='coin'):

@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 import hdroller
 from hdroller.collections import FrozenSortedWeights
 

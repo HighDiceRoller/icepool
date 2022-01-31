@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 import hdroller
 
 from abc import ABC, abstractmethod
@@ -177,3 +179,4 @@ class PoolSum(PoolEval):
         return prev_state + outcome * count
 
 pool_sum = PoolSum()
+""" A shared PoolSum object for caching results. """

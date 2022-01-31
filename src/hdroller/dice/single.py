@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 import hdroller
 import hdroller.dice.base
 import hdroller.dice.multi

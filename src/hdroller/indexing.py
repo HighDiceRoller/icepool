@@ -1,3 +1,5 @@
+__docformat__ = 'google'
+
 """numpy-like indexing."""
 
 def slice_range(n, select):
