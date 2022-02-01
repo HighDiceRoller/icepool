@@ -1,3 +1,10 @@
+## 0.4.1
+
+* Use the `@` operator and `d()` instead of `*` for "roll the die on the left, then roll that many dice on the right and sum".
+* `*` operator now multiplies.
+* Add `/` operator.
+* Add `median_left(), median_right(), ppf(), ppf_left(), ppf_right(), sample(), cmp(), sign()`.
+
 ## 0.4.0
 
 No longer numpy-based. Major changes:
