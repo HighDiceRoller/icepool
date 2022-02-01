@@ -6,7 +6,8 @@ import hdroller.dice.base
 class ZeroDie(hdroller.dice.base.BaseDie):
     """ Die with with `ndim == 0`.
     
-    The only possible outcome is the empty tuple `()`.
+    This die produces no outcome information with 100% probability.
+    This is distinct from having zero weight.
     
     Since there is no outcome information, operations do nothing.
     """
