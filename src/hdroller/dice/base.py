@@ -256,6 +256,8 @@ class BaseDie():
         other = hdroller.die(other)
         return other.binary_op(self, operator.mod)
     
+    # Comparators.
+    
     def __lt__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.lt)
@@ -287,6 +289,34 @@ class BaseDie():
         """
         other = hdroller.die(other)
         return self.binary_op(other, operator.ne)
+    
+    @staticmethod
+    def _sign(x):
+        z = BaseDie._zero(x)
+        if x > z:
+            return 1
+        elif x < z:
+            return -1
+        else:
+            return 0
+    
+    def sign(self):
+        """ Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.
+        
+        Note that for `float`s, +0.0, -0.0, and nan all become 0.
+        """
+        return self.unary_op(BaseDie._sign)
+    
+    @staticmethod
+    def _cmp(x, y):
+        return BaseDie._sign(x - y)
+    
+    def cmp(self, other):
+        """ Returns a die with the possible outcomes 1, -1, and 0.
+        
+        These are if self rolls > other, < other, or neither respectively.
+        """
+        return self.binary_op(other, BaseDie._cmp)
     
     # Logical operators.
     # These operate on bool(outcome).
