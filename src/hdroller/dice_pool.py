@@ -33,6 +33,8 @@ def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=Non
     if max_outcomes is True or (min_outcomes is None and max_outcomes is None):
         max_outcomes = (die.max_outcome(),) * num_dice
     else:
+        if len(max_outcomes) != num_dice:
+            raise ValueError('If provided, max_outcomes must have len equal to num_dice.')
         max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
     
     if select_dice is None:

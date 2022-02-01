@@ -3,6 +3,7 @@ __docformat__ = 'google'
 """numpy-like indexing."""
 
 def slice_range(n, select):
+    """ Returns indexes sliced from a range of n. """
     if select.start is None:
         start = 0
     elif select.start < 0:
@@ -22,7 +23,7 @@ def slice_range(n, select):
     else:
         step = select.step
     
-    return range(start, stop, step)
+    yield from (i for i in range(start, stop, step) if i >= 0 and i < n)
 
 def select_from(a, select):
     """
