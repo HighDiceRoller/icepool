@@ -103,6 +103,8 @@ def standard(num_sides):
     
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive with weight 1 each. """
     return die([1] * num_sides, min_outcome=1)
+    
+d = standard
 
 def __getattr__(key):
     """ Implements the `dX` syntax, e.g. `hdroller.d6`. """
