@@ -188,9 +188,15 @@ class BaseDie():
         
         This is done by calling the constructor for each outcome's type with no arguments.
         
-        The resulting weights are `reduce`d.
+        The result will have a single outcome with weight 1.
+        
+        Raises:
+            ValueError if the zeros did not resolve to a single outcome.
         """
-        return self.unary_op(BaseDie._zero).reduce()
+        result = self.unary_op(BaseDie._zero)
+        if len(result) != 1:
+            raise ValueError('zero() did not resolve to a single outcome.')
+        return result.reduce()
     
     # Binary operators.
     
