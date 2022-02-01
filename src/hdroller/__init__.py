@@ -15,12 +15,15 @@ from hdroller.dice.multi import MultiDie
 
 min = hdroller.dice.base.BaseDie.min
 max = hdroller.dice.base.BaseDie.max
+min_outcome = hdroller.dice.base.BaseDie.min_outcome
+max_outcome = hdroller.dice.base.BaseDie.max_outcome
 
 # Careful when using _align, since it introduces zero-weight outcomes.
 from hdroller.dice.base import _align
+from hdroller.dice.single import _align_range
 
 from hdroller.dice_pool import pool
 from hdroller.pool_eval import PoolEval, PoolSum, pool_sum, PoolMatchingSet
 
-__all__ = ['die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie', 'from_cweights', 'from_sweights', 'from_rv', 'mix', 'min', 'max', 'apply', '_align',
+__all__ = ['die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie', 'from_cweights', 'from_sweights', 'from_rv', 'mix', 'min', 'max', 'min_outcome', 'max_outcome', 'apply', '_align',
     'pool', 'PoolEval', 'PoolSum', 'pool_sum', 'PoolMatchingSet']

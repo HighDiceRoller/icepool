@@ -537,6 +537,8 @@ class BaseDie():
     def _set_outcomes(self, outcomes):
         """ Returns a die whose outcomes are set to the argument, including zero weights.
         
+        This may remove outcomes or add zero-weight outcomes.
+        
         Note that public methods are intended to have no zero-weight outcomes.
         This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
@@ -585,11 +587,13 @@ class BaseDie():
     
     # Scalar(-ish) statistics.
     
-    def min_outcome(self):
-        return self.outcomes()[0]
+    def min_outcome(*dice):
+        """ Returns the minimum possible outcome among the dice. """
+        return min(die.outcomes()[0] for die in dice)
     
-    def max_outcome(self):
-        return self.outcomes()[-1]
+    def max_outcome(*dice):
+        """ Returns the maximum possible outcome among the dice. """
+        return max(die.outcomes()[-1] for die in dice)
     
     @cached_property
     def _total_weight(self):
@@ -742,3 +746,4 @@ def _align(*dice):
     BaseDie._check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die._set_outcomes(union_outcomes) for die in dice)
+    
