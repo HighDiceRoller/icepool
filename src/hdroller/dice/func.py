@@ -15,8 +15,9 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     """ General-purpose constructor for a die.
     
     Don't confuse this with `hdroller.d()`:
-        * `hdroller.die(6)`: A die that always rolls the integer 6.
-        * `hdroller.d(6)`: A d6.
+    
+    * `hdroller.die(6)`: A die that always rolls the integer 6.
+    * `hdroller.d(6)`: A d6.
     
     Args:
         arg: This can be one of the following:
@@ -121,7 +122,9 @@ def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
     
     Args:
-        arg: An `int`, which produces a standard die. Or a die, which is returned itself.
+        arg: Either:
+            * An `int`, which produces a standard die.
+            * A die, which is returned itself.
     
     Returns:
         A die.

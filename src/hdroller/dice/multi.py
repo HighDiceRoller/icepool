@@ -12,6 +12,8 @@ class MultiDie(hdroller.dice.base.BaseDie):
     """ Multivariate die with `ndim > 1`.
     
     Outcomes are sequences, and operations are performed elementwise on the sequences.
+    
+    Statistical methods other than `mode()` take in an argument `i` specifying which dimension to take the statistic over.
     """
     
     def unary_op(self, op, *args, **kwargs):

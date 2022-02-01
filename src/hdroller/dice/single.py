@@ -16,7 +16,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     Statistics have an extra parameter `i` specifying a single dimension to take the statistic over.
     
-    Special operator beyond `BaseDie`: `@`, aka `__matmul__`.
+    Special operator: `@`, aka `__matmul__`.
     This rolls the left die, then rolls the right die that many times and sums the outcomes.
     Like the other operators, it will cast the operands to dice before proceeding.
     
@@ -88,14 +88,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         other = hdroller.die(other)
         return self._d_after_cast(other)
     
-    def __rmatmul__(self, other):
-        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
-        
-        Note that this differs from d() in that an `int` on the right side is treated as a constant
-        rather than as a standard die.
-        """
-        other = hdroller.die(other)
-        return other._d_after_cast(self)
+    # __rmatmul__ is implemented in the base class, since it is the left side that needs to have a single dimension.
     
     # Statistics.
     
@@ -121,7 +114,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         return self.ppf(1, 2)
     
     def ppf_left(self, n, d=100):
-        """ Returns a quantile, n / d of the way through the cdf.
+        """ Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the lower of the two.
         """
@@ -130,7 +123,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         return self.outcomes()[index]
     
     def ppf_right(self, n, d=100):
-        """ Returns a quantile, n / d of the way through the cdf.
+        """ Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the higher of the two.
         """
@@ -139,7 +132,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         return self.outcomes()[index]
     
     def ppf(self, n, d=100):
-        """ Returns a quantile, n / d of the way through the cdf.
+        """ Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;

@@ -13,7 +13,17 @@ import operator
 import random
 
 class BaseDie():
-    """ Abstract base die class. """
+    """ Abstract base die class for a die.
+    
+    A die is a discrete probability distribution with `int` weights.
+    The outcomes can be any hashable, comparable values.
+    
+    The weights should be strictly positive for public dice.
+    Some private calculations may use temporary dice with zero weights,
+    however, this is not recommended for public use.
+    
+    Subclasses implement the operations that make sense only for a particular number of dimensions.
+    """
     
     # Abstract methods.
     
@@ -21,7 +31,7 @@ class BaseDie():
     def unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on the outcomes.
         
-        This is used for the operators `-, abs, ~, round, trunc, floor, ceil`.
+        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil`.
         """
     
     @abstractmethod
@@ -35,10 +45,13 @@ class BaseDie():
         This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
         Special operators:
+            * The `@` operator rolls the left die, then rolls the right die that many times and sums the outcomes.
             * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
                 To get the chance of the two dice rolling the same outcome, use the `eq` method.
             * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
                 To get the chance of the two dice rolling the same outcome, use the `ne` method.
+        
+        The operators `<<, >>` are not implemented.
         """
         
     # Construction.
@@ -137,6 +150,9 @@ class BaseDie():
     
     def __neg__(self):
         return self.unary_op(operator.neg)
+    
+    def __pos__(self):
+        return self.unary_op(operator.pos)
     
     def __abs__(self):
         return self.unary_op(operator.abs)
@@ -304,6 +320,17 @@ class BaseDie():
     def __rxor__(self, other):
         other = hdroller.die(other)
         return other.binary_op(self, self._xor)
+    
+    # Special operators.
+    
+    def __rmatmul__(self, other):
+        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        
+        Note that this differs from d() in that an `int` on the right side is treated as a constant
+        rather than as a standard die.
+        """
+        other = hdroller.die(other)
+        return other @ self
     
     # Mixtures.
 
