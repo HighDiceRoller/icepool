@@ -191,7 +191,7 @@ class BaseDie():
         The result will have a single outcome with weight 1.
         
         Raises:
-            ValueError if the zeros did not resolve to a single outcome.
+            `ValueError` if the zeros did not resolve to a single outcome.
         """
         result = self.unary_op(BaseDie._zero)
         if len(result) != 1:
@@ -312,9 +312,9 @@ class BaseDie():
         return BaseDie._sign(x - y)
     
     def cmp(self, other):
-        """ Returns a die with the possible outcomes 1, -1, and 0.
+        """ Returns a die with possible outcomes 1, -1, and 0.
         
-        These are if self rolls > other, < other, or neither respectively.
+        The weights are equal to the positive outcome of `self > other`, `self < other`, and the remainder respectively.
         """
         return self.binary_op(other, BaseDie._cmp)
     

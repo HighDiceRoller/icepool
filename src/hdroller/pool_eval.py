@@ -181,9 +181,11 @@ class PoolEval(ABC):
 class PoolSum(PoolEval):
     """ A simple `PoolEval` that just sums the dice in a pool. """
     def initial_state(self, pool):
+        """ The running total starts at 0. """
         return 0
         
     def next_state(self, prev_state, outcome, count):
+        """ Add the dice to the running total. """
         return prev_state + outcome * count
 
 pool_sum = PoolSum()
@@ -192,10 +194,17 @@ pool_sum = PoolSum()
 class PoolMatchingSet(PoolEval):
     """ A `PoolEval` that takes the best matching set in a pool.
     
+    This prioritizes set size, then the outcome.
+    
     The outcomes are `(set_size, outcome)`.
     """
     def initial_state(self, pool):
+        """ Start with `set_size = -1` so any outcome will be written in. """
         return -1, 0
     
     def next_state(self, prev_state, outcome, count):
+        """ Replace the last best set if this one is better. 
+        
+        Note the use of tuple comparison, which priortizes elements to the left.
+        """
         return max(prev_state, (count, outcome))

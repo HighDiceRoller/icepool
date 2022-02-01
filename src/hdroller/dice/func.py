@@ -109,8 +109,9 @@ def standard(num_sides):
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
     
     Don't confuse this with `hdroller.die()`:
-        * `hdroller.die(6)`: A die that always rolls the integer 6.
-        * `hdroller.d(6)`: A d6.
+    
+    * `hdroller.die(6)`: A die that always rolls the integer 6.
+    * `hdroller.d(6)`: A d6.
     """
     if not isinstance(num_sides, int):
         raise TypeError('Argument to standard() must be an int.')
