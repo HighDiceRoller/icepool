@@ -612,6 +612,16 @@ class BaseDie():
         index = bisect.bisect_right(self.cweights(), r)
         return self.outcomes()[index]
     
+    # Type conversions out.
+    
+    def __bool__(self):
+        """ Dice are not considered to have truth values. 
+        
+        The result of a comparator operation is a die, which if considered to have a truth value,
+        would imply that dice are sortable.
+        """
+        raise TypeError('Dice do not have truth values.')
+    
     # Strings.
     
     def __str__(self):

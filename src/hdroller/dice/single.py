@@ -56,7 +56,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = _align(*subresults)
+        subresults = hdroller.dice.base._align(*subresults)
         
         data = defaultdict(int)
         
