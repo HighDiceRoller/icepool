@@ -68,17 +68,19 @@ Source for ability score rolling methods: [https://www.reddit.com/r/dndnext/comm
 
 import hdroller
 
-# Note that the * operator is not commutative:
-# it means "roll the left die, then roll that many of the right die and sum".
-# Integers are treated as a die that always rolls that number.
-# Therefore:
-# 3 * hdroller.d6 means 3d6.
-# hdroller.d6 * 3 means roll a d6 and multiply the result by 3.
-method1 = 6 * hdroller.d6.keep_highest(num_dice=4, num_keep=3)
-method2 = (3 * hdroller.d6).keep_highest(12, 6)
+"""
+The @ operator means "roll the left die, then roll that many of the right die and sum".
+Integers are treated as a die that always rolls that number.
+Therefore:
+* 3 @ hdroller.d6 means 3d6.
+* hdroller.d6 @ 3 means roll a d6 and multiply the result by 3.
+"""
+
+method1 = 6 @ hdroller.d6.keep_highest(num_dice=4, num_keep=3)
+method2 = (3 @ hdroller.d6).keep_highest(12, 6)
 # num_keep defaults to 1.
-method3 = 6 * (3 * hdroller.d6).keep_highest(6)
-method4 = (6 * (3 * hdroller.d6)).keep_highest(12)
+method3 = 6 @ (3 @ hdroller.d6).keep_highest(6)
+method4 = (6 @ (3 @ hdroller.d6)).keep_highest(12)
 
 import numpy
 import matplotlib.pyplot as plt
