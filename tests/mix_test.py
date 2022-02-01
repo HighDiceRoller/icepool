@@ -16,7 +16,7 @@ def test_mix_identical():
 def test_mix_weight():
     outcomes = range(2, 13)
     mix_weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
-    assert hdroller.mix(*outcomes, mix_weights=mix_weights) == 2 * hdroller.d6
+    assert hdroller.mix(*outcomes, mix_weights=mix_weights) == 2 @ hdroller.d6
     
 def test_mix_mixed():
     die = hdroller.mix(hdroller.d4, hdroller.d6)

@@ -15,6 +15,14 @@ class SingleDie(hdroller.dice.base.BaseDie):
     Operations are performed directly on the outcomes.
     
     Statistics have an extra parameter `i` specifying a single dimension to take the statistic over.
+    
+    Special operator beyond `BaseDie`: `@`, aka `__matmul__`.
+    This rolls the left die, then rolls the right die that many times and sums the outcomes.
+    Like the other operators, it will cast the operands to dice before proceeding.
+    
+    Note that this is NOT the same as `SingleDie.d()` when the right operand is an `int`:
+    * `d(4).d(6)`: Roll a d4, then roll that many d6s and sum.
+    * `d(4) @ 6`: Roll a d4, then multiply the result by 6.
     """
     
     def unary_op(self, op, *args, **kwargs):
@@ -31,6 +39,63 @@ class SingleDie(hdroller.dice.base.BaseDie):
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
         return hdroller.die(data, ndim=1)
+    
+    # Special operators.
+    
+    def _d_after_cast(self, other):
+        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        
+        This carries out the logic after any casting has taken place.
+        """
+        subresults = []
+        subresult_weights = []
+        
+        max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
+        for die_count, die_count_weight in self.items():
+            factor = other.total_weight() ** (max_abs_die_count - abs(die_count))
+            subresults.append(other.repeat_and_sum(die_count))
+            subresult_weights.append(die_count_weight * factor)
+        
+        subresults = _align(*subresults)
+        
+        data = defaultdict(int)
+        
+        for subresult, subresult_weight in zip(subresults, subresult_weights):
+            for outcome, weight in subresult.items():
+                data[outcome] += weight * subresult_weight
+            
+        return hdroller.die(data, ndim=other.ndim())
+    
+    def d(self, other):
+        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        
+        If an `int` is provided for the right side, it becomes a standard die with that many faces.
+        Otherwise it is cast to a die.
+        """
+        if isinstance(other, int):
+            other = hdroller.standard(other)
+        else:
+            other = hdroller.die(other)
+        
+        return self._d_after_cast(other)
+    
+    def __matmul__(self, other):
+        """ Roll the left die, then roll the right die that many times and sum the outcomes.
+        
+        Note that this differs from d() in that an `int` on the right side is treated as a constant
+        rather than as a standard die.
+        """
+        other = hdroller.die(other)
+        return self._d_after_cast(other)
+    
+    def __rmatmul__(self, other):
+        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        
+        Note that this differs from d() in that an `int` on the right side is treated as a constant
+        rather than as a standard die.
+        """
+        other = hdroller.die(other)
+        return other._d_after_cast(self)
     
     # Statistics.
     

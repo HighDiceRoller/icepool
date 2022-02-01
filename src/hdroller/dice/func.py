@@ -14,6 +14,10 @@ import math
 def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     """ General-purpose constructor for a die.
     
+    Don't confuse this with `hdroller.d()`:
+        * `hdroller.die(6)`: A die that always rolls the integer 6.
+        * `hdroller.d(6)`: A d6.
+    
     Args:
         arg: This can be one of the following:
             * A die, which will be returned itself.
@@ -101,7 +105,12 @@ def _calc_ndim(data, ndim):
 def standard(num_sides):
     """ A standard die.
     
-    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive with weight 1 each. """
+    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
+    
+    This is also aliased to `hdroller.d()`. Don't confuse this with `hdroller.die()`:
+        * `hdroller.die(6)`: A die that always rolls the integer 6.
+        * `hdroller.d(6)`: A d6.
+    """
     return die([1] * num_sides, min_outcome=1)
     
 d = standard

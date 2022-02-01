@@ -28,13 +28,13 @@ class BaseDie():
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.
         
+        The other operand is cast to a die (using `hdroller.die`) before performing the operation.
+        
         This is used for the operators `+, -, /, //, %, **, <, <=, >=, >`.
         
         This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
         Special operators:
-            * The `*` operator means "roll the left die, then roll that many of the right die and sum the outcomes."
-                To actually multiply the outcomes of the left and right die, use the `mul` method.
             * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
                 To get the chance of the two dice rolling the same outcome, use the `eq` method.
             * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
@@ -193,6 +193,14 @@ class BaseDie():
     def __rsub__(self, other):
         other = hdroller.die(other)
         return other.binary_op(self, operator.sub)
+    
+    def __mul__(self, other):
+        other = hdroller.die(other)
+        return self.binary_op(other, operator.mul)
+    
+    def __rmul__(self, other):
+        other = hdroller.die(other)
+        return other.binary_op(self, operator.mul)
         
     def __truediv__(self, other):
         other = hdroller.die(other)
@@ -281,7 +289,7 @@ class BaseDie():
         other = hdroller.die(other)
         return self.binary_op(other, self._or)
     
-    def __or__(self, other):
+    def __ror__(self, other):
         other = hdroller.die(other)
         return other.binary_op(self, self._or)
     
@@ -293,49 +301,9 @@ class BaseDie():
         other = hdroller.die(other)
         return self.binary_op(other, self._xor)
     
-    def __xor__(self, other):
+    def __rxor__(self, other):
         other = hdroller.die(other)
         return other.binary_op(self, self._xor)
-    
-    # Special operators.
-    
-    def __mul__(self, other):
-        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
-        
-        To actually multiply the outcomes of the left and right die, use the `mul` method.
-        """
-        other = hdroller.die(other)
-        
-        subresults = []
-        subresult_weights = []
-        
-        max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
-        for die_count, die_count_weight in self.items():
-            factor = other.total_weight() ** (max_abs_die_count - abs(die_count))
-            subresults.append(other.repeat_and_sum(die_count))
-            subresult_weights.append(die_count_weight * factor)
-        
-        subresults = _align(*subresults)
-        
-        data = defaultdict(int)
-        
-        for subresult, subresult_weight in zip(subresults, subresult_weights):
-            for outcome, weight in subresult.items():
-                data[outcome] += weight * subresult_weight
-            
-        return hdroller.die(data, ndim=other.ndim())
-    
-    def __rmul__(self, other):
-        other = hdroller.die(other)
-        return other.__mul__(self)
-    
-    def mul(self, other):
-        """ Actually multiplies the outcomes of the left and right die. 
-        
-        Note that `__mul__` has a different meaning.
-        """
-        other = hdroller.die(other)
-        return self.binary_op(other, operator.mul)
     
     # Mixtures.
 
