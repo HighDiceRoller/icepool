@@ -384,7 +384,6 @@ class BaseDie():
             if len(data) == 0:
                 return None
         else:
-            # TODO: simplify this
             total_reroll_weight = sum(weight for outcome, weight in self.items() if outcome in outcomes )
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
