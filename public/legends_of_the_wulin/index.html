@@ -132,27 +132,39 @@
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
             });
             
-            await pyodide.loadPackage(["micropip", "numpy"], setLoadingText);
+            await pyodide.loadPackage(["micropip"], setLoadingText);
             
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.2.2')
+                await micropip.install('hdroller==0.4.2')
                 
                 import js
-                import numpy
                 import pyodide
-                from hdroller import Die
+                import hdroller
                 
-                die_player_unaligned = Die(0)
-                die_opposition_unaligned = Die(0)
+                die = hdroller.d10 - 1
+                
+                die_player_unaligned = hdroller.die(0)
+                die_opposition_unaligned = hdroller.die(0)
+                
+                class WulinEval(hdroller.PoolEval):
+                    def __init__(self, river):
+                        self._river = river
+                
+                    def initial_state(self, pool):
+                        return 0
+                    
+                    def next_state(self, prev_state, outcome, count):
+                        score = (count + self._river[outcome]) * 10 + outcome
+                        return max(prev_state, score)
                 
                 def calc_pool(prefix):
                     lake = int(js.document.getElementById('%slake' % prefix).value)
-                    river = numpy.array([int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10)])
-                    def score_func(set_size, set_outcome):
-                        return 10 * (set_size + river[set_outcome]) + set_outcome
-                    return (Die.d10 - 1).best_set(lake, score_func)
+                    river = tuple(int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10))
+                    
+                    pool = hdroller.pool(die, lake)
+                    return WulinEval(river).eval(pool)
             `);
             
             totalChart.options.plugins.title = {
@@ -169,7 +181,6 @@
             
             pyodide.runPython(`
             die_player_unaligned = calc_pool('p')
-            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
             `);
         }
         
@@ -178,7 +189,7 @@
             
             pyodide.runPython(`
             die_opposition_unaligned = calc_pool('o')
-            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
+            
             `);
         }
         
@@ -186,22 +197,25 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
+            min_outcome = min(die_player_unaligned.min_outcome(), die_opposition_unaligned.min_outcome())
+            max_outcome = max(die_player_unaligned.max_outcome(), die_opposition_unaligned.max_outcome())
+            outcomes = range(min_outcome, max_outcome+1)
+            die_player = die_player_unaligned._set_outcomes(outcomes)
+            die_opposition = die_opposition_unaligned._set_outcomes(outcomes)
             
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
-            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (float(die_player == die_opposition)  * 100.0)
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean()  * 100.0)
+            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (die_player.eq(die_opposition).mean() * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.pmf() * 100.0])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.pmf() * 100.0])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf() * 100.0])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf() * 100.0])
-            
-            
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf()])
             `);
             
             totalChart.update();
@@ -255,7 +269,7 @@
         <h3>How does it work?</h3>
         <p>
             I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
-            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library, itself powered by <a href="https://numpy.org/">numpy</a>.
+            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
         </p>
         
         <p>
