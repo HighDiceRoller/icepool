@@ -107,13 +107,34 @@ def standard(num_sides):
     
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
     
-    This is also aliased to `hdroller.d()`. Don't confuse this with `hdroller.die()`:
+    Don't confuse this with `hdroller.die()`:
         * `hdroller.die(6)`: A die that always rolls the integer 6.
         * `hdroller.d(6)`: A d6.
     """
+    if not isinstance(num_sides, int):
+        raise TypeError('Argument to standard() must be an int.')
+    elif num_sides < 1:
+        raise ValueError('Standard die must have at least one side.')
     return die([1] * num_sides, min_outcome=1)
     
-d = standard
+def d(arg):
+    """ Converts the argument to a standard die if it is not already a die.
+    
+    Args:
+        arg: An `int`, which produces a standard die. Or a die, which is returned itself.
+    
+    Returns:
+        A die.
+        
+    Raises:
+        `TypeError` if the argument is not an `int` or a die.
+    """
+    if isinstance(arg, int):
+        return standard(arg)
+    elif isinstance(arg, hdroller.dice.base.BaseDie):
+        return arg
+    else:
+        raise TypeError('The argument to d() must be an int or a die.')
 
 def __getattr__(key):
     """ Implements the `dX` syntax, e.g. `hdroller.d6`. """
