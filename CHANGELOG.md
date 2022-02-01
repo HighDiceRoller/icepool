@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Remove numpy install dependency.
+
 ## 0.4.1
 
 * Use the `@` operator and `d()` instead of `*` for "roll the die on the left, then roll that many dice on the right and sum".
