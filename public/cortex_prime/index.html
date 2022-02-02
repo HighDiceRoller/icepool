@@ -186,32 +186,31 @@
                 indexURL : "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/",
             });
             
-            await pyodide.loadPackage(["micropip", "numpy"], setLoadingText);
+            await pyodide.loadPackage(["micropip"], setLoadingText);
             
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.2.2')
+                await micropip.install('hdroller==0.4.4')
                 
                 import js
-                import numpy
                 import pyodide
-                from hdroller import Die
+                import hdroller
                 
-                reference_die = Die.d12.relabel({1: 0})
+                reference_die = hdroller.d12.relabel({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
-                die_player_unaligned, hitch_player_unaligned = Die(0), Die(0)
-                die_opposition_unaligned, hitch_opposition_unaligned = Die(0), Die(0)
+                die_player_unaligned, hitch_player_unaligned = hdroller.die(0), hdroller.die(0)
+                die_opposition_unaligned, hitch_opposition_unaligned = hdroller.die(0), hdroller.die(0)
                 
                 def calc_pool(prefix):
-                    pool = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
+                    max_outcomes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
-                    die = reference_die.keep_highest(num_dice=len(pool), num_keep=num_keep, num_drop=num_drop, max_outcomes=pool)
-                    hitch = Die(0)
-                    for n in pool:
-                        hitch += Die.coin(1, n)
+                    die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, max_outcomes=max_outcomes)
+                    hitch = hdroller.die(0)
+                    for n in max_outcomes:
+                        hitch += hdroller.coin(1, n)
                     return die, hitch
             `);
             
@@ -234,8 +233,6 @@
             
             pyodide.runPython(`
             die_player_unaligned, hitch_player_unaligned = calc_pool('p')
-            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
-            hitch_player, hitch_opposition = Die.align([hitch_player_unaligned, hitch_opposition_unaligned])
             `);
         }
         
@@ -244,8 +241,6 @@
             
             pyodide.runPython(`
             die_opposition_unaligned, hitch_opposition_unaligned = calc_pool('o')
-            die_player, die_opposition = Die.align([die_player_unaligned, die_opposition_unaligned])
-            hitch_player, hitch_opposition = Die.align([hitch_player_unaligned, hitch_opposition_unaligned])
             `);
         }
         
@@ -254,20 +249,22 @@
             
             pyodide.runPython(`
             
+            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
+            
             js.document.getElementById('pmean').innerHTML = '%0.2f' % die_player.mean()
             js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % (float(die_player > die_opposition)  * 100.0)
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.pmf() * 100.0])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.pmf() * 100.0])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) for x in die_player.ccdf(inclusive=False) * 100.0])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) for x in die_opposition.ccdf(inclusive=False) * 100.0])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf(inclusive=False)])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf(inclusive=False)])
                 
             `);
             
@@ -279,16 +276,18 @@
             
             pyodide.runPython(`
             
+            hitch_player, hitch_opposition = hdroller.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
+            
             js.hitchChart.data.labels = pyodide.to_js([float(x) for x in hitch_player.outcomes()])
             
             selected_dist = js.document.getElementById('hitchDistSelect').value
             
             if selected_dist == 'pmf':
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) for x in hitch_player.pmf() * 100.0])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) for x in hitch_opposition.pmf() * 100.0])
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.pmf()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.pmf()])
             else:
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) for x in hitch_player.ccdf() * 100.0])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) for x in hitch_opposition.ccdf() * 100.0])
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.sf()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.sf()])
             `);
             
             hitchChart.update();
