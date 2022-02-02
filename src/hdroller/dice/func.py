@@ -19,13 +19,20 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
     * `hdroller.die(6)`: A die that always rolls the integer 6.
     * `hdroller.d(6)`: A d6.
     
+    Here are different ways to create a d6:'
+    
+    * Provide the die itself: `hdroller.die(hdroller.d6)`
+    * Provide a mapping from outcomes to weights: `hdroller.die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
+    * Provide a sequence of outcomes: `hdroller.die([1, 2, 3, 4, 5, 6])`
+    * Provide a consecutive sequence of weights with a minimum outcome: `hdroller.die([1, 1, 1, 1, 1, 1], min_outcome=1)`
+    
     Args:
-        arg: This can be one of the following:
+        arg: This can be one of the following, with examples of how to create a d6:
             * A die, which will be returned itself.
-            * An iterable of weights, with `min_outcome` set to an `int`.
-                The outcomes will be `int`s starting at `min_outcome`.
             * A mapping from outcomes to weights.
-            * An iterable of pairs of outcomes and weights.
+            * A sequence of outcomes. Each outcome will be given weight `1` per time it appears.
+            * A sequence of weights, with `min_outcome` set to an `int`. 
+                The outcomes will be `int`s starting at `min_outcome`.
             * A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight `1`.
         ndim: If provided, the die will have the given number of dimensions.
@@ -34,9 +41,6 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
         remove_zero_weights: If `True`, zero weights will be filtered out.
             This should be left at `True` for most cases.
     """
-    if isinstance(arg, hdroller.dice.base.BaseDie):
-        return arg
-        
     data = _make_data(arg, min_outcome, remove_zero_weights)
     
     if len(data) == 0:
@@ -53,14 +57,18 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
 
 def _make_data(arg, min_outcome=None, remove_zero_weights=True):
     """ Creates a `FrozenSortedWeights` from the arguments. """
-    if isinstance(arg, FrozenSortedWeights):
+    if isinstance(arg, hdroller.dice.base.BaseDie):
+        data = arg._data
+    elif isinstance(arg, FrozenSortedWeights):
         data = arg
     elif min_outcome is not None:
         data = { min_outcome + i : weight for i, weight in enumerate(arg) }
     elif hasattr(arg, 'keys') and hasattr(arg, '__getitem__'):
         data = { k : arg[k] for k in arg.keys() }
     elif hasattr(arg, '__iter__'):
-        data = { k : v for k, v in arg }
+        data = defaultdict(int)
+        for v in arg:
+            data[v] += 1
     else:
         # Treat arg as the only possible value.
         data = { arg : 1 }
