@@ -13,8 +13,6 @@ class SingleDie(hdroller.dice.base.BaseDie):
     """ Univariate die with `ndim == 1`.
     
     Operations are performed directly on the outcomes.
-    
-    Statistics have an extra parameter `i` specifying a single dimension to take the statistic over.
     """
     
     def unary_op(self, op, *args, **kwargs):
