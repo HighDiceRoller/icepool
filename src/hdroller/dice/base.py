@@ -431,7 +431,7 @@ class BaseDie():
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
         explode_die = hdroller.dice.func.die(explode, ndim=self.ndim()) + tail_die
         
-        non_explode_die, explode_die = _align(non_explode_die, explode_die)
+        non_explode_die, explode_die = align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
         return hdroller.dice.func.die(data, ndim=self.ndim())
@@ -467,14 +467,14 @@ class BaseDie():
     
     def max(*dice):
         """ Roll all the dice and take the highest. """
-        dice = _align(dice)
+        dice = align(dice)
         ndim = BaseDie._check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def min(*dice):
         """ Roll all the dice and take the lowest. """
-        dice = _align(dice)
+        dice = align(dice)
         ndim = BaseDie._check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
@@ -645,12 +645,12 @@ class BaseDie():
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = _align(self, other)
+        a, b = align(self, other)
         return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = _align(self, other)
+        a, b = align(self, other)
         return sum((a - b) ** 2 for a, b in zip(a.cdf(), b.cdf()))
     
     # Iterable statistics.
@@ -756,7 +756,7 @@ class BaseDie():
     def __hash__(self):
         return self._hash
 
-def _align(*dice):
+def align(*dice):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
     Note that public methods are intended to have no zero-weight outcomes.

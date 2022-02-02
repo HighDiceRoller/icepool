@@ -215,7 +215,7 @@ def mix(*dice, mix_weights=None):
         mix_weights: An iterable of one `int` per input die.
             If not provided, all dice are mixed uniformly.
     """
-    dice = hdroller.dice.base._align(*dice)
+    dice = hdroller.dice.base.align(*dice)
     ndim = None
     for d in dice:
         if ndim is None:

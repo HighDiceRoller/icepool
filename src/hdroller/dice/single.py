@@ -54,7 +54,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = hdroller.dice.base._align(*subresults)
+        subresults = hdroller.dice.base.align(*subresults)
         
         data = defaultdict(int)
         
@@ -176,7 +176,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         
         return hdroller.die(data)
 
-def _align_range(*dice):
+def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
     dice = [hdroller.die(d) for d in dice]
     hdroller.dice.base.BaseDie._check_ndim(*dice)
