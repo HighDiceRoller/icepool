@@ -21,9 +21,12 @@ def test_list_no_min_outcome():
     assert hdroller.die([2, 3, 3, 4, 4, 4, 5, 5, 6]) == 2 @ hdroller.d3
 
 def test_remove_zero_weights():
-    assert hdroller.die([0, 1, 1, 1, 1, 1, 1], min_outcome=0) == hdroller.d6
+    die = hdroller.die([0, 1, 1, 1, 1, 1, 1], min_outcome=0)
+    assert not die.has_zero_weights()
+    assert die == hdroller.d6
 
 def test_remove_zero_weights_from_die():
     die = hdroller.die([0, 1, 1, 1, 1, 1, 1], min_outcome=0, remove_zero_weights=False)
+    assert die.has_zero_weights()
     assert die != hdroller.d6
     assert hdroller.die(die) == hdroller.d6

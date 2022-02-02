@@ -76,6 +76,10 @@ class BaseDie():
     
     def ndim(self):
         return self._ndim
+    
+    def has_zero_weights(self):
+        """ Returns `True` iff `self` contains at least one zero weight. """
+        return self._data.has_zero_weights()
         
     def _check_ndim(*dice):
         """ Checks that `ndim` matches between the dice, and returns it. 

@@ -18,7 +18,16 @@ class FrozenSortedWeights():
                 raise ValueError('Values must be ints, got ' + type(value).__name__)
             if value < 0:
                 raise ValueError('Values must not be negative.')
-        self._d = { k : d[k] for k in sorted(d.keys()) if not remove_zero_weights or d[k] > 0 }
+        if remove_zero_weights:
+            self._d = { k : d[k] for k in sorted(d.keys()) if d[k] > 0 }
+            self._has_zero_weights = False
+        else:
+            self._d = { k : d[k] for k in sorted(d.keys()) }
+            self._has_zero_weights = 0 in d.values()
+    
+    def has_zero_weights(self):
+        """ Returns `True` iff `self` contains at least one zero weight. """
+        return self._has_zero_weights
     
     def __len__(self):
         return len(self._d)
