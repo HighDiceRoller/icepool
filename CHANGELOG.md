@@ -1,3 +1,13 @@
+## 0.4.3
+
+* `min_outcome()`, `max_outcome()` now accept multiple dice.
+* Fix slice range going below zero.
+* `num_dice` is now an optional parameter for `keep*()` and `pool()`. Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
+* Removed right-side cast for `@` operator, as it leads to confusion with either other operator casting or `d()` casting.
+* Replaced key-value sequence option for `die()` with a sequence of weight-1 outcomes.
+* Add `has_zero_weights()` method to dice.
+* `align()`, `align_range()` are now public.
+
 ## 0.4.2
 
 * Remove numpy install dependency.
