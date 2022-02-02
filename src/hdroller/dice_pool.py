@@ -7,35 +7,44 @@ import bisect
 from functools import cache, cached_property
 import math
 
-def pool(die, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
     """ Constructor for dice pools.
+    
+    Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
+    This will also determine whether the outcomes are evaluated by `PoolEval.next_state()`
+    in ascending order or descending order.
     
     Args:
         die: The die this pool is based on.
-        num_dice: The number of dice in the pool.
-        min_outcomes, max_outcomes: At most one of these must be provided.
-            This should be an iterable with length equal to num_dice. Each limits the min/max outcome of a single die.
-            Alternatively, this can be set to True, which makes all dice span all outcomes of the die.
-            This also determines the direction of the state iteration.
-            If `max_outcomes` is provided, PoolEval will receive outcomes in order from min to max.
-            If `min_outcomes` is provided, PoolEval will receive outcomes in order from max to min.
-            If neither is provided, it has the same effect as `max_outcomes=True`.
-        select_dice: 
-            The `select_dice` applies to the dice sorted from lowest to highest (regardless of iteration direction).
+        num_dice: The number of dice in the pool. If set, all dice will have the same outcomes as `die`.
+            If non-negative, the outcomes will be evaluated in ascending order.
+            If negative, the outcomes will be evaluated in descending order.
+        min_outcomes: A sequence of one outcome per die in the pool.
+            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            The outcomes will be evaluated in descending order.
+        max_outcomes: A sequence of one outcome per die in the pool.
+            That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+            The outcomes will be evaluated in ascending order.
+        select_dice: Only dice selected by this will be counted.
+            This applies to the dice sorted from lowest to highest (regardless of iteration direction).
             For example, `slice(-2, None)` would count only the two highest dice.
     """
+    if (num_dice is not None) + (min_outcomes is not None) + (max_outcomes is not None) != 1:
+        raise ValueError('Exactly one of num_dice, min_outcomes, or max_outcomes must be provided.')
 
-    if min_outcomes is True:
-        min_outcomes = (die.min_outcome(),) * num_dice
+    if num_dice is not None:
+        if num_dice >= 0:
+            max_outcomes = (die.max_outcome(),) * num_dice
+        else:
+            min_outcomes = (die.min_outcome(),) * num_dice
+            raise NotImplementedError('min_outcomes not yet implemented for pools.')
     elif min_outcomes is not None:
+        min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
+        num_dice = len(min_outcomes)
         raise NotImplementedError('min_outcomes not yet implemented for pools.')
-    
-    if max_outcomes is True or (min_outcomes is None and max_outcomes is None):
-        max_outcomes = (die.max_outcome(),) * num_dice
-    else:
-        if len(max_outcomes) != num_dice:
-            raise ValueError('If provided, max_outcomes must have len equal to num_dice.')
+    else:  # max_outcomes is not None
         max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
+        num_dice = len(max_outcomes)
     
     if select_dice is None:
         select_dice = (True,) * num_dice

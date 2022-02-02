@@ -486,16 +486,20 @@ class BaseDie():
         if num_dice % 2: result += self
         return result
     
-    def keep(self, num_dice, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+    def keep(self, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
+        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
+        
         Args:
-            max_outcomes: Either:
-                * An iterable indicating the maximum outcome for each die in the pool.
-                * An integer indicating the number of dice in the pool; all dice will have max outcome equal to `die.max_outcome()`.
-            mask:
-                The pool will be sorted from lowest to highest; only dice selected by mask will be counted.
-                If omitted, all dice will be counted.
+            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            max_outcomes: A sequence of one outcome per die.
+                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+            select_dice: Only dice selected by this will be counted.
+                This applies to the dice sorted from lowest to highest.
+                For example, `slice(-2, None)` would count only the two highest dice.
                 
         Returns:
             A Die representing the probability distribution of the sum.
@@ -503,11 +507,17 @@ class BaseDie():
         pool = hdroller.dice_pool.pool(self, num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         return hdroller.pool_eval.pool_sum.eval(pool)
         
-    def keep_highest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
+    def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
         
+        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
+        
         Args:
-            num_dice: The number of dice to roll.
+            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            max_outcomes: A sequence of one outcome per die.
+                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             num_keep: The number of dice to keep.
             num_drop: If provided, this many highest dice will be dropped before keeping.
                 
@@ -519,11 +529,17 @@ class BaseDie():
         select_dice = slice(start, stop)
         return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         
-    def keep_lowest(self, num_dice, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
+    def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
+        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
+        
         Args:
-            num_dice: The number of dice to roll.
+            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            max_outcomes: A sequence of one outcome per die.
+                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             num_keep: The number of dice to keep.
             num_drop: If provided, this many lowest dice will be dropped before keeping.
                 
