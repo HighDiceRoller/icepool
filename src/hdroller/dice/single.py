@@ -181,4 +181,4 @@ def align_range(*dice):
     dice = [hdroller.die(d) for d in dice]
     hdroller.dice.base.BaseDie._check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
-    return tuple(die._set_outcomes(outcomes) for die in dice)
+    return tuple(die.set_outcomes(outcomes) for die in dice)

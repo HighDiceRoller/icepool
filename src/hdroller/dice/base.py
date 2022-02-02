@@ -563,7 +563,7 @@ class BaseDie():
     
     # Modifying outcomes.
     
-    def _set_outcomes(self, outcomes):
+    def set_outcomes(self, outcomes):
         """ Returns a die whose outcomes are set to the argument, including zero weights.
         
         This may remove outcomes or add zero-weight outcomes.
@@ -774,5 +774,5 @@ def align(*dice):
     dice = [hdroller.die(d) for d in dice]
     BaseDie._check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
-    return tuple(die._set_outcomes(union_outcomes) for die in dice)
+    return tuple(die.set_outcomes(union_outcomes) for die in dice)
     
