@@ -25,5 +25,6 @@ from hdroller.dice.single import align_range
 from hdroller.dice_pool import pool
 from hdroller.pool_eval import PoolEval, PoolSum, pool_sum, PoolMatchingSet
 
-__all__ = ['die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie', 'from_cweights', 'from_sweights', 'from_rv', 'mix', 'min', 'max', 'min_outcome', 'max_outcome', 'apply', 'align',
+__all__ = ['die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie', 'from_cweights', 'from_sweights', 'from_rv', 'mix',
+    'min', 'max', 'min_outcome', 'max_outcome', 'apply', 'align', 'align_range',
     'pool', 'PoolEval', 'PoolSum', 'pool_sum', 'PoolMatchingSet']
