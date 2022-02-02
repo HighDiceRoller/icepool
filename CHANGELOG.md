@@ -1,3 +1,8 @@
+## 0.4.4
+
+* Fix `weights_le()` etc.
+* `set_outcomes()` is now public.
+
 ## 0.4.3
 
 * `min_outcome()`, `max_outcome()` now accept multiple dice.
