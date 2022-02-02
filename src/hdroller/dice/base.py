@@ -18,10 +18,6 @@ class BaseDie():
     A die is a discrete probability distribution with `int` weights.
     The outcomes can be any hashable, comparable values.
     
-    The weights should be strictly positive for public dice.
-    Some private calculations may use temporary dice with zero weights,
-    however, this is not recommended for public use.
-    
     Subclasses implement the operations that make sense only for a particular number of dimensions.
     """
     
@@ -567,9 +563,6 @@ class BaseDie():
         """ Returns a die whose outcomes are set to the argument, including zero weights.
         
         This may remove outcomes or add zero-weight outcomes.
-        
-        Note that public methods are intended to have no zero-weight outcomes.
-        This should therefore not be used externally for any Die that you want to do anything with afterwards.
         """
         data = {x : self.weight(x) for x in outcomes}
         return hdroller.dice.func.die(data, ndim=self.ndim(), remove_zero_weights=False)
@@ -758,9 +751,6 @@ class BaseDie():
 
 def align(*dice):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
-    
-    Note that public methods are intended to have no zero-weight outcomes.
-    This should therefore not be used externally for any die that you want to do anything with afterwards.
     
     Args:
         *dice: Multiple dice or a single iterable of dice.
