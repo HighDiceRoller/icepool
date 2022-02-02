@@ -137,7 +137,7 @@
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.4.2')
+                await micropip.install('hdroller==0.4.4')
                 
                 import js
                 import pyodide
@@ -197,11 +197,8 @@
             let pyodide = await pyodideReadyPromise;
             
             pyodide.runPython(`
-            min_outcome = min(die_player_unaligned.min_outcome(), die_opposition_unaligned.min_outcome())
-            max_outcome = max(die_player_unaligned.max_outcome(), die_opposition_unaligned.max_outcome())
-            outcomes = range(min_outcome, max_outcome+1)
-            die_player = die_player_unaligned._set_outcomes(outcomes)
-            die_opposition = die_opposition_unaligned._set_outcomes(outcomes)
+            
+            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
             
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean()  * 100.0)
             js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (die_player.eq(die_opposition).mean() * 100.0)
