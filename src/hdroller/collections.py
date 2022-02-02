@@ -61,26 +61,6 @@ class FrozenSortedWeights():
     
     def __len__(self):
         return len(self._d)
-    
-    def pop_min(self):
-        """Returns a copy of self with the min key removed, the popped key, and the popped value.
-        
-        Returns None, None, 0 if self has no elements remaining.
-        """
-        if len(self) > 0:
-            return FrozenSortedWeights({ k : v for k, v in zip(self._keys[1:], self._values[1:]) }), self._keys[0], self._values[0]
-        else:
-            return None, None, 0
-    
-    def pop_max(self):
-        """Returns a copy of self with the max key removed, the popped key, and the popped value.
-        
-        Returns None, None, 0 if self has no elements remaining.
-        """
-        if len(self) > 0:
-            return FrozenSortedWeights({ k : v for k, v in zip(self._keys[:-1], self._values[:-1]) }), self._keys[-1], self._keys[-1]
-        else:
-            return None, None, 0
 
     def __str__(self):
         return str(self._d)
