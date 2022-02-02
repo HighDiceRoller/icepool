@@ -41,11 +41,13 @@ class BaseDie():
         The other operand is cast to a die (using `hdroller.die`) before performing the operation.
         
         This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >`.
+        Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.
         
         This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
         Special operators:
             * The `@` operator rolls the left die, then rolls the right die that many times and sums the outcomes.
+                Only the left side will be cast to a die; the right side must already be a die.
             * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
                 To get the chance of the two dice rolling the same outcome, use the `eq` method.
             * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
@@ -362,11 +364,15 @@ class BaseDie():
     def __rmatmul__(self, other):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
         
-        Note that this differs from d() in that an `int` on the right side is treated as a constant
-        rather than as a standard die.
+        Unlike other operators, this does not work for built-in types on the right side.
+        For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
+        
+        This is because all other operators convert their right side to a die using die,
+        so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
+        so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
         other = hdroller.die(other)
-        return other @ self
+        return other.d(self)
     
     # Mixtures.
 

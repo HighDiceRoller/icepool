@@ -15,14 +15,6 @@ class SingleDie(hdroller.dice.base.BaseDie):
     Operations are performed directly on the outcomes.
     
     Statistics have an extra parameter `i` specifying a single dimension to take the statistic over.
-    
-    Special operator: `@`, aka `__matmul__`.
-    This rolls the left die, then rolls the right die that many times and sums the outcomes.
-    Like the other operators, it will cast the operands to dice before proceeding.
-    
-    Note that this is NOT the same as `SingleDie.d()` when the right operand is an `int`:
-    * `d(4).d(6)`: Roll a d4, then roll that many d6s and sum.
-    * `d(4) @ 6`: Roll a d4, then multiply the result by 6.
     """
     
     def unary_op(self, op, *args, **kwargs):
@@ -42,11 +34,17 @@ class SingleDie(hdroller.dice.base.BaseDie):
     
     # Special operators.
     
-    def _d_after_cast(self, other):
+    def d(self, other):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
         
-        This carries out the logic after any casting has taken place.
+        If an `int` is provided for the right side, it becomes a standard die with that many faces.
+        Otherwise it is cast to a die.
         """
+        if isinstance(other, int):
+            other = hdroller.standard(other)
+        else:
+            other = hdroller.die(other)
+        
         subresults = []
         subresult_weights = []
         
@@ -66,29 +64,19 @@ class SingleDie(hdroller.dice.base.BaseDie):
             
         return hdroller.die(data, ndim=other.ndim())
     
-    def d(self, other):
+    def __matmul__(self, other):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
         
-        If an `int` is provided for the right side, it becomes a standard die with that many faces.
-        Otherwise it is cast to a die.
-        """
-        if isinstance(other, int):
-            other = hdroller.standard(other)
-        else:
-            other = hdroller.die(other)
+        Unlike other operators, this does not work for built-in types on the right side.
+        For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
         
-        return self._d_after_cast(other)
-    
-    def __matmul__(self, other):
-        """ Roll the left die, then roll the right die that many times and sum the outcomes.
-        
-        Note that this differs from d() in that an `int` on the right side is treated as a constant
-        rather than as a standard die.
+        This is because all other operators convert their right side to a die using die,
+        so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
+        so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
-        other = hdroller.die(other)
-        return self._d_after_cast(other)
-    
-    # __rmatmul__ is implemented in the base class, since it is the left side that needs to have a single dimension.
+        if not isinstance(other, hdroller.dice.base.BaseDie):
+            raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
+        return self.d(other)
     
     # Statistics.
     

@@ -87,3 +87,9 @@ def test_reduce():
     result = hdroller.die([2, 4, 6], 0).reduce()
     expected = hdroller.die([1, 2, 3], 0)
     assert result == expected
+
+def test_matmul_int_die():
+    assert 2 @ hdroller.d6 == hdroller.d6 + hdroller.d6
+
+def test_matmul_die_die():
+    assert hdroller.die(2) @ hdroller.d6 == hdroller.d6 + hdroller.d6
