@@ -156,7 +156,7 @@ class PoolEval(ABC):
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is None: continue
                     result[state] += prev_weight * prod_weight
-
+        
         self._cache[cache_key] = result
         return result
     

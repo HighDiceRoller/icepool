@@ -118,26 +118,26 @@ class BaseDie():
     
     def weight_le(self, outcome):
         """ Returns the weight <= a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self): return self.total_weight()
+        index = bisect.bisect_right(self.outcomes(), outcome) - 1
+        if index < 0: return 0
         return self.cweights()[index]
         
     def weight_lt(self, outcome):
         """ Returns the weight < a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self): return self.total_weight()
+        index = bisect.bisect_left(self.outcomes(), outcome) - 1
+        if index < 0: return 0
         return self.cweights()[index]
         
     def weight_ge(self, outcome):
         """ Returns the weight >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self): return self.total_weight()
+        if index >= len(self): return 0
         return self.sweights()[index]
         
     def weight_gt(self, outcome):
         """ Returns the weight > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self): return self.total_weight()
+        if index >= len(self): return 0
         return self.sweights()[index]
     
     def probability(self, outcome):

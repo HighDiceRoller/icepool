@@ -38,7 +38,7 @@ def test_keep_highest_zero_weights(num_keep):
     assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_highest_mixed_drop_highest(num_keep):
+def test_keep_highest_drop_highest(num_keep):
     die = hdroller.d12
     result = die.keep_highest(4, num_keep, num_drop=1)
     expected = bf_keep_highest(die, 4, num_keep, num_drop=1)
@@ -52,7 +52,7 @@ def test_keep_lowest(num_keep):
     assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_lowest_mixed_drop_highest(num_keep):
+def test_keep_lowest_drop_highest(num_keep):
     die = hdroller.d12
     result = die.keep_lowest(4, num_keep, num_drop=1)
     expected = bf_keep_lowest(die, 4, num_keep, num_drop=1)
@@ -69,4 +69,12 @@ def test_max_outcomes():
     die = hdroller.d12
     result = die.keep(max_outcomes=[8, 6])
     expected = hdroller.d8 + hdroller.d6
+    assert result == expected
+
+def test_mixed_keep_highest():
+    die = hdroller.d12
+    result = die.keep_highest(max_outcomes=[8, 6, 4], num_keep=2)
+    def func(*outcomes):
+        return sum(sorted(outcomes)[-2:])
+    expected = hdroller.apply(func, hdroller.d8, hdroller.d6, hdroller.d4)
     assert result == expected

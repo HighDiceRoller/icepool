@@ -39,7 +39,7 @@ def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
             min_outcomes = (die.min_outcome(),) * num_dice
             raise NotImplementedError('min_outcomes not yet implemented for pools.')
     elif min_outcomes is not None:
-        min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
+        min_outcomes = tuple(sorted((max(outcome, die.min_outcome()) for outcome in min_outcomes), reverse=True))
         num_dice = len(min_outcomes)
         raise NotImplementedError('min_outcomes not yet implemented for pools.')
     else:  # max_outcomes is not None

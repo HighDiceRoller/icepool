@@ -1,7 +1,7 @@
 import _context
 
 import numpy
-from hdroller import Die
+import hdroller
 import hdroller.tournament
 
 from functools import cached_property
@@ -18,10 +18,14 @@ num_drops_and_keeps = [
 ]
 max_keep = max(k for d, k in num_drops_and_keeps)
 
-reference_die = Die.d12.relabel({1: 0})
+reference_die = hdroller.d12.relabel({1: 0})
 base_dice = [12, 10, 8, 6, 4]
 
-gm_pools = [Die.d6.relabel({1: 0}), 2 * Die.d6.relabel({1: 0}), 2 * Die.d8.relabel({1: 0}), 2 * Die.d10.relabel({1: 0}), 2 * Die.d12.relabel({1: 0})]
+gm_pools = [hdroller.d6.relabel({1: 0}),
+            2 @ hdroller.d6.relabel({1: 0}),
+            2 @ hdroller.d8.relabel({1: 0}),
+            2 @ hdroller.d10.relabel({1: 0}),
+            2 @ hdroller.d12.relabel({1: 0})]
 
 class Pool():
     def __init__(self, pool_comp, num_drop, num_keep):
@@ -39,16 +43,16 @@ class Pool():
 
     @cached_property
     def sum_die(self):
-        result = reference_die.keep_highest(self.dice, num_keep=self.num_keep, num_drop=self.num_drop)
+        result = reference_die.keep_highest(max_outcomes=self.dice, num_keep=self.num_keep, num_drop=self.num_drop)
         return result
 
     @cached_property
     def hitch_chance(self):
-        return reference_die.keep_lowest(self.dice, num_keep=1).probability(0)
+        return reference_die.keep_lowest(max_outcomes=self.dice, num_keep=1).probability(0)
 
     @cached_property
     def multi_hitch_chance(self):
-        return reference_die.keep_lowest(self.dice, num_keep=2).probability(0)
+        return reference_die.keep_lowest(max_outcomes=self.dice, num_keep=2).probability(0)
 
 def iter_pool_comps(max_pool_size, partial=()):
     if len(partial) == 5:
@@ -88,10 +92,10 @@ for pool, vs_gm in zip(pools, vs_gms):
     result += ',%0.2f%%' % (pool.hitch_chance * 100.0)
     result += ',%0.2f%%' % (pool.multi_hitch_chance * 100.0)
     
-    for x in vs_gm: result += ',%0.2f%%' % (float(x) * 100.0)
+    for x in vs_gm: result += ',%0.2f%%' % (x.mean() * 100.0)
     
-    for p in pool.sum_die.sf()[2:]: result += ',%0.2f%%' % (p * 100.0)
-    result += ',' * (12 * max_keep + 1 - len(pool.sum_die))
+    for p in pool.sum_die.sf()[1:]: result += ',%0.2f%%' % (p * 100.0)
+    result += ',' * (12 * max_keep - len(pool.sum_die))
     result += '\n'
 
 with open('output/cortex.csv', mode='w') as outfile:
