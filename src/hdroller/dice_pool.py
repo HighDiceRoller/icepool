@@ -103,6 +103,13 @@ class DicePool():
             yield None, remaining_selected_dice, weight
             return
         
+        if popped_die.total_weight() == 0:
+            # This is the last outcome with positive weight. All dice must roll this outcome.
+            weight = single_weight ** num_possible_dice
+            pool = _pool_cached_unchecked(popped_die, (), None, ())
+            yield pool, remaining_selected_dice, weight
+            return
+        
         if remaining_selected_dice == 0:
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.

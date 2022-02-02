@@ -31,6 +31,13 @@ def test_keep_highest(num_keep):
     assert result == expected
 
 @pytest.mark.parametrize('num_keep', range(1, 6))
+def test_keep_highest_zero_weights(num_keep):
+    die = hdroller.die([0, 0, 1, 1, 1, 1], min_outcome=0, remove_zero_weights=True)
+    result = die.keep_highest(4, num_keep)
+    expected = bf_keep_highest(die, 4, num_keep)
+    assert result == expected
+
+@pytest.mark.parametrize('num_keep', range(1, 6))
 def test_keep_highest_mixed_drop_highest(num_keep):
     die = hdroller.d12
     result = die.keep_highest(4, num_keep, num_drop=1)
