@@ -40,7 +40,7 @@ class BaseDie():
         
         The other operand is cast to a die (using `hdroller.die`) before performing the operation.
         
-        This is used for the operators `+, -, /, //, %, **, <, <=, >=, >`.
+        This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >`.
         
         This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
