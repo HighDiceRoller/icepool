@@ -379,12 +379,16 @@ class BaseDie():
     def relabel(self, relabeling):
         """ Changes outcomes of the die to other outcomes.
         
+        Outcomes can be changed to other dice.
+        This means you can use this method to roll one die,
+        and then choose a second die based on the result of the first die.
+        
         Args:
             relabeling: One of the following:
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
-                A die may be provided instead of a single new outcome.
+                The new outcomes may be dice rather than just single outcomes.
         
         Returns:
             The relabeled die.
