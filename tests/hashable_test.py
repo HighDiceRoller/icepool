@@ -5,5 +5,5 @@ import pytest
 
 def test_dict():
     d = {}
-    d[hdroller.pool(hdroller.d6, 5)] = 100
-    assert d[hdroller.pool(hdroller.d6, 5)] == 100
+    d[hdroller.Pool(hdroller.d6, 5)] = 100
+    assert d[hdroller.Pool(hdroller.d6, 5)] == 100

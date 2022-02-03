@@ -80,12 +80,12 @@ def test_mixed_keep_highest():
     assert result.equals(expected)
     
 def test_pool_select():
-    pool = hdroller.pool(hdroller.d6, 5)
+    pool = hdroller.Pool(hdroller.d6, 5)
     assert pool[-2].select_dice() == (False, False, False, True, False)
     assert pool[-2:].select_dice() == (False, False, False, True, True)
-    assert pool[-2:] == hdroller.pool(hdroller.d6, 5, select_dice=slice(-2, None))
+    assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, select_dice=slice(-2, None))
     assert pool[-2:][:1] == pool[-2]
 
 def test_pool_select_all():
-    pool = hdroller.pool(hdroller.d6, 5)
+    pool = hdroller.Pool(hdroller.d6, 5)
     assert pool[-2].select_all_dice() == pool

@@ -28,7 +28,7 @@ class CthulhuTechEval(hdroller.PoolEval):
     return prev_state[0]
 
 import cProfile
-cProfile.run('CthulhuTechEval().eval(hdroller.pool(hdroller.d10, 10))')
+cProfile.run('CthulhuTechEval().eval(hdroller.Pool(hdroller.d10, 10))')
 
 import numpy
 import matplotlib.pyplot as plt
@@ -41,7 +41,7 @@ figsize = (16, 9)
 fig, ax = plt.subplots(figsize=figsize)
 
 for i in range(1, 11):
-  pool = hdroller.pool(hdroller.d10, i)
+  pool = hdroller.Pool(hdroller.d10, i)
   result = evaluator.eval(pool)
   ax.plot(result.outcomes(), numpy.array(result.sf()) * 100.0)
   marker_size = 64 if i < 10 else 128

@@ -18,6 +18,6 @@ class AllSetsEval(hdroller.PoolEval):
 die = hdroller.d10
 
 for num_dice in range(2, 13):
-    result = AllSetsEval().eval(hdroller.pool(die, num_dice))
+    result = AllSetsEval().eval(hdroller.Pool(die, num_dice))
     print(result)
 

@@ -8,8 +8,12 @@ import bisect
 from functools import cached_property
 import math
 
-def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
-    """ Constructor for dice pools.
+def Pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+    """ Factory function for dice pools.
+    
+    This is capitalized because it is the preferred way of getting a new instance,
+    and so that you can use `from hdroller import Pool` while leaving the name `pool` free.
+    The name of the actual class is `DicePool`.
     
     Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
     This will also determine whether the outcomes are evaluated by `PoolEval.next_state()`
@@ -63,7 +67,7 @@ def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
 class DicePool():
     def __init__(self, die, select_dice, min_outcomes, max_outcomes):
         """ Unchecked constructor. """
-        self.dice = die
+        self._die = die
         self._select_dice = select_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
@@ -85,7 +89,7 @@ class DicePool():
         return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     def die(self):
-        return self.dice
+        return self._die
         
     def select_dice(self):
         return self._select_dice
