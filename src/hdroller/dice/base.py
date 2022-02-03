@@ -574,7 +574,7 @@ class BaseDie():
         This may remove outcomes or add zero-weight outcomes.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.dice.func.die(data, ndim=self.ndim(), trim=False)
+        return hdroller.dice.func.die(data, ndim=self.ndim())
     
     def trim(self):
         """ Removes all zero-weight outcomes from self. """

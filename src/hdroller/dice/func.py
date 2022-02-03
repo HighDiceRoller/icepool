@@ -11,7 +11,7 @@ from collections import defaultdict
 import itertools
 import math
 
-def die(arg, min_outcome=None, ndim=None, trim=True):
+def die(arg, min_outcome=None, ndim=None):
     """ General-purpose constructor for a die.
     
     Don't confuse this with `hdroller.d()`:
@@ -38,10 +38,8 @@ def die(arg, min_outcome=None, ndim=None, trim=True):
         ndim: If provided, the die will have the given number of dimensions.
             E.g. for `str` outcomes you may want to set `ndim=1`, which will
             treat e.g. `'abc' + 'def'` as `'abcdef'` rather than `('ad', 'be', 'cf')`.
-        trim: If `True`, zero weights will be filtered out.
-            This should be left at `True` for most cases.
     """
-    data = _make_data(arg, min_outcome, trim)
+    data = _make_data(arg, min_outcome)
         
     ndim = _calc_ndim(data, ndim)
     
@@ -52,7 +50,7 @@ def die(arg, min_outcome=None, ndim=None, trim=True):
     else:
         return hdroller.dice.multi.MultiDie(data, ndim)
 
-def _make_data(arg, min_outcome=None, trim=True):
+def _make_data(arg, min_outcome=None):
     """ Creates a `FrozenSortedWeights` from the arguments. """
     if isinstance(arg, hdroller.dice.base.BaseDie):
         data = arg._data
@@ -70,7 +68,7 @@ def _make_data(arg, min_outcome=None, trim=True):
         # Treat arg as the only possible value.
         data = { arg : 1 }
     
-    return FrozenSortedWeights(data, trim)
+    return FrozenSortedWeights(data)
     
 
 def _calc_ndim(data, ndim):

@@ -7,23 +7,19 @@ class FrozenSortedWeights():
     
     keys(), values(), and items() return tuples, which are subscriptable.
     """
-    def __init__(self, d, trim=True):
+    def __init__(self, d):
         """
         Args:
             d: A dictionary of ints.
-            trim: If True, zero weights will be omitted.
         """
         for key, value in d.items():
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' + type(value).__name__)
             if value < 0:
                 raise ValueError('Values must not be negative.')
-        if trim:
-            self._d = { k : d[k] for k in sorted(d.keys()) if d[k] > 0 }
-            self._has_zero_weights = False
-        else:
-            self._d = { k : d[k] for k in sorted(d.keys()) }
-            self._has_zero_weights = 0 in d.values()
+        
+        self._d = { k : d[k] for k in sorted(d.keys()) }
+        self._has_zero_weights = 0 in d.values()
     
     def has_zero_weights(self):
         """ Returns `True` iff `self` contains at least one zero weight. """
