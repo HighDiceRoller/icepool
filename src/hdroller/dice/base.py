@@ -381,7 +381,6 @@ class BaseDie():
         
         Args:
             relabeling: One of the following:
-                * An array-like containing relabelings, one for each outcome in order.
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
@@ -404,7 +403,7 @@ class BaseDie():
             max_depth: The maximum number of additional dice to roll.
             outcomes: Which outcomes to explode. Options:
                 * An iterable containing outcomes to explode.
-                * If not supplied, the top single outcome will explode with full probability.
+                * If not supplied, the top single outcome will explode.
         """
         if max_depth < 0:
             raise ValueError('max_depth cannot be negative.')
