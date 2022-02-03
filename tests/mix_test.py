@@ -8,7 +8,9 @@ Tests hdroller.mix() and its derivatives.
 """
 
 def test_mix_d6_faces():
-    assert hdroller.mix(1, 2, 3, 4, 5, 6) == hdroller.d6
+    result = hdroller.mix(1, 2, 3, 4, 5, 6)
+    expected = hdroller.d6
+    assert result.equals(expected)
 
 def test_mix_identical():
     assert hdroller.mix(hdroller.d6, hdroller.d6, hdroller.d6, hdroller.d6).pmf() == pytest.approx(hdroller.d6.pmf())
@@ -16,7 +18,9 @@ def test_mix_identical():
 def test_mix_weight():
     outcomes = range(2, 13)
     mix_weights = [1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
-    assert hdroller.mix(*outcomes, mix_weights=mix_weights) == 2 @ hdroller.d6
+    result = hdroller.mix(*outcomes, mix_weights=mix_weights)
+    expected = 2 @ hdroller.d6
+    assert result.equals(expected)
     
 def test_mix_mixed():
     die = hdroller.mix(hdroller.d4, hdroller.d6)

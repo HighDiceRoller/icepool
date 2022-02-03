@@ -4,22 +4,44 @@ import hdroller
 import pytest
 
 def test_lt():
-    assert (hdroller.d6 < hdroller.d6) == hdroller.bernoulli(15, 36)
+    result = hdroller.d6 < hdroller.d6
+    expected = hdroller.bernoulli(15, 36)
+    assert result.equals(expected)
 
 def test_gt():
-    assert (hdroller.d6 > hdroller.d6) == hdroller.bernoulli(15, 36)
+    result = hdroller.d6 > hdroller.d6
+    expected = hdroller.bernoulli(15, 36)
+    assert result.equals(expected)
 
 def test_leq():
-    assert (hdroller.d6 <= hdroller.d6) == hdroller.bernoulli(21, 36)
+    result = hdroller.d6 <= hdroller.d6
+    expected = hdroller.bernoulli(21, 36)
+    assert result.equals(expected)
 
 def test_geq():
-    assert (hdroller.d6 >= hdroller.d6) == hdroller.bernoulli(21, 36)
-    
+    result = hdroller.d6 >= hdroller.d6
+    expected = hdroller.bernoulli(21, 36)
+    assert result.equals(expected)
+
+def test_eq():
+    result = hdroller.d6 == hdroller.d6
+    expected = hdroller.bernoulli(6, 36)
+    assert result.equals(expected)
+
+def test_ne():
+    result = hdroller.d6 != hdroller.d6
+    expected = hdroller.bernoulli(30, 36)
+    assert result.equals(expected)
+
 def test_sign():
-    assert (hdroller.d6 - 3).sign() == hdroller.die([2, 1, 3], min_outcome=-1)
+    result = (hdroller.d6 - 3).sign()
+    expected = hdroller.die([2, 1, 3], min_outcome=-1)
+    assert result.equals(expected)
 
 def test_cmp():
-    assert hdroller.d6.cmp(hdroller.d6 - 1) == hdroller.die([10, 5, 21], min_outcome=-1)
+    result = hdroller.d6.cmp(hdroller.d6 - 1)
+    expected = hdroller.die([10, 5, 21], min_outcome=-1)
+    assert result.equals(expected)
 
 def test_weight_le():
     assert hdroller.d6.weight_le(3) == 3

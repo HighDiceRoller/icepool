@@ -19,8 +19,8 @@ def test_explode_d6(max_depth):
     result = hdroller.d6.explode(max_depth)
     result_int = hdroller.d6.explode(max_depth, outcomes=[6])
     expected = bf_explode_basic(hdroller.d6, max_depth)
-    assert result == expected
-    assert result_int == expected
+    assert result.equals(expected)
+    assert result_int.equals(expected)
 
 """
 def test_explode_chance():
@@ -45,12 +45,12 @@ def test_explode_chance_weights():
 def test_reroll():
     result = hdroller.d6.reroll(1)
     expected = hdroller.d5 + 1
-    assert result == expected
+    assert result.equals(expected)
     
 def test_reroll_2():
     result = hdroller.d6.reroll(1, 2)
     expected = hdroller.d4 + 2
-    assert result == expected
+    assert result.equals(expected)
 
 """
 def test_reroll_partial():
@@ -62,7 +62,7 @@ def test_reroll_partial():
 def test_reroll_limit():
     result = hdroller.d4.reroll(1, max_depth=1)
     expected = hdroller.die([1, 5, 5, 5], 1)
-    assert result == expected
+    assert result.equals(expected)
 
 def test_infinite_reroll():
-    assert hdroller.d4.reroll(1, 2, 3, 4) is None
+    assert len(hdroller.d4.reroll(1, 2, 3, 4)) == 0

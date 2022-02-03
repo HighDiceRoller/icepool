@@ -45,20 +45,19 @@ class BaseDie():
         
         The other operand is cast to a die (using `hdroller.die`) before performing the operation.
         
-        This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >`.
+        This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >, ==, !=`.
         Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.
         
         This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
         
+        The operators `<<, >>` are not implemented.
+        
         Special operators:
             * The `@` operator rolls the left die, then rolls the right die that many times and sums the outcomes.
                 Only the left side will be cast to a die; the right side must already be a die.
-            * The `==` operator returns `True` iff the two dice have identical outcomes, weights, and `ndim`.
-                To get the chance of the two dice rolling the same outcome, use the `eq` method.
-            * The `!=` operator returns `True` iff the two dice do not have identical outcomes, weights, and `ndim`.
-                To get the chance of the two dice rolling the same outcome, use the `ne` method.
-        
-        The operators `<<, >>` are not implemented.
+            * `==` and `!=` are applied across outcomes like the other operators.
+                Unfortunately this means dice are not hashable by normal means.
+                Custom functions can use `key_tuple()`, `equals()` and `hash()` as workarounds.
         """
         
     # Construction.
@@ -285,19 +284,11 @@ class BaseDie():
         other = hdroller.die(other)
         return self.binary_op(other, operator.gt)
     
-    def eq(self, other):
-        """ The chance that the two dice will roll equal to each other.
-        
-        Note that `__eq__` is taken up by the dice being equal, as opposed to the chance of their outcomes being equal.
-        """
+    def __eq__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.eq)
     
-    def ne(self, other):
-        """ The chance that the two dice will roll not equal to each other.
-        
-        Note that `__ne__` is taken up by the dice being equal, as opposed to the chance of their outcomes being not equal.
-        """
+    def __ne__(self, other):
         other = hdroller.die(other)
         return self.binary_op(other, operator.ne)
     
@@ -459,8 +450,6 @@ class BaseDie():
         
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
-            if len(data) == 0:
-                return None
         else:
             total_reroll_weight = sum(weight for outcome, weight in self.items() if outcome in outcomes )
             rerollable_factor = total_reroll_weight ** max_depth
@@ -737,25 +726,31 @@ class BaseDie():
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
     
-    # Hashing and equality.
+    # Equality and hashing.
     
     @cached_property
     def _key_tuple(self):
         return self.ndim(), tuple(self.items())
         
-    def __eq__(self, other):
-        """ Returns `True` iff this die has the same outcomes, weights, and `ndim` as the other die.
+    def key_tuple(self):
+        """ Returns a tuple that uniquely (as `equal()`) identifies this die. """
+        return self._key_tuple
+
+    def hash(self):
+        """ A true __hash__ doesn't work because we used the __eq__ operator 
+        for determining the chance two dice will roll equal to each other.
         
-        Note that fractions are NOT reduced for this comparison.
-        For example, a 1:1 coin flip is NOT considered == to a 2:2 coin flip.
+        See `hdroller.functools.die_cache` for an example.
         """
-        if not isinstance(other, BaseDie): return False
-        return self._key_tuple == other._key_tuple
-    
-    @cached_property
-    def _hash(self):
-        return hash(self._key_tuple)
+        return hash(self.key_tuple())
+
+    def equals(self, other):
+        """ Returns `True` iff both dice have the same ndim, outcomes, and weights.
         
-    def __hash__(self):
-        return self._hash
-    
+        Note that dice are not reduced, e.g. a 2:2 coin is not `equals()` to a 1:1 coin. 
+        Zero-weight outcomes are also considered for the purposes of `equals()`.
+        
+        For the chance of two dice rolling the same as each other, use the == operator.
+        """
+        other = hdroller.die(other)
+        return self.key_tuple() == other.key_tuple()

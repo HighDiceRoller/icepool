@@ -2,9 +2,10 @@ __docformat__ = 'google'
 
 import hdroller.indexing
 import hdroller.math
+from hdroller.functools import die_cache
 
 import bisect
-from functools import cache, cached_property
+from functools import cached_property
 import math
 
 def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
@@ -55,7 +56,7 @@ def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
     
     return DicePool(die, select_dice, min_outcomes, max_outcomes)
 
-@cache
+@die_cache
 def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
     return DicePool(die, select_dice, min_outcomes, max_outcomes)
 
@@ -165,7 +166,7 @@ class DicePool():
     
     @cached_property
     def _key_tuple(self):
-        return self.die(), self.min_outcomes(), self.max_outcomes(), self.select_dice()
+        return self.die().key_tuple(), self.min_outcomes(), self.max_outcomes(), self.select_dice()
     
     def __eq__(self, other):
         if not isinstance(other, DicePool): return False
