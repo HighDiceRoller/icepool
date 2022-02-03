@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from functools import cached_property
 
-class FrozenSortedWeights():
+class Weights():
     """Immutable sorted dictionary whose values are integers.
     
     keys(), values(), and items() return tuples, which are subscriptable.

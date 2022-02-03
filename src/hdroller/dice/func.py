@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import hdroller
-from hdroller.collections import FrozenSortedWeights
+from hdroller.collections import Weights
 import hdroller.dice.base
 import hdroller.dice.multi
 import hdroller.dice.single
@@ -55,10 +55,10 @@ def Die(arg, min_outcome=None, ndim=None):
         return hdroller.dice.multi.MultiDie(data, ndim)
 
 def _make_data(arg, min_outcome=None):
-    """ Creates a `FrozenSortedWeights` from the arguments. """
+    """ Creates a `Weights` from the arguments. """
     if isinstance(arg, hdroller.dice.base.BaseDie):
         data = arg._data
-    elif isinstance(arg, FrozenSortedWeights):
+    elif isinstance(arg, Weights):
         data = arg
     elif min_outcome is not None:
         data = { min_outcome + i : weight for i, weight in enumerate(arg) }
@@ -72,14 +72,14 @@ def _make_data(arg, min_outcome=None):
         # Treat arg as the only possible value.
         data = { arg : 1 }
     
-    return FrozenSortedWeights(data)
+    return Weights(data)
     
 
 def _calc_ndim(data, ndim):
     """Verifies `ndim` if provided, or calculates it if not.
     
     Args:
-        data: A `FrozenSortedWeights`.
+        data: A `Weights`.
         ndim: If provided, `ndims` will be set to this value.
         
     Returns:

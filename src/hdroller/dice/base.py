@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import hdroller
-from hdroller.collections import FrozenSortedWeights
+from hdroller.collections import Weights
 
 from abc import ABC, abstractmethod
 import bisect
@@ -72,7 +72,7 @@ class BaseDie():
         (which are imported into the top-level `hdroller` module).
         
         Args:
-            data: A `FrozenSortedWeights` mapping outcomes to weights.
+            data: A `Weights` mapping outcomes to weights.
             ndim: The number of dimensions of the outcomes.
         """
         self._data = data
