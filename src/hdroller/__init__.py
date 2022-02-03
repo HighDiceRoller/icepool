@@ -26,4 +26,5 @@ __all__ = ['Die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'from_cweights', 'from_sweights', 'from_rv', 'mix', 'align', 'align_range',
     'min', 'max', 'min_outcome', 'max_outcome',
     'apply',
-    'Pool', 'PoolEval', 'PoolSum', 'pool_sum', 'PoolMatchingSet']
+    'Pool', 'PoolEval', 'PoolSum', 'pool_sum', 'PoolMatchingSet',
+    'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']

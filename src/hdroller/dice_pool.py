@@ -35,6 +35,8 @@ def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=Non
             You can also use the [] operator to select dice from an existing pool.
             For example, you could construct the pool first and then index it with `[-2:]`.
         reverse: Only valid if `num_dice` is provided.
+            If not `True` (default), the outcomes will be evaluated in ascending order.
+            If `True`, outcomes will be evaluated in descending order.
     """
     if (num_dice is not None) + (min_outcomes is not None) + (max_outcomes is not None) != 1:
         raise ValueError('Exactly one of num_dice, min_outcomes, or max_outcomes must be provided.')
@@ -77,22 +79,6 @@ class DicePool():
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
     
-    def select_all_dice(self):
-        """ Returns a pool with all dice selected. """
-        return DicePool(self.die(), (True,) * self.num_dice(), self.min_outcomes(), self.max_outcomes())
-    
-    def __getitem__(self, select_dice):
-        """ Returns a pool with only selected dice counted. 
-        
-        If a selection was already applied to the pool, this is applied only to the previously selected dice.
-        For example, pool[-2:][:1] would select the top two dice, then the bottom die of those,
-        with the final result being a pool with the second-highest die counted.
-        """
-        prev_indexes = tuple(i for i, selected in enumerate(self.select_dice()) if selected)
-        new_indexes = hdroller.indexing.select_from(prev_indexes, select_dice)
-        new_select = hdroller.indexing.select_bools(self.num_dice(), new_indexes)
-        return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
-    
     def die(self):
         return self._die
         
@@ -107,13 +93,22 @@ class DicePool():
         
     def max_outcomes(self):
         return self._max_outcomes
+        
+    def direction(self):
+        """ Returns 1 if the outcomes are evaluated in ascending order, 
+        or -1 if they are evaluated in descending order.
+        """
+        if self.max_outcomes() is not None:
+            return 1
+        else:
+            return -1
     
     def _iter_pops(self):
         """
         Yields:
             From 0 to the number of dice that can roll this outcome inclusive:
             * pool: A `DicePool` resulting from removing that many dice from this `DicePool`, while also removing the max outcome.
-                If there is only one outcome remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
+                If there is only one outcome with weight remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
                 If the outcome has zero weight, only one result will be yielded, corresponding to zero dice rolling that outcome.
                 If there are no outcomes remaining, this will be `None`.
             * count: An `int` indicating the number of selected dice that rolled the removed outcome.
@@ -165,6 +160,22 @@ class DicePool():
                 popped_select_dice = popped_select_dice[:-1]
                 pool = _pool_cached_unchecked(popped_die, popped_select_dice, None, popped_max_outcomes)
                 yield pool, count, weight
+    
+    def select_all_dice(self):
+        """ Returns a pool with all dice selected. """
+        return DicePool(self.die(), (True,) * self.num_dice(), self.min_outcomes(), self.max_outcomes())
+    
+    def __getitem__(self, select_dice):
+        """ Returns a pool with only selected dice counted. 
+        
+        If a selection was already applied to the pool, this is applied only to the previously selected dice.
+        For example, pool[-2:][:1] would select the top two dice, then the bottom die of those,
+        with the final result being a pool with the second-highest die counted.
+        """
+        prev_indexes = tuple(i for i, selected in enumerate(self.select_dice()) if selected)
+        new_indexes = hdroller.indexing.select_from(prev_indexes, select_dice)
+        new_select = hdroller.indexing.select_bools(self.num_dice(), new_indexes)
+        return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     @cached_property
     def _pops(self):

@@ -148,7 +148,7 @@ def d(arg):
         raise TypeError('The argument to d() must be an int or a die.')
 
 def __getattr__(key):
-    """ Implements the `dX` syntax, e.g. `hdroller.d6`. """
+    """ Implements the `dX` syntax for standard die with no parentheses, e.g. `hdroller.d6`. """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
