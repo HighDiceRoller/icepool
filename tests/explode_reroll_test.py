@@ -24,8 +24,8 @@ def test_explode_d6(max_depth):
 
 """
 def test_explode_chance():
-    result = hdroller.die(hdroller.d10 >= 8).explode(3, {1 : 1/3})
-    expected = hdroller.die([1.0 - 0.3,
+    result = hdroller.Die(hdroller.d10 >= 8).explode(3, {1 : 1/3})
+    expected = hdroller.Die([1.0 - 0.3,
                     0.3 - 0.03,
                     0.03 - 0.003,
                     0.003 - 0.0003,
@@ -34,7 +34,7 @@ def test_explode_chance():
 
 def test_explode_chance_weights():
     result = Die.mix([0]*7 + [1]*3).explode(3, {1 : 1/3})
-    expected = hdroller.die([1.0 - 0.3,
+    expected = hdroller.Die([1.0 - 0.3,
                     0.3 - 0.03,
                     0.03 - 0.003,
                     0.003 - 0.0003,
@@ -61,7 +61,7 @@ def test_reroll_partial():
 
 def test_reroll_limit():
     result = hdroller.d4.reroll(1, max_depth=1)
-    expected = hdroller.die([1, 5, 5, 5], 1)
+    expected = hdroller.Die([1, 5, 5, 5], 1)
     assert result.equals(expected)
 
 def test_infinite_reroll():

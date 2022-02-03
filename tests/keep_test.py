@@ -7,13 +7,13 @@ max_tuple_length = 5
 max_num_values = 5
 
 def bf_keep_highest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return hdroller.die(0)
+    if num_keep == 0: return hdroller.Die(0)
     def func(*outcomes):
         return sum(sorted(outcomes)[-(num_keep+num_drop):len(outcomes)-num_drop])
     return hdroller.apply(func, *([die] * num_dice))
     
 def bf_keep_lowest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return hdroller.die(0)
+    if num_keep == 0: return hdroller.Die(0)
     def func(*outcomes):
         return sum(sorted(outcomes)[num_drop:num_keep+num_drop])
     return hdroller.apply(func, *([die] * num_dice))
@@ -32,7 +32,7 @@ def test_keep_highest(num_keep):
 
 @pytest.mark.parametrize('num_keep', range(1, 6))
 def test_keep_highest_zero_weights(num_keep):
-    die = hdroller.die([0, 0, 1, 1, 1, 1], min_outcome=0)
+    die = hdroller.Die([0, 0, 1, 1, 1, 1], min_outcome=0)
     result = die.keep_highest(4, num_keep).trim()
     expected = bf_keep_highest(hdroller.d4 + 1, 4, num_keep)
     assert result.equals(expected)

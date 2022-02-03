@@ -20,7 +20,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
-        return hdroller.die(data, ndim=1)
+        return hdroller.Die(data, ndim=1)
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
@@ -28,7 +28,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
-        return hdroller.die(data, ndim=1)
+        return hdroller.Die(data, ndim=1)
     
     # Special operators.
     
@@ -41,7 +41,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         if isinstance(other, int):
             other = hdroller.standard(other)
         else:
-            other = hdroller.die(other)
+            other = hdroller.Die(other)
         
         subresults = []
         subresult_weights = []
@@ -60,7 +60,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
             for outcome, weight in subresult.items():
                 data[outcome] += weight * subresult_weight
             
-        return hdroller.die(data, ndim=other.ndim())
+        return hdroller.Die(data, ndim=other.ndim())
     
     def __matmul__(self, other):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
@@ -172,4 +172,4 @@ class SingleDie(hdroller.dice.base.BaseDie):
             outcomes, weights = zip(*t)
             data[outcomes] += math.prod(weights)
         
-        return hdroller.die(data)
+        return hdroller.Die(data)

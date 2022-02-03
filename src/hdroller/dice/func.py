@@ -11,20 +11,24 @@ from collections import defaultdict
 import itertools
 import math
 
-def die(arg, min_outcome=None, ndim=None):
-    """ General-purpose constructor for a die.
+def Die(arg, min_outcome=None, ndim=None):
+    """ Factory for constructing a die.
+    
+    This is capitalized because it is the preferred way of getting a new instance,
+    and so that you can use `from hdroller import Die` while leaving the name `die` free.
+    The actual class of the result will be one of the subclasses of `BaseDie`.
     
     Don't confuse this with `hdroller.d()`:
     
-    * `hdroller.die(6)`: A die that always rolls the integer 6.
+    * `hdroller.Die(6)`: A die that always rolls the integer 6.
     * `hdroller.d(6)`: A d6.
     
     Here are different ways to create a d6:'
     
-    * Provide the die itself: `hdroller.die(hdroller.d6)`
-    * Provide a mapping from outcomes to weights: `hdroller.die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
-    * Provide a sequence of outcomes: `hdroller.die([1, 2, 3, 4, 5, 6])`
-    * Provide a consecutive sequence of weights with a minimum outcome: `hdroller.die([1, 1, 1, 1, 1, 1], min_outcome=1)`
+    * Provide the die itself: `hdroller.Die(hdroller.d6)`
+    * Provide a mapping from outcomes to weights: `hdroller.Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
+    * Provide a sequence of outcomes: `hdroller.Die([1, 2, 3, 4, 5, 6])`
+    * Provide a consecutive sequence of weights with a minimum outcome: `hdroller.Die([1, 1, 1, 1, 1, 1], min_outcome=1)`
     
     Args:
         arg: This can be one of the following, with examples of how to create a d6:
@@ -111,16 +115,16 @@ def standard(num_sides):
     
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
     
-    Don't confuse this with `hdroller.die()`:
+    Don't confuse this with `hdroller.Die()`:
     
-    * `hdroller.die(6)`: A die that always rolls the integer 6.
+    * `hdroller.Die(6)`: A die that always rolls the integer 6.
     * `hdroller.d(6)`: A d6.
     """
     if not isinstance(num_sides, int):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return die([1] * num_sides, min_outcome=1)
+    return Die([1] * num_sides, min_outcome=1)
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -154,7 +158,7 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return die({False : d - n, True : n})
+    return Die({False : d - n, True : n})
 
 coin = bernoulli
 
@@ -166,7 +170,7 @@ def from_cweights(outcomes, cweights, ndim=None):
         if weight - prev > 0:
             d[outcome] = weight - prev
             prev = weight
-    return die(d, ndim=ndim)
+    return Die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, ndim=None):
     """ Constructs a die from survival weights. """
@@ -178,7 +182,7 @@ def from_sweights(outcomes, sweights, ndim=None):
             weight = sweights[i]
         if weight > 0:
             d[outcome] = weight
-    return die(d, ndim=ndim)
+    return Die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """ Constructs a die from a rv object (as `scipy.stats`).
@@ -228,7 +232,7 @@ def mix(*dice, mix_weights=None):
         factor = mix_weight * weight_product // d.total_weight()
         for outcome, weight in zip(d.outcomes(), d.weights()):
             data[outcome] += weight * factor
-    return die(data, ndim=ndim)
+    return Die(data, ndim=ndim)
 
 def align(*dice):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
@@ -242,14 +246,14 @@ def align(*dice):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    dice = [hdroller.die(d) for d in dice]
+    dice = [hdroller.Die(d) for d in dice]
     hdroller.BaseDie._check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(union_outcomes) for die in dice)
 
 def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice = [hdroller.die(d) for d in dice]
+    dice = [hdroller.Die(d) for d in dice]
     hdroller.BaseDie._check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -267,10 +271,10 @@ def apply(func, *dice, ndim=None):
     Returns:
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
-    dice = [die(d) for d in dice]
+    dice = [Die(d) for d in dice]
     data = defaultdict(int)
     for t in itertools.product(*(d.items() for d in dice)):
         outcomes, weights = zip(*t)
         data[func(*outcomes)] += math.prod(weights)
     
-    return die(data, ndim=ndim)
+    return Die(data, ndim=ndim)

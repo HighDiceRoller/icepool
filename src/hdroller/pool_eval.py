@@ -125,7 +125,7 @@ class PoolEval(ABC):
         if ndim is None:
             ndim = self.ndim(*pools)
         
-        return hdroller.die(final_dist, ndim=ndim)
+        return hdroller.Die(final_dist, ndim=ndim)
     
     def _eval_internal(self, initial_state, *pools):
         """

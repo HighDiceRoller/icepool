@@ -22,7 +22,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         for outcome, weight in self.items():
             new_outcome = tuple(op(x, *args, **kwargs) for x in outcome)
             data[new_outcome] += weight
-        return hdroller.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
@@ -31,7 +31,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
             data[new_outcome] += weight_self * weight_other
-        return hdroller.die(data, ndim=ndim)
+        return hdroller.Die(data, ndim=ndim)
     
     def __getitem__(self, select):
         """ Slices the dimensions of the die. """
@@ -41,7 +41,7 @@ class MultiDie(hdroller.dice.base.BaseDie):
         for outcome, weight in self.items():
             data[hdroller.indexing.select_from(outcome, select)] = weight
         
-        result = hdroller.die(data, ndim=ndim)
+        result = hdroller.Die(data, ndim=ndim)
         return result
     
     # Statistics.

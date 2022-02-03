@@ -5,13 +5,13 @@ import pytest
 
 def test_align_range_symmetric_difference():
     a, b = hdroller.align_range(hdroller.d4, hdroller.d6 + 1)
-    assert a.equals(hdroller.die([1, 1, 1, 1, 0, 0, 0], min_outcome=1))
-    assert b.equals(hdroller.die([0, 1, 1, 1, 1, 1, 1], min_outcome=1))
+    assert a.equals(hdroller.Die([1, 1, 1, 1, 0, 0, 0], min_outcome=1))
+    assert b.equals(hdroller.Die([0, 1, 1, 1, 1, 1, 1], min_outcome=1))
 
 def test_align_range_subset():
     a, b = hdroller.align_range(hdroller.d4+1, hdroller.d8)
-    assert a.equals(hdroller.die([0, 1, 1, 1, 1, 0, 0, 0], min_outcome=1))
-    assert b.equals(hdroller.die([1, 1, 1, 1, 1, 1, 1, 1], min_outcome=1))
+    assert a.equals(hdroller.Die([0, 1, 1, 1, 1, 0, 0, 0], min_outcome=1))
+    assert b.equals(hdroller.Die([1, 1, 1, 1, 1, 1, 1, 1], min_outcome=1))
 
 def test_trim():
     a, b = hdroller.align_range(hdroller.d4, hdroller.d6 + 1)

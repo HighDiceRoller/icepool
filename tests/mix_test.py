@@ -24,9 +24,9 @@ def test_mix_weight():
     
 def test_mix_mixed():
     die = hdroller.mix(hdroller.d4, hdroller.d6)
-    assert die.pmf() == hdroller.die([5, 5, 5, 5, 2, 2], 1).pmf()
+    assert die.pmf() == hdroller.Die([5, 5, 5, 5, 2, 2], 1).pmf()
 
-expected_d6x1 = hdroller.die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1).trim()
+expected_d6x1 = hdroller.Die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1).trim()
 
 def test_relabel_array():
     die = hdroller.d6.relabel([5, 4, 1, 2, 3, hdroller.d6 + 6])

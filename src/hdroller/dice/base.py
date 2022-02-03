@@ -211,85 +211,85 @@ class BaseDie():
     # Binary operators.
     
     def __add__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.add)
     
     def __radd__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.add)
     
     def __sub__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.sub)
     
     def __rsub__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.sub)
     
     def __mul__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.mul)
     
     def __rmul__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.mul)
         
     def __truediv__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.truediv)
     
     def __rtruediv__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.truediv)
     
     def __floordiv__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.floordiv)
     
     def __rfloordiv__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.floordiv)
     
     def __pow__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.pow)
     
     def __rpow__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.pow)
     
     def __mod__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.mod)
     
     def __rmod__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, operator.mod)
     
     # Comparators.
     
     def __lt__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.lt)
         
     def __le__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.le)
     
     def __ge__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.ge)
         
     def __gt__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.gt)
     
     def __eq__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.eq)
     
     def __ne__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, operator.ne)
     
     @staticmethod
@@ -328,11 +328,11 @@ class BaseDie():
         return bool(x) and bool(y)
     
     def __and__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, self._and)
     
     def __rand__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, self._and)
     
     @staticmethod
@@ -340,11 +340,11 @@ class BaseDie():
         return bool(x) or bool(y)
         
     def __or__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, self._or)
     
     def __ror__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, self._or)
     
     @staticmethod
@@ -352,11 +352,11 @@ class BaseDie():
         return bool(x) + bool(y) == 1
     
     def __xor__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.binary_op(other, self._xor)
     
     def __rxor__(self, other):
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.binary_op(self, self._xor)
     
     # Special operators.
@@ -371,7 +371,7 @@ class BaseDie():
         so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
         so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return other.d(self)
     
     # Mixtures.
@@ -423,14 +423,14 @@ class BaseDie():
             else:
                 non_explode[outcome] = weight
         
-        non_explode_die = hdroller.dice.func.die(non_explode, ndim=self.ndim())
+        non_explode_die = hdroller.Die(non_explode, ndim=self.ndim())
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
-        explode_die = hdroller.dice.func.die(explode, ndim=self.ndim()) + tail_die
+        explode_die = hdroller.Die(explode, ndim=self.ndim()) + tail_die
         
         non_explode_die, explode_die = hdroller.align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
-        return hdroller.dice.func.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     def reroll(self, *outcomes, max_depth=None):
         """ Rerolls the given outcomes.
@@ -455,7 +455,7 @@ class BaseDie():
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
-        return hdroller.dice.func.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     # Repeat, keep, and sum.
     
@@ -563,17 +563,17 @@ class BaseDie():
         This may remove outcomes or add zero-weight outcomes.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.dice.func.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     def trim(self):
         """ Removes all zero-weight outcomes from self. """
         data = { k : v for k, v in self.items() if v > 0 }
-        return hdroller.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     @cached_property
     def _pop_min(self):
         d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-        die = hdroller.dice.func.die(d, ndim=self.ndim())
+        die = hdroller.Die(d, ndim=self.ndim())
         return die, self.outcomes()[0], self.weights()[0]
     
     def pop_min(self):
@@ -587,7 +587,7 @@ class BaseDie():
     @cached_property
     def _pop_max(self):
         d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-        die = hdroller.dice.func.die(d, ndim=self.ndim())
+        die = hdroller.Die(d, ndim=self.ndim())
         return die, self.outcomes()[-1], self.weights()[-1]
     
     def pop_max(self):
@@ -604,7 +604,7 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
-        return hdroller.dice.func.die(data, ndim=self.ndim())
+        return hdroller.Die(data, ndim=self.ndim())
     
     # Scalar(-ish) statistics.
     
@@ -752,5 +752,5 @@ class BaseDie():
         
         For the chance of two dice rolling the same as each other, use the == operator.
         """
-        other = hdroller.die(other)
+        other = hdroller.Die(other)
         return self.key_tuple() == other.key_tuple()

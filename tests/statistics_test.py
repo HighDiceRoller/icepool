@@ -7,8 +7,8 @@ def test_ks_stat_standard_dice():
     assert hdroller.d10.ks_stat(hdroller.d20) == pytest.approx(0.5)
 
 def test_ks_stat_flat_number():
-    assert hdroller.die(10).ks_stat(hdroller.die(10)) == 0.0
-    assert hdroller.die(10).ks_stat(hdroller.die(9)) == 1.0
+    assert hdroller.Die(10).ks_stat(hdroller.Die(10)) == 0.0
+    assert hdroller.Die(10).ks_stat(hdroller.Die(9)) == 1.0
 
 def test_d6_median():
     assert hdroller.d6.median_left() == 3

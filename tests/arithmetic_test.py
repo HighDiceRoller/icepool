@@ -51,7 +51,7 @@ def test_die_die_sub(a, b):
 def test_clip():
     result = hdroller.d6
     result = result.clip(2, 5)
-    expected = hdroller.die([2, 1, 1, 2], 2)
+    expected = hdroller.Die([2, 1, 1, 2], 2)
     assert result.equals(expected)
 """
 
@@ -67,27 +67,27 @@ def test_abs_negative():
 
 def test_abs_cross_zero():
     result = (hdroller.d6 - 3).abs()
-    expected = hdroller.die([1, 2, 2, 1], 0)
+    expected = hdroller.Die([1, 2, 2, 1], 0)
     assert result.equals(expected)
 
 def test_abs_cross_zero_nonuniform():
     result = (hdroller.d6 + hdroller.d6 - 7).abs()
-    expected = hdroller.die([6, 10, 8, 6, 4, 2], 0)
+    expected = hdroller.Die([6, 10, 8, 6, 4, 2], 0)
     assert result.equals(expected)
 
 def test_mod():
     result = hdroller.d10 % 4
-    expected = hdroller.die([2, 3, 3, 2], 0)
+    expected = hdroller.Die([2, 3, 3, 2], 0)
     assert result.equals(expected)
     
 def test_div():
     result = hdroller.d10 // 4
-    expected = hdroller.die([3, 4, 3], 0)
+    expected = hdroller.Die([3, 4, 3], 0)
     assert result.equals(expected)
 
 def test_reduce():
-    result = hdroller.die([2, 4, 6], 0).reduce()
-    expected = hdroller.die([1, 2, 3], 0)
+    result = hdroller.Die([2, 4, 6], 0).reduce()
+    expected = hdroller.Die([1, 2, 3], 0)
     assert result.equals(expected)
 
 def test_matmul_int_die():
@@ -96,6 +96,6 @@ def test_matmul_int_die():
     assert result.equals(expected)
 
 def test_matmul_die_die():
-    result = hdroller.die(2) @ hdroller.d6
+    result = hdroller.Die(2) @ hdroller.d6
     expected = hdroller.d6 + hdroller.d6
     assert result.equals(expected)
