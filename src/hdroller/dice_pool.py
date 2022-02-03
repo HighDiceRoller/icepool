@@ -8,7 +8,7 @@ import bisect
 from functools import cached_property
 import math
 
-def Pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=None, max_outcomes=None):
     """ Factory function for dice pools.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -22,8 +22,7 @@ def Pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
     Args:
         die: The die this pool is based on.
         num_dice: The number of dice in the pool. If set, all dice will have the same outcomes as `die`.
-            If non-negative, the outcomes will be evaluated in ascending order.
-            If negative, the outcomes will be evaluated in descending order.
+            The outcomes will be evaluated in ascending order unless `reverse=True`.
         min_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
             The outcomes will be evaluated in descending order.
@@ -35,23 +34,29 @@ def Pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
             For example, `slice(-2, None)` would count only the two highest dice.
             You can also use the [] operator to select dice from an existing pool.
             For example, you could construct the pool first and then index it with `[-2:]`.
+        reverse: Only valid if `num_dice` is provided.
     """
     if (num_dice is not None) + (min_outcomes is not None) + (max_outcomes is not None) != 1:
         raise ValueError('Exactly one of num_dice, min_outcomes, or max_outcomes must be provided.')
 
     if num_dice is not None:
-        if num_dice >= 0:
+        if reverse is not True:
             max_outcomes = (die.max_outcome(),) * num_dice
         else:
             min_outcomes = (die.min_outcome(),) * num_dice
-            raise NotImplementedError('min_outcomes not yet implemented for pools.')
     elif min_outcomes is not None:
-        min_outcomes = tuple(sorted((max(outcome, die.min_outcome()) for outcome in min_outcomes), reverse=True))
+        if reverse is not None:
+            raise ValueError('reverse is not valid if min_outcomes is provided.')
+        min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
         num_dice = len(min_outcomes)
-        raise NotImplementedError('min_outcomes not yet implemented for pools.')
     else:  # max_outcomes is not None
+        if reverse is not None:
+            raise ValueError('reverse is not valid if max_outcomes is provided.')
         max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
         num_dice = len(max_outcomes)
+    
+    if min_outcomes is not None:
+        raise NotImplementedError('min_outcomes not yet implemented for pools.')
     
     if select_dice is None:
         select_dice = (True,) * num_dice
@@ -105,7 +110,7 @@ class DicePool():
     
     def _iter_pops(self):
         """
-        Yields: 
+        Yields:
             From 0 to the number of dice that can roll this outcome inclusive:
             * pool: A `DicePool` resulting from removing that many dice from this `DicePool`, while also removing the max outcome.
                 If there is only one outcome remaining, only one result will be yielded, corresponding to all dice rolling that outcome.

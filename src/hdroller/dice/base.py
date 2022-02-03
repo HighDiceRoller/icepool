@@ -27,6 +27,8 @@ class BaseDie():
     
     Most operations will not introduce zero-weight outcomes if their arguments do not have any.
     
+    `len(die)` will return the number of outcomes (including zero-weight outcomes).
+    
     Subclasses implement the operations that make sense only for a particular number of dimensions.
     """
     
@@ -153,7 +155,7 @@ class BaseDie():
         return self._data.items()
     
     def __len__(self):
-        """ Returns the number of outcomes. """
+        """ Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
     
     # Unary operators.
@@ -736,7 +738,7 @@ class BaseDie():
         return self.ndim(), tuple(self.items())
         
     def key_tuple(self):
-        """ Returns a tuple that uniquely (as `equal()`) identifies this die. """
+        """ Returns a tuple that uniquely (as `equals()`) identifies this die. """
         return self._key_tuple
 
     def hash(self):
