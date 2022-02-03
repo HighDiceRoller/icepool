@@ -18,6 +18,15 @@ class BaseDie():
     A die is a discrete probability distribution with `int` weights.
     The outcomes can be any hashable, comparable values.
     
+    It *is* (mostly) well-defined to have a die with zero-weight outcomes, or even no outcomes at all.
+    However, these are only recommended in special cases, such as:
+    
+    * `DicePool` and `PoolEval` will iterate through zero-weight outcomes with 0 count,
+        rather than `None` or skipping that outcome.
+    * `hdroller.align()` and the like are convenient for making pools share the same set of outcomes.
+    
+    Most operations will not introduce zero-weight outcomes if their arguments do not have any.
+    
     Subclasses implement the operations that make sense only for a particular number of dimensions.
     """
     
@@ -427,7 +436,7 @@ class BaseDie():
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
         explode_die = hdroller.dice.func.die(explode, ndim=self.ndim()) + tail_die
         
-        non_explode_die, explode_die = align(non_explode_die, explode_die)
+        non_explode_die, explode_die = hdroller.align(non_explode_die, explode_die)
         data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
         
         return hdroller.dice.func.die(data, ndim=self.ndim())
@@ -463,14 +472,14 @@ class BaseDie():
     
     def max(*dice):
         """ Roll all the dice and take the highest. """
-        dice = align(dice)
+        dice = hdroller.align(dice)
         ndim = BaseDie._check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def min(*dice):
         """ Roll all the dice and take the lowest. """
-        dice = align(dice)
+        dice = hdroller.align(dice)
         ndim = BaseDie._check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
@@ -634,12 +643,12 @@ class BaseDie():
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = align(self, other)
+        a, b = hdroller.align(self, other)
         return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = align(self, other)
+        a, b = hdroller.align(self, other)
         return sum((a - b) ** 2 for a, b in zip(a.cdf(), b.cdf()))
     
     # Iterable statistics.
@@ -744,21 +753,4 @@ class BaseDie():
         
     def __hash__(self):
         return self._hash
-
-def align(*dice):
-    """Pads all the dice with zero weights so that all have the same set of outcomes.
-    
-    Args:
-        *dice: Multiple dice or a single iterable of dice.
-    
-    Returns:
-        A tuple of aligned dice.
-    
-    Raises:
-        `ValueError` if the dice are of mixed ndims.
-    """
-    dice = [hdroller.die(d) for d in dice]
-    BaseDie._check_ndim(*dice)
-    union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
-    return tuple(die.set_outcomes(union_outcomes) for die in dice)
     

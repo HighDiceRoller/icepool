@@ -55,8 +55,9 @@ class PoolEval(ABC):
             prev_state: A hashable object indicating the state before rolling the current outcome.
             outcome: The current outcome.
             counts: One `int`for each pool indicating how many dice in that pool rolled the current outcome.
-                If the outcome does not appear in the fundamental die of the pool, this is `None`.
-                Zero-weight outcomes count as appearing.
+                If there are multiple pools, it's possible that some outcomes will not appear in all pools.
+                In this case, the count for the pool(s) that do not have the outcome will be `None`. 
+                Zero-weight outcomes count having that outcome (with 0 count).
         
         Returns:
             A hashable object indicating the next state.
@@ -87,8 +88,6 @@ class PoolEval(ABC):
         1. The `ndim` argument to `eval()`, if not `None`.
         2. This method, if not `None`.
         3. Automatically determined by `die()`.
-        
-        This should be a pure function with no side-effects.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.

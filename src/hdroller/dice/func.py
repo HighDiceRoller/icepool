@@ -212,7 +212,7 @@ def mix(*dice, mix_weights=None):
         mix_weights: An iterable of one `int` per input die.
             If not provided, all dice are mixed uniformly.
     """
-    dice = hdroller.dice.base.align(*dice)
+    dice = align(*dice)
     ndim = None
     for d in dice:
         if ndim is None:
@@ -231,6 +231,23 @@ def mix(*dice, mix_weights=None):
         for outcome, weight in zip(d.outcomes(), d.weights()):
             data[outcome] += weight * factor
     return die(data, ndim=ndim)
+
+def align(*dice):
+    """Pads all the dice with zero weights so that all have the same set of outcomes.
+    
+    Args:
+        *dice: Multiple dice or a single iterable of dice.
+    
+    Returns:
+        A tuple of aligned dice.
+    
+    Raises:
+        `ValueError` if the dice are of mixed ndims.
+    """
+    dice = [hdroller.die(d) for d in dice]
+    hdroller.BaseDie._check_ndim(*dice)
+    union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
+    return tuple(die.set_outcomes(union_outcomes) for die in dice)
 
 def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
