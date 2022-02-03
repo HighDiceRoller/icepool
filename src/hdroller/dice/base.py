@@ -735,7 +735,7 @@ class BaseDie():
     
     @cached_property
     def _key_tuple(self):
-        return self.ndim(), tuple(self.items())
+        return tuple(self.items()), self.ndim()
         
     def key_tuple(self):
         """ Returns a tuple that uniquely (as `equals()`) identifies this die. """
