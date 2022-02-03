@@ -28,6 +28,8 @@ def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
         select_dice: Only dice selected by this will be counted.
             This applies to the dice sorted from lowest to highest (regardless of iteration direction).
             For example, `slice(-2, None)` would count only the two highest dice.
+            You can also use the [] operator to select dice from an existing pool.
+            For example, `pool[-2:]` would count only the two highest dice.
     """
     if (num_dice is not None) + (min_outcomes is not None) + (max_outcomes is not None) != 1:
         raise ValueError('Exactly one of num_dice, min_outcomes, or max_outcomes must be provided.')
@@ -64,6 +66,22 @@ class DicePool():
         self._select_dice = select_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
+    
+    def select_all_dice(self):
+        """ Returns a pool with all dice selected. """
+        return DicePool(self.die(), (True,) * self.num_dice(), self.min_outcomes(), self.max_outcomes())
+    
+    def __getitem__(self, select_dice):
+        """ Returns a pool with only selected dice counted. 
+        
+        If a selection was already applied to the pool, this is applied only to the previously selected dice.
+        For example, pool[-2:][:1] would select the top two dice, then the bottom die of those,
+        with the final result being a pool with the second-highest die counted.
+        """
+        prev_indexes = tuple(i for i, selected in enumerate(self.select_dice()) if selected)
+        new_indexes = hdroller.indexing.select_from(prev_indexes, select_dice)
+        new_select = hdroller.indexing.select_bools(self.num_dice(), new_indexes)
+        return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     def die(self):
         return self.dice

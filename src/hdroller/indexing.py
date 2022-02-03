@@ -26,10 +26,10 @@ def slice_range(n, select):
     yield from (i for i in range(start, stop, step) if i >= 0 and i < n)
 
 def select_from(a, select):
-    """
+    """ Selects elements from a sequence and returns them as a tuple.
     
     Args:
-        n: The number of elements to return.
+        a: The sequence to select from.
         select: An object to select elements. Options are:
             slice: Selects a slice.
             integer: Selects a single index.
@@ -68,7 +68,7 @@ def select_from(a, select):
     return tuple(result)
     
 def select_bools(n, select):
-    """
+    """ Returns a tuple of `n` `bool`s with the selected elements set to `True`.
     
     Args:
         n: The number of elements to return.
