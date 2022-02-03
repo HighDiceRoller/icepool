@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from hdroller.dice.func import die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, align, apply
+from hdroller.dice.func import die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, align, align_range, apply
 
 import hdroller.dice.base
 
@@ -17,8 +17,6 @@ min = hdroller.dice.base.BaseDie.min
 max = hdroller.dice.base.BaseDie.max
 min_outcome = hdroller.dice.base.BaseDie.min_outcome
 max_outcome = hdroller.dice.base.BaseDie.max_outcome
-
-from hdroller.dice.single import align_range
 
 from hdroller.dice_pool import pool
 from hdroller.pool_eval import PoolEval, PoolSum, pool_sum, PoolMatchingSet

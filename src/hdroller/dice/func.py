@@ -249,6 +249,13 @@ def align(*dice):
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(union_outcomes) for die in dice)
 
+def align_range(*dice):
+    """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
+    dice = [hdroller.die(d) for d in dice]
+    hdroller.BaseDie._check_ndim(*dice)
+    outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
+    return tuple(die.set_outcomes(outcomes) for die in dice)
+
 def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     

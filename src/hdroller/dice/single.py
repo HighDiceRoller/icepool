@@ -173,10 +173,3 @@ class SingleDie(hdroller.dice.base.BaseDie):
             data[outcomes] += math.prod(weights)
         
         return hdroller.die(data)
-
-def align_range(*dice):
-    """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice = [hdroller.die(d) for d in dice]
-    hdroller.dice.base.BaseDie._check_ndim(*dice)
-    outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
-    return tuple(die.set_outcomes(outcomes) for die in dice)
