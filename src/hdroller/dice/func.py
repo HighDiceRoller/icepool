@@ -42,9 +42,6 @@ def die(arg, min_outcome=None, ndim=None, remove_zero_weights=True):
             This should be left at `True` for most cases.
     """
     data = _make_data(arg, min_outcome, remove_zero_weights)
-    
-    if len(data) == 0:
-        return None
         
     ndim = _calc_ndim(data, ndim)
     
@@ -97,7 +94,7 @@ def _calc_ndim(data, ndim):
         return ndim
     
     if len(data) == 0:
-        return None
+        raise ValueError('The ndim of a die with no outcomes cannot be automatically determined.')
     
     for outcome in data.keys():
         try:

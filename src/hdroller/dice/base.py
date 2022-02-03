@@ -569,33 +569,29 @@ class BaseDie():
     
     @cached_property
     def _pop_min(self):
-        if len(self) > 1:
-            d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-            die = hdroller.dice.func.die(d, ndim=self.ndim())
-            return die, self.outcomes()[0], self.weights()[0]
-        else:
-            return None, self.outcomes()[0], self.weights()[0]
+        d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
+        die = hdroller.dice.func.die(d, ndim=self.ndim())
+        return die, self.outcomes()[0], self.weights()[0]
     
     def pop_min(self):
         """ Remove the min outcome and return the result, along with the popped outcome, and the popped weight.
         
-        If the last outcome is removed, the returned die is `None`.
+        Raises:
+            `IndexError` if this die has no outcome to pop.
         """
         return self._pop_min
     
     @cached_property
     def _pop_max(self):
-        if len(self) > 1:
-            d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-            die = hdroller.dice.func.die(d, ndim=self.ndim())
-            return die, self.outcomes()[-1], self.weights()[-1]
-        else:
-            return None, self.outcomes()[-1], self.weights()[-1]
+        d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
+        die = hdroller.dice.func.die(d, ndim=self.ndim())
+        return die, self.outcomes()[-1], self.weights()[-1]
     
     def pop_max(self):
         """ Remove the max outcome and return the result, along with the popped outcome, and the popped weight.
         
-        If the last outcome is removed, the returned die is `None`.
+        Raises:
+            `IndexError` if this die has no outcome to pop.
         """
         return self._pop_max
     

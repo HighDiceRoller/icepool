@@ -29,7 +29,7 @@ def pool(die, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcome
             This applies to the dice sorted from lowest to highest (regardless of iteration direction).
             For example, `slice(-2, None)` would count only the two highest dice.
             You can also use the [] operator to select dice from an existing pool.
-            For example, `pool[-2:]` would count only the two highest dice.
+            For example, you could construct the pool first and then index it with `[-2:]`.
     """
     if (num_dice is not None) + (min_outcomes is not None) + (max_outcomes is not None) != 1:
         raise ValueError('Exactly one of num_dice, min_outcomes, or max_outcomes must be provided.')
@@ -115,7 +115,7 @@ class DicePool():
         num_unused_dice = self.num_dice() - num_possible_dice
         popped_die, outcome, single_weight = self.die().pop_max()
         
-        if popped_die is None:
+        if len(popped_die) == 0:
             # This is the last outcome. All dice must roll this outcome.
             weight = single_weight ** num_possible_dice
             yield None, remaining_selected_dice, weight
