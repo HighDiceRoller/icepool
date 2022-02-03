@@ -574,7 +574,12 @@ class BaseDie():
         This may remove outcomes or add zero-weight outcomes.
         """
         data = {x : self.weight(x) for x in outcomes}
-        return hdroller.dice.func.die(data, ndim=self.ndim(), remove_zero_weights=False)
+        return hdroller.dice.func.die(data, ndim=self.ndim(), trim=False)
+    
+    def trim(self):
+        """ Removes all zero-weight outcomes from self. """
+        data = { k : v for k, v in self.items() if v > 0 }
+        return hdroller.die(data, ndim=self.ndim())
     
     @cached_property
     def _pop_min(self):
