@@ -9,7 +9,7 @@ import itertools
 import math
 
 class EvalPool(ABC):
-    """ An abstract class for evaulating one or more `DicePool`s.
+    """ An abstract, immutable, callable class for evaulating one or more `DicePool`s.
     
     You can pretend that evaluation occurs on individual rolls of the pool as follows:
     
@@ -105,6 +105,9 @@ class EvalPool(ABC):
     def eval(self, *pools, ndim=None):
         """ Evaluates pools.
         
+        You can call the `EvalPool` object directly for the same effect,
+        e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.
+        
         Args:
             *pools: One or more `DicePool`s to evaluate.
                 Most evaluators will expect a fixed number of pools.
@@ -126,6 +129,8 @@ class EvalPool(ABC):
             ndim = self.ndim(*pools)
         
         return hdroller.Die(final_dist, ndim=ndim)
+    
+    __call__ = eval
     
     def _eval_internal(self, initial_state, *pools):
         """

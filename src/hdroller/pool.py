@@ -275,7 +275,7 @@ class DicePool():
         Returns:
             A die representing the sum.
         """
-        return hdroller.sum_pool.eval(self)
+        return hdroller.sum_pool(self)
     
     @cached_property
     def _key_tuple(self):
