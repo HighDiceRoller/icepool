@@ -91,25 +91,25 @@ def test_pool_select():
     assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, count_dice=slice(-2, None))
 
 def test_pool_select_multi():
-    pool = hdroller.Pool(hdroller.d6, 5)
+    pool = hdroller.Pool(hdroller.d6)
     result = hdroller.pool_sum.eval(pool[0,0,2,0,0])
     expected = 2 * hdroller.d6.keep_highest(5, 1, num_drop=2)
     assert result.equals(expected)
 
 def test_pool_select_negative():
-    pool = hdroller.Pool(hdroller.d6, 5)
+    pool = hdroller.Pool(hdroller.d6)
     result = hdroller.pool_sum.eval(pool[0,0,-2,0,0])
     expected = -2 * hdroller.d6.keep_highest(5, 1, num_drop=2)
     assert result.equals(expected)
 
 def test_pool_select_mixed_sign():
-    pool = hdroller.Pool(hdroller.d6, 2)
+    pool = hdroller.Pool(hdroller.d6)
     result = hdroller.pool_sum.eval(pool[-1,1])
     expected = abs(hdroller.d6 - hdroller.d6)
     assert result.equals(expected)
 
 def test_pool_select_mixed_sign_split():
-    pool = hdroller.Pool(hdroller.d6, 4)
+    pool = hdroller.Pool(hdroller.d6)
     result = hdroller.pool_sum.eval(pool[-1,0,0,1])
     expected = bf_diff_highest_lowest(hdroller.d6, 4)
     assert result.equals(expected)
