@@ -152,9 +152,11 @@ class DicePool():
         self._max_outcomes = max_outcomes
         
     def die(self):
+        """ The fundamental die of the pool. """
         return self._die
         
     def count_dice(self):
+        """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
         return self._count_dice
         
     def __getitem__(self, count_dice):
@@ -185,8 +187,8 @@ class DicePool():
         return DicePool(self.die(), count_dice, self.direction(), self.min_outcomes(), self.max_outcomes())
     
     def direction(self):
-        """ Returns `False` if the outcomes are evaluated in ascending order, 
-        or `True` if they are evaluated in descending order.
+        """ `1` if the outcomes are evaluated in ascending order, 
+        or `-1` if they are evaluated in descending order.
         """
         return self._direction
     
@@ -194,9 +196,17 @@ class DicePool():
         return len(self._count_dice)
         
     def min_outcomes(self):
+        """ A tuple of sorted min outcomes, one for each die in the pool.
+        
+        May be `None`, in which case all dice in the pool have the same min outcome as `pool.die()`.
+        """
         return self._min_outcomes
         
     def max_outcomes(self):
+        """ A tuple of sorted max outcomes, one for each die in the pool.
+        
+        May be `None`, in which case all dice in the pool have the same max outcome as `pool.die()`.
+        """
         return self._max_outcomes
     
     def _iter_pops(self):

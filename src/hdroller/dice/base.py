@@ -518,17 +518,15 @@ class BaseDie():
         if num_dice % 2: result += self
         return result
     
+    def pool(self, *args, **kwargs):
+        """ Creates a pool from this die, as `hdroller.Pool()`. """
+        return hdroller.Pool(self, *args, **kwargs)
+    
     def keep(self, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
-        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
-        
         Args:
             num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
-            min_outcomes: A sequence of one outcome per die.
-                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-            max_outcomes: A sequence of one outcome per die.
-                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             count_dice: Only dice selected by this will be counted.
                 Determines which of the **sorted** dice will be counted, and how many times.
                 The dice are sorted in ascending order for this purpose,
@@ -540,6 +538,12 @@ class BaseDie():
                 Or this can be a sequence of `int`s, one for each die in order.
                 Each die is counted that many times.
                 For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+                This is not compatible with `max_outcomes`.
+            max_outcomes: A sequence of one outcome per die.
+                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+                This is not compatible with `min_outcomes`.
                 
         Returns:
             A Die representing the probability distribution of the sum.
