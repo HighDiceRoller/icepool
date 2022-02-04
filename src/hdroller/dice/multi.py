@@ -3,7 +3,6 @@ __docformat__ = 'google'
 import hdroller
 import hdroller.dice.base
 import hdroller.dice.single
-import hdroller.indexing
 
 from collections import defaultdict
 import itertools

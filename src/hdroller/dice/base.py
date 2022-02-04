@@ -507,8 +507,16 @@ class BaseDie():
             max_outcomes: A sequence of one outcome per die.
                 That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             select_dice: Only dice selected by this will be counted.
-                This applies to the dice sorted from lowest to highest.
-                For example, `slice(-2, None)` would count only the two highest dice.
+                Determines which of the **sorted** dice will be counted, and how many times.
+                The dice are sorted in ascending order for this purpose,
+                regardless of which order the outcomes are evaluated in.
+                
+                This can be an `int` or a `slice`, in which case the selected dice are counted once each.
+                For example, `slice(-2, None)` would count the two highest dice.
+                
+                Or this can be a sequence of `int`s, one for each die in order.
+                Each die is counted that many times.
+                For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
                 
         Returns:
             A Die representing the probability distribution of the sum.

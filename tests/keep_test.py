@@ -23,6 +23,11 @@ def bf_keep(die, num_dice, keep_indexes):
         return sorted(outcomes)[keep_indexes]
     return hdroller.apply(func, *([die] * num_dice))
 
+def bf_diff_highest_lowest(die, num_dice):
+    def func(*outcomes):
+        return max(outcomes) - min(outcomes)
+    return hdroller.apply(func, *([die] * num_dice))
+
 @pytest.mark.parametrize('num_keep', range(1, 6))
 def test_keep_highest(num_keep):
     die = hdroller.d12
@@ -81,11 +86,30 @@ def test_mixed_keep_highest():
     
 def test_pool_select():
     pool = hdroller.Pool(hdroller.d6, 5)
-    assert pool[-2].select_dice() == (False, False, False, True, False)
-    assert pool[-2:].select_dice() == (False, False, False, True, True)
+    assert pool[-2].select_dice() == (0, 0, 0, 1, 0)
+    assert pool[-2:].select_dice() == (0, 0, 0, 1, 1)
     assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, select_dice=slice(-2, None))
-    assert pool[-2:][:1] == pool[-2]
 
-def test_pool_select_all():
+def test_pool_select_multi():
     pool = hdroller.Pool(hdroller.d6, 5)
-    assert pool[-2].select_all_dice() == pool
+    result = hdroller.pool_sum.eval(pool[0,0,2,0,0])
+    expected = 2 * hdroller.d6.keep_highest(5, 1, num_drop=2)
+    assert result.equals(expected)
+
+def test_pool_select_negative():
+    pool = hdroller.Pool(hdroller.d6, 5)
+    result = hdroller.pool_sum.eval(pool[0,0,-2,0,0])
+    expected = -2 * hdroller.d6.keep_highest(5, 1, num_drop=2)
+    assert result.equals(expected)
+
+def test_pool_select_mixed_sign():
+    pool = hdroller.Pool(hdroller.d6, 2)
+    result = hdroller.pool_sum.eval(pool[-1,1])
+    expected = abs(hdroller.d6 - hdroller.d6)
+    assert result.equals(expected)
+
+def test_pool_select_mixed_sign_split():
+    pool = hdroller.Pool(hdroller.d6, 4)
+    result = hdroller.pool_sum.eval(pool[-1,0,0,1])
+    expected = bf_diff_highest_lowest(hdroller.d6, 4)
+    assert result.equals(expected)

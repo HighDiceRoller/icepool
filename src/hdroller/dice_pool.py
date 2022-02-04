@@ -1,6 +1,5 @@
 __docformat__ = 'google'
 
-import hdroller.indexing
 import hdroller.math
 from hdroller.functools import die_cache
 
@@ -29,11 +28,21 @@ def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=Non
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             The outcomes will be evaluated in ascending order.
-        select_dice: Only dice selected by this will be counted.
-            This applies to the dice sorted from lowest to highest (regardless of iteration direction).
-            For example, `slice(-2, None)` would count only the two highest dice.
+        select_dice: Determines which of the **sorted** dice will be counted, and how many times.
+            The dice are sorted in ascending order for this purpose,
+            regardless of which order the outcomes are evaluated in.
+            
+            This can be an `int` or a `slice`, in which case the selected dice are counted once each.
+            For example, `slice(-2, None)` would count the two highest dice.
+            
+            Or this can be a sequence of `int`s, one for each die in order.
+            Each die is counted that many times.
+            For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            
             You can also use the [] operator to select dice from an existing pool.
-            For example, you could construct the pool first and then index it with `[-2:]`.
+            This is always an absolute selection on all `num_dice`,
+            not a relative selection on already-selected dice,
+            which would be ambiguous in the presence of multiple or negative counts.
         reverse: Only valid if `num_dice` is provided.
             If not `True` (default), the outcomes will be evaluated in ascending order.
             If `True`, outcomes will be evaluated in descending order.
@@ -61,11 +70,27 @@ def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=Non
         raise NotImplementedError('min_outcomes not yet implemented for pools.')
     
     if select_dice is None:
-        select_dice = (True,) * num_dice
+        select_dice = (1,) * num_dice
     else:
-        select_dice = hdroller.indexing.select_bools(num_dice, select_dice)
+        select_dice = _compute_select_dice(num_dice, select_dice)
     
     return DicePool(die, select_dice, min_outcomes, max_outcomes)
+
+def _compute_select_dice(num_dice, select_dice):
+    if isinstance(select_dice, int):
+        result = [0] * num_dice
+        result[select_dice] = 1
+        return tuple(result)
+    elif isinstance(select_dice, slice):
+        result = [0] * num_dice
+        result[select_dice] = [1] * len(result[select_dice])
+        return tuple(result)
+    else:
+        if len(select_dice) != num_dice:
+            raise ValueError('select_dice must either be a slice, or a sequence of length equal to num_dice.')
+        if not all(isinstance(x, int) for x in select_dice):
+            raise TypeError('select_dice must be a sequence of ints.')
+        return tuple(select_dice)
 
 @die_cache
 def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
@@ -84,6 +109,27 @@ class DicePool():
         
     def select_dice(self):
         return self._select_dice
+        
+    def __getitem__(self, select_dice):
+        """ Returns a pool with the selected dice counted, as the `select_dice` argument to `Pool()`.
+        
+            Determines which of the **sorted** dice will be counted, and how many times.
+            The dice are sorted in ascending order for this purpose,
+            regardless of which order the outcomes are evaluated in.
+            
+            This can be an `int` or a `slice`, in which case the selected dice are counted once each.
+            For example, `slice(-2, None)` would count the two highest dice.
+            
+            Or this can be a sequence of `int`s, one for each die in order.
+            Each die is counted that many times.
+            For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            
+            This is always an absolute selection on all `num_dice`,
+            not a relative selection on already-selected dice,
+            which would be ambiguous in the presence of multiple or negative counts.
+        """
+        new_select = _compute_select_dice(self.num_dice(), select_dice)
+        return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     def num_dice(self):
         return len(self._select_dice)
@@ -114,7 +160,7 @@ class DicePool():
             * count: An `int` indicating the number of selected dice that rolled the removed outcome.
             * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
-        remaining_selected_dice = sum(self.select_dice())
+        remaining_count = sum(self.select_dice())
 
         num_possible_dice = self.num_dice() - bisect.bisect_left(self.max_outcomes(), self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_possible_dice
@@ -123,17 +169,17 @@ class DicePool():
         if len(popped_die) == 0:
             # This is the last outcome. All dice must roll this outcome.
             weight = single_weight ** num_possible_dice
-            yield None, remaining_selected_dice, weight
+            yield None, remaining_count, weight
             return
         
         if popped_die.total_weight() == 0:
             # This is the last outcome with positive weight. All dice must roll this outcome.
             weight = single_weight ** num_possible_dice
             pool = _pool_cached_unchecked(popped_die, (), None, ())
-            yield pool, remaining_selected_dice, weight
+            yield pool, remaining_count, weight
             return
         
-        if remaining_selected_dice == 0:
+        if not any(self.select_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = _pool_cached_unchecked(popped_die, (), None, ())
@@ -160,22 +206,6 @@ class DicePool():
                 popped_select_dice = popped_select_dice[:-1]
                 pool = _pool_cached_unchecked(popped_die, popped_select_dice, None, popped_max_outcomes)
                 yield pool, count, weight
-    
-    def select_all_dice(self):
-        """ Returns a pool with all dice selected. """
-        return DicePool(self.die(), (True,) * self.num_dice(), self.min_outcomes(), self.max_outcomes())
-    
-    def __getitem__(self, select_dice):
-        """ Returns a pool with only selected dice counted. 
-        
-        If a selection was already applied to the pool, this is applied only to the previously selected dice.
-        For example, pool[-2:][:1] would select the top two dice, then the bottom die of those,
-        with the final result being a pool with the second-highest die counted.
-        """
-        prev_indexes = tuple(i for i, selected in enumerate(self.select_dice()) if selected)
-        new_indexes = hdroller.indexing.select_from(prev_indexes, select_dice)
-        new_select = hdroller.indexing.select_bools(self.num_dice(), new_indexes)
-        return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     @cached_property
     def _pops(self):
