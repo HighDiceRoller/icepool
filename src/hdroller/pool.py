@@ -202,6 +202,8 @@ class DicePool():
     
     def num_dice(self):
         return len(self._count_dice)
+    
+    __len__ = num_dice
         
     def min_outcomes(self):
         """ A tuple of sorted min outcomes, one for each die in the pool.
