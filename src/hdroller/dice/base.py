@@ -442,7 +442,8 @@ class BaseDie():
         
         Args:
             outcomes: Selects which outcomes to reroll. Options:
-                * A sequence of outcomes to reroll.
+                * A callable that takes outcomes and returns `True` if it should be rerolled.
+                * A set of outcomes to reroll.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
         
@@ -450,6 +451,9 @@ class BaseDie():
             A die representing the reroll.
             If the reroll would never terminate, the result is `None`.
         """
+        if callable(outcomes):
+            outcomes = set(outcome for outcome in self.outcomes() if outcomes(outcome))
+        
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
         else:
