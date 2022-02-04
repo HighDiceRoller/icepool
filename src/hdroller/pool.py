@@ -14,11 +14,14 @@ def Pool(die, num_dice=None, count_dice=None, direction=None, *, min_outcomes=No
     and so that you can use `from hdroller import Pool` while leaving the name `pool` free.
     The name of the actual class is `DicePool`.
     
-    You can provide any set of arguments as there is no conflicting information.
+    You can use `die.pool(args...)` for the same effect as this function.
+    
+    You may provide any set of arguments as there is no conflict in the number of dice
+    or the direction in which outcomes are given to `EvalPool.next_state()`.
     
     Defaults are:
     
-    * 0 dice in the pool. (To do anything useful in this case, you will need to use the [] operator.)
+    * 0 dice in the pool. (To do anything useful in this case, you will need to use the [] operator to add dice to the pool.)
     * Outcomes are given to `EvalPool.next_state()` in ascending order.
     * All dice can roll all outcomes of the provided die.
     
@@ -36,22 +39,25 @@ def Pool(die, num_dice=None, count_dice=None, direction=None, *, min_outcomes=No
             The outcomes will be given to `EvalPool.next_state()` in ascending order.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times.
             The dice are sorted in ascending order for this purpose,
-            regardless of which order the outcomes are evaluated in.
+            regardless of which direction the outcomes are given to `EvalPool.next_state()`.
             
-            This can be an `int` or a `slice`, in which case the selected dice are counted once each.
+            `count_dice` can be an `int` or a `slice`, in which case the selected dice are counted once each.
             For example, `slice(-2, None)` would count the two highest dice.
             
-            Or this can be a sequence of `int`s, one for each die in order.
+            Or `count_dice` can be a sequence of `int`s, one for each die in order.
             Each die is counted that many times.
-            For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            For example, `[0, 1, 1]` would count the two highest dice out of three.
+            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
             
-            You can also use the [] operator to select dice from an existing pool.
+            You can also use the `[]` operator to select dice from an existing pool.
             This is always an absolute selection on all `num_dice`,
             not a relative selection on already-selected dice,
             which would be ambiguous in the presence of multiple or negative counts.
+            
             This can even change the size of the pool,
-            provided that neither `min_outcomes` nor `max_outcomes` were set.
-            For example, you could create a pool of 5d6 using `Pool(hdroller.d6)[1, 1, 1, 1, 1]`.
+            provided that neither `min_outcomes` nor `max_outcomes` are set.
+            For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
     
     Raises:
         `ValueError` if arguments conflict with each other.
@@ -171,7 +177,9 @@ class DicePool():
             
             Or this can be a sequence of `int`s, one for each die in order.
             Each die is counted that many times.
-            For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            For example, `[-2:]` would also count the two highest dice.
+            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
             This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
             
             This is always an absolute selection on all `num_dice`,

@@ -20,10 +20,10 @@ def Die(arg, min_outcome=None, ndim=None):
     
     Don't confuse this with `hdroller.d()`:
     
-    * `hdroller.Die(6)`: A die that always rolls the integer 6.
+    * `hdroller.Die(6)`: A die that always rolls the `int` 6.
     * `hdroller.d(6)`: A d6.
     
-    Here are different ways to create a d6:'
+    Here are different ways to create a d6:
     
     * Provide the die itself: `hdroller.Die(hdroller.d6)`
     * Provide a mapping from outcomes to weights: `hdroller.Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`

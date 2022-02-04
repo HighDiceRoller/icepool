@@ -118,9 +118,13 @@ class BaseDie():
     def __contains__(self, outcome):
         return outcome in self._data
     
-    def weight(self, outcome):
+    def weight_eq(self, outcome):
         """ Returns the weight of a single outcome, or 0 if not present. """
         return self._data[outcome]
+        
+    def weight_ne(self, outcome):
+        """ Returns the weight != a single outcome. """
+        return self.total_weight() - self.weight_eq(outcome)
     
     def weight_le(self, outcome):
         """ Returns the weight <= a single outcome. """
@@ -148,7 +152,7 @@ class BaseDie():
     
     def probability(self, outcome):
         """ Returns the probability of a single outcome. """
-        return self.weight(outcome) / self.total_weight()
+        return self.weight_eq(outcome) / self.total_weight()
     
     def items(self):
         """ Returns all outcome, weight pairs. """
@@ -602,7 +606,7 @@ class BaseDie():
         
         This may remove outcomes or add zero-weight outcomes.
         """
-        data = {x : self.weight(x) for x in outcomes}
+        data = {x : self.weight_eq(x) for x in outcomes}
         return hdroller.Die(data, ndim=self.ndim())
     
     def trim(self):
