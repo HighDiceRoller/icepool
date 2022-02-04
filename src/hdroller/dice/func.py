@@ -42,6 +42,9 @@ def Die(arg, min_outcome=None, ndim=None):
         ndim: If provided, the die will have the given number of dimensions.
             E.g. for `str` outcomes you may want to set `ndim=1`, which will
             treat e.g. `'abc' + 'def'` as `'abcdef'` rather than `('ad', 'be', 'cf')`.
+    
+    Raises:
+        `ValueError` if `ndim` is provided but is not consistent with `arg`.
     """
     data = _make_data(arg, min_outcome)
         
@@ -124,7 +127,7 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return Die([1] * num_sides, min_outcome=1)
+    return Die([1] * num_sides, min_outcome=1, ndim=1)
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -158,7 +161,7 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return Die({False : d - n, True : n})
+    return Die({False : d - n, True : n}, ndim=1)
 
 coin = bernoulli
 
@@ -234,7 +237,7 @@ def mix(*dice, mix_weights=None):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
 
-def align(*dice):
+def align(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
     Args:
@@ -246,14 +249,14 @@ def align(*dice):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    dice = [hdroller.Die(d) for d in dice]
+    dice = [Die(d, ndim=ndim) for d in dice]
     hdroller.BaseDie._check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(union_outcomes) for die in dice)
 
-def align_range(*dice):
+def align_range(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice = [hdroller.Die(d) for d in dice]
+    dice = [Die(d, ndim=ndim) for d in dice]
     hdroller.BaseDie._check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -271,7 +274,7 @@ def apply(func, *dice, ndim=None):
     Returns:
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
-    dice = [Die(d) for d in dice]
+    dice = [Die(d, ndim=ndim) for d in dice]
     data = defaultdict(int)
     for t in itertools.product(*(d.items() for d in dice)):
         outcomes, weights = zip(*t)
