@@ -266,6 +266,16 @@ class DicePool():
     
     def pops(self):
         return self._pops
+        
+    def sum(self):
+        """ Convenience method to simply sum the dice in this pool.
+        
+        This uses `hdroller.pool_sum`.
+        
+        Returns:
+            A die representing the sum.
+        """
+        return hdroller.pool_sum.eval(self)
     
     @cached_property
     def _key_tuple(self):

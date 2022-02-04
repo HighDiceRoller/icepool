@@ -90,6 +90,10 @@ def test_pool_select():
     assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
     assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, count_dice=slice(-2, None))
 
+def test_sum_from_pool():
+    pool = hdroller.Pool(hdroller.d6, 5)
+    assert pool.sum().equals(5 @ hdroller.d6)
+
 def test_pool_select_multi():
     pool = hdroller.Pool(hdroller.d6)
     result = hdroller.pool_sum.eval(pool[0,0,2,0,0])
