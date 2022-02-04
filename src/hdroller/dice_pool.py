@@ -7,7 +7,7 @@ import bisect
 from functools import cached_property
 import math
 
-def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=None, max_outcomes=None):
+def Pool(die, num_dice=None, count_dice=None, reverse=None, *, min_outcomes=None, max_outcomes=None):
     """ Factory function for dice pools.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -28,7 +28,7 @@ def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=Non
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             The outcomes will be evaluated in ascending order.
-        select_dice: Determines which of the **sorted** dice will be counted, and how many times.
+        count_dice: Determines which of the **sorted** dice will be counted, and how many times.
             The dice are sorted in ascending order for this purpose,
             regardless of which order the outcomes are evaluated in.
             
@@ -69,49 +69,49 @@ def Pool(die, num_dice=None, select_dice=None, reverse=None, *, min_outcomes=Non
     if min_outcomes is not None:
         raise NotImplementedError('min_outcomes not yet implemented for pools.')
     
-    if select_dice is None:
-        select_dice = (1,) * num_dice
+    if count_dice is None:
+        count_dice = (1,) * num_dice
     else:
-        select_dice = _compute_select_dice(num_dice, select_dice)
+        count_dice = _compute_select_dice(num_dice, count_dice)
     
-    return DicePool(die, select_dice, min_outcomes, max_outcomes)
+    return DicePool(die, count_dice, min_outcomes, max_outcomes)
 
-def _compute_select_dice(num_dice, select_dice):
-    if isinstance(select_dice, int):
+def _compute_select_dice(num_dice, count_dice):
+    if isinstance(count_dice, int):
         result = [0] * num_dice
-        result[select_dice] = 1
+        result[count_dice] = 1
         return tuple(result)
-    elif isinstance(select_dice, slice):
+    elif isinstance(count_dice, slice):
         result = [0] * num_dice
-        result[select_dice] = [1] * len(result[select_dice])
+        result[count_dice] = [1] * len(result[count_dice])
         return tuple(result)
     else:
-        if len(select_dice) != num_dice:
-            raise ValueError('select_dice must either be a slice, or a sequence of length equal to num_dice.')
-        if not all(isinstance(x, int) for x in select_dice):
-            raise TypeError('select_dice must be a sequence of ints.')
-        return tuple(select_dice)
+        if len(count_dice) != num_dice:
+            raise ValueError('count_dice must either be a slice, or a sequence of length equal to num_dice.')
+        if not all(isinstance(x, int) for x in count_dice):
+            raise TypeError('count_dice must be a sequence of ints.')
+        return tuple(count_dice)
 
 @die_cache
-def _pool_cached_unchecked(die, select_dice, min_outcomes, max_outcomes):
-    return DicePool(die, select_dice, min_outcomes, max_outcomes)
+def _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes):
+    return DicePool(die, count_dice, min_outcomes, max_outcomes)
 
 class DicePool():
-    def __init__(self, die, select_dice, min_outcomes, max_outcomes):
+    def __init__(self, die, count_dice, min_outcomes, max_outcomes):
         """ Unchecked constructor. """
         self._die = die
-        self._select_dice = select_dice
+        self._select_dice = count_dice
         self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
     
     def die(self):
         return self._die
         
-    def select_dice(self):
+    def count_dice(self):
         return self._select_dice
         
-    def __getitem__(self, select_dice):
-        """ Returns a pool with the selected dice counted, as the `select_dice` argument to `Pool()`.
+    def __getitem__(self, count_dice):
+        """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
         
             Determines which of the **sorted** dice will be counted, and how many times.
             The dice are sorted in ascending order for this purpose,
@@ -128,7 +128,7 @@ class DicePool():
             not a relative selection on already-selected dice,
             which would be ambiguous in the presence of multiple or negative counts.
         """
-        new_select = _compute_select_dice(self.num_dice(), select_dice)
+        new_select = _compute_select_dice(self.num_dice(), count_dice)
         return DicePool(self.die(), new_select, self.min_outcomes(), self.max_outcomes())
     
     def num_dice(self):
@@ -160,7 +160,7 @@ class DicePool():
             * count: An `int` indicating the number of selected dice that rolled the removed outcome.
             * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
-        remaining_count = sum(self.select_dice())
+        remaining_count = sum(self.count_dice())
 
         num_possible_dice = self.num_dice() - bisect.bisect_left(self.max_outcomes(), self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_possible_dice
@@ -179,7 +179,7 @@ class DicePool():
             yield pool, remaining_count, weight
             return
         
-        if not any(self.select_dice()):
+        if not any(self.count_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = _pool_cached_unchecked(popped_die, (), None, ())
@@ -188,7 +188,7 @@ class DicePool():
             return
         
         popped_max_outcomes = self.max_outcomes()[:num_unused_dice] + (outcome-1,) * num_possible_dice
-        popped_select_dice = self.select_dice()
+        popped_select_dice = self.count_dice()
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
@@ -216,7 +216,7 @@ class DicePool():
     
     @cached_property
     def _key_tuple(self):
-        return self.die().key_tuple(), self.min_outcomes(), self.max_outcomes(), self.select_dice()
+        return self.die().key_tuple(), self.min_outcomes(), self.max_outcomes(), self.count_dice()
     
     def __eq__(self, other):
         if not isinstance(other, DicePool): return False
@@ -230,4 +230,4 @@ class DicePool():
         return self._hash
 
     def __str__(self):
-        return '\n'.join([str(self.die()), str(self.min_outcomes()), str(self.max_outcomes()), str(self.select_dice())])
+        return '\n'.join([str(self.die()), str(self.min_outcomes()), str(self.max_outcomes()), str(self.count_dice())])

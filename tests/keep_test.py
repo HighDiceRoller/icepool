@@ -86,9 +86,9 @@ def test_mixed_keep_highest():
     
 def test_pool_select():
     pool = hdroller.Pool(hdroller.d6, 5)
-    assert pool[-2].select_dice() == (0, 0, 0, 1, 0)
-    assert pool[-2:].select_dice() == (0, 0, 0, 1, 1)
-    assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, select_dice=slice(-2, None))
+    assert pool[-2].count_dice() == (0, 0, 0, 1, 0)
+    assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
+    assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, count_dice=slice(-2, None))
 
 def test_pool_select_multi():
     pool = hdroller.Pool(hdroller.d6, 5)

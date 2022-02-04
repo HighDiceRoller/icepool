@@ -495,7 +495,7 @@ class BaseDie():
         if num_dice % 2: result += self
         return result
     
-    def keep(self, num_dice=None, select_dice=None, *, min_outcomes=None, max_outcomes=None):
+    def keep(self, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
         Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
@@ -506,7 +506,7 @@ class BaseDie():
                 That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
             max_outcomes: A sequence of one outcome per die.
                 That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
-            select_dice: Only dice selected by this will be counted.
+            count_dice: Only dice selected by this will be counted.
                 Determines which of the **sorted** dice will be counted, and how many times.
                 The dice are sorted in ascending order for this purpose,
                 regardless of which order the outcomes are evaluated in.
@@ -521,7 +521,7 @@ class BaseDie():
         Returns:
             A Die representing the probability distribution of the sum.
         """
-        pool = hdroller.Pool(self, num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         return hdroller.pool_eval.pool_sum.eval(pool)
         
     def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
@@ -543,8 +543,8 @@ class BaseDie():
         """
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
-        select_dice = slice(start, stop)
-        return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        count_dice = slice(start, stop)
+        return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         
     def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
@@ -565,8 +565,8 @@ class BaseDie():
         """
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
-        select_dice = slice(start, stop)
-        return self.keep(num_dice, select_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        count_dice = slice(start, stop)
+        return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
     
     # Modifying outcomes.
     
