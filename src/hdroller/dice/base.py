@@ -437,12 +437,12 @@ class BaseDie():
         
         return hdroller.Die(data, ndim=self.ndim())
     
-    def reroll(self, *outcomes, max_depth=None):
+    def reroll(self, outcomes, max_depth=None):
         """ Rerolls the given outcomes.
         
         Args:
-            *outcomes: Selects which outcomes to reroll. Options:
-                * A set of outcomes to reroll.
+            outcomes: Selects which outcomes to reroll. Options:
+                * A sequence of outcomes to reroll.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
         
@@ -450,9 +450,6 @@ class BaseDie():
             A die representing the reroll.
             If the reroll would never terminate, the result is `None`.
         """
-        if outcomes is None:
-            raise TypeError('outcomes to reroll must be provided.')
-        
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
         else:
