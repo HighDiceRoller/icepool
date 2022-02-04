@@ -523,7 +523,7 @@ class BaseDie():
             A Die representing the probability distribution of the sum.
         """
         pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
-        return hdroller.pool_eval.pool_sum.eval(pool)
+        return pool.sum()
         
     def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
