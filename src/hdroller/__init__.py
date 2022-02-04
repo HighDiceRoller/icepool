@@ -19,7 +19,7 @@ min_outcome = hdroller.dice.base.BaseDie.min_outcome
 max_outcome = hdroller.dice.base.BaseDie.max_outcome
 
 from hdroller.pool import Pool
-from hdroller.pool_eval import PoolEval, PoolSum, pool_sum, PoolMatchingSet
+from hdroller.eval_pool import PoolEval, PoolSum, pool_sum, PoolMatchingSet
 
 __all__ = ['Die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie',
