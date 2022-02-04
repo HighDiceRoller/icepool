@@ -84,10 +84,12 @@ def Pool(die, num_dice=None, count_dice=None, direction=None, *, min_outcomes=No
             direction = 1
             if min_outcomes is not None:
                 raise ValueError('direction > 0 is not compatible with min_outcomes.')
-        else:
+        elif direction < 0:
             direction = -1
             if max_outcomes is not None:
                 raise ValueError('direction < 0 is not compatible with max_outcomes.')
+        else:
+            raise ValueError('direction must be positive or negative.')
     else:
         # Need direction.
         if max_outcomes is not None:
@@ -132,7 +134,9 @@ def _pool_cached_unchecked(die, count_dice, direction, min_outcomes, max_outcome
 
 class DicePool():
     def __init__(self, die, count_dice, direction, min_outcomes, max_outcomes):
-        """ Unchecked constructor. 
+        """ Unchecked constructor.
+        
+        This should not be used externally.
         
         Args:
             die: The fundamental die of the pool.
@@ -178,9 +182,9 @@ class DicePool():
                 raise ValueError('The [] operator cannot change the size of a pool with min_outcomes.')
             if self.max_outcomes() is not None:
                 raise ValueError('The [] operator cannot change the size of a pool with max_outcomes.')
-        return DicePool(self.die(), count_dice, self.is_reverse(), self.min_outcomes(), self.max_outcomes())
+        return DicePool(self.die(), count_dice, self.direction(), self.min_outcomes(), self.max_outcomes())
     
-    def is_reverse(self):
+    def direction(self):
         """ Returns `False` if the outcomes are evaluated in ascending order, 
         or `True` if they are evaluated in descending order.
         """
@@ -224,14 +228,14 @@ class DicePool():
         if popped_die.total_weight() == 0:
             # This is the last outcome with positive weight. All dice must roll this outcome.
             weight = single_weight ** num_possible_dice
-            pool = _pool_cached_unchecked(popped_die, (), self.is_reverse(), None, ())
+            pool = _pool_cached_unchecked(popped_die, (), self.direction(), None, ())
             yield pool, remaining_count, weight
             return
         
         if not any(self.count_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
-            pool = _pool_cached_unchecked(popped_die, (), self.is_reverse(), None, ())
+            pool = _pool_cached_unchecked(popped_die, (), self.direction(), None, ())
             weight = math.prod(self.die().weight_le(max_outcome) for max_outcome in max_outcomes)
             yield pool, 0, weight
             return
@@ -241,7 +245,7 @@ class DicePool():
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
-        pool = _pool_cached_unchecked(popped_die, popped_count_dice, self.is_reverse(), None, popped_max_outcomes)
+        pool = _pool_cached_unchecked(popped_die, popped_count_dice, self.direction(), None, popped_max_outcomes)
         weight = 1
         count = 0
         yield pool, count, weight
@@ -253,7 +257,7 @@ class DicePool():
                 count += popped_count_dice[-1]
                 popped_max_outcomes = popped_max_outcomes[:-1]
                 popped_count_dice = popped_count_dice[:-1]
-                pool = _pool_cached_unchecked(popped_die, popped_count_dice, self.is_reverse(), None, popped_max_outcomes)
+                pool = _pool_cached_unchecked(popped_die, popped_count_dice, self.direction(), None, popped_max_outcomes)
                 yield pool, count, weight
     
     @cached_property
@@ -265,7 +269,7 @@ class DicePool():
     
     @cached_property
     def _key_tuple(self):
-        return self.die().key_tuple(), self.count_dice(), self.is_reverse(), self.min_outcomes(), self.max_outcomes()
+        return self.die().key_tuple(), self.count_dice(), self.direction(), self.min_outcomes(), self.max_outcomes()
     
     def __eq__(self, other):
         if not isinstance(other, DicePool): return False
@@ -279,4 +283,4 @@ class DicePool():
         return self._hash
 
     def __str__(self):
-        return '\n'.join([str(self.die()), str(self.is_reverse()), str(self.min_outcomes()), str(self.max_outcomes()), str(self.count_dice())])
+        return '\n'.join([str(self.die()), str(self.direction()), str(self.min_outcomes()), str(self.max_outcomes()), str(self.count_dice())])
