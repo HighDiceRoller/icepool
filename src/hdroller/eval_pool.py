@@ -8,7 +8,7 @@ from functools import cached_property
 import itertools
 import math
 
-class PoolEval(ABC):
+class EvalPool(ABC):
     """ An abstract class for evaulating one or more `DicePool`s.
     
     You can pretend that evaluation occurs on individual rolls of the pool as follows:
@@ -178,8 +178,8 @@ class PoolEval(ABC):
         else:
             yield from pool.pops()
 
-class PoolSum(PoolEval):
-    """ A simple `PoolEval` that just sums the dice in a pool. """
+class SumPool(EvalPool):
+    """ A simple `EvalPool` that just sums the dice in a pool. """
     def initial_state(self, pool):
         """ The running total starts at 0. """
         return 0
@@ -188,11 +188,11 @@ class PoolSum(PoolEval):
         """ Add the dice to the running total. """
         return prev_state + outcome * count
 
-pool_sum = PoolSum()
-""" A shared `PoolSum` object for caching results. """
+""" A shared `SumPool` object for caching results. """
+sum_pool = SumPool()
 
-class PoolMatchingSet(PoolEval):
-    """ A `PoolEval` that takes the best matching set in a pool.
+class FindMatchingSets(EvalPool):
+    """ A `EvalPool` that takes the best matching set in a pool.
     
     This prioritizes set size, then the outcome.
     

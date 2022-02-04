@@ -265,7 +265,7 @@ def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient for large numbers of dice.
-    In particular, for pools use `hdroller.Pool` and `hdroller.PoolEval` instead if possible.
+    In particular, for pools use `hdroller.Pool` and `hdroller.EvalPool` instead if possible.
     
     Args:
         func: A function that takes one argument per input die and returns a new outcome.

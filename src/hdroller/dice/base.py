@@ -21,7 +21,7 @@ class BaseDie():
     It *is* (mostly) well-defined to have a die with zero-weight outcomes, or even no outcomes at all.
     However, these are only recommended in special cases, such as:
     
-    * `DicePool` and `PoolEval` will iterate through zero-weight outcomes with 0 count,
+    * `DicePool` and `EvalPool` will iterate through zero-weight outcomes with 0 count,
         rather than `None` or skipping that outcome.
     * `hdroller.align()` and the like are convenient for making pools share the same set of outcomes.
     

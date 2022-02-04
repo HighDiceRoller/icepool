@@ -19,21 +19,21 @@ def Pool(die, num_dice=None, count_dice=None, direction=None, *, min_outcomes=No
     Defaults are:
     
     * 0 dice in the pool. (To do anything useful in this case, you will need to use the [] operator.)
-    * Outcomes are given to `PoolEval.next_state()` in ascending order.
+    * Outcomes are given to `EvalPool.next_state()` in ascending order.
     * All dice can roll all outcomes of the provided die.
     
     Args:
         die: The fundamental die of the pool.
         num_dice: An `int` that sets the number of dice in the pool.
         direction:
-            If positive, the outcomes will be given to `PoolEval.next_state()` in ascending order.
-            If negative, the outcomes will be given to `PoolEval.next_state()` in descending order.
+            If positive, the outcomes will be given to `EvalPool.next_state()` in ascending order.
+            If negative, the outcomes will be given to `EvalPool.next_state()` in descending order.
         min_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-            The outcomes will be given to `PoolEval.next_state()` in descending order.
+            The outcomes will be given to `EvalPool.next_state()` in descending order.
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
-            The outcomes will be given to `PoolEval.next_state()` in ascending order.
+            The outcomes will be given to `EvalPool.next_state()` in ascending order.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times.
             The dice are sorted in ascending order for this purpose,
             regardless of which order the outcomes are evaluated in.
@@ -270,12 +270,12 @@ class DicePool():
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
         
-        This uses `hdroller.pool_sum`.
+        This uses `hdroller.sum_pool`.
         
         Returns:
             A die representing the sum.
         """
-        return hdroller.pool_sum.eval(self)
+        return hdroller.sum_pool.eval(self)
     
     @cached_property
     def _key_tuple(self):
