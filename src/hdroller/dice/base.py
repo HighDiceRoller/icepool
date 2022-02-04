@@ -449,7 +449,7 @@ class BaseDie():
         
         Returns:
             A die representing the reroll.
-            If the reroll would never terminate, the result is `None`.
+            If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
             outcomes = set(outcome for outcome in self.outcomes() if outcomes(outcome))
@@ -462,6 +462,28 @@ class BaseDie():
             stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
         return hdroller.Die(data, ndim=self.ndim())
+    
+    def reroll_until(self, outcomes, max_depth=None):
+        """ Rerolls until getting one of the given outcomes.
+        
+        Essentially the complement of reroll().
+        
+        Args:
+            outcomes: Selects which outcomes to reroll until. Options:
+                * A callable that takes outcomes and returns `True` if it should be accepted.
+                * A set of outcomes to reroll until.
+            max_depth: The maximum number of times to reroll.
+                If omitted, rerolls an unlimited number of times.
+        
+        Returns:
+            A die representing the reroll.
+            If the reroll would never terminate, the result has no outcomes.
+        """
+        if callable(outcomes):
+            not_outcomes = lambda outcome: not outcomes(outcome)
+        else:
+            not_outcomes = lambda outcome: outcome not in outcomes
+        return self.reroll(not_outcomes, max_depth)
     
     # Repeat, keep, and sum.
     
