@@ -260,7 +260,7 @@ class DicePool():
             yield pool, 0, weight
             return
         
-        popped_max_outcomes = max_outcomes[:num_unused_dice] + (outcome-1,) * num_possible_dice
+        popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
         popped_count_dice = self.count_dice()
         
         # Zero dice rolling this outcome.
