@@ -16,7 +16,7 @@ class EvalPool(ABC):
     
     1. First, specify the `initial_state()`. The state is usually some sort of running total.
     2. Then, you will be given one outcome at a time,
-        along with how many dice in the pool rolled that outcome.
+        along with how many dice in each pool rolled that outcome.
         Update the state using `next_state()` using that information.
         
     `final_outcome()`, `reroll_state()` provided further options for customizing behavior,
@@ -120,6 +120,7 @@ class EvalPool(ABC):
         Args:
             *pools: One or more `DicePool`s to evaluate.
                 Most evaluators will expect a fixed number of pools.
+                The outcomes of the pools must be mutually comparable.
             ndim: The number of dimensions of the resulting die.
                 If omitted, this will be determined automatically.
         
