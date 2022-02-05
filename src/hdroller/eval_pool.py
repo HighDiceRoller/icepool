@@ -4,6 +4,7 @@ import hdroller
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
+from enum import Enum
 from functools import cached_property
 import itertools
 import math
@@ -17,8 +18,9 @@ class EvalPool(ABC):
     2. Then, you will be given one outcome at a time,
         along with how many dice in the pool rolled that outcome.
         Update the state using `next_state()` using that information.
-    3. Finally and optionally, once all outcomes have been accounted for,
-        use `final_outcome()` to specify the result of that roll.
+        
+    `final_outcome()`, `reroll_state()` provided further options for customizing behavior,
+    but are not necessary.
     
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
@@ -61,9 +63,16 @@ class EvalPool(ABC):
         
         Returns:
             A hashable object indicating the next state.
-            If the return value is `None`, the state will be dropped from consideration.
-            This is equivalent to performing a full reroll with no maximum depth.
         """
+    
+    def reroll_state(self, prev_state, outcome, *counts):
+        """ Optional function to reroll states.
+        
+        Given the same arguments as `next_state()`, if this returns `True`,
+        the state will immediately be dropped from consideration.
+        This effectively performs a reroll of the entire pool.
+        """
+        return False
     
     def final_outcome(self, final_state, *pools):
         """ Optional function to generate a final outcome from a final state.
@@ -158,8 +167,9 @@ class EvalPool(ABC):
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(initial_state, *prev_pools)
                 for prev_state, prev_weight in prev.items():
+                    if self.reroll_state(prev_state, outcome, *counts):
+                        continue
                     state = self.next_state(prev_state, outcome, *counts)
-                    if state is None: continue
                     result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
