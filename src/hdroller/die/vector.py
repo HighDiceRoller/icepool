@@ -56,7 +56,7 @@ class VectorDie(hdroller.die.base.BaseDie):
         if hasattr(test_select, '__len__'):
             ndim = len(test_select)
         else:
-            ndim = 1
+            ndim = False
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[outcome[select]] += weight
