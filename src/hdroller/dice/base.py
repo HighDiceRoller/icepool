@@ -533,7 +533,7 @@ class BaseDie():
         """ Creates a pool from this die, as `hdroller.Pool()`. """
         return hdroller.Pool(self, *args, **kwargs)
     
-    def keep(self, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes=None):
+    def keep(self, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
         
         Args:
@@ -549,12 +549,13 @@ class BaseDie():
                 Or this can be a sequence of `int`s, one for each die in order.
                 Each die is counted that many times.
                 For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-            min_outcomes: A sequence of one outcome per die.
-                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-                This is not compatible with `max_outcomes`.
             max_outcomes: A sequence of one outcome per die.
                 That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
                 This is not compatible with `min_outcomes`.
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+                This is not compatible with `max_outcomes`.
+            
                 
         Returns:
             A Die representing the probability distribution of the sum.
@@ -562,19 +563,19 @@ class BaseDie():
         pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         return pool.sum()
         
-    def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
+    def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
         
         Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
         
         Args:
             num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
-            min_outcomes: A sequence of one outcome per die.
-                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-            max_outcomes: A sequence of one outcome per die.
-                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             num_keep: The number of dice to keep.
             num_drop: If provided, this many highest dice will be dropped before keeping.
+            max_outcomes: A sequence of one outcome per die.
+                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+            min_outcomes: A sequence of one outcome per die.
+                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
                 
         Returns:
             A die representing the probability distribution of the sum.
@@ -584,7 +585,7 @@ class BaseDie():
         count_dice = slice(start, stop)
         return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         
-    def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, min_outcomes=None, max_outcomes=None):
+    def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
         Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.
@@ -622,20 +623,6 @@ class BaseDie():
         return hdroller.Die(data, ndim=self.ndim())
     
     @cached_property
-    def _pop_min(self):
-        d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-        die = hdroller.Die(d, ndim=self.ndim())
-        return die, self.outcomes()[0], self.weights()[0]
-    
-    def pop_min(self):
-        """ Remove the min outcome and return the result, along with the popped outcome, and the popped weight.
-        
-        Raises:
-            `IndexError` if this die has no outcome to pop.
-        """
-        return self._pop_min
-    
-    @cached_property
     def _pop_max(self):
         d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
         die = hdroller.Die(d, ndim=self.ndim())
@@ -648,6 +635,20 @@ class BaseDie():
             `IndexError` if this die has no outcome to pop.
         """
         return self._pop_max
+    
+    @cached_property
+    def _pop_min(self):
+        d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
+        die = hdroller.Die(d, ndim=self.ndim())
+        return die, self.outcomes()[0], self.weights()[0]
+    
+    def pop_min(self):
+        """ Remove the min outcome and return the result, along with the popped outcome, and the popped weight.
+        
+        Raises:
+            `IndexError` if this die has no outcome to pop.
+        """
+        return self._pop_min
     
     def reduce(self):
         """ Divides all weights by their greatest common denominator. """

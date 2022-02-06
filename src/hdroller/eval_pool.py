@@ -18,9 +18,8 @@ class EvalPool(ABC):
     2. Then, you will be given one outcome at a time,
         along with how many dice in each pool rolled that outcome.
         Update the state using `next_state()` using that information.
-        
-    `final_outcome()`, `reroll_state()` provide further options for customizing behavior,
-    but are optional.
+    
+    `final_outcome()`, `reroll()` provide further options.
     
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
