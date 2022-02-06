@@ -192,7 +192,7 @@ class EvalPool(ABC):
         if pool is None or outcome not in pool.die():
             yield pool, None, 1
         else:
-            yield from pool.pops()
+            yield from pool.pop_max()
 
 class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """

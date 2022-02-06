@@ -22,13 +22,7 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
         die: The fundamental die of the pool.
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
-        min_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-            A pool cannot limit both `min_outcomes` and `max_outcomes`.
-        max_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
-            A pool cannot limit both `min_outcomes` and `max_outcomes`.
-        count_dice: Determines which of the **sorted** dice will be counted, and how many times.
+        count_dice: Determines which of the **sorted** dice will be counted, and how many times each.
             
             `count_dice` can be an `int` or a `slice`, in which case the selected dice are counted once each.
             For example, `slice(-2, None)` would count the two highest dice.
@@ -44,15 +38,21 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
             not a relative selection on already-selected dice,
             which would be ambiguous in the presence of multiple or negative counts.
             
-            This can even change the size of the pool,
+            The `[]` operator can even change the size of the pool,
             provided that neither `min_outcomes` nor `max_outcomes` are set.
             For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
+        min_outcomes: A sequence of one outcome per die in the pool.
+            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            A pool cannot limit both `min_outcomes` and `max_outcomes`.
+        max_outcomes: A sequence of one outcome per die in the pool.
+            That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+            A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
     Raises:
         `ValueError` if arguments conflict with each other.
     """
     
-    # Determine num_dice.
+    # Compute num_dice.
     
     for seq in (count_dice, min_outcomes, max_outcomes):
         if hasattr(seq, '__len__'):
@@ -205,7 +205,7 @@ class DicePool():
             return (self.die().max_outcome(),) * self.num_dice()
         return self._max_outcomes
     
-    def _iter_pops(self):
+    def _iter_pop_max(self):
         """
         Yields:
             From 0 to the number of dice that can roll this outcome inclusive:
@@ -265,11 +265,16 @@ class DicePool():
                 yield pool, count, weight
     
     @cached_property
-    def _pops(self):
-        return tuple(self._iter_pops())
+    def _pop_max(self):
+        if self.min_outcomes() is not None:
+            raise ValueError('pop_maxs is not valid with min_outcomes.')
+        return tuple(self._iter_pop_max())
     
-    def pops(self):
-        return self._pops
+    def pop_max(self):
+        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
+        with count and weight corresponding to various numbers of dice rolling that outcome.
+        """
+        return self._pop_max
         
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
