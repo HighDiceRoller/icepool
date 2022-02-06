@@ -529,6 +529,34 @@ class BaseDie():
         if num_dice % 2: result += self
         return result
     
+    def hitting_time(self, cond, max_depth):
+        """ Repeats and sums this dice until `cond` is successful, and counts the number of rolls to success.
+        
+        Args:
+            * cond: A function that takes outcomes and returns `True` if the sum is successful.
+            * max_depth: The maximum number of times to repeat.
+                This can be `None` for an unlimited number of times,
+                but you need to make sure that success is guaranteed within a limited number of repeats in this case.
+        
+        Returns:
+            A die representing the number of rolls until success.
+        """
+        num_dice = 0
+        not_done, done = self.zero().split(cond)
+        done_weight = done.total_weight()
+        data = [done_weight]
+        while True:
+            if max_depth is not None and num_dice > max_depth:
+                break
+            data = [x * self.total_weight() for x in data]
+            not_done += self
+            not_done, new_done = not_done.split(cond)
+            data.append(data[-1] + new_done.total_weight())
+            if not_done.total_weight() == 0:
+                break
+            num_dice += 1
+        return hdroller.from_cweights(range(len(data)), data)
+    
     def pool(self, *args, **kwargs):
         """ Creates a pool from this die, as `hdroller.Pool()`. """
         return hdroller.Pool(self, *args, **kwargs)
@@ -606,7 +634,7 @@ class BaseDie():
         count_dice = slice(start, stop)
         return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
     
-    # Modifying outcomes.
+    # Modifying outcomes and/or weights.
     
     def set_outcomes(self, outcomes):
         """ Returns a die whose outcomes are set to the argument, including zero weights.
@@ -648,6 +676,21 @@ class BaseDie():
             `IndexError` if this die has no outcome to pop.
         """
         return self._pop_min
+    
+    def split(self, cond):
+        """ Splits this die's items into two pieces based on `cond(outcome)`.
+        
+        The left result is all outcome-weight pairs where `cond(outcome)` is `False`.
+        The right result is all outcome-weight pairs where `cond(outcome)` is `True`.
+        """
+        data_false = {}
+        data_true = {}
+        for outcome, weight in self.items():
+            if cond(outcome):
+                data_true[outcome] = weight
+            else:
+                data_false[outcome] = weight
+        return hdroller.Die(data_false, ndim=self.ndim()), hdroller.Die(data_true, ndim=self.ndim())
     
     def reduce(self):
         """ Divides all weights by their greatest common denominator. """

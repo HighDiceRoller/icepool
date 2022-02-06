@@ -170,9 +170,8 @@ def from_cweights(outcomes, cweights, ndim=None):
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
-        if weight - prev > 0:
-            d[outcome] = weight - prev
-            prev = weight
+        d[outcome] = weight - prev
+        prev = weight
     return Die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, ndim=None):
@@ -183,8 +182,7 @@ def from_sweights(outcomes, sweights, ndim=None):
             weight = sweights[i] - sweights[i+1]
         else:
             weight = sweights[i]
-        if weight > 0:
-            d[outcome] = weight
+        d[outcome] = weight
     return Die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
@@ -214,7 +212,7 @@ def mix(*dice, mix_weights=None):
     
     Args:
         *dice: The dice to mix.
-        mix_weights: An iterable of one `int` per input die.
+        mix_weights: An iterable of one `int` weight per input die.
             If not provided, all dice are mixed uniformly.
     """
     dice = align(*dice)
