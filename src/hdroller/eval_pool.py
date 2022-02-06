@@ -31,16 +31,17 @@ class EvalPool(ABC):
     """
     
     @abstractmethod
-    def initial_state(self, *pools):
+    def initial_state(self, *pools, **kwargs):
         """ Generates an initial state for the evaluation.
         
         Arguments:
             *pools: One or more `DicePool`s being evaluated.
+            **kwargs: Keyword arguments passed to `eval()`.
         
         Returns:
             A hashable object indicating the initial state.
         
-        If you want to use information about the pool(s) being evaluated,
+        If you want to use information from the arguments in `next_state()` or `reroll()`,
         you need to save that information to the state here.
         This is to avoid polluting the cache with duplicate entries
         based on irrelevant information in the key.
@@ -76,7 +77,7 @@ class EvalPool(ABC):
         """
         return False
     
-    def final_outcome(self, final_state, *pools):
+    def final_outcome(self, final_state, *pools, **kwargs):
         """ Optional function to generate a final outcome from a final state.
         
         By default, the final outcome is equal to the final state.
@@ -84,6 +85,7 @@ class EvalPool(ABC):
         Args:
             final_state: A state after all outcomes have been processed.
             *pools: One or more `DicePool`s being evaluated.
+            **kwargs: Keyword arguments passed to `eval()`.
             
         Returns:
             A final outcome that will be used as part of constructing a die.
@@ -91,7 +93,7 @@ class EvalPool(ABC):
         """
         return final_state
     
-    def direction(self, *pools):
+    def direction(self, *pools, **kwargs):
         """ Optional function to determine the direction in which this evaluator will give outcomes to `next_state()`.
         
         * If > 0, this will be ascending order. This is not compatible with pools with `min_outcomes`.
@@ -102,10 +104,11 @@ class EvalPool(ABC):
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
+            **kwargs: Keyword arguments passed to `eval()`.
         """
         return 0
     
-    def ndim(self, *pools):
+    def ndim(self, *pools, **kwargs):
         """ Optional function to specify the number of dimensions of the output die.
         
         The priority to determine ndim is as follows.
@@ -116,6 +119,7 @@ class EvalPool(ABC):
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
+            **kwargs: Keyword arguments passed to `eval()`.
         
         Returns:
             The number of dimensions that the output die should have,
@@ -127,7 +131,7 @@ class EvalPool(ABC):
     def _cache(self):
         return {}
     
-    def eval(self, *pools, ndim=None):
+    def eval(self, *pools, ndim=None, **kwargs):
         """ Evaluates pools.
         
         You can call the `EvalPool` object directly for the same effect,
@@ -140,11 +144,13 @@ class EvalPool(ABC):
                 Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
             ndim: The number of dimensions of the resulting die.
                 If omitted, this will be determined automatically.
+            **kwargs: These will be passed to
+                `initial_state()`, `final_outcome()`, `direction()`, and `ndims()`.
         
         Returns:
             A die representing the distribution of the final score.
         """
-        direction = self.direction(*pools)
+        direction = self.direction(*pools, **kwargs)
         
         if direction > 0:
             if any(pool.min_outcomes() is not None for pool in pools):
@@ -162,17 +168,17 @@ class EvalPool(ABC):
             else:
                 direction = 1
         
-        initial_state = self.initial_state(*pools)
+        initial_state = self.initial_state(*pools, **kwargs)
         
         dist = self._eval_internal(direction, initial_state, *pools)
         
         final_dist = defaultdict(int)
         for state, weight in dist.items():
-            outcome = self.final_outcome(state, *pools)
+            outcome = self.final_outcome(state, *pools, **kwargs)
             final_dist[outcome] += weight
         
         if ndim is None:
-            ndim = self.ndim(*pools)
+            ndim = self.ndim(*pools, **kwargs)
         
         return hdroller.Die(final_dist, ndim=ndim)
     

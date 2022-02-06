@@ -32,6 +32,13 @@ class MultiDie(hdroller.dice.base.BaseDie):
             data[new_outcome] += weight_self * weight_other
         return hdroller.Die(data, ndim=ndim)
     
+    def __getitem__(self, select):
+        """Slices the outcomes of the die."""
+        data = defaultdict(int)
+        for outcome, weight in self.items():
+            data[outcome[select]] += weight
+        return hdroller.Die(data)
+    
     # Statistics.
     # These apply to a single dimension `i`.
     
