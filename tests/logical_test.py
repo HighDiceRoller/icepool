@@ -17,7 +17,7 @@ def test_xor():
     print((hdroller.coin(1, 4) ^ hdroller.coin(1, 4)).probability(1))
     assert (hdroller.coin(1, 4) ^ hdroller.coin(1, 4)).mean() == pytest.approx(6/16)
 
-def test_ternary():
-    result = hdroller.ternary(hdroller.coin(1, 2), hdroller.d8, hdroller.d6)
+def test_ifelse():
+    result = hdroller.if_else(hdroller.d8, hdroller.coin(1, 2), hdroller.d6)
     expected = hdroller.Die([14, 14, 14, 14, 14, 14, 6, 6], min_outcome=1)
     assert result.equals(expected)

@@ -208,7 +208,7 @@ def mix(*dice, mix_weights=None):
     """ Constructs a die from a mixture of the input dice.
     
     This is equivalent to rolling a die and then choosing one of the input dice
-    based on the resulting outcome rolled.
+    based on the resulting outcome rolled. See `if_else()` for a simple example.
     
     Args:
         *dice: The dice to mix.
@@ -235,8 +235,10 @@ def mix(*dice, mix_weights=None):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
 
-def ternary(cond_die, true_die, false_die):
-    """ Ternary operator.
+def if_else(true_die, cond_die, false_die):
+    """ Roll `true_die` if `cond_die` else roll `false_die`.
+    
+    Also known as the ternary conditional operator.
     
     Selects one of two argument dice depending on whether `cond_die.bool()` is `True`.
     """

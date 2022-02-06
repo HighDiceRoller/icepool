@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from hdroller.dice.func import Die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, ternary, align, align_range, apply
+from hdroller.dice.func import Die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, if_else, align, align_range, apply
 
 import hdroller.dice.base
 
@@ -23,7 +23,7 @@ from hdroller.eval_pool import EvalPool, SumPool, sum_pool, FindMatchingSets
 
 __all__ = ['Die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'ZeroDie', 'SingleDie', 'MultiDie',
-    'from_cweights', 'from_sweights', 'from_rv', 'mix', 'ternary', 'align', 'align_range',
+    'from_cweights', 'from_sweights', 'from_rv', 'mix', 'if_else', 'align', 'align_range',
     'min', 'max', 'min_outcome', 'max_outcome',
     'apply',
     'Pool', 'DicePool', 'EvalPool', 'SumPool', 'sum_pool', 'FindMatchingSets',
