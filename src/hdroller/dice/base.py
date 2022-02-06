@@ -50,8 +50,6 @@ class BaseDie():
         This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >, ==, !=`.
         Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.
         
-        This is used for the logical operators `&, |, ^` on `bool()` of the outcome.
-        
         The operators `<<, >>` are not implemented.
         
         Special operators:
@@ -325,45 +323,6 @@ class BaseDie():
         The weights are equal to the positive outcome of `self > other`, `self < other`, and the remainder respectively.
         """
         return self.binary_op(other, BaseDie._cmp)
-    
-    # Logical operators.
-    # These operate on bool(outcome).
-    
-    @staticmethod
-    def _and(x, y):
-        return bool(x) and bool(y)
-    
-    def __and__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return self.binary_op(other, self._and)
-    
-    def __rand__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return other.binary_op(self, self._and)
-    
-    @staticmethod
-    def _or(x, y):
-        return bool(x) or bool(y)
-        
-    def __or__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return self.binary_op(other, self._or)
-    
-    def __ror__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return other.binary_op(self, self._or)
-    
-    @staticmethod
-    def _xor(x, y):
-        return bool(x) + bool(y) == 1
-    
-    def __xor__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return self.binary_op(other, self._xor)
-    
-    def __rxor__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
-        return other.binary_op(self, self._xor)
     
     # Special operators.
     
