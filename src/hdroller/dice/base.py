@@ -555,7 +555,6 @@ class BaseDie():
             min_outcomes: A sequence of one outcome per die.
                 That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
                 This is not compatible with `max_outcomes`.
-            
                 
         Returns:
             A Die representing the probability distribution of the sum.
@@ -656,6 +655,13 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
+        return hdroller.Die(data, ndim=self.ndim())
+    
+    def scale_weights(self, scale):
+        """ Multiplies all weights by a constant. """
+        if scale < 0:
+            raise ValueError('Weights cannot be scaled by a negative number.')
+        data = { outcome : scale * weight for outcome, weight in self.items() }
         return hdroller.Die(data, ndim=self.ndim())
     
     # Scalar(-ish) statistics.
