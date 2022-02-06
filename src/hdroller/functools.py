@@ -8,7 +8,7 @@ def die_cache(func):
     cache = {}
     @functools.wraps(func)
     def wrapped(die, *args, **kwargs):
-        key = (die.key_tuple(),) + args
+        key = (die.key_tuple(),) + args + tuple(kwargs.items())
         if key in cache:
             return cache[key]
         else:
