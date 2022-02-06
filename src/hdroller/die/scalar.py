@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import hdroller
 import hdroller.die.base
-import hdroller.die.multi
+import hdroller.die.vector
 
 import bisect
 from collections import defaultdict

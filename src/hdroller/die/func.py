@@ -3,8 +3,8 @@ __docformat__ = 'google'
 import hdroller
 from hdroller.collections import Weights
 import hdroller.die.base
-import hdroller.die.multi
-import hdroller.die.single
+import hdroller.die.vector
+import hdroller.die.scalar
 import hdroller.die.zero
 
 from collections import defaultdict
@@ -53,9 +53,9 @@ def Die(arg, min_outcome=None, ndim=None):
     if ndim == 0:
         return hdroller.die.zero.ZeroDie(data, 0)
     elif ndim == 1:
-        return hdroller.die.single.SingleDie(data, 1)
+        return hdroller.die.scalar.SingleDie(data, 1)
     else:
-        return hdroller.die.multi.MultiDie(data, ndim)
+        return hdroller.die.vector.MultiDie(data, ndim)
 
 def _make_data(arg, min_outcome=None):
     """ Creates a `Weights` from the arguments. """

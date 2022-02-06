@@ -10,8 +10,8 @@ import hdroller.die.base
 
 from hdroller.die.base import BaseDie
 from hdroller.die.zero import ZeroDie
-from hdroller.die.single import SingleDie
-from hdroller.die.multi import MultiDie
+from hdroller.die.scalar import SingleDie
+from hdroller.die.vector import MultiDie
 
 min = hdroller.die.base.BaseDie.min
 max = hdroller.die.base.BaseDie.max
