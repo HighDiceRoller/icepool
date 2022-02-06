@@ -172,4 +172,4 @@ class SingleDie(hdroller.dice.base.BaseDie):
             outcomes, weights = zip(*t)
             data[outcomes] += math.prod(weights)
         
-        return hdroller.Die(data)
+        return hdroller.Die(data, ndim=len(dice))
