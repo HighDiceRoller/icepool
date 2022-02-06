@@ -65,8 +65,8 @@ class EvalPool(ABC):
             A hashable object indicating the next state.
         """
     
-    def reroll_state(self, prev_state, outcome, *counts):
-        """ Optional function to reroll states.
+    def reroll(self, prev_state, outcome, *counts):
+        """ Optional function to trigger rerolls.
         
         Given the same arguments as `next_state()`, if this returns `True`,
         the state will immediately be dropped from consideration.
@@ -97,7 +97,7 @@ class EvalPool(ABC):
         * If > 0, this will be ascending order.
         * If < 0, this will be descending order.
         
-        The default is ascending order for now.
+        By default, outcomes will be given to `next_state()` in ascending order.
         """
         return 1
     
@@ -186,7 +186,7 @@ class EvalPool(ABC):
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, initial_state, *prev_pools)
                 for prev_state, prev_weight in prev.items():
-                    if self.reroll_state(prev_state, outcome, *counts):
+                    if self.reroll(prev_state, outcome, *counts):
                         continue
                     state = self.next_state(prev_state, outcome, *counts)
                     result[state] += prev_weight * prod_weight
