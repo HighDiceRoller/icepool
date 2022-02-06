@@ -542,7 +542,7 @@ class BaseDie():
             A die representing the number of rolls until success.
         """
         num_dice = 0
-        not_done, done = self.zero().split(cond)
+        done, not_done = self.zero().split(cond)
         done_weight = done.total_weight()
         data = [done_weight]
         while True:
@@ -550,7 +550,7 @@ class BaseDie():
                 break
             data = [x * self.total_weight() for x in data]
             not_done += self
-            not_done, new_done = not_done.split(cond)
+            new_done, not_done = not_done.split(cond)
             data.append(data[-1] + new_done.total_weight())
             if not_done.total_weight() == 0:
                 break
@@ -683,14 +683,14 @@ class BaseDie():
         The left result is all outcome-weight pairs where `cond(outcome)` is `False`.
         The right result is all outcome-weight pairs where `cond(outcome)` is `True`.
         """
-        data_false = {}
         data_true = {}
+        data_false = {}
         for outcome, weight in self.items():
             if cond(outcome):
                 data_true[outcome] = weight
             else:
                 data_false[outcome] = weight
-        return hdroller.Die(data_false, ndim=self.ndim()), hdroller.Die(data_true, ndim=self.ndim())
+        return hdroller.Die(data_true, ndim=self.ndim()), hdroller.Die(data_false, ndim=self.ndim())
     
     def reduce(self):
         """ Divides all weights by their greatest common denominator. """

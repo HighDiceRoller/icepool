@@ -235,6 +235,14 @@ def mix(*dice, mix_weights=None):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
 
+def ternary(cond_die, true_die, false_die):
+    """ Ternary operator.
+    
+    Selects one of two argument dice depending on whether `cond_die.bool()` is `True`.
+    """
+    cond_die = cond_die.bool()
+    return mix(true_die, false_die, mix_weights=[cond_die.weight_eq(True), cond_die.weight_eq(False)])
+
 def align(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
