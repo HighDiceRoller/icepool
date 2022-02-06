@@ -68,16 +68,22 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
     else:
         count_dice = _compute_count_dice(num_dice, count_dice)
     
-    # Sort and tupleize min/max_outcome.
-    if min_outcomes is not None:
-        min_outcomes = tuple(sorted(min_outcomes))
-    if max_outcomes is not None:
-        max_outcomes = tuple(sorted(max_outcomes))
+    # Normalize min/max outcome.
+    if min_outcomes is not None and num_dice > 0:
+        if max(min_outcomes) <= die.min_outcome():
+            min_outcomes = None
+        else:
+            min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
+    if max_outcomes is not None and num_dice > 0:
+        if min(max_outcomes) >= die.max_outcome():
+            max_outcomes = None
+        else:
+            max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
     
     if min_outcomes is not None:
         raise NotImplementedError('min_outcomes not yet implemented.')
     
-    return DicePool(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+    return _pool_cached_unchecked(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
 
 def _compute_count_dice(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
@@ -153,7 +159,7 @@ class DicePool():
                 raise ValueError('The [] operator cannot change the size of a pool with min_outcomes.')
             if self.max_outcomes() is not None:
                 raise ValueError('The [] operator cannot change the size of a pool with max_outcomes.')
-        return DicePool(self.die(), count_dice, min_outcomes=self.min_outcomes(), max_outcomes=self.max_outcomes())
+        return Pool(self.die(), count_dice=count_dice, min_outcomes=self.min_outcomes(), max_outcomes=self.max_outcomes())
     
     def num_dice(self):
         return len(self._count_dice)
@@ -207,14 +213,14 @@ class DicePool():
         if popped_die.total_weight() == 0:
             # This is the last outcome with positive weight. All dice must roll this outcome.
             weight = single_weight ** num_possible_dice
-            pool = _pool_cached_unchecked(popped_die, (), min_outcomes=None, max_outcomes=())
+            pool = Pool(popped_die, count_dice=(), min_outcomes=None, max_outcomes=())
             yield pool, remaining_count, weight
             return
         
         if not any(self.count_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
-            pool = _pool_cached_unchecked(popped_die, (), min_outcomes=None, max_outcomes=())
+            pool = Pool(popped_die, count_dice=(), min_outcomes=None, max_outcomes=())
             weight = math.prod(self.die().weight_le(max_outcome) for max_outcome in max_outcomes)
             yield pool, 0, weight
             return
@@ -224,7 +230,7 @@ class DicePool():
         
         # Zero dice rolling this outcome.
         # If there is no weight, this is the only possibility.
-        pool = _pool_cached_unchecked(popped_die, popped_count_dice, min_outcomes=None, max_outcomes=popped_max_outcomes)
+        pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=None, max_outcomes=popped_max_outcomes)
         weight = 1
         count = 0
         yield pool, count, weight
@@ -236,7 +242,7 @@ class DicePool():
                 count += popped_count_dice[-1]
                 popped_max_outcomes = popped_max_outcomes[:-1]
                 popped_count_dice = popped_count_dice[:-1]
-                pool = _pool_cached_unchecked(popped_die, popped_count_dice, min_outcomes=None, max_outcomes=popped_max_outcomes)
+                pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=None, max_outcomes=popped_max_outcomes)
                 yield pool, count, weight
     
     @cached_property
