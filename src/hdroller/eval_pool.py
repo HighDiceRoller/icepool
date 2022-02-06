@@ -96,10 +96,11 @@ class EvalPool(ABC):
         
         * If > 0, this will be ascending order.
         * If < 0, this will be descending order.
+        * If 0, `next_state()` is assumed to not care about the order.
         
-        By default, outcomes will be given to `next_state()` in ascending order.
+        The default is 0.
         """
-        return 1
+        return 0
     
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
@@ -140,6 +141,21 @@ class EvalPool(ABC):
             A die representing the distribution of the final score.
         """
         direction = self.direction(*pools)
+        
+        if direction == 0:
+            if pools[0].min_outcomes() is not None:
+                direction = -1
+            else:
+                direction = 1
+        
+        if direction > 1:
+            if any(pool.min_outcomes() for pool in pools):
+                raise ValueError('Cannot iterate in ascending order for pools with min_outcomes.')
+        
+        if direction < 1:
+            if any(pool.max_outcomes() for pool in pools):
+                raise ValueError('Cannot iterate in descending order for pools with min_outcomes.')
+        
         initial_state = self.initial_state(*pools)
         
         dist = self._eval_internal(direction, initial_state, *pools)
