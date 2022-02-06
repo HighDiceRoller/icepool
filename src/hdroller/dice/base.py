@@ -212,6 +212,13 @@ class BaseDie():
             raise ValueError('zero() did not resolve to a single outcome.')
         return result.reduce()
     
+    def bool(self):
+        """ Takes `bool()` of all outcomes.
+        
+        Note the die as a whole is not considered to have a truth value.
+        """
+        return self.unary_op(bool)
+    
     # Binary operators.
     
     def __add__(self, other):
