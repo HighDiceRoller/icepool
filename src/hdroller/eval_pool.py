@@ -142,7 +142,7 @@ class EvalPool(ABC):
         direction = self.direction(*pools)
         initial_state = self.initial_state(*pools)
         
-        dist = self._eval_narrowing(direction, initial_state, *pools)
+        dist = self._eval_internal(direction, initial_state, *pools)
         
         final_dist = defaultdict(int)
         for state, weight in dist.items():
@@ -156,11 +156,10 @@ class EvalPool(ABC):
     
     __call__ = eval
     
-    def _eval_narrowing(self, direction, initial_state, *pools):
+    def _eval_internal(self, direction, initial_state, *pools):
         """ Internal algorithm.
         
-        This algorithm gives outcomes to `next_state()` starting from the wide end of the pool
-        (e.g. the bottom when `max_outcomes` is present) to the narrow end of the pool.
+        All intermediate return values are cached in the instance.
         
         Arguments:
             direction: The direction in which to send outcomes to `next_state()`.
@@ -185,7 +184,7 @@ class EvalPool(ABC):
             for p in itertools.product(*iterators):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self._eval_narrowing(direction, initial_state, *prev_pools)
+                prev = self._eval_internal(direction, initial_state, *prev_pools)
                 for prev_state, prev_weight in prev.items():
                     if self.reroll_state(prev_state, outcome, *counts):
                         continue
