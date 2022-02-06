@@ -150,19 +150,20 @@ class EvalPool(ABC):
         Returns:
             A die representing the distribution of the final score.
         """
+        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
+        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
+        if has_max_outcomes and has_min_outcomes:
+            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
+        
         direction = self.direction(*pools, **kwargs)
         
         if direction > 0:
-            if any(pool.min_outcomes() is not None for pool in pools):
+            if has_min_outcomes:
                 raise ValueError('Cannot iterate in ascending order for pools with min_outcomes.')
         elif direction < 0:
-            if any(pool.max_outcomes() is not None for pool in pools):
+            if has_max_outcomes:
                 raise ValueError('Cannot iterate in descending order for pools with max_outcomes.')
         else:
-            has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
-            has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
-            if has_max_outcomes and has_min_outcomes:
-                raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
             if has_min_outcomes:
                 direction = -1
             else:
