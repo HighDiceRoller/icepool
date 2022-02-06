@@ -32,12 +32,20 @@ class MultiDie(hdroller.dice.base.BaseDie):
             data[new_outcome] += weight_self * weight_other
         return hdroller.Die(data, ndim=ndim)
     
-    def __getitem__(self, select):
-        """Slices the outcomes of the die."""
+    def marginal(self, select):
+        """ Returns the marginal distribution over selected dimensions of the die. """
+        test_select = ([None] * self.ndim())[select]
+        if hasattr(test_select, '__len__'):
+            ndim = len(test_select)
+        else:
+            ndim = 1
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[outcome[select]] += weight
-        return hdroller.Die(data)
+        return hdroller.Die(data, ndim=ndim)
+    
+    __getitem__ = marginal
+        
     
     # Statistics.
     # These apply to a single dimension `i`.
