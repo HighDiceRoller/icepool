@@ -352,7 +352,7 @@ class BaseDie():
     
     # Mixtures.
 
-    def relabel(self, relabeling):
+    def relabel(self, relabeling, total_weight_method='lcm'):
         """ Changes outcomes of the die to other outcomes.
         
         Outcomes can be changed to other dice.
@@ -365,6 +365,7 @@ class BaseDie():
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
                 The new outcomes may be dice rather than just single outcomes.
+            total_weight_method: As `hdroller.mix()`.
         
         Returns:
             The relabeled die.
@@ -374,7 +375,7 @@ class BaseDie():
         elif callable(relabeling):
             relabeling = [relabeling(outcome) for outcome in self.outcomes()]
 
-        return hdroller.mix(*relabeling, mix_weights=self.weights())
+        return hdroller.mix(*relabeling, mix_weights=self.weights(), total_weight_method=total_weight_method)
     
     def explode(self, max_depth, outcomes=None):
         """ Causes outcomes to be rolled again and added to the total.
@@ -393,23 +394,15 @@ class BaseDie():
         if outcomes is None:
             outcomes = set([self.max_outcome()])
         
-        explode = {}
-        non_explode = {}
-        
-        for outcome, weight in self.items():
-            if outcome in outcomes:
-                explode[outcome] = weight
-            else:
-                non_explode[outcome] = weight
-        
-        non_explode_die = hdroller.Die(non_explode, ndim=self.ndim())
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
-        explode_die = hdroller.Die(explode, ndim=self.ndim()) + tail_die
         
-        non_explode_die, explode_die = hdroller.align(non_explode_die, explode_die)
-        data = { outcome : n_weight * tail_die.total_weight() + x_weight for (outcome, n_weight), x_weight in zip(non_explode_die.items(), explode_die.weights()) }
+        def relabel_func(outcome):
+            if outcome in outcomes:
+                return outcome + tail_die
+            else:
+                return outcome
         
-        return hdroller.Die(data, ndim=self.ndim())
+        return self.relabel(relabel_func, total_weight_method='lcm')
     
     def reroll(self, outcomes, max_depth=None):
         """ Rerolls the given outcomes.

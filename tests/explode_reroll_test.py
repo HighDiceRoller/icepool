@@ -21,26 +21,10 @@ def test_explode_d6(max_depth):
     expected = bf_explode_basic(hdroller.d6, max_depth)
     assert result.equals(expected)
     assert result_int.equals(expected)
-
-"""
-def test_explode_chance():
-    result = hdroller.Die(hdroller.d10 >= 8).explode(3, {1 : 1/3})
-    expected = hdroller.Die([1.0 - 0.3,
-                    0.3 - 0.03,
-                    0.03 - 0.003,
-                    0.003 - 0.0003,
-                    0.0003], 0)
-    assert result.ks_stat(expected) == pytest.approx(0.0)
-
-def test_explode_chance_weights():
-    result = Die.mix([0]*7 + [1]*3).explode(3, {1 : 1/3})
-    expected = hdroller.Die([1.0 - 0.3,
-                    0.3 - 0.03,
-                    0.03 - 0.003,
-                    0.003 - 0.0003,
-                    0.0003], 0)
-    assert result.ks_stat(expected) == pytest.approx(0.0)
-"""
+    
+def test_explode_multiple_weight():
+    result = hdroller.d6.explode(1, outcomes=[5, 6])
+    assert result.total_weight() == 36
     
 def test_reroll():
     result = hdroller.d6.reroll([1])

@@ -205,7 +205,7 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         cweights = tuple(int(round(x * denominator)) for x in cdf)
     return from_cweights(outcomes, cweights)
 
-def mix(*dice, mix_weights=None):
+def mix(*dice, mix_weights=None, total_weight_method='lcm'):
     """ Constructs a die from a mixture of the input dice.
     
     This is equivalent to rolling a die and then choosing one of the input dice
@@ -215,14 +215,29 @@ def mix(*dice, mix_weights=None):
         *dice: The dice to mix.
         mix_weights: An iterable of one `int` weight per input die.
             If not provided, all dice are mixed uniformly.
+        total_weight_method: How to determine the total weight of the result.
+            From greatest to least:
+            * 'prod': Product of all mixed dice, times the total of mixing weights.
+                This is like rolling all of the possible dice, and then selecting a result based on the mixing weights.
+            * 'lcm' (default): LCM of mixed dice, times the total of mixing weights.
+                This is like rolling the mixing weights first, then selecting a mixed die to roll.
+            * 'lcm_weighted': LCM of (mixed die * mixing weight for that die).
+                This is like rolling the mixing weights first, then selecting a fraction of a mixed die to roll.
     """
     dice = align(*dice)
     ndim = check_ndim(*dice)
     
-    weight_product = math.prod(d.total_weight() for d in dice)
-    
     if mix_weights is None:
         mix_weights = (1,) * len(dice)
+        
+    if total_weight_method == 'prod':
+        weight_product = math.prod(d.total_weight() for d in dice)
+    elif total_weight_method == 'lcm':
+        weight_product = math.lcm(*(d.total_weight() for d in dice))
+    elif total_weight_method == 'lcm_weighted':
+        weight_product = math.lcm(*(d.total_weight() * w for d, w in zip(dice, mix_weights)))
+    else:
+        raise ValueError(f'Invalid total_weight_method {total_weight_method}.')
     
     data = defaultdict(int)
     for d, mix_weight in zip(dice, mix_weights):
@@ -231,15 +246,20 @@ def mix(*dice, mix_weights=None):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
 
-def if_else(true_die, cond_die, false_die):
+def if_else(true_die, cond_die, false_die, total_weight_method='lcm'):
     """ Roll `true_die` if `cond_die` else roll `false_die`.
     
     Also known as the ternary conditional operator.
     
-    Selects one of two argument dice depending on whether `cond_die.bool()` is `True`.
+    Args:
+        true_die: The die to roll if `cond_die.bool()` rolls `True`.
+        cond_die: The result of this die selects between `true_die` and `false_die`.
+        false_die: The die to roll if `cond_die.bool()` rolls `False`.
+        total_weight_method: As `hdroller.mix()`.
     """
     cond_die = cond_die.bool()
-    return mix(true_die, false_die, mix_weights=[cond_die.weight_eq(True), cond_die.weight_eq(False)])
+    mix_weights = cond_die.weight_eq(True), cond_die.weight_eq(False)
+    return mix(true_die, false_die, mix_weights=mix_weights, total_weight_method=total_weight_method)
 
 def align(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
