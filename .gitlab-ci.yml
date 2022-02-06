@@ -1,5 +1,12 @@
 image: python:3.9
 
+test:
+    stage: test
+    before_script:
+        - pip install pytest numpy scipy
+    script:
+        - pytest tests
+
 pages:
     stage: deploy
     before_script:
