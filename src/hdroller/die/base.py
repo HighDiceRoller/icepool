@@ -45,7 +45,7 @@ class BaseDie():
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.
         
-        The other operand is cast to a die (using `hdroller.die`) before performing the operation.
+        The other operand is cast to a die (using `hdroller.Die`) before performing the operation.
         
         This is used for the operators `+, -, *, /, //, %, **, <, <=, >=, >, ==, !=`.
         Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.
@@ -68,7 +68,7 @@ class BaseDie():
         """ Constructor, shared by subclasses.
         
         Users should usually not construct dice directly;
-        instead they should use one of the methods defined in `hdroller.dice.func` 
+        instead they should use one of the methods defined in `hdroller.die.func` 
         (which are imported into the top-level `hdroller` module).
         
         Args:

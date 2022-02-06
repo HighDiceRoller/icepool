@@ -2,10 +2,10 @@ __docformat__ = 'google'
 
 import hdroller
 from hdroller.collections import Weights
-import hdroller.dice.base
-import hdroller.dice.multi
-import hdroller.dice.single
-import hdroller.dice.zero
+import hdroller.die.base
+import hdroller.die.multi
+import hdroller.die.single
+import hdroller.die.zero
 
 from collections import defaultdict
 import itertools
@@ -51,15 +51,15 @@ def Die(arg, min_outcome=None, ndim=None):
     ndim = _calc_ndim(data, ndim)
     
     if ndim == 0:
-        return hdroller.dice.zero.ZeroDie(data, 0)
+        return hdroller.die.zero.ZeroDie(data, 0)
     elif ndim == 1:
-        return hdroller.dice.single.SingleDie(data, 1)
+        return hdroller.die.single.SingleDie(data, 1)
     else:
-        return hdroller.dice.multi.MultiDie(data, ndim)
+        return hdroller.die.multi.MultiDie(data, ndim)
 
 def _make_data(arg, min_outcome=None):
     """ Creates a `Weights` from the arguments. """
-    if isinstance(arg, hdroller.dice.base.BaseDie):
+    if isinstance(arg, hdroller.die.base.BaseDie):
         data = arg._data
     elif isinstance(arg, Weights):
         data = arg
@@ -145,7 +145,7 @@ def d(arg):
     """
     if isinstance(arg, int):
         return standard(arg)
-    elif isinstance(arg, hdroller.dice.base.BaseDie):
+    elif isinstance(arg, hdroller.die.base.BaseDie):
         return arg
     else:
         raise TypeError('The argument to d() must be an int or a die.')

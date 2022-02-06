@@ -4,19 +4,19 @@ __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from hdroller.dice.func import Die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, if_else, align, align_range, apply
+from hdroller.die.func import Die, standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, mix, if_else, align, align_range, apply
 
-import hdroller.dice.base
+import hdroller.die.base
 
-from hdroller.dice.base import BaseDie
-from hdroller.dice.zero import ZeroDie
-from hdroller.dice.single import SingleDie
-from hdroller.dice.multi import MultiDie
+from hdroller.die.base import BaseDie
+from hdroller.die.zero import ZeroDie
+from hdroller.die.single import SingleDie
+from hdroller.die.multi import MultiDie
 
-min = hdroller.dice.base.BaseDie.min
-max = hdroller.dice.base.BaseDie.max
-min_outcome = hdroller.dice.base.BaseDie.min_outcome
-max_outcome = hdroller.dice.base.BaseDie.max_outcome
+min = hdroller.die.base.BaseDie.min
+max = hdroller.die.base.BaseDie.max
+min_outcome = hdroller.die.base.BaseDie.min_outcome
+max_outcome = hdroller.die.base.BaseDie.max_outcome
 
 from hdroller.pool import Pool, DicePool
 from hdroller.eval_pool import EvalPool, SumPool, sum_pool, FindMatchingSets

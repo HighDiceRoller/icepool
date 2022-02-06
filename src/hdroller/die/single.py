@@ -1,15 +1,15 @@
 __docformat__ = 'google'
 
 import hdroller
-import hdroller.dice.base
-import hdroller.dice.multi
+import hdroller.die.base
+import hdroller.die.multi
 
 import bisect
 from collections import defaultdict
 import itertools
 import math
 
-class SingleDie(hdroller.dice.base.BaseDie):
+class SingleDie(hdroller.die.base.BaseDie):
     """ Univariate die with `ndim == 1`.
     
     Operations are performed directly on the outcomes.
@@ -72,7 +72,7 @@ class SingleDie(hdroller.dice.base.BaseDie):
         so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
         so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
-        if not isinstance(other, hdroller.dice.base.BaseDie):
+        if not isinstance(other, hdroller.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     

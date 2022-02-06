@@ -1,13 +1,13 @@
 __docformat__ = 'google'
 
 import hdroller
-import hdroller.dice.base
-import hdroller.dice.single
+import hdroller.die.base
+import hdroller.die.single
 
 from collections import defaultdict
 import itertools
 
-class MultiDie(hdroller.dice.base.BaseDie):
+class MultiDie(hdroller.die.base.BaseDie):
     """ Multivariate die with `ndim > 1`.
     
     Outcomes are sequences, and operations are performed elementwise on the sequences.
@@ -54,42 +54,42 @@ class MultiDie(hdroller.dice.base.BaseDie):
         return func(self[i], *args, **kwargs)
     
     def median_left(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.median_left, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.median_left, i)
         
     def median_right(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.median_right, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.median_right, i)
     
     def median(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.median, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.median, i)
     
     def ppf_left(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf_left, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.ppf_left, i)
         
     def ppf_right(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf_right, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.ppf_right, i)
     
     def ppf(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.ppf, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.ppf, i)
         
     def mean(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.mean, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.mean, i)
     
     def variance(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.variance, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.variance, i)
     
     def standard_deviation(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.standard_deviation, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.standard_deviation, i)
     
     sd = standard_deviation
     
     def standardized_moment(self, i, k):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.standardized_moment, i, k)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.standardized_moment, i, k)
     
     def skewness(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.skewness, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.skewness, i)
         
     def excess_kurtosis(self, i):
-        return self._apply_to_dim(hdroller.dice.single.SingleDie.excess_kurtosis, i)
+        return self._apply_to_dim(hdroller.die.single.SingleDie.excess_kurtosis, i)
     
     # Joint statistics.
     

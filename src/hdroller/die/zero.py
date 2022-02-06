@@ -1,9 +1,9 @@
 __docformat__ = 'google'
 
 import hdroller
-import hdroller.dice.base
+import hdroller.die.base
 
-class ZeroDie(hdroller.dice.base.BaseDie):
+class ZeroDie(hdroller.die.base.BaseDie):
     """ Die with with `ndim == 0`.
     
     This die produces no outcome information with 100% probability.
