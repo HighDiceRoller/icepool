@@ -10,10 +10,26 @@ import itertools
 import math
 
 class ScalarDie(hdroller.die.base.BaseDie):
-    """ Univariate die with `ndim == 1`.
+    """ Univariate die.
     
-    Operations are performed directly on the outcomes.
+    Outcomes are scalars and operations are performed directly on the outcomes.
     """
+    
+    def ndim(self):
+        """ Returns the number of dimensions if is a `VectorDie`, or `False` otherwise. """
+        return False
+    
+    def __init__(self, data):
+        """ Constructor.
+        
+        Dice should not be constructed directly;
+        instead, use one of the methods defined in `hdroller.die.func` 
+        (which are imported into the top-level `hdroller` module).
+        
+        Args:
+            data: A `Weights` mapping outcomes to weights.
+        """
+        self._data = data
     
     def unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on the outcomes. """
@@ -24,7 +40,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
-        ndim = self._check_ndim(other)
+        ndim = hdroller.check_ndim(self, other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other

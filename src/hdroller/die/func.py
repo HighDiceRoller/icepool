@@ -11,7 +11,7 @@ from collections import defaultdict
 import itertools
 import math
 
-def Die(arg, min_outcome=None, ndim=None):
+def Die(arg, min_outcome=None, is_vector=None):
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -39,23 +39,23 @@ def Die(arg, min_outcome=None, ndim=None):
                 The outcomes will be `int`s starting at `min_outcome`.
             * A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight `1`.
-        ndim: If provided, the die will have the given number of dimensions.
-            E.g. for `str` outcomes you may want to set `ndim=1`, which will
-            treat e.g. `'abc' + 'def'` as `'abcdef'` rather than `('ad', 'be', 'cf')`.
+        is_vector: If set to `False`, the die will be forced to be scalar.
+            If set to `True`, the die will be forced to be vector.
+            If omitted, this will be automatically detected.
+            E.g. for `str` outcomes you may want to set `vector=False`, which will
+            treat e.g. `'abc' as a single string rather than `('a', 'b', 'c')`.
     
     Raises:
-        `ValueError` if `ndim` is provided but is not consistent with `arg`.
+        `ValueError` if `vector` is set but is not consistent with `arg`.
     """
     data = _make_data(arg, min_outcome)
         
-    ndim = _calc_ndim(data, ndim)
+    is_vector, ndim = _calc_ndim(data, is_vector)
     
-    if ndim == 0:
-        return hdroller.die.zero.ZeroDie(data, 0)
-    elif ndim == 1:
-        return hdroller.die.scalar.ScalarDie(data, 1)
-    else:
+    if is_vector:
         return hdroller.die.vector.VectorDie(data, ndim)
+    else:
+        return hdroller.die.scalar.ScalarDie(data)
 
 def _make_data(arg, min_outcome=None):
     """ Creates a `Weights` from the arguments. """
@@ -78,40 +78,43 @@ def _make_data(arg, min_outcome=None):
     return Weights(data)
     
 
-def _calc_ndim(data, ndim):
-    """Verifies `ndim` if provided, or calculates it if not.
+def _calc_ndim(data, is_vector):
+    """Verifies `is_vector` if provided and calculates `ndim`.
     
     Args:
         data: A `Weights`.
-        ndim: If provided, `ndims` will be set to this value.
+        is_vector: If `None`, this will be determined from `data`.
+            If provided, this will be verified.
         
     Returns:
-        An appropriate `ndim` for a die.
+        is_vector: `True` or `False`.
+        ndim: The number of dimensions, or `False` if `is_vector` is determined to be `False`.
         
     Raises:
         `ValueError` if `ndim` is provided but is not consistent with the data.
     """
-    if ndim is not None:
-        if ndim != 1:
-            for outcome in data.keys():
-                if len(outcome) != ndim:
-                    raise ValueError('Outcomes not consistent with provided ndim.')
-        return ndim
-    
-    if len(data) == 0:
-        raise ValueError('The ndim of a die with no outcomes cannot be automatically determined.')
-    
+    if is_vector is False:
+        # Force scalar.
+        return False, False
+        
+    ndim = None
     for outcome in data.keys():
-        try:
+        if hasattr(outcome, '__len__'):
             if ndim is None:
                 ndim = len(outcome)
             elif len(outcome) != ndim:
-                # The data has mixed dimensions.
-                return 1
-        except TypeError:
-            # The data contains a scalar.
-            return 1
-    return ndim
+                # Found mixed dimension.
+                if is_vector is True:
+                    raise ValueError('Cannot make a VectorDie with mixed ndim.')
+                else:
+                    return False, False
+        else:
+            if is_vector is True:
+                raise ValueError('Cannot make a VectorDie with scalar value.')
+            else:
+                return False, False
+    
+    return is_vector, ndim
 
 def standard(num_sides):
     """ A standard die.
@@ -127,7 +130,7 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return Die([1] * num_sides, min_outcome=1, ndim=1)
+    return Die([1] * num_sides, min_outcome=1, is_vector=False)
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -161,20 +164,20 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return Die({False : d - n, True : n}, ndim=1)
+    return Die({False : d - n, True : n}, is_vector=False)
 
 coin = bernoulli
 
-def from_cweights(outcomes, cweights, ndim=None):
+def from_cweights(outcomes, cweights, is_vector=None):
     """ Constructs a die from cumulative weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
         d[outcome] = weight - prev
         prev = weight
-    return Die(d, ndim=ndim)
+    return Die(d, is_vector=is_vector)
     
-def from_sweights(outcomes, sweights, ndim=None):
+def from_sweights(outcomes, sweights, is_vector=None):
     """ Constructs a die from survival weights. """
     d = {}
     for i, outcome in enumerate(outcomes):
@@ -183,7 +186,7 @@ def from_sweights(outcomes, sweights, ndim=None):
         else:
             weight = sweights[i]
         d[outcome] = weight
-    return Die(d, ndim=ndim)
+    return Die(d, is_vector=is_vector)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """ Constructs a die from a rv object (as `scipy.stats`).
@@ -216,12 +219,8 @@ def mix(*dice, mix_weights=None):
             If not provided, all dice are mixed uniformly.
     """
     dice = align(*dice)
-    ndim = None
-    for d in dice:
-        if ndim is None:
-            ndim = d.ndim()
-        elif d.ndim() != ndim:
-            ndim = 1
+    
+    # TODO: Check ndim
     
     weight_product = math.prod(d.total_weight() for d in dice)
     
@@ -233,7 +232,7 @@ def mix(*dice, mix_weights=None):
         factor = mix_weight * weight_product // d.total_weight()
         for outcome, weight in zip(d.outcomes(), d.weights()):
             data[outcome] += weight * factor
-    return Die(data, ndim=ndim)
+    return Die(data, is_vector=is_vector)
 
 def if_else(true_die, cond_die, false_die):
     """ Roll `true_die` if `cond_die` else roll `false_die`.
@@ -245,7 +244,7 @@ def if_else(true_die, cond_die, false_die):
     cond_die = cond_die.bool()
     return mix(true_die, false_die, mix_weights=[cond_die.weight_eq(True), cond_die.weight_eq(False)])
 
-def align(*dice, ndim=None):
+def align(*dice, is_vector=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
     Args:
@@ -257,19 +256,19 @@ def align(*dice, ndim=None):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    dice = [Die(d, ndim=ndim) for d in dice]
-    hdroller.BaseDie._check_ndim(*dice)
+    dice = [Die(d, is_vector=is_vector) for d in dice]
+    hdroller.check_ndim(*dice)
     union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(union_outcomes) for die in dice)
 
-def align_range(*dice, ndim=None):
+def align_range(*dice, is_vector=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice = [Die(d, ndim=ndim) for d in dice]
-    hdroller.BaseDie._check_ndim(*dice)
+    dice = [Die(d, is_vector=is_vector) for d in dice]
+    hdroller.check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
-def apply(func, *dice, ndim=None):
+def apply(func, *dice, is_vector=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient for large numbers of dice.
@@ -282,10 +281,10 @@ def apply(func, *dice, ndim=None):
     Returns:
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
-    dice = [Die(d, ndim=ndim) for d in dice]
+    dice = [Die(d, is_vector=is_vector) for d in dice]
     data = defaultdict(int)
     for t in itertools.product(*(d.items() for d in dice)):
         outcomes, weights = zip(*t)
         data[func(*outcomes)] += math.prod(weights)
     
-    return Die(data, ndim=ndim)
+    return Die(data, is_vector=is_vector)

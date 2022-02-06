@@ -28,9 +28,11 @@ class BaseDie():
     Most operations will not introduce zero-weight outcomes if their arguments do not have any.
     
     `len(die)` will return the number of outcomes (including zero-weight outcomes).
-    
-    Subclasses implement the operations that make sense only for a particular number of dimensions.
     """
+    
+    @abstractmethod
+    def ndim(self):
+        """ Returns the number of dimensions if is a `VectorDie`, or `False` otherwise. """
     
     # Abstract methods.
     
@@ -62,32 +64,13 @@ class BaseDie():
                 Custom functions can use `key_tuple()`, `equals()` and `hash()` as workarounds.
         """
         
-    # Construction.
-
-    def __init__(self, data, ndim):
-        """ Constructor, shared by subclasses.
-        
-        Users should usually not construct dice directly;
-        instead they should use one of the methods defined in `hdroller.die.func` 
-        (which are imported into the top-level `hdroller` module).
-        
-        Args:
-            data: A `Weights` mapping outcomes to weights.
-            ndim: The number of dimensions of the outcomes.
-        """
-        self._data = data
-        self._ndim = ndim
-        
     # Basic access.
-    
-    def ndim(self):
-        return self._ndim
     
     def has_zero_weights(self):
         """ Returns `True` iff `self` contains at least one zero weight. """
         return self._data.has_zero_weights()
         
-    def _check_ndim(*dice):
+    def check_ndim(*dice):
         """ Checks that `ndim` matches between the dice, and returns it. 
         
         Args:
@@ -501,14 +484,14 @@ class BaseDie():
     def max(*dice):
         """ Roll all the dice and take the highest. """
         dice = hdroller.align(dice)
-        ndim = BaseDie._check_ndim(*dice)
+        ndim = hdroller.check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def min(*dice):
         """ Roll all the dice and take the lowest. """
         dice = hdroller.align(dice)
-        ndim = BaseDie._check_ndim(*dice)
+        ndim = hdroller.check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
     

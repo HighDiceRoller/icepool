@@ -8,12 +8,30 @@ from collections import defaultdict
 import itertools
 
 class VectorDie(hdroller.die.base.BaseDie):
-    """ Multivariate die with `ndim > 1`.
+    """ Multivariate die.
     
-    Outcomes are sequences, and operations are performed elementwise on the sequences.
+    Outcomes are tuples and operators are performed elementwise.
     
     Statistical methods other than `mode()` take in an argument `i` specifying which dimension to take the statistic over.
     """
+    
+    def ndim(self):
+        """ Returns the number of dimensions if is a `VectorDie`, or `False` otherwise. """
+        return self._ndim
+    
+    def __init__(self, data, ndim):
+        """ Constructor.
+        
+        Dice should not be constructed directly;
+        instead, use one of the methods defined in `hdroller.die.func` 
+        (which are imported into the top-level `hdroller` module).
+        
+        Args:
+            data: A `Weights` mapping outcomes to weights.
+            ndim: The number of dimensions of this die.
+        """
+        self._data = data
+        self._ndim = ndim
     
     def unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on the outcome sequences. """
@@ -25,7 +43,7 @@ class VectorDie(hdroller.die.base.BaseDie):
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
-        ndim = self._check_ndim(other)
+        ndim = self.check_ndim(other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
