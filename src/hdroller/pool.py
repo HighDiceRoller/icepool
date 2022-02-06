@@ -7,7 +7,7 @@ import bisect
 from functools import cached_property
 import math
 
-def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes=None):
+def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes=None):
     """ Factory function for dice pools.
     
     A pool represents rolling a set of dice where you do not know which die rolled which outcome,
@@ -49,16 +49,16 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
             The `[]` operator can even change the size of the pool,
             provided that neither `min_outcomes` nor `max_outcomes` are set.
             For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
-        min_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-            Values below the `min_outcome` of the fundamental die have no effect.
-            A pool cannot limit both `min_outcomes` and `max_outcomes`.
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
             Values above the `max_outcome` of the fundamental die have no effect.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
             For example, `Pool(hdroller.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
+        min_outcomes: A sequence of one outcome per die in the pool.
+            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            Values below the `min_outcome` of the fundamental die have no effect.
+            A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
     Raises:
         `ValueError` if arguments conflict with each other.
@@ -84,32 +84,31 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
     else:
         count_dice = _compute_count_dice(num_dice, count_dice)
     
-    # Put min/max outcomes into standard form.
+    # Put max/min outcomes into standard form.
     # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
     # Values will also be clipped to the range of the fundamental die.
     
     if num_dice == 0:
-        min_outcomes = None
         max_outcomes = None
+        min_outcomes = None
     else:
-        if min_outcomes is not None:
-            if max(min_outcomes) > die.min_outcome():
-                min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
-            else:
-                # In this case, the min_outcomes don't actually do anything.
-                min_outcomes = None
-        
         if max_outcomes is not None:
             if min(max_outcomes) < die.max_outcome():
                 max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
             else:
                 # In this case, the max_outcomes don't actually do anything.
                 max_outcomes = None
+        if min_outcomes is not None:
+            if max(min_outcomes) > die.min_outcome():
+                min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
+            else:
+                # In this case, the min_outcomes don't actually do anything.
+                min_outcomes = None
     
-    if min_outcomes is not None and max_outcomes is not None:
-        raise ValueError('A pool cannot limit both min_outcomes and max_outcomes.')
+    if max_outcomes is not None and min_outcomes is not None:
+        raise ValueError('A pool cannot limit both max_outcomes and min_outcomes.')
     
-    return _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes)
+    return _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
 
 def _compute_count_dice(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
@@ -130,15 +129,15 @@ def _compute_count_dice(num_dice, count_dice):
         return tuple(count_dice)
 
 @die_cache
-def _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes):
+def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
     """
-    return DicePool(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+    return DicePool(die, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
 
 class DicePool():
-    def __init__(self, die, count_dice, *, min_outcomes, max_outcomes):
+    def __init__(self, die, count_dice, *, max_outcomes, min_outcomes):
         """ Unchecked constructor.
         
         This should not be used directly. Use the `Pool()` factory function instead.
@@ -146,13 +145,13 @@ class DicePool():
         Args:
             die: The fundamental die of the pool.
             count_dice: At this point, this should be a tuple the length of the pool.
-            min_outcomes: At this point this should be a tuple the length of the pool or `None`.
             max_outcomes: At this point this should be a tuple the length of the pool or `None`.
+            min_outcomes: At this point this should be a tuple the length of the pool or `None`.
         """
         self._die = die
         self._count_dice = count_dice
-        self._min_outcomes = min_outcomes
         self._max_outcomes = max_outcomes
+        self._min_outcomes = min_outcomes
         
     def die(self):
         """ The fundamental die of the pool. """
@@ -185,27 +184,16 @@ class DicePool():
         """
         count_dice = _compute_count_dice(self.num_dice(), count_dice)
         if len(count_dice) != self.num_dice():
-            if self.min_outcomes() is not None:
-                raise ValueError('The [] operator cannot change the size of a pool with min_outcomes.')
             if self.max_outcomes() is not None:
                 raise ValueError('The [] operator cannot change the size of a pool with max_outcomes.')
-        return Pool(self.die(), count_dice=count_dice, min_outcomes=self.min_outcomes(), max_outcomes=self.max_outcomes())
+            if self.min_outcomes() is not None:
+                raise ValueError('The [] operator cannot change the size of a pool with min_outcomes.')
+        return Pool(self.die(), count_dice=count_dice, max_outcomes=self.max_outcomes(), min_outcomes=self.min_outcomes())
     
     def num_dice(self):
         return len(self._count_dice)
     
     __len__ = num_dice
-        
-    def min_outcomes(self, always_tuple=False):
-        """ A tuple of sorted min outcomes, one for each die in the pool. 
-        
-        Args:
-            * always_tuple: If `False`, this will return `None` if there are no die-specific min_outcomes.
-                If `True` this will return a `tuple` even in this case.
-        """
-        if self._min_outcomes is None and always_tuple:
-            return (self.die().min_outcome(),) * self.num_dice()
-        return self._min_outcomes
     
     def max_outcomes(self, always_tuple=False):
         """ A tuple of sorted max outcomes, one for each die in the pool. 
@@ -217,6 +205,17 @@ class DicePool():
         if self._max_outcomes is None and always_tuple:
             return (self.die().max_outcome(),) * self.num_dice()
         return self._max_outcomes
+        
+    def min_outcomes(self, always_tuple=False):
+        """ A tuple of sorted min outcomes, one for each die in the pool. 
+        
+        Args:
+            * always_tuple: If `False`, this will return `None` if there are no die-specific min_outcomes.
+                If `True` this will return a `tuple` even in this case.
+        """
+        if self._min_outcomes is None and always_tuple:
+            return (self.die().min_outcome(),) * self.num_dice()
+        return self._min_outcomes
     
     def _iter_pop_max(self):
         """
