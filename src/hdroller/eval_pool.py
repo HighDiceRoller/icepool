@@ -94,11 +94,14 @@ class EvalPool(ABC):
     def direction(self, *pools):
         """ Optional function to determine the direction in which this evaluator will give outcomes to `next_state()`.
         
-        * If > 0, this will be ascending order.
-        * If < 0, this will be descending order.
-        * If 0, `next_state()` is assumed to not care about the order.
+        * If > 0, this will be ascending order. This is not compatible with pools with `min_outcomes`.
+        * If < 0, this will be descending order. This is not compatible with pools with `max_outcomes`.
+        * Otherwise, `next_state()` is assumed to not care about the order in which it sees outcomes.
         
         The default is 0.
+        
+        Args:
+            *pools: One or more `DicePool`s being evaluated.
         """
         return 0
     
@@ -134,6 +137,7 @@ class EvalPool(ABC):
             *pools: One or more `DicePool`s to evaluate.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
+                Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
             ndim: The number of dimensions of the resulting die.
                 If omitted, this will be determined automatically.
         
