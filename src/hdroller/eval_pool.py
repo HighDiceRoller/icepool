@@ -195,25 +195,27 @@ class EvalPool(ABC):
         self._cache[cache_key] = result
         return result
     
-def _pop_pools(direction, pools):
+def _pop_pools(side, pools):
     """ Pops a single outcome from the pools.
     
     Returns:
         * The popped outcome.
         * A tuple of iterators over the possible resulting pools, counts, and weights.
     """
-    if direction > 0:
+    if side >= 0:
         outcome = max(pool.die().max_outcome() for pool in pools if pool is not None)
+        iterators = tuple(_pop_pool_max(outcome, pool) for pool in pools)
     else:
         outcome = min(pool.die().min_outcome() for pool in pools if pool is not None)
-    iterators = tuple(_pop_pool(direction, outcome, pool) for pool in pools)
+        iterators = tuple(_pop_pool_min(outcome, pool) for pool in pools)
+    
     return outcome, iterators
 
-def _pop_pool(direction, outcome, pool):
+def _pop_pool_max(outcome, pool):
     """ Iterates over possible numbers of dice that could roll an outcome.
     
     Args:
-        outcome: The min or max outcome.
+        outcome: The max outcome.
         pool: The `DicePool` under consideration.
     
     Yields:
@@ -224,10 +226,24 @@ def _pop_pool(direction, outcome, pool):
     if pool is None or outcome not in pool.die():
         yield pool, None, 1
     else:
-        if direction > 0:
-            yield from pool.pop_max()
-        else:
-            yield from pool.pop_min()
+        yield from pool.pop_max()
+        
+def _pop_pool_min(outcome, pool):
+    """ Iterates over possible numbers of dice that could roll an outcome.
+    
+    Args:
+        outcome: The min outcome.
+        pool: The `DicePool` under consideration.
+    
+    Yields:
+        prev_pool: The remainder of the pool after taking out the dice that rolled the current outcome.
+        count: How many dice rolled the current outcome, or `None` if the outcome is not in this pool.
+        weight: The weight of that many dice rolling the current outcome.
+    """
+    if pool is None or outcome not in pool.die():
+        yield pool, None, 1
+    else:
+        yield from pool.pop_min()
 
 class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """
