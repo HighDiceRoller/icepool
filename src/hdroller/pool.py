@@ -96,7 +96,7 @@ def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes
     if min_outcomes is not None and max_outcomes is not None:
         raise ValueError('A pool cannot limit both min_outcomes and max_outcomes.')
     
-    return _pool_cached_unchecked(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+    return _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes)
 
 def _compute_count_dice(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
@@ -117,14 +117,18 @@ def _compute_count_dice(num_dice, count_dice):
         return tuple(count_dice)
 
 @die_cache
-def _pool_cached_unchecked(die, count_dice, *, min_outcomes, max_outcomes):
+def _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes):
+    """ Cached, unchecked constructor for dice pools.
+    
+    This should not be used directly. Use the `Pool()` factory function instead.
+    """
     return DicePool(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
 
 class DicePool():
     def __init__(self, die, count_dice, *, min_outcomes, max_outcomes):
         """ Unchecked constructor.
         
-        This should not be used directly.
+        This should not be used directly. Use the `Pool()` factory function instead.
         
         Args:
             die: The fundamental die of the pool.
