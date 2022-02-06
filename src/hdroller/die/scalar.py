@@ -36,7 +36,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
-        return hdroller.Die(data, ndim=1)
+        return hdroller.Die(data, ndim=False)
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
@@ -44,7 +44,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
-        return hdroller.Die(data, ndim=1)
+        return hdroller.Die(data, ndim=False)
     
     # Special operators.
     

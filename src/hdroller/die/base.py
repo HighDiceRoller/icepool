@@ -69,26 +69,6 @@ class BaseDie():
     def has_zero_weights(self):
         """ Returns `True` iff `self` contains at least one zero weight. """
         return self._data.has_zero_weights()
-        
-    def check_ndim(*dice):
-        """ Checks that `ndim` matches between the dice, and returns it. 
-        
-        Args:
-            *dice: The dice to be checked.
-        
-        Returns:
-            The common `ndim` of the dice.
-        
-        Raises:
-            ValueError if a mismatch in `ndim` is found.
-        """
-        ndim = None
-        for die in dice:
-            if ndim is None:
-                ndim = die.ndim()
-            elif die.ndim() != ndim:
-                raise ValueError('Dice have mismatched ndim.')
-        return ndim
     
     def outcomes(self):
         """ Returns an iterable into the sorted outcomes of the die. """
