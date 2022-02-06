@@ -9,7 +9,7 @@ from collections import defaultdict
 import itertools
 import math
 
-class SingleDie(hdroller.die.base.BaseDie):
+class ScalarDie(hdroller.die.base.BaseDie):
     """ Univariate die with `ndim == 1`.
     
     Operations are performed directly on the outcomes.
@@ -153,7 +153,7 @@ class SingleDie(hdroller.die.base.BaseDie):
     
     def cartesian_product(*dice):
         """
-        Produces a `MultiDie` from the Cartesian product of the input `SingleDie`.
+        Produces a `VectorDie` from the Cartesian product of the input `ScalarDie`.
         
         This is usually not recommended, as it takes space and time exponential in the number of dice,
         while not actually producing any additional information.
@@ -162,10 +162,10 @@ class SingleDie(hdroller.die.base.BaseDie):
             *dice: Multiple dice or a single iterable of dice.
         
         Raises:
-            `TypeError` if any of the input dice are already `MultiDie`.
+            `TypeError` if any of the input dice are already `VectorDie`.
         """
         if any(die.ndim > 1 for die in dice):
-            raise TypeError('cartesian_product() is only valid on SingleDie.')
+            raise TypeError('cartesian_product() is only valid on ScalarDie.')
         
         data = defaultdict(int)
         for t in itertools.product(*(die.items() for die in dice)):

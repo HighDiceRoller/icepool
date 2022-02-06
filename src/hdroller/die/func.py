@@ -53,9 +53,9 @@ def Die(arg, min_outcome=None, ndim=None):
     if ndim == 0:
         return hdroller.die.zero.ZeroDie(data, 0)
     elif ndim == 1:
-        return hdroller.die.scalar.SingleDie(data, 1)
+        return hdroller.die.scalar.ScalarDie(data, 1)
     else:
-        return hdroller.die.vector.MultiDie(data, ndim)
+        return hdroller.die.vector.VectorDie(data, ndim)
 
 def _make_data(arg, min_outcome=None):
     """ Creates a `Weights` from the arguments. """
