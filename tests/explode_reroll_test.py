@@ -21,10 +21,11 @@ def test_explode_d6(max_depth):
     expected = bf_explode_basic(hdroller.d6, max_depth)
     assert result.equals(expected)
     assert result_int.equals(expected)
-    
-def test_explode_multiple_weight():
-    result = hdroller.d6.explode(1, outcomes=[5, 6])
-    assert result.total_weight() == 36
+
+@pytest.mark.parametrize('max_depth', range(6))
+def test_explode_multiple_weight(max_depth):
+    result = hdroller.d6.explode(max_depth, outcomes=[5, 6])
+    assert result.total_weight() == 6 ** (max_depth + 1)
     
 def test_reroll():
     result = hdroller.d6.reroll([1])
