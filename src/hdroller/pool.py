@@ -249,11 +249,9 @@ class DicePool():
             yield pool, 0, weight
             return
         
+        # Consider various numbers of dice rolling this outcome.
         popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
         popped_count_dice = self.count_dice()
-        
-        # Zero dice rolling this outcome.
-        # If there is no weight, this is the only possibility.
         pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
         weight = 1
         count = 0
@@ -302,11 +300,9 @@ class DicePool():
             yield pool, 0, weight
             return
         
+        # Consider various numbers of dice rolling this outcome.
         popped_min_outcomes = (popped_die.min_outcome(),) * num_possible_dice + min_outcomes[num_possible_dice:]
         popped_count_dice = self.count_dice()
-        
-        # Zero dice rolling this outcome.
-        # If there is no weight, this is the only possibility.
         pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
         weight = 1
         count = 0

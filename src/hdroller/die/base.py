@@ -177,6 +177,10 @@ class BaseDie():
             raise ValueError('zero() did not resolve to a single outcome.')
         return result.reduce()
     
+    def zero_outcome(self):
+        """ Returns a zero-outcome for this die, e.g. `0` for a die whose outcomes are `int`s. """
+        return self.zero().outcomes()[0]
+    
     def bool(self):
         """ Takes `bool()` of all outcomes.
         
@@ -545,7 +549,7 @@ class BaseDie():
         """
         pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         return pool.sum()
-        
+    
     def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
         
@@ -563,11 +567,19 @@ class BaseDie():
         Returns:
             A die representing the probability distribution of the sum.
         """
+        if num_keep == 1 and num_drop == 0 and max_outcomes is None and min_outcomes is None:
+            return self.keep_highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
-        return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
-        
+        return self.keep(num_dice, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
+    
+    def keep_highest_single(self, num_dice=None):
+        """ Faster algorithm for keeping just the single highest die. """
+        if num_dice is None:
+            return self.zero()
+        return hdroller.from_cweights(self.outcomes(), (x ** num_dice for x in self.cweights()), ndim=self.ndim())
+    
     def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
         
@@ -585,10 +597,18 @@ class BaseDie():
         Returns:
             A die representing the probability distribution of the sum.
         """
+        if num_keep == 1 and num_drop == 0 and max_outcomes is None and min_outcomes is None:
+            return self.keep_lowest_single(num_dice)
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
-        return self.keep(num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        return self.keep(num_dice, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
+    
+    def keep_lowest_single(self, num_dice=None):
+        """ Faster algorithm for keeping just the single lowest die. """
+        if num_dice is None:
+            return self.zero()
+        return hdroller.from_sweights(self.outcomes(), (x ** num_dice for x in self.sweights()), ndim=self.ndim())
     
     # Modifying outcomes and/or weights.
     

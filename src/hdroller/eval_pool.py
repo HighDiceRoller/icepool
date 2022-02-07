@@ -296,7 +296,7 @@ class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """
     def initial_state(self, pool):
         """ The running total starts at 0. """
-        return 0
+        return pool.die().zero_outcome()
         
     def next_state(self, prev_state, outcome, count):
         """ Add the dice to the running total. """
@@ -314,7 +314,7 @@ class FindMatchingSets(EvalPool):
     """
     def initial_state(self, pool):
         """ Start with `set_size = -1` so any outcome will be written in. """
-        return -1, 0
+        return -1, pool.die().zero_outcome()
     
     def next_state(self, prev_state, outcome, count):
         """ Replace the last best set if this one is better. 

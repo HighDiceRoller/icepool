@@ -177,13 +177,11 @@ def from_cweights(outcomes, cweights, ndim=None):
     
 def from_sweights(outcomes, sweights, ndim=None):
     """ Constructs a die from survival weights. """
+    prev = 0
     d = {}
-    for i, outcome in enumerate(outcomes):
-        if i < len(outcomes) - 1:
-            weight = sweights[i] - sweights[i+1]
-        else:
-            weight = sweights[i]
-        d[outcome] = weight
+    for outcome, weight in zip(reversed(outcomes), reversed(tuple(sweights))):
+        d[outcome] = weight - prev
+        prev = weight
     return Die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
