@@ -471,10 +471,10 @@ class BaseDie():
     def repeat_and_sum(self, num_dice):
         """ Roll this die `num_dice` times and sum the results. 
         
-        If `num_dice` is negative, negate both `num_dice` and the result.
+        If `num_dice` is negative, roll the die `abs(num_dice)` times and negate the result.
         """
         if num_dice < 0:
-            return (-self).repeat_and_sum(-num_dice)
+            return -self.repeat_and_sum(-num_dice)
         elif num_dice == 0:
             return self.zero()
         elif num_dice == 1:
