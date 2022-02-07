@@ -1,3 +1,14 @@
+## 0.5.0
+
+* Capitalize `Die()` and `Pool()` factory methods.
+* `PoolEval` renamed to `EvalPool`.
+* Implemented `min_outcomes` for pools. Direction is now determined by `EvalPool`.
+* Allow dice with zero weights or zero outcomes.
+* `BaseDie` subclasses are now `ScalarDie` and `VectorDie`.
+* `==` and `!=` compare outcomes again. Dice are no longer hashable by the standard `hash()`.
+* Rewored `Pool()` arguments.
+* Added several methods.
+
 ## 0.4.4
 
 * Fix `weights_le()` etc.
