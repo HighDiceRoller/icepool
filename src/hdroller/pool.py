@@ -241,13 +241,6 @@ class DicePool():
             yield None, remaining_count, weight
             return
         
-        if popped_die.total_weight() == 0:
-            # This is the last outcome with positive weight. All dice must roll this outcome.
-            weight = single_weight ** num_possible_dice
-            pool = Pool(popped_die, num_dice=0)
-            yield pool, remaining_count, weight
-            return
-        
         if not any(self.count_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
@@ -266,15 +259,13 @@ class DicePool():
         count = 0
         yield pool, count, weight
         
-        if single_weight > 0:
-            # If the outcome has nonzero weight, consider how many dice could roll this outcome.
-            comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
-            for weight in comb_row[1:]:
-                count += popped_count_dice[-1]
-                popped_max_outcomes = popped_max_outcomes[:-1]
-                popped_count_dice = popped_count_dice[:-1]
-                pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
-                yield pool, count, weight
+        comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
+        for weight in comb_row[1:]:
+            count += popped_count_dice[-1]
+            popped_max_outcomes = popped_max_outcomes[:-1]
+            popped_count_dice = popped_count_dice[:-1]
+            pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            yield pool, count, weight
     
     def _iter_pop_min(self):
         """
@@ -303,13 +294,6 @@ class DicePool():
             yield None, remaining_count, weight
             return
         
-        if popped_die.total_weight() == 0:
-            # This is the last outcome with positive weight. All dice must roll this outcome.
-            weight = single_weight ** num_possible_dice
-            pool = Pool(popped_die, num_dice=0)
-            yield pool, remaining_count, weight
-            return
-        
         if not any(self.count_dice()):
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
@@ -328,15 +312,13 @@ class DicePool():
         count = 0
         yield pool, count, weight
         
-        if single_weight > 0:
-            # If the outcome has nonzero weight, consider how many dice could roll this outcome.
-            comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
-            for weight in comb_row[1:]:
-                count += popped_count_dice[0]
-                popped_min_outcomes = popped_min_outcomes[1:]
-                popped_count_dice = popped_count_dice[1:]
-                pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
-                yield pool, count, weight
+        comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
+        for weight in comb_row[1:]:
+            count += popped_count_dice[0]
+            popped_min_outcomes = popped_min_outcomes[1:]
+            popped_count_dice = popped_count_dice[1:]
+            pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
+            yield pool, count, weight
     
     @cached_property
     def _pop_max(self):

@@ -36,3 +36,7 @@ def test_sum_descending_keep_highest():
     result = SumPoolDescending().eval(hdroller.d6.pool()[0, 1, 1, 1])
     expected = hdroller.d6.keep_highest(4, 3)
     assert result.equals(expected)
+
+def test_zero_weight_outcomes():
+    result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(2, 1)
+    assert len(result) == 5
