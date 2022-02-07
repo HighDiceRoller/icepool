@@ -208,6 +208,7 @@ def mix(*dice, mix_weights=None, total_weight_method='lcm'):
     
     This is equivalent to rolling a die and then choosing one of the input dice
     based on the resulting outcome rolled. See `if_else()` for a simple example.
+    Also see `BaseDie.relabel()`.
     
     Args:
         *dice: The dice to mix.
@@ -220,7 +221,8 @@ def mix(*dice, mix_weights=None, total_weight_method='lcm'):
             * 'lcm' (default): LCM of mixed dice, times the total of mixing weights.
                 This is like rolling the mixing weights first, then selecting a mixed die to roll.
             * 'lcm_weighted': LCM of (mixed die * mixing weight for that die).
-                This is like rolling the mixing weights first, then selecting a fraction of a mixed die to roll.
+                This is like rolling the above, but the specific mixing weight rolled
+                is used to help determine the result of the selected die.
     """
     dice = align(*dice)
     ndim = check_ndim(*dice)

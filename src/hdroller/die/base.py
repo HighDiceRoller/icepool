@@ -800,7 +800,7 @@ class BaseDie():
         index = bisect.bisect_right(self.cweights(), r)
         return self.outcomes()[index]
     
-    # Type conversions out.
+    # Invalid operations.
     
     def __bool__(self):
         """ Dice are not considered to have truth values. 
@@ -809,6 +809,9 @@ class BaseDie():
         would imply that dice are sortable.
         """
         raise TypeError('Dice do not have truth values.')
+    
+    def __reversed__(self):
+        raise TypeError('Dice cannot be reversed.')
     
     # Strings.
     
@@ -832,7 +835,9 @@ class BaseDie():
         See `hdroller.functools.die_cache` for an example.
         """
         return hash(self.key_tuple())
-
+    
+    __hash__ = None
+    
     def equals(self, other):
         """ Returns `True` iff both dice have the same ndim, outcomes, and weights.
         

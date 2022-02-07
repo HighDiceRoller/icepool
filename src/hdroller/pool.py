@@ -25,8 +25,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     
     Args:
         die: The fundamental die of the pool.
-            Note that this will **not** be clipped to `min_outcomes` or `max_outcomes`
-            even if no die in the pool can actually reach the extreme outcomes of the fundamental die.
+            If outcomes are not reachable by any die due to `min_outcomes` or `max_outcomes`,
+            they will have 0 count. Zero-weight outcomes will appear with zero weight.
             `PoolEval` will see the unrollable outcomes as being rolled 0 times each.
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
@@ -50,13 +50,13 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             provided that neither `min_outcomes` nor `max_outcomes` are set.
             For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
         max_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+            That die will be limited to that maximum outcome, with all higher outcomes being removed (not set to 0 weight).
             Values above the `max_outcome` of the fundamental die have no effect.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
             For example, `Pool(hdroller.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
         min_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+            That die will be limited to that minimum outcome, with all lower outcomes being removed (not set to 0 weight).
             Values below the `min_outcome` of the fundamental die have no effect.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
