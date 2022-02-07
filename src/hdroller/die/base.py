@@ -456,14 +456,14 @@ class BaseDie():
     
     def max(*dice):
         """ Roll all the dice and take the highest. """
-        dice = hdroller.align(dice)
+        dice = hdroller.align(*dice)
         ndim = hdroller.check_ndim(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def min(*dice):
         """ Roll all the dice and take the lowest. """
-        dice = hdroller.align(dice)
+        dice = hdroller.align(*dice)
         ndim = hdroller.check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)

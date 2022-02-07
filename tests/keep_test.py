@@ -117,3 +117,13 @@ def test_pool_select_mixed_sign_split():
     result = hdroller.sum_pool.eval(pool[-1,0,0,1])
     expected = bf_diff_highest_lowest(hdroller.d6, 4)
     assert result.equals(expected)
+
+def test_max():
+    result = hdroller.max(hdroller.d6, hdroller.d6)
+    expected = hdroller.d6.keep_highest(2, 1)
+    assert result.equals(expected)
+    
+def test_min():
+    result = hdroller.min(hdroller.d6, hdroller.d6)
+    expected = hdroller.d6.keep_lowest(2, 1)
+    assert result.equals(expected)
