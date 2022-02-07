@@ -1,3 +1,8 @@
+## 0.5.2
+
+* Faster algorithm for keeping the single highest/lowest.
+* Fix `from_sweights()`.
+
 ## 0.5.1
 
 * Fix `max()` and `min()` casting to dice.
