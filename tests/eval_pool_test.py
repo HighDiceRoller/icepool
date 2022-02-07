@@ -38,5 +38,5 @@ def test_sum_descending_keep_highest():
     assert result.equals(expected)
 
 def test_zero_weight_outcomes():
-    result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(2, 1)
-    assert len(result) == 5
+    result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(3, 2)
+    assert len(result) == 9
