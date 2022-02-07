@@ -728,9 +728,17 @@ class BaseDie():
     def _pmf(self):
         return tuple(weight / self.total_weight() for weight in self.weights())
     
-    def pmf(self):
-        """ Probability mass function. The probability of rolling each outcome in order. """
-        return self._pmf
+    def pmf(self, percent=False):
+        """ Probability mass function. The probability of rolling each outcome in order. 
+        
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * x for x in self._pmf)
+        else:
+            return self._pmf
     
     @cached_property
     def _cweights(self):
@@ -752,17 +760,33 @@ class BaseDie():
     def _cdf(self):
         return tuple(weight / self.total_weight() for weight in self.cweights())
     
-    def cdf(self):
-        """ Cumulative distribution function. The chance of rolling <= each outcome in order. """
-        return self._cdf
+    def cdf(self, percent=False):
+        """ Cumulative distribution function. The chance of rolling <= each outcome in order. 
+        
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * x for x in self._cdf)
+        else:
+            return self._cdf
         
     @cached_property
     def _sf(self):
         return tuple(weight / self.total_weight() for weight in self.sweights())
     
-    def sf(self):
-        """ Survival function. The chance of rolling >= each outcome in order. """
-        return self._sf
+    def sf(self, percent=False):
+        """ Survival function. The chance of rolling >= each outcome in order. 
+        
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * x for x in self._sf)
+        else:
+            return self._sf
     
     # Rolling.
     
