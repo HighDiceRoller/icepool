@@ -1,3 +1,7 @@
+## 0.5.1
+
+* Fix `max()` and `min()` casting to dice.
+
 ## 0.5.0
 
 * Capitalize `Die()` and `Pool()` factory methods.
