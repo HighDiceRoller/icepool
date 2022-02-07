@@ -120,3 +120,23 @@ class VectorDie(hdroller.die.base.BaseDie):
         sd_i = self[i].standard_deviation()
         sd_j = self[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
+    
+    def __str__(self):
+        """ Formats the die as a Markdown table. """
+        weight_header = f'Weight (out of {self.total_weight()})'
+        weight_length = len(weight_header)
+        outcome_lengths = [max(len(str(outcome[i])) for outcome in self.outcomes()) for i in range(self.ndim())]
+        outcome_lengths = [max(x, 10) for x in outcome_lengths]
+        result = ''
+        for i in range(self.ndim()):
+            result += '| ' + ' ' * (outcome_lengths[i] - 10) + f'Outcome[{i}]' + ' '
+        result += f'| {weight_header} | Probability |\n'
+        for i in range(self.ndim()):
+            result += '|-' + '-' * outcome_lengths[i] + ':'
+        result += '|-' + '-' * weight_length + ':|------------:|\n'
+        for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
+            for i, x in enumerate(outcome):
+                result += f'| {str(x):>{outcome_lengths[i]}} '
+            result += f'| {weight:>{weight_length}} | {p:11.6%} |\n'
+        return result
+        
