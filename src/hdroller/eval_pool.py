@@ -25,8 +25,6 @@ class EvalPool(ABC):
     6. `state = next_state(state, 6, how_many_dice_rolled_6)`
     7. `outcome = final_outcome(state, *pools)`
     
-    `final_outcome()`, `reroll()` provide further options.
-    
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
     
@@ -50,22 +48,13 @@ class EvalPool(ABC):
             counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
                 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
                 In this case, the count for the pool(s) that do not have the outcome will be `None`. 
-                Zero-weight outcomes count having that outcome (with 0 count).
+                Zero-weight outcomes count as having that outcome.
         
         Returns:
             A hashable object indicating the next state.
+            Alternatively, a value of `None` will drop the state from consideration,
+            effectively performing a full reroll.
         """
-    
-    def reroll(self, state, outcome, *counts):
-        """ Optional function to trigger rerolls.
-        
-        Given the same arguments as `next_state()`, if this returns `True`,
-        the state will immediately be dropped from consideration.
-        This effectively performs a reroll of the entire pool.
-        
-        By default, this is `False`, i.e. all states will be retained.
-        """
-        return False
     
     def final_outcome(self, final_state, *pools):
         """ Optional function to generate a final outcome from a final state.
@@ -221,10 +210,9 @@ class EvalPool(ABC):
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, *prev_pools)
                 for prev_state, prev_weight in prev.items():
-                    if self.reroll(prev_state, outcome, *counts):
-                        continue
                     state = self.next_state(prev_state, outcome, *counts)
-                    result[state] += prev_weight * prod_weight
+                    if state is not None:
+                        result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
         return result

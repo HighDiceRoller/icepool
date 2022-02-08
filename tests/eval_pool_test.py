@@ -5,13 +5,12 @@ import pytest
 
 class SumRerollIfAnyOnes(hdroller.EvalPool):
     def next_state(self, prev_state, outcome, count):
-        if prev_state is None:
+        if outcome == 1 and count > 0:
+            return None
+        elif prev_state is None:
             return outcome * count
         else:
             return prev_state + outcome * count
-        
-    def reroll(self, prev_state, outcome, count):
-        return outcome == 1 and count > 0
 
 def test_reroll():
     result = SumRerollIfAnyOnes().eval(hdroller.d6.pool(5))
