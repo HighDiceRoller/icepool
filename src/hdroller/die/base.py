@@ -18,14 +18,20 @@ class BaseDie():
     A die is a discrete probability distribution with `int` weights.
     The outcomes can be any hashable, comparable values.
     
-    It *is* (mostly) well-defined to have a die with zero-weight outcomes, or even no outcomes at all.
-    However, these are only recommended in special cases, such as:
+    It *is* (mostly) well-defined to have a die with zero-weight outcomes.
+    These can be useful in a few cases, such as:
     
     * `DicePool` and `EvalPool` will iterate through zero-weight outcomes with 0 count,
         rather than `None` or skipping that outcome.
     * `hdroller.align()` and the like are convenient for making pools share the same set of outcomes.
     
+    Otherwise, zero-weight outcomes have a computational cost like any other outcome,
+    so it's best to leave them out if not necessary.
+    
     Most operations will not introduce zero-weight outcomes if their arguments do not have any.
+    
+    It's also possible to have dice with no outcomes at all,
+    though these have little use other than being sentinel values.
     
     `len(die)` will return the number of outcomes (including zero-weight outcomes).
     """
