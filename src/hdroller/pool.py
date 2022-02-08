@@ -26,8 +26,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     Args:
         die: The fundamental die of the pool.
             If outcomes are not reachable by any die due to `min_outcomes` or `max_outcomes`,
-            they will have 0 count. Zero-weight outcomes will appear with zero weight.
-            `PoolEval` will see the unrollable outcomes as being rolled 0 times each.
+            they will have 0 count. Zero-weight outcomes will appear with zero weight,
+            but can still generate nonzero counts.
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times each.
@@ -42,6 +42,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
             
             You can also use the `[]` operator to select dice from an existing pool.
+            For example, `pool[-2:]` would also count the two highest dice.
             This is always an absolute selection on all `num_dice`,
             not a relative selection on already-selected dice,
             which would be ambiguous in the presence of multiple or negative counts.
