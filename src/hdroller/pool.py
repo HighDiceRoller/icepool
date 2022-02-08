@@ -241,12 +241,11 @@ class DicePool():
             yield None, remaining_count, weight
             return
         
-        if not any(self.count_dice()):
+        if not self.has_counted_dice():
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = Pool(popped_die, num_dice=0)
-            weight = math.prod(self.die().weight_le(max_outcome) for max_outcome in max_outcomes)
-            yield pool, 0, weight
+            yield pool, 0, self.prod_weight()
             return
         
         # Consider various numbers of dice rolling this outcome.
@@ -292,12 +291,11 @@ class DicePool():
             yield None, remaining_count, weight
             return
         
-        if not any(self.count_dice()):
+        if not self.has_counted_dice():
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
             # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = Pool(popped_die, num_dice=0)
-            weight = math.prod(self.die().weight_ge(min_outcome) for min_outcome in min_outcomes)
-            yield pool, 0, weight
+            yield pool, 0, self.prod_weight()
             return
         
         # Consider various numbers of dice rolling this outcome.
@@ -339,6 +337,22 @@ class DicePool():
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._pop_min
+        
+    def has_counted_dice(self):
+        """ Returns `True` iff any of the remaining dice are counted a nonzero number of times.
+        
+        This is used to skip to the base case when there are no more dice to consider.
+        """
+        return any(self.count_dice())
+    
+    def prod_weight(self):
+        """ The product of the remaining weights. """
+        if self.max_outcomes() is not None:
+            return math.prod(self.die().weight_le(max_outcome) for max_outcome in self.max_outcomes())
+        elif self.min_outcomes() is not None:
+            return math.prod(self.die().weight_ge(min_outcome) for min_outcome in self.min_outcomes())
+        else:
+            return self.die().total_weight() ** self.num_dice()
         
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
