@@ -112,6 +112,10 @@ def _calc_ndim(data, ndim):
             else:
                 return False
     
+    if ndim is None:
+        # Default to scalar for empty dice?
+        return False
+    
     return ndim
 
 def standard(num_sides):
@@ -288,6 +292,8 @@ def align_range(*dice, ndim=None):
 def check_ndim(*dice):
     """ Checks that `ndim` matches between the dice, and returns it. 
     
+    Empty dice are not required to match.
+    
     Args:
         *dice: The dice to be checked.
     
@@ -302,7 +308,7 @@ def check_ndim(*dice):
     
     ndim = None
     for die in dice:
-        if ndim is None:
+        if ndim is None and len(die) > 0:
             ndim = die.ndim()
         elif die.ndim() != ndim:
             raise ValueError('Dice have mismatched ndim.')
