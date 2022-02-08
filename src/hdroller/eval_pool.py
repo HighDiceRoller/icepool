@@ -73,6 +73,8 @@ class EvalPool(ABC):
         Returns:
             A final outcome that will be used as part of constructing a die.
             This should be hashable and comparable.
+            Alternatively, a return value of `None` will drop the state from consideration,
+            effectively performing a full reroll.
         """
         return final_state
     
@@ -153,7 +155,8 @@ class EvalPool(ABC):
         final_dist = defaultdict(int)
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
-            final_dist[outcome] += weight
+            if outcome is not None:
+                final_dist[outcome] += weight
         
         if ndim is None:
             ndim = self.ndim(*pools)

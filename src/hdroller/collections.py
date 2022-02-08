@@ -13,6 +13,8 @@ class Weights():
             d: A dictionary of ints.
         """
         for key, value in d.items():
+            if key is None:
+                raise TypeError('None is not a valid outcome.')
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' + type(value).__name__)
             if value < 0:
