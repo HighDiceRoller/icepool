@@ -31,8 +31,6 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times each.
-        
-            If there are no counted dice, the pool will be created with zero dice.
             
             `count_dice` can be an `int` or a `slice`, in which case the selected dice are counted once each.
             For example, `slice(-2, None)` would count the two highest dice.
@@ -86,9 +84,6 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         count_dice = (1,) * num_dice
     else:
         count_dice = _compute_count_dice(num_dice, count_dice)
-        if not any(count_dice):
-            num_dice = 0
-            count_dice = ()
     
     # Put max/min outcomes into standard form.
     # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
@@ -263,6 +258,13 @@ class DicePool():
             yield pool, remaining_count, weight
             return
         
+        if not self.has_counted_dice():
+            # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
+            # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
+            pool = Pool(popped_die, num_dice=0)
+            yield pool, 0, self.prod_weight()
+            return
+        
         # Consider various numbers of dice rolling this outcome.
         popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
         popped_count_dice = self.count_dice()
@@ -307,6 +309,13 @@ class DicePool():
             yield pool, remaining_count, weight
             return
         
+        if not self.has_counted_dice():
+            # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
+            # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
+            pool = Pool(popped_die, num_dice=0)
+            yield pool, 0, self.prod_weight()
+            return
+        
         # Consider various numbers of dice rolling this outcome.
         popped_min_outcomes = (popped_die.min_outcome(),) * num_possible_dice + min_outcomes[num_possible_dice:]
         popped_count_dice = self.count_dice()
@@ -346,6 +355,13 @@ class DicePool():
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._pop_min
+        
+    def has_counted_dice(self):
+        """ Returns `True` iff any of the remaining dice are counted a nonzero number of times.
+        
+        This is used to skip to the base case when there are no more dice to consider.
+        """
+        return any(self.count_dice())
     
     def prod_weight(self):
         """ The product of the remaining weights. """
