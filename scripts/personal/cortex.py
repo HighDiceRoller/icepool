@@ -19,7 +19,7 @@ num_drops_and_keeps = [
 max_keep = max(k for d, k in num_drops_and_keeps)
 
 base_dice = [Die.d12, Die.d10, Die.d8, Die.d6, Die.d4]
-base_dice = [die.relabel({1: 0}) for die in base_dice]
+base_dice = [die.sub({1: 0}) for die in base_dice]
 
 gm_pools = [base_dice[3], 2 * base_dice[3], 2 * base_dice[2], 2 * base_dice[1], 2 * base_dice[0]]
 

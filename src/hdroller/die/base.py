@@ -362,30 +362,30 @@ class BaseDie():
     
     # Mixtures.
 
-    def relabel(self, relabeling, total_weight_method='lcm'):
+    def sub(self, repl, /, ndim=None, total_weight_method='lcm'):
         """ Changes outcomes of the die to other outcomes.
         
-        Outcomes can be changed to other dice.
-        This means you can use this method to roll one die,
-        and then choose a second die based on the result of the first die.
+        You can think of this as `sub`stituting outcomes of this die for other outcomes or dice.
+        Or, as executing a `sub`routine based on the roll of this die.
         
         Args:
-            relabeling: One of the following:
+            repl: One of the following:
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
                 The new outcomes may be dice rather than just single outcomes.
+            ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
             total_weight_method: As `hdroller.mix()`.
         
         Returns:
             The relabeled die.
         """
-        if hasattr(relabeling, 'items'):
-            relabeling = [(relabeling[outcome] if outcome in relabeling else outcome) for outcome in self.outcomes()]
-        elif callable(relabeling):
-            relabeling = [relabeling(outcome) for outcome in self.outcomes()]
+        if hasattr(repl, 'items'):
+            repl = [(repl[outcome] if outcome in repl else outcome) for outcome in self.outcomes()]
+        elif callable(repl):
+            repl = [repl(outcome) for outcome in self.outcomes()]
 
-        return hdroller.mix(*relabeling, mix_weights=self.weights(), total_weight_method=total_weight_method)
+        return hdroller.mix(*repl, mix_weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
     
     def explode(self, max_depth, outcomes=None):
         """ Causes outcomes to be rolled again and added to the total.
@@ -406,13 +406,13 @@ class BaseDie():
         
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
         
-        def relabel_func(outcome):
+        def sub_func(outcome):
             if outcome in outcomes:
                 return outcome + tail_die
             else:
                 return outcome
         
-        return self.relabel(relabel_func, total_weight_method='lcm')
+        return self.sub(sub_func, ndim=self.ndim(), total_weight_method='lcm')
     
     def reroll(self, outcomes, max_depth=None):
         """ Rerolls the given outcomes.

@@ -35,19 +35,19 @@ point_buy_pathfinder = {
 }
 
 
-points_3d6 = Die.d(3, 6).relabel(point_buy_pathfinder).repeat_and_sum(6)
+points_3d6 = Die.d(3, 6).sub(point_buy_pathfinder).repeat_and_sum(6)
 print(points_3d6.mean(), points_3d6.standard_deviation(), points_3d6.total_mass())
 
-points_3d6_7 = Die.d(3, 6).relabel(point_buy_pathfinder).repeat_and_keep_and_sum2(7, keep_highest=6)
+points_3d6_7 = Die.d(3, 6).sub(point_buy_pathfinder).repeat_and_keep_and_sum2(7, keep_highest=6)
 print(points_3d6_7.mean(), points_3d6_7.standard_deviation(), points_3d6_7.total_mass())
 
 start = time.time()
-points_3d6_9 = Die.d(3, 6).relabel(point_buy_pathfinder).repeat_and_keep_and_sum2(9, keep_highest=6)
+points_3d6_9 = Die.d(3, 6).sub(point_buy_pathfinder).repeat_and_keep_and_sum2(9, keep_highest=6)
 print(points_3d6_9.mean(), points_3d6_9.standard_deviation(), points_3d6_9.total_mass())
 end = time.time()
 print('time:', end - start)
 
-points_4d6_7 = Die.d(6).repeat_and_keep_and_sum2(4, keep_highest=3).relabel(point_buy_pathfinder).repeat_and_keep_and_sum2(7, keep_highest=6)
+points_4d6_7 = Die.d(6).repeat_and_keep_and_sum2(4, keep_highest=3).sub(point_buy_pathfinder).repeat_and_keep_and_sum2(7, keep_highest=6)
 print(points_4d6_7.mean(), points_4d6_7.standard_deviation(), points_4d6_7.total_mass())
 
 means = []

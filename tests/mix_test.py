@@ -28,14 +28,14 @@ def test_mix_mixed():
 
 expected_d6x1 = hdroller.Die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1).trim()
 
-def test_relabel_array():
-    die = hdroller.d6.relabel([5, 4, 1, 2, 3, hdroller.d6 + 6])
+def test_sub_array():
+    die = hdroller.d6.sub([5, 4, 1, 2, 3, hdroller.d6 + 6])
     assert die.pmf() == pytest.approx(expected_d6x1.pmf())
 
-def test_relabel_dict():
-    die = hdroller.d6.relabel({6 : hdroller.d6+6})
+def test_sub_dict():
+    die = hdroller.d6.sub({6 : hdroller.d6+6})
     assert die.pmf() == pytest.approx(expected_d6x1.pmf())
 
-def test_relabel_func():
-    die = hdroller.d6.relabel(lambda x: hdroller.d6 + 6 if x == 6 else 6 - x)
+def test_sub_func():
+    die = hdroller.d6.sub(lambda x: hdroller.d6 + 6 if x == 6 else 6 - x)
     assert die.pmf() == pytest.approx(expected_d6x1.pmf())

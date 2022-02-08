@@ -203,12 +203,12 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         cweights = tuple(int(round(x * denominator)) for x in cdf)
     return from_cweights(outcomes, cweights)
 
-def mix(*dice, mix_weights=None, total_weight_method='lcm'):
+def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
     """ Constructs a die from a mixture of the input dice.
     
     This is equivalent to rolling a die and then choosing one of the input dice
     based on the resulting outcome rolled. See `if_else()` for a simple example.
-    Also see `BaseDie.relabel()`.
+    Also see `BaseDie.sub()`.
     
     Args:
         *dice: The dice to mix.
@@ -224,7 +224,7 @@ def mix(*dice, mix_weights=None, total_weight_method='lcm'):
                 This is like rolling the above, but the specific mixing weight rolled
                 is used to help determine the result of the selected die.
     """
-    dice = align(*dice)
+    dice = align(*dice, ndim=ndim)
     ndim = check_ndim(*dice)
     
     if mix_weights is None:

@@ -122,28 +122,28 @@ def semilogy_extremeness(ax, die, **kwargs):
     ax.semilogy(die.outcomes(), 1.0 / extremeness, **kwargs)
 
 die_3d6 = Die.d(3, 6)
-points_3d6 = die_3d6.relabel(point_buy_to_use).repeat_and_sum(6)
+points_3d6 = die_3d6.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_3d6r1 = Die.d(3, 5)+3
-points_3d6r1 = die_3d6r1.relabel(point_buy_to_use).repeat_and_sum(6)
+points_3d6r1 = die_3d6r1.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_3d6r2 = Die.d(3, 4)+6
-points_3d6r2 = die_3d6r2.relabel(point_buy_to_use).repeat_and_sum(6)
+points_3d6r2 = die_3d6r2.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_4d6kh3 = Die.d(6).repeat_and_keep_and_sum(4, keep_highest=3)
-points_4d6kh3 = die_4d6kh3.relabel(point_buy_to_use).repeat_and_sum(6)
+points_4d6kh3 = die_4d6kh3.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_4d6r1kh3 = Die.d(5).repeat_and_keep_and_sum(4, keep_highest=3)+3
-points_4d6r1kh3 = die_4d6r1kh3.relabel(point_buy_to_use).repeat_and_sum(6)
+points_4d6r1kh3 = die_4d6r1kh3.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_5d6kh3 = Die.d(6).repeat_and_keep_and_sum(5, keep_highest=3)
-points_5d6kh3 = die_5d6kh3.relabel(point_buy_to_use).repeat_and_sum(6)
+points_5d6kh3 = die_5d6kh3.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_5d6r1kh3 = Die.d(5).repeat_and_keep_and_sum(5, keep_highest=3)+3
-points_5d6r1kh3 = die_5d6r1kh3.relabel(point_buy_to_use).repeat_and_sum(6)
+points_5d6r1kh3 = die_5d6r1kh3.sub(point_buy_to_use).repeat_and_sum(6)
 
 die_5d6median3 = Die.d(6).repeat_and_keep_and_sum(5, keep_middle=3)
-points_5d6median3 = die_5d6median3.relabel(point_buy_to_use).repeat_and_sum(6)
+points_5d6median3 = die_5d6median3.sub(point_buy_to_use).repeat_and_sum(6)
 
 # 4d6
 fig = plt.figure(figsize=figsize)
