@@ -80,6 +80,7 @@ class EvalPool(ABC):
         and a descending (< 0) direction is not compatible with `max_outcomes`.
 
         The default implementation chooses a direction automatically.
+        If only one direction is valid, it returns +2 / -2.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
@@ -90,9 +91,9 @@ class EvalPool(ABC):
             raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
         
         if has_max_outcomes:
-            return 1
+            return 2
         elif has_min_outcomes:
-            return -1
+            return -2
         else:
             num_ignored_min = max(pool.num_ignored_min() for pool in pools)
             num_ignored_max = max(pool.num_ignored_max() for pool in pools)
