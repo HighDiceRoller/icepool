@@ -76,16 +76,27 @@ class EvalPool(ABC):
     def direction(self, *pools):
         """ Optional function to determine the direction in which this evaluator will give outcomes to `next_state()`.
         
-        * If > 0, this will be ascending order. This is not compatible with pools with `min_outcomes`.
-        * If < 0, this will be descending order. This is not compatible with pools with `max_outcomes`.
-        * Otherwise, `next_state()` is assumed to not care about the order in which it sees outcomes.
-        
-        The default is 0.
+        Note that an ascending (> 0) direction is not compatible with `min_outcomes`,
+        and a descending (< 0) direction is not compatible with `max_outcomes`.
+
+        The default implementation chooses a direction automatically.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
         """
-        return 0
+        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
+        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
+        if has_max_outcomes and has_min_outcomes:
+            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
+        
+        if has_max_outcomes:
+            return 1
+        elif has_min_outcomes:
+            return -1
+        else:
+            num_ignored_min = max(pool.num_ignored_min() for pool in pools)
+            num_ignored_max = max(pool.num_ignored_max() for pool in pools)
+            return 1 if num_ignored_min >= num_ignored_max else -1
     
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
@@ -126,24 +137,7 @@ class EvalPool(ABC):
         Returns:
             A die representing the distribution of the final score.
         """
-        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
-        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
-        if has_max_outcomes and has_min_outcomes:
-            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
-        
         direction = self.direction(*pools)
-        
-        if direction > 0:
-            if has_min_outcomes:
-                raise ValueError('Cannot iterate in ascending order for pools with min_outcomes.')
-        elif direction < 0:
-            if has_max_outcomes:
-                raise ValueError('Cannot iterate in descending order for pools with max_outcomes.')
-        else:
-            if has_min_outcomes:
-                direction = -1
-            else:
-                direction = 1
         
         dist = self._eval_internal(direction, *pools)
         

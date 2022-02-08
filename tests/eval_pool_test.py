@@ -4,13 +4,13 @@ import hdroller
 import pytest
 
 class SumRerollIfAnyOnes(hdroller.EvalPool):
-    def next_state(self, prev_state, outcome, count):
+    def next_state(self, state, outcome, count):
         if outcome == 1 and count > 0:
             return None
-        elif prev_state is None:
+        elif state is None:
             return outcome * count
         else:
-            return prev_state + outcome * count
+            return state + outcome * count
 
 def test_reroll():
     result = SumRerollIfAnyOnes().eval(hdroller.d6.pool(5))
@@ -39,3 +39,17 @@ def test_sum_descending_keep_highest():
 def test_zero_weight_outcomes():
     result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(3, 2)
     assert len(result) == 9
+
+class EvalDirection(hdroller.EvalPool):
+    def __init__(self, direction):
+        self._direction = direction
+
+    def next_state(self, state, outcome, count):
+        return 0
+    
+    def direction(self, *pools):
+        return self._direction
+
+def test_direction():
+    assert SumRerollIfAnyOnes().direction(hdroller.d6.pool(count_dice=[0,1,1,1])) > 0
+    assert SumRerollIfAnyOnes().direction(hdroller.d6.pool(count_dice=[1,1,1,0])) < 0

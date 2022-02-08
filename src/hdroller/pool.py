@@ -160,6 +160,20 @@ class DicePool():
     def count_dice(self):
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
         return self._count_dice
+    
+    def num_ignored_min(self):
+        """ How many elements of count_dice on the low side have a false truth value. """
+        for i, count in enumerate(self.count_dice()):
+            if count:
+                return i
+        return self.num_dice()
+    
+    def num_ignored_max(self):
+        """ How many elements of count_dice on the high side have a false truth value. """
+        for i, count in enumerate(reversed(self.count_dice())):
+            if count:
+                return i
+        return self.num_dice()
         
     def __getitem__(self, count_dice):
         """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
