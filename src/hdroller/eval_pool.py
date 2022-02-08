@@ -12,12 +12,18 @@ import math
 class EvalPool(ABC):
     """ An abstract, immutable, callable class for evaulating one or more `DicePool`s.
     
-    You can pretend that evaluation occurs on individual rolls of the pool as follows:
+    The function method to implement is `next_state()`.
+    This should incrementally calculate the result of the roll
+    given one outcome at a time along with how many dice rolled that outcome.
+    An example sequence of calls, as far as `next_state()` is concerned, is:
     
-    1. First, specify the `initial_state()`. The state is usually some sort of running total.
-    2. Then, you will be given one outcome at a time,
-        along with how many dice in each pool rolled that outcome.
-        Update the state using `next_state()` using that information.
+    1. `state = next_state(state=None, 1, how_many_dice_rolled_1)`
+    2. `state = next_state(state, 2, how_many_dice_rolled_2)`
+    3. `state = next_state(state, 3, how_many_dice_rolled_3)`
+    4. `state = next_state(state, 4, how_many_dice_rolled_4)`
+    5. `state = next_state(state, 5, how_many_dice_rolled_5)`
+    6. `state = next_state(state, 6, how_many_dice_rolled_6)`
+    7. `outcome = final_outcome(state, *pools)`
     
     `final_outcome()`, `reroll()` provide further options.
     
@@ -30,16 +36,16 @@ class EvalPool(ABC):
     """
     
     @abstractmethod
-    def next_state(self, prev_state, outcome, *counts):
+    def next_state(self, state, outcome, *counts):
         """ State transition function.
         
         This should produce a state given the previous state, an outcome, and the number of dice in each pool rolling that outcome.
         
-        Make sure to handle the base case where `prev_state is None`.
+        Make sure to handle the base case where `state is None`.
         
         Args:
-            prev_state: A hashable object indicating the state before rolling the current outcome.
-                If there was no previous state, this will be `None`.
+            state: A hashable object indicating the state before rolling the current outcome.
+                For the first call this will be `None`.
             outcome: The current outcome.
             counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
                 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
@@ -50,7 +56,7 @@ class EvalPool(ABC):
             A hashable object indicating the next state.
         """
     
-    def reroll(self, prev_state, outcome, *counts):
+    def reroll(self, state, outcome, *counts):
         """ Optional function to trigger rerolls.
         
         Given the same arguments as `next_state()`, if this returns `True`,
@@ -68,6 +74,7 @@ class EvalPool(ABC):
         
         Args:
             final_state: A state after all outcomes have been processed.
+                Note that this may be `None` if the pools are based on the empty die.
             *pools: One or more `DicePool`s being evaluated.
             
         Returns:
@@ -274,12 +281,12 @@ def _pop_pool_min(outcome, pool):
 
 class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """
-    def next_state(self, prev_state, outcome, count):
+    def next_state(self, state, outcome, count):
         """ Add the dice to the running total. """
-        if prev_state is None:
+        if state is None:
             return outcome * count
         else:
-            return prev_state + outcome * count
+            return state + outcome * count
 
 """ A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
@@ -292,14 +299,12 @@ class FindMatchingSets(EvalPool):
     The outcomes are `(set_size, outcome)`.
     """
     
-    def next_state(self, prev_state, outcome, count):
+    def next_state(self, state, outcome, count):
         """ Replace the last best set if this one is better. 
         
         Note the use of tuple comparison, which priortizes elements to the left.
         """
-        if prev_state is None:
+        if state is None:
             return count, outcome
         else:
-            return max(prev_state, (count, outcome))
-        
-        
+            return max(state, (count, outcome))
