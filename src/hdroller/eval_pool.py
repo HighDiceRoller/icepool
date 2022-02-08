@@ -63,7 +63,6 @@ class EvalPool(ABC):
         
         Args:
             final_state: A state after all outcomes have been processed.
-                Note that this may be `None` if the pools are based on the empty die.
             *pools: One or more `DicePool`s being evaluated.
             
         Returns:
@@ -148,6 +147,10 @@ class EvalPool(ABC):
         
         dist = self._eval_internal(direction, *pools)
         
+        if dist is None:
+            # All dice were empty.
+            return hdroller.Die(ndim=ndim)
+        
         final_dist = defaultdict(int)
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
@@ -202,17 +205,23 @@ class EvalPool(ABC):
         result = defaultdict(int)
         
         if all(pool.num_outcomes() == 0 for pool in pools):
-            result[None] = 1
+            result = None
         else:
             outcome, iterators = _pop_pools(direction, pools)
             for p in itertools.product(*iterators):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, *prev_pools)
-                for prev_state, prev_weight in prev.items():
-                    state = self.next_state(prev_state, outcome, *counts)
+                if prev is None:
+                    # Base case.
+                    state = self.next_state(None, outcome, *counts)
                     if state is not None:
-                        result[state] += prev_weight * prod_weight
+                        result[state] = prod_weight
+                else:
+                    for prev_state, prev_weight in prev.items():
+                        state = self.next_state(prev_state, outcome, *counts)
+                        if state is not None:
+                            result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
         return result
