@@ -43,7 +43,7 @@ class VectorDie(hdroller.die.base.BaseDie):
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
-        ndim = self.check_ndim(other)
+        ndim = hdroller.check_ndim(self, other)
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
