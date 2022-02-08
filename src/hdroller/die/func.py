@@ -91,6 +91,9 @@ def _calc_ndim(data, ndim):
     Raises:
         `ValueError` if `ndim` is provided but is not consistent with the data.
     """
+    if len(data) == 0:
+        return False
+    
     if ndim is False:
         return False
     
@@ -308,7 +311,9 @@ def check_ndim(*dice):
     
     ndim = None
     for die in dice:
-        if ndim is None and len(die) > 0:
+        if len(die) == 0:
+            continue
+        if ndim is None:
             ndim = die.ndim()
         elif die.ndim() != ndim:
             raise ValueError('Dice have mismatched ndim.')
