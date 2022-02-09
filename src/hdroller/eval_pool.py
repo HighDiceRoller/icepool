@@ -199,7 +199,7 @@ class EvalPool(ABC):
         
         result = defaultdict(int)
         
-        if all(pool.die().num_outcomes() == 0 for pool in pools):
+        if all(pool.die().is_empty() for pool in pools):
             result = None
         else:
             outcome, iterators = _pop_pools(direction, pools)

@@ -254,7 +254,7 @@ class DicePool():
         num_unused_dice = self.num_dice() - num_possible_dice
         popped_die, outcome, single_weight = self.die().pop_max()
         
-        if popped_die.num_outcomes() == 0:
+        if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
             remaining_count = sum(self.count_dice())
@@ -309,7 +309,7 @@ class DicePool():
         num_possible_dice = bisect.bisect_right(min_outcomes, self.die().min_outcome())
         popped_die, outcome, single_weight = self.die().pop_min()
         
-        if popped_die.num_outcomes() == 0:
+        if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
             remaining_count = sum(self.count_dice())

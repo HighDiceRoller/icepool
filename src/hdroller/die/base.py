@@ -129,6 +129,10 @@ class BaseDie():
         """ Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
     
+    def is_empty(self):
+        """ Returns `True` if this die has no outcomes. """
+        return self.num_outcomes() == 0
+    
     # Unary operators.
     
     def __neg__(self):
@@ -154,13 +158,13 @@ class BaseDie():
         return self.unary_op(round, ndigits)
     
     def __trunc__(self):
-        return self.unary_op(trunc)
+        return self.unary_op(math.trunc)
     
     def __floor__(self):
-        return self.unary_op(floor)
+        return self.unary_op(math.floor)
     
     def __ceil__(self):
-        return self.unary_op(ceil)
+        return self.unary_op(math.ceil)
     
     @staticmethod
     def _zero(x):
