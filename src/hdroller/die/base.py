@@ -813,13 +813,17 @@ class BaseDie():
     def __bool__(self):
         """ Dice are not considered to have truth values. 
         
-        The result of a comparator operation is a die, which if considered to have a truth value,
-        would imply that dice are sortable.
+        The result of a comparator operation is a die,
+        which if considered to have a truth value,
+        would imply that dice are sortable by that operator.
         """
-        raise TypeError('Dice do not have truth values.')
+        raise TypeError('A die does not have a truth value.')
     
     def __reversed__(self):
-        raise TypeError('Dice cannot be reversed.')
+        raise TypeError('A die cannot be reversed.')
+    
+    def __len__(self):
+        raise TypeError('The length of a die is ambiguous. Use die.num_outcomes(), die.total_weight(), or die.ndim().')
     
     # Strings.
     
