@@ -199,7 +199,7 @@ class EvalPool(ABC):
         
         result = defaultdict(int)
         
-        if all(pool.num_outcomes() == 0 for pool in pools):
+        if all(pool.die().num_outcomes() == 0 for pool in pools):
             result = None
         else:
             outcome, iterators = _pop_pools(direction, pools)
@@ -229,10 +229,10 @@ def _pop_pools(side, pools):
         * A tuple of iterators over the possible resulting pools, counts, and weights.
     """
     if side >= 0:
-        outcome = max(pool.die().max_outcome() for pool in pools if pool.num_outcomes() > 0)
+        outcome = max(pool.die().max_outcome() for pool in pools if pool.die().num_outcomes() > 0)
         iterators = tuple(_pop_pool_max(outcome, pool) for pool in pools)
     else:
-        outcome = min(pool.die().min_outcome() for pool in pools if pool.num_outcomes() > 0)
+        outcome = min(pool.die().min_outcome() for pool in pools if pool.die().num_outcomes() > 0)
         iterators = tuple(_pop_pool_min(outcome, pool) for pool in pools)
     
     return outcome, iterators

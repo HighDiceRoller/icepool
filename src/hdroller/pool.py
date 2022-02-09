@@ -215,9 +215,6 @@ class DicePool():
     
     def num_dice(self):
         return len(self._count_dice)
-
-    def num_outcomes(self):
-        return len(self.die())
     
     def max_outcomes(self, always_tuple=False):
         """ A tuple of sorted max outcomes, one for each die in the pool. 
@@ -257,7 +254,7 @@ class DicePool():
         num_unused_dice = self.num_dice() - num_possible_dice
         popped_die, outcome, single_weight = self.die().pop_max()
         
-        if len(popped_die) == 0:
+        if popped_die.num_outcomes() == 0:
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
             remaining_count = sum(self.count_dice())
@@ -312,7 +309,7 @@ class DicePool():
         num_possible_dice = bisect.bisect_right(min_outcomes, self.die().min_outcome())
         popped_die, outcome, single_weight = self.die().pop_min()
         
-        if len(popped_die) == 0:
+        if popped_die.num_outcomes() == 0:
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
             remaining_count = sum(self.count_dice())

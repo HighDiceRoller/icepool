@@ -65,5 +65,5 @@ def test_reroll_until_func():
     assert result.equals(expected)
 
 def test_infinite_reroll():
-    assert len(hdroller.d4.reroll([1, 2, 3, 4])) == 0
+    assert hdroller.d4.reroll([1, 2, 3, 4]).num_outcomes() == 0
 

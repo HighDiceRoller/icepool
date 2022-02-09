@@ -311,7 +311,7 @@ def check_ndim(*dice):
     
     ndim = None
     for die in dice:
-        if len(die) == 0:
+        if die.num_outcomes() == 0:
             continue
         if ndim is None:
             ndim = die.ndim()

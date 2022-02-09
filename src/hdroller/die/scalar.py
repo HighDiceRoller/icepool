@@ -121,7 +121,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         If the result lies between two outcomes, returns the lower of the two.
         """
         index = bisect.bisect_left(self.cweights(), (n * self.total_weight() + d - 1) // d)
-        if index >= len(self): return self.max_outcome()
+        if index >= self.num_outcomes(): return self.max_outcome()
         return self.outcomes()[index]
     
     def ppf_right(self, n, d=100):
@@ -130,7 +130,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         If the result lies between two outcomes, returns the higher of the two.
         """
         index = bisect.bisect_right(self.cweights(), n * self.total_weight() // d)
-        if index >= len(self): return self.max_outcome()
+        if index >= self.num_outcomes(): return self.max_outcome()
         return self.outcomes()[index]
     
     def ppf(self, n, d=100):

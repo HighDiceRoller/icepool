@@ -32,8 +32,6 @@ class BaseDie():
     
     It's also possible to have dice with no outcomes at all,
     though these have little use other than being sentinel values.
-    
-    `len(die)` will return the number of outcomes (including zero-weight outcomes).
     """
     
     @abstractmethod
@@ -110,13 +108,13 @@ class BaseDie():
     def weight_ge(self, outcome):
         """ Returns the weight >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self): return 0
+        if index >= self.num_outcomes(): return 0
         return self.sweights()[index]
         
     def weight_gt(self, outcome):
         """ Returns the weight > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self): return 0
+        if index >= self.num_outcomes(): return 0
         return self.sweights()[index]
     
     def probability(self, outcome):
@@ -127,7 +125,7 @@ class BaseDie():
         """ Returns all outcome, weight pairs. """
         return self._data.items()
     
-    def __len__(self):
+    def num_outcomes(self):
         """ Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
     
@@ -179,7 +177,7 @@ class BaseDie():
             `ValueError` if the zeros did not resolve to a single outcome.
         """
         result = self.unary_op(BaseDie._zero)
-        if len(result) != 1:
+        if result.num_outcomes() != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
         return result.reduce()
     

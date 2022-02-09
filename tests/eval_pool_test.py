@@ -38,7 +38,7 @@ def test_sum_descending_keep_highest():
 
 def test_zero_weight_outcomes():
     result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(3, 2)
-    assert len(result) == 9
+    assert result.num_outcomes() == 9
 
 class EvalDirection(hdroller.EvalPool):
     def __init__(self, direction):
