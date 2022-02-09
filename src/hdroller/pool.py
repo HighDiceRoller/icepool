@@ -162,19 +162,27 @@ class DicePool():
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
         return self._count_dice
     
-    def num_ignored_min(self):
-        """ How many elements of count_dice on the low side have a false truth value. """
+    @cached_property
+    def _num_drop_lowest(self):
         for i, count in enumerate(self.count_dice()):
             if count:
                 return i
         return self.num_dice()
     
-    def num_ignored_max(self):
-        """ How many elements of count_dice on the high side have a false truth value. """
+    def num_drop_lowest(self):
+        """ How many elements of count_dice on the low side have a false truth value. """
+        return self._num_drop_lowest
+    
+    @cached_property
+    def _num_drop_highest(self):
         for i, count in enumerate(reversed(self.count_dice())):
             if count:
                 return i
         return self.num_dice()
+    
+    def num_drop_highest(self):
+        """ How many elements of count_dice on the high side have a false truth value. """
+        return self._num_drop_highest
         
     def __getitem__(self, count_dice):
         """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
@@ -259,7 +267,6 @@ class DicePool():
         
         if not self.has_counted_dice():
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
-            # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = Pool(popped_die, num_dice=0)
             yield pool, 0, self.prod_weight()
             return
@@ -309,7 +316,6 @@ class DicePool():
         
         if not self.has_counted_dice():
             # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
-            # We could follow the staircase of max_outcomes more closely but this is unlikely to be relevant in most cases.
             pool = Pool(popped_die, num_dice=0)
             yield pool, 0, self.prod_weight()
             return

@@ -95,9 +95,9 @@ class EvalPool(ABC):
         elif has_min_outcomes:
             return -2
         else:
-            num_ignored_min = max(pool.num_ignored_min() for pool in pools)
-            num_ignored_max = max(pool.num_ignored_max() for pool in pools)
-            return 1 if num_ignored_min >= num_ignored_max else -1
+            num_drop_lowest = max(pool.num_drop_lowest() for pool in pools)
+            num_drop_highest = max(pool.num_drop_highest() for pool in pools)
+            return 1 if num_drop_lowest >= num_drop_highest else -1
     
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
