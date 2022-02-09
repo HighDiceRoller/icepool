@@ -245,8 +245,6 @@ class DicePool():
             * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
         max_outcomes = self.max_outcomes(always_tuple=True)
-        remaining_count = sum(self.count_dice())
-
         num_possible_dice = self.num_dice() - bisect.bisect_left(max_outcomes, self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_possible_dice
         popped_die, outcome, single_weight = self.die().pop_max()
@@ -254,6 +252,7 @@ class DicePool():
         if len(popped_die) == 0:
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
+            remaining_count = sum(self.count_dice())
             weight = single_weight ** num_possible_dice
             yield pool, remaining_count, weight
             return
@@ -297,14 +296,13 @@ class DicePool():
         # However, the alternative of reversing the storage order of die_counts and min_outcomes seems even worse.
         
         min_outcomes = self.min_outcomes(always_tuple=True)
-        remaining_count = sum(self.count_dice())
-
         num_possible_dice = bisect.bisect_right(min_outcomes, self.die().min_outcome())
         popped_die, outcome, single_weight = self.die().pop_min()
         
         if len(popped_die) == 0:
             # This is the last outcome. All dice must roll this outcome.
             pool = Pool(popped_die, num_dice=0)
+            remaining_count = sum(self.count_dice())
             weight = single_weight ** num_possible_dice
             yield pool, remaining_count, weight
             return
