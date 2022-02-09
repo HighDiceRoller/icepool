@@ -121,6 +121,9 @@ class VectorDie(hdroller.die.base.BaseDie):
         sd_j = self[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
     
+    def __repr__(self):
+        return type(self).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
+    
     def __str__(self):
         """ Formats the die as a Markdown table. """
         weight_header = f'Weight (out of {self.total_weight()})'

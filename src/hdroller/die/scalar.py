@@ -190,6 +190,9 @@ class ScalarDie(hdroller.die.base.BaseDie):
         
         return hdroller.Die(data, ndim=len(dice))
     
+    def __repr__(self):
+        return type(self).__qualname__ + f'({self._data.__repr__()})'
+    
     def __str__(self):
         """ Formats the die as a Markdown table. """
         weight_header = f'Weight (out of {self.total_weight()})'

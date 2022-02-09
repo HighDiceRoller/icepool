@@ -826,11 +826,6 @@ class BaseDie():
     def __len__(self):
         raise TypeError('The length of a die is ambiguous. Use die.num_outcomes(), die.total_weight(), or die.ndim().')
     
-    # Strings.
-    
-    def __repr__(self):
-        return type(self).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
-    
     # Equality and hashing.
     
     @cached_property
