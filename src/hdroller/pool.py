@@ -279,7 +279,7 @@ class DicePool():
             popped_max_outcomes = popped_max_outcomes[:-1]
             popped_count_dice = popped_count_dice[:-1]
         
-        if end_counted >= num_possible_dice:
+        if end_counted > num_possible_dice:
             pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
             yield pool, count, comb_row[-1]
         else:
@@ -334,7 +334,7 @@ class DicePool():
             popped_min_outcomes = popped_min_outcomes[1:]
             popped_count_dice = popped_count_dice[1:]
         
-        if end_counted >= num_possible_dice:
+        if end_counted > num_possible_dice:
             pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
             yield pool, count, comb_row[-1]
         else:
@@ -344,7 +344,7 @@ class DicePool():
             for weight in comb_row[end_counted:]:
                 skip_weight *= popped_die.total_weight()
                 skip_weight += weight
-            skip_weight *= math.prod(popped_die.weight_ge(max_outcome) for min_outcome in min_outcomes[num_possible_dice:])
+            skip_weight *= math.prod(popped_die.weight_ge(min_outcome) for min_outcome in min_outcomes[num_possible_dice:])
             pool = Pool(popped_die, 0)
             yield pool, count, skip_weight
     
