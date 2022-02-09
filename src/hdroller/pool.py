@@ -265,27 +265,33 @@ class DicePool():
             yield pool, remaining_count, weight
             return
         
-        if not self.has_counted_dice():
-            # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
-            pool = Pool(popped_die, num_dice=0)
-            yield pool, 0, self.prod_weight()
-            return
-        
         # Consider various numbers of dice rolling this outcome.
         popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
         popped_count_dice = self.count_dice()
-        pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
-        weight = 1
         count = 0
-        yield pool, count, weight
         
         comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
-        for weight in comb_row[1:]:
+        end_counted = self.num_dice() - self.num_drop_lowest()
+        for weight in comb_row[:min(num_possible_dice, end_counted)]:
+            pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            yield pool, count, weight
             count += popped_count_dice[-1]
             popped_max_outcomes = popped_max_outcomes[:-1]
             popped_count_dice = popped_count_dice[:-1]
+        
+        if end_counted >= num_possible_dice:
             pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
-            yield pool, count, weight
+            yield pool, count, comb_row[-1]
+        else:
+            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
+            # We empty the rest of the pool immediately since no more dice can contribute counts.
+            skip_weight = 0
+            for weight in comb_row[end_counted:]:
+                skip_weight *= popped_die.total_weight()
+                skip_weight += weight
+            skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in max_outcomes[:num_unused_dice])
+            pool = Pool(popped_die, 0)
+            yield pool, count, skip_weight
     
     def _iter_pop_min(self):
         """
@@ -314,27 +320,33 @@ class DicePool():
             yield pool, remaining_count, weight
             return
         
-        if not self.has_counted_dice():
-            # No selected dice remain. All dice must roll somewhere below, so empty all dice in one go.
-            pool = Pool(popped_die, num_dice=0)
-            yield pool, 0, self.prod_weight()
-            return
-        
         # Consider various numbers of dice rolling this outcome.
         popped_min_outcomes = (popped_die.min_outcome(),) * num_possible_dice + min_outcomes[num_possible_dice:]
         popped_count_dice = self.count_dice()
-        pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
-        weight = 1
         count = 0
-        yield pool, count, weight
         
         comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
-        for weight in comb_row[1:]:
+        end_counted = self.num_dice() - self.num_drop_highest()
+        for weight in comb_row[:min(num_possible_dice, end_counted)]:
+            pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
+            yield pool, count, weight
             count += popped_count_dice[0]
             popped_min_outcomes = popped_min_outcomes[1:]
             popped_count_dice = popped_count_dice[1:]
+        
+        if end_counted >= num_possible_dice:
             pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
-            yield pool, count, weight
+            yield pool, count, comb_row[-1]
+        else:
+            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
+            # We empty the rest of the pool immediately since no more dice can contribute counts.
+            skip_weight = 0
+            for weight in comb_row[end_counted:]:
+                skip_weight *= popped_die.total_weight()
+                skip_weight += weight
+            skip_weight *= math.prod(popped_die.weight_ge(max_outcome) for min_outcome in min_outcomes[num_possible_dice:])
+            pool = Pool(popped_die, 0)
+            yield pool, count, skip_weight
     
     @cached_property
     def _pop_max(self):

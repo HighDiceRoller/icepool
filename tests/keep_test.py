@@ -83,7 +83,15 @@ def test_mixed_keep_highest():
         return sum(sorted(outcomes)[-2:])
     expected = hdroller.apply(func, hdroller.d8, hdroller.d6, hdroller.d4)
     assert result.equals(expected)
-    
+
+def test_mixed_keep_lowest():
+    die = -hdroller.d12
+    result = -die.keep_lowest(min_outcomes=[-8, -6, -4], num_keep=2)
+    def func(*outcomes):
+        return sum(sorted(outcomes)[-2:])
+    expected = hdroller.apply(func, hdroller.d8, hdroller.d6, hdroller.d4)
+    assert result.equals(expected)
+
 def test_pool_select():
     pool = hdroller.Pool(hdroller.d6, 5)
     assert pool[-2].count_dice() == (0, 0, 0, 1, 0)
