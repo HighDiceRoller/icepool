@@ -470,16 +470,12 @@ class BaseDie():
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
-    max = highest
-    
     def lowest(*dice):
         """ Roll all the dice and take the lowest. """
         dice = hdroller.align(*dice)
         ndim = hdroller.check_ndim(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
-    
-    min = lowest
     
     def repeat_and_sum(self, num_dice):
         """ Roll this die `num_dice` times and sum the results. 
