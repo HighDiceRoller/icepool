@@ -10,7 +10,7 @@ import itertools
 class VectorDie(hdroller.die.base.BaseDie):
     """ Multivariate die.
     
-    Outcomes are tuples and operators are performed elementwise.
+    Outcomes are tuples and most methods and operators are performed elementwise.
     
     Statistical methods other than `mode()` take in an argument `i` specifying which dimension to take the statistic over.
     """
