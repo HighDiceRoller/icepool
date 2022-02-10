@@ -1,3 +1,16 @@
+## 0.6.0
+
+* Removed `initial_state()` in favor of using `None` as the initial state.
+* Added simple `pool.eval()` method.
+* `None` now rerolls in `EvalPool`.
+* Fix `trunc`, `floor`, `ceil`.
+* Various improvements to pool algorithm.
+* Add some thresholding methods for dice.
+* Max/min renamed to highest/lowest.
+* Improve empty die handling.
+* Improved `VectorDie` string formatting.
+* Disabled `reverse()`.
+
 ## 0.5.2
 
 * Faster algorithm for keeping the single highest/lowest.
