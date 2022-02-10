@@ -96,17 +96,17 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     else:
         if max_outcomes is not None:
             if min(max_outcomes) < die.max_outcome():
-                max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
                 # Limit die to the max of the max outcomes.
                 die = die.reroll_gt(max(max_outcomes))
+                max_outcomes = tuple(sorted(die.nearest_le(outcome) for outcome in max_outcomes))
             else:
                 # In this case, the max_outcomes don't actually do anything.
                 max_outcomes = None
         if min_outcomes is not None:
             if max(min_outcomes) > die.min_outcome():
-                min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
                 # Limit die to the min of the min outcomes.
                 die = die.reroll_lt(min(min_outcomes))
+                min_outcomes = tuple(sorted(die.nearest_ge(outcome) for outcome in min_outcomes))
             else:
                 # In this case, the min_outcomes don't actually do anything.
                 min_outcomes = None
