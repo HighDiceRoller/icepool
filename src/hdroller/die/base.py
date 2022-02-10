@@ -246,22 +246,28 @@ class BaseDie():
     # Rerolls and other outcome management.
     
     def min_outcome(*dice):
-        """ Returns the minimum possible outcome among the dice (including zero-weight outcomes). """
+        """ Returns the minimum possible outcome among the dice. """
         return min(die.outcomes()[0] for die in dice)
     
     def max_outcome(*dice):
-        """ Returns the maximum possible outcome among the dice (including zero-weight outcomes). """
+        """ Returns the maximum possible outcome among the dice. """
         return max(die.outcomes()[-1] for die in dice)
     
     def nearest_le(self, outcome):
-        """ Returns the argument if it is in this die, otherwise the next-lower outcome. """
+        """ Returns the nearest outcome that is <= the argument. 
+        
+        Returns `None` if there is no such outcome.
+        """
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
         if index < 0:
             return None
         return self.outcomes()[index]
         
     def nearest_ge(self, outcome):
-        """ Returns the argument if it is in this die, otherwise the next-higher outcome. """
+        """ Returns the nearest outcome that is >= the argument. 
+        
+        Returns `None` if there is no such outcome.
+        """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= self.num_outcomes():
             return None

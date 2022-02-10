@@ -17,7 +17,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     
     You can use `die.pool(args...)` for the same effect as this function.
     
-    All instances are cached.
+    All instances are cached. The members of the actual instance may not match the arguments exactly;
+    instead, they may be optimized to values that give the same result as far as `EvalPool` is concerned.
     
     This is capitalized because it is the preferred way of getting a new instance,
     and so that you can use `from hdroller import Pool` while leaving the name `pool` free.
@@ -96,12 +97,16 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         if max_outcomes is not None:
             if min(max_outcomes) < die.max_outcome():
                 max_outcomes = tuple(sorted(min(outcome, die.max_outcome()) for outcome in max_outcomes))
+                # Limit die to the max of the max outcomes.
+                die = die.reroll_gt(max(max_outcomes))
             else:
                 # In this case, the max_outcomes don't actually do anything.
                 max_outcomes = None
         if min_outcomes is not None:
             if max(min_outcomes) > die.min_outcome():
                 min_outcomes = tuple(sorted(max(outcome, die.min_outcome()) for outcome in min_outcomes))
+                # Limit die to the min of the min outcomes.
+                die = die.reroll_lt(min(min_outcomes))
             else:
                 # In this case, the min_outcomes don't actually do anything.
                 min_outcomes = None
