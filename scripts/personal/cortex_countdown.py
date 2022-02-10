@@ -95,7 +95,7 @@ for pool, vs_gm in zip(pools, vs_gms):
     for x in vs_gm: result += ',%0.2f%%' % (x.mean() * 100.0)
     
     for p in pool.sum_die.sf()[1:]: result += ',%0.2f%%' % (p * 100.0)
-    result += ',' * (12 * max_keep - len(pool.sum_die))
+    result += ',' * (12 * max_keep - pool.sum_die.num_outcomes())
     result += '\n'
 
 with open('output/cortex.csv', mode='w') as outfile:

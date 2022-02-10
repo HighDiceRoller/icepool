@@ -321,42 +321,6 @@ class BaseDie():
             not_outcomes = lambda outcome: outcome not in outcomes
         return self.reroll(not_outcomes, max_depth)
     
-    def reroll_lt(self, outcome):
-        """ Rerolls all outcomes < the given outcome. 
-        
-        This effectively removes them from the die.
-        """
-        split = bisect.bisect_left(self.outcomes(), outcome)
-        data = {outcome : weight for outcome, weight in zip(self.outcomes()[split:], self.weights()[split:])}
-        return hdroller.Die(data, ndim=self.ndim())
-        
-    def reroll_le(self, outcome):
-        """ Rerolls all outcomes <= the given outcome. 
-        
-        This effectively removes them from the die.
-        """
-        split = bisect.bisect_right(self.outcomes(), outcome)
-        data = {outcome : weight for outcome, weight in zip(self.outcomes()[split:], self.weights()[split:])}
-        return hdroller.Die(data, ndim=self.ndim())
-    
-    def reroll_ge(self, outcome):
-        """ Rerolls all outcomes >= the given outcome. 
-        
-        This effectively removes them from the die.
-        """
-        split = bisect.bisect_left(self.outcomes(), outcome)
-        data = {outcome : weight for outcome, weight in zip(self.outcomes()[:split], self.weights()[:split])}
-        return hdroller.Die(data, ndim=self.ndim())
-    
-    def reroll_gt(self, outcome):
-        """ Rerolls all outcomes > the given outcome. 
-        
-        This effectively removes them from the die.
-        """
-        split = bisect.bisect_right(self.outcomes(), outcome)
-        data = {outcome : weight for outcome, weight in zip(self.outcomes()[:split], self.weights()[:split])}
-        return hdroller.Die(data, ndim=self.ndim())
-    
     def split(self, cond):
         """ Splits this die's items into two pieces based on `cond(outcome)`.
         
