@@ -18,12 +18,12 @@ max_outcome = hdroller.die.base.BaseDie.max_outcome
 min_outcome = hdroller.die.base.BaseDie.min_outcome
 
 from hdroller.pool import Pool, DicePool
-from hdroller.eval_pool import EvalPool, SumPool, sum_pool, FindMatchingSets
+from hdroller.eval_pool import EvalPool, WrapFuncEval, SumPool, sum_pool, FindMatchingSets
 
 __all__ = ['Die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'mix', 'if_else', 'align', 'align_range', 'check_ndim',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
     'apply',
-    'Pool', 'DicePool', 'EvalPool', 'SumPool', 'sum_pool', 'FindMatchingSets',
+    'Pool', 'DicePool', 'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindMatchingSets',
     'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']

@@ -271,6 +271,23 @@ def _pop_pool_min(outcome, pool):
     else:
         yield from pool.pop_min()
 
+class WrapFuncEval(EvalPool):
+    """ A `EvalPool` created from a single provided function.
+    
+    `next_state()` simply calls that function.
+    """
+    
+    def __init__(self, func, /):
+        """ Constructs a new instance given the function that should be called for `next_state()`.
+        Args:
+            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,
+                and return the next state.
+        """
+        self._func = func
+    
+    def next_state(self, state, outcome, *counts):
+        return self._func(state, outcome, *counts)
+
 class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """
     def next_state(self, state, outcome, count):

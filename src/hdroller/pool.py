@@ -376,16 +376,23 @@ class DicePool():
         """
         return any(self.count_dice())
     
-    def prod_weight(self):
-        """ The product of the remaining weights. """
-        if self.max_outcomes() is not None:
-            return math.prod(self.die().weight_le(max_outcome) for max_outcome in self.max_outcomes())
-        elif self.min_outcomes() is not None:
-            return math.prod(self.die().weight_ge(min_outcome) for min_outcome in self.min_outcomes())
-        else:
-            # Note that 0 ** 0 = 1, which is correct for our purposes.
-            return self.die().total_weight() ** self.num_dice()
+    def eval(self, eval_or_func, /):
+        """ Evaluates this pool using the given `EvalPool` or function.
         
+        Note that each `EvalPool` instance carries its own cache;
+        if you plan to use an evaluation multiple times,
+        you may want to explicitly create an `EvalPool` instance
+        rather than passing a function to this method directly.
+        
+        Args:
+            func: This can be an `EvalPool`, in which case it evaluates the pool directly.
+                Or it can be a `next_state()`-like function, taking in state, outcome, *counts and returning the next state.
+                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.
+        """
+        if not isinstance(eval_or_func, hdroller.EvalPool):
+            eval_or_func = hdroller.WrapFuncEval(eval_or_func)
+        return eval_or_func.eval(self)
+    
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
         

@@ -53,3 +53,11 @@ class EvalDirection(hdroller.EvalPool):
 def test_direction():
     assert SumRerollIfAnyOnes().direction(hdroller.d6.pool(count_dice=[0,1,1,1])) > 0
     assert SumRerollIfAnyOnes().direction(hdroller.d6.pool(count_dice=[1,1,1,0])) < 0
+
+def sum_dice_func(state, outcome, count):
+    return (state or 0) + outcome * count
+
+def test_wrap_func_eval():
+    result = hdroller.d6.pool()[0,0,1,1,1].eval(sum_dice_func)
+    expected = hdroller.d6.keep_highest(5, 3)
+    assert result.equals(expected)
