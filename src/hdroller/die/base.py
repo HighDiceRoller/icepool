@@ -253,6 +253,20 @@ class BaseDie():
         """ Returns the maximum possible outcome among the dice (including zero-weight outcomes). """
         return max(die.outcomes()[-1] for die in dice)
     
+    def nearest_le(self, outcome):
+        """ Returns the argument if it is in this die, otherwise the next-lower outcome. """
+        index = bisect.bisect_right(self.outcomes(), outcome) - 1
+        if index < 0:
+            return None
+        return self.outcomes()[index]
+        
+    def nearest_ge(self, outcome):
+        """ Returns the argument if it is in this die, otherwise the next-higher outcome. """
+        index = bisect.bisect_left(self.outcomes(), outcome)
+        if index >= self.num_outcomes():
+            return None
+        return self.outcomes()[index]
+    
     def reroll(self, outcomes, max_depth=None):
         """ Rerolls the given outcomes.
         

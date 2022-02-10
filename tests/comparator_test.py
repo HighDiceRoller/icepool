@@ -88,3 +88,60 @@ def test_weight_gt_zero_weight():
     assert die_spaced.weight_gt(-1) == 2
     assert die_spaced.weight_gt(0) == 1
     assert die_spaced.weight_gt(1) == 1
+
+def test_reroll_lt():
+    assert hdroller.d6.reroll_lt(1).equals(hdroller.d6)
+    assert hdroller.d6.reroll_lt(7).is_empty()
+    assert hdroller.d6.reroll_lt(2).equals(hdroller.d5 + 1)
+
+def test_reroll_le():
+    assert hdroller.d6.reroll_le(1).equals(hdroller.d5 + 1)
+    assert hdroller.d6.reroll_le(7).is_empty()
+    assert hdroller.d6.reroll_le(0).equals(hdroller.d6)
+    
+def test_reroll_gt():
+    assert hdroller.d6.reroll_gt(1).equals(hdroller.Die(1))
+    assert hdroller.d6.reroll_gt(0).is_empty()
+    assert hdroller.d6.reroll_gt(2).equals(hdroller.d2)
+
+def test_reroll_ge():
+    assert hdroller.d6.reroll_ge(1).is_empty()
+    assert hdroller.d6.reroll_ge(7).equals(hdroller.d6)
+    assert hdroller.d6.reroll_ge(4).equals(hdroller.d3)
+
+def test_nearest_le():
+    assert hdroller.d6.nearest_le(0) == None
+    assert hdroller.d6.nearest_le(1) == 1
+    assert hdroller.d6.nearest_le(6) == 6
+    assert hdroller.d6.nearest_le(7) == 6
+
+def test_nearest_le_gap():
+    die = hdroller.Die([-3, 0, 3])
+    assert die.nearest_le(-4) == None
+    assert die.nearest_le(-3) == -3
+    assert die.nearest_le(-2) == -3
+    assert die.nearest_le(-1) == -3
+    assert die.nearest_le(0) == 0
+    assert die.nearest_le(1) == 0
+    assert die.nearest_le(2) == 0
+    assert die.nearest_le(3) == 3
+
+def test_nearest_ge():
+    assert hdroller.d6.nearest_ge(0) == 1
+    assert hdroller.d6.nearest_ge(1) == 1
+    assert hdroller.d6.nearest_ge(6) == 6
+    assert hdroller.d6.nearest_ge(7) == None
+
+def test_nearest_ge_gap():
+    die = hdroller.Die([-3, 0, 3])
+    assert die.nearest_ge(-4) == -3
+    assert die.nearest_ge(-3) == -3
+    assert die.nearest_ge(-2) == 0
+    assert die.nearest_ge(-1) == 0
+    assert die.nearest_ge(0) == 0
+    assert die.nearest_ge(1) == 3
+    assert die.nearest_ge(2) == 3
+    assert die.nearest_ge(3) == 3
+    assert die.nearest_ge(4) == None
+
+    
