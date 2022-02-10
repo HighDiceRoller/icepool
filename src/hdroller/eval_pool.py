@@ -12,7 +12,7 @@ import math
 class EvalPool(ABC):
     """ An abstract, immutable, callable class for evaulating one or more `DicePool`s.
     
-    The function method to implement is `next_state()`.
+    There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result of the roll
     given one outcome at a time along with how many dice rolled that outcome.
     An example sequence of calls, as far as `next_state()` is concerned, is:
@@ -24,6 +24,13 @@ class EvalPool(ABC):
     5. `state = next_state(state, 5, how_many_dice_rolled_5)`
     6. `state = next_state(state, 6, how_many_dice_rolled_6)`
     7. `outcome = final_outcome(state, *pools)`
+    
+    A few other methods can optionally be overridden to further customize behavior.
+    
+    It is not expected that subclasses of `EvalPool`
+    be able to handle arbitrary types or numbers of pools.
+    Indeed, most are expected to handle only a fixed number of pools,
+    and often even only pools with a particular type of die.
     
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
@@ -74,10 +81,10 @@ class EvalPool(ABC):
         return final_state
     
     def direction(self, *pools):
-        """ Optional function to determine the direction in which this evaluator will give outcomes to `next_state()`.
+        """ Optional function to determine the direction in which `next_state()` will see outcomes.
         
-        Note that an ascending (> 0) direction is not compatible with `min_outcomes`,
-        and a descending (< 0) direction is not compatible with `max_outcomes`.
+        Note that an ascending (> 0) direction is not compatible with pools with `min_outcomes`,
+        and a descending (< 0) direction is not compatible with pools with `max_outcomes`.
 
         The default implementation chooses a direction automatically.
         If only one direction is valid, it returns +2 / -2.
@@ -106,7 +113,7 @@ class EvalPool(ABC):
         
         1. The `ndim` argument to `eval()`, if not `None`.
         2. This method, if not `None`.
-        3. Automatically determined by `die()`.
+        3. Automatically determined by `Die()`.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
@@ -119,6 +126,7 @@ class EvalPool(ABC):
     
     @cached_property
     def _cache(self):
+        """ A cache of (direction, pools) -> weight distribution over states. """
         return {}
     
     def eval(self, *pools, ndim=None):
