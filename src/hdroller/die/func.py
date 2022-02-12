@@ -116,10 +116,6 @@ def _calc_ndim(data, ndim):
             else:
                 return 'scalar'
     
-    if ndim is None:
-        # Default to scalar for empty dice?
-        return 'scalar'
-    
     return ndim
 
 def standard(num_sides):
