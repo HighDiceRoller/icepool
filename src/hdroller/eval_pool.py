@@ -349,4 +349,5 @@ class FindBestRun(EvalPool):
         return final_state[:2]
     
     def direction(self, *pools):
+        """ This only considers outcomes in ascending order. """
         return 1

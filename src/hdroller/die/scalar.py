@@ -195,12 +195,21 @@ class ScalarDie(hdroller.die.base.BaseDie):
     
     def __str__(self):
         """ Formats the die as a Markdown table. """
-        weight_header = f'Weight (out of {self.total_weight()})'
-        w = len(weight_header)
-        o = max(len(str(outcome)) for outcome in self.outcomes())
-        o = max(o, 7)
-        result =  '| ' + ' ' * (o-7) + f'Outcome | {weight_header} | Probability |\n'
-        result += '|-' + '-' *  o +            ':|-' + '-' * w + ':|------------:|\n'
+        outcome_length = max(tuple(len(str(outcome)) for outcome in self.outcomes()) + (len('Outcome'),))
+        weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
+        result = f'Total weight: {self.total_weight()}\n'
+        result +=  '| ' + ' ' * (outcome_length - len('Outcome')) + 'Outcome |'
+        result +=   ' ' + ' ' * (weight_length - len('Weight'))   +  'Weight |'
+        if self.total_weight() > 0:
+            result += ' Probability |'
+        result += '\n'
+        result += '|-' + '-' * outcome_length + ':|-' + '-' * weight_length + ':|'
+        if self.total_weight() > 0:
+            result += '------------:|'
+        result += '\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
-            result += f'| {str(outcome):>{o}} | {weight:>{w}} | {p:11.6%} |\n'
+            result += f'| {str(outcome):>{outcome_length}} | {weight:>{weight_length}} |'
+            if self.total_weight() > 0:
+                result += f' {p:11.6%} |'
+            result += '\n'
         return result
