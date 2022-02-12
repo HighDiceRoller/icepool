@@ -76,3 +76,20 @@ def test_standard_pool():
     result = hdroller.standard_pool(8, 8, 6, 6, 6).sum()
     expected = 3 @ hdroller.d6 + 2 @ hdroller.d8
     assert result.equals(expected)
+
+def test_runs():
+    result = hdroller.FindBestRun()(hdroller.standard_pool(12, 10, 8))
+    def func(*outcomes):
+        outcomes = sorted(outcomes)
+        a = outcomes[1] == outcomes[0] + 1
+        b = outcomes[2] == outcomes[1] + 1
+        if a and b:
+            return 3, outcomes[2]
+        elif b:
+            return 2, outcomes[2]
+        elif a:
+            return 2, outcomes[1]
+        else:
+            return 1, outcomes[2]
+    expected = hdroller.apply(func, hdroller.d12, hdroller.d10, hdroller.d8)
+    assert result.equals(expected)

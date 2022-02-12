@@ -308,7 +308,7 @@ class SumPool(EvalPool):
 """ A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
 
-class FindMatchingSets(EvalPool):
+class FindBestSet(EvalPool):
     """ A `EvalPool` that takes the best matching set in a pool.
     
     This prioritizes set size, then the outcome.
@@ -325,3 +325,28 @@ class FindMatchingSets(EvalPool):
             return count, outcome
         else:
             return max(state, (count, outcome))
+
+class FindBestRun(EvalPool):
+    """ A `EvalPool` that takes the best run (aka "straight") in a pool.
+    
+    This prioritizes run size, then the outcome.
+    
+    The outcomes are `(run_size, outcome)`.
+    """
+    
+    def next_state(self, state, outcome, count):
+        if state is None:
+            best_run, best_run_outcome, curr_run = 0, outcome, 0
+        else:
+            best_run, best_run_outcome, curr_run = state
+        if count >= 1:
+            curr_run += 1
+        else:
+            curr_run = 0
+        return max((curr_run, outcome), (best_run, best_run_outcome)) + (curr_run,)
+    
+    def final_outcome(self, final_state, *pools):
+        return final_state[:2]
+    
+    def direction(self, *pools):
+        return 1
