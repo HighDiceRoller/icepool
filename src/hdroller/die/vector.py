@@ -127,20 +127,31 @@ class VectorDie(hdroller.die.base.BaseDie):
     
     def __str__(self):
         """ Formats the die as a Markdown table. """
-        weight_header = f'Weight (out of {self.total_weight()})'
-        weight_length = len(weight_header)
-        outcome_lengths = [max(len(str(outcome[i])) for outcome in self.outcomes()) for i in range(self.ndim())]
-        outcome_lengths = [max(x, 10) for x in outcome_lengths]
-        result = ''
+        outcome_lengths = []
         for i in range(self.ndim()):
-            result += '| ' + ' ' * (outcome_lengths[i] - 10) + f'Outcome[{i}]' + ' '
-        result += f'| {weight_header} | Probability |\n'
+            outcome_length = max(tuple(len(str(outcome[i])) for outcome in self.outcomes()) + (len(f'Outcome[{i}]'),))
+            outcome_lengths.append(outcome_length)
+        weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
+        result = ''
+        result = f'Total weight: {self.total_weight()}\n'
+        for i in range(self.ndim()):
+            result += '| ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')) + f'Outcome[{i}]' + ' '
+        result += '| ' + ' ' * (weight_length - len('Weight')) + 'Weight |'
+        if self.total_weight() > 0:
+            result += ' Probability |'
+        result += '\n'
         for i in range(self.ndim()):
             result += '|-' + '-' * outcome_lengths[i] + ':'
-        result += '|-' + '-' * weight_length + ':|------------:|\n'
+        result += '|-' + '-' * weight_length + ':|'
+        if self.total_weight() > 0:
+            result += '------------:|'
+        result += '\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
             for i, x in enumerate(outcome):
                 result += f'| {str(x):>{outcome_lengths[i]}} '
-            result += f'| {weight:>{weight_length}} | {p:11.6%} |\n'
+            result += f'| {weight:>{weight_length}} |'
+            if self.total_weight() > 0:
+                result += f' {p:11.6%} |'
+            result += '\n'
         return result
         
