@@ -53,17 +53,18 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes being removed (not set to 0 weight).
-            Values above the `max_outcome` of the fundamental die have no effect.
+            Values cannot be > the `max_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
             For example, `Pool(hdroller.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
         min_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that minimum outcome, with all lower outcomes being removed (not set to 0 weight).
-            Values below the `min_outcome` of the fundamental die have no effect.
+            Values cannot be < the `min_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
     Raises:
-        `ValueError` if arguments conflict with each other.
+        `ValueError` if arguments result in a conflicting number of dice, 
+            or if `max_outcome` or `min_outcome` fall outside the range of the die.
     """
     
     # Compute num_dice.
@@ -98,6 +99,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             if min(max_outcomes) < die.max_outcome():
                 # Limit die to the max of the max outcomes.
                 max_outcome = max(max_outcomes)
+                if max_outcome > die.max_outcome():
+                    raise ValueError('max_outcomes cannot be > the max_outcome of the die.')
                 die = die.reroll(lambda o: o > max_outcome)
                 max_outcomes = tuple(sorted(die.nearest_le(outcome) for outcome in max_outcomes))
             else:
@@ -106,6 +109,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         if min_outcomes is not None:
             if max(min_outcomes) > die.min_outcome():
                 min_outcome = min(min_outcomes)
+                if min_outcome < die.min_outcome():
+                    raise ValueError('min_outcomes cannot be < the min_outcome of the die.')
                 # Limit die to the min of the min outcomes.
                 die = die.reroll(lambda o: o < min_outcome)
                 min_outcomes = tuple(sorted(die.nearest_ge(outcome) for outcome in min_outcomes))
