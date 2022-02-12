@@ -36,7 +36,7 @@ class BaseDie():
     
     @abstractmethod
     def ndim(self):
-        """ Returns the number of dimensions if is a `VectorDie`, or `False` otherwise. """
+        """ Returns the number of dimensions if is a `VectorDie`, or a non-`int` value otherwise. """
     
     # Abstract methods.
     

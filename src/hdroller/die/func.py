@@ -38,10 +38,10 @@ def Die(arg, min_outcome=None, ndim=None):
                 The outcomes will be `int`s starting at `min_outcome`.
             * A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight `1`.
-        ndim: If set to `False`, the die will be forced to be scalar.
+        ndim: If set to `'scalar'`, the die will be forced to be scalar.
             If set to an `int`, the die will be forced to be vector with that number of dimensions.
             If omitted, this will be automatically detected.
-            E.g. for `str` outcomes you may want to set `ndim=False`, which will
+            E.g. for `str` outcomes you may want to set `ndim='scalar'`, which will
             treat e.g. `'abc' as a single string rather than `('a', 'b', 'c')`.
     
     Raises:
@@ -51,7 +51,7 @@ def Die(arg, min_outcome=None, ndim=None):
         
     ndim = _calc_ndim(data, ndim)
     
-    if ndim is not False:
+    if ndim != 'scalar':
         return hdroller.die.vector.VectorDie(data, ndim)
     else:
         return hdroller.die.scalar.ScalarDie(data)
@@ -86,16 +86,16 @@ def _calc_ndim(data, ndim):
             If provided, this will be verified.
         
     Returns:
-        ndim: The number of dimensions, or `False` if the data is determined to be sclar.
+        ndim: The number of dimensions, or `'scalar'` if the data is determined to be sclar.
         
     Raises:
         `ValueError` if `ndim` is provided but is not consistent with the data.
     """
     if len(data) == 0:
-        return False
+        return 'scalar'
     
-    if ndim is False:
-        return False
+    if ndim == 'scalar':
+        return 'scalar'
     
     provided_ndim = ndim is not None
     
@@ -108,16 +108,16 @@ def _calc_ndim(data, ndim):
                 if provided_ndim:
                     raise ValueError('Data does not match provided ndim.')
                 else:
-                    return False
+                    return 'scalar'
         else:
             if provided_ndim:
                 raise ValueError('Provided ndim but found scalar value.')
             else:
-                return False
+                return 'scalar'
     
     if ndim is None:
         # Default to scalar for empty dice?
-        return False
+        return 'scalar'
     
     return ndim
 
@@ -135,7 +135,7 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return Die([1] * num_sides, min_outcome=1, ndim=False)
+    return Die([1] * num_sides, min_outcome=1, ndim='scalar')
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -169,7 +169,7 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return Die({False : d - n, True : n}, ndim=False)
+    return Die({False : d - n, True : n}, ndim='scalar')
 
 coin = bernoulli
 
