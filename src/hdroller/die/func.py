@@ -51,7 +51,8 @@ def Die(arg, min_outcome=None, ndim=None):
         
     ndim = _calc_ndim(data, ndim)
     
-    if ndim != 'scalar':
+    if isinstance(ndim, int):
+        data = Weights({ tuple(k) : v for k, v in data.items() })
         return hdroller.die.vector.VectorDie(data, ndim)
     else:
         return hdroller.die.scalar.ScalarDie(data)
