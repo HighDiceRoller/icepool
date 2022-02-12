@@ -144,6 +144,20 @@ def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes):
     """
     return DicePool(die, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
 
+def standard_pool(*die_sizes, count_dice=None):
+    """ Creates a pool of standard dice.
+    
+    For example, `standard_pool(8, 8, 6, 6, 6)` would be a pool of 2 d8s and 3 d6s.
+    
+    Args:
+        *die_sizes: The size of each die in the pool.
+        count_dice: Which dice will be counted, as `Pool()`.
+            As with `Pool()`, you can also use the `[]` operator after the fact.
+            For example, `standard_pool(8, 8, 6, 6, 6)[-2:]` would keep the highest two dice
+            of 2 d8s and 3 d6s.
+    """
+    return Pool(hdroller.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
+
 class DicePool():
     def __init__(self, die, count_dice, *, max_outcomes, min_outcomes):
         """ Unchecked constructor.

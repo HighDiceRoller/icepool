@@ -71,3 +71,8 @@ def test_min_outcome_rounding():
     result = hdroller.d12.pool(min_outcomes=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
     expected = hdroller.d12.pool(min_outcomes=[9, 9, 9, 7, 6]).sum()
     assert result.equals(expected)
+
+def test_standard_pool():
+    result = hdroller.standard_pool(8, 8, 6, 6, 6).sum()
+    expected = 3 @ hdroller.d6 + 2 @ hdroller.d8
+    assert result.equals(expected)
