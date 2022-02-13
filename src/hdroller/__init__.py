@@ -20,11 +20,19 @@ min_outcome = hdroller.die.base.BaseDie.min_outcome
 from hdroller.pool import Pool, standard_pool, DicePool
 from hdroller.eval_pool import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBestSet, FindBestRun
 
+import enum
+
+class SpecialValue(enum.Enum):
+    Reroll = 'Reroll'
+
+Reroll = SpecialValue.Reroll
+
 __all__ = ['Die', 'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'mix', 'if_else', 'align', 'align_range', 'check_ndim',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
     'apply',
+    'Reroll',
     'Pool', 'standard_pool', 'DicePool',
     'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun',
     'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']

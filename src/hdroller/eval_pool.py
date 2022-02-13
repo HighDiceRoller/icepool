@@ -4,7 +4,6 @@ import hdroller
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from enum import Enum
 from functools import cached_property
 import itertools
 import math
@@ -59,8 +58,8 @@ class EvalPool(ABC):
         
         Returns:
             A hashable object indicating the next state.
-            Note that if this is `None` for the final state and `final_outcome()` is not overridden,
-            the result will be rerolled.
+            The special value `hdroller.Reroll` can be used to immediately remove the state from consideration,
+            effectively performing a full reroll of the pool.
         """
     
     def final_outcome(self, final_state, *pools):
@@ -75,7 +74,7 @@ class EvalPool(ABC):
         Returns:
             A final outcome that will be used as part of constructing a die.
             This should be hashable and comparable.
-            Alternatively, a return value of `None` will drop the state from consideration,
+            Alternatively, a return value of `hdroller.Reroll` will drop the state from consideration,
             effectively performing a full reroll.
         """
         return final_state
@@ -146,12 +145,12 @@ class EvalPool(ABC):
         
         if dist is None:
             # All dice were empty.
-            return hdroller.Die(ndim=ndim)
+            return hdroller.Die({})
         
         final_dist = defaultdict(int)
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
-            if outcome is not None:
+            if outcome is not hdroller.Reroll:
                 final_dist[outcome] += weight
         
         return hdroller.Die(final_dist, ndim=self.ndim(*pools))
@@ -209,11 +208,13 @@ class EvalPool(ABC):
                 if prev is None:
                     # Base case.
                     state = self.next_state(None, outcome, *counts)
-                    result[state] = prod_weight
+                    if state is not hdroller.Reroll:
+                        result[state] = prod_weight
                 else:
                     for prev_state, prev_weight in prev.items():
                         state = self.next_state(prev_state, outcome, *counts)
-                        result[state] += prev_weight * prod_weight
+                        if state is not hdroller.Reroll:
+                            result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
         return result
