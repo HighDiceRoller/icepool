@@ -1,3 +1,13 @@
+## 0.6.1
+
+* Pool `max_outcomes` or `min_outcomes` outside the range of the fundamental die is now an error.
+* Pools no longer automatically shrink the die to fit `max_outcomes` or `min_outcomes`. This is to guarantee a predictable iteration order.
+* Improved `str(die)` formatting.
+* `VectorDie` outcomes are automatically converted to tuples.
+* `ScalarDie` now has `ndim='scalar'` rather than `ndim=False`.
+* Add `standard_pool()` function for easy creation of standard pools.
+* Removed `reroll_lt()`, etc. as they weren't enough faster than `reroll(func)` to justify spending extra space.
+
 ## 0.6.0
 
 * Removed `initial_state()` in favor of using `None` as the initial state.
