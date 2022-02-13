@@ -302,7 +302,7 @@ class BaseDie():
     def reroll_until(self, outcomes, max_depth=None):
         """ Rerolls until getting one of the given outcomes.
         
-        Essentially the complement of reroll().
+        Essentially the complement of `reroll()`.
         
         Args:
             outcomes: Selects which outcomes to reroll until. Options:
@@ -324,8 +324,8 @@ class BaseDie():
     def split(self, cond):
         """ Splits this die's items into two pieces based on `cond(outcome)`.
         
-        The left result is all outcome-weight pairs where `cond(outcome)` is `False`.
-        The right result is all outcome-weight pairs where `cond(outcome)` is `True`.
+        The left result is all outcome-weight pairs where `cond(outcome)` is `True`.
+        The right result is all outcome-weight pairs where `cond(outcome)` is `False`.
         """
         data_true = {}
         data_false = {}
