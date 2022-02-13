@@ -1,5 +1,7 @@
 __docformat__ = 'google'
 
+import hdroller
+
 from functools import cached_property
 
 class Weights():
@@ -15,6 +17,8 @@ class Weights():
         for key, value in d.items():
             if key is None:
                 raise TypeError('None is not a valid outcome.')
+            if isinstance(key, hdroller.SpecialValue):
+                raise TypeError(str(key) + ' is not a valid outcome.')
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' + type(value).__name__)
             if value < 0:

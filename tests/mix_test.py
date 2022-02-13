@@ -26,6 +26,11 @@ def test_mix_mixed():
     die = hdroller.mix(hdroller.d4, hdroller.d6)
     assert die.pmf() == hdroller.Die([5, 5, 5, 5, 2, 2], 1).pmf()
 
+def test_mix_reroll():
+    result = hdroller.mix(1,2,3,4,hdroller.Reroll,hdroller.Reroll)
+    expected = hdroller.d4
+    assert result.equals(expected)
+
 expected_d6x1 = hdroller.Die([6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], 1).trim()
 
 def test_sub_array():
@@ -39,3 +44,8 @@ def test_sub_dict():
 def test_sub_func():
     die = hdroller.d6.sub(lambda x: hdroller.d6 + 6 if x == 6 else 6 - x)
     assert die.pmf() == pytest.approx(expected_d6x1.pmf())
+
+def test_sub_mix():
+    result = hdroller.d6.sub(lambda x: x if x >= 3 else hdroller.Reroll)
+    expected = hdroller.d4 + 2
+    assert result.equals(expected)

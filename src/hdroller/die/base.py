@@ -395,6 +395,7 @@ class BaseDie():
                     Unmapped old outcomes stay the same.
                 * A function mapping old outcomes to new outcomes.
                 The new outcomes may be dice rather than just single outcomes.
+                The special value `hdroller.Reroll` will reroll that old outcome.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
             total_weight_method: As `hdroller.mix()`.
         

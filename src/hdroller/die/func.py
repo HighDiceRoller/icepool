@@ -217,6 +217,9 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
     
     Args:
         *dice: The dice to mix.
+            These can be values castable to dice.
+            Alternatively, values may be `hdroller.Reroll`,
+            in which case that value and the corresponding mix weight is simply dropped.
         mix_weights: An iterable of one `int` weight per input die.
             If not provided, all dice are mixed uniformly.
         total_weight_method: How to determine the total weight of the result.
@@ -229,11 +232,13 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
                 This is like rolling the above, but the specific mixing weight rolled
                 is used to help determine the result of the selected die.
     """
-    dice = align(*dice, ndim=ndim)
-    ndim = check_ndim(*dice)
-    
     if mix_weights is None:
         mix_weights = (1,) * len(dice)
+    
+    dice, mix_weights = zip(*((die, weight) for die, weight in zip(dice, mix_weights) if die is not hdroller.Reroll))
+    
+    dice = align(*dice, ndim=ndim)
+    ndim = check_ndim(*dice)
         
     if total_weight_method == 'prod':
         weight_product = math.prod(d.total_weight() for d in dice)
