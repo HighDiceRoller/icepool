@@ -15,7 +15,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     
     This should be used in conjunction with `EvalPool` to generate a result.
     
-    You can use `die.pool(args...)` for the same effect as this function.
+    You can use `die.pool(num_dice=None, ...)` for the same effect as this function.
     
     All instances are cached. The members of the actual instance may not match the arguments exactly;
     instead, they may be optimized to values that give the same result as far as `EvalPool` is concerned.
@@ -52,13 +52,13 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             provided that neither `min_outcomes` nor `max_outcomes` are set.
             For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
         max_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that maximum outcome, with all higher outcomes having 0 weight.
+            That die will be limited to that maximum outcome, with all higher outcomes having 0 count.
             Values cannot be > the `max_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
             For example, `Pool(hdroller.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
         min_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that minimum outcome, with all lower outcomes having 0 weight.
+            That die will be limited to that minimum outcome, with all lower outcomes having 0 count.
             Values cannot be < the `min_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
