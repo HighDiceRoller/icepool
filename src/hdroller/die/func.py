@@ -46,6 +46,7 @@ def Die(arg, min_outcome=None, ndim=None):
     
     Raises:
         `ValueError` if `ndim` is set but is not consistent with `arg`.
+            Also, `None` is not a valid outcome for a die.
     """
     data = _make_data(arg, min_outcome)
         
