@@ -13,24 +13,27 @@ import operator
 import random
 
 class BaseDie():
-    """ Abstract base die class for a die.
+    """ Abstract base class for a die.
     
-    A die is a discrete probability distribution with `int` weights.
-    The outcomes can be any hashable, comparable values.
+    A die is a sorted mapping of outcomes to `int` weights.
     
-    It *is* (mostly) well-defined to have a die with zero-weight outcomes.
+    Dice are immutable. Methods do not modify the die in-place;
+    rather they return a die representing the result.
+    
+    It *is* (mostly) well-defined to have a die with zero-weight outcomes,
+    even though this is not a proper probability distribution.
     These can be useful in a few cases, such as:
     
-    * `DicePool` and `EvalPool` will iterate through zero-weight outcomes with 0 count,
+    * `DicePool` and `EvalPool` will iterate through zero-weight outcomes with 0 `count`,
         rather than `None` or skipping that outcome.
-    * `hdroller.align()` and the like are convenient for making pools share the same set of outcomes.
+    * `hdroller.align()` and the like are convenient for making dice share the same set of outcomes.
     
-    Otherwise, zero-weight outcomes have a computational cost like any other outcome,
-    so it's best to leave them out if not necessary.
+    However, zero-weight outcomes have a computational cost like any other outcome.
+    Unless you have a specific use case in mind, it's best to leave them out if not necessary.
     
-    Most operations will not introduce zero-weight outcomes if their arguments do not have any.
+    Most operators and methods will not introduce zero-weight outcomes if their arguments do not have any.
     
-    It's also possible to have dice with no outcomes at all,
+    It's also possible to have "empty" dice with no outcomes at all,
     though these have little use other than being sentinel values.
     """
     
@@ -86,7 +89,7 @@ class BaseDie():
         return self._data.values()
     
     def has_zero_weights(self):
-        """ Returns `True` iff `self` contains at least one zero weight. """
+        """ Returns `True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_weights()
     
     def items(self):
@@ -337,15 +340,16 @@ class BaseDie():
         return hdroller.Die(data_true, ndim=self.ndim()), hdroller.Die(data_false, ndim=self.ndim())
     
     def set_outcomes(self, outcomes):
-        """ Returns a die whose outcomes are set to the argument, including zero weights.
+        """ Sets the set of outcomes to the argument.
         
-        This may remove outcomes or add zero-weight outcomes.
+        This may remove outcomes (if they are not present in the argument)
+        and/or add zero-weight outcomes (if they are not present in this die).
         """
         data = {x : self.weight_eq(x) for x in outcomes}
         return hdroller.Die(data, ndim=self.ndim())
     
     def trim(self):
-        """ Removes all zero-weight outcomes from self. """
+        """ Removes all zero-weight outcomes. """
         data = { k : v for k, v in self.items() if v > 0 }
         return hdroller.Die(data, ndim=self.ndim())
     
@@ -870,9 +874,10 @@ class BaseDie():
         """ Returns `True` iff both dice have the same ndim, outcomes, and weights.
         
         Note that dice are not reduced, e.g. a 2:2 coin is not `equals()` to a 1:1 coin. 
-        Zero-weight outcomes are also considered for the purposes of `equals()`.
+        Also, if one die has a zero-weight outcome and the other die does not contain that outcome,
+        they are treated as unequal by this function.
         
-        For the chance of two dice rolling the same as each other, use the == operator.
+        For the chance of two dice rolling the same outcome, use the == operator.
         """
         try:
             other = hdroller.Die(other, ndim=self.ndim())

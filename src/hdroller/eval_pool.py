@@ -109,18 +109,14 @@ class EvalPool(ABC):
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
         
-        The priority to determine ndim is as follows.
-        
-        1. The `ndim` argument to `eval()`, if not `None`.
-        2. This method, if not `None`.
-        3. Automatically determined by `Die()`.
+        If not provided, the ndim of the result will be determined automatically as per `Die()`.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
         
         Returns:
             The number of dimensions that the output die should have,
-            or `None` if this should be determined automatically by `die()`.
+            or `None` if this should be determined automatically by `Die()`.
         """
         return None
     
@@ -129,7 +125,7 @@ class EvalPool(ABC):
         """ A cache of (direction, pools) -> weight distribution over states. """
         return {}
     
-    def eval(self, *pools, ndim=None):
+    def eval(self, *pools):
         """ Evaluates pools.
         
         You can call the `EvalPool` object directly for the same effect,
@@ -140,8 +136,6 @@ class EvalPool(ABC):
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
                 Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
-            ndim: The number of dimensions of the resulting die.
-                If omitted, this will be determined automatically.
         
         Returns:
             A die representing the distribution of the final score.
@@ -160,10 +154,7 @@ class EvalPool(ABC):
             if outcome is not None:
                 final_dist[outcome] += weight
         
-        if ndim is None:
-            ndim = self.ndim(*pools)
-        
-        return hdroller.Die(final_dist, ndim=ndim)
+        return hdroller.Die(final_dist, ndim=self.ndim(*pools))
     
     __call__ = eval
     
