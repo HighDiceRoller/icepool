@@ -50,7 +50,7 @@ class EvalPool(ABC):
         
         Args:
             state: A hashable object indicating the state before rolling the current outcome.
-                For the first call this will be `None`.
+                If there was no previous outcome, this will be `None`.
             outcome: The current outcome.
             counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
                 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
@@ -59,8 +59,8 @@ class EvalPool(ABC):
         
         Returns:
             A hashable object indicating the next state.
-            Alternatively, a value of `None` will drop the state from consideration,
-            effectively performing a full reroll.
+            Note that if this is `None` for the final state and `final_outcome()` is not overridden,
+            the result will be rerolled.
         """
     
     def final_outcome(self, final_state, *pools):
@@ -218,13 +218,11 @@ class EvalPool(ABC):
                 if prev is None:
                     # Base case.
                     state = self.next_state(None, outcome, *counts)
-                    if state is not None:
-                        result[state] = prod_weight
+                    result[state] = prod_weight
                 else:
                     for prev_state, prev_weight in prev.items():
                         state = self.next_state(prev_state, outcome, *counts)
-                        if state is not None:
-                            result[state] += prev_weight * prod_weight
+                        result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
         return result
