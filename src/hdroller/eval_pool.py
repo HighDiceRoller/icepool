@@ -185,7 +185,6 @@ class EvalPool(ABC):
         Arguments:
             direction: The direction in which to send outcomes to `next_state()`.
             *pools: One or more `DicePool`s to evaluate.
-                Values of `None` indicate that pool has no remaining outcomes to process.
                 This *does* change recursively.
             
         Returns:
