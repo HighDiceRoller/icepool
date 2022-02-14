@@ -12,10 +12,10 @@ pip install hdroller
 
 ## Principles
 
-* Handles both univariate and multivariate distributions.
+* Combinatorics and caching allow for flexible yet efficient solutions to common problems.
 * Weights are Python `int`s, providing exact results.
-* Combinatorics and caching allow for asymptotically efficient solutions to common problems.
 * Constant-factor optimizations are not a priority.
+* Handles both univariate and multivariate distributions.
 
 ## Examples
 
