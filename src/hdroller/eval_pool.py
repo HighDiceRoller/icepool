@@ -66,6 +66,9 @@ class EvalPool(ABC):
         """ Optional function to generate a final outcome from a final state.
         
         By default, the final outcome is equal to the final state.
+        Note that `None` is not a valid outcome for a die,
+        and if all pools consist of empty dice, the final state will be `None`.
+        Subclasses that want to handle this case should explicitly define what happens.
         
         Args:
             final_state: A state after all outcomes have been processed.
@@ -131,10 +134,6 @@ class EvalPool(ABC):
         Returns:
             A die representing the distribution of the final score.
         """
-        if all(pool.die().is_empty() for pool in pools):
-            # All dice are empty.
-            return hdroller.Die({})
-        
         algorithm, direction = self._select_algorithm(*pools)
         
         dist = algorithm(direction, *pools)
