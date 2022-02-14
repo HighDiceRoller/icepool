@@ -178,7 +178,8 @@ class EvalPool(ABC):
         return bound_eval
     
     def _eval_internal(self, direction, *pools):
-        """ Internal algorithm.
+        """ Internal algorithm for iterating in the more-preferred direction,
+        i.e. giving outcomes to `next_state` from wide to narrow. 
         
         All intermediate return values are cached in the instance.
         
@@ -217,6 +218,27 @@ class EvalPool(ABC):
         
         self._cache[cache_key] = result
         return result
+    
+    def _eval_internal_iterative(self, direction, *pools):
+        """ Internal algorithm for iterating in the less-preferred direction,
+        i.e. giving outcomes to `next_state` from narrow to wide.
+        """
+        dist = defaultdict(int)
+        dist[None, pools] = 1
+        while True:
+            next_dist = defaultdict(int)
+            for (state, pools), weight in dist.items():
+                # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
+                if all(pool.die().is_empty() for pool in pools):
+                    return { state : weight for (state, pools), weight in dist.items() }
+                outcome, iterators = _pop_pools(-direction, pools)
+                for p in itertools.product(*iterators):
+                    next_pools, counts, weights = zip(*p)
+                    prod_weight = math.prod(weights)
+                    next_state = self.next_state(state, outcome, *counts)
+                    if next_state is not hdroller.Reroll:
+                        next_dist[next_state, next_pools] += weight * prod_weight
+            dist = next_dist
     
 def _pop_pools(side, pools):
     """ Pops a single outcome from the pools.
