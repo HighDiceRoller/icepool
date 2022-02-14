@@ -248,21 +248,20 @@ class EvalPool(ABC):
         """
         dist = defaultdict(int)
         dist[None, pools] = 1
-        while True:
+        # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
+        while not all(pool.die().is_empty() for pool in pools):
             next_dist = defaultdict(int)
-            for (state, pools), weight in dist.items():
-                # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
-                if all(pool.die().is_empty() for pool in pools):
-                    return { state : weight for (state, pools), weight in dist.items() }
+            for (prev_state, prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
-                outcome, iterators = _pop_pools(-direction, pools)
+                outcome, iterators = _pop_pools(-direction, prev_pools)
                 for p in itertools.product(*iterators):
-                    next_pools, counts, weights = zip(*p)
+                    pools, counts, weights = zip(*p)
                     prod_weight = math.prod(weights)
-                    next_state = self.next_state(state, outcome, *counts)
-                    if next_state is not hdroller.Reroll:
-                        next_dist[next_state, next_pools] += weight * prod_weight
+                    state = self.next_state(prev_state, outcome, *counts)
+                    if state is not hdroller.Reroll:
+                        next_dist[state, pools] += weight * prod_weight
             dist = next_dist
+        return { state : weight for (state, _), weight in dist.items() }
     
 def _pop_pools(side, pools):
     """ Pops a single outcome from the pools.
