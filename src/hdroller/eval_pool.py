@@ -85,25 +85,17 @@ class EvalPool(ABC):
         Note that an ascending (> 0) direction is not compatible with pools with `min_outcomes`,
         and a descending (< 0) direction is not compatible with pools with `max_outcomes`.
 
-        The default implementation chooses a direction automatically.
-        If only one direction is valid, it returns +2 / -2.
+        The default is ascending order.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
+            
+        Returns:
+            * > 0 if `next_state()` should always see the outcomes in ascending order.
+            * < 0 if `next_state()` should always see the outcomes in descending order.
+            * 0 if the order may be determined automatically.
         """
-        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
-        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
-        if has_max_outcomes and has_min_outcomes:
-            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
-        
-        if has_max_outcomes:
-            return 2
-        elif has_min_outcomes:
-            return -2
-        else:
-            num_drop_lowest = max(pool.num_drop_lowest() for pool in pools)
-            num_drop_highest = max(pool.num_drop_highest() for pool in pools)
-            return 1 if num_drop_lowest >= num_drop_highest else -1
+        return 1
     
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
@@ -139,9 +131,9 @@ class EvalPool(ABC):
         Returns:
             A die representing the distribution of the final score.
         """
-        direction = self.direction(*pools)
+        algorithm, direction = self._select_algorithm(*pools)
         
-        dist = self._eval_internal(direction, *pools)
+        dist = algorithm(direction, *pools)
         
         if dist is None:
             # All dice were empty.
@@ -177,9 +169,45 @@ class EvalPool(ABC):
         
         return bound_eval
     
+    def _select_algorithm(self, *pools):
+        """ Selects an algorithm and iteration direction.
+        
+        Returns:
+            * The algorithm to use (`_eval_internal*`).
+            * The direction in which `next_state()` sees outcomes.
+                1 for ascending and -1 for descending.
+            
+        """
+        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
+        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
+        if has_max_outcomes and has_min_outcomes:
+            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
+        
+        direction = self.direction(*pools)
+        
+        if not direction:
+            if has_max_outcomes:
+                direction = 1
+            elif has_min_outcomes:
+                direction = -1
+            else:
+                num_drop_lowest = max(pool.num_drop_lowest() for pool in pools)
+                num_drop_highest = max(pool.num_drop_highest() for pool in pools)
+                if num_drop_lowest >= num_drop_highest:
+                    direction = 1
+                else:
+                    direction = -1
+        
+        if direction < 0 and has_max_outcomes or direction > 0 and has_min_outcomes:
+            # Forced onto the less-preferred algorithm.
+            return self._eval_internal_iterative, direction
+        else:
+            # Use the preferred algorithm.
+            return self._eval_internal, direction
+    
     def _eval_internal(self, direction, *pools):
         """ Internal algorithm for iterating in the more-preferred direction,
-        i.e. giving outcomes to `next_state` from wide to narrow. 
+        i.e. giving outcomes to `next_state()` from wide to narrow. 
         
         All intermediate return values are cached in the instance.
         
@@ -221,7 +249,7 @@ class EvalPool(ABC):
     
     def _eval_internal_iterative(self, direction, *pools):
         """ Internal algorithm for iterating in the less-preferred direction,
-        i.e. giving outcomes to `next_state` from narrow to wide.
+        i.e. giving outcomes to `next_state()` from narrow to wide.
         """
         dist = defaultdict(int)
         dist[None, pools] = 1
@@ -231,6 +259,7 @@ class EvalPool(ABC):
                 # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
                 if all(pool.die().is_empty() for pool in pools):
                     return { state : weight for (state, pools), weight in dist.items() }
+                # The direction flip here is the only purpose of this algorithm.
                 outcome, iterators = _pop_pools(-direction, pools)
                 for p in itertools.product(*iterators):
                     next_pools, counts, weights = zip(*p)
@@ -315,6 +344,10 @@ class SumPool(EvalPool):
             return outcome * count
         else:
             return state + outcome * count
+    
+    def direction(self, *pools):
+        """ This eval doesn't care about direction. """
+        return 0
 
 """ A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
@@ -336,6 +369,10 @@ class FindBestSet(EvalPool):
             return count, outcome
         else:
             return max(state, (count, outcome))
+    
+    def direction(self, *pools):
+        """ This eval doesn't care about direction. """
+        return 0
 
 class FindBestRun(EvalPool):
     """ A `EvalPool` that takes the best run (aka "straight") in a pool.
