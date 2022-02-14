@@ -150,6 +150,8 @@ def standard_pool(*die_sizes, count_dice=None):
     
     For example, `standard_pool(8, 8, 6, 6, 6)` would be a pool of 2 d8s and 3 d6s.
     
+    If no die sizes are given, the pool will consist of zero d1s.
+    
     Args:
         *die_sizes: The size of each die in the pool.
         count_dice: Which dice will be counted, as `Pool()`.
@@ -157,6 +159,8 @@ def standard_pool(*die_sizes, count_dice=None):
             For example, `standard_pool(8, 8, 6, 6, 6)[-2:]` would keep the highest two dice
             of 2 d8s and 3 d6s.
     """
+    if len(die_sizes) == 0:
+        return Pool(hdroller.d1, num_dice=0)
     return Pool(hdroller.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
 
 class DicePool():
