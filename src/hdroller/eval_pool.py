@@ -131,13 +131,13 @@ class EvalPool(ABC):
         Returns:
             A die representing the distribution of the final score.
         """
+        if all(pool.die().is_empty() for pool in pools):
+            # All dice are empty.
+            return hdroller.Die({})
+        
         algorithm, direction = self._select_algorithm(*pools)
         
         dist = algorithm(direction, *pools)
-        
-        if dist is None:
-            # All dice were empty.
-            return hdroller.Die({})
         
         final_dist = defaultdict(int)
         for state, weight in dist.items():
@@ -226,23 +226,17 @@ class EvalPool(ABC):
         result = defaultdict(int)
         
         if all(pool.die().is_empty() for pool in pools):
-            result = None
+            result = { None : 1 }
         else:
             outcome, iterators = _pop_pools(direction, pools)
             for p in itertools.product(*iterators):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, *prev_pools)
-                if prev is None:
-                    # Base case.
-                    state = self.next_state(None, outcome, *counts)
+                for prev_state, prev_weight in prev.items():
+                    state = self.next_state(prev_state, outcome, *counts)
                     if state is not hdroller.Reroll:
-                        result[state] = prod_weight
-                else:
-                    for prev_state, prev_weight in prev.items():
-                        state = self.next_state(prev_state, outcome, *counts)
-                        if state is not hdroller.Reroll:
-                            result[state] += prev_weight * prod_weight
+                        result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
         return result
@@ -250,6 +244,8 @@ class EvalPool(ABC):
     def _eval_internal_iterative(self, direction, *pools):
         """ Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
+        
+        This algorithm does not perform persistent memoization.
         """
         dist = defaultdict(int)
         dist[None, pools] = 1
