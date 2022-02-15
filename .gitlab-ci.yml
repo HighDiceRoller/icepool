@@ -8,7 +8,7 @@ test:
         - pytest tests
 
 apidoc:
-    stage: apidoc
+    stage: deploy
     before_script:
         - pip install pdoc
     script:
@@ -20,7 +20,7 @@ apidoc:
     - master
 
 notebooks:
-    stage: notebooks
+    stage: deploy
     before_script:
         - pip install --pre jupyterlite
     script:
