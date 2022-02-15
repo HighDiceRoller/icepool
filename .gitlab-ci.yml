@@ -23,7 +23,7 @@ notebooks:
     stage: deploy
     before_script:
         - pip install --pre jupyterlite
-        - pip install jupyterlab_server
+        - pip install jupyterlab_server toml
     script:
         - jupyter lite build --contents notebooks --output-dir public/notebooks
     artifacts:
