@@ -14,7 +14,7 @@ pages:
         - pip install --pre jupyterlite
     script:
         - pdoc -o public/apidoc src/hdroller
-        - jupyter lite build --output-dir public/notebooks --contents notebooks
+        - jupyter lite build --output-dir public --contents notebooks
     artifacts:
         paths:
         - public
