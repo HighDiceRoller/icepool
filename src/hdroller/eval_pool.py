@@ -43,7 +43,8 @@ class EvalPool(ABC):
     def next_state(self, state, outcome, *counts):
         """ State transition function.
         
-        This should produce a state given the previous state, an outcome, and the number of dice in each pool rolling that outcome.
+        This should produce a state given the previous state, an outcome,
+        and the number of dice in each pool rolling that outcome.
         
         Make sure to handle the base case where `state is None`.
         
@@ -51,6 +52,8 @@ class EvalPool(ABC):
             state: A hashable object indicating the state before rolling the current outcome.
                 If there was no previous outcome, this will be `None`.
             outcome: The current outcome.
+                `next_state` will see all outcomes in consecutive order,
+                either ascending or descending depending on `direction()`.
             counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
                 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
                 In this case, the count for the pool(s) that do not have the outcome will be `None`. 
