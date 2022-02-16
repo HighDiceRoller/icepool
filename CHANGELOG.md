@@ -1,3 +1,16 @@
+## 0.6.2
+
+* Rerolls in pools, `mix()`, and `sub()` are now triggered by a sentinel value `hdroller.Reroll` (rather than `None`).
+* Single-`int` indexes for `count_dice` and pool `[]` operator now produce a die rather than a pool,
+    in analogy to sequence indexing. However, note that this is absolute relative to the whole pool
+    rather than relative to any previous indexing.
+* `EvalPool` can now iterate in both directions even if one of `max_outcomes` or `min_outcomes` is given,
+    though at lower efficiency in the disfavored direction.
+* Default such direction changed back to ascending.
+* Re-implemented `clip()`.
+* The minimum outcome of `highest()` is equal to the highest minimum outcome among all input dice
+    and likewise for `lowest()`. This will prevent introducing zero-weight outcomes where they did not exist before.
+
 ## 0.6.1
 
 * Pool `max_outcomes` or `min_outcomes` outside the range of the fundamental die is now an error.
