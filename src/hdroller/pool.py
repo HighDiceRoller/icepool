@@ -112,7 +112,10 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
 def _compute_count_dice(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
     
-    If `count_dice` is already a sequence, this does not check its length against `num_dice`.
+    If `count_dice` is already a sequence,
+    this does not check its length against `num_dice`.
+    
+    Otherwise, the result has length equal to `num_dice`.
     """
     if isinstance(count_dice, int):
         result = [0] * num_dice
