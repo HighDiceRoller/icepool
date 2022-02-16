@@ -241,18 +241,18 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
     ndim = check_ndim(*dice)
         
     if total_weight_method == 'prod':
-        weight_product = math.prod(d.total_weight() for d in dice)
+        weight_product = math.prod(die.total_weight() for die in dice)
     elif total_weight_method == 'lcm':
-        weight_product = math.lcm(*(d.total_weight() for d in dice))
+        weight_product = math.lcm(*(die.total_weight() for die in dice))
     elif total_weight_method == 'lcm_weighted':
-        weight_product = math.lcm(*(d.total_weight() * w for d, w in zip(dice, mix_weights)))
+        weight_product = math.lcm(*(die.total_weight() * w for die, w in zip(dice, mix_weights)))
     else:
         raise ValueError(f'Invalid total_weight_method {total_weight_method}.')
     
     data = defaultdict(int)
-    for d, mix_weight in zip(dice, mix_weights):
-        factor = mix_weight * weight_product // d.total_weight()
-        for outcome, weight in zip(d.outcomes(), d.weights()):
+    for die, mix_weight in zip(dice, mix_weights):
+        factor = mix_weight * weight_product // die.total_weight()
+        for outcome, weight in zip(die.outcomes(), die.weights()):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
 
@@ -276,6 +276,7 @@ def align(*dice, ndim=None):
     
     Args:
         *dice: Multiple dice or a single iterable of dice.
+        ndim: The number of dimensions of the result.
     
     Returns:
         A tuple of aligned dice.
@@ -283,14 +284,14 @@ def align(*dice, ndim=None):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    dice = [Die(d, ndim=ndim) for d in dice]
+    dice = [Die(die, ndim=ndim) for die in dice]
     check_ndim(*dice)
-    union_outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
-    return tuple(die.set_outcomes(union_outcomes) for die in dice)
+    outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
+    return tuple(die.set_outcomes(outcomes) for die in dice)
 
 def align_range(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice = [Die(d, ndim=ndim) for d in dice]
+    dice = [Die(die, ndim=ndim) for die in dice]
     check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -335,9 +336,9 @@ def apply(func, *dice, ndim=None):
     Returns:
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
-    dice = [Die(d, ndim=ndim) for d in dice]
+    dice = [Die(die, ndim=ndim) for die in dice]
     data = defaultdict(int)
-    for t in itertools.product(*(d.items() for d in dice)):
+    for t in itertools.product(*(die.items() for die in dice)):
         outcomes, weights = zip(*t)
         data[func(*outcomes)] += math.prod(weights)
     
