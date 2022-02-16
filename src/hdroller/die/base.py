@@ -324,6 +324,23 @@ class BaseDie():
             not_outcomes = lambda outcome: outcome not in outcomes
         return self.reroll(not_outcomes, max_depth)
     
+    def clip(self, min_outcome=None, max_outcome=None):
+        """ Clips the outcomes of this die to the given values.
+        
+        This is not the same as rerolling; the outcome is simply adjusted to fit within the range.
+        
+        If one of the arguments is not provided, that side will not be clipped.
+        """
+        data = defaultdict(int)
+        for outcome, weight in self.items():
+            if min_outcome is not None and outcome <= min_outcome:
+                data[min_outcome] += weight
+            elif max_outcome is not None and outcome >= max_outcome:
+                data[max_outcome] += weight
+            else:
+                data[outcome] += weight
+        return hdroller.Die(data, ndim=self.ndim()) 
+    
     def split(self, cond):
         """ Splits this die's items into two pieces based on `cond(outcome)`.
         
@@ -439,16 +456,28 @@ class BaseDie():
     # Pools.
     
     def highest(*dice):
-        """ Roll all the dice and take the highest. """
-        dice = hdroller.align(*dice)
+        """ Roll all the dice and take the highest.
+        
+        The minimum outcome is equal to the highest minimum outcome among all input dice.
+        """
+        dice = [hdroller.Die(die) for die in dice]
         ndim = hdroller.check_ndim(*dice)
+        min_outcome = max(die.min_outcome() for die in dice)
+        dice = [die.clip(min_outcome=min_outcome) for die in dice]
+        dice = hdroller.align(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
         return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def lowest(*dice):
-        """ Roll all the dice and take the lowest. """
-        dice = hdroller.align(*dice)
+        """ Roll all the dice and take the lowest.
+        
+        The maximum outcome is equal to the highest maximum outcome among all input dice.
+        """
+        dice = [hdroller.Die(die) for die in dice]
         ndim = hdroller.check_ndim(*dice)
+        max_outcome = min(die.max_outcome() for die in dice)
+        dice = [die.clip(max_outcome=max_outcome) for die in dice]
+        dice = hdroller.align(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
     

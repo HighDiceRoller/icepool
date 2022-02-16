@@ -124,4 +124,12 @@ def test_nearest_ge_gap():
     assert die.nearest_ge(3) == 3
     assert die.nearest_ge(4) == None
 
-    
+def test_highest():
+    result = hdroller.highest(hdroller.d4+1, hdroller.d6)
+    expected = hdroller.Die({2: 2, 3: 4, 4: 6, 5: 8, 6: 4})
+    assert result.equals(expected)
+
+def test_lowest():
+    result = hdroller.lowest(hdroller.d4+1, hdroller.d6)
+    expected = hdroller.Die({1: 4, 2: 8, 3: 6, 4: 4, 5: 2})
+    assert result.equals(expected)
