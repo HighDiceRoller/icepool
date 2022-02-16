@@ -6,16 +6,17 @@ A Python library for computing dice probabilities.
 pip install hdroller
 ```
 
-## API documentation
-
-[GitLab.](https://highdiceroller.gitlab.io/hdroller/apidoc/hdroller.html)
-
 ## Principles
 
+* Supports all standard operators on dice for compact syntax.
 * Combinatorics and caching allow for flexible yet efficient solutions to common problems.
 * Weights are Python `int`s, providing exact results.
 * Constant-factor optimizations are not a priority.
 * Handles both univariate and multivariate distributions.
+
+## API documentation
+
+[GitLab.](https://highdiceroller.gitlab.io/hdroller/apidoc/hdroller.html)
 
 ## Examples
 
