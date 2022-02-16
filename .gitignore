@@ -4,3 +4,7 @@
 /src/hdroller.egg-info
 /public/ability_scores/index.zip
 /public/apidoc
+*.db
+/notebooks/_output
+/notebooks/.ipynb_checkpoints
+/public/notebooks
