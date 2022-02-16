@@ -19,34 +19,11 @@ pip install hdroller
 
 ## Examples
 
-### *Legend of the Five Rings* (1st-4th edition) dice
-
-[Try this in your browser using a Starboard notebook.](https://starboard.gg/nb/nfmQTSp)
-
-```python
-import hdroller
-
-# A standard d10.
-die = hdroller.d10
-
-# A d10, exploding on highest face at most twice, similar to Legend of the Five Rings.
-die = hdroller.d10.explode(2)
-
-# Roll ten L5R dice and keep the five highest.
-die = hdroller.d10.explode(2).keep_highest(10, 5)
-
-import matplotlib.pyplot as plt
-
-fig, ax = plt.subplots()
-ax.plot(die.outcomes(), die.pmf())
-plt.show()
-```
+See this [JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/notebooks/lab/index.html) for a collection of interactive examples.
 
 ### *Advanced Dungeons & Dragons* 1st edition ability score methods
 
-[Try this in your browser using a Starboard notebook.](https://starboard.gg/nb/nSMJ7hH)
-
-Source for ability score rolling methods: [https://www.reddit.com/r/dndnext/comments/6gv1qn/gary_gygaxs_ability_score_creation_methods_from](https://www.reddit.com/r/dndnext/comments/6gv1qn/gary_gygaxs_ability_score_creation_methods_from):
+[Source for these methods.](https://www.reddit.com/r/dndnext/comments/6gv1qn/gary_gygaxs_ability_score_creation_methods_from)
 
 > **Method I:**
 >
@@ -86,10 +63,10 @@ import numpy
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
-ax.plot(method1.outcomes(), numpy.array(method1.pmf()) * 100.0)
-ax.plot(method2.outcomes(), numpy.array(method2.pmf()) * 100.0)
-ax.plot(method3.outcomes(), numpy.array(method3.pmf()) * 100.0)
-ax.plot(method4.outcomes(), numpy.array(method4.pmf()) * 100.0)
+ax.plot(method1.outcomes(), method1.pmf(percent=True))
+ax.plot(method2.outcomes(), method2.pmf(percent=True))
+ax.plot(method3.outcomes(), method3.pmf(percent=True))
+ax.plot(method4.outcomes(), method4.pmf(percent=True))
 ax.set_title('AD&D 1e ability score methods')
 ax.legend(['Method I', 'Method II', 'Method III', 'Method IV'])
 ax.set_xlabel('Total of ability scores')
