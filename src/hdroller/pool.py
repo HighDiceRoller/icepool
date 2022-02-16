@@ -31,26 +31,25 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             but can still generate nonzero counts.
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
-        count_dice: Determines which of the **sorted** dice will be counted, and how many times each.
+        count_dice: Determines which of the **sorted** dice will be counted, and how many times.
+            The dice are sorted in ascending order for this purpose,
+            regardless of which order the outcomes are evaluated in.
             
-            `count_dice` can be an `int` or a `slice`, in which case the selected dice are counted once each.
+            This can be a `slice`, in which case the selected dice are counted once each.
             For example, `slice(-2, None)` would count the two highest dice.
             
-            Or `count_dice` can be a sequence of `int`s, one for each die in order.
+            Or this can be a sequence of `int`s, one for each die in order.
             Each die is counted that many times.
-            For example, `[0, 1, 1]` would count the two highest dice out of three.
+            For example, `[-2:]` would also count the two highest dice.
             `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
             `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
             
-            You can also use the `[]` operator to select dice from an existing pool.
-            For example, `pool[-2:]` would also count the two highest dice.
+            Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
+            Note that in this case, the result is a die, not a pool.
+            
             This is always an absolute selection on all `num_dice`,
             not a relative selection on already-selected dice,
             which would be ambiguous in the presence of multiple or negative counts.
-            
-            The `[]` operator can even change the size of the pool,
-            provided that neither `min_outcomes` nor `max_outcomes` are set.
-            For example, you could create a pool of 4d6 drop lowest using `hdroller.d6.pool()[0, 1, 1, 1]`.
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes having 0 count.
             Values cannot be > the `max_outcome` of the fundamental die.
@@ -81,6 +80,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         num_dice = 0
     
     # Compute count_dice.
+    
+    convert_to_die = isinstance(count_dice, int)
     
     if count_dice is None:
         count_dice = (1,) * num_dice
@@ -117,7 +118,11 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     if max_outcomes is not None and min_outcomes is not None:
         raise ValueError('A pool cannot limit both max_outcomes and min_outcomes.')
     
-    return _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
+    pool = _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
+    if convert_to_die:
+        return pool.eval(lambda state, outcome, count: outcome if count else state)
+    else:
+        return pool
 
 def _compute_count_dice(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
@@ -188,6 +193,43 @@ class DicePool():
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
         return self._count_dice
     
+    def num_dice(self):
+        """ The number of dice in this pool (before dropping or counting multiple times). """
+        return len(self._count_dice)
+    
+    def set_count_dice(self, count_dice):
+        """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
+        
+            The dice are sorted in ascending order for this purpose,
+            regardless of which order the outcomes are evaluated in.
+            
+            This can be a `slice`, in which case the selected dice are counted once each.
+            For example, `slice(-2, None)` would count the two highest dice.
+            
+            Or this can be a sequence of `int`s, one for each die in order.
+            Each die is counted that many times.
+            For example, `[-2:]` would also count the two highest dice.
+            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
+            This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
+            
+            Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
+            Note that in this case, the result is a die, not a pool.
+            
+            This is always an absolute selection on all `num_dice`,
+            not a relative selection on already-selected dice,
+            which would be ambiguous in the presence of multiple or negative counts.
+        """
+        count_dice = _compute_count_dice(self.num_dice(), count_dice)
+        if len(count_dice) != self.num_dice():
+            if self.max_outcomes() is not None:
+                raise ValueError('Cannot change the size of a pool with max_outcomes.')
+            if self.min_outcomes() is not None:
+                raise ValueError('Cannot change the size of a pool with min_outcomes.')
+        return Pool(self.die(), count_dice=count_dice, max_outcomes=self.max_outcomes(), min_outcomes=self.min_outcomes())
+    
+    __getitem__ = set_count_dice
+    
     @cached_property
     def _num_drop_lowest(self):
         for i, count in enumerate(self.count_dice()):
@@ -209,38 +251,6 @@ class DicePool():
     def num_drop_highest(self):
         """ How many elements of count_dice on the high side have a false truth value. """
         return self._num_drop_highest
-        
-    def __getitem__(self, count_dice):
-        """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
-        
-            Determines which of the **sorted** dice will be counted, and how many times.
-            The dice are sorted in ascending order for this purpose,
-            regardless of which order the outcomes are evaluated in.
-            
-            This can be an `int` or a `slice`, in which case the selected dice are counted once each.
-            For example, `slice(-2, None)` would count the two highest dice.
-            
-            Or this can be a sequence of `int`s, one for each die in order.
-            Each die is counted that many times.
-            For example, `[-2:]` would also count the two highest dice.
-            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
-            This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
-            
-            This is always an absolute selection on all `num_dice`,
-            not a relative selection on already-selected dice,
-            which would be ambiguous in the presence of multiple or negative counts.
-        """
-        count_dice = _compute_count_dice(self.num_dice(), count_dice)
-        if len(count_dice) != self.num_dice():
-            if self.max_outcomes() is not None:
-                raise ValueError('The [] operator cannot change the size of a pool with max_outcomes.')
-            if self.min_outcomes() is not None:
-                raise ValueError('The [] operator cannot change the size of a pool with min_outcomes.')
-        return Pool(self.die(), count_dice=count_dice, max_outcomes=self.max_outcomes(), min_outcomes=self.min_outcomes())
-    
-    def num_dice(self):
-        return len(self._count_dice)
     
     def max_outcomes(self, always_tuple=False):
         """ A tuple of sorted max outcomes, one for each die in the pool. 

@@ -512,12 +512,20 @@ class BaseDie():
                 The dice are sorted in ascending order for this purpose,
                 regardless of which order the outcomes are evaluated in.
                 
-                This can be an `int` or a `slice`, in which case the selected dice are counted once each.
+                This can be a `slice`, in which case the selected dice are counted once each.
                 For example, `slice(-2, None)` would count the two highest dice.
                 
                 Or this can be a sequence of `int`s, one for each die in order.
                 Each die is counted that many times.
-                For example, `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+                For example, `[-2:]` would also count the two highest dice.
+                `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+                `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
+                
+                Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
+                
+                This is always an absolute selection on all `num_dice`,
+                not a relative selection on already-selected dice,
+                which would be ambiguous in the presence of multiple or negative counts.
             max_outcomes: A sequence of one outcome per die.
                 That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
                 This is not compatible with `min_outcomes`.
@@ -529,7 +537,10 @@ class BaseDie():
             A Die representing the probability distribution of the sum.
         """
         pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
-        return pool.sum()
+        if isinstance(count_dice, int):
+            return pool
+        else:
+            return pool.sum()
     
     def keep_highest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.
