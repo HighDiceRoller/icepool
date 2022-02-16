@@ -508,24 +508,7 @@ class BaseDie():
         Args:
             num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.
             count_dice: Only dice selected by this will be counted.
-                Determines which of the **sorted** dice will be counted, and how many times.
-                The dice are sorted in ascending order for this purpose,
-                regardless of which order the outcomes are evaluated in.
-                
-                This can be a `slice`, in which case the selected dice are counted once each.
-                For example, `slice(-2, None)` would count the two highest dice.
-                
-                Or this can be a sequence of `int`s, one for each die in order.
-                Each die is counted that many times.
-                For example, `[-2:]` would also count the two highest dice.
-                `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-                `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
-                
-                Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
-                
-                This is always an absolute selection on all `num_dice`,
-                not a relative selection on already-selected dice,
-                which would be ambiguous in the presence of multiple or negative counts.
+                See `DicePool.count_dice()` for details.
             max_outcomes: A sequence of one outcome per die.
                 That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
                 This is not compatible with `min_outcomes`.
@@ -536,7 +519,7 @@ class BaseDie():
         Returns:
             A Die representing the probability distribution of the sum.
         """
-        pool = hdroller.Pool(self, num_dice, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        pool = hdroller.Pool(self, num_dice, count_dice=count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         if isinstance(count_dice, int):
             return pool
         else:

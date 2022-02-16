@@ -32,24 +32,9 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         num_dice: An `int` that sets the number of dice in the pool.
             If no arguments are provided, this defaults to 0.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times.
-            The dice are sorted in ascending order for this purpose,
-            regardless of which order the outcomes are evaluated in.
-            
-            This can be a `slice`, in which case the selected dice are counted once each.
-            For example, `slice(-2, None)` would count the two highest dice.
-            
-            Or this can be a sequence of `int`s, one for each die in order.
-            Each die is counted that many times.
-            For example, `[-2:]` would also count the two highest dice.
-            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
-            
-            Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
-            Note that in this case, the result is a die, not a pool.
-            
-            This is always an absolute selection on all `num_dice`,
-            not a relative selection on already-selected dice,
-            which would be ambiguous in the presence of multiple or negative counts.
+            Prefer to use the `DicePool`'s `[]` operator after the fact rather than providing an argument here.
+            This operator is an alias for `DicePool.set_count_dice()`.
+            See that method's docstring for details.
         max_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that maximum outcome, with all higher outcomes having 0 count.
             Values cannot be > the `max_outcome` of the fundamental die.
@@ -200,25 +185,28 @@ class DicePool():
     def set_count_dice(self, count_dice):
         """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
         
-            The dice are sorted in ascending order for this purpose,
-            regardless of which order the outcomes are evaluated in.
-            
-            This can be a `slice`, in which case the selected dice are counted once each.
-            For example, `slice(-2, None)` would count the two highest dice.
-            
-            Or this can be a sequence of `int`s, one for each die in order.
-            Each die is counted that many times.
-            For example, `[-2:]` would also count the two highest dice.
-            `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-            `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
-            This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
-            
-            Finally, this can be just an `int`, in which case the result is the die at that index (starting from the lowest).
-            Note that in this case, the result is a die, not a pool.
-            
-            This is always an absolute selection on all `num_dice`,
-            not a relative selection on already-selected dice,
-            which would be ambiguous in the presence of multiple or negative counts.
+        The dice are sorted in ascending order for this purpose,
+        regardless of which order the outcomes are evaluated in.
+        
+        This can be a `slice`, in which case the selected dice are counted once each.
+        For example, `slice(-2, None)` would count the two highest dice.
+        
+        Or this can be a sequence of `int`s, one for each die in order.
+        Each die is counted that many times.
+        For example, `[-2:]` would also count the two highest dice.
+        `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
+        `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
+        This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
+        
+        Finally, this can be just an `int`, in which case the result 
+        is the die at that index (starting from the lowest).
+        Note that in this case, the result is a die, not a pool.
+        For example, `0` would produce a die representing the lowest die in the pool,
+        while -2 would produce a die representing the second-highest die in the pool.
+        
+        This is always an absolute selection on all `num_dice`,
+        not a relative selection on already-selected dice,
+        which would be ambiguous in the presence of multiple or negative counts.
         """
         count_dice = _compute_count_dice(self.num_dice(), count_dice)
         if len(count_dice) != self.num_dice():
