@@ -126,8 +126,6 @@ def _compute_count_dice(num_dice, count_dice):
         result[count_dice] = [1] * len(result[count_dice])
         return tuple(result)
     else:
-        if not all(isinstance(x, int) for x in count_dice):
-            raise TypeError('count_dice must be a sequence of ints.')
         return tuple(count_dice)
 
 @die_cache
