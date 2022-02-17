@@ -1,0 +1,9 @@
+{
+    "LiteBuildConfig": {
+        "contents" : ["notebooks"],
+        "federated_extensions" : [],
+        "ignore_sys_prefix" : true,
+        "output_dir" : "public/notebooks",
+        "piplite_urls" : []
+    }
+}
