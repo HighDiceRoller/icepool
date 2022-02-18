@@ -71,7 +71,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     if count_dice is None:
         count_dice = (1,) * num_dice
     else:
-        count_dice = _compute_count_dice(num_dice, count_dice)
+        count_dice = count_dice_tuple(num_dice, count_dice)
     
     # Put max/min outcomes into standard form.
     # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
@@ -109,7 +109,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     else:
         return pool
 
-def _compute_count_dice(num_dice, count_dice):
+def count_dice_tuple(num_dice, count_dice):
     """ Returns a tuple specifying count_dice.
     
     If `count_dice` is already a sequence,
@@ -209,7 +209,7 @@ class DicePool():
         not a relative selection on already-selected dice,
         which would be ambiguous in the presence of multiple or negative counts.
         """
-        count_dice = _compute_count_dice(self.num_dice(), count_dice)
+        count_dice = count_dice_tuple(self.num_dice(), count_dice)
         if len(count_dice) != self.num_dice():
             if self.max_outcomes() is not None:
                 raise ValueError('Cannot change the size of a pool with max_outcomes.')
