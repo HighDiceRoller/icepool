@@ -22,20 +22,13 @@ def Die(arg, *, min_outcome=None, ndim=None):
     * `hdroller.Die(6)`: A die that always rolls the `int` 6.
     * `hdroller.d(6)`: A d6.
     
-    Here are different ways to create a d6:
-    
-    * Provide the die itself: `hdroller.Die(hdroller.d6)`
-    * Provide a mapping from outcomes to weights: `hdroller.Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
-    * Provide a sequence of outcomes: `hdroller.Die([1, 2, 3, 4, 5, 6])`
-    * Provide a consecutive sequence of weights with a minimum outcome: `hdroller.Die([1, 1, 1, 1, 1, 1], min_outcome=1)`
-    
     Args:
-        arg: This can be one of the following, with examples of how to create a d6:
-            * A die, which will be returned itself.
-            * A mapping from outcomes to weights.
+        arg: This can be one of the following, with examples of how to create a d6 where applicable:
+            * A die, which will be returned itself: `d6 == Die(d6)`
+            * A mapping from outcomes to weights: `d6 == Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`.
             * A sequence of outcomes. Each outcome will be given weight `1` per time it appears.
             * A sequence of weights, with `min_outcome` set to an `int`. 
-                The outcomes will be `int`s starting at `min_outcome`.
+                The outcomes will be `int`s starting at `min_outcome`: `d6 == Die([1, 1, 1, 1, 1, 1], min_outcome=1)`.
             * A single hashable and comparable value.
                 There will be a single outcome equal to the argument, with weight `1`.
         ndim: If set to `'scalar'`, the die will be forced to be scalar.
