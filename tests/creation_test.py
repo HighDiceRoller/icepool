@@ -18,7 +18,7 @@ def test_coin():
     assert c.pmf() == pytest.approx([0.5, 0.5])
 
 def test_list_no_min_outcome():
-    result = hdroller.Die([2, 3, 3, 4, 4, 4, 5, 5, 6])
+    result = hdroller.Die(2, 3, 3, 4, 4, 4, 5, 5, 6)
     expected = 2 @ hdroller.d3
     assert result.equals(expected)
 

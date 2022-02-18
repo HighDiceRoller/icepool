@@ -10,7 +10,7 @@ from collections import defaultdict
 import itertools
 import math
 
-def Die(arg, *, min_outcome=None, ndim=None):
+def Die(*args, min_outcome=None, ndim=None):
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -23,14 +23,18 @@ def Die(arg, *, min_outcome=None, ndim=None):
     * `hdroller.d(6)`: A d6.
     
     Args:
-        arg: This can be one of the following, with examples of how to create a d6 where applicable:
-            * A die, which will be returned itself: `d6 == Die(d6)`
-            * A mapping from outcomes to weights: `d6 == Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`.
-            * A sequence of outcomes. Each outcome will be given weight `1` per time it appears.
-            * A sequence of weights, with `min_outcome` set to an `int`. 
-                The outcomes will be `int`s starting at `min_outcome`: `d6 == Die([1, 1, 1, 1, 1, 1], min_outcome=1)`.
-            * A single hashable and comparable value.
-                There will be a single outcome equal to the argument, with weight `1`.
+        *args: This can be one of the following, with examples of how to create a d6 where applicable:
+            * A single argument die, which will be returned itself.
+                `d6 == Die(d6)`.
+            * A single argument mapping from outcomes to weights.
+                `d6 == Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`.
+            * A single argument sequence of weights, with `min_outcome` set to an `int`. 
+                The outcomes will be `int`s starting at `min_outcome`.
+                `d6 == Die([1, 1, 1, 1, 1, 1], min_outcome=1)`.
+            * Zero or more arguments, each one denoting an outcome with weight 1 per appearance.
+                The outcomes must be hashable and comparable.
+                `d6 == Die(1, 2, 3, 4, 5, 6)`.
+        min_outcome: Only used with a sequence of weights, as above.
         ndim: If set to `'scalar'`, the die will be forced to be scalar.
             If set to an `int`, the die will be forced to be vector with that number of dimensions.
             If omitted, this will be automatically detected.
@@ -41,7 +45,7 @@ def Die(arg, *, min_outcome=None, ndim=None):
         `ValueError` if `ndim` is set but is not consistent with `arg`.
             Also, `None` is not a valid outcome for a die.
     """
-    data = _make_data(arg, min_outcome)
+    data = _make_data(args, min_outcome)
         
     ndim = _calc_ndim(data, ndim)
     
@@ -51,26 +55,25 @@ def Die(arg, *, min_outcome=None, ndim=None):
     else:
         return hdroller.die.scalar.ScalarDie(data)
 
-def _make_data(arg, min_outcome=None):
+def _make_data(args, min_outcome=None):
     """ Creates a `Weights` from the arguments. """
-    if isinstance(arg, hdroller.die.base.BaseDie):
-        data = arg._data
-    elif isinstance(arg, Weights):
-        data = arg
-    elif min_outcome is not None:
-        data = { min_outcome + i : weight for i, weight in enumerate(arg) }
-    elif hasattr(arg, 'keys') and hasattr(arg, '__getitem__'):
-        data = { k : arg[k] for k in arg.keys() }
-    elif hasattr(arg, '__iter__'):
-        data = defaultdict(int)
-        for v in arg:
-            data[v] += 1
-    else:
-        # Treat arg as the only possible value.
-        data = { arg : 1 }
+    if len(args) == 1:
+        arg = args[0]
+        if isinstance(arg, hdroller.die.base.BaseDie):
+            return arg._data
+        elif isinstance(arg, Weights):
+            return arg
+        elif min_outcome is not None:
+            return Weights({ min_outcome + i : weight for i, weight in enumerate(arg) })
+        elif hasattr(arg, 'keys') and hasattr(arg, '__getitem__'):
+            return Weights({ k : arg[k] for k in arg.keys() })
+
+    # Default case: each argument becomes an outcome.
+    data = defaultdict(int)
+    for outcome in args:
+        data[outcome] += 1
     
     return Weights(data)
-    
 
 def _calc_ndim(data, ndim):
     """Verifies `ndim` if provided and calculates it otherwise.

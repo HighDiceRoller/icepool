@@ -96,7 +96,7 @@ def test_nearest_le():
     assert hdroller.d6.nearest_le(7) == 6
 
 def test_nearest_le_gap():
-    die = hdroller.Die([-3, 0, 3])
+    die = hdroller.Die(-3, 0, 3)
     assert die.nearest_le(-4) == None
     assert die.nearest_le(-3) == -3
     assert die.nearest_le(-2) == -3
@@ -113,7 +113,7 @@ def test_nearest_ge():
     assert hdroller.d6.nearest_ge(7) == None
 
 def test_nearest_ge_gap():
-    die = hdroller.Die([-3, 0, 3])
+    die = hdroller.Die(-3, 0, 3)
     assert die.nearest_ge(-4) == -3
     assert die.nearest_ge(-3) == -3
     assert die.nearest_ge(-2) == 0
