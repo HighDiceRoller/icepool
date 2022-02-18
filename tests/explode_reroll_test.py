@@ -46,22 +46,22 @@ def test_reroll_partial():
 
 def test_reroll_limit():
     result = hdroller.d4.reroll([1], max_depth=1)
-    expected = hdroller.Die([1, 5, 5, 5], 1)
+    expected = hdroller.Die([1, 5, 5, 5], min_outcome=1)
     assert result.equals(expected)
     
 def test_reroll_until_limit():
     result = hdroller.d4.reroll_until([2, 3, 4], max_depth=1)
-    expected = hdroller.Die([1, 5, 5, 5], 1)
+    expected = hdroller.Die([1, 5, 5, 5], min_outcome=1)
     assert result.equals(expected)
 
 def test_reroll_func():
     result = hdroller.d4.reroll(lambda x: x == 1, max_depth=1)
-    expected = hdroller.Die([1, 5, 5, 5], 1)
+    expected = hdroller.Die([1, 5, 5, 5], min_outcome=1)
     assert result.equals(expected)
 
 def test_reroll_until_func():
     result = hdroller.d4.reroll_until(lambda x: x != 1, max_depth=1)
-    expected = hdroller.Die([1, 5, 5, 5], 1)
+    expected = hdroller.Die([1, 5, 5, 5], min_outcome=1)
     assert result.equals(expected)
 
 def test_infinite_reroll():

@@ -10,7 +10,7 @@ from collections import defaultdict
 import itertools
 import math
 
-def Die(arg, min_outcome=None, ndim=None):
+def Die(arg, *, min_outcome=None, ndim=None):
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
