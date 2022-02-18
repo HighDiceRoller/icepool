@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 import hdroller.math
-from hdroller.functools import die_cache
 
 import bisect
 from functools import cached_property
@@ -171,13 +170,20 @@ def count_dice_tuple(num_dice, count_dice):
                 raise ValueError('Too few dice for Ellipsis (...) in center.')
             return tuple(count_dice[:split]) + (0,) + tuple(count_dice[split:])
 
-@die_cache
+_pool_cache = {}
+
 def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes, /):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
     """
-    return DicePool(die, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
+    key = (die.key_tuple(), count_dice, max_outcomes, min_outcomes)
+    if key in _pool_cache:
+        return _pool_cache[key]
+    else:
+        result = DicePool(die, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
+    _pool_cache[key] = result
+    return result
 
 def standard_pool(*die_sizes, count_dice=None):
     """ Creates a pool of standard dice.
