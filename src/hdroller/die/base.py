@@ -641,13 +641,9 @@ class BaseDie():
     
     abs = __abs__
     
-    @staticmethod
-    def _invert(x):
-        return not bool(x)
-    
     def __invert__(self):
         """ This negates `bool(outcome)`. """
-        return self.unary_op(self._invert)
+        return self.unary_op(operator.invert)
     
     def __round__(self, ndigits=None):
         return self.unary_op(round, ndigits)
