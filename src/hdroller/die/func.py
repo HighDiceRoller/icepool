@@ -212,8 +212,7 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
     """ Constructs a die from a mixture of the input dice.
     
     This is equivalent to rolling a die and then choosing one of the input dice
-    based on the resulting outcome rolled. See `if_else()` for a simple example.
-    Also see `BaseDie.sub()`.
+    based on the resulting outcome rolled. See also `BaseDie.sub()`.
     
     Args:
         *dice: The dice to mix.
@@ -255,21 +254,6 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
         for outcome, weight in zip(die.outcomes(), die.weights()):
             data[outcome] += weight * factor
     return Die(data, ndim=ndim)
-
-def if_else(true_die, cond_die, false_die, total_weight_method='lcm'):
-    """ Roll `true_die` if `cond_die` else roll `false_die`.
-    
-    Also known as the ternary conditional operator.
-    
-    Args:
-        true_die: The die to roll if `cond_die.bool()` rolls `True`.
-        cond_die: The result of this die selects between `true_die` and `false_die`.
-        false_die: The die to roll if `cond_die.bool()` rolls `False`.
-        total_weight_method: As `hdroller.mix()`.
-    """
-    cond_die = cond_die.bool()
-    mix_weights = cond_die.weight_eq(True), cond_die.weight_eq(False)
-    return mix(true_die, false_die, mix_weights=mix_weights, total_weight_method=total_weight_method)
 
 def align(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.

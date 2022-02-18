@@ -96,6 +96,18 @@ class ScalarDie(hdroller.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     
+    def if_else(self, true_die, false_die, ndim=None, total_weight_method='lcm'):
+        """ If the result of `self` has a true value, roll `true_die`, else roll `false_die`.
+        
+        Also known as the ternary conditional operator.
+        
+        Args:
+            true_die: The die to roll if `self.bool()` rolls `True`.
+            false_die: The die to roll if `self.bool()` rolls `False`.
+            total_weight_method: As `hdroller.mix()`.
+        """
+        return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, total_weight_method=total_weight_method)
+    
     # Statistics.
     
     def median_left(self):
