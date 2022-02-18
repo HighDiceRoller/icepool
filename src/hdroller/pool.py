@@ -102,25 +102,20 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
                 # In this case, the min_outcomes don't actually do anything.
                 min_outcomes = None
     
-    pool = _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
+    result = _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
     if convert_to_die:
-        return pool.eval(lambda state, outcome, count: outcome if count else state)
+        return result.eval(lambda state, outcome, count: outcome if count else state)
     else:
-        return pool
+        return result
 
 def count_dice_tuple(num_dice, count_dice):
     """ Expresses `count_dice` as a tuple.
     
+    See `DicePool.set_count_dice()` for details.
+    
     Args:
         `num_dice`: An `int` specifying the number of dice.
-        `count_dice` is `None`: Each die is counted once.
-        `count_dice` is an `int`: Selects a single index.
-        `count_dice` is a `slice`: Dice selected by the slice out of `num_dice` are counted once. Other dice are not counted.
-        `count_dice` is a sequence with no `Ellipsis`: `count_dice` is returned directly.
-            This may not match `num_dice`.
-        `count_dice` is a sequence with one `Ellipsis`:
-            * If `num_dice` is >= `len(count_dice)`, the dice covered by the `Ellipsis` are counted zero times each.
-            * If `num_dice` is < `len(count_dice)`, `count_dice` is shortened to `num_dice`.
+        `count_dice`: Raw specification for how the dice are to be counted.
     Raises:
         `ValueError` if:
             * More than one `Ellipsis` is used.
@@ -148,7 +143,7 @@ def count_dice_tuple(num_dice, count_dice):
         if split is None:
             return tuple(count_dice)
         
-        extra_dice = num_dice - len(count_dice) - 1
+        extra_dice = num_dice - len(count_dice) + 1
         
         if split == 0:
             # Ellipsis on left.
@@ -167,12 +162,12 @@ def count_dice_tuple(num_dice, count_dice):
         else:
             # Ellipsis in center.
             if extra_dice < 0:
-                raise ValueError('Too few dice for Ellipsis (...) in center.')
-            return tuple(count_dice[:split]) + (0,) + tuple(count_dice[split:])
+                raise ValueError(f'count_dice={count_dice} with Ellipsis (...) in center has too many elements for num_dice={num_dice}.')
+            return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(count_dice[split+1:])
 
 _pool_cache = {}
 
-def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes, /):
+def _pool_cached_unchecked(die, count_dice, max_outcomes=None, min_outcomes=None):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
@@ -233,38 +228,60 @@ class DicePool():
         return len(self._count_dice)
     
     def set_count_dice(self, count_dice):
-        """ Returns a pool with the selected dice counted, as the `count_dice` argument to `Pool()`.
+        """ Returns a pool with the selected dice counted.
+        
+        You can use `pool[count_dice]` for the same effect as this method.
         
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
         
-        This can be a `slice`, in which case the selected dice are counted once each.
-        For example, `slice(-2, None)` would count the two highest dice.
-        
-        Or this can be a sequence of `int`s, one for each die in order.
-        Each die is counted that many times.
-        For example, `[-2:]` would also count the two highest dice.
-        `[0, 0, 2, 0, 0]` would count the middle out of five dice twice.
-        `[-1, 1]` would roll two dice, counting the higher die as a positive and the lower die as a negative.
-        This can change the size of the pool, but only if neither `min_outcomes` or `max_outcomes` are set.
-        
-        Finally, this can be just an `int`, in which case the result 
-        is the die at that index (starting from the lowest).
-        Note that in this case, the result is a die, not a pool.
-        For example, `0` would produce a die representing the lowest die in the pool,
-        while -2 would produce a die representing the second-highest die in the pool.
-        
         This is always an absolute selection on all `num_dice`,
         not a relative selection on already-selected dice,
         which would be ambiguous in the presence of multiple or negative counts.
+        
+        Args:
+            `None`: All dice will be counted once.
+            An `int`. This will count only the die at the specified index (once).
+                In this case, the result will be a die, not a pool.
+            A `slice`. The selected dice are counted once each.
+            A sequence of one `int`s for each die.
+                Each die is counted that many times, which could be multiple or negative times.
+                This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.
+                Up to one `Ellipsis` (`...`) may be used.
+                If one is used, `count_dice` will be padded with zero counts if shorter than `num_dice`,
+                or trimmed if longer.
+        
+        Raises:
+            ValueError if:
+                * `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.
+                * More than one `Ellipsis` is used.
+                * `Ellipsis` is used in the center with too many elements for `num_dice`.
+        
+        For example, here are some ways of selecting the two highest dice out of 5:
+        
+        * `pool[3:5]`
+        * `pool[3:]`
+        * `pool[-2:]`
+        * `pool[0, 0, 0, 1, 1]`
+        * `pool[..., 1, 1]`
+        
+        And of counting the highest as a positive and the lowest as a negative:
+        
+        * `pool[-1, 0, 0, 0, 1]`
+        * `pool[-1, ..., 1]`
         """
+        convert_to_die = isinstance(count_dice, int)
         count_dice = count_dice_tuple(self.num_dice(), count_dice)
         if len(count_dice) != self.num_dice():
             if self.max_outcomes() is not None:
                 raise ValueError('Cannot change the size of a pool with max_outcomes.')
             if self.min_outcomes() is not None:
                 raise ValueError('Cannot change the size of a pool with min_outcomes.')
-        return Pool(self.die(), count_dice=count_dice, max_outcomes=self.max_outcomes(), min_outcomes=self.min_outcomes())
+        result = _pool_cached_unchecked(self.die(), count_dice=count_dice, max_outcomes=self.max_outcomes(), min_outcomes=self.min_outcomes())
+        if convert_to_die:
+            return result.eval(lambda state, outcome, count: outcome if count else state)
+        else:
+            return result
     
     __getitem__ = set_count_dice
     
@@ -330,7 +347,7 @@ class DicePool():
         
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
-            pool = Pool(popped_die, num_dice=0)
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
             remaining_count = sum(self.count_dice())
             weight = single_weight ** num_possible_dice
             yield pool, remaining_count, weight
@@ -344,14 +361,14 @@ class DicePool():
         comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self.num_drop_lowest()
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
-            pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
             yield pool, count, weight
             count += popped_count_dice[-1]
             popped_max_outcomes = popped_max_outcomes[:-1]
             popped_count_dice = popped_count_dice[:-1]
         
         if end_counted > num_possible_dice:
-            pool = Pool(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
             yield pool, count, comb_row[-1]
         else:
             # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
@@ -361,7 +378,7 @@ class DicePool():
                 skip_weight *= popped_die.total_weight()
                 skip_weight += weight
             skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in max_outcomes[:num_unused_dice])
-            pool = Pool(popped_die, 0)
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
             yield pool, count, skip_weight
     
     def _iter_pop_min(self):
@@ -385,7 +402,7 @@ class DicePool():
         
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
-            pool = Pool(popped_die, num_dice=0)
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
             remaining_count = sum(self.count_dice())
             weight = single_weight ** num_possible_dice
             yield pool, remaining_count, weight
@@ -399,14 +416,14 @@ class DicePool():
         comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self.num_drop_highest()
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
-            pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
             yield pool, count, weight
             count += popped_count_dice[0]
             popped_min_outcomes = popped_min_outcomes[1:]
             popped_count_dice = popped_count_dice[1:]
         
         if end_counted > num_possible_dice:
-            pool = Pool(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
             yield pool, count, comb_row[-1]
         else:
             # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
@@ -416,7 +433,7 @@ class DicePool():
                 skip_weight *= popped_die.total_weight()
                 skip_weight += weight
             skip_weight *= math.prod(popped_die.weight_ge(min_outcome) for min_outcome in min_outcomes[num_possible_dice:])
-            pool = Pool(popped_die, 0)
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
             yield pool, count, skip_weight
     
     @cached_property

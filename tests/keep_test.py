@@ -94,7 +94,7 @@ def test_mixed_keep_lowest():
 
 def test_pool_select():
     pool = hdroller.Pool(hdroller.d6, 5)
-    assert pool[-2].count_dice() == (0, 0, 0, 1, 0)
+    assert pool[-2].equals(pool[-2:-1].sum())
     assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
     assert pool[-2:] == hdroller.Pool(hdroller.d6, 5, count_dice=slice(-2, None))
 
@@ -135,3 +135,35 @@ def test_lowest():
     result = hdroller.lowest(hdroller.d6, hdroller.d6)
     expected = hdroller.d6.keep_lowest(2, 1)
     assert result.equals(expected)
+
+def test_two_highest_slice():
+    pool = hdroller.d6.pool(5)
+    expected = pool[3:5]
+    assert expected.count_dice() == pool[3:].count_dice()
+    assert expected.count_dice() == pool[-2:].count_dice()
+    assert expected.count_dice() == pool[0,0,0,1,1].count_dice()
+    assert expected.count_dice() == pool[...,1,1].count_dice()
+
+def test_two_highest_slice_shorten():
+    pool = hdroller.d6.pool(1)
+    expected = pool
+    assert expected.count_dice() == pool[-2:].count_dice()
+    assert expected.count_dice() == pool[...,1,1].count_dice()
+
+def test_two_lowest_slice():
+    pool = hdroller.d6.pool(5)
+    expected = pool[0:2]
+    assert expected.count_dice() == pool[:2].count_dice()
+    assert expected.count_dice() == pool[:-3].count_dice()
+    assert expected.count_dice() == pool[1,1,0,0,0].count_dice()
+    assert expected.count_dice() == pool[1,1,...].count_dice()
+
+def test_two_lowest_slice_shorten():
+    pool = hdroller.d6.pool(1)
+    expected = pool
+    assert expected.count_dice() == pool[:2].count_dice()
+    assert expected.count_dice() == pool[1,1,...].count_dice()
+
+def test_highest_minus_lowest_slice():
+    pool = hdroller.d6.pool(5)
+    assert pool[-1,0,0,0,1].count_dice() == pool[-1,...,1].count_dice()
