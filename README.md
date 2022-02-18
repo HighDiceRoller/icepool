@@ -6,13 +6,13 @@ A Python library for computing dice probabilities.
 pip install hdroller
 ```
 
-## Principles
+## Features
 
-* Supports all standard operators on dice for compact syntax.
-* Combinatorics and caching allow for flexible yet efficient solutions to common problems.
-* Weights are Python `int`s, providing exact results.
-* Constant-factor optimizations are not a priority.
-* Handles both univariate and multivariate distributions.
+* Implemented in pure Python for high interoperability.
+* Weights are Python `int`s, providing exact results even for large numbers of dice.
+* Dice support all standard operators as well as an extensive library of functions.
+* Dice pool system allows for flexible yet efficient solutions to common problems.
+* Also handles multivariate distributions (though less tested).
 
 ## API documentation
 
@@ -43,7 +43,6 @@ See this [JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/no
 > 3d6 are rolled sufficient times to generate the 6 ability scores, in order, for 12 characters. The player then selects the single set of scores which he or she finds most desirable and these scores are noted on the character record sheet.
 
 ```python
-
 import hdroller
 
 """
