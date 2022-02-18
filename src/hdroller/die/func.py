@@ -236,7 +236,7 @@ def mix(*dice, mix_weights=None, ndim=None, total_weight_method='lcm'):
     
     dice, mix_weights = zip(*((die, weight) for die, weight in zip(dice, mix_weights) if die is not hdroller.Reroll))
     
-    dice = align(*dice, ndim=ndim)
+    dice = [Die(die, ndim=ndim) for die in dice]
     ndim = check_ndim(*dice)
         
     if total_weight_method == 'prod':
