@@ -51,27 +51,30 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             or if `max_outcome` or `min_outcome` fall outside the range of the die.
     """
     
-    # Compute num_dice.
+    if max_outcomes is not None and min_outcomes is not None:
+        raise ValueError('A pool cannot limit both max_outcomes and min_outcomes.')
     
-    for seq in (count_dice, min_outcomes, max_outcomes):
+    # Compute num_dice and count_dice.
+    
+    for seq in (min_outcomes, max_outcomes):
         if hasattr(seq, '__len__'):
             if num_dice is not None and num_dice != len(seq):
                 raise ValueError('Conflicting values for the number of dice: ' +
-                    f'num_dice={num_dice}, count_dice={count_dice}, min_outcomes={min_outcomes}, max_outcomes={max_outcomes}')
+                    f'num_dice={num_dice}, min_outcomes={min_outcomes}, max_outcomes={max_outcomes}')
             else:
                 num_dice = len(seq)
-        
-    if num_dice is None:
-        num_dice = 0
-    
-    # Compute count_dice.
     
     convert_to_die = isinstance(count_dice, int)
     
-    if count_dice is None:
-        count_dice = (1,) * num_dice
+    if num_dice is None:
+        # Default to zero dice, unless count_dice has something to say.
+        count_dice = count_dice_tuple(0, count_dice)
+        num_dice = len(count_dice)
     else:
+        # Must match num_dice.
         count_dice = count_dice_tuple(num_dice, count_dice)
+        if len(count_dice) != num_dice:
+            raise ValueError(f'The length of count_dice={count_dice} conflicts with num_dice={num_dice}.')
     
     # Put max/min outcomes into standard form.
     # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
@@ -100,9 +103,6 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
                 # In this case, the min_outcomes don't actually do anything.
                 min_outcomes = None
     
-    if max_outcomes is not None and min_outcomes is not None:
-        raise ValueError('A pool cannot limit both max_outcomes and min_outcomes.')
-    
     pool = _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
     if convert_to_die:
         return pool.eval(lambda state, outcome, count: outcome if count else state)
@@ -110,14 +110,26 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
         return pool
 
 def count_dice_tuple(num_dice, count_dice):
-    """ Returns a tuple specifying count_dice.
+    """ Expresses `count_dice` as a tuple.
     
-    If `count_dice` is already a sequence,
-    this does not check its length against `num_dice`.
-    
-    Otherwise, the result has length equal to `num_dice`.
+    Args:
+        `num_dice`: An `int` specifying the number of dice.
+        `count_dice` is `None`: Each die is counted once.
+        `count_dice` is an `int`: Selects a single index.
+        `count_dice` is a `slice`: Dice selected by the slice out of `num_dice` are counted once. Other dice are not counted.
+        `count_dice` is a sequence with no `Ellipsis`: `count_dice` is returned directly.
+            This may not match `num_dice`.
+        `count_dice` is a sequence with one `Ellipsis`:
+            * If `num_dice` is >= `len(count_dice)`, the dice covered by the `Ellipsis` are counted zero times each.
+            * If `num_dice` is < `len(count_dice)`, `count_dice` is shortened to `num_dice`.
+    Raises:
+        `ValueError` if:
+            * More than one `Ellipsis` is used.
+            * An `Ellipsis` is used in the center with too few `num_dice`.
     """
-    if isinstance(count_dice, int):
+    if count_dice is None:
+        return (1,) * num_dice
+    elif isinstance(count_dice, int):
         result = [0] * num_dice
         result[count_dice] = 1
         return tuple(result)
@@ -126,10 +138,41 @@ def count_dice_tuple(num_dice, count_dice):
         result[count_dice] = [1] * len(result[count_dice])
         return tuple(result)
     else:
-        return tuple(count_dice)
+        split = None
+        for i, x in enumerate(count_dice):
+            if x is Ellipsis:
+                if split is None:
+                    split = i
+                else:
+                    raise ValueError('Cannot use more than one Ellipsis (...) for count_dice.')
+
+        if split is None:
+            return tuple(count_dice)
+        
+        extra_dice = num_dice - len(count_dice) - 1
+        
+        if split == 0:
+            # Ellipsis on left.
+            count_dice = count_dice[1:]
+            if extra_dice < 0:
+                return tuple(count_dice[-extra_dice:])
+            else:
+                return (0,) * extra_dice + tuple(count_dice)
+        elif split == len(count_dice) - 1:
+            # Ellipsis on right.
+            count_dice = count_dice[:-1]
+            if extra_dice < 0:
+                return tuple(count_dice[:extra_dice])
+            else:
+                return tuple(count_dice) + (0,) * extra_dice
+        else:
+            # Ellipsis in center.
+            if extra_dice < 0:
+                raise ValueError('Too few dice for Ellipsis (...) in center.')
+            return tuple(count_dice[:split]) + (0,) + tuple(count_dice[split:])
 
 @die_cache
-def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes):
+def _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes, /):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
