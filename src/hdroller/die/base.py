@@ -285,7 +285,7 @@ class BaseDie():
         
         Args:
             outcomes: Selects which outcomes to reroll. Options:
-                * A callable that takes outcomes and returns `True` if it should be rerolled.
+                * A callable that takes an outcome and returns `True` if it should be rerolled.
                     The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 * A set of outcomes to reroll.
             max_depth: The maximum number of times to reroll.
@@ -296,8 +296,8 @@ class BaseDie():
             If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
-            outcomes = self.wrap_unpack(outcomes)
-            outcomes = set(outcome for outcome in self.outcomes() if outcomes(outcome))
+            func = self.wrap_unpack(outcomes)
+            outcomes = set(outcome for outcome in self.outcomes() if func(outcome))
         
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
@@ -315,7 +315,7 @@ class BaseDie():
         
         Args:
             outcomes: Selects which outcomes to reroll until. Options:
-                * A callable that takes outcomes and returns `True` if it should be accepted.
+                * A callable that takes an outcome and returns `True` if it should be accepted.
                 * A set of outcomes to reroll until.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
@@ -444,7 +444,9 @@ class BaseDie():
             max_depth: The maximum number of additional dice to roll.
             outcomes: Which outcomes to explode. Options:
                 * An iterable containing outcomes to explode.
-                * If not supplied, the top single outcome will explode.
+                * A callable that takes an outcome and returns `True` if it should be exploded.
+                    The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
+                * If not supplied, the max outcome will explode.
         """
         if max_depth < 0:
             raise ValueError('max_depth cannot be negative.')
@@ -452,7 +454,10 @@ class BaseDie():
             return self
         
         if outcomes is None:
-            outcomes = set([self.max_outcome()])
+            outcomes = { self.max_outcome() }
+        elif callable(outcomes):
+            func = self.wrap_unpack(outcomes)
+            outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
         tail_die = self.explode(max_depth-1, outcomes=outcomes)
         
