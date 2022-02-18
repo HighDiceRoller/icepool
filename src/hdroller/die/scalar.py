@@ -72,8 +72,6 @@ class ScalarDie(hdroller.die.base.BaseDie):
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
-        subresults = hdroller.align(*subresults)
-        
         data = defaultdict(int)
         
         for subresult, subresult_weight in zip(subresults, subresult_weights):
