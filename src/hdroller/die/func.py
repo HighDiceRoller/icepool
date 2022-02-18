@@ -26,7 +26,9 @@ def Die(*args, min_outcome=None, ndim=None):
         *args: This can be one of the following, with examples of how to create a d6 where applicable:
             * A single argument die, which will be returned itself.
                 `d6 == Die(d6)`.
-            * A single argument mapping from outcomes to weights.
+            * A single argument dict-like that maps outcomes to weights.
+                This option will be taken in preference to treating the dict-like itself as an outcome
+                even if the dict-like itself is hashable and comparable.
                 `d6 == Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`.
             * A single argument sequence of weights, with `min_outcome` set to an `int`. 
                 The outcomes will be `int`s starting at `min_outcome`.
@@ -34,6 +36,8 @@ def Die(*args, min_outcome=None, ndim=None):
             * Zero or more arguments, each one denoting an outcome with weight 1 per appearance.
                 The outcomes must be hashable and comparable.
                 `d6 == Die(1, 2, 3, 4, 5, 6)`.
+                Note that a single argument sequence will be treated as a single outcome; 
+                for example, `Die((1, 2, 3, 4, 5, 6))` is a die that always rolls the tuple `(1, 2, 3, 4, 5, 6)`.
         min_outcome: Only used with a sequence of weights, as above.
         ndim: If set to `'scalar'`, the die will be forced to be scalar.
             If set to an `int`, the die will be forced to be vector with that number of dimensions.
