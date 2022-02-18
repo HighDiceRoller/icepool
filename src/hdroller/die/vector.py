@@ -5,6 +5,7 @@ import hdroller.die.base
 import hdroller.die.scalar
 
 from collections import defaultdict
+from functools import wraps
 import itertools
 
 class VectorDie(hdroller.die.base.BaseDie):
@@ -50,6 +51,13 @@ class VectorDie(hdroller.die.base.BaseDie):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
             data[new_outcome] += weight_self * weight_other
         return hdroller.Die(data, ndim=ndim)
+    
+    def wrap_unpack(self, func):
+        """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
+        @wraps(func)
+        def unpacked_func(outcome):
+            return func(*outcome)
+        return unpacked_func
     
     def marginal(self, select):
         """ Returns the marginal distribution over selected dimensions of the die. """

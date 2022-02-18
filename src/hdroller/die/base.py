@@ -66,7 +66,11 @@ class BaseDie():
                 Unfortunately this means dice are not hashable by normal means.
                 Custom functions can use `key_tuple()`, `equals()` and `hash()` as workarounds.
         """
-        
+    
+    @abstractmethod
+    def wrap_unpack(self, func):
+        """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
+    
     # Basic access.
     
     def outcomes(self):
@@ -282,6 +286,7 @@ class BaseDie():
         Args:
             outcomes: Selects which outcomes to reroll. Options:
                 * A callable that takes outcomes and returns `True` if it should be rerolled.
+                    The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 * A set of outcomes to reroll.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
@@ -291,6 +296,7 @@ class BaseDie():
             If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
+            outcomes = self.wrap_unpack(outcomes)
             outcomes = set(outcome for outcome in self.outcomes() if outcomes(outcome))
         
         if max_depth is None:
@@ -346,7 +352,10 @@ class BaseDie():
         
         The left result is all outcome-weight pairs where `cond(outcome)` is `True`.
         The right result is all outcome-weight pairs where `cond(outcome)` is `False`.
+        
+        `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.
         """
+        cond = self.wrap_unpack(cond)
         data_true = {}
         data_false = {}
         for outcome, weight in self.items():
@@ -410,7 +419,8 @@ class BaseDie():
             repl: One of the following:
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
-                * A function mapping old outcomes to new outcomes.
+                * A callable mapping old outcomes to new outcomes.
+                    The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `hdroller.Reroll` will reroll that old outcome.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
@@ -422,6 +432,7 @@ class BaseDie():
         if hasattr(repl, 'items'):
             repl = [(repl[outcome] if outcome in repl else outcome) for outcome in self.outcomes()]
         elif callable(repl):
+            repl = self.wrap_unpack(repl)
             repl = [repl(outcome) for outcome in self.outcomes()]
 
         return hdroller.mix(*repl, mix_weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
@@ -592,6 +603,7 @@ class BaseDie():
         
         Args:
             * cond: A function that takes outcomes and returns `True` if the sum is successful.
+                `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.
             * max_depth: The maximum number of times to repeat.
                 This can be `None` for an unlimited number of times,
                 but you need to make sure that success is guaranteed within a limited number of repeats in this case.
@@ -599,6 +611,7 @@ class BaseDie():
         Returns:
             A die representing the number of rolls until success.
         """
+        cond = self.wrap_unpack(cond)
         num_dice = 0
         done, not_done = self.zero().split(cond)
         done_weight = done.total_weight()

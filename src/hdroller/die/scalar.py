@@ -46,6 +46,10 @@ class ScalarDie(hdroller.die.base.BaseDie):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
         return hdroller.Die(data, ndim='scalar')
     
+    def wrap_unpack(self, func):
+        """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
+        return func
+    
     # Special operators.
     
     def d(self, other):
