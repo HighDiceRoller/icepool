@@ -18,6 +18,14 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
     * `hdroller.Die(6)`: A die that always rolls the `int` 6.
     * `hdroller.d(6)`: A d6.
     
+    Here are some different ways of constructing a d6:
+    
+    * Just import it: `from hdroller import d6`
+    * Use the `d()` function: `hdroller.d(6)`
+    * Use a d6 that you already have: `Die(d6)`
+    * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
+    * Give the faces as args: `Die(1, 2, 3, 4, 5, 6)`
+    
     Args:
         *args: Each of these arguments can be one of the following:
             * A single outcome, which must be hashable and comparable.
