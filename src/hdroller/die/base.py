@@ -437,20 +437,23 @@ class BaseDie():
 
         return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
     
-    def explode(self, max_depth, outcomes=None):
+    def explode(self, outcomes=None, max_depth=None):
         """ Causes outcomes to be rolled again and added to the total.
         
         Args:
-            max_depth: The maximum number of additional dice to roll.
             outcomes: Which outcomes to explode. Options:
                 * An iterable containing outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it should be exploded.
                     The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 * If not supplied, the max outcome will explode.
+            max_depth: The maximum number of additional dice to roll.
+                If not supplied, a default value will be used.
         """
-        if max_depth < 0:
+        if max_depth is None:
+            max_depth = 9
+        elif max_depth < 0:
             raise ValueError('max_depth cannot be negative.')
-        if max_depth == 0:
+        elif max_depth == 0:
             return self
         
         if outcomes is None:
@@ -459,7 +462,7 @@ class BaseDie():
             func = self.wrap_unpack(outcomes)
             outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
-        tail_die = self.explode(max_depth-1, outcomes=outcomes)
+        tail_die = self.explode(outcomes=outcomes, max_depth=max_depth-1)
         
         def sub_func(outcome):
             if outcome in outcomes:

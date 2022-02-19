@@ -3,7 +3,7 @@ import _context
 import hdroller
 import pytest
 
-test_dice = [hdroller.d6, hdroller.d8, hdroller.d10.explode(2)]
+test_dice = [hdroller.d6, hdroller.d8, hdroller.d10.explode(max_depth=2)]
 
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('i', range(-5, 5))
