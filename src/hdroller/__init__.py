@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from hdroller.die.create import Die, calc_ndim
+from hdroller.die.create import Die, dice_with_common_ndim
 from hdroller.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply
 
 import hdroller.die.base
@@ -28,7 +28,7 @@ class SpecialValue(enum.Enum):
 
 Reroll = SpecialValue.Reroll
 
-__all__ = ['Die', 'calc_ndim',
+__all__ = ['Die', 'dice_with_common_ndim',
     'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',

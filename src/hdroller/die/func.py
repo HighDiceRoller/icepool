@@ -108,15 +108,13 @@ def align(*dice, ndim=None):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    ndim = hdroller.calc_ndim(*dice)
-    dice = [hdroller.Die(die, ndim=ndim) for die in dice]
+    dice, ndim = hdroller.dice_with_common_ndim(*dice)
     outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 def align_range(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    ndim = hdroller.calc_ndim(*dice)
-    dice = [hdroller.Die(die, ndim=ndim) for die in dice]
+    dice, ndim = hdroller.dice_with_common_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
@@ -133,7 +131,8 @@ def apply(func, *dice, ndim=None):
     Returns:
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
-    dice = [hdroller.Die(die, ndim=ndim) for die in dice]
+    # No common ndim required for the inputs in this case.
+    dice = [hdroller.Die(die) for die in dice]
     data = defaultdict(int)
     for t in itertools.product(*(die.items() for die in dice)):
         outcomes, weights = zip(*t)

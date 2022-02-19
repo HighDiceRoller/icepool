@@ -92,7 +92,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
         raise ValueError(f'Invalid total_weight_method {total_weight_method}.')    
     
     # Compute ndim.
-    ndim = calc_ndim(*args)
+    ndim = _calc_ndim(*args)
     
     # Make data.
     data = defaultdict(int)
@@ -119,6 +119,15 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
         data = Weights({ tuple(k) : v for k, v in data.items() })
         return hdroller.VectorDie(data, ndim)
 
+def _is_die(arg):
+    return isinstance(arg, hdroller.BaseDie)
+
+def _is_dict(arg):
+    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
+
+def _is_seq(arg):
+    return hasattr(arg, '__len__')
+
 def _arg_total_weight(arg):
     if _is_die(arg):
         return arg.total_weight()
@@ -128,14 +137,23 @@ def _arg_total_weight(arg):
     else:
         return 1
 
-def _is_die(arg):
-    return isinstance(arg, hdroller.BaseDie)
-
-def _is_dict(arg):
-    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
-
-def _is_seq(arg):
-    return hasattr(arg, '__len__')
+def _calc_ndim(*args, ndim=None):
+    """ Computes the common `ndim` of the arguments. 
+    
+    Args:
+        *args: Args to find the common `ndim` of.
+        ndim: The required ndim of the results.
+    
+    Returns:
+        The common `ndim` of the arguments.  
+        May return `None` if no `ndim` is found.
+    
+    Raises:
+        `ValueError` if the arguments include conflicting `ndim`s.
+    """
+    for arg in args:
+        ndim = _arg_ndim(arg, ndim)
+    return ndim 
 
 def _arg_ndim(arg, ndim):
     """ Checks the ndim of a single argument. """
@@ -169,17 +187,18 @@ def _arg_ndim(arg, ndim):
         # Arg is a scalar.
         return 'scalar'
 
-def calc_ndim(*args, ndim=None):
-    """ Computes the common `ndim` of the arguments. 
+def dice_with_common_ndim(*args, ndim=None):
+    """ Converts the arguments to dice with a common ndim.
+    
+    Args:
+        *args: Args to be converted to dice.
+        ndim: The required ndim of the results.
     
     Returns:
-        The common `ndim` of the arguments.  
-        May return `None` if no `ndim` is found.
+        A tuple with one die per arg, the common `ndim.`
     
     Raises:
-        `ValueError` if the arguments include dice with conflicting `ndim`s.
+        `ValueError` if the arguments include conflicting `ndim`s.
     """
-    
-    for arg in args:
-        ndim = _arg_ndim(arg, ndim)
-    return ndim 
+    ndim = _calc_ndim(*args, ndim)
+    return tuple(Die(arg, ndim=ndim) for arg in args), ndim
