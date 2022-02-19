@@ -476,8 +476,8 @@ class BaseDie():
         
         The minimum outcome is equal to the highest minimum outcome among all input dice.
         """
-        dice = [hdroller.Die(die) for die in dice]
-        ndim = hdroller.check_ndim(*dice)
+        ndim = hdroller.calc_ndim(*dice)
+        dice = [hdroller.Die(die, ndim=ndim) for die in dice]
         min_outcome = max(die.min_outcome() for die in dice)
         dice = [die.clip(min_outcome=min_outcome) for die in dice]
         dice = hdroller.align(*dice)
@@ -489,8 +489,8 @@ class BaseDie():
         
         The maximum outcome is equal to the highest maximum outcome among all input dice.
         """
-        dice = [hdroller.Die(die) for die in dice]
-        ndim = hdroller.check_ndim(*dice)
+        ndim = hdroller.calc_ndim(*dice)
+        dice = [hdroller.Die(die, ndim=ndim) for die in dice]
         max_outcome = min(die.max_outcome() for die in dice)
         dice = [die.clip(max_outcome=max_outcome) for die in dice]
         dice = hdroller.align(*dice)

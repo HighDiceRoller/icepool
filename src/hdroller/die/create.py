@@ -92,8 +92,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
         raise ValueError(f'Invalid total_weight_method {total_weight_method}.')    
     
     # Compute ndim.
-    for arg in args:
-        ndim = _arg_ndim(arg, ndim)
+    ndim = calc_ndim(*args)
     
     # Make data.
     data = defaultdict(int)
@@ -137,13 +136,15 @@ def _is_dict(arg):
 
 def _is_seq(arg):
     return hasattr(arg, '__len__')
-    
+
 def _arg_ndim(arg, ndim):
     """ Checks the ndim of a single argument. """
     if _is_die(arg):
-        if ndim is None:
+        if arg.is_empty():
+            return ndim
+        elif ndim is None:
             return arg.ndim()
-        if arg.ndim() != ndim:
+        elif arg.ndim() != ndim:
             raise ValueError(f'Argument die has ndim={arg.ndim()} inconsistent with other ndim={ndim}.')
         return ndim
     elif ndim == 'scalar':
@@ -167,3 +168,18 @@ def _arg_ndim(arg, ndim):
     else:
         # Arg is a scalar.
         return 'scalar'
+
+def calc_ndim(*args, ndim=None):
+    """ Computes the common `ndim` of the arguments. 
+    
+    Returns:
+        The common `ndim` of the arguments.  
+        May return `None` if no `ndim` is found.
+    
+    Raises:
+        `ValueError` if the arguments include dice with conflicting `ndim`s.
+    """
+    
+    for arg in args:
+        ndim = _arg_ndim(arg, ndim)
+    return ndim 

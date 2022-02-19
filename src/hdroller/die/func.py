@@ -108,44 +108,17 @@ def align(*dice, ndim=None):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
+    ndim = hdroller.calc_ndim(*dice)
     dice = [hdroller.Die(die, ndim=ndim) for die in dice]
-    check_ndim(*dice)
     outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 def align_range(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
+    ndim = hdroller.calc_ndim(*dice)
     dice = [hdroller.Die(die, ndim=ndim) for die in dice]
-    check_ndim(*dice)
     outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
-
-def check_ndim(*dice):
-    """ Checks that `ndim` matches between the dice, and returns it. 
-    
-    Empty dice are not required to match.
-    
-    Args:
-        *dice: The dice to be checked.
-    
-    Returns:
-        The common `ndim` of the dice.
-    
-    Raises:
-        ValueError if no dice were provided, or a mismatch in `ndim` is found.
-    """
-    if len(dice) == 0:
-        raise ValueError('No dice were provided.')
-    
-    ndim = None
-    for die in dice:
-        if die.is_empty():
-            continue
-        if ndim is None:
-            ndim = die.ndim()
-        elif die.ndim() != ndim:
-            raise ValueError('Dice have mismatched ndim.')
-    return ndim
 
 def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
