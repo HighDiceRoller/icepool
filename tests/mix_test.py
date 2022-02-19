@@ -31,6 +31,12 @@ def test_mix_reroll():
     expected = hdroller.d4
     assert result.equals(expected)
 
+def test_mix_dict_reroll():
+    data = {1:1, 2:1, 3:1, 4:1, hdroller.Reroll:10}
+    result = hdroller.Die(data, data).reduce()
+    expected = hdroller.d4
+    assert result.equals(expected)
+
 expected_d6x1 = hdroller.Die(weights=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], min_outcome=1).trim()
 
 def test_sub_array():

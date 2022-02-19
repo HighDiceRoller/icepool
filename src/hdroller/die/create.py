@@ -31,7 +31,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
             * A dict-like that maps outcomes to weights.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
-                If you want to use the dict-like as an outcome (not recommended), wrap it in another dict.
+                If you want to use the dict-like itself as an outcome (not recommended), wrap it in another dict.
             * `hdroller.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
         weights: Controls the relative weight of the arguments.
@@ -78,6 +78,9 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
     
     # Remove rerolls.
     args, weights = zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not hdroller.Reroll))
+    for arg in args:
+        if _is_dict(arg):
+            arg.pop(hdroller.Reroll, None)
     
     # Total weights.
     arg_total_weights = [_arg_total_weight(arg) for arg in args]
@@ -100,8 +103,6 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
         factor = weight_product * w // atw if atw else 0
         if _is_die(arg) or _is_dict(arg):
             for outcome, weight in arg.items():
-                if outcome is hdroller.Reroll:
-                    continue  # TODO: pre-filter?
                 data[outcome] += weight * factor
         else:
             data[arg] += factor
@@ -123,7 +124,7 @@ def _is_die(arg):
     return isinstance(arg, hdroller.BaseDie)
 
 def _is_dict(arg):
-    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
+    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__') and hasattr(arg, 'pop')
 
 def _is_seq(arg):
     return hasattr(arg, '__len__')
@@ -132,8 +133,7 @@ def _arg_total_weight(arg):
     if _is_die(arg):
         return arg.total_weight()
     elif _is_dict(arg):
-        # TODO: Pre-filter?
-        return sum(weight for outcome, weight in arg.items() if outcome is not hdroller.Reroll)
+        return sum(arg.values())
     else:
         return 1
 
@@ -188,14 +188,14 @@ def _arg_ndim(arg, ndim):
         return 'scalar'
 
 def dice_with_common_ndim(*args, ndim=None):
-    """ Converts the arguments to dice with a common ndim.
+    """ Converts the arguments to dice with a common `ndim`.
     
     Args:
         *args: Args to be converted to dice.
-        ndim: The required ndim of the results.
+        ndim: The required `ndim` of the results.
     
     Returns:
-        A tuple with one die per arg, the common `ndim.`
+        dice, ndim: A tuple containing one die per arg, and the common `ndim`,
     
     Raises:
         `ValueError` if the arguments include conflicting `ndim`s.
