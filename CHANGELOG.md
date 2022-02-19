@@ -1,3 +1,15 @@
+## 0.6.3
+
+* `Die()` now takes a variable number of arguments. A sequence provided as a single argument will be treated as a single outcome equal to that sequence.
+    To have one outcome per item in the sequence, the sequence must be unpacked into multiple arguments.
+* `min_outcome` and `ndim` args to `Die()` are now keyword-only.
+* Non-integers are now allowed for `count_dice`. Use at your own risk.
+* The third argument to a `count_dice` slice, if provided, changes the size of the pool.
+* Up to one `Ellipsis` (`...`) may now be used in `count_dice`. This allows the tuple option to adapt to differently-sized pools.
+* `VectorDie` outcomes are now unpacked when providing them to callable arguments in `reroll()`, `explode()`, `split()`.
+* `if_else()` is now a method of `ScalarDie` rather than a free function.
+* Fixed the invert operator.
+
 ## 0.6.2
 
 * Rerolls in pools, `mix()`, and `sub()` are now triggered by a sentinel value `hdroller.Reroll` (rather than `None`).
