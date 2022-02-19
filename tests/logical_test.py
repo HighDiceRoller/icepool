@@ -19,5 +19,5 @@ def test_xor():
 
 def test_ifelse():
     result = hdroller.coin(1, 2).if_else(hdroller.d8, hdroller.d6).reduce()
-    expected = hdroller.Die([14, 14, 14, 14, 14, 14, 6, 6], min_outcome=1).reduce()
+    expected = hdroller.Die(weights=[14, 14, 14, 14, 14, 14, 6, 6], min_outcome=1).reduce()
     assert result.equals(expected)

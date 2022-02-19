@@ -102,7 +102,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         Args:
             true_die: The die to roll if `self.bool()` rolls `True`.
             false_die: The die to roll if `self.bool()` rolls `False`.
-            total_weight_method: As `hdroller.mix()`.
+            total_weight_method: As `hdroller.Die()`.
         """
         return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, total_weight_method=total_weight_method)
     

@@ -424,7 +424,7 @@ class BaseDie():
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `hdroller.Reroll` will reroll that old outcome.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
-            total_weight_method: As `hdroller.mix()`.
+            total_weight_method: As `hdroller.Die()`.
         
         Returns:
             The relabeled die.
@@ -435,7 +435,7 @@ class BaseDie():
             repl = self.wrap_unpack(repl)
             repl = [repl(outcome) for outcome in self.outcomes()]
 
-        return hdroller.mix(*repl, mix_weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
+        return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
     
     def explode(self, max_depth, outcomes=None):
         """ Causes outcomes to be rolled again and added to the total.

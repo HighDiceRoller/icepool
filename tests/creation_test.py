@@ -23,7 +23,7 @@ def test_list_no_min_outcome():
     assert result.equals(expected)
 
 def test_zero_outcomes():
-    die = hdroller.Die([0, 1, 1, 1, 1, 1, 1], min_outcome=0)
+    die = hdroller.Die(weights=[0, 1, 1, 1, 1, 1, 1], min_outcome=0)
     other = hdroller.d6
     assert die.has_zero_weights()
     assert not die.equals(other)

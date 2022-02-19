@@ -37,7 +37,7 @@ def test_keep_highest(num_keep):
 
 @pytest.mark.parametrize('num_keep', range(1, 6))
 def test_keep_highest_zero_weights(num_keep):
-    die = hdroller.Die([0, 0, 1, 1, 1, 1], min_outcome=0)
+    die = hdroller.Die(weights=[0, 0, 1, 1, 1, 1], min_outcome=0)
     result = die.keep_highest(4, num_keep).trim()
     expected = bf_keep_highest(hdroller.d4 + 1, 4, num_keep)
     assert result.equals(expected)

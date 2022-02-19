@@ -40,7 +40,7 @@ def test_sum_descending_keep_highest():
     assert result.equals(expected)
 
 def test_zero_weight_outcomes():
-    result = hdroller.Die([0, 1, 0, 1, 0], min_outcome=0).keep_highest(3, 2)
+    result = hdroller.Die(weights=[0, 1, 0, 1, 0], min_outcome=0).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
 # The auto direction should maximize skips.

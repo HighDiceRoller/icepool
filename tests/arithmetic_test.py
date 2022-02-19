@@ -67,27 +67,27 @@ def test_abs_negative():
 
 def test_abs_cross_zero():
     result = (hdroller.d6 - 3).abs()
-    expected = hdroller.Die([1, 2, 2, 1], min_outcome=0)
+    expected = hdroller.Die(weights=[1, 2, 2, 1], min_outcome=0)
     assert result.equals(expected)
 
 def test_abs_cross_zero_nonuniform():
     result = (hdroller.d6 + hdroller.d6 - 7).abs()
-    expected = hdroller.Die([6, 10, 8, 6, 4, 2], min_outcome=0)
+    expected = hdroller.Die(weights=[6, 10, 8, 6, 4, 2], min_outcome=0)
     assert result.equals(expected)
 
 def test_mod():
     result = hdroller.d10 % 4
-    expected = hdroller.Die([2, 3, 3, 2], min_outcome=0)
+    expected = hdroller.Die(weights=[2, 3, 3, 2], min_outcome=0)
     assert result.equals(expected)
     
 def test_div():
     result = hdroller.d10 // 4
-    expected = hdroller.Die([3, 4, 3], min_outcome=0)
+    expected = hdroller.Die(weights=[3, 4, 3], min_outcome=0)
     assert result.equals(expected)
 
 def test_reduce():
-    result = hdroller.Die([2, 4, 6], min_outcome=0).reduce()
-    expected = hdroller.Die([1, 2, 3], min_outcome=0)
+    result = hdroller.Die(weights=[2, 4, 6], min_outcome=0).reduce()
+    expected = hdroller.Die(weights=[1, 2, 3], min_outcome=0)
     assert result.equals(expected)
 
 def test_matmul_int_die():
