@@ -250,6 +250,7 @@ class DicePool():
                 In this case, the result will be a die, not a pool.
             A `slice`. The selected dice are counted once each.
                 If provided, the third argument resizes the pool,
+                rather than being a step,
                 but only if the pool does not have `max_outcomes` or `min_outcomes`.
             A sequence of one `int`s for each die.
                 Each die is counted that many times, which could be multiple or negative times.
