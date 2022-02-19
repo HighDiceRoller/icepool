@@ -29,7 +29,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             they will have 0 count. Zero-weight outcomes will appear with zero weight,
             but can still generate nonzero counts.
         num_dice: An `int` that sets the number of dice in the pool.
-            If no arguments are provided, this defaults to 0.
+            If not provided, the number of dice will be inferred from the other arguments.
+            If no arguments are provided at all, this defaults to 0.
         count_dice: Determines which of the **sorted** dice will be counted, and how many times.
             Prefer to use the `DicePool`'s `[]` operator after the fact rather than providing an argument here.
             This operator is an alias for `DicePool.set_count_dice()`.
@@ -128,6 +129,10 @@ def count_dice_tuple(num_dice, count_dice):
         result[count_dice] = 1
         return tuple(result)
     elif isinstance(count_dice, slice):
+        if count_dice.step is not None:
+            # "Step" is not useful here, so we repurpose it to set the number of dice.
+            num_dice = count_dice.step
+            count_dice = slice(count_dice.start, count_dice.stop)
         result = [0] * num_dice
         result[count_dice] = [1] * len(result[count_dice])
         return tuple(result)
@@ -244,6 +249,8 @@ class DicePool():
             An `int`. This will count only the die at the specified index (once).
                 In this case, the result will be a die, not a pool.
             A `slice`. The selected dice are counted once each.
+                If provided, the third argument resizes the pool,
+                but only if the pool does not have `max_outcomes` or `min_outcomes`.
             A sequence of one `int`s for each die.
                 Each die is counted that many times, which could be multiple or negative times.
                 This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.
@@ -262,10 +269,16 @@ class DicePool():
         * `pool[3:5]`
         * `pool[3:]`
         * `pool[-2:]`
-        * `pool[0, 0, 0, 1, 1]`
         * `pool[..., 1, 1]`
         
-        And of counting the highest as a positive and the lowest as a negative:
+        These will also select the two highest dice out of 5, and will also resize the pool to 5 dice first:
+        
+        * `pool[3::5]`
+        * `pool[3:5:5]`
+        * `pool[-2::5]`
+        * `pool[0, 0, 0, 1, 1]`
+        
+        These will count the highest as a positive and the lowest as a negative:
         
         * `pool[-1, 0, 0, 0, 1]`
         * `pool[-1, ..., 1]`
