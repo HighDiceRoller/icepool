@@ -20,7 +20,15 @@ pip install hdroller
 
 ## Examples
 
+### JupyterLite notebooks
+
 See this [JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/notebooks/lab/index.html) for a collection of interactive examples.
+
+### Applications
+
+* [Ability score rolling method calculator](https://highdiceroller.gitlab.io/hdroller/ability_scores/)
+* [*Cortex Prime* calculator](https://highdiceroller.gitlab.io/hdroller/cortex_prime/)
+* [*Legends of the Wulin* calculator](https://highdiceroller.gitlab.io/hdroller/legends_of_the_wulin/)
 
 ### *Advanced Dungeons & Dragons* 1st edition ability score methods
 
