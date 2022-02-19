@@ -78,10 +78,8 @@ class EvalPool(ABC):
             *pools: One or more `DicePool`s being evaluated.
             
         Returns:
-            A final outcome that will be used as part of constructing a die.
-            This should be hashable and comparable.
-            Alternatively, a return value of `hdroller.Reroll` will drop the state from consideration,
-            effectively performing a full reroll.
+            A final outcome that will be used as part of constructing the result die.
+            As usual for `Die()`, this could itself be a die or `hdroller.Reroll`.
         """
         return final_state
     
@@ -141,13 +139,15 @@ class EvalPool(ABC):
         
         dist = algorithm(direction, *pools)
         
-        final_dist = defaultdict(int)
+        final_outcomes = []
+        final_weights = []
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
             if outcome is not hdroller.Reroll:
-                final_dist[outcome] += weight
+                final_outcomes.append(outcome)
+                final_weights.append(weight)
         
-        return hdroller.Die(final_dist, ndim=self.ndim(*pools))
+        return hdroller.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
     
     __call__ = eval
     

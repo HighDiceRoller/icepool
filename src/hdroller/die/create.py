@@ -40,7 +40,12 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
             * A dict-like that maps outcomes to weights.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
-                If you want to use the dict-like itself as an outcome (not recommended), wrap it in another dict.
+                
+                Not recommended options:
+                
+                * If you want to use the dict-like itself as an outcome, wrap it in another dict.
+                * The dict itself can contain `hdroller.Reroll`.
+                    This will only reroll within the dict, not the entire construction.
             * `hdroller.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
         weights: Controls the relative weight of the arguments.
