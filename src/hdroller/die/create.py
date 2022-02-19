@@ -23,6 +23,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
     * Just import it: `from hdroller import d6`
     * Use the `d()` function: `hdroller.d(6)`
     * Use a d6 that you already have: `Die(d6)`
+    * Mix a d3 and a d3+3: `Die(d3, d3+3)`
     * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
     * Give the faces as args: `Die(1, 2, 3, 4, 5, 6)`
     
