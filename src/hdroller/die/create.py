@@ -87,8 +87,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
     # Remove rerolls.
     args, weights = zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not hdroller.Reroll))
     for arg in args:
-        if _is_dict(arg):
-            arg.pop(hdroller.Reroll, None)
+        if _is_dict(arg) and hdroller.Reroll in arg:
+            del arg[hdroller.Reroll]
     
     # Total weights.
     arg_total_weights = [_arg_total_weight(arg) for arg in args]
@@ -132,7 +132,7 @@ def _is_die(arg):
     return isinstance(arg, hdroller.BaseDie)
 
 def _is_dict(arg):
-    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__') and hasattr(arg, 'pop')
+    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
 
 def _is_seq(arg):
     return hasattr(arg, '__len__')
