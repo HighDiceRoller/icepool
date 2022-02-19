@@ -82,7 +82,7 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         rv: A rv object (as `scipy.stats`).
         outcomes: An iterable of `int`s or `float`s that will be the outcomes of the resulting die.
             If the distribution is discrete, outcomes must be `int`s.
-        denominator: The total weight of the resulting die will be set to this.
+        denominator: The denominator of the resulting die will be set to this.
         **kwargs: These will be provided to `rv.cdf()`.
     """
     if hasattr(rv, 'pdf'):

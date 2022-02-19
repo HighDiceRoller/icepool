@@ -122,7 +122,7 @@ class VectorDie(hdroller.die.base.BaseDie):
     def covariance(self, i, j):
         mean_i = self[i].mean()
         mean_j = self[j].mean()
-        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight for outcome, weight in self.items()) / self.total_weight()
+        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight for outcome, weight in self.items()) / self.denominator()
     
     def correlation(self, i, j):
         sd_i = self[i].standard_deviation()
@@ -140,24 +140,24 @@ class VectorDie(hdroller.die.base.BaseDie):
             outcome_lengths.append(outcome_length)
         weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
         result = ''
-        result = f'Total weight: {self.total_weight()}\n'
+        result = f'Denominator: {self.denominator()}\n'
         for i in range(self.ndim()):
             result += '| ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')) + f'Outcome[{i}]' + ' '
         result += '| ' + ' ' * (weight_length - len('Weight')) + 'Weight |'
-        if self.total_weight() > 0:
+        if self.denominator() > 0:
             result += ' Probability |'
         result += '\n'
         for i in range(self.ndim()):
             result += '|-' + '-' * outcome_lengths[i] + ':'
         result += '|-' + '-' * weight_length + ':|'
-        if self.total_weight() > 0:
+        if self.denominator() > 0:
             result += '------------:|'
         result += '\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
             for i, x in enumerate(outcome):
                 result += f'| {str(x):>{outcome_lengths[i]}} '
             result += f'| {weight:>{weight_length}} |'
-            if self.total_weight() > 0:
+            if self.denominator() > 0:
                 result += f' {p:11.6%} |'
             result += '\n'
         return result

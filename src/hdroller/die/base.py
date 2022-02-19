@@ -103,16 +103,18 @@ class BaseDie():
     # Weights.
     
     @cached_property
-    def _total_weight(self):
+    def _denominator(self):
         return sum(self._data.values())
     
-    def total_weight(self):
+    def denominator(self):
         """ The total weight of all outcomes. """
-        return self._total_weight
+        return self._denominator
+    
+    total_weight = denominator
     
     @cached_property
     def _pmf(self):
-        return tuple(weight / self.total_weight() for weight in self.weights())
+        return tuple(weight / self.denominator() for weight in self.weights())
     
     def pmf(self, percent=False):
         """ Probability mass function. The probability of rolling each outcome in order. 
@@ -136,7 +138,7 @@ class BaseDie():
     
     @cached_property
     def _sweights(self):
-        return tuple(itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.total_weight()))
+        return tuple(itertools.accumulate(self.weights()[:-1], operator.sub, initial=self.denominator()))
     
     def sweights(self):
         """ Survival weights. The weight >= each outcome in order. """
@@ -144,7 +146,7 @@ class BaseDie():
         
     @cached_property
     def _cdf(self):
-        return tuple(weight / self.total_weight() for weight in self.cweights())
+        return tuple(weight / self.denominator() for weight in self.cweights())
     
     def cdf(self, percent=False):
         """ Cumulative distribution function. The chance of rolling <= each outcome in order. 
@@ -160,7 +162,7 @@ class BaseDie():
         
     @cached_property
     def _sf(self):
-        return tuple(weight / self.total_weight() for weight in self.sweights())
+        return tuple(weight / self.denominator() for weight in self.sweights())
     
     def sf(self, percent=False):
         """ Survival function. The chance of rolling >= each outcome in order. 
@@ -180,7 +182,7 @@ class BaseDie():
         
     def weight_ne(self, outcome):
         """ Returns the weight != a single outcome. """
-        return self.total_weight() - self.weight_eq(outcome)
+        return self.denominator() - self.weight_eq(outcome)
     
     def weight_le(self, outcome):
         """ Returns the weight <= a single outcome. """
@@ -208,7 +210,7 @@ class BaseDie():
     
     def probability(self, outcome):
         """ Returns the probability of a single outcome. """
-        return self.weight_eq(outcome) / self.total_weight()
+        return self.weight_eq(outcome) / self.denominator()
     
     # Scalar(-ish) statistics.
         
@@ -304,7 +306,7 @@ class BaseDie():
         else:
             total_reroll_weight = sum(weight for outcome, weight in self.items() if outcome in outcomes )
             rerollable_factor = total_reroll_weight ** max_depth
-            stop_factor = self.total_weight() ** max_depth + total_reroll_weight ** max_depth
+            stop_factor = self.denominator() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
         return hdroller.Die(data, ndim=self.ndim())
     
@@ -409,7 +411,7 @@ class BaseDie():
     
     # Mixtures.
 
-    def sub(self, repl, /, ndim=None, total_weight_method='lcm'):
+    def sub(self, repl, /, ndim=None, denominator_method='lcm'):
         """ Changes outcomes of the die to other outcomes.
         
         You can think of this as `sub`stituting outcomes of this die for other outcomes or dice.
@@ -424,7 +426,7 @@ class BaseDie():
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `hdroller.Reroll` will reroll that old outcome.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
-            total_weight_method: As `hdroller.Die()`.
+            denominator_method: As `hdroller.Die()`.
         
         Returns:
             The relabeled die.
@@ -435,7 +437,7 @@ class BaseDie():
             repl = self.wrap_unpack(repl)
             repl = [repl(outcome) for outcome in self.outcomes()]
 
-        return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, total_weight_method=total_weight_method)
+        return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
     
     def explode(self, outcomes=None, max_depth=None):
         """ Causes outcomes to be rolled again and added to the total.
@@ -470,7 +472,7 @@ class BaseDie():
             else:
                 return outcome
         
-        return self.sub(sub_func, ndim=self.ndim(), total_weight_method='lcm')
+        return self.sub(sub_func, ndim=self.ndim(), denominator_method='lcm')
     
     # Pools.
     
@@ -620,16 +622,16 @@ class BaseDie():
         cond = self.wrap_unpack(cond)
         num_dice = 0
         done, not_done = self.zero().split(cond)
-        done_weight = done.total_weight()
+        done_weight = done.denominator()
         data = [done_weight]
         while True:
             if max_depth is not None and num_dice > max_depth:
                 break
-            data = [x * self.total_weight() for x in data]
+            data = [x * self.denominator() for x in data]
             not_done += self
             new_done, not_done = not_done.split(cond)
-            data.append(data[-1] + new_done.total_weight())
-            if not_done.total_weight() == 0:
+            data.append(data[-1] + new_done.denominator())
+            if not_done.denominator() == 0:
                 break
             num_dice += 1
         return hdroller.from_cweights(range(len(data)), data)
@@ -867,7 +869,7 @@ class BaseDie():
         Do not use for security purposes.
         """
         # We don't use random.choices since that is based on floats rather than ints.
-        r = random.randrange(self.total_weight())
+        r = random.randrange(self.denominator())
         index = bisect.bisect_right(self.cweights(), r)
         return self.outcomes()[index]
     
@@ -886,7 +888,7 @@ class BaseDie():
         raise TypeError('A die cannot be reversed.')
     
     def __len__(self):
-        raise TypeError('The length of a die is ambiguous. Use die.num_outcomes(), die.total_weight(), or die.ndim().')
+        raise TypeError('The length of a die is ambiguous. Use die.num_outcomes(), die.denominator(), or die.ndim().')
     
     # Equality and hashing.
     

@@ -389,7 +389,7 @@ class DicePool():
             # We empty the rest of the pool immediately since no more dice can contribute counts.
             skip_weight = 0
             for weight in comb_row[end_counted:]:
-                skip_weight *= popped_die.total_weight()
+                skip_weight *= popped_die.denominator()
                 skip_weight += weight
             skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in max_outcomes[:num_unused_dice])
             pool = _pool_cached_unchecked(popped_die, count_dice=())
@@ -444,7 +444,7 @@ class DicePool():
             # We empty the rest of the pool immediately since no more dice can contribute counts.
             skip_weight = 0
             for weight in comb_row[end_counted:]:
-                skip_weight *= popped_die.total_weight()
+                skip_weight *= popped_die.denominator()
                 skip_weight += weight
             skip_weight *= math.prod(popped_die.weight_ge(min_outcome) for min_outcome in min_outcomes[num_possible_dice:])
             pool = _pool_cached_unchecked(popped_die, count_dice=())

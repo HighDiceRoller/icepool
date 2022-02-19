@@ -67,7 +67,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         
         max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
         for die_count, die_count_weight in self.items():
-            factor = other.total_weight() ** (max_abs_die_count - abs(die_count))
+            factor = other.denominator() ** (max_abs_die_count - abs(die_count))
             subresults.append(other.repeat_and_sum(die_count))
             subresult_weights.append(die_count_weight * factor)
         
@@ -93,7 +93,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     
-    def if_else(self, true_die, false_die, ndim=None, total_weight_method='lcm'):
+    def if_else(self, true_die, false_die, ndim=None, denominator_method='lcm'):
         """ If the result of `self` has a true value, roll `true_die`, else roll `false_die`.
         
         Also known as the ternary conditional operator.
@@ -101,9 +101,9 @@ class ScalarDie(hdroller.die.base.BaseDie):
         Args:
             true_die: The die to roll if `self.bool()` rolls `True`.
             false_die: The die to roll if `self.bool()` rolls `False`.
-            total_weight_method: As `hdroller.Die()`.
+            denominator_method: As `hdroller.Die()`.
         """
-        return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, total_weight_method=total_weight_method)
+        return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, denominator_method=denominator_method)
     
     # Statistics.
     
@@ -133,7 +133,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         
         If the result lies between two outcomes, returns the lower of the two.
         """
-        index = bisect.bisect_left(self.cweights(), (n * self.total_weight() + d - 1) // d)
+        index = bisect.bisect_left(self.cweights(), (n * self.denominator() + d - 1) // d)
         if index >= self.num_outcomes(): return self.max_outcome()
         return self.outcomes()[index]
     
@@ -142,7 +142,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         
         If the result lies between two outcomes, returns the higher of the two.
         """
-        index = bisect.bisect_right(self.cweights(), n * self.total_weight() // d)
+        index = bisect.bisect_right(self.cweights(), n * self.denominator() // d)
         if index >= self.num_outcomes(): return self.max_outcome()
         return self.outcomes()[index]
     
@@ -210,19 +210,19 @@ class ScalarDie(hdroller.die.base.BaseDie):
         """ Formats the die as a Markdown table. """
         outcome_length = max(tuple(len(str(outcome)) for outcome in self.outcomes()) + (len('Outcome'),))
         weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
-        result = f'Total weight: {self.total_weight()}\n'
+        result = f'Denominator: {self.denominator()}\n'
         result +=  '| ' + ' ' * (outcome_length - len('Outcome')) + 'Outcome |'
         result +=   ' ' + ' ' * (weight_length - len('Weight'))   +  'Weight |'
-        if self.total_weight() > 0:
+        if self.denominator() > 0:
             result += ' Probability |'
         result += '\n'
         result += '|-' + '-' * outcome_length + ':|-' + '-' * weight_length + ':|'
-        if self.total_weight() > 0:
+        if self.denominator() > 0:
             result += '------------:|'
         result += '\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
             result += f'| {str(outcome):>{outcome_length}} | {weight:>{weight_length}} |'
-            if self.total_weight() > 0:
+            if self.denominator() > 0:
                 result += f' {p:11.6%} |'
             result += '\n'
         return result

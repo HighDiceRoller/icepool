@@ -6,7 +6,7 @@ from hdroller.collections import Weights
 from collections import defaultdict
 import math
 
-def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='lcm'):
+def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lcm'):
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -37,6 +37,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
                 If you want each element in the sequence to be a separate outcome,
                 you need to unpack it into separate arguments.
             * A die. The `ndim` of the die must be preserved, or this is a `ValueError`.
+                The outcomes of the die will be "flattened" in the result die.
             * A dict-like that maps outcomes to weights.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
@@ -49,7 +50,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
             * `hdroller.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
         weights: Controls the relative weight of the arguments.
-            If not provided, each argument will have the same total weight.
+            If not provided, each argument will end up with the same total weight,
+            unless they have zero weight to begin with.
             For example, `Die(d6, 7)` is the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
         min_outcome: If used, there must be zero `*args` and `weights` must be provided.
             The outcomes of the result will be integers starting at `min_outcome`,
@@ -59,13 +61,14 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
             If not provided, this will be automatically detected.
             E.g. for `str` outcomes you may want to set `ndim='scalar'`, which will
             treat e.g. `'abc' as a single string rather than `('a', 'b', 'c')`.
-        total_weight_method: How to determine the total weight of the result if the arguments themselves contain weights.
+        denominator_method: How to determine the denominator of the result
+            if the arguments themselves contain weights.
             From greatest to least:
-            * 'prod': Product of the individual argument weights, times the total of `weights`.
+            * 'prod': Product of the individual argument denominators, times the total of `weights`.
                 This is like rolling all of the possible dice, and then selecting a result.
-            * 'lcm' (default): LCM of the individual argument weights, times the total of `weights`.
+            * 'lcm' (default): LCM of the individual argument denominators, times the total of `weights`.
                 This is like rolling `weights` first, then selecting an argument to roll.
-            * 'lcm_weighted': LCM of the individual (argument weights times corresponding element of `weights`).
+            * 'lcm_weighted': LCM of the individual (argument denominators times corresponding element of `weights`).
                 This is like rolling the above, but the specific weight rolled
                 is used to help determine the result of the selected argument.
     Raises:
@@ -97,23 +100,23 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, total_weight_method='l
             del arg[hdroller.Reroll]
     
     # Total weights.
-    arg_total_weights = [_arg_total_weight(arg) for arg in args]
+    arg_denominators = [_arg_denominator(arg) for arg in args]
     
-    if total_weight_method == 'prod':
-        weight_product = math.prod(arg_total_weights)
-    elif total_weight_method == 'lcm':
-        weight_product = math.lcm(*arg_total_weights)
-    elif total_weight_method == 'lcm_weighted':
-        weight_product = math.lcm(*[atw * w for atw, w in zip(arg_total_weights, weights)])
+    if denominator_method == 'prod':
+        weight_product = math.prod(arg_denominators)
+    elif denominator_method == 'lcm':
+        weight_product = math.lcm(*arg_denominators)
+    elif denominator_method == 'lcm_weighted':
+        weight_product = math.lcm(*[atw * w for atw, w in zip(arg_denominators, weights)])
     else:
-        raise ValueError(f'Invalid total_weight_method {total_weight_method}.')    
+        raise ValueError(f'Invalid denominator_method {denominator_method}.')    
     
     # Compute ndim.
     ndim = _calc_ndim(*args)
     
     # Make data.
     data = defaultdict(int)
-    for arg, atw, w in zip(args, arg_total_weights, weights):
+    for arg, atw, w in zip(args, arg_denominators, weights):
         factor = weight_product * w // atw if atw else 0
         if _is_die(arg) or _is_dict(arg):
             for outcome, weight in arg.items():
@@ -143,9 +146,9 @@ def _is_dict(arg):
 def _is_seq(arg):
     return hasattr(arg, '__len__')
 
-def _arg_total_weight(arg):
+def _arg_denominator(arg):
     if _is_die(arg):
-        return arg.total_weight()
+        return arg.denominator()
     elif _is_dict(arg):
         return sum(arg.values())
     else:
