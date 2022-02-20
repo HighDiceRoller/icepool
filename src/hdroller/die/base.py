@@ -467,6 +467,9 @@ class BaseDie():
             func = self.wrap_unpack(outcomes)
             outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
+        if len(outcomes) == 0:
+            return self
+        
         tail_die = self.explode(outcomes=outcomes, max_depth=max_depth-1)
         
         def sub_func(outcome):
