@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import hdroller
-from hdroller.collections import Weights
+from hdroller.collections import Slicer, Weights
 
 from abc import ABC, abstractmethod
 import bisect
@@ -86,6 +86,8 @@ class BaseDie():
     def num_outcomes(self):
         """ Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
+    
+    __len__ = num_outcomes
     
     def is_empty(self):
         """ Returns `True` if this die has no outcomes. """
@@ -256,6 +258,20 @@ class BaseDie():
         return hdroller.Die(data, ndim=self.ndim())
     
     # Rerolls and other outcome management.
+    
+    def __getitem__(self, select):
+        """ Selects outcomes (and their associated weights) by (sorted) outcome index.
+        
+        Args:
+            select: If this is a `slice`, the result is a `Die`.
+                If this is an `int`, the result is the `outcome, weight` at that index.
+        """
+        if isinstance(select, slice):
+            outcomes = self.outcomes()[select]
+            weights = self.weights()[select]
+            return hdroller.Die(*outcomes, weights=weights)
+        else:
+            return self.items()[select]
     
     def min_outcome(*dice):
         """ Returns the minimum possible outcome among the dice. """
@@ -457,13 +473,6 @@ class BaseDie():
             max_depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
         """
-        if max_depth is None:
-            max_depth = 9
-        elif max_depth < 0:
-            raise ValueError('max_depth cannot be negative.')
-        elif max_depth == 0:
-            return self
-        
         if outcomes is None:
             outcomes = { self.max_outcome() }
         elif callable(outcomes):
@@ -471,6 +480,13 @@ class BaseDie():
             outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
         if len(outcomes) == 0:
+            return self
+        
+        if max_depth is None:
+            max_depth = 9
+        elif max_depth < 0:
+            raise ValueError('max_depth cannot be negative.')
+        elif max_depth == 0:
             return self
         
         tail_die = self.explode(outcomes=outcomes, max_depth=max_depth-1)
@@ -895,9 +911,6 @@ class BaseDie():
     
     def __reversed__(self):
         raise TypeError('A die cannot be reversed.')
-    
-    def __len__(self):
-        raise TypeError('The length of a die is ambiguous. Use die.num_outcomes(), die.denominator(), or die.ndim().')
     
     # Equality and hashing.
     
