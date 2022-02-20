@@ -2,10 +2,10 @@ __docformat__ = 'google'
 
 import hdroller
 import hdroller.die.base
-import hdroller.die.scalar
+from hdroller.collections import Slicer
 
 from collections import defaultdict
-from functools import wraps
+from functools import cached_property, wraps
 import itertools
 
 class VectorDie(hdroller.die.base.BaseDie):
@@ -73,8 +73,13 @@ class VectorDie(hdroller.die.base.BaseDie):
             data[outcome[select]] += weight
         return hdroller.Die(data, ndim=ndim)
     
-    __getitem__ = marginal
+    @cached_property
+    def slice_dims(self):
+        """ Subscript this to produce a marginal distribution.
         
+        For example, `die.slice_dims[0]` will extract the 0th dimension.
+        """
+        return Slicer(self.marginal)
     
     # Statistics.
     # These apply to a single dimension `i`.
@@ -83,42 +88,42 @@ class VectorDie(hdroller.die.base.BaseDie):
         return func(self[i], *args, **kwargs)
     
     def median_left(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.median_left, i)
+        return self._apply_to_dim(hdroller.ScalarDie.median_left, i)
         
     def median_right(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.median_right, i)
+        return self._apply_to_dim(hdroller.ScalarDie.median_right, i)
     
     def median(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.median, i)
+        return self._apply_to_dim(hdroller.ScalarDie.median, i)
     
     def ppf_left(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.ppf_left, i)
+        return self._apply_to_dim(hdroller.ScalarDie.ppf_left, i)
         
     def ppf_right(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.ppf_right, i)
+        return self._apply_to_dim(hdroller.ScalarDie.ppf_right, i)
     
     def ppf(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.ppf, i)
+        return self._apply_to_dim(hdroller.ScalarDie.ppf, i)
         
     def mean(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.mean, i)
+        return self._apply_to_dim(hdroller.ScalarDie.mean, i)
     
     def variance(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.variance, i)
+        return self._apply_to_dim(hdroller.ScalarDie.variance, i)
     
     def standard_deviation(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.standard_deviation, i)
+        return self._apply_to_dim(hdroller.ScalarDie.standard_deviation, i)
     
     sd = standard_deviation
     
     def standardized_moment(self, i, k):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.standardized_moment, i, k)
+        return self._apply_to_dim(hdroller.ScalarDie.standardized_moment, i, k)
     
     def skewness(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.skewness, i)
+        return self._apply_to_dim(hdroller.ScalarDie.skewness, i)
         
     def excess_kurtosis(self, i):
-        return self._apply_to_dim(hdroller.die.scalar.ScalarDie.excess_kurtosis, i)
+        return self._apply_to_dim(hdroller.ScalarDie.excess_kurtosis, i)
     
     # Joint statistics.
     

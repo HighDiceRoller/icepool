@@ -66,3 +66,10 @@ class Weights():
     
     def __repr__(self):
         return type(self).__qualname__ + f'({repr(self._d)})'
+
+class Slicer():
+    def __init__(self, bound_func):
+        self._func = bound_func
+
+    def __getitem__(self, select):
+        return self._func(select)
