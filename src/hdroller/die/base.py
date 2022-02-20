@@ -259,7 +259,7 @@ class BaseDie():
     
     # Rerolls and other outcome management.
     
-    def __getitem__(self, select):
+    def getitem(self, select):
         """ Selects outcomes (and their associated weights) by (sorted) outcome index.
         
         Args:
@@ -270,6 +270,8 @@ class BaseDie():
             return hdroller.Die({outcome : weight for outcome, weight in self.items()[select]})
         else:
             return self.items()[select]
+    
+    __getitem__ = getitem
     
     def min_outcome(*dice):
         """ Returns the minimum possible outcome among the dice. """
