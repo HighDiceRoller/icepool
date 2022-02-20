@@ -60,9 +60,6 @@ class Weights():
     
     def items(self):
         return self._items
-    
-    def __len__(self):
-        return len(self._d)
 
     def __str__(self):
         return str(self._d)
