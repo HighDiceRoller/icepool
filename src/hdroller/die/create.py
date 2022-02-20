@@ -138,13 +138,11 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     for arg in args:
         ndim = _arg_ndim(arg, ndim)
     
-    if ndim is None:
-        ndim = 'empty'
-    
     if ndim == 'scalar':
         data = Weights(data)
         return hdroller.ScalarDie(data)
-    elif ndim == 'empty':
+    elif ndim is None:
+        # Implicitly ndim = 'empty'.
         return hdroller.EmptyDie()
     else:
         data = Weights({ tuple(k) : v for k, v in data.items() })
