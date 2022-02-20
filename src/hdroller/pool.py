@@ -262,12 +262,15 @@ class DicePool():
             A sequence of one `int`s for each die.
                 Each die is counted that many times, which could be multiple or negative times.
                 This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.
-                Up to one `Ellipsis` (`...`) may be used. If an `Ellipsis` is used:
+                
+                Up to one `Ellipsis` (`...`) may be used.
+                If an `Ellipsis` is used, the size of the pool won't change. Instead:
                 
                 * If `count_dice` is shorter than `num_dice`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
                     For example, `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
                 * If `count_dice` has length equal to `num_dice`, the `Ellipsis` has no effect.
+                    For example, `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
                 * If `count_dice` is longer than `num_dice` and the `Ellipsis` is on one side,
                     elements will be dropped from `count_dice` on the side with the `Ellipsis`.
                     For example, `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
