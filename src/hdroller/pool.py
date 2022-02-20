@@ -282,7 +282,6 @@ class DicePool():
             ValueError if:
                 * `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.
                 * More than one `Ellipsis` is used.
-                * `Ellipsis` is used in the center with too many elements for `num_dice`.
         
         For example, here are some ways of selecting the two highest dice out of 5:
         
