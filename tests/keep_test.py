@@ -184,3 +184,7 @@ def test_two_lowest_slice_shorten():
 def test_highest_minus_lowest_slice():
     pool = hdroller.d6.pool(5)
     assert pool[-1,0,0,0,1].count_dice() == pool[-1,...,1].count_dice()
+
+def test_highest_minus_lowest_slice_shorten():
+    pool = hdroller.d6.pool(1)
+    assert pool[-1,...,1].count_dice() == (0,)

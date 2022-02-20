@@ -167,8 +167,15 @@ def count_dice_tuple(num_dice, count_dice):
         else:
             # Ellipsis in center.
             if extra_dice < 0:
-                raise ValueError(f'count_dice={count_dice} with Ellipsis (...) in center has too many elements for num_dice={num_dice}.')
-            return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(count_dice[split+1:])
+                result = [0] * num_dice
+                for i in range(min(split, num_dice)):
+                    result[i] += count_dice[i]
+                reverse_split = split - len(count_dice)
+                for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
+                    result[i] += count_dice[i]
+                return tuple(result)
+            else:
+                return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(count_dice[split+1:])
 
 _pool_cache = {}
 
@@ -255,9 +262,18 @@ class DicePool():
             A sequence of one `int`s for each die.
                 Each die is counted that many times, which could be multiple or negative times.
                 This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.
-                Up to one `Ellipsis` (`...`) may be used.
-                If one is used, `count_dice` will be padded with zero counts if shorter than `num_dice`,
-                or trimmed if longer.
+                Up to one `Ellipsis` (`...`) may be used. If an `Ellipsis` is used:
+                
+                * If `count_dice` is shorter than `num_dice`, the `Ellipsis`
+                    acts as enough zero counts to make up the difference.
+                    For example, `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
+                * If `count_dice` has length equal to `num_dice`, the `Ellipsis` has no effect.
+                * If `count_dice` is longer than `num_dice` and the `Ellipsis` is on one side,
+                    elements will be dropped from `count_dice` on the side with the `Ellipsis`.
+                    For example, `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
+                * If `count_dice` is longer than `num_dice` and the `Ellipsis` is in the middle,
+                    the counts will be as the sum of two one-sided `Ellipsis`.
+                    For example, `pool[-1, ..., 1]` on a single die would have the two ends cancel out.
         
         Raises:
             ValueError if:
