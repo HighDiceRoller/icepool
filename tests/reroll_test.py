@@ -3,6 +3,11 @@ import _context
 import hdroller
 import pytest
 
+def test_reroll_default():
+    result = hdroller.d6.reroll()
+    expected = hdroller.d5 + 1
+    assert result.equals(expected)
+
 def test_reroll():
     result = hdroller.d6.reroll([1])
     expected = hdroller.d5 + 1

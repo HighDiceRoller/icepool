@@ -285,7 +285,7 @@ class BaseDie():
             return None
         return self.outcomes()[index]
     
-    def reroll(self, outcomes, max_depth=None):
+    def reroll(self, outcomes=None, max_depth=None):
         """ Rerolls the given outcomes.
         
         Args:
@@ -293,6 +293,7 @@ class BaseDie():
                 * A callable that takes an outcome and returns `True` if it should be rerolled.
                     The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 * A set of outcomes to reroll.
+                * If not provided, the min outcome will be rerolled.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
         
@@ -300,9 +301,11 @@ class BaseDie():
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
         """
-        if callable(outcomes):
+        if outcomes is None:
+            outcomes = { self.min_outcome() }
+        elif callable(outcomes):
             func = self.wrap_unpack(outcomes)
-            outcomes = set(outcome for outcome in self.outcomes() if func(outcome))
+            outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
         if max_depth is None:
             data = { outcome : weight for outcome, weight in self.items() if outcome not in outcomes }
