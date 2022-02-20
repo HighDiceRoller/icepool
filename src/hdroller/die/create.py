@@ -118,9 +118,9 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     elif denominator_method == 'lcm':
         denominator_prod = math.lcm(*(d for d in arg_denominators if d > 0))
     elif denominator_method == 'lcm_weighted':
-        denominator_prod = math.lcm(*(d * w for d, w in zip(arg_denominators, weights) if d > 0))
+        denominator_prod = math.lcm(*(d // math.gcd(d, w) for d, w in zip(arg_denominators, weights) if d > 0))
     else:
-        raise ValueError(f'Invalid denominator_method {denominator_method}.')    
+        raise ValueError(f'Invalid denominator_method {denominator_method}.')
     
     # Compute ndim.
     ndim = _calc_ndim(*args)

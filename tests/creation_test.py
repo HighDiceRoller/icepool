@@ -39,3 +39,26 @@ def test_d6s():
 def test_return_self():
     die = hdroller.d6
     assert hdroller.Die(die) is die
+
+denominator_method_test_args = [
+    ((), None),
+    ((hdroller.d5, hdroller.d7), None),
+    ((hdroller.d6, hdroller.d8), None),
+    ((hdroller.d6, hdroller.d8, hdroller.d10), None),
+    ((hdroller.d6, hdroller.d8, hdroller.d10, hdroller.d12), (4, 3, 2, 1)),
+    ((hdroller.d6, hdroller.d8, hdroller.d10, hdroller.d12), (3, 4, 5, 6)),
+]
+
+@pytest.mark.parametrize('args,weights', denominator_method_test_args)
+def test_denominator_method(args, weights):
+    prod = hdroller.Die(*args, weights=weights, denominator_method='prod')
+    lcm = hdroller.Die(*args, weights=weights, denominator_method='lcm')
+    lcm_weighted = hdroller.Die(*args, weights=weights, denominator_method='lcm_weighted')
+    assert prod.reduce().equals(lcm.reduce())
+    assert prod.reduce().equals(lcm_weighted.reduce())
+    assert prod.denominator() >= lcm.denominator()
+    assert lcm.denominator() >= lcm_weighted.denominator()
+
+def test_denominator_lcm_weighted():
+    result = hdroller.Die(hdroller.d6, hdroller.d8, hdroller.d10, hdroller.d12, weights=(3, 4, 5, 6), denominator_method='lcm_weighted')
+    assert result.denominator() == 36
