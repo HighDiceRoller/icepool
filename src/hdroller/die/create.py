@@ -103,11 +103,11 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     arg_denominators = [_arg_denominator(arg) for arg in args]
     
     if denominator_method == 'prod':
-        weight_product = math.prod(arg_denominators)
+        final_denominator = math.prod(arg_denominators)
     elif denominator_method == 'lcm':
-        weight_product = math.lcm(*arg_denominators)
+        final_denominator = math.lcm(*arg_denominators)
     elif denominator_method == 'lcm_weighted':
-        weight_product = math.lcm(*[atw * w for atw, w in zip(arg_denominators, weights)])
+        final_denominator = math.lcm(*[arg_denominator * w for arg_denominator, w in zip(arg_denominators, weights)])
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')    
     
@@ -116,8 +116,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     
     # Make data.
     data = defaultdict(int)
-    for arg, atw, w in zip(args, arg_denominators, weights):
-        factor = weight_product * w // atw if atw else 0
+    for arg, arg_denominator, w in zip(args, arg_denominators, weights):
+        factor = final_denominator * w // arg_denominator if arg_denominator else 0
         if _is_die(arg) or _is_dict(arg):
             for outcome, weight in arg.items():
                 data[outcome] += weight * factor
