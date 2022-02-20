@@ -279,9 +279,9 @@ class DicePool():
                     For example, `pool[-1, ..., 1]` on a single die would have the two ends cancel out.
         
         Raises:
-            ValueError if:
-                * `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.
-                * More than one `Ellipsis` is used.
+            ValueError:
+                * If `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.
+                * If more than one `Ellipsis` is used.
         
         For example, here are some ways of selecting the two highest dice out of 5:
         
