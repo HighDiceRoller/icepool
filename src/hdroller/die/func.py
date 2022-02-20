@@ -125,7 +125,7 @@ def apply(func, *dice, ndim=None):
     In particular, for pools use `hdroller.Pool` and `hdroller.EvalPool` instead if possible.
     
     Args:
-        func: A function that takes one argument per input die and returns a new outcome.
+        func: A function that takes one argument per input die and returns an argument to `Die()`.
         ndim: If supplied, the result will have this many dimensions.
     
     Returns:
@@ -133,9 +133,15 @@ def apply(func, *dice, ndim=None):
     """
     # No common ndim required for the inputs in this case.
     dice = [hdroller.Die(die) for die in dice]
+    final_outcomes = []
+    final_weights = []
     data = defaultdict(int)
     for t in itertools.product(*(die.items() for die in dice)):
         outcomes, weights = zip(*t)
-        data[func(*outcomes)] += math.prod(weights)
+        final_outcome = func(*outcomes)
+        final_weight = math.prod(weights)
+        if final_outcome is not hdroller.Reroll:
+            final_outcomes.append(final_outcome)
+            final_weights.append(final_weight)
     
-    return hdroller.Die(data, ndim=ndim)
+    return hdroller.Die(*final_outcomes, weights=final_weights, ndim=ndim)
