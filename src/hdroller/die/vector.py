@@ -74,10 +74,10 @@ class VectorDie(hdroller.die.base.BaseDie):
         return hdroller.Die(data, ndim=ndim)
     
     @cached_property
-    def dims(self):
+    def dim(self):
         """ Subscript this to produce a marginal distribution.
         
-        For example, `die.dims[0]` will extract the 0th dimension.
+        For example, `die.dim[0]` will extract the 0th dimension.
         """
         return Slicer(self.marginal)
     
