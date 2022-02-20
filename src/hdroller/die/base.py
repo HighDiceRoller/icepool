@@ -267,9 +267,7 @@ class BaseDie():
                 If this is an `int`, the result is the `outcome, weight` at that index.
         """
         if isinstance(select, slice):
-            outcomes = self.outcomes()[select]
-            weights = self.weights()[select]
-            return hdroller.Die(*outcomes, weights=weights)
+            return hdroller.Die({outcome : weight for outcome, weight in self.items()[select]})
         else:
             return self.items()[select]
     
@@ -405,8 +403,7 @@ class BaseDie():
     
     @cached_property
     def _pop_max(self):
-        d = { k : v for k, v in zip(self.outcomes()[:-1], self.weights()[:-1]) }
-        die = hdroller.Die(d, ndim=self.ndim())
+        die = self[:-1]
         return die, self.outcomes()[-1], self.weights()[-1]
     
     def pop_max(self):
@@ -419,8 +416,7 @@ class BaseDie():
     
     @cached_property
     def _pop_min(self):
-        d = { k : v for k, v in zip(self.outcomes()[1:], self.weights()[1:]) }
-        die = hdroller.Die(d, ndim=self.ndim())
+        die = self[1:]
         return die, self.outcomes()[0], self.weights()[0]
     
     def pop_min(self):
