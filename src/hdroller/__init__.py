@@ -10,6 +10,7 @@ from hdroller.die.func import standard, d, __getattr__, bernoulli, coin, from_cw
 import hdroller.die.base
 
 from hdroller.die.base import BaseDie
+from hdroller.die.empty import EmptyDie
 from hdroller.die.scalar import ScalarDie
 from hdroller.die.vector import VectorDie
 
@@ -30,7 +31,7 @@ Reroll = SpecialValue.Reroll
 
 __all__ = ['Die', 'dice_with_common_ndim',
     'standard', 'd', '__getattr__', 'bernoulli', 'coin',
-    'BaseDie', 'ScalarDie', 'VectorDie',
+    'BaseDie', 'EmptyDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
     'apply',

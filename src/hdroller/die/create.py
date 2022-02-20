@@ -94,20 +94,31 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         weights = (1,) * len(args)
     
     # Remove rerolls.
-    args, weights = zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not hdroller.Reroll))
+    args_weights = tuple(zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not hdroller.Reroll)))
+    if len(args_weights) == 0:
+        args, weights = (), ()
+    else:
+        args, weights = args_weights
     for arg in args:
         if _is_dict(arg) and hdroller.Reroll in arg:
             del arg[hdroller.Reroll]
+    
+    # Special cases.
+    if len(args) == 0:
+        return hdroller.EmptyDie()
+    elif len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
+        # Single unmodified die: just return the existing instance.
+        return args[0]
     
     # Total weights.
     arg_denominators = [_arg_denominator(arg) for arg in args]
     
     if denominator_method == 'prod':
-        denominator_prod = math.prod(arg_denominators)
+        denominator_prod = math.prod(d for d in arg_denominators if d > 0)
     elif denominator_method == 'lcm':
-        denominator_prod = math.lcm(*arg_denominators)
+        denominator_prod = math.lcm(*(d for d in arg_denominators if d > 0))
     elif denominator_method == 'lcm_weighted':
-        denominator_prod = math.lcm(*[arg_denominator * w for arg_denominator, w in zip(arg_denominators, weights)])
+        denominator_prod = math.lcm(*(d * w for d, w in zip(arg_denominators, weights) if d > 0))
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')    
     
@@ -128,11 +139,13 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         ndim = _arg_ndim(arg, ndim)
     
     if ndim is None:
-        ndim = 'scalar'
+        ndim = 'empty'
     
     if ndim == 'scalar':
         data = Weights(data)
         return hdroller.ScalarDie(data)
+    elif ndim == 'empty':
+        return hdroller.EmptyDie()
     else:
         data = Weights({ tuple(k) : v for k, v in data.items() })
         return hdroller.VectorDie(data, ndim)
@@ -186,11 +199,14 @@ def _arg_ndim(arg, ndim):
         return 'scalar'
     elif _is_dict(arg):
         for outcome in arg.keys():
-            if hasattr(outcome, '__len__'):
+            # No recursion to nested dicts.
+            if _is_seq(outcome):
                 if ndim is None:
                     ndim = len(outcome)
                 elif len(outcome) != ndim:
                     return 'scalar'
+            else:
+                return 'scalar'
         return ndim
     elif _is_seq(arg):
         # Arg is a sequence.

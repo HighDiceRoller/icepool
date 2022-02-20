@@ -35,4 +35,7 @@ def test_d6s():
     assert d6.equals(hdroller.Die(hdroller.d3, hdroller.d3+3))
     assert d6.equals(hdroller.Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1}))
     assert d6.equals(hdroller.Die(1, 2, 3, 4, 5, 6))
-    
+
+def test_return_self():
+    die = hdroller.d6
+    assert hdroller.Die(die) is die

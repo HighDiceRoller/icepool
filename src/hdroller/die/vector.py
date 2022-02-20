@@ -18,7 +18,10 @@ class VectorDie(hdroller.die.base.BaseDie):
     """
     
     def ndim(self):
-        """ Returns the number of dimensions if is a `VectorDie`, or `False` otherwise. """
+        """ Returns the number of dimensions if this is a `VectorDie`.
+        
+        Otherwise, returns 'scalar' for a `ScalarDie` and 'empty'` for an `EmptyDie`.
+        """
         return self._ndim
     
     def __init__(self, data, ndim):
