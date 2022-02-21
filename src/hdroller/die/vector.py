@@ -52,7 +52,7 @@ class VectorDie(hdroller.die.base.BaseDie):
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
             data[new_outcome] += weight_self * weight_other
-        return hdroller.Die(data, ndim=ndim)
+        return hdroller.Die(data, ndim=self.ndim())
     
     def wrap_unpack(self, func):
         """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
