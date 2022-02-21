@@ -123,7 +123,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         raise ValueError(f'Invalid denominator_method {denominator_method}.')
     
     # Compute ndim.
-    ndim = _calc_ndim(*args)
+    ndim = _calc_ndim(*args, ndim=ndim)
     
     # Make data.
     data = defaultdict(int)
@@ -135,15 +135,15 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         else:
             data[arg] += factor
     
+    if len(data) == 0:
+        return hdroller.EmptyDie()
+    
     for arg in args:
         ndim = _arg_ndim(arg, ndim)
     
     if ndim == 'scalar':
         data = Weights(data)
         return hdroller.ScalarDie(data)
-    elif ndim is None:
-        # Implicitly ndim = 'empty'.
-        return hdroller.EmptyDie()
     else:
         data = Weights({ tuple(k) : v for k, v in data.items() })
         return hdroller.VectorDie(data, ndim)
@@ -165,7 +165,7 @@ def _arg_denominator(arg):
     else:
         return 1
 
-def _calc_ndim(*args, ndim=None):
+def _calc_ndim(*args, ndim):
     """ Computes the common `ndim` of the arguments. 
     
     Args:
@@ -231,5 +231,5 @@ def dice_with_common_ndim(*args, ndim=None):
     Raises:
         `ValueError` if the arguments include conflicting `ndim`s.
     """
-    ndim = _calc_ndim(*args, ndim)
+    ndim = _calc_ndim(*args, ndim=ndim)
     return tuple(Die(arg, ndim=ndim) for arg in args), ndim

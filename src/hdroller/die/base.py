@@ -267,7 +267,7 @@ class BaseDie():
                 If this is an `int`, the result is the `outcome, weight` at that index.
         """
         if isinstance(select, slice):
-            return hdroller.Die({outcome : weight for outcome, weight in self.items()[select]})
+            return hdroller.Die({outcome : weight for outcome, weight in self.items()[select]}, ndim=self.ndim())
         else:
             return self.items()[select]
     
