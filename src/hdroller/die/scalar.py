@@ -54,7 +54,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
     
     # Special operators.
     
-    def d(self, other):
+    def d(self, other, ndim=None):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
         
         If an `int` is provided for the right side, it becomes a standard die with that many faces.
@@ -63,7 +63,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         if isinstance(other, int):
             other = hdroller.standard(other)
         else:
-            other = hdroller.Die(other)
+            other = hdroller.Die(other, ndim=ndim)
         
         subresults = []
         subresult_weights = []
