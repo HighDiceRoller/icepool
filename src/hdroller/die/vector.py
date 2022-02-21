@@ -82,9 +82,11 @@ class VectorDie(hdroller.die.base.BaseDie):
         return Slicer(self.marginal)
     
     def all(self):
+        """ Returns a die representing whether all dimensions are true. """
         return self.sub(lambda *outcome: all(outcome), ndim='scalar')
     
     def any(self):
+        """ Returns a die representing whether any dimension is true. """
         return self.sub(lambda *outcome: any(outcome), ndim='scalar')
     
     # Statistics.
