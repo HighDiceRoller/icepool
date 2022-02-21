@@ -81,6 +81,12 @@ class VectorDie(hdroller.die.base.BaseDie):
         """
         return Slicer(self.marginal)
     
+    def all(self):
+        return self.sub(lambda *outcome: all(outcome), ndim='scalar')
+    
+    def any(self):
+        return self.sub(lambda *outcome: any(outcome), ndim='scalar')
+    
     # Statistics.
     # These apply to a single dimension `i`.
     
