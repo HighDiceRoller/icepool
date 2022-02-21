@@ -1,3 +1,15 @@
+## 0.6.4
+
+* `EmptyDie` (a die with no outcomes) is now its own class.
+* `mix()` along with its weights argument is folded into the `Die()` factory.
+* Fixes to `ndim` calculation.
+* `apply(), EvalPool.final_outcome()` can now return dice, `hdroller.Reroll`, etc.
+* Center `Ellipsis` when indexing a pool can now work on undersized pools, rather than being an error.
+* Fix `lcm_weighted` denominator method.
+* `len(die)` is now the same as `die.num_outcomes()` again.
+* Slicing a die now refers to (sorted) outcome indexes.
+* Dimension slicing is now `VectorDie.dim[select]`.
+
 ## 0.6.3
 
 * `Die()` now takes a variable number of arguments. A sequence provided as a single argument will be treated as a single outcome equal to that sequence.
