@@ -1,3 +1,8 @@
+## 0.6.5
+
+* Add `VectorDie.all()` and `VectorDie.any()`.
+* More fixes to `ndim` calculation.
+
 ## 0.6.4
 
 * `EmptyDie` (a die with no outcomes) is now its own class.
