@@ -62,3 +62,12 @@ def test_denominator_method(args, weights):
 def test_denominator_lcm_weighted():
     result = hdroller.Die(hdroller.d6, hdroller.d8, hdroller.d10, hdroller.d12, weights=(3, 4, 5, 6), denominator_method='lcm_weighted')
     assert result.denominator() == 36
+
+def test_scalar_vector():
+    assert hdroller.Die({}, ndim='scalar').ndim() == 'empty'
+    assert hdroller.Die({}, ndim=3).ndim() == 'empty'
+    assert hdroller.Die({hdroller.Reroll : 1}, ndim='scalar').ndim() == 'empty'
+    assert hdroller.Die((1, 2, 3)).ndim() == 3
+    assert hdroller.Die((1, 2, 3), ndim='scalar').ndim() == 'scalar'
+    assert hdroller.Die('test').ndim() == 'scalar'
+    

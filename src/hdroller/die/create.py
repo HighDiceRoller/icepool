@@ -59,8 +59,9 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         ndim: If set to `'scalar'`, the die will be forced to be scalar.
             If set to an `int`, the die will be forced to be vector with that number of dimensions.
             If not provided, this will be automatically detected.
-            E.g. for `str` outcomes you may want to set `ndim='scalar'`, which will
-            treat e.g. `'abc' as a single string rather than `('a', 'b', 'c')`.
+            If all arguments are sequences of the same length and are not `str` or `bytes`,
+            the result will have that many dimensions.
+            Otherwise the result will be scalar.
         denominator_method: How to determine the denominator of the result
             if the arguments themselves contain weights.
             From greatest to least:
@@ -155,7 +156,7 @@ def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
 
 def _is_seq(arg):
-    return hasattr(arg, '__len__')
+    return hasattr(arg, '__len__') and not isinstance(arg, (bytes, str))
 
 def _arg_denominator(arg):
     if _is_die(arg):
