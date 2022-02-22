@@ -352,7 +352,7 @@ class BaseDie():
             not_outcomes = lambda outcome: not outcomes(outcome)
         else:
             not_outcomes = lambda outcome: outcome not in outcomes
-        return self.reroll(not_outcomes, max_depth)
+        return self.reroll(not_outcomes, max_depth=max_depth)
     
     def clip(self, min_outcome=None, max_outcome=None):
         """ Clips the outcomes of this die to the given values.
@@ -431,7 +431,7 @@ class BaseDie():
     
     # Mixtures.
 
-    def sub(self, repl, /, ndim=None, denominator_method='lcm'):
+    def sub(self, repl, /, *, ndim=None, denominator_method='lcm'):
         """ Changes outcomes of the die to other outcomes.
         
         You can think of this as `sub`stituting outcomes of this die for other outcomes or dice.

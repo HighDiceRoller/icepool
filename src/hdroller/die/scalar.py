@@ -54,7 +54,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
     
     # Special operators.
     
-    def d(self, other, ndim=None):
+    def d(self, other, *, ndim=None):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
         
         If an `int` is provided for the right side, it becomes a standard die with that many faces.
@@ -96,7 +96,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     
-    def if_else(self, true_die, false_die, ndim=None, denominator_method='lcm'):
+    def if_else(self, true_die, false_die, *, ndim=None, denominator_method='lcm'):
         """ If the result of `self` has a true value, roll `true_die`, else roll `false_die`.
         
         Also known as the ternary conditional operator.
