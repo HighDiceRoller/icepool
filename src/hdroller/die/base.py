@@ -301,7 +301,7 @@ class BaseDie():
             return None
         return self.outcomes()[index]
     
-    def reroll(self, outcomes=None, max_depth=None):
+    def reroll(self, outcomes=None, *, max_depth=None):
         """ Rerolls the given outcomes.
         
         Args:
@@ -332,7 +332,7 @@ class BaseDie():
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
         return hdroller.Die(data, ndim=self.ndim())
     
-    def reroll_until(self, outcomes, max_depth=None):
+    def reroll_until(self, outcomes, *, max_depth=None):
         """ Rerolls until getting one of the given outcomes.
         
         Essentially the complement of `reroll()`.
@@ -459,7 +459,7 @@ class BaseDie():
 
         return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
     
-    def explode(self, outcomes=None, max_depth=None):
+    def explode(self, outcomes=None, *, max_depth=None):
         """ Causes outcomes to be rolled again and added to the total.
         
         Args:
