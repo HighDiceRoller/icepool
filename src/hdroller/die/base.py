@@ -627,38 +627,6 @@ class BaseDie():
             return self.zero()
         return hdroller.from_sweights(self.outcomes(), (x ** num_dice for x in self.sweights()), ndim=self.ndim())
     
-    # Processes.
-    
-    def hitting_time(self, cond, max_depth):
-        """ Repeats and sums this dice until `cond` is successful, and counts the number of rolls to success.
-        
-        Args:
-            * cond: A function that takes outcomes and returns `True` if the sum is successful.
-                `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.
-            * max_depth: The maximum number of times to repeat.
-                This can be `None` for an unlimited number of times,
-                but you need to make sure that success is guaranteed within a limited number of repeats in this case.
-        
-        Returns:
-            A die representing the number of rolls until success.
-        """
-        cond = self.wrap_unpack(cond)
-        num_dice = 0
-        done, not_done = self.zero().split(cond)
-        done_weight = done.denominator()
-        data = [done_weight]
-        while True:
-            if max_depth is not None and num_dice > max_depth:
-                break
-            data = [x * self.denominator() for x in data]
-            not_done += self
-            new_done, not_done = not_done.split(cond)
-            data.append(data[-1] + new_done.denominator())
-            if not_done.denominator() == 0:
-                break
-            num_dice += 1
-        return hdroller.from_cweights(range(len(data)), data)
-    
     # Unary operators.
     
     def __neg__(self):
