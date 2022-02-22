@@ -29,12 +29,12 @@ class SpecialValue(enum.Enum):
 
 Reroll = SpecialValue.Reroll
 
-__all__ = ['Die', 'dice_with_common_ndim',
+__all__ = ['Die',
     'standard', 'd', '__getattr__', 'bernoulli', 'coin',
     'BaseDie', 'EmptyDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
-    'apply',
+    'apply', 'dice_with_common_ndim',
     'Reroll',
     'Pool', 'standard_pool', 'DicePool',
     'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun',
