@@ -13,7 +13,7 @@ pages:
         - pip install jupyterlab_server pdoc
         - pip install --pre jupyterlite
     script:
-        - pdoc --favicon public/die.png -o public/apidoc src/hdroller
+        - pdoc --favicon "../die.png" -o public/apidoc src/hdroller
         - jupyter lite build
     artifacts:
         paths:
