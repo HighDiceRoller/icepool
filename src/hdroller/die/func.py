@@ -58,7 +58,7 @@ def bernoulli(n, d):
 
 coin = bernoulli
 
-def from_cweights(outcomes, cweights, ndim=None):
+def from_cweights(outcomes, cweights, *, ndim=None):
     """ Constructs a die from cumulative weights. """
     prev = 0
     d = {}
@@ -67,7 +67,7 @@ def from_cweights(outcomes, cweights, ndim=None):
         prev = weight
     return hdroller.Die(d, ndim=ndim)
     
-def from_sweights(outcomes, sweights, ndim=None):
+def from_sweights(outcomes, sweights, *, ndim=None):
     """ Constructs a die from survival weights. """
     prev = 0
     d = {}
