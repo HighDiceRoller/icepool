@@ -1,4 +1,9 @@
-""" Package for computing dice probabilities. """
+""" Package for computing dice probabilities.
+
+See [this JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/notebooks/lab/index.html) for examples.
+
+[Visit the project page.](https://gitlab.com/highdiceroller/hdroller)
+"""
 
 __docformat__ = 'google'
 
