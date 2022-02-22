@@ -16,10 +16,6 @@ class ScalarDie(hdroller.die.base.BaseDie):
     """
     
     def ndim(self):
-        """ Returns the number of dimensions if this is a `VectorDie`.
-        
-        Otherwise, returns 'scalar' for a `ScalarDie` and 'empty' for an `EmptyDie`.
-        """
         return 'scalar'
     
     def __init__(self, data):
@@ -49,7 +45,6 @@ class ScalarDie(hdroller.die.base.BaseDie):
         return hdroller.Die(data, ndim='scalar')
     
     def wrap_unpack(self, func):
-        """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
         return func
     
     # Special operators.

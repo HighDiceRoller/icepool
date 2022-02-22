@@ -56,10 +56,13 @@ class EvalPool(ABC):
                 either ascending or descending depending on `direction()`.
                 If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.
                 Interleaving outcomes between different pools is allowed but strongly discouraged.
-            counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
+            *counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
                 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
                 In this case, the count for the pool(s) that do not have the outcome will be 0. 
                 Zero-weight outcomes count as having that outcome.
+                
+                Most subclasses will expect a fixed number of pools and 
+                can replace this variadic parameter with a fixed number of named parameters.
         
         Returns:
             A hashable object indicating the next state.
@@ -79,6 +82,9 @@ class EvalPool(ABC):
             final_state: A state after all outcomes have been processed.
             *pools: One or more `DicePool`s being evaluated.
             
+                Most subclasses will expect a fixed number of pools and 
+                can replace this variadic parameter with a fixed number of named parameters.
+            
         Returns:
             A final outcome that will be used as part of constructing the result die.
             As usual for `Die()`, this could itself be a die or `hdroller.Reroll`.
@@ -96,6 +102,9 @@ class EvalPool(ABC):
         Args:
             *pools: One or more `DicePool`s being evaluated.
             
+                Most subclasses will expect a fixed number of pools and 
+                can replace this variadic parameter with a fixed number of named parameters.
+            
         Returns:
             * > 0 if `next_state()` should always see the outcomes in ascending order.
             * < 0 if `next_state()` should always see the outcomes in descending order.
@@ -110,6 +119,9 @@ class EvalPool(ABC):
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
+                
+                Most subclasses will expect a fixed number of pools and 
+                can replace this variadic parameter with a fixed number of named parameters.
         
         Returns:
             The number of dimensions that the output die should have,

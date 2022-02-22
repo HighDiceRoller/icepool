@@ -7,10 +7,7 @@ from functools import cached_property
 import math
 
 def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes=None):
-    """ Factory function for dice pools.
-    
-    A pool represents rolling a set of dice where you do not know which die rolled which outcome,
-    only how many dice rolled each outcome.
+    """ Factory function for `DicePool`.
     
     This should be used in conjunction with `EvalPool` to generate a result.
     
@@ -211,6 +208,18 @@ def standard_pool(*die_sizes, count_dice=None):
     return Pool(hdroller.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
 
 class DicePool():
+    """ A pool is a set of (semi-)identical dice that are rolled in no particular order
+    and sorted only after the fact.
+    
+    A pool is defined by:
+
+    * A fundamental die.
+    * The number of dice in the pool.
+    * Which of the sorted positions are counted (possibly multiple or negative times).
+    * Possibly limiting the max or min outcomes of dice in the pool (but not both)
+        relative to the fundamental die.
+    """
+    
     def __init__(self, die, count_dice, *, max_outcomes, min_outcomes):
         """ Unchecked constructor.
         
@@ -276,10 +285,12 @@ class DicePool():
                     For example, `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
                 * If `count_dice` is longer than `num_dice` and the `Ellipsis` is in the middle,
                     the counts will be as the sum of two one-sided `Ellipsis`.
-                    For example, `pool[-1, ..., 1]` on a single die would have the two ends cancel out.
+                    For example, `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
+                    On a pool consisting of a single single die this would have the -1 and 1 cancel each other out.
         
         Raises:
             ValueError:
+            
                 * If `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.
                 * If more than one `Ellipsis` is used.
         
@@ -343,7 +354,7 @@ class DicePool():
         """ A tuple of sorted max outcomes, one for each die in the pool. 
         
         Args:
-            * always_tuple: If `False`, this will return `None` if there are no die-specific max_outcomes.
+            always_tuple: If `False`, this will return `None` if there are no die-specific `max_outcomes`.
                 If `True` this will return a `tuple` even in this case.
         """
         if self._max_outcomes is None and always_tuple:
@@ -354,7 +365,7 @@ class DicePool():
         """ A tuple of sorted min outcomes, one for each die in the pool. 
         
         Args:
-            * always_tuple: If `False`, this will return `None` if there are no die-specific min_outcomes.
+            always_tuple: If `False`, this will return `None` if there are no die-specific `min_outcomes`.
                 If `True` this will return a `tuple` even in this case.
         """
         if self._min_outcomes is None and always_tuple:
@@ -509,7 +520,8 @@ class DicePool():
         
         Args:
             func: This can be an `EvalPool`, in which case it evaluates the pool directly.
-                Or it can be a `next_state()`-like function, taking in state, outcome, *counts and returning the next state.
+                Or it can be a `EvalPool.next_state()`-like function,
+                taking in `state, outcome, *counts` and returning the next state.
                 In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.
         """
         if not isinstance(eval_or_func, hdroller.EvalPool):

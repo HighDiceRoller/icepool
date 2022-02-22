@@ -41,7 +41,7 @@ class BaseDie():
     def ndim(self):
         """ Returns the number of dimensions if this is a `VectorDie`.
         
-        Otherwise, returns 'scalar' for a `ScalarDie` and 'empty' for an `EmptyDie`.
+        Otherwise, returns `'scalar'` for a `ScalarDie` and `'empty'` for an `EmptyDie`.
         """
     
     # Abstract methods.
@@ -72,7 +72,7 @@ class BaseDie():
     
     @abstractmethod
     def wrap_unpack(self, func):
-        """ Possibly wraps func so that outcomes are unpacked before giving it to func. """
+        """ Possibly wraps `func` so that outcomes are unpacked before giving it to `func`. """
     
     # Basic access.
     
@@ -891,8 +891,6 @@ class BaseDie():
     def hash(self):
         """ A true __hash__ doesn't work because we used the __eq__ operator 
         for determining the chance two dice will roll equal to each other.
-        
-        See `hdroller.functools.die_cache` for an example.
         """
         return hash(self.key_tuple())
     
@@ -905,7 +903,7 @@ class BaseDie():
         Also, if one die has a zero-weight outcome and the other die does not contain that outcome,
         they are treated as unequal by this function.
         
-        For the chance of two dice rolling the same outcome, use the == operator.
+        For the chance of two dice rolling the same outcome, use the `==` operator.
         """
         try:
             other = hdroller.Die(other, ndim=self.ndim())
