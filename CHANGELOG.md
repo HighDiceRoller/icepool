@@ -1,3 +1,10 @@
+## 0.6.6
+
+* Add `ndim` keyword argument to `d()`.
+* Removed `hitting_time()` method; it seems too niche to commit to.
+* Several arguments are now keyword-only.
+* Fix to `reroll_until()` for vector dice.
+
 ## 0.6.5
 
 * Add `VectorDie.all()` and `VectorDie.any()`.
