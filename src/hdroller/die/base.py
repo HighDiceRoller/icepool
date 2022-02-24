@@ -349,9 +349,10 @@ class BaseDie():
             If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
-            not_outcomes = lambda outcome: not outcomes(outcome)
+            func = self.wrap_unpack(outcomes)
+            not_outcomes = { outcome for outcome in self.outcomes() if not func(outcome) }
         else:
-            not_outcomes = lambda outcome: outcome not in outcomes
+            not_outcomes = { not_outcome for not_outcome in self.outcomes() if not_outcome not in outcomes }
         return self.reroll(not_outcomes, max_depth=max_depth)
     
     def clip(self, min_outcome=None, max_outcome=None):

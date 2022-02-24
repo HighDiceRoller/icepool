@@ -47,3 +47,13 @@ def test_reroll_until_func():
 
 def test_infinite_reroll():
     assert hdroller.d4.reroll([1, 2, 3, 4]).num_outcomes() == 0
+
+def test_reroll_multidim():
+    result = hdroller.Die((1, 0), (0, 1)).reroll(lambda a, b: a == 0)
+    expected = hdroller.Die((1, 0))
+    assert result.equals(expected)
+
+def test_reroll_until_multidim():
+    result = hdroller.Die((1, 0), (0, 1)).reroll_until(lambda a, b: a == 0)
+    expected = hdroller.Die((0, 1))
+    assert result.equals(expected)
