@@ -60,20 +60,14 @@ class ScalarDie(hdroller.die.base.BaseDie):
         else:
             other = hdroller.Die(other, ndim=ndim)
         
-        subresults = []
-        subresult_weights = []
+        data = defaultdict(int)
         
         max_abs_die_count = max(abs(self.min_outcome()), abs(self.max_outcome()))
         for die_count, die_count_weight in self.items():
             factor = other.denominator() ** (max_abs_die_count - abs(die_count))
-            subresults.append(other.repeat_and_sum(die_count))
-            subresult_weights.append(die_count_weight * factor)
-        
-        data = defaultdict(int)
-        
-        for subresult, subresult_weight in zip(subresults, subresult_weights):
-            for outcome, weight in subresult.items():
-                data[outcome] += weight * subresult_weight
+            subresult = other.repeat_and_sum(die_count)
+            for outcome, subresult_weight in subresult.items():
+                data[outcome] += subresult_weight * die_count_weight * factor
             
         return hdroller.Die(data, ndim=other.ndim())
     
