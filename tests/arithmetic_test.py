@@ -104,3 +104,7 @@ def test_d():
     result = hdroller.d3.d(3)
     expected = hdroller.Die({1: 9, 2: 12, 3: 16, 4: 12, 5: 12, 6: 10, 7: 6, 8: 3, 9: 1})
     assert result.equals(expected)
+
+def test_d_negative():
+    result = (hdroller.d7 - 4).d(3)
+    assert result.equals(-result)
