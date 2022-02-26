@@ -523,12 +523,19 @@ class BaseDie():
         dice = hdroller.align(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
         return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
+
+    @cached_property
+    def _repeat_and_sum_cache(self):
+        return {}
     
     def repeat_and_sum(self, num_dice):
         """ Roll this die `num_dice` times and sum the results. 
         
         If `num_dice` is negative, roll the die `abs(num_dice)` times and negate the result.
         """
+        if num_dice in self._repeat_and_sum_cache:
+            return self._repeat_and_sum_cache[num_dice]
+        
         if num_dice < 0:
             return -self.repeat_and_sum(-num_dice)
         elif num_dice == 0:
@@ -536,9 +543,10 @@ class BaseDie():
         elif num_dice == 1:
             return self
         
-        half_result = self.repeat_and_sum(num_dice // 2)
-        result = half_result + half_result
-        if num_dice % 2: result += self
+        # Binary split seems to perform much worse.
+        result = self + self.repeat_and_sum(num_dice - 1)
+        
+        self._repeat_and_sum_cache[num_dice] = result
         return result
     
     def pool(self, *args, **kwargs):
