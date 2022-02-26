@@ -537,14 +537,14 @@ class BaseDie():
             return self._repeat_and_sum_cache[num_dice]
         
         if num_dice < 0:
-            return -self.repeat_and_sum(-num_dice)
+            result = -self.repeat_and_sum(-num_dice)
         elif num_dice == 0:
-            return self.zero()
+            result = self.zero()
         elif num_dice == 1:
-            return self
-        
-        # Binary split seems to perform much worse.
-        result = self + self.repeat_and_sum(num_dice - 1)
+            result = self
+        else:
+            # Binary split seems to perform much worse.
+            result = self + self.repeat_and_sum(num_dice - 1)
         
         self._repeat_and_sum_cache[num_dice] = result
         return result
