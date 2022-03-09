@@ -4,6 +4,8 @@ This collection of Jupyter notebooks gives several examples of using the `hdroll
 
 [API documentation.](https://highdiceroller.gitlab.io/hdroller/apidoc/hdroller.html)
 
+If you have questions or comments, feel free to message me on [Reddit](https://www.reddit.com/user/HighDiceRoller) or [Twitter](https://twitter.com/highdiceroller).
+
 ## Tips (JupyterLite)
 
 * Your local edits are stored in your browser. Only you can see your local version.
