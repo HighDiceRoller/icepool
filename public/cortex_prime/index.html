@@ -191,24 +191,24 @@
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.4.4')
+                await micropip.install('hdroller==0.6.6')
                 
                 import js
                 import pyodide
                 import hdroller
                 
-                reference_die = hdroller.d12.relabel({1: 0})
+                reference_die = hdroller.d12.sub({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
-                die_player_unaligned, hitch_player_unaligned = hdroller.die(0), hdroller.die(0)
-                die_opposition_unaligned, hitch_opposition_unaligned = hdroller.die(0), hdroller.die(0)
+                die_player_unaligned, hitch_player_unaligned = hdroller.Die(0), hdroller.Die(0)
+                die_opposition_unaligned, hitch_opposition_unaligned = hdroller.Die(0), hdroller.Die(0)
                 
                 def calc_pool(prefix):
                     max_outcomes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
                     die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, max_outcomes=max_outcomes)
-                    hitch = hdroller.die(0)
+                    hitch = hdroller.Die(0)
                     for n in max_outcomes:
                         hitch += hdroller.coin(1, n)
                     return die, hitch
