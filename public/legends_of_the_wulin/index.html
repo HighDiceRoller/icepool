@@ -137,7 +137,7 @@
             setLoadingText('Loading hdroller')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.4.4')
+                await micropip.install('hdroller==0.6.6')
                 
                 import js
                 import pyodide
@@ -145,25 +145,24 @@
                 
                 die = hdroller.d10 - 1
                 
-                die_player_unaligned = hdroller.die(0)
-                die_opposition_unaligned = hdroller.die(0)
+                die_player_unaligned = hdroller.Die(0)
+                die_opposition_unaligned = hdroller.Die(0)
                 
-                class WulinEval(hdroller.PoolEval):
+                class WulinEval(hdroller.EvalPool):
                     def __init__(self, river):
                         self._river = river
-                
-                    def initial_state(self, pool):
-                        return 0
                     
-                    def next_state(self, prev_state, outcome, count):
+                    def next_state(self, state, outcome, count):
+                        if state is None:
+                            state = 0
                         score = (count + self._river[outcome]) * 10 + outcome
-                        return max(prev_state, score)
+                        return max(state, score)
                 
                 def calc_pool(prefix):
                     lake = int(js.document.getElementById('%slake' % prefix).value)
                     river = tuple(int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10))
                     
-                    pool = hdroller.pool(die, lake)
+                    pool = hdroller.Pool(die, lake)
                     return WulinEval(river).eval(pool)
             `);
             
@@ -200,8 +199,8 @@
             
             die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
             
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean()  * 100.0)
-            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % (die_player.eq(die_opposition).mean() * 100.0)
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
+            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
