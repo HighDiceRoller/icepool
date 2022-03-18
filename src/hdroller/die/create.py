@@ -72,6 +72,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
             * 'lcm_weighted': LCM of the individual (argument denominators times corresponding element of `weights`).
                 This is like rolling the above, but the specific weight rolled
                 is used to help determine the result of the selected argument.
+            * 'reduce': `reduce()` is called at the end.
     Raises:
         `ValueError` if `ndim` is set but is not consistent with `*args`,
             or there is a mismatch between the `ndim` of die arguments.
@@ -118,7 +119,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         denominator_prod = math.prod(d for d in arg_denominators if d > 0)
     elif denominator_method == 'lcm':
         denominator_prod = math.lcm(*(d for d in arg_denominators if d > 0))
-    elif denominator_method == 'lcm_weighted':
+    elif denominator_method in ['lcm_weighted', 'reduce']:
         denominator_prod = math.lcm(*(d // math.gcd(d, w) for d, w in zip(arg_denominators, weights) if d > 0))
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')
@@ -144,10 +145,15 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     
     if ndim == 'scalar':
         data = Weights(data)
-        return hdroller.ScalarDie(data)
+        result = hdroller.ScalarDie(data)
     else:
         data = Weights({ tuple(k) : v for k, v in data.items() })
-        return hdroller.VectorDie(data, ndim)
+        result = hdroller.VectorDie(data, ndim)
+    
+    if denominator_method == 'reduce':
+        result = result.reduce()
+    
+    return result
 
 def _is_die(arg):
     return isinstance(arg, hdroller.BaseDie)
