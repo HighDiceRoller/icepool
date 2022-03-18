@@ -432,7 +432,7 @@ class BaseDie():
     
     # Mixtures.
 
-    def sub(self, repl, /, *, ndim=None, denominator_method='lcm'):
+    def sub(self, repl, /, *, max_depth=1, ndim=None, denominator_method='lcm'):
         """ Changes outcomes of the die to other outcomes.
         
         You can think of this as `sub`stituting outcomes of this die for other outcomes or dice.
@@ -446,19 +446,34 @@ class BaseDie():
                     The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `hdroller.Reroll` will reroll that old outcome.
+            max_depth: `sub()` will be repeated with the same argument on the result this many times.
+                If set to `None`, this will repeat until a fixed point is reached.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
             denominator_method: As `hdroller.Die()`.
         
         Returns:
             The relabeled die.
         """
-        if hasattr(repl, 'items'):
-            repl = [(repl[outcome] if outcome in repl else outcome) for outcome in self.outcomes()]
-        elif callable(repl):
-            repl = self.wrap_unpack(repl)
-            repl = [repl(outcome) for outcome in self.outcomes()]
+        if max_depth == 0:
+            return self
+        elif max_depth == 1:
+            if hasattr(repl, 'items'):
+                repl = [(repl[outcome] if outcome in repl else outcome) for outcome in self.outcomes()]
+            elif callable(repl):
+                repl = self.wrap_unpack(repl)
+                repl = [repl(outcome) for outcome in self.outcomes()]
 
-        return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
+            return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
+        elif max_depth is not None:
+            next = self.sub(repl, max_depth=1, ndim=ndim, denominator_method=denominator_method)
+            return next.sub(repl, max_depth=max_depth-1, ndim=ndim, denominator_method=denominator_method)
+        else:
+            # Seek fixed point.
+            next = self.sub(repl, max_depth=1, ndim=ndim, denominator_method=denominator_method)
+            if self.reduce().equals(next.reduce()):
+                return self
+            else:
+                return next.sub(repl, max_depth=None, ndim=ndim, denominator_method=denominator_method)
     
     def explode(self, outcomes=None, *, max_depth=None):
         """ Causes outcomes to be rolled again and added to the total.

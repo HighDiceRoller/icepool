@@ -55,3 +55,22 @@ def test_sub_mix():
     result = hdroller.d6.sub(lambda x: x if x >= 3 else hdroller.Reroll)
     expected = hdroller.d4 + 2
     assert result.equals(expected)
+
+def test_sub_max_depth():
+    result = (hdroller.d8 - 1).sub(lambda x: x // 2, max_depth=2).reduce()
+    expected = hdroller.d2 - 1
+    assert result.equals(expected)
+
+def collatz(x):
+    if x == 1:
+        return 1
+    elif x % 2:
+        return x * 3 + 1
+    else:
+        return x // 2
+
+def test_sub_fixed_point():
+    # Collatz conjecture.
+    result = hdroller.d100.sub(collatz, max_depth=None).reduce()
+    expected = hdroller.Die(1)
+    assert result.equals(expected)
