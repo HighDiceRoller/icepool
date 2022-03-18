@@ -8,6 +8,7 @@ test:
         - pytest tests
     only:
         changes:
+            - .gitlab-ci.yml
             - src/**/*
             - tests/**/*
 
