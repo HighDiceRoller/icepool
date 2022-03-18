@@ -6,6 +6,11 @@ test:
         - pip install pytest numpy scipy
     script:
         - pytest tests
+    only:
+        changes:
+            - .gitlab-ci.yml
+            - src/**/*
+            - tests/**/*
 
 pages:
     stage: deploy
