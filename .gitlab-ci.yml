@@ -6,6 +6,10 @@ test:
         - pip install pytest numpy scipy
     script:
         - pytest tests
+    only:
+        changes:
+            - src/**/*
+            - tests/**/*
 
 pages:
     stage: deploy
