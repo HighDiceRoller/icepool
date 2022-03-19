@@ -1,3 +1,9 @@
+## 0.6.7
+
+* Add `max_depth` parameter to `sub()`. If set to `None` this seeks a fixed point.
+* Add `'reduce'` option for `denominator_method` parameters.
+* Cache results of `repeat_and_sum()`.
+
 ## 0.6.6
 
 * Add `ndim` keyword argument to `d()`.
