@@ -67,7 +67,6 @@ method2 = (3 @ hdroller.d6).keep_highest(12, 6)
 method3 = 6 @ (3 @ hdroller.d6).keep_highest(6)
 method4 = (6 @ (3 @ hdroller.d6)).keep_highest(12)
 
-import numpy
 import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots()
