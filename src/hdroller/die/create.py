@@ -59,7 +59,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         ndim: If set to `'scalar'`, the die will be forced to be scalar.
             If set to an `int`, the die will be forced to be vector with that number of dimensions.
             If not provided, this will be automatically detected.
-            If all arguments are sequences of the same length and are not `str` or `bytes`,
+            If all arguments are `tuple`s of the same length,
             the result will have that many dimensions.
             Otherwise the result will be scalar.
         denominator_method: How to determine the denominator of the result
@@ -161,8 +161,8 @@ def _is_die(arg):
 def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
 
-def _is_seq(arg):
-    return hasattr(arg, '__len__') and not isinstance(arg, (bytes, str))
+def _is_tuple(arg):
+    return type(arg) is tuple
 
 def _arg_denominator(arg):
     if _is_die(arg):
@@ -205,7 +205,7 @@ def _arg_ndim(arg, ndim):
     elif _is_dict(arg):
         for outcome in arg.keys():
             # No recursion to nested dicts.
-            if _is_seq(outcome):
+            if _is_tuple(outcome):
                 if ndim is None:
                     ndim = len(outcome)
                 elif len(outcome) != ndim:
@@ -213,7 +213,7 @@ def _arg_ndim(arg, ndim):
             else:
                 return 'scalar'
         return ndim
-    elif _is_seq(arg):
+    elif _is_tuple(arg):
         # Arg is a sequence.
         if ndim is None:
             return len(arg)
