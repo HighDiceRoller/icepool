@@ -143,33 +143,38 @@ class VectorDie(hdroller.die.base.BaseDie):
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
     
-    def __str__(self):
+    def markdown(self, include_weights=True):
         """ Formats the die as a Markdown table. """
         outcome_lengths = []
         for i in range(self.ndim()):
             outcome_length = max(tuple(len(str(outcome[i])) for outcome in self.outcomes()) + (len(f'Outcome[{i}]'),))
             outcome_lengths.append(outcome_length)
-        weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
         result = ''
-        result = f'Denominator: {self.denominator()}\n'
+        result += f'Denominator: {self.denominator()}\n\n'
+        result += '|'
         for i in range(self.ndim()):
-            result += '| ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')) + f'Outcome[{i}]' + ' '
-        result += '| ' + ' ' * (weight_length - len('Weight')) + 'Weight |'
+            result += ' ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')) + f'Outcome[{i}]' + ' |'
+        if include_weights:
+            weight_length = max(tuple(len(str(weight)) for weight in self.weights()) + (len('Weight'),))
+            result += ' ' + ' ' * (weight_length - len('Weight')) + 'Weight |'
         if self.denominator() > 0:
             result += ' Probability |'
         result += '\n'
+        result += '|'
         for i in range(self.ndim()):
-            result += '|-' + '-' * outcome_lengths[i] + ':'
-        result += '|-' + '-' * weight_length + ':|'
+            result += '-' + '-' * outcome_lengths[i] + ':|'
+        if include_weights:
+            result += '-' + '-' * weight_length + ':|'
         if self.denominator() > 0:
             result += '------------:|'
         result += '\n'
         for outcome, weight, p in zip(self.outcomes(), self.weights(), self.pmf()):
+            result += '|'
             for i, x in enumerate(outcome):
-                result += f'| {str(x):>{outcome_lengths[i]}} '
-            result += f'| {weight:>{weight_length}} |'
+                result += f' {str(x):>{outcome_lengths[i]}} |'
+            if include_weights:
+                result += f' {weight:>{weight_length}} |'
             if self.denominator() > 0:
                 result += f' {p:11.6%} |'
             result += '\n'
         return result
-        

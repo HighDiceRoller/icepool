@@ -73,6 +73,10 @@ class BaseDie():
     @abstractmethod
     def wrap_unpack(self, func):
         """ Possibly wraps `func` so that outcomes are unpacked before giving it to `func`. """
+        
+    @abstractmethod
+    def markdown(self, include_weights=True):
+        """ Formats the die as a Markdown string. """
     
     # Basic access.
     
@@ -934,3 +938,8 @@ class BaseDie():
         except ValueError:
             return False
         return self.key_tuple() == other.key_tuple()
+    
+    # Strings.
+    
+    def __str__(self):
+        return self.markdown(include_weights=self.denominator() < 10 ** 30)

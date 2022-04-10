@@ -27,5 +27,5 @@ class EmptyDie(hdroller.die.base.BaseDie):
     def __repr__(self):
         return type(self).__qualname__ + '()'
     
-    def __str__(self):
+    def markdown(self, include_weights=True):
         return 'EmptyDie'
