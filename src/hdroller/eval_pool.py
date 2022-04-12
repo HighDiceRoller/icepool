@@ -397,10 +397,7 @@ class FindBestRun(EvalPool):
         """ Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
-        if state is None:
-            best_run, best_run_outcome, curr_run = 0, outcome, 0
-        else:
-            best_run, best_run_outcome, curr_run = state
+        best_run, best_run_outcome, curr_run = state or (0, outcome, 0)
         if count >= 1:
             curr_run += 1
         else:
