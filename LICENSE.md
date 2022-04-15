@@ -1,4 +1,4 @@
-# hdroller (https://gitlab.com/highdiceroller/hdroller)
+MIT License
 
 Copyright © 2021-2022, Albert Julius Liu.
 All rights reserved.
