@@ -1,7 +1,7 @@
 import _context
 
-import hdroller.countdown
-from hdroller import Die
+import icepool.countdown
+from icepool import Die
 import numpy
 
 def match_func(size, outcome):

@@ -1,4 +1,4 @@
-from hdroller import Die
+from icepool import Die
 import numpy
 import matplotlib as mpl
 import matplotlib.pyplot as plt

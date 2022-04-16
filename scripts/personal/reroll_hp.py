@@ -2,7 +2,7 @@ import _context
 
 import functools
 
-from hdroller import Die
+from icepool import Die
 import numpy
 
 def opt_hp_at_max_level(die, max_level):

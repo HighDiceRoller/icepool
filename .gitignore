@@ -1,7 +1,7 @@
 *.pyc
 /scripts/personal/output
 /dist
-/src/hdroller.egg-info
+/src/icepool.egg-info
 /public/ability_scores/index.zip
 /public/apidoc
 *.db

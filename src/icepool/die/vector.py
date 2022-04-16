@@ -1,14 +1,14 @@
 __docformat__ = 'google'
 
-import hdroller
-import hdroller.die.base
-from hdroller.collections import Slicer
+import icepool
+import icepool.die.base
+from icepool.collections import Slicer
 
 from collections import defaultdict
 from functools import cached_property, wraps
 import itertools
 
-class VectorDie(hdroller.die.base.BaseDie):
+class VectorDie(icepool.die.base.BaseDie):
     """ Multivariate die.
     
     Outcomes are tuples. Most methods and operators are performed elementwise.
@@ -24,8 +24,8 @@ class VectorDie(hdroller.die.base.BaseDie):
         """ Constructor.
         
         Dice should not be constructed directly;
-        instead, use one of the methods defined in `hdroller.die.func` 
-        (which are imported into the top-level `hdroller` module).
+        instead, use one of the methods defined in `icepool.die.func` 
+        (which are imported into the top-level `icepool` module).
         
         Args:
             data: A `Weights` mapping outcomes to weights.
@@ -40,7 +40,7 @@ class VectorDie(hdroller.die.base.BaseDie):
         for outcome, weight in self.items():
             new_outcome = tuple(op(x, *args, **kwargs) for x in outcome)
             data[new_outcome] += weight
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
@@ -48,7 +48,7 @@ class VectorDie(hdroller.die.base.BaseDie):
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             new_outcome = tuple(op(x, y, *args, **kwargs) for x, y in zip(outcome_self, outcome_other))
             data[new_outcome] += weight_self * weight_other
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     def wrap_unpack(self, func):
         @wraps(func)
@@ -66,7 +66,7 @@ class VectorDie(hdroller.die.base.BaseDie):
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[outcome[select]] += weight
-        return hdroller.Die(data, ndim=ndim)
+        return icepool.Die(data, ndim=ndim)
     
     @cached_property
     def dim(self):
@@ -91,42 +91,42 @@ class VectorDie(hdroller.die.base.BaseDie):
         return func(self[i], *args, **kwargs)
     
     def median_left(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.median_left, i)
+        return self._apply_to_dim(icepool.ScalarDie.median_left, i)
         
     def median_right(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.median_right, i)
+        return self._apply_to_dim(icepool.ScalarDie.median_right, i)
     
     def median(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.median, i)
+        return self._apply_to_dim(icepool.ScalarDie.median, i)
     
     def ppf_left(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.ppf_left, i)
+        return self._apply_to_dim(icepool.ScalarDie.ppf_left, i)
         
     def ppf_right(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.ppf_right, i)
+        return self._apply_to_dim(icepool.ScalarDie.ppf_right, i)
     
     def ppf(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.ppf, i)
+        return self._apply_to_dim(icepool.ScalarDie.ppf, i)
         
     def mean(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.mean, i)
+        return self._apply_to_dim(icepool.ScalarDie.mean, i)
     
     def variance(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.variance, i)
+        return self._apply_to_dim(icepool.ScalarDie.variance, i)
     
     def standard_deviation(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.standard_deviation, i)
+        return self._apply_to_dim(icepool.ScalarDie.standard_deviation, i)
     
     sd = standard_deviation
     
     def standardized_moment(self, i, k):
-        return self._apply_to_dim(hdroller.ScalarDie.standardized_moment, i, k)
+        return self._apply_to_dim(icepool.ScalarDie.standardized_moment, i, k)
     
     def skewness(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.skewness, i)
+        return self._apply_to_dim(icepool.ScalarDie.skewness, i)
         
     def excess_kurtosis(self, i):
-        return self._apply_to_dim(hdroller.ScalarDie.excess_kurtosis, i)
+        return self._apply_to_dim(icepool.ScalarDie.excess_kurtosis, i)
     
     # Joint statistics.
     

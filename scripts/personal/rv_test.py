@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import scipy.stats
 import scipy.special
 
-from hdroller import Die
+from icepool import Die
 
 die = Die.d(1000, 6)
 

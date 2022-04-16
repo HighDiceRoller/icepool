@@ -1,31 +1,31 @@
 """ Package for computing dice probabilities.
 
-See [this JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/notebooks/lab/index.html) for examples.
+See [this JupyterLite distribution](https://highdiceroller.gitlab.io/icepool/notebooks/lab/index.html) for examples.
 
-[Visit the project page.](https://gitlab.com/highdiceroller/hdroller)
+[Visit the project page.](https://gitlab.com/highdiceroller/icepool)
 """
 
 __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from hdroller.die.create import Die, dice_with_common_ndim
-from hdroller.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply
+from icepool.die.create import Die, dice_with_common_ndim
+from icepool.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply
 
-import hdroller.die.base
+import icepool.die.base
 
-from hdroller.die.base import BaseDie
-from hdroller.die.empty import EmptyDie
-from hdroller.die.scalar import ScalarDie
-from hdroller.die.vector import VectorDie
+from icepool.die.base import BaseDie
+from icepool.die.empty import EmptyDie
+from icepool.die.scalar import ScalarDie
+from icepool.die.vector import VectorDie
 
-highest = hdroller.die.base.BaseDie.highest
-lowest = hdroller.die.base.BaseDie.lowest
-max_outcome = hdroller.die.base.BaseDie.max_outcome
-min_outcome = hdroller.die.base.BaseDie.min_outcome
+highest = icepool.die.base.BaseDie.highest
+lowest = icepool.die.base.BaseDie.lowest
+max_outcome = icepool.die.base.BaseDie.max_outcome
+min_outcome = icepool.die.base.BaseDie.min_outcome
 
-from hdroller.pool import Pool, standard_pool, DicePool
-from hdroller.eval_pool import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBestSet, FindBestRun
+from icepool.pool import Pool, standard_pool, DicePool
+from icepool.eval_pool import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBestSet, FindBestRun
 
 import enum
 

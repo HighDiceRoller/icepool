@@ -1,10 +1,10 @@
 __docformat__ = 'google'
 
-import hdroller
-import hdroller.die.base
-from hdroller.collections import Weights
+import icepool
+import icepool.die.base
+from icepool.collections import Weights
 
-class EmptyDie(hdroller.die.base.BaseDie):
+class EmptyDie(icepool.die.base.BaseDie):
     """ Die with no outcomes. """
     
     def ndim(self):

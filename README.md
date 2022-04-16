@@ -3,7 +3,7 @@ A Python library for computing dice probabilities.
 ## Installing
 
 ```
-pip install hdroller
+pip install icepool
 ```
 
 ## Features
@@ -51,21 +51,21 @@ See this [JupyterLite distribution](https://highdiceroller.gitlab.io/hdroller/no
 > 3d6 are rolled sufficient times to generate the 6 ability scores, in order, for 12 characters. The player then selects the single set of scores which he or she finds most desirable and these scores are noted on the character record sheet.
 
 ```python
-import hdroller
+import icepool
 
 """
 The @ operator means "roll the left die, then roll that many of the right die and sum".
 Integers are treated as a die that always rolls that number.
 Therefore:
-* 3 @ hdroller.d6 means 3d6.
-* hdroller.d6 @ 3 means roll a d6 and multiply the result by 3.
+* 3 @ icepool.d6 means 3d6.
+* icepool.d6 @ 3 means roll a d6 and multiply the result by 3.
 """
 
-method1 = 6 @ hdroller.d6.keep_highest(num_dice=4, num_keep=3)
-method2 = (3 @ hdroller.d6).keep_highest(12, 6)
+method1 = 6 @ icepool.d6.keep_highest(num_dice=4, num_keep=3)
+method2 = (3 @ icepool.d6).keep_highest(12, 6)
 # num_keep defaults to 1.
-method3 = 6 @ (3 @ hdroller.d6).keep_highest(6)
-method4 = (6 @ (3 @ hdroller.d6)).keep_highest(12)
+method3 = 6 @ (3 @ icepool.d6).keep_highest(6)
+method4 = (6 @ (3 @ icepool.d6)).keep_highest(12)
 
 import matplotlib.pyplot as plt
 

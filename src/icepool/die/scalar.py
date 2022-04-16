@@ -1,15 +1,15 @@
 __docformat__ = 'google'
 
-import hdroller
-import hdroller.die.base
-import hdroller.die.vector
+import icepool
+import icepool.die.base
+import icepool.die.vector
 
 import bisect
 from collections import defaultdict
 import itertools
 import math
 
-class ScalarDie(hdroller.die.base.BaseDie):
+class ScalarDie(icepool.die.base.BaseDie):
     """ Univariate die.
     
     Outcomes are scalars and operations are performed directly on the outcomes.
@@ -22,8 +22,8 @@ class ScalarDie(hdroller.die.base.BaseDie):
         """ Constructor.
         
         Dice should not be constructed directly;
-        instead, use one of the methods defined in `hdroller.die.func` 
-        (which are imported into the top-level `hdroller` module).
+        instead, use one of the methods defined in `icepool.die.func` 
+        (which are imported into the top-level `icepool` module).
         
         Args:
             data: A `Weights` mapping outcomes to weights.
@@ -35,14 +35,14 @@ class ScalarDie(hdroller.die.base.BaseDie):
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
-        return hdroller.Die(data, ndim='scalar')
+        return icepool.Die(data, ndim='scalar')
     
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
-        return hdroller.Die(data, ndim='scalar')
+        return icepool.Die(data, ndim='scalar')
     
     def wrap_unpack(self, func):
         return func
@@ -56,9 +56,9 @@ class ScalarDie(hdroller.die.base.BaseDie):
         Otherwise it is cast to a die.
         """
         if isinstance(other, int):
-            other = hdroller.standard(other)
+            other = icepool.standard(other)
         else:
-            other = hdroller.Die(other, ndim=ndim)
+            other = icepool.Die(other, ndim=ndim)
         
         data = defaultdict(int)
         
@@ -69,7 +69,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
             for outcome, subresult_weight in subresult.items():
                 data[outcome] += subresult_weight * die_count_weight * factor
             
-        return hdroller.Die(data, ndim=other.ndim())
+        return icepool.Die(data, ndim=other.ndim())
     
     def __matmul__(self, other):
         """ Roll the left die, then roll the right die that many times and sum the outcomes. 
@@ -81,7 +81,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
         so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
-        if not isinstance(other, hdroller.die.base.BaseDie):
+        if not isinstance(other, icepool.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     
@@ -93,7 +93,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
         Args:
             true_die: The die to roll if `self.bool()` rolls `True`.
             false_die: The die to roll if `self.bool()` rolls `False`.
-            denominator_method: As `hdroller.Die()`.
+            denominator_method: As `icepool.Die()`.
         """
         return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, denominator_method=denominator_method)
     
@@ -193,7 +193,7 @@ class ScalarDie(hdroller.die.base.BaseDie):
             outcomes, weights = zip(*t)
             data[outcomes] += math.prod(weights)
         
-        return hdroller.Die(data, ndim=len(dice))
+        return icepool.Die(data, ndim=len(dice))
     
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()})'

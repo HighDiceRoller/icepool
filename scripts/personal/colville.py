@@ -1,7 +1,7 @@
 import _context
 
 import numpy
-from hdroller import Die, Pool, SinglePoolScorer
+from icepool import Die, Pool, SinglePoolScorer
 
 ability = Die.d6.keep_highest(4, 3).reroll([3, 4, 5, 6, 7])
 pool = Pool(ability, 6)

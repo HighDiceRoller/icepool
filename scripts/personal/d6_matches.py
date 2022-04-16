@@ -1,7 +1,7 @@
 import _context
 
-import hdroller.countdown
-from hdroller import Die
+import icepool.countdown
+from icepool import Die
 import numpy
 import matplotlib as mpl
 import matplotlib.pyplot as plt

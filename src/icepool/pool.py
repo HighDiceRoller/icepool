@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-import hdroller.math
+import icepool.math
 
 import bisect
 from functools import cached_property
@@ -17,7 +17,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     instead, they may be optimized to values that give the same result as far as `EvalPool` is concerned.
     
     This is capitalized because it is the preferred way of getting a new instance,
-    and so that you can use `from hdroller import Pool` while leaving the name `pool` free.
+    and so that you can use `from icepool import Pool` while leaving the name `pool` free.
     The name of the actual class is `DicePool`.
     
     Args:
@@ -37,7 +37,7 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             Values cannot be > the `max_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
-            For example, `Pool(hdroller.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
+            For example, `Pool(icepool.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
         min_outcomes: A sequence of one outcome per die in the pool.
             That die will be limited to that minimum outcome, with all lower outcomes having 0 count.
             Values cannot be < the `min_outcome` of the fundamental die.
@@ -204,8 +204,8 @@ def standard_pool(*die_sizes, count_dice=None):
             of 2 d8s and 3 d6s.
     """
     if len(die_sizes) == 0:
-        return Pool(hdroller.d1, num_dice=0)
-    return Pool(hdroller.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
+        return Pool(icepool.d1, num_dice=0)
+    return Pool(icepool.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
 
 class DicePool():
     """ A pool is a set of (semi-)identical dice that are rolled in no particular order
@@ -401,7 +401,7 @@ class DicePool():
         popped_count_dice = self.count_dice()
         count = 0
         
-        comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
+        comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self.num_drop_lowest()
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
             pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
@@ -456,7 +456,7 @@ class DicePool():
         popped_count_dice = self.count_dice()
         count = 0
         
-        comb_row = hdroller.math.comb_row(num_possible_dice, single_weight)
+        comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self.num_drop_highest()
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
             pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, min_outcomes=popped_min_outcomes)
@@ -524,19 +524,19 @@ class DicePool():
                 taking in `state, outcome, *counts` and returning the next state.
                 In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.
         """
-        if not isinstance(eval_or_func, hdroller.EvalPool):
-            eval_or_func = hdroller.WrapFuncEval(eval_or_func)
+        if not isinstance(eval_or_func, icepool.EvalPool):
+            eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
     
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
         
-        This uses `hdroller.sum_pool`.
+        This uses `icepool.sum_pool`.
         
         Returns:
             A die representing the sum.
         """
-        return hdroller.sum_pool(self)
+        return icepool.sum_pool(self)
     
     @cached_property
     def _key_tuple(self):

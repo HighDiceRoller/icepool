@@ -1,8 +1,8 @@
 import _context
 
-from hdroller import Die
-import hdroller.die_sort
-import hdroller.tournament
+from icepool import Die
+import icepool.die_sort
+import icepool.tournament
 
 from functools import cached_property
 
@@ -39,7 +39,7 @@ class Pool():
 
     @cached_property
     def sum_die(self):
-        return hdroller.die_sort.keep_highest(self.num_drop + self.num_keep, *self.dice, drop_highest=self.num_drop)
+        return icepool.die_sort.keep_highest(self.num_drop + self.num_keep, *self.dice, drop_highest=self.num_drop)
 
     @cached_property
     def hitch_chance(self):
@@ -47,7 +47,7 @@ class Pool():
 
     @cached_property
     def multi_hitch_chance(self):
-        return hdroller.die_sort.keep_lowest(2, *self.dice) <= 0
+        return icepool.die_sort.keep_lowest(2, *self.dice) <= 0
 
 def iter_pool_comps(max_pool_size, partial=()):
     if len(partial) == 5:

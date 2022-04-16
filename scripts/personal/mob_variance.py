@@ -1,5 +1,5 @@
 import _context
-from hdroller import Die
+from icepool import Die
 
 base_die = Die.d12
 

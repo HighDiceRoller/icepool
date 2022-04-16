@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-import hdroller
+import icepool
 
 def round_robin_score(*dice, tiebreaker='coin'):
     """
@@ -13,7 +13,7 @@ def round_robin_score(*dice, tiebreaker='coin'):
         for opponent in dice:
             difference = die - opponent
             if tiebreaker == 'coin':
-                difference = difference - hdroller.coin(1, 2)
+                difference = difference - icepool.coin(1, 2)
             elif tiebreaker == 'win':
                 pass
             elif tiebreaker == 'lose':

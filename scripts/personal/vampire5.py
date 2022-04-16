@@ -1,6 +1,6 @@
 import _context
 
-from hdroller import Die, Pool, SinglePoolScorer
+from icepool import Die, Pool, SinglePoolScorer
 
 class V5PoolSuccesses(SinglePoolScorer):
     def __init__(self, extra_crit=0):

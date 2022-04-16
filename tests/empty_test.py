@@ -1,13 +1,13 @@
 import _context
 
-import hdroller
+import icepool
 import pytest
 
 """
 Tests empty dice.
 """
 
-empty_dice = [hdroller.Die(), hdroller.Die(hdroller.Reroll), hdroller.Die({})]
+empty_dice = [icepool.Die(), icepool.Die(icepool.Reroll), icepool.Die({})]
 
 @pytest.mark.parametrize('die', empty_dice)
 def test_create_empty(die):
@@ -16,11 +16,11 @@ def test_create_empty(die):
     assert result.ndim() == 'empty'
 
 def test_op_empty():
-    result = hdroller.d6 + {}
-    expected = hdroller.Die()
+    result = icepool.d6 + {}
+    expected = icepool.Die()
     assert result.equals(expected)
 
 def test_mix_empty():
-    result = hdroller.Die(hdroller.d6, {})
-    expected = hdroller.d6
+    result = icepool.Die(icepool.d6, {})
+    expected = icepool.d6
     assert result.equals(expected)

@@ -1,110 +1,110 @@
 import _context
 
-import hdroller
+import icepool
 import pytest
 
-test_dice = [hdroller.d6, hdroller.d8, hdroller.d10.explode(max_depth=2)]
+test_dice = [icepool.d6, icepool.d8, icepool.d10.explode(max_depth=2)]
 
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('i', range(-5, 5))
 def test_die_int_add(a, i):
     result = a + i
-    expected = hdroller.apply(lambda x, y: x + y, a, i)
+    expected = icepool.apply(lambda x, y: x + y, a, i)
     assert result.equals(expected)
 
 @pytest.mark.parametrize('i', range(-5, 5))
 @pytest.mark.parametrize('a', test_dice)
 def test_int_die_add(i, a):
     result = i + a
-    expected = hdroller.apply(lambda x, y: x + y, i, a)
+    expected = icepool.apply(lambda x, y: x + y, i, a)
     assert result.equals(expected)
 
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('b', test_dice)
 def test_die_die_add(a, b):
     result = a + b
-    expected = hdroller.apply(lambda x, y: x + y, a, b)
+    expected = icepool.apply(lambda x, y: x + y, a, b)
     assert result.equals(expected)
     
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('i', range(-5, 5))
 def test_die_int_sub(a, i):
     result = a - i
-    expected = hdroller.apply(lambda x, y: x - y, a, i)
+    expected = icepool.apply(lambda x, y: x - y, a, i)
     assert result.equals(expected)
 
 @pytest.mark.parametrize('i', range(-5, 5))
 @pytest.mark.parametrize('a', test_dice)
 def test_int_die_sub(i, a):
     result = i - a
-    expected = hdroller.apply(lambda x, y: x - y, i, a)
+    expected = icepool.apply(lambda x, y: x - y, i, a)
     assert result.equals(expected)
 
 @pytest.mark.parametrize('a', test_dice)
 @pytest.mark.parametrize('b', test_dice)
 def test_die_die_sub(a, b):
     result = a - b
-    expected = hdroller.apply(lambda x, y: x - y, a, b)
+    expected = icepool.apply(lambda x, y: x - y, a, b)
     assert result.equals(expected)
 
 """
 def test_clip():
-    result = hdroller.d6
+    result = icepool.d6
     result = result.clip(2, 5)
-    expected = hdroller.Die([2, 1, 1, 2], 2)
+    expected = icepool.Die([2, 1, 1, 2], 2)
     assert result.equals(expected)
 """
 
 def test_abs_positive():
-    result = hdroller.d6.abs()
-    expected = hdroller.d6
+    result = icepool.d6.abs()
+    expected = icepool.d6
     assert result.equals(expected)
 
 def test_abs_negative():
-    result = (-hdroller.d6).abs()
-    expected = hdroller.d6
+    result = (-icepool.d6).abs()
+    expected = icepool.d6
     assert result.equals(expected)
 
 def test_abs_cross_zero():
-    result = (hdroller.d6 - 3).abs()
-    expected = hdroller.Die(weights=[1, 2, 2, 1], min_outcome=0)
+    result = (icepool.d6 - 3).abs()
+    expected = icepool.Die(weights=[1, 2, 2, 1], min_outcome=0)
     assert result.equals(expected)
 
 def test_abs_cross_zero_nonuniform():
-    result = (hdroller.d6 + hdroller.d6 - 7).abs()
-    expected = hdroller.Die(weights=[6, 10, 8, 6, 4, 2], min_outcome=0)
+    result = (icepool.d6 + icepool.d6 - 7).abs()
+    expected = icepool.Die(weights=[6, 10, 8, 6, 4, 2], min_outcome=0)
     assert result.equals(expected)
 
 def test_mod():
-    result = hdroller.d10 % 4
-    expected = hdroller.Die(weights=[2, 3, 3, 2], min_outcome=0)
+    result = icepool.d10 % 4
+    expected = icepool.Die(weights=[2, 3, 3, 2], min_outcome=0)
     assert result.equals(expected)
     
 def test_div():
-    result = hdroller.d10 // 4
-    expected = hdroller.Die(weights=[3, 4, 3], min_outcome=0)
+    result = icepool.d10 // 4
+    expected = icepool.Die(weights=[3, 4, 3], min_outcome=0)
     assert result.equals(expected)
 
 def test_reduce():
-    result = hdroller.Die(weights=[2, 4, 6], min_outcome=0).reduce()
-    expected = hdroller.Die(weights=[1, 2, 3], min_outcome=0)
+    result = icepool.Die(weights=[2, 4, 6], min_outcome=0).reduce()
+    expected = icepool.Die(weights=[1, 2, 3], min_outcome=0)
     assert result.equals(expected)
 
 def test_matmul_int_die():
-    result = 2 @ hdroller.d6
-    expected = hdroller.d6 + hdroller.d6
+    result = 2 @ icepool.d6
+    expected = icepool.d6 + icepool.d6
     assert result.equals(expected)
 
 def test_matmul_die_die():
-    result = hdroller.Die(2) @ hdroller.d6
-    expected = hdroller.d6 + hdroller.d6
+    result = icepool.Die(2) @ icepool.d6
+    expected = icepool.d6 + icepool.d6
     assert result.equals(expected)
 
 def test_d():
-    result = hdroller.d3.d(3)
-    expected = hdroller.Die({1: 9, 2: 12, 3: 16, 4: 12, 5: 12, 6: 10, 7: 6, 8: 3, 9: 1})
+    result = icepool.d3.d(3)
+    expected = icepool.Die({1: 9, 2: 12, 3: 16, 4: 12, 5: 12, 6: 10, 7: 6, 8: 3, 9: 1})
     assert result.equals(expected)
 
 def test_d_negative():
-    result = (hdroller.d7 - 4).d(3)
+    result = (icepool.d7 - 4).d(3)
     assert result.equals(-result)

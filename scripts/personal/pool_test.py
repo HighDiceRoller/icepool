@@ -1,8 +1,8 @@
 import _context
 
-import hdroller
-from hdroller import Die
-from hdroller.dice_pool import DicePool
+import icepool
+from icepool import Die
+from icepool.dice_pool import DicePool
 import numpy
 
 # = chicken dinner

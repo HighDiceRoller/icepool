@@ -6,7 +6,7 @@ import scipy.stats
 import scipy.special
 
 import _context
-from hdroller import Die
+from icepool import Die
 
 db = 0.1 * numpy.log(10)
 

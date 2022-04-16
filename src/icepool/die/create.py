@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
-import hdroller
-from hdroller.collections import Weights
+import icepool
+from icepool.collections import Weights
 
 from collections import defaultdict
 import math
@@ -10,18 +10,18 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
-    and so that you can use `from hdroller import Die` while leaving the name `die` free.
+    and so that you can use `from icepool import Die` while leaving the name `die` free.
     The actual class of the result will be one of the subclasses of `BaseDie`.
     
-    Don't confuse this with `hdroller.d()`:
+    Don't confuse this with `icepool.d()`:
     
-    * `hdroller.Die(6)`: A die that always rolls the `int` 6.
-    * `hdroller.d(6)`: A d6.
+    * `icepool.Die(6)`: A die that always rolls the `int` 6.
+    * `icepool.d(6)`: A d6.
     
     Here are some different ways of constructing a d6:
     
-    * Just import it: `from hdroller import d6`
-    * Use the `d()` function: `hdroller.d(6)`
+    * Just import it: `from icepool import d6`
+    * Use the `d()` function: `icepool.d(6)`
     * Use a d6 that you already have: `Die(d6)`
     * Mix a d3 and a d3+3: `Die(d3, d3+3)`
     * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
@@ -45,9 +45,9 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 Not recommended options:
                 
                 * If you want to use the dict-like itself as an outcome, wrap it in another dict.
-                * The dict itself can contain `hdroller.Reroll`.
+                * The dict itself can contain `icepool.Reroll`.
                     This will only reroll within the dict, not the entire construction.
-            * `hdroller.Reroll`, which will drop itself
+            * `icepool.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
         weights: Controls the relative weight of the arguments.
             If not provided, each argument will end up with the same total weight,
@@ -87,7 +87,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         if ndim not in [None, 'scalar']:
             raise ValueError('If min_outcome is provided, the result may only be a scalar die.')
         data = Weights({i + min_outcome : weight for i, weight in enumerate(weights)})
-        return hdroller.ScalarDie(data)
+        return icepool.ScalarDie(data)
     
     if weights is not None:
         if len(weights) != len(args):
@@ -96,18 +96,18 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         weights = (1,) * len(args)
     
     # Remove rerolls.
-    args_weights = tuple(zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not hdroller.Reroll)))
+    args_weights = tuple(zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not icepool.Reroll)))
     if len(args_weights) == 0:
         args, weights = (), ()
     else:
         args, weights = args_weights
     for arg in args:
-        if _is_dict(arg) and hdroller.Reroll in arg:
-            del arg[hdroller.Reroll]
+        if _is_dict(arg) and icepool.Reroll in arg:
+            del arg[icepool.Reroll]
     
     # Special cases.
     if len(args) == 0:
-        return hdroller.EmptyDie()
+        return icepool.EmptyDie()
     elif len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
         # Single unmodified die: just return the existing instance.
         return args[0]
@@ -138,17 +138,17 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
             data[arg] += factor
     
     if len(data) == 0:
-        return hdroller.EmptyDie()
+        return icepool.EmptyDie()
     
     for arg in args:
         ndim = _arg_ndim(arg, ndim)
     
     if ndim == 'scalar':
         data = Weights(data)
-        result = hdroller.ScalarDie(data)
+        result = icepool.ScalarDie(data)
     else:
         data = Weights({ tuple(k) : v for k, v in data.items() })
-        result = hdroller.VectorDie(data, ndim)
+        result = icepool.VectorDie(data, ndim)
     
     if denominator_method == 'reduce':
         result = result.reduce()
@@ -156,7 +156,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     return result
 
 def _is_die(arg):
-    return isinstance(arg, hdroller.BaseDie)
+    return isinstance(arg, icepool.BaseDie)
 
 def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')

@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
-import hdroller
-from hdroller.collections import Slicer, Weights
+import icepool
+from icepool.collections import Slicer, Weights
 
 from abc import ABC, abstractmethod
 import bisect
@@ -26,7 +26,7 @@ class BaseDie():
     
     * `DicePool` and `EvalPool` will iterate through zero-weight outcomes with 0 `count`,
         rather than `None` or skipping that outcome.
-    * `hdroller.align()` and the like are convenient for making dice share the same set of outcomes.
+    * `icepool.align()` and the like are convenient for making dice share the same set of outcomes.
     
     However, zero-weight outcomes have a computational cost like any other outcome.
     Unless you have a specific use case in mind, it's best to leave them out if not necessary.
@@ -57,7 +57,7 @@ class BaseDie():
     def binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.
         
-        The other operand is cast to a die (using `hdroller.Die`) before performing the operation.
+        The other operand is cast to a die (using `icepool.Die`) before performing the operation.
         
         This is used for the operators `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`.
         Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.
@@ -236,12 +236,12 @@ class BaseDie():
     
     def ks_stat(self, other):
         """ Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = hdroller.align(self, other)
+        a, b = icepool.align(self, other)
         return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
     
     def cvm_stat(self, other):
         """ Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = hdroller.align(self, other)
+        a, b = icepool.align(self, other)
         return sum((a - b) ** 2 for a, b in zip(a.cdf(), b.cdf()))
     
     # Weight management.
@@ -252,14 +252,14 @@ class BaseDie():
         if gcd <= 1:
             return self
         data = { outcome : weight // gcd for outcome, weight in self.items() }
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     def scale_weights(self, scale):
         """ Multiplies all weights by a constant. """
         if scale < 0:
             raise ValueError('Weights cannot be scaled by a negative number.')
         data = { outcome : scale * weight for outcome, weight in self.items() }
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     # Rerolls and other outcome management.
     
@@ -271,7 +271,7 @@ class BaseDie():
                 If this is an `int`, the result is the `outcome, weight` at that index.
         """
         if isinstance(select, slice):
-            return hdroller.Die({outcome : weight for outcome, weight in self.items()[select]}, ndim=self.ndim())
+            return icepool.Die({outcome : weight for outcome, weight in self.items()[select]}, ndim=self.ndim())
         else:
             return self.items()[select]
     
@@ -334,7 +334,7 @@ class BaseDie():
             rerollable_factor = total_reroll_weight ** max_depth
             stop_factor = self.denominator() ** max_depth + total_reroll_weight ** max_depth
             data = { outcome : (rerollable_factor * weight if outcome in outcomes else stop_factor * weight) for outcome, weight in self.items() }
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     def reroll_until(self, outcomes, *, max_depth=None):
         """ Rerolls until getting one of the given outcomes.
@@ -374,7 +374,7 @@ class BaseDie():
                 data[max_outcome] += weight
             else:
                 data[outcome] += weight
-        return hdroller.Die(data, ndim=self.ndim()) 
+        return icepool.Die(data, ndim=self.ndim()) 
     
     def split(self, cond):
         """ Splits this die's items into two pieces based on `cond(outcome)`.
@@ -392,7 +392,7 @@ class BaseDie():
                 data_true[outcome] = weight
             else:
                 data_false[outcome] = weight
-        return hdroller.Die(data_true, ndim=self.ndim()), hdroller.Die(data_false, ndim=self.ndim())
+        return icepool.Die(data_true, ndim=self.ndim()), icepool.Die(data_false, ndim=self.ndim())
     
     def set_outcomes(self, outcomes):
         """ Sets the set of outcomes to the argument.
@@ -401,12 +401,12 @@ class BaseDie():
         and/or add zero-weight outcomes (if they are not present in this die).
         """
         data = {x : self.weight_eq(x) for x in outcomes}
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     def trim(self):
         """ Removes all zero-weight outcomes. """
         data = { k : v for k, v in self.items() if v > 0 }
-        return hdroller.Die(data, ndim=self.ndim())
+        return icepool.Die(data, ndim=self.ndim())
     
     @cached_property
     def _pop_max(self):
@@ -449,11 +449,11 @@ class BaseDie():
                 * A callable mapping old outcomes to new outcomes.
                     The callable will be supplied with one argument per `ndim` if this is a `VectorDie`.
                 The new outcomes may be dice rather than just single outcomes.
-                The special value `hdroller.Reroll` will reroll that old outcome.
+                The special value `icepool.Reroll` will reroll that old outcome.
             max_depth: `sub()` will be repeated with the same argument on the result this many times.
                 If set to `None`, this will repeat until a fixed point is reached.
             ndim: Sets the `ndim` of the result. If not provided, `ndim` will be determined automatically.
-            denominator_method: As `hdroller.Die()`.
+            denominator_method: As `icepool.Die()`.
         
         Returns:
             The relabeled die.
@@ -467,7 +467,7 @@ class BaseDie():
                 repl = self.wrap_unpack(repl)
                 repl = [repl(outcome) for outcome in self.outcomes()]
 
-            return hdroller.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
+            return icepool.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
         elif max_depth is not None:
             next = self.sub(repl, max_depth=1, ndim=ndim, denominator_method=denominator_method)
             return next.sub(repl, max_depth=max_depth-1, ndim=ndim, denominator_method=denominator_method)
@@ -524,24 +524,24 @@ class BaseDie():
         
         The minimum outcome is equal to the highest minimum outcome among all input dice.
         """
-        dice, ndim = hdroller.dice_with_common_ndim(*dice)
+        dice, ndim = icepool.dice_with_common_ndim(*dice)
         min_outcome = max(die.min_outcome() for die in dice)
         dice = [die.clip(min_outcome=min_outcome) for die in dice]
-        dice = hdroller.align(*dice)
+        dice = icepool.align(*dice)
         cweights = tuple(math.prod(t) for t in zip(*(die.cweights() for die in dice)))
-        return hdroller.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
+        return icepool.from_cweights(dice[0].outcomes(), cweights, ndim=ndim)
     
     def lowest(*dice):
         """ Roll all the dice and take the lowest.
         
         The maximum outcome is equal to the highest maximum outcome among all input dice.
         """
-        dice, ndim = hdroller.dice_with_common_ndim(*dice)
+        dice, ndim = icepool.dice_with_common_ndim(*dice)
         max_outcome = min(die.max_outcome() for die in dice)
         dice = [die.clip(max_outcome=max_outcome) for die in dice]
-        dice = hdroller.align(*dice)
+        dice = icepool.align(*dice)
         sweights = tuple(math.prod(t) for t in zip(*(die.sweights() for die in dice)))
-        return hdroller.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
+        return icepool.from_sweights(dice[0].outcomes(), sweights, ndim=ndim)
 
     @cached_property
     def _repeat_and_sum_cache(self):
@@ -569,8 +569,8 @@ class BaseDie():
         return result
     
     def pool(self, *args, **kwargs):
-        """ Creates a pool from this die, as `hdroller.Pool()`. """
-        return hdroller.Pool(self, *args, **kwargs)
+        """ Creates a pool from this die, as `icepool.Pool()`. """
+        return icepool.Pool(self, *args, **kwargs)
     
     def keep(self, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.
@@ -589,7 +589,7 @@ class BaseDie():
         Returns:
             A Die representing the probability distribution of the sum.
         """
-        pool = hdroller.Pool(self, num_dice, count_dice=count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
+        pool = icepool.Pool(self, num_dice, count_dice=count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
         if isinstance(count_dice, int):
             return pool
         else:
@@ -623,7 +623,7 @@ class BaseDie():
         """ Faster algorithm for keeping just the single highest die. """
         if num_dice is None:
             return self.zero()
-        return hdroller.from_cweights(self.outcomes(), (x ** num_dice for x in self.cweights()), ndim=self.ndim())
+        return icepool.from_cweights(self.outcomes(), (x ** num_dice for x in self.cweights()), ndim=self.ndim())
     
     def keep_lowest(self, num_dice=None, num_keep=1, num_drop=0, *, max_outcomes=None, min_outcomes=None):
         """ Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.
@@ -653,7 +653,7 @@ class BaseDie():
         """ Faster algorithm for keeping just the single lowest die. """
         if num_dice is None:
             return self.zero()
-        return hdroller.from_sweights(self.outcomes(), (x ** num_dice for x in self.sweights()), ndim=self.ndim())
+        return icepool.from_sweights(self.outcomes(), (x ** num_dice for x in self.sweights()), ndim=self.ndim())
     
     # Unary operators.
     
@@ -716,125 +716,125 @@ class BaseDie():
     # Binary operators.
     
     def __add__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.add)
     
     def __radd__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.add)
     
     def __sub__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.sub)
     
     def __rsub__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.sub)
     
     def __mul__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.mul)
     
     def __rmul__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.mul)
         
     def __truediv__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.truediv)
     
     def __rtruediv__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.truediv)
     
     def __floordiv__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.floordiv)
     
     def __rfloordiv__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.floordiv)
     
     def __pow__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.pow)
     
     def __rpow__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.pow)
     
     def __mod__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.mod)
     
     def __rmod__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.mod)
     
     def __lshift__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.lshift)
     
     def __rlshift__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.lshift)
     
     def __rshift__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.rshift)
     
     def __rrshift__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.rshift)
     
     def __and__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.and_)
     
     def __rand__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.and_)
         
     def __or__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.or_)
     
     def __ror__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.or_)
     
     def __xor__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.xor)
     
     def __rxor__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.binary_op(self, operator.xor)
     
     # Comparators.
     
     def __lt__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.lt)
         
     def __le__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.le)
     
     def __ge__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.ge)
         
     def __gt__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.gt)
     
     def __eq__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.eq)
     
     def __ne__(self, other):
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return self.binary_op(other, operator.ne)
     
     @staticmethod
@@ -877,7 +877,7 @@ class BaseDie():
         so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
         so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
         """
-        other = hdroller.Die(other, ndim=self.ndim())
+        other = icepool.Die(other, ndim=self.ndim())
         return other.d(self)
     
     # Rolling.
@@ -934,7 +934,7 @@ class BaseDie():
         For the chance of two dice rolling the same outcome, use the `==` operator.
         """
         try:
-            other = hdroller.Die(other, ndim=self.ndim())
+            other = icepool.Die(other, ndim=self.ndim())
         except ValueError:
             return False
         return self.key_tuple() == other.key_tuple()

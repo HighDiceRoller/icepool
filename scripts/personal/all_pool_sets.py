@@ -1,8 +1,8 @@
 import _context
 
-import hdroller
+import icepool
 
-class AllSetsEval(hdroller.PoolEval):
+class AllSetsEval(icepool.PoolEval):
     def initial_state(self, pool):
         return ()
 
@@ -15,9 +15,9 @@ class AllSetsEval(hdroller.PoolEval):
     def ndim(self, pool):
         return 1
 
-die = hdroller.d10
+die = icepool.d10
 
 for num_dice in range(2, 13):
-    result = AllSetsEval().eval(hdroller.Pool(die, num_dice))
+    result = AllSetsEval().eval(icepool.Pool(die, num_dice))
     print(result)
 

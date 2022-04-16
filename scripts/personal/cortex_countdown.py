@@ -1,8 +1,8 @@
 import _context
 
 import numpy
-import hdroller
-import hdroller.tournament
+import icepool
+import icepool.tournament
 
 from functools import cached_property
 
@@ -18,14 +18,14 @@ num_drops_and_keeps = [
 ]
 max_keep = max(k for d, k in num_drops_and_keeps)
 
-reference_die = hdroller.d12.sub({1: 0})
+reference_die = icepool.d12.sub({1: 0})
 base_dice = [12, 10, 8, 6, 4]
 
-gm_pools = [hdroller.d6.sub({1: 0}),
-            2 @ hdroller.d6.sub({1: 0}),
-            2 @ hdroller.d8.sub({1: 0}),
-            2 @ hdroller.d10.sub({1: 0}),
-            2 @ hdroller.d12.sub({1: 0})]
+gm_pools = [icepool.d6.sub({1: 0}),
+            2 @ icepool.d6.sub({1: 0}),
+            2 @ icepool.d8.sub({1: 0}),
+            2 @ icepool.d10.sub({1: 0}),
+            2 @ icepool.d12.sub({1: 0})]
 
 class Pool():
     def __init__(self, pool_comp, num_drop, num_keep):

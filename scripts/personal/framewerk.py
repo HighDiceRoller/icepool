@@ -1,8 +1,8 @@
 import _context
 
-import hdroller
+import icepool
 
-class CthulhuTechEval(hdroller.PoolEval):
+class CthulhuTechEval(icepool.PoolEval):
     def initial_state(self, pool):
         # The state consists of the best score so far and the current run length.
         return 0, 0
@@ -28,7 +28,7 @@ class CthulhuTechEval(hdroller.PoolEval):
         return state[0]
 
 import cProfile
-cProfile.run('CthulhuTechEval().eval(hdroller.Pool(hdroller.d10, 10))')
+cProfile.run('CthulhuTechEval().eval(icepool.Pool(icepool.d10, 10))')
 
 import numpy
 import matplotlib.pyplot as plt
@@ -41,7 +41,7 @@ figsize = (16, 9)
 fig, ax = plt.subplots(figsize=figsize)
 
 for i in range(1, 11):
-    pool = hdroller.Pool(hdroller.d10, i)
+    pool = icepool.Pool(icepool.d10, i)
     result = evaluator.eval(pool)
     ax.plot(result.outcomes(), numpy.array(result.sf()) * 100.0)
     marker_size = 64 if i < 10 else 128

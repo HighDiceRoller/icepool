@@ -1,4 +1,4 @@
-This collection of Jupyter notebooks gives several examples of using the `hdroller` module.
+This collection of Jupyter notebooks gives several examples of using the `icepool` module.
 
 [Repository.](https://gitlab.com/highdiceroller/hdroller)
 

@@ -1,9 +1,9 @@
 import _context
 
-import hdroller
+import icepool
 import pytest
 
 def test_dict():
     d = {}
-    d[hdroller.Pool(hdroller.d6, 5)] = 100
-    assert d[hdroller.Pool(hdroller.d6, 5)] == 100
+    d[icepool.Pool(icepool.d6, 5)] = 100
+    assert d[icepool.Pool(icepool.d6, 5)] == 100

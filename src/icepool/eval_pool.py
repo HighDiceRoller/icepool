@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-import hdroller
+import icepool
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -66,7 +66,7 @@ class EvalPool(ABC):
         
         Returns:
             A hashable object indicating the next state.
-            The special value `hdroller.Reroll` can be used to immediately remove the state from consideration,
+            The special value `icepool.Reroll` can be used to immediately remove the state from consideration,
             effectively performing a full reroll of the pool.
         """
     
@@ -87,7 +87,7 @@ class EvalPool(ABC):
             
         Returns:
             A final outcome that will be used as part of constructing the result die.
-            As usual for `Die()`, this could itself be a die or `hdroller.Reroll`.
+            As usual for `Die()`, this could itself be a die or `icepool.Reroll`.
         """
         return final_state
     
@@ -157,20 +157,20 @@ class EvalPool(ABC):
         final_weights = []
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
-            if outcome is not hdroller.Reroll:
+            if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
         
-        return hdroller.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
+        return icepool.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
     
     __call__ = eval
     
     def bind_dice(self, *dice):
         """ Binds one die for each pool.
         
-        For example, `sum_d6s = sum_pool.bind_dice(hdroller.d6)` would produce
+        For example, `sum_d6s = sum_pool.bind_dice(icepool.d6)` would produce
         a function that takes one argument and sums that many d6s.
-        `sum_d6s(3)` would then be the same as `3 @ hdroller.d6`.
+        `sum_d6s(3)` would then be the same as `3 @ icepool.d6`.
         
         Args:
             *dice: One die for each pool taken by this `EvalPool`.
@@ -251,7 +251,7 @@ class EvalPool(ABC):
                 prev = self._eval_internal(direction, *prev_pools)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
-                    if state is not hdroller.Reroll:
+                    if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
         
         self._cache[cache_key] = result
@@ -275,7 +275,7 @@ class EvalPool(ABC):
                     pools, counts, weights = zip(*p)
                     prod_weight = math.prod(weights)
                     state = self.next_state(prev_state, outcome, *counts)
-                    if state is not hdroller.Reroll:
+                    if state is not icepool.Reroll:
                         next_dist[state, pools] += weight * prod_weight
             dist = next_dist
         return { state : weight for (state, _), weight in dist.items() }

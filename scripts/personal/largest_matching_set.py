@@ -1,13 +1,13 @@
 import _context
 import numpy
 
-from hdroller import Die
-import hdroller.matching_sets
-import hdroller.tournament
+from icepool import Die
+import icepool.matching_sets
+import icepool.tournament
 
 dice = []
 for i in range(1, 10):
-    dice.append(Die.from_sf(hdroller.matching_sets.largest_matching_set(i, 10), 1))
+    dice.append(Die.from_sf(icepool.matching_sets.largest_matching_set(i, 10), 1))
 
-print(hdroller.tournament.round_robin_score(*dice))
+print(icepool.tournament.round_robin_score(*dice))
 

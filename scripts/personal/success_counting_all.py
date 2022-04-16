@@ -1,4 +1,4 @@
-from hdroller import Die
+from icepool import Die
 import numpy
 
 def iter_standard_dice():

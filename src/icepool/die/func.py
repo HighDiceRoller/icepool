@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-import hdroller
+import icepool
 
 from collections import defaultdict
 import itertools
@@ -11,16 +11,16 @@ def standard(num_sides):
     
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
     
-    Don't confuse this with `hdroller.Die()`:
+    Don't confuse this with `icepool.Die()`:
     
-    * `hdroller.Die(6)`: A die that always rolls the integer 6.
-    * `hdroller.d(6)`: A d6.
+    * `icepool.Die(6)`: A die that always rolls the integer 6.
+    * `icepool.d(6)`: A d6.
     """
     if not isinstance(num_sides, int):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return hdroller.Die(weights=[1] * num_sides, min_outcome=1, ndim='scalar')
+    return icepool.Die(weights=[1] * num_sides, min_outcome=1, ndim='scalar')
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -38,13 +38,13 @@ def d(arg):
     """
     if isinstance(arg, int):
         return standard(arg)
-    elif isinstance(arg, hdroller.BaseDie):
+    elif isinstance(arg, icepool.BaseDie):
         return arg
     else:
         raise TypeError('The argument to d() must be an int or a die.')
 
 def __getattr__(key):
-    """ Implements the `dX` syntax for standard die with no parentheses, e.g. `hdroller.d6`. """
+    """ Implements the `dX` syntax for standard die with no parentheses, e.g. `icepool.d6`. """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
@@ -54,7 +54,7 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return hdroller.Die({False : d - n, True : n}, ndim='scalar')
+    return icepool.Die({False : d - n, True : n}, ndim='scalar')
 
 coin = bernoulli
 
@@ -65,7 +65,7 @@ def from_cweights(outcomes, cweights, *, ndim=None):
     for outcome, weight in zip(outcomes, cweights):
         d[outcome] = weight - prev
         prev = weight
-    return hdroller.Die(d, ndim=ndim)
+    return icepool.Die(d, ndim=ndim)
     
 def from_sweights(outcomes, sweights, *, ndim=None):
     """ Constructs a die from survival weights. """
@@ -74,7 +74,7 @@ def from_sweights(outcomes, sweights, *, ndim=None):
     for outcome, weight in zip(reversed(outcomes), reversed(tuple(sweights))):
         d[outcome] = weight - prev
         prev = weight
-    return hdroller.Die(d, ndim=ndim)
+    return icepool.Die(d, ndim=ndim)
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """ Constructs a die from a rv object (as `scipy.stats`).
@@ -108,21 +108,21 @@ def align(*dice, ndim=None):
     Raises:
         `ValueError` if the dice are of mixed ndims.
     """
-    dice, ndim = hdroller.dice_with_common_ndim(*dice)
+    dice, ndim = icepool.dice_with_common_ndim(*dice)
     outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 def align_range(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice, ndim = hdroller.dice_with_common_ndim(*dice)
-    outcomes = tuple(range(hdroller.min_outcome(*dice), hdroller.max_outcome(*dice) + 1))
+    dice, ndim = icepool.dice_with_common_ndim(*dice)
+    outcomes = tuple(range(icepool.min_outcome(*dice), icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient for large numbers of dice.
-    In particular, for pools use `hdroller.Pool` and `hdroller.EvalPool` instead if possible.
+    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead if possible.
     
     Args:
         func: A function that takes one argument per input die and returns an argument to `Die()`.
@@ -132,7 +132,7 @@ def apply(func, *dice, ndim=None):
         A die constructed from the outputs of `func` and the product of the weights of the dice.
     """
     # No common ndim required for the inputs in this case.
-    dice = [hdroller.Die(die) for die in dice]
+    dice = [icepool.Die(die) for die in dice]
     final_outcomes = []
     final_weights = []
     data = defaultdict(int)
@@ -140,8 +140,8 @@ def apply(func, *dice, ndim=None):
         outcomes, weights = zip(*t)
         final_outcome = func(*outcomes)
         final_weight = math.prod(weights)
-        if final_outcome is not hdroller.Reroll:
+        if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)
             final_weights.append(final_weight)
     
-    return hdroller.Die(*final_outcomes, weights=final_weights, ndim=ndim)
+    return icepool.Die(*final_outcomes, weights=final_weights, ndim=ndim)

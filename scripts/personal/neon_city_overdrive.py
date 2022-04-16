@@ -49,8 +49,8 @@ cProfile.run('neon_city_overdrive(6, 6)')
 y = neon_city_overdrive(6, 6)
 
 import _context
-import hdroller
-from hdroller import die, pool, PoolEval
+import icepool
+from icepool import die, pool, PoolEval
 
 class NeonCityOverdriveEval(PoolEval):
     def initial_state(self, action, danger):
@@ -65,9 +65,9 @@ class NeonCityOverdriveEval(PoolEval):
         else:
             return prev_state
 
-cProfile.run('NeonCityOverdriveEval().eval(pool(hdroller.d6, 11), pool(hdroller.d6, 11))')
+cProfile.run('NeonCityOverdriveEval().eval(pool(icepool.d6, 11), pool(icepool.d6, 11))')
 
-y2 = NeonCityOverdriveEval().eval(pool(hdroller.d6, 6), pool(hdroller.d6, 6))
+y2 = NeonCityOverdriveEval().eval(pool(icepool.d6, 6), pool(icepool.d6, 6))
 
 print(y2)
 
