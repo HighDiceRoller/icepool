@@ -1,3 +1,10 @@
+## 0.7.0
+
+* Renamed from `hdroller` to `icepool`.
+* Primary repository is now https://github.com/HighDiceRoller/icepool.
+* Only `tuple`s become `VectorDie`.
+* Weights of 10^30 or above are not shown in tables by default.
+
 ## 0.6.7
 
 * Add `max_depth` parameter to `sub()`. If set to `None` this seeks a fixed point.
