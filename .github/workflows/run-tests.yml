@@ -24,4 +24,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest numpy scipy
       - name: Run Tests
-          run: pytest tests
+        run: pytest tests
