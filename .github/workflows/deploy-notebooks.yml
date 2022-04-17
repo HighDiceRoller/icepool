@@ -8,9 +8,10 @@ on:
       - '.github/workflows/**'
       - 'notebooks/**'
       - 'jupyter*'
+      - 'favicon*'
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
