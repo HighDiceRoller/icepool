@@ -52,15 +52,6 @@
                                 <a class="function" href="#BaseDie.ndim">ndim</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseDie.unary_op">unary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#BaseDie.binary_op">binary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#BaseDie.wrap_unpack">wrap_unpack</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#BaseDie.markdown">markdown</a>
                         </li>
                         <li>
@@ -175,12 +166,6 @@
                                 <a class="function" href="#BaseDie.trim">trim</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseDie.pop_max">pop_max</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#BaseDie.pop_min">pop_min</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#BaseDie.sub">sub</a>
                         </li>
                         <li>
@@ -256,15 +241,6 @@
                                 <a class="function" href="#EmptyDie.ndim">ndim</a>
                         </li>
                         <li>
-                                <a class="function" href="#EmptyDie.unary_op">unary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#EmptyDie.binary_op">binary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#EmptyDie.wrap_unpack">wrap_unpack</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#EmptyDie.markdown">markdown</a>
                         </li>
                 </ul>
@@ -278,15 +254,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#ScalarDie.ndim">ndim</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ScalarDie.unary_op">unary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ScalarDie.binary_op">binary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#ScalarDie.wrap_unpack">wrap_unpack</a>
                         </li>
                         <li>
                                 <a class="function" href="#ScalarDie.d">d</a>
@@ -350,15 +317,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#VectorDie.ndim">ndim</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#VectorDie.unary_op">unary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#VectorDie.binary_op">binary_op</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#VectorDie.wrap_unpack">wrap_unpack</a>
                         </li>
                         <li>
                                 <a class="function" href="#VectorDie.marginal">marginal</a>
@@ -494,12 +452,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#DicePool.min_outcomes">min_outcomes</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#DicePool.pop_max">pop_max</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#DicePool.pop_min">pop_min</a>
                         </li>
                         <li>
                                 <a class="function" href="#DicePool.has_counted_dice">has_counted_dice</a>
@@ -1184,14 +1136,14 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     <span class="c1"># Abstract methods.</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on the outcomes.</span>
 <span class="sd">        </span>
 <span class="sd">        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.</span>
 <span class="sd">        </span>
 <span class="sd">        The other operand is cast to a die (using `icepool.Die`) before performing the operation.</span>
@@ -1208,7 +1160,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        &quot;&quot;&quot;</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Possibly wraps `func` so that outcomes are unpacked before giving it to `func`. &quot;&quot;&quot;</span>
         
     <span class="nd">@abstractmethod</span>
@@ -1461,7 +1413,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
         <span class="k">if</span> <span class="n">outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="p">}</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         
         <span class="k">if</span> <span class="n">max_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1490,7 +1442,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">            If the reroll would never terminate, the result has no outcomes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">not_outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">not_outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">not_outcome</span> <span class="k">for</span> <span class="n">not_outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">not_outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outcomes</span> <span class="p">}</span>
@@ -1521,7 +1473,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        </span>
 <span class="sd">        `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
+        <span class="n">cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
         <span class="n">data_true</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">data_false</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1546,30 +1498,30 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
     
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">die</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     
-    <span class="k">def</span> <span class="nf">pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Remove the max outcome and return the result, along with the popped outcome, and the popped weight.</span>
 <span class="sd">        </span>
 <span class="sd">        Raises:</span>
 <span class="sd">            `IndexError` if this die has no outcome to pop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_max</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_max</span>
     
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="k">return</span> <span class="n">die</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
     
-    <span class="k">def</span> <span class="nf">pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Remove the min outcome and return the result, along with the popped outcome, and the popped weight.</span>
 <span class="sd">        </span>
 <span class="sd">        Raises:</span>
 <span class="sd">            `IndexError` if this die has no outcome to pop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_min</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_min</span>
     
     <span class="c1"># Mixtures.</span>
 
@@ -1601,7 +1553,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">):</span>
                 <span class="n">repl</span> <span class="o">=</span> <span class="p">[(</span><span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span> <span class="k">else</span> <span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()]</span>
             <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
-                <span class="n">repl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
+                <span class="n">repl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
                 <span class="n">repl</span> <span class="o">=</span> <span class="p">[</span><span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()]</span>
 
             <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">repl</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">(),</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">,</span> <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
@@ -1631,7 +1583,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
         <span class="k">if</span> <span class="n">outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="p">}</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1795,30 +1747,30 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     <span class="c1"># Unary operators.</span>
     
     <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">neg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">neg</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__pos__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">abs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">abs</span><span class="p">)</span>
     
     <span class="nb">abs</span> <span class="o">=</span> <span class="fm">__abs__</span>
     
     <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__round__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">__trunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">__floor__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">__ceil__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">)</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_zero</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -1834,7 +1786,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        Raises:</span>
 <span class="sd">            `ValueError` if the zeros did not resolve to a single outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
@@ -1848,131 +1800,131 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        </span>
 <span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     
     <span class="c1"># Binary operators.</span>
     
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rfloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__mod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rmod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lshift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lshift</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rlshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lshift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lshift</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rrshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">rshift</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span>
     
     <span class="c1"># Comparators.</span>
     
     <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">lt</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">le</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">ge</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">gt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">gt</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">eq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">eq</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">ne</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">operator</span><span class="o">.</span><span class="n">ne</span><span class="p">)</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_sign</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -1989,7 +1941,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        </span>
 <span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
     
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_cmp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -2000,7 +1952,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 <span class="sd">        </span>
 <span class="sd">        The weights are equal to the positive outcome of `self &gt; other`, `self &lt; other`, and the remainder respectively.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BaseDie</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BaseDie</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
     
     <span class="c1"># Special operators.</span>
     
@@ -2146,110 +2098,6 @@ though these have little use other than being sentinel values.</p>
             <div class="docstring"><p>Returns the number of dimensions if this is a <code><a href="#VectorDie">VectorDie</a></code>.</p>
 
 <p>Otherwise, returns <code>'scalar'</code> for a <code><a href="#ScalarDie">ScalarDie</a></code> and <code>'empty'</code> for an <code><a href="#EmptyDie">EmptyDie</a></code>.</p>
-</div>
-
-
-                            </div>
-                            <div id="BaseDie.unary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.unary_op">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">unary_op</span><span class="signature">(self, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on the outcomes.</span>
-<span class="sd">        </span>
-<span class="sd">        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation on the outcomes.</p>
-
-<p>This is used for the operators <code>-, +, abs, ~, round, trunc, floor, ceil</code>.</p>
-</div>
-
-
-                            </div>
-                            <div id="BaseDie.binary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.binary_op">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">binary_op</span><span class="signature">(self, other, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.</span>
-<span class="sd">        </span>
-<span class="sd">        The other operand is cast to a die (using `icepool.Die`) before performing the operation.</span>
-<span class="sd">        </span>
-<span class="sd">        This is used for the operators `+, -, *, /, //, %, **, &lt;&lt;, &gt;&gt;, &amp;, |, ^, &lt;, &lt;=, &gt;=, &gt;, ==, !=`.</span>
-<span class="sd">        Note that `*` multiplies outcomes directly; it is not the same as `@` or `d()`.</span>
-<span class="sd">        </span>
-<span class="sd">        Special operators:</span>
-<span class="sd">            * The `@` operator rolls the left die, then rolls the right die that many times and sums the outcomes.</span>
-<span class="sd">                Only the left side will be cast to a die; the right side must already be a die.</span>
-<span class="sd">            * `==` and `!=` are applied across outcomes like the other operators.</span>
-<span class="sd">                Unfortunately this means dice are not hashable by normal means.</span>
-<span class="sd">                Custom functions can use `key_tuple()`, `equals()` and `hash()` as workarounds.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.</p>
-
-<p>The other operand is cast to a die (using <code><a href="#Die">icepool.Die</a></code>) before performing the operation.</p>
-
-<p>This is used for the operators <code>+, -, *, /, //, %, **, &lt;&lt;, &gt;&gt;, &amp;, |, ^, &lt;, &lt;=, &gt;=, &gt;, ==, !=</code>.
-Note that <code>*</code> multiplies outcomes directly; it is not the same as <code>@</code> or <code><a href="#d">d()</a></code>.</p>
-
-<h6 id="special-operators">Special operators</h6>
-
-<blockquote>
-  <ul>
-  <li>The <code>@</code> operator rolls the left die, then rolls the right die that many times and sums the outcomes.
-  Only the left side will be cast to a die; the right side must already be a die.</li>
-  <li><code>==</code> and <code>!=</code> are applied across outcomes like the other operators.
-  Unfortunately this means dice are not hashable by normal means.
-  Custom functions can use <code><a href="#BaseDie.key_tuple">key_tuple()</a></code>, <code><a href="#BaseDie.equals">equals()</a></code> and <code><a href="#BaseDie.hash">hash()</a></code> as workarounds.</li>
-  </ul>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="BaseDie.wrap_unpack" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.wrap_unpack">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">wrap_unpack</span><span class="signature">(self, func)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Possibly wraps `func` so that outcomes are unpacked before giving it to `func`. &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Possibly wraps <code>func</code> so that outcomes are unpacked before giving it to <code>func</code>.</p>
 </div>
 
 
@@ -3086,7 +2934,7 @@ If this is an <code>int</code>, the result is the <code>outcome, weight</code> a
         <span class="k">if</span> <span class="n">outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="p">}</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         
         <span class="k">if</span> <span class="n">max_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3154,7 +3002,7 @@ If omitted, rerolls an unlimited number of times.</li>
 <span class="sd">            If the reroll would never terminate, the result has no outcomes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">not_outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">not_outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">not_outcome</span> <span class="k">for</span> <span class="n">not_outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">not_outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outcomes</span> <span class="p">}</span>
@@ -3246,7 +3094,7 @@ If omitted, rerolls an unlimited number of times.</li>
 <span class="sd">        </span>
 <span class="sd">        `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
+        <span class="n">cond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
         <span class="n">data_true</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">data_false</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -3322,70 +3170,6 @@ and/or add zero-weight outcomes (if they are not present in this die).</p>
 
 
                             </div>
-                            <div id="BaseDie.pop_max" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.pop_max">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">pop_max</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Remove the max outcome and return the result, along with the popped outcome, and the popped weight.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises:</span>
-<span class="sd">            `IndexError` if this die has no outcome to pop.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_max</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Remove the max outcome and return the result, along with the popped outcome, and the popped weight.</p>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><code>IndexError</code> if this die has no outcome to pop.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="BaseDie.pop_min" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.pop_min">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">pop_min</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Remove the min outcome and return the result, along with the popped outcome, and the popped weight.</span>
-<span class="sd">        </span>
-<span class="sd">        Raises:</span>
-<span class="sd">            `IndexError` if this die has no outcome to pop.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_min</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Remove the min outcome and return the result, along with the popped outcome, and the popped weight.</p>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><code>IndexError</code> if this die has no outcome to pop.</li>
-</ul>
-</div>
-
-
-                            </div>
                             <div id="BaseDie.sub" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#BaseDie.sub">#&nbsp;&nbsp</a>
 
@@ -3424,7 +3208,7 @@ and/or add zero-weight outcomes (if they are not present in this die).</p>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">):</span>
                 <span class="n">repl</span> <span class="o">=</span> <span class="p">[(</span><span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span> <span class="k">else</span> <span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()]</span>
             <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
-                <span class="n">repl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
+                <span class="n">repl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
                 <span class="n">repl</span> <span class="o">=</span> <span class="p">[</span><span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()]</span>
 
             <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">repl</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">(),</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">,</span> <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
@@ -3499,7 +3283,7 @@ If set to <code>None</code>, this will repeat until a fixed point is reached.</l
         <span class="k">if</span> <span class="n">outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="p">}</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_unpack</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
             <span class="n">outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="p">}</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -3938,7 +3722,7 @@ That die will be limited to that maximum outcome, with all higher outcomes being
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">abs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">abs</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -3966,7 +3750,7 @@ That die will be limited to that maximum outcome, with all higher outcomes being
 <span class="sd">        Raises:</span>
 <span class="sd">            `ValueError` if the zeros did not resolve to a single outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
@@ -4026,7 +3810,7 @@ That die will be limited to that maximum outcome, with all higher outcomes being
 <span class="sd">        </span>
 <span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -4053,7 +3837,7 @@ That die will be limited to that maximum outcome, with all higher outcomes being
 <span class="sd">        </span>
 <span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unary_op</span><span class="p">(</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -4080,7 +3864,7 @@ That die will be limited to that maximum outcome, with all higher outcomes being
 <span class="sd">        </span>
 <span class="sd">        The weights are equal to the positive outcome of `self &gt; other`, `self &lt; other`, and the remainder respectively.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BaseDie</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BaseDie</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -4229,15 +4013,15 @@ they are treated as unequal by this function.</p>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">({})</span>
         
-    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; There are no outcomes, so nothing happens. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span>
     
-    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; There are no outcomes, so nothing happens. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span>
     
-    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">func</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -4290,71 +4074,6 @@ they are treated as unequal by this function.</p>
             <div class="docstring"><p>Returns the number of dimensions if this is a <code><a href="#VectorDie">VectorDie</a></code>.</p>
 
 <p>Otherwise, returns <code>'scalar'</code> for a <code><a href="#ScalarDie">ScalarDie</a></code> and <code>'empty'</code> for an <code><a href="#EmptyDie">EmptyDie</a></code>.</p>
-</div>
-
-
-                            </div>
-                            <div id="EmptyDie.unary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#EmptyDie.unary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">unary_op</span><span class="signature">(self, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; There are no outcomes, so nothing happens. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>There are no outcomes, so nothing happens.</p>
-</div>
-
-
-                            </div>
-                            <div id="EmptyDie.binary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#EmptyDie.binary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">binary_op</span><span class="signature">(self, other, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; There are no outcomes, so nothing happens. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>There are no outcomes, so nothing happens.</p>
-</div>
-
-
-                            </div>
-                            <div id="EmptyDie.wrap_unpack" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#EmptyDie.wrap_unpack">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">wrap_unpack</span><span class="signature">(self, func)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">func</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Possibly wraps <code>func</code> so that outcomes are unpacked before giving it to <code>func</code>.</p>
 </div>
 
 
@@ -4421,8 +4140,6 @@ they are treated as unequal by this function.</p>
                 <dd id="EmptyDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="EmptyDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="EmptyDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
-                <dd id="EmptyDie.pop_max" class="function"><a href="#BaseDie.pop_max">pop_max</a></dd>
-                <dd id="EmptyDie.pop_min" class="function"><a href="#BaseDie.pop_min">pop_min</a></dd>
                 <dd id="EmptyDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
                 <dd id="EmptyDie.explode" class="function"><a href="#BaseDie.explode">explode</a></dd>
                 <dd id="EmptyDie.highest" class="function"><a href="#BaseDie.highest">highest</a></dd>
@@ -4481,21 +4198,21 @@ they are treated as unequal by this function.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
     
-    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on the outcomes. &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">data</span><span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">weight</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="s1">&#39;scalar&#39;</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span> <span class="n">weight_other</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">outcome_other</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">weight_self</span> <span class="o">*</span> <span class="n">weight_other</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="s1">&#39;scalar&#39;</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">func</span>
     
     <span class="c1"># Special operators.</span>
@@ -4742,77 +4459,6 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
             <div class="docstring"><p>Returns the number of dimensions if this is a <code><a href="#VectorDie">VectorDie</a></code>.</p>
 
 <p>Otherwise, returns <code>'scalar'</code> for a <code><a href="#ScalarDie">ScalarDie</a></code> and <code>'empty'</code> for an <code><a href="#EmptyDie">EmptyDie</a></code>.</p>
-</div>
-
-
-                            </div>
-                            <div id="ScalarDie.unary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ScalarDie.unary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">unary_op</span><span class="signature">(self, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on the outcomes. &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">weight</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="s1">&#39;scalar&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation on the outcomes.</p>
-</div>
-
-
-                            </div>
-                            <div id="ScalarDie.binary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ScalarDie.binary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">binary_op</span><span class="signature">(self, other, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span> <span class="n">weight_other</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">op</span><span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">outcome_other</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">weight_self</span> <span class="o">*</span> <span class="n">weight_other</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="s1">&#39;scalar&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.</p>
-</div>
-
-
-                            </div>
-                            <div id="ScalarDie.wrap_unpack" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ScalarDie.wrap_unpack">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">wrap_unpack</span><span class="signature">(self, func)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">func</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Possibly wraps <code>func</code> so that outcomes are unpacked before giving it to <code>func</code>.</p>
 </div>
 
 
@@ -5351,8 +4997,6 @@ while not actually producing any additional information.</p>
                 <dd id="ScalarDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="ScalarDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="ScalarDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
-                <dd id="ScalarDie.pop_max" class="function"><a href="#BaseDie.pop_max">pop_max</a></dd>
-                <dd id="ScalarDie.pop_min" class="function"><a href="#BaseDie.pop_min">pop_min</a></dd>
                 <dd id="ScalarDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
                 <dd id="ScalarDie.explode" class="function"><a href="#BaseDie.explode">explode</a></dd>
                 <dd id="ScalarDie.highest" class="function"><a href="#BaseDie.highest">highest</a></dd>
@@ -5416,7 +5060,7 @@ while not actually producing any additional information.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="n">ndim</span>
     
-    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation elementwise on the outcome sequences. &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -5424,7 +5068,7 @@ while not actually producing any additional information.</p>
             <span class="n">data</span><span class="p">[</span><span class="n">new_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span> <span class="n">weight_other</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -5432,7 +5076,7 @@ while not actually producing any additional information.</p>
             <span class="n">data</span><span class="p">[</span><span class="n">new_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight_self</span> <span class="o">*</span> <span class="n">weight_other</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">unpacked_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
@@ -5634,82 +5278,6 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
             <div class="docstring"><p>Returns the number of dimensions if this is a <code><a href="#VectorDie">VectorDie</a></code>.</p>
 
 <p>Otherwise, returns <code>'scalar'</code> for a <code><a href="#ScalarDie">ScalarDie</a></code> and <code>'empty'</code> for an <code><a href="#EmptyDie">EmptyDie</a></code>.</p>
-</div>
-
-
-                            </div>
-                            <div id="VectorDie.unary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#VectorDie.unary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">unary_op</span><span class="signature">(self, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation elementwise on the outcome sequences. &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">new_outcome</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcome</span><span class="p">)</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">new_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation elementwise on the outcome sequences.</p>
-</div>
-
-
-                            </div>
-                            <div id="VectorDie.binary_op" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#VectorDie.binary_op">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">binary_op</span><span class="signature">(self, other, op, *args, **kwargs)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">binary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span> <span class="n">weight_other</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="n">new_outcome</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">outcome_other</span><span class="p">))</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">new_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight_self</span> <span class="o">*</span> <span class="n">weight_other</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice.</p>
-</div>
-
-
-                            </div>
-                            <div id="VectorDie.wrap_unpack" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#VectorDie.wrap_unpack">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">wrap_unpack</span><span class="signature">(self, func)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">wrap_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">unpacked_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">unpacked_func</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Possibly wraps <code>func</code> so that outcomes are unpacked before giving it to <code>func</code>.</p>
 </div>
 
 
@@ -6186,8 +5754,6 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
                 <dd id="VectorDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="VectorDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="VectorDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
-                <dd id="VectorDie.pop_max" class="function"><a href="#BaseDie.pop_max">pop_max</a></dd>
-                <dd id="VectorDie.pop_min" class="function"><a href="#BaseDie.pop_min">pop_min</a></dd>
                 <dd id="VectorDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
                 <dd id="VectorDie.explode" class="function"><a href="#BaseDie.explode">explode</a></dd>
                 <dd id="VectorDie.highest" class="function"><a href="#BaseDie.highest">highest</a></dd>
@@ -7035,7 +6601,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="n">max_outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="n">max_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">())</span>
         <span class="n">num_unused_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="n">num_possible_dice</span>
-        <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">pop_max</span><span class="p">()</span>
+        <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">_pop_max</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">popped_die</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
             <span class="c1"># This is the last outcome. All dice must roll this outcome.</span>
@@ -7090,7 +6656,7 @@ of 2 d8s and 3 d6s.</li>
         
         <span class="n">min_outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">())</span>
-        <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">pop_min</span><span class="p">()</span>
+        <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">_pop_min</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">popped_die</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
             <span class="c1"># This is the last outcome. All dice must roll this outcome.</span>
@@ -7129,28 +6695,28 @@ of 2 d8s and 3 d6s.</li>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">skip_weight</span>
     
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_max is not valid with min_outcomes.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_pop_max</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
 <span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_max</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_max</span>
     
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_min is not valid with min_outcomes.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_pop_min</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
 <span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_min</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_min</span>
         
     <span class="k">def</span> <span class="nf">has_counted_dice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns `True` iff any of the remaining dice are counted a nonzero number of times.</span>
@@ -7617,56 +7183,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <li><strong>always_tuple:</strong>  If <code>False</code>, this will return <code>None</code> if there are no die-specific <code><a href="#DicePool.min_outcomes">min_outcomes</a></code>.
 If <code>True</code> this will return a <code>tuple</code> even in this case.</li>
 </ul>
-</div>
-
-
-                            </div>
-                            <div id="DicePool.pop_max" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.pop_max">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">pop_max</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
-<span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_max</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a sequence of pool, count, weight corresponding to removing the max outcome,
-with count and weight corresponding to various numbers of dice rolling that outcome.</p>
-</div>
-
-
-                            </div>
-                            <div id="DicePool.pop_min" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.pop_min">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">pop_min</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
-<span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pop_min</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a sequence of pool, count, weight corresponding to removing the max outcome,
-with count and weight corresponding to various numbers of dice rolling that outcome.</p>
 </div>
 
 
