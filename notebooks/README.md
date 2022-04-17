@@ -1,8 +1,8 @@
 This collection of Jupyter notebooks gives several examples of using the `icepool` module.
 
-[Repository.](https://gitlab.com/highdiceroller/hdroller)
+[Repository.](https://github.com/HighDiceRoller/icepool)
 
-[API documentation.](https://highdiceroller.gitlab.io/hdroller/apidoc/hdroller.html)
+[API documentation.](https://github.com/HighDiceRoller/icepool)
 
 If you have questions or comments, feel free to message me on [Reddit](https://www.reddit.com/user/HighDiceRoller) or [Twitter](https://twitter.com/highdiceroller).
 
