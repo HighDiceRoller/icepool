@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-04-17T01:07:01.607647Z",
+      "created": "2022-04-17T01:15:37.481521Z",
       "format": null,
-      "last_modified": "2022-04-17T01:06:46.439465Z",
+      "last_modified": "2022-04-17T01:15:19.801277Z",
       "mimetype": null,
       "name": "adnd.ipynb",
       "path": "ability_scores/adnd.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-04-17T01:07:01.607647Z",
+      "created": "2022-04-17T01:15:37.481521Z",
       "format": null,
-      "last_modified": "2022-04-17T01:06:46.439465Z",
+      "last_modified": "2022-04-17T01:15:19.805277Z",
       "mimetype": null,
       "name": "snake_draft.ipynb",
       "path": "ability_scores/snake_draft.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-04-17T01:07:01.607647Z",
+      "created": "2022-04-17T01:15:37.481521Z",
       "format": null,
-      "last_modified": "2022-04-17T01:06:46.439465Z",
+      "last_modified": "2022-04-17T01:15:19.801277Z",
       "mimetype": null,
       "name": "completely_unfair.ipynb",
       "path": "ability_scores/completely_unfair.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-04-17T01:07:01.607647Z",
+      "created": "2022-04-17T01:15:37.481521Z",
       "format": null,
-      "last_modified": "2022-04-17T01:06:46.439465Z",
+      "last_modified": "2022-04-17T01:15:19.801277Z",
       "mimetype": null,
       "name": "one_set_strictly_better.ipynb",
       "path": "ability_scores/one_set_strictly_better.ipynb",
@@ -49,9 +49,9 @@
       "writable": true
     }
   ],
-  "created": "2022-04-17T01:07:01.607647Z",
+  "created": "2022-04-17T01:15:37.481521Z",
   "format": "json",
-  "last_modified": "2022-04-17T01:07:01.607647Z",
+  "last_modified": "2022-04-17T01:15:37.481521Z",
   "mimetype": null,
   "name": "ability_scores",
   "path": "ability_scores",
