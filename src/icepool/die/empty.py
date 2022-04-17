@@ -13,15 +13,15 @@ class EmptyDie(icepool.die.base.BaseDie):
     def __init__(self):
         self._data = Weights({})
         
-    def unary_op(self, op, *args, **kwargs):
+    def _unary_op(self, op, *args, **kwargs):
         """ There are no outcomes, so nothing happens. """
         return self
     
-    def binary_op(self, other, op, *args, **kwargs):
+    def _binary_op(self, other, op, *args, **kwargs):
         """ There are no outcomes, so nothing happens. """
         return self
     
-    def wrap_unpack(self, func):
+    def _wrap_unpack(self, func):
         return func
 
     def __repr__(self):

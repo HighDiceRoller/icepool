@@ -34,7 +34,7 @@ class VectorDie(icepool.die.base.BaseDie):
         self._data = data
         self._ndim = ndim
     
-    def unary_op(self, op, *args, **kwargs):
+    def _unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on the outcome sequences. """
         data = defaultdict(int)
         for outcome, weight in self.items():
@@ -42,7 +42,7 @@ class VectorDie(icepool.die.base.BaseDie):
             data[new_outcome] += weight
         return icepool.Die(data, ndim=self.ndim())
     
-    def binary_op(self, other, op, *args, **kwargs):
+    def _binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
@@ -50,7 +50,7 @@ class VectorDie(icepool.die.base.BaseDie):
             data[new_outcome] += weight_self * weight_other
         return icepool.Die(data, ndim=self.ndim())
     
-    def wrap_unpack(self, func):
+    def _wrap_unpack(self, func):
         @wraps(func)
         def unpacked_func(outcome):
             return func(*outcome)

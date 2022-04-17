@@ -386,7 +386,7 @@ class DicePool():
         max_outcomes = self.max_outcomes(always_tuple=True)
         num_possible_dice = self.num_dice() - bisect.bisect_left(max_outcomes, self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_possible_dice
-        popped_die, outcome, single_weight = self.die().pop_max()
+        popped_die, outcome, single_weight = self.die()._pop_max()
         
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
@@ -441,7 +441,7 @@ class DicePool():
         
         min_outcomes = self.min_outcomes(always_tuple=True)
         num_possible_dice = bisect.bisect_right(min_outcomes, self.die().min_outcome())
-        popped_die, outcome, single_weight = self.die().pop_min()
+        popped_die, outcome, single_weight = self.die()._pop_min()
         
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
@@ -480,28 +480,28 @@ class DicePool():
             yield pool, count, skip_weight
     
     @cached_property
-    def _pop_max(self):
+    def _popped_max(self):
         if self.min_outcomes() is not None:
             raise ValueError('pop_max is not valid with min_outcomes.')
         return tuple(self._iter_pop_max())
     
-    def pop_max(self):
+    def _pop_max(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
-        return self._pop_max
+        return self._popped_max
     
     @cached_property
-    def _pop_min(self):
+    def _popped_min(self):
         if self.max_outcomes() is not None:
             raise ValueError('pop_min is not valid with min_outcomes.')
         return tuple(self._iter_pop_min())
     
-    def pop_min(self):
+    def _pop_min(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
-        return self._pop_min
+        return self._popped_min
         
     def has_counted_dice(self):
         """ Returns `True` iff any of the remaining dice are counted a nonzero number of times.

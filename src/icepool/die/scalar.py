@@ -30,21 +30,21 @@ class ScalarDie(icepool.die.base.BaseDie):
         """
         self._data = data
     
-    def unary_op(self, op, *args, **kwargs):
+    def _unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on the outcomes. """
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
         return icepool.Die(data, ndim='scalar')
     
-    def binary_op(self, other, op, *args, **kwargs):
+    def _binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
         return icepool.Die(data, ndim='scalar')
     
-    def wrap_unpack(self, func):
+    def _wrap_unpack(self, func):
         return func
     
     # Special operators.

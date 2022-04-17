@@ -47,14 +47,14 @@ class BaseDie():
     # Abstract methods.
     
     @abstractmethod
-    def unary_op(self, op, *args, **kwargs):
+    def _unary_op(self, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on the outcomes.
         
         This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil`.
         """
     
     @abstractmethod
-    def binary_op(self, other, op, *args, **kwargs):
+    def _binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice.
         
         The other operand is cast to a die (using `icepool.Die`) before performing the operation.
@@ -71,7 +71,7 @@ class BaseDie():
         """
     
     @abstractmethod
-    def wrap_unpack(self, func):
+    def _wrap_unpack(self, func):
         """ Possibly wraps `func` so that outcomes are unpacked before giving it to `func`. """
         
     @abstractmethod
@@ -324,7 +324,7 @@ class BaseDie():
         if outcomes is None:
             outcomes = { self.min_outcome() }
         elif callable(outcomes):
-            func = self.wrap_unpack(outcomes)
+            func = self._wrap_unpack(outcomes)
             outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
         if max_depth is None:
@@ -353,7 +353,7 @@ class BaseDie():
             If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
-            func = self.wrap_unpack(outcomes)
+            func = self._wrap_unpack(outcomes)
             not_outcomes = { outcome for outcome in self.outcomes() if not func(outcome) }
         else:
             not_outcomes = { not_outcome for not_outcome in self.outcomes() if not_outcome not in outcomes }
@@ -384,7 +384,7 @@ class BaseDie():
         
         `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.
         """
-        cond = self.wrap_unpack(cond)
+        cond = self._wrap_unpack(cond)
         data_true = {}
         data_false = {}
         for outcome, weight in self.items():
@@ -409,30 +409,30 @@ class BaseDie():
         return icepool.Die(data, ndim=self.ndim())
     
     @cached_property
-    def _pop_max(self):
+    def _popped_max(self):
         die = self[:-1]
         return die, self.outcomes()[-1], self.weights()[-1]
     
-    def pop_max(self):
+    def _pop_max(self):
         """ Remove the max outcome and return the result, along with the popped outcome, and the popped weight.
         
         Raises:
             `IndexError` if this die has no outcome to pop.
         """
-        return self._pop_max
+        return self._popped_max
     
     @cached_property
-    def _pop_min(self):
+    def _popped_min(self):
         die = self[1:]
         return die, self.outcomes()[0], self.weights()[0]
     
-    def pop_min(self):
+    def _pop_min(self):
         """ Remove the min outcome and return the result, along with the popped outcome, and the popped weight.
         
         Raises:
             `IndexError` if this die has no outcome to pop.
         """
-        return self._pop_min
+        return self._popped_min
     
     # Mixtures.
 
@@ -464,7 +464,7 @@ class BaseDie():
             if hasattr(repl, 'items'):
                 repl = [(repl[outcome] if outcome in repl else outcome) for outcome in self.outcomes()]
             elif callable(repl):
-                repl = self.wrap_unpack(repl)
+                repl = self._wrap_unpack(repl)
                 repl = [repl(outcome) for outcome in self.outcomes()]
 
             return icepool.Die(*repl, weights=self.weights(), ndim=ndim, denominator_method=denominator_method)
@@ -494,7 +494,7 @@ class BaseDie():
         if outcomes is None:
             outcomes = { self.max_outcome() }
         elif callable(outcomes):
-            func = self.wrap_unpack(outcomes)
+            func = self._wrap_unpack(outcomes)
             outcomes = { outcome for outcome in self.outcomes() if func(outcome) }
         
         if len(outcomes) == 0:
@@ -658,30 +658,30 @@ class BaseDie():
     # Unary operators.
     
     def __neg__(self):
-        return self.unary_op(operator.neg)
+        return self._unary_op(operator.neg)
     
     def __pos__(self):
-        return self.unary_op(operator.pos)
+        return self._unary_op(operator.pos)
     
     def __abs__(self):
-        return self.unary_op(operator.abs)
+        return self._unary_op(operator.abs)
     
     abs = __abs__
     
     def __invert__(self):
-        return self.unary_op(operator.invert)
+        return self._unary_op(operator.invert)
     
     def __round__(self, ndigits=None):
-        return self.unary_op(round, ndigits)
+        return self._unary_op(round, ndigits)
     
     def __trunc__(self):
-        return self.unary_op(math.trunc)
+        return self._unary_op(math.trunc)
     
     def __floor__(self):
-        return self.unary_op(math.floor)
+        return self._unary_op(math.floor)
     
     def __ceil__(self):
-        return self.unary_op(math.ceil)
+        return self._unary_op(math.ceil)
     
     @staticmethod
     def _zero(x):
@@ -697,7 +697,7 @@ class BaseDie():
         Raises:
             `ValueError` if the zeros did not resolve to a single outcome.
         """
-        result = self.unary_op(BaseDie._zero)
+        result = self._unary_op(BaseDie._zero)
         if result.num_outcomes() != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
         return result.reduce()
@@ -711,131 +711,131 @@ class BaseDie():
         
         Note the die as a whole is not considered to have a truth value.
         """
-        return self.unary_op(bool)
+        return self._unary_op(bool)
     
     # Binary operators.
     
     def __add__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.add)
+        return self._binary_op(other, operator.add)
     
     def __radd__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.add)
+        return other._binary_op(self, operator.add)
     
     def __sub__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.sub)
+        return self._binary_op(other, operator.sub)
     
     def __rsub__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.sub)
+        return other._binary_op(self, operator.sub)
     
     def __mul__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.mul)
+        return self._binary_op(other, operator.mul)
     
     def __rmul__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.mul)
+        return other._binary_op(self, operator.mul)
         
     def __truediv__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.truediv)
+        return self._binary_op(other, operator.truediv)
     
     def __rtruediv__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.truediv)
+        return other._binary_op(self, operator.truediv)
     
     def __floordiv__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.floordiv)
+        return self._binary_op(other, operator.floordiv)
     
     def __rfloordiv__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.floordiv)
+        return other._binary_op(self, operator.floordiv)
     
     def __pow__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.pow)
+        return self._binary_op(other, operator.pow)
     
     def __rpow__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.pow)
+        return other._binary_op(self, operator.pow)
     
     def __mod__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.mod)
+        return self._binary_op(other, operator.mod)
     
     def __rmod__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.mod)
+        return other._binary_op(self, operator.mod)
     
     def __lshift__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.lshift)
+        return self._binary_op(other, operator.lshift)
     
     def __rlshift__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.lshift)
+        return other._binary_op(self, operator.lshift)
     
     def __rshift__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.rshift)
+        return self._binary_op(other, operator.rshift)
     
     def __rrshift__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.rshift)
+        return other._binary_op(self, operator.rshift)
     
     def __and__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.and_)
+        return self._binary_op(other, operator.and_)
     
     def __rand__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.and_)
+        return other._binary_op(self, operator.and_)
         
     def __or__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.or_)
+        return self._binary_op(other, operator.or_)
     
     def __ror__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.or_)
+        return other._binary_op(self, operator.or_)
     
     def __xor__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.xor)
+        return self._binary_op(other, operator.xor)
     
     def __rxor__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return other.binary_op(self, operator.xor)
+        return other._binary_op(self, operator.xor)
     
     # Comparators.
     
     def __lt__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.lt)
+        return self._binary_op(other, operator.lt)
         
     def __le__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.le)
+        return self._binary_op(other, operator.le)
     
     def __ge__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.ge)
+        return self._binary_op(other, operator.ge)
         
     def __gt__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.gt)
+        return self._binary_op(other, operator.gt)
     
     def __eq__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.eq)
+        return self._binary_op(other, operator.eq)
     
     def __ne__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self.binary_op(other, operator.ne)
+        return self._binary_op(other, operator.ne)
     
     @staticmethod
     def _sign(x):
@@ -852,7 +852,7 @@ class BaseDie():
         
         Note that for `float`s, +0.0, -0.0, and nan all become 0.
         """
-        return self.unary_op(BaseDie._sign)
+        return self._unary_op(BaseDie._sign)
     
     @staticmethod
     def _cmp(x, y):
@@ -863,7 +863,7 @@ class BaseDie():
         
         The weights are equal to the positive outcome of `self > other`, `self < other`, and the remainder respectively.
         """
-        return self.binary_op(other, BaseDie._cmp)
+        return self._binary_op(other, BaseDie._cmp)
     
     # Special operators.
     

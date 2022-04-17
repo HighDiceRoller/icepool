@@ -311,7 +311,7 @@ def _pop_pool_max(outcome, pool):
     if outcome not in pool.die():
         yield pool, 0, 1
     else:
-        yield from pool.pop_max()
+        yield from pool._pop_max()
         
 def _pop_pool_min(outcome, pool):
     """ Iterates over possible numbers of dice that could roll an outcome.
@@ -328,7 +328,7 @@ def _pop_pool_min(outcome, pool):
     if outcome not in pool.die():
         yield pool, 0, 1
     else:
-        yield from pool.pop_min()
+        yield from pool._pop_min()
 
 class WrapFuncEval(EvalPool):
     """ A `EvalPool` created from a single provided function.
