@@ -188,29 +188,29 @@
             
             await pyodide.loadPackage(["micropip"], setLoadingText);
             
-            setLoadingText('Loading hdroller')
+            setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.6.6')
+                await micropip.install('icepool==0.7.0')
                 
                 import js
                 import pyodide
-                import hdroller
+                import icepool
                 
-                reference_die = hdroller.d12.sub({1: 0})
+                reference_die = icepool.d12.sub({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
-                die_player_unaligned, hitch_player_unaligned = hdroller.Die(0), hdroller.Die(0)
-                die_opposition_unaligned, hitch_opposition_unaligned = hdroller.Die(0), hdroller.Die(0)
+                die_player_unaligned, hitch_player_unaligned = icepool.Die(0), icepool.Die(0)
+                die_opposition_unaligned, hitch_opposition_unaligned = icepool.Die(0), icepool.Die(0)
                 
                 def calc_pool(prefix):
                     max_outcomes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
                     die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, max_outcomes=max_outcomes)
-                    hitch = hdroller.Die(0)
+                    hitch = icepool.Die(0)
                     for n in max_outcomes:
-                        hitch += hdroller.coin(1, n)
+                        hitch += icepool.coin(1, n)
                     return die, hitch
             `);
             
@@ -249,7 +249,7 @@
             
             pyodide.runPython(`
             
-            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
+            die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
             
             js.document.getElementById('pmean').innerHTML = '%0.2f' % die_player.mean()
             js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
@@ -276,7 +276,7 @@
             
             pyodide.runPython(`
             
-            hitch_player, hitch_opposition = hdroller.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
+            hitch_player, hitch_opposition = icepool.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
             
             js.hitchChart.data.labels = pyodide.to_js([float(x) for x in hitch_player.outcomes()])
             
@@ -345,7 +345,7 @@
         <h3>How does it work?</h3>
         <p>
             I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
-            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+            and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
         </p>
         
         <h3>Prior work</h3>

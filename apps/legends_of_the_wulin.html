@@ -134,21 +134,21 @@
             
             await pyodide.loadPackage(["micropip"], setLoadingText);
             
-            setLoadingText('Loading hdroller')
+            setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('hdroller==0.6.6')
+                await micropip.install('icepool==0.7.0')
                 
                 import js
                 import pyodide
-                import hdroller
+                import icepool
                 
-                die = hdroller.d10 - 1
+                die = icepool.d10 - 1
                 
-                die_player_unaligned = hdroller.Die(0)
-                die_opposition_unaligned = hdroller.Die(0)
+                die_player_unaligned = icepool.Die(0)
+                die_opposition_unaligned = icepool.Die(0)
                 
-                class WulinEval(hdroller.EvalPool):
+                class WulinEval(icepool.EvalPool):
                     def __init__(self, river):
                         self._river = river
                     
@@ -162,7 +162,7 @@
                     lake = int(js.document.getElementById('%slake' % prefix).value)
                     river = tuple(int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10))
                     
-                    pool = hdroller.Pool(die, lake)
+                    pool = icepool.Pool(die, lake)
                     return WulinEval(river).eval(pool)
             `);
             
@@ -197,7 +197,7 @@
             
             pyodide.runPython(`
             
-            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
+            die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
             
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
             js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
@@ -265,7 +265,7 @@
         <h3>How does it work?</h3>
         <p>
             I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
-            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+            and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
         </p>
         
         <p>
