@@ -1,3 +1,5 @@
+# <img width="32" height="32" src="https://highdiceroller.github.io/icepool/apps/favicon.png" /> Icepool
+
 A Python library for computing dice probabilities.
 
 ## Installing
