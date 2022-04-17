@@ -5,7 +5,7 @@
             "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.1.0-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.1.0-pyhd8ed1ab_0.tar.bz2"
         ],
         "ignore_sys_prefix" : true,
-        "output_dir" : "dist/notebooks",
+        "output_dir" : "dist",
         "piplite_urls" : []
     }
 }
