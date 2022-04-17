@@ -25,6 +25,7 @@ jobs:
           pip install jupyterlab_server
           pip install --pre jupyterlite
       - name: Copy Favicon
+        run: |
           cp favicon.png dist/favicon.png
       - name: Build JupyterLite Site
         run: |

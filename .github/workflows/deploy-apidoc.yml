@@ -23,6 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pdoc
       - name: Copy Favicon
+        run: |
           cp favicon.png dist/favicon.png
       - name: Run Pdoc
         run: |
