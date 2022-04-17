@@ -11,7 +11,7 @@
       "nbdime-jupyterlab"
     ],
     "exposeAppInBrowser": true,
-    "faviconUrl": "https://highdiceroller.github.io/icepool/notebooks/favicon.png",
+    "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [
       {
         "extension": "./extension",
