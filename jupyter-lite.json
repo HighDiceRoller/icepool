@@ -4,7 +4,7 @@
         "appName": "Icepool examples",
         "collaborative": true,
         "exposeAppInBrowser": true,
-        "faviconUrl": "favicon.ico",
+        "faviconUrl": "https://highdiceroller.github.io/icepool/notebooks/favicon.ico",
         "disabledExtensions": [
             "@jupyterlab/server-proxy",
             "jupyterlab-server-proxy",
