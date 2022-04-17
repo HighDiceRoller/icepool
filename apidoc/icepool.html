@@ -418,6 +418,15 @@
                     <a class="variable" href="#Reroll">Reroll</a>
             </li>
             <li>
+                    <a class="class" href="#BasePool">BasePool</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#BasePool.outcomes">outcomes</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#Pool">Pool</a>
             </li>
             <li>
@@ -431,6 +440,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#DicePool.die">die</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#DicePool.outcomes">outcomes</a>
                         </li>
                         <li>
                                 <a class="function" href="#DicePool.count_dice">count_dice</a>
@@ -600,6 +612,13 @@ icepool    </h1>
 <p>See <a href="https://highdiceroller.github.io/icepool/notebooks/lab/index.html">this JupyterLite distribution</a> for examples.</p>
 
 <p><a href="https://github.com/HighDiceRoller/icepool">Visit the project page.</a></p>
+
+<p>General conventions:</p>
+
+<ul>
+<li>Unless explictly specified otherwise, all sorting is in ascending order.</li>
+<li>The words "min" and "max" refer to outcomes, and the words "low" and "high" refer to dice in a pool.</li>
+</ul>
 </div>
 
                         <details>
@@ -609,6 +628,11 @@ icepool    </h1>
 <span class="sd">See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for examples.</span>
 
 <span class="sd">[Visit the project page.](https://github.com/HighDiceRoller/icepool)</span>
+
+<span class="sd">General conventions:</span>
+
+<span class="sd">* Unless explictly specified otherwise, all sorting is in ascending order.</span>
+<span class="sd">* The words &quot;min&quot; and &quot;max&quot; refer to outcomes, and the words &quot;low&quot; and &quot;high&quot; refer to dice in a pool.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
@@ -630,7 +654,9 @@ icepool    </h1>
 <span class="n">max_outcome</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">max_outcome</span>
 <span class="n">min_outcome</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">BaseDie</span><span class="o">.</span><span class="n">min_outcome</span>
 
+<span class="kn">from</span> <span class="nn">icepool.pool.base</span> <span class="kn">import</span> <span class="n">BasePool</span>
 <span class="kn">from</span> <span class="nn">icepool.pool.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span><span class="p">,</span> <span class="n">DicePool</span>
+<span class="kn">from</span> <span class="nn">icepool.pool.roll</span> <span class="kn">import</span> <span class="n">PoolRoll</span>
 <span class="kn">from</span> <span class="nn">icepool.pool.eval</span> <span class="kn">import</span> <span class="n">EvalPool</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">SumPool</span><span class="p">,</span> <span class="n">sum_pool</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
 
 <span class="kn">import</span> <span class="nn">enum</span>
@@ -647,6 +673,7 @@ icepool    </h1>
     <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span>
     <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;dice_with_common_ndim&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BasePool&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;DicePool&#39;</span><span class="p">,</span>
     <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;WrapFuncEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestRun&#39;</span><span class="p">,</span>
     <span class="s1">&#39;d2&#39;</span><span class="p">,</span> <span class="s1">&#39;d3&#39;</span><span class="p">,</span> <span class="s1">&#39;d4&#39;</span><span class="p">,</span> <span class="s1">&#39;d6&#39;</span><span class="p">,</span> <span class="s1">&#39;d8&#39;</span><span class="p">,</span> <span class="s1">&#39;d10&#39;</span><span class="p">,</span> <span class="s1">&#39;d12&#39;</span><span class="p">,</span> <span class="s1">&#39;d20&#39;</span><span class="p">,</span> <span class="s1">&#39;d100&#39;</span><span class="p">]</span>
@@ -1165,7 +1192,13 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
         
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Formats the die as a Markdown string. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Formats the die as a Markdown string. </span>
+<span class="sd">        </span>
+<span class="sd">        This will have the denominator and a table of outcomes and their probabilities.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            include_weights: Iff `True`, the table will have a column for weights.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
     
     <span class="c1"># Basic access.</span>
     
@@ -2115,12 +2148,26 @@ though these have little use other than being sentinel values.</p>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Formats the die as a Markdown string. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Formats the die as a Markdown string. </span>
+<span class="sd">        </span>
+<span class="sd">        This will have the denominator and a table of outcomes and their probabilities.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            include_weights: Iff `True`, the table will have a column for weights.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Formats the die as a Markdown string.</p>
+            <div class="docstring"><p>Formats the die as a Markdown string. </p>
+
+<p>This will have the denominator and a table of outcomes and their probabilities.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>include_weights:</strong>  Iff <code>True</code>, the table will have a column for weights.</li>
+</ul>
 </div>
 
 
@@ -4094,7 +4141,15 @@ they are treated as unequal by this function.</p>
 
         </details>
 
-            <div class="docstring"><p>Formats the die as a Markdown string.</p>
+            <div class="docstring"><p>Formats the die as a Markdown string. </p>
+
+<p>This will have the denominator and a table of outcomes and their probabilities.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>include_weights:</strong>  Iff <code>True</code>, the table will have a column for weights.</li>
+</ul>
 </div>
 
 
@@ -4951,7 +5006,15 @@ while not actually producing any additional information.</p>
 
         </details>
 
-            <div class="docstring"><p>Formats the die as a Markdown string.</p>
+            <div class="docstring"><p>Formats the die as a Markdown string. </p>
+
+<p>This will have the denominator and a table of outcomes and their probabilities.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>include_weights:</strong>  Iff <code>True</code>, the table will have a column for weights.</li>
+</ul>
 </div>
 
 
@@ -6192,6 +6255,104 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
     
 
                 </section>
+                <section id="BasePool">
+                                <div class="attr class">
+        <a class="headerlink" href="#BasePool">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">BasePool</span><wbr>(<span class="base">abc.ABC</span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">BasePool</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Abstract base class for dice pools.</span>
+<span class="sd">    </span>
+<span class="sd">    This provides the methods needed to run the dice pool algorithm.</span>
+<span class="sd">    </span>
+<span class="sd">    There are two subclasses:</span>
+<span class="sd">    </span>
+<span class="sd">    * `DicePool`, which represents a pool of dice with random results.</span>
+<span class="sd">    * `PoolRoll`, which represents a single, fixed roll of a pool.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns `True` iff this is a single, fixed roll of a pool. &quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_has_max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has right-truncation. &quot;&quot;&quot;</span>
+        
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_has_min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has left-truncation. &quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The outcomes of the fundamental die (including those with zero weight). &quot;&quot;&quot;</span>
+        
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The maximum outcome of the fundamental die. &quot;&quot;&quot;</span>
+        
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The minimum outcome of the fundamental die. &quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
+<span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the min outcome,</span>
+<span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Abstract base class for dice pools.</p>
+
+<p>This provides the methods needed to run the dice pool algorithm.</p>
+
+<p>There are two subclasses:</p>
+
+<ul>
+<li><code><a href="#DicePool">DicePool</a></code>, which represents a pool of dice with random results.</li>
+<li><code>PoolRoll</code>, which represents a single, fixed roll of a pool.</li>
+</ul>
+</div>
+
+
+                            <div id="BasePool.outcomes" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BasePool.outcomes">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">outcomes</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The outcomes of the fundamental die (including those with zero weight). &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>The outcomes of the fundamental die (including those with zero weight).</p>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="Pool">
                             <div class="attr function"><a class="headerlink" href="#Pool">#&nbsp;&nbsp</a>
 
@@ -6236,13 +6397,13 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
 <span class="sd">            This operator is an alias for `DicePool.set_count_dice()`.</span>
 <span class="sd">            See that method&#39;s docstring for details.</span>
 <span class="sd">        max_outcomes: A sequence of one outcome per die in the pool.</span>
-<span class="sd">            That die will be limited to that maximum outcome, with all higher outcomes having 0 count.</span>
+<span class="sd">            That die will be limited to that maximum outcome, with all greater outcomes having 0 count.</span>
 <span class="sd">            Values cannot be &gt; the `max_outcome` of the fundamental die.</span>
 <span class="sd">            A pool cannot limit both `min_outcomes` and `max_outcomes`.</span>
 <span class="sd">            This can be used to efficiently roll a set of mixed standard dice.</span>
 <span class="sd">            For example, `Pool(icepool.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.</span>
 <span class="sd">        min_outcomes: A sequence of one outcome per die in the pool.</span>
-<span class="sd">            That die will be limited to that minimum outcome, with all lower outcomes having 0 count.</span>
+<span class="sd">            That die will be limited to that minimum outcome, with all lesser outcomes having 0 count.</span>
 <span class="sd">            Values cannot be &lt; the `min_outcome` of the fundamental die.</span>
 <span class="sd">            A pool cannot limit both `min_outcomes` and `max_outcomes`.</span>
 <span class="sd">    </span>
@@ -6340,13 +6501,13 @@ Prefer to use the <code><a href="#DicePool">DicePool</a></code>'s <code>[]</code
 This operator is an alias for <code><a href="#DicePool.set_count_dice">DicePool.set_count_dice()</a></code>.
 See that method's docstring for details.</li>
 <li><strong>max_outcomes:</strong>  A sequence of one outcome per die in the pool.
-That die will be limited to that maximum outcome, with all higher outcomes having 0 count.
+That die will be limited to that maximum outcome, with all greater outcomes having 0 count.
 Values cannot be &gt; the <code><a href="#max_outcome">max_outcome</a></code> of the fundamental die.
 A pool cannot limit both <code>min_outcomes</code> and <code>max_outcomes</code>.
 This can be used to efficiently roll a set of mixed standard dice.
 For example, <code>Pool(<a href="#d12">icepool.d12</a>, max_outcomes=[6, 6, 6, 8, 8])</code> would be a pool of 3d6 and 2d8.</li>
 <li><strong>min_outcomes:</strong>  A sequence of one outcome per die in the pool.
-That die will be limited to that minimum outcome, with all lower outcomes having 0 count.
+That die will be limited to that minimum outcome, with all lesser outcomes having 0 count.
 Values cannot be &lt; the <code><a href="#min_outcome">min_outcome</a></code> of the fundamental die.
 A pool cannot limit both <code>min_outcomes</code> and <code>max_outcomes</code>.</li>
 </ul>
@@ -6417,12 +6578,12 @@ of 2 d8s and 3 d6s.</li>
 
         
         <span class="def">class</span>
-        <span class="name">DicePool</span>:
+        <span class="name">DicePool</span><wbr>(<span class="base"><a href="#BasePool">icepool.BasePool</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DicePool</span><span class="p">():</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">DicePool</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">BasePool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A pool is a set of (semi-)identical dice that are rolled in no particular order</span>
 <span class="sd">    and sorted only after the fact.</span>
 <span class="sd">    </span>
@@ -6450,10 +6611,22 @@ of 2 d8s and 3 d6s.</li>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count_dice</span> <span class="o">=</span> <span class="n">count_dice</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="o">=</span> <span class="n">max_outcomes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="o">=</span> <span class="n">min_outcomes</span>
-        
+    
+    <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    
     <span class="k">def</span> <span class="nf">die</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; The fundamental die of the pool. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_die</span>
+    
+    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">_max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">count_dice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. &quot;&quot;&quot;</span>
@@ -6575,7 +6748,10 @@ of 2 d8s and 3 d6s.</li>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span>
-        
+    
+    <span class="k">def</span> <span class="nf">_has_max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    
     <span class="k">def</span> <span class="nf">min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A tuple of sorted min outcomes, one for each die in the pool. </span>
 <span class="sd">        </span>
@@ -6586,6 +6762,9 @@ of 2 d8s and 3 d6s.</li>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span>
+    
+    <span class="k">def</span> <span class="nf">_has_min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     
     <span class="k">def</span> <span class="nf">_iter_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -6713,7 +6892,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_pop_min</span><span class="p">())</span>
     
     <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
+        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the min outcome,</span>
 <span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_min</span>
@@ -6851,6 +7030,27 @@ relative to the fundamental die.</li>
         </details>
 
             <div class="docstring"><p>The fundamental die of the pool.</p>
+</div>
+
+
+                            </div>
+                            <div id="DicePool.outcomes" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DicePool.outcomes">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">outcomes</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>The outcomes of the fundamental die (including those with zero weight).</p>
 </div>
 
 
@@ -7457,15 +7657,20 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
         
         <span class="n">dist</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
-        <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-                <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-                <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># Return a single outcome.</span>
+                <span class="k">return</span> <span class="n">state</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+                    <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+                    <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">))</span>
     
     <span class="fm">__call__</span> <span class="o">=</span> <span class="nb">eval</span>
     
@@ -7498,8 +7703,8 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 <span class="sd">                1 for ascending and -1 for descending.</span>
 <span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">has_max_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
-        <span class="n">has_min_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+        <span class="n">has_max_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_max_outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+        <span class="n">has_min_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_min_outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">has_max_outcomes</span> <span class="ow">and</span> <span class="n">has_min_outcomes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Pools cannot be evaluated if they have both max_outcomes and min_outcomes.&#39;</span><span class="p">)</span>
         
@@ -7510,13 +7715,15 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
                 <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">has_min_outcomes</span><span class="p">:</span>
                 <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">num_drop_lowest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
-                <span class="n">num_drop_highest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_highest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+                <span class="n">num_drop_lowest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">())</span>
+                <span class="n">num_drop_highest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_highest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">())</span>
                 <span class="k">if</span> <span class="n">num_drop_lowest</span> <span class="o">&gt;=</span> <span class="n">num_drop_highest</span><span class="p">:</span>
                     <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
         
         <span class="k">if</span> <span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_max_outcomes</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_min_outcomes</span><span class="p">:</span>
             <span class="c1"># Forced onto the less-preferred algorithm.</span>
@@ -7545,7 +7752,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
         
         <span class="n">result</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">{</span> <span class="kc">None</span> <span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">outcome</span><span class="p">,</span> <span class="n">iterators</span> <span class="o">=</span> <span class="n">_pop_pools</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">pools</span><span class="p">)</span>
@@ -7570,7 +7777,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
         <span class="n">dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">dist</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">pools</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="c1"># This is only safe because all pools are guaranteed to pop outcomes at the same rate.</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
             <span class="n">next_dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">prev_pools</span><span class="p">),</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># The direction flip here is the only purpose of this algorithm.</span>
@@ -7908,15 +8115,20 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         
         <span class="n">dist</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
-        <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-                <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-                <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># Return a single outcome.</span>
+                <span class="k">return</span> <span class="n">state</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+                    <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+                    <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">))</span>
 </pre></div>
 
         </details>
