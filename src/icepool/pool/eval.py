@@ -153,15 +153,20 @@ class EvalPool(ABC):
         
         dist = algorithm(direction, *pools)
         
-        final_outcomes = []
-        final_weights = []
-        for state, weight in dist.items():
-            outcome = self.final_outcome(state, *pools)
-            if outcome is not icepool.Reroll:
-                final_outcomes.append(outcome)
-                final_weights.append(weight)
-        
-        return icepool.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
+        if all(pool._is_single_roll() for pool in pools):
+            for state in dist.keys():
+                # Return a single outcome.
+                return state
+        else:
+            final_outcomes = []
+            final_weights = []
+            for state, weight in dist.items():
+                outcome = self.final_outcome(state, *pools)
+                if outcome is not icepool.Reroll:
+                    final_outcomes.append(outcome)
+                    final_weights.append(weight)
+            
+            return icepool.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
     
     __call__ = eval
     
@@ -194,8 +199,8 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
             
         """
-        has_max_outcomes = any(pool.max_outcomes() is not None for pool in pools)
-        has_min_outcomes = any(pool.min_outcomes() is not None for pool in pools)
+        has_max_outcomes = any(pool._has_max_outcomes() for pool in pools)
+        has_min_outcomes = any(pool._has_min_outcomes() for pool in pools)
         if has_max_outcomes and has_min_outcomes:
             raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
         
@@ -206,13 +211,15 @@ class EvalPool(ABC):
                 direction = 1
             elif has_min_outcomes:
                 direction = -1
-            else:
-                num_drop_lowest = max(pool.num_drop_lowest() for pool in pools)
-                num_drop_highest = max(pool.num_drop_highest() for pool in pools)
+            elif any(not pool._is_single_roll() for pool in pools):
+                num_drop_lowest = max(pool.num_drop_lowest() for pool in pools if not pool._is_single_roll())
+                num_drop_highest = max(pool.num_drop_highest() for pool in pools if not pool._is_single_roll())
                 if num_drop_lowest >= num_drop_highest:
                     direction = 1
                 else:
                     direction = -1
+            else:
+                direction = 1
         
         if direction < 0 and has_max_outcomes or direction > 0 and has_min_outcomes:
             # Forced onto the less-preferred algorithm.
@@ -241,7 +248,7 @@ class EvalPool(ABC):
         
         result = defaultdict(int)
         
-        if all(pool.die().is_empty() for pool in pools):
+        if all(len(pool.outcomes()) == 0 for pool in pools):
             result = { None : 1 }
         else:
             outcome, iterators = _pop_pools(direction, pools)
@@ -266,7 +273,7 @@ class EvalPool(ABC):
         dist = defaultdict(int)
         dist[None, pools] = 1
         # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
-        while not all(pool.die().is_empty() for pool in pools):
+        while not all(len(pool.outcomes()) == 0 for pool in pools):
             next_dist = defaultdict(int)
             for (prev_state, prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
@@ -288,10 +295,10 @@ def _pop_pools(side, pools):
         * A tuple of iterators over the possible resulting pools, counts, and weights.
     """
     if side >= 0:
-        outcome = max(pool.die().max_outcome() for pool in pools if pool.die().num_outcomes() > 0)
+        outcome = max(pool._max_outcome() for pool in pools if len(pool.outcomes()) > 0)
         iterators = tuple(_pop_pool_max(outcome, pool) for pool in pools)
     else:
-        outcome = min(pool.die().min_outcome() for pool in pools if pool.die().num_outcomes() > 0)
+        outcome = min(pool._min_outcome() for pool in pools if len(pool.outcomes()) > 0)
         iterators = tuple(_pop_pool_min(outcome, pool) for pool in pools)
     
     return outcome, iterators
@@ -308,7 +315,7 @@ def _pop_pool_max(outcome, pool):
         count: How many dice rolled the current outcome, or 0 if the outcome is not in this pool.
         weight: The weight of that many dice rolling the current outcome.
     """
-    if outcome not in pool.die():
+    if outcome not in pool.outcomes():
         yield pool, 0, 1
     else:
         yield from pool._pop_max()
@@ -325,7 +332,7 @@ def _pop_pool_min(outcome, pool):
         count: How many dice rolled the current outcome, or 0 if the outcome is not in this pool.
         weight: The weight of that many dice rolling the current outcome.
     """
-    if outcome not in pool.die():
+    if outcome not in pool.outcomes():
         yield pool, 0, 1
     else:
         yield from pool._pop_min()

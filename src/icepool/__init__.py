@@ -29,7 +29,9 @@ lowest = icepool.die.base.BaseDie.lowest
 max_outcome = icepool.die.base.BaseDie.max_outcome
 min_outcome = icepool.die.base.BaseDie.min_outcome
 
+from icepool.pool.base import BasePool
 from icepool.pool.pool import Pool, standard_pool, DicePool
+from icepool.pool.roll import PoolRoll
 from icepool.pool.eval import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBestSet, FindBestRun
 
 import enum
@@ -46,6 +48,7 @@ __all__ = ['Die',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
     'apply', 'dice_with_common_ndim',
     'Reroll',
+    'BasePool',
     'Pool', 'standard_pool', 'DicePool',
     'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun',
     'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']

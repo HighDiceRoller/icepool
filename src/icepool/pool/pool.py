@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+import icepool
 import icepool.math
 
 import bisect
@@ -207,7 +208,7 @@ def standard_pool(*die_sizes, count_dice=None):
         return Pool(icepool.d1, num_dice=0)
     return Pool(icepool.d(max(die_sizes)), count_dice=count_dice, max_outcomes=die_sizes)
 
-class DicePool():
+class DicePool(icepool.BasePool):
     """ A pool is a set of (semi-)identical dice that are rolled in no particular order
     and sorted only after the fact.
     
@@ -235,10 +236,22 @@ class DicePool():
         self._count_dice = count_dice
         self._max_outcomes = max_outcomes
         self._min_outcomes = min_outcomes
-        
+    
+    def _is_single_roll(self):
+        return False
+    
     def die(self):
         """ The fundamental die of the pool. """
         return self._die
+    
+    def outcomes(self):
+        return self.die().outcomes()
+    
+    def _max_outcome(self):
+        return self.die().max_outcome()
+    
+    def _min_outcome(self):
+        return self.die().min_outcome()
         
     def count_dice(self):
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
@@ -360,7 +373,10 @@ class DicePool():
         if self._max_outcomes is None and always_tuple:
             return (self.die().max_outcome(),) * self.num_dice()
         return self._max_outcomes
-        
+    
+    def _has_max_outcomes(self):
+        return self._max_outcomes is not None
+    
     def min_outcomes(self, always_tuple=False):
         """ A tuple of sorted min outcomes, one for each die in the pool. 
         
@@ -371,6 +387,9 @@ class DicePool():
         if self._min_outcomes is None and always_tuple:
             return (self.die().min_outcome(),) * self.num_dice()
         return self._min_outcomes
+    
+    def _has_min_outcomes(self):
+        return self._min_outcomes is not None
     
     def _iter_pop_max(self):
         """
