@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cortex Prime calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/png" href="../die.png">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="common.js"></script>
+</head>
+
+<body>
+    <h1>Cortex Prime calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
+    
+    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+        <form id="pinputs">
+            Player pool:<br/>
+            <input name="p4" id="p4" type="number" min="0" max="10" value="0" required onwheel="" />d4,
+            <input name="p6" id="p6" type="number" min="0" max="10" value="2" required onwheel="" />d6,
+            <input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" />d8,
+            <input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" />d10, and
+            <input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" />d12, dropping the
+            <input name="pd" id="pd" type="number" min="0" max="10" value="0" required onwheel="" /> highest dice, then keeping the
+            <input name="pk" id="pk" type="number" min="1" max="10" value="2" required onwheel="" /> next highest dice.
+        </form>
+        <form id="oinputs">
+            Opposition pool:<br/>
+            <input name="o4" id="o4" type="number" min="0" max="10" value="0" required onwheel="" />d4,
+            <input name="o6" id="o6" type="number" min="0" max="10" value="2" required onwheel="" />d6,
+            <input name="o8" id="o8" type="number" min="0" max="10" value="0" required onwheel="" />d8,
+            <input name="o10" id="o10" type="number" min="0" max="10" value="0" required onwheel="" />d10, and
+            <input name="o12" id="o12" type="number" min="0" max="10" value="0" required onwheel="" />d12, dropping the
+            <input name="od" id="od" type="number" min="0" max="10" value="0" required onwheel="" /> highest dice, then keeping the
+            <input name="ok" id="ok" type="number" min="1" max="10" value="2" required onwheel="" /> next highest dice.
+        </form>
+    </div>
+    
+    <h2>Probability distribution of the total</h2>
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="distSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling greater than</option>
+            </select>
+        </div>
+        <canvas id="totalChart"></canvas>
+        <div style="font-size: 200%;">
+            Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br/>
+            Chance of player rolling greater than opposition: <span id="successChance"></span>
+        </div>
+    </div>
+    
+    <h2>Probability distribution of hitches</h2>
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="hitchDistSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf" selected><i>Chance of rolling at least</option>
+            </select>
+        </div>
+        <canvas id="hitchChart"></canvas>
+    </div>
+    
+    <script type="text/javascript">
+        setInputsFromSearchQuery();
+        
+        var totalChartContext = document.getElementById('totalChart').getContext('2d');
+        var totalChart = new Chart(totalChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Player',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        data: [],
+                    },
+                    {
+                        label: 'Opposition',
+                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                },
+            },
+        });
+        
+        var hitchChartContext = document.getElementById('hitchChart').getContext('2d');
+        var hitchChart = new Chart(hitchChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Player',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        data: [],
+                    },
+                    {
+                        label: 'Opposition',
+                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Hitches',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                },
+            },
+        });
+        
+        function setLoadingText(text) {
+            console.log(text);
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
+                return;
+            }
+            totalChart.options.plugins.title.text = loadingText[0];
+            totalChart.update();
+            hitchChart.options.plugins.title.text = loadingText[0];
+            hitchChart.update();
+        }
+        
+        async function initPyodide(){
+            setLoadingText('Loading pyodide')
+            let pyodide = await loadPyodide({
+                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+            });
+            
+            await pyodide.loadPackage(["micropip"], setLoadingText);
+            
+            setLoadingText('Loading hdroller')
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('hdroller==0.6.6')
+                
+                import js
+                import pyodide
+                import hdroller
+                
+                reference_die = hdroller.d12.sub({1: 0})
+                die_sizes = [4, 6, 8, 10, 12]
+                
+                die_player_unaligned, hitch_player_unaligned = hdroller.Die(0), hdroller.Die(0)
+                die_opposition_unaligned, hitch_opposition_unaligned = hdroller.Die(0), hdroller.Die(0)
+                
+                def calc_pool(prefix):
+                    max_outcomes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
+                    num_drop = int(js.document.getElementById(prefix + 'd').value)
+                    num_keep = int(js.document.getElementById(prefix + 'k').value)
+                    die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, max_outcomes=max_outcomes)
+                    hitch = hdroller.Die(0)
+                    for n in max_outcomes:
+                        hitch += hdroller.coin(1, n)
+                    return die, hitch
+            `);
+            
+            totalChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            hitchChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            return pyodide;
+        }
+        let pyodideReadyPromise = initPyodide();
+        
+        async function updatePlayerRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            die_player_unaligned, hitch_player_unaligned = calc_pool('p')
+            `);
+        }
+        
+        async function updateOppositionRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            die_opposition_unaligned, hitch_opposition_unaligned = calc_pool('o')
+            `);
+        }
+        
+        async function updateTotalResults() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            
+            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
+            
+            js.document.getElementById('pmean').innerHTML = '%0.2f' % die_player.mean()
+            js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
+            
+            js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
+            
+            selected_dist = js.document.getElementById('distSelect').value
+            
+            if selected_dist == 'pmf':
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
+            else:
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf(inclusive=False)])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf(inclusive=False)])
+                
+            `);
+            
+            totalChart.update();
+        }
+                
+        async function updateHitchResults() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            
+            hitch_player, hitch_opposition = hdroller.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
+            
+            js.hitchChart.data.labels = pyodide.to_js([float(x) for x in hitch_player.outcomes()])
+            
+            selected_dist = js.document.getElementById('hitchDistSelect').value
+            
+            if selected_dist == 'pmf':
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.pmf()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.pmf()])
+            else:
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.sf()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.sf()])
+            `);
+            
+            hitchChart.update();
+        }
+        
+        function validatePlayerInputsAndUpdate() {
+            if (validateInputs()) {
+                updatePlayerRoll();
+                updateResults();
+            }
+        }
+        
+        function validateOppositionInputsAndUpdate() {
+            if (validateInputs()) {
+                updateOppositionRoll();
+                updateResults();
+            }
+        }
+        
+        updatePlayerRoll();
+        updateOppositionRoll();
+        updateTotalResults();
+        updateHitchResults();
+        updateSearchQueryFromForms();
+        
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
+        pinputs.addEventListener('input', updatePlayerRoll);
+        pinputs.addEventListener('input', updateTotalResults);
+        pinputs.addEventListener('input', updateHitchResults);
+        pinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let oinputs = document.querySelector('#oinputs');
+        oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
+        oinputs.addEventListener('input', updateOppositionRoll);
+        oinputs.addEventListener('input', updateTotalResults);
+        oinputs.addEventListener('input', updateHitchResults);
+        oinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let dist_select = document.querySelector('#distSelect');
+        dist_select.addEventListener('input', updateTotalResults);
+        
+        let hitch_dist_select = document.querySelector('#hitchDistSelect');
+        hitch_dist_select.addEventListener('input', updateHitchResults);
+    </script>
+    
+    <div style="max-width:1280px;">
+        <h2>Notes</h2>
+        
+        <ul>
+            <li>Remember that players lose ties. This is why the chart for totals has an option for "chance of rolling greater than" while the chart for hitches has an option for "chance of rolling at least".</li>
+            <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
+        </ul>
+        
+        <h3>How does it work?</h3>
+        <p>
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+        </p>
+        
+        <h3>Prior work</h3>
+        <p>
+        Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by Casey Link</a>, which uses exponential-time enumeration of all possible die results.
+        While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute larger pools at interactive speed due to a polynomial-time algorithm.
+        </p>
+        
+        <p>
+            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+        </p>
+    </div>
+    
+    <br/>
+</body>

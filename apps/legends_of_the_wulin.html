@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Legends of the Wulin calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/png" href="../die.png">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="common.js"></script>
+</head>
+
+<body>
+    <h1>Legends of the Wulin calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
+    
+    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+        <form id="pinputs">
+            <b>Player pool:</b><br/>
+            Lake: <input name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
+            River:
+            <input name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
+            <input name="p1" id="p1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
+            <input name="p2" id="p2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
+            <input name="p3" id="p3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
+            <input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
+            <input name="p5" id="p5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
+            <input name="p6" id="p6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
+            <input name="p7" id="p7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
+            <input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
+            <input name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
+            <br/>
+        </form>
+        <form id="oinputs">
+            <b>Opposition pool:</b><br/>
+            Lake: <input name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /> dice.<br/>
+            River:
+            <input name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /> zeros,
+            <input name="o1" id="o1" type="number" min="0" max="9" value="0" required onwheel="" /> ones,
+            <input name="o2" id="o2" type="number" min="0" max="9" value="0" required onwheel="" /> twos,
+            <input name="o3" id="o3" type="number" min="0" max="9" value="0" required onwheel="" /> threes,
+            <input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" /> fours,
+            <input name="o5" id="o5" type="number" min="0" max="9" value="0" required onwheel="" /> fives,
+            <input name="o6" id="o6" type="number" min="0" max="9" value="0" required onwheel="" /> sixes,
+            <input name="o7" id="o7" type="number" min="0" max="9" value="0" required onwheel="" /> sevens,
+            <input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" /> eights,
+            <input name="o9" id="o9" type="number" min="0" max="9" value="0" required onwheel="" /> nines.
+        </form>
+    </div>
+    
+    <h2>Probability distribution of the total results</h2>
+    <div style="width: 80%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="distSelect">
+                <option value="pmf">Chance of rolling exactly</option>
+                <option value="ccdf"><i>Chance of rolling at least</option>
+            </select>
+        </div>
+        <canvas id="totalChart"></canvas>
+        <div style="font-size: 200%;">
+            Chance of player rolling greater than opposition: <span id="successChance"></span><br/>
+            Chance of player tying opposition: <span id="tieChance"></span>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        setInputsFromSearchQuery();
+        var totalChartContext = document.getElementById('totalChart').getContext('2d');
+        var totalChart = new Chart(totalChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Player',
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        data: [],
+                    },
+                    {
+                        label: 'Opposition',
+                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display : true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                },
+            },
+        });
+        
+        function setLoadingText(text) {
+            console.log(text);
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
+                return;
+            }
+            totalChart.options.plugins.title.text = loadingText[0];
+            totalChart.update();
+        }
+        
+        async function initPyodide(){
+            setLoadingText('Loading pyodide')
+            let pyodide = await loadPyodide({
+                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+            });
+            
+            await pyodide.loadPackage(["micropip"], setLoadingText);
+            
+            setLoadingText('Loading hdroller')
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('hdroller==0.6.6')
+                
+                import js
+                import pyodide
+                import hdroller
+                
+                die = hdroller.d10 - 1
+                
+                die_player_unaligned = hdroller.Die(0)
+                die_opposition_unaligned = hdroller.Die(0)
+                
+                class WulinEval(hdroller.EvalPool):
+                    def __init__(self, river):
+                        self._river = river
+                    
+                    def next_state(self, state, outcome, count):
+                        if state is None:
+                            state = 0
+                        score = (count + self._river[outcome]) * 10 + outcome
+                        return max(state, score)
+                
+                def calc_pool(prefix):
+                    lake = int(js.document.getElementById('%slake' % prefix).value)
+                    river = tuple(int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10))
+                    
+                    pool = hdroller.Pool(die, lake)
+                    return WulinEval(river).eval(pool)
+            `);
+            
+            totalChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display : false,
+            };
+            return pyodide;
+        }
+        let pyodideReadyPromise = initPyodide();
+        
+        async function updatePlayerRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            die_player_unaligned = calc_pool('p')
+            `);
+        }
+        
+        async function updateOppositionRoll() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            die_opposition_unaligned = calc_pool('o')
+            
+            `);
+        }
+        
+        async function updateTotalChart() {
+            let pyodide = await pyodideReadyPromise;
+            
+            pyodide.runPython(`
+            
+            die_player, die_opposition = hdroller.align_range(die_player_unaligned, die_opposition_unaligned)
+            
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
+            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
+            
+            js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
+            
+            selected_dist = js.document.getElementById('distSelect').value
+            
+            if selected_dist == 'pmf':
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
+            else:
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf()])
+            `);
+            
+            totalChart.update();
+        }
+        
+        function updateAll() {
+            updateRoll();
+            updateTotalChart();
+        }
+        
+        function validatePlayerInputsAndUpdate() {
+            if (validateInputs()) {
+                updatePlayerRoll();
+                updateResults();
+            }
+        }
+        
+        function validateOppositionInputsAndUpdate() {
+            if (validateInputs()) {
+                updateOppositionRoll();
+                updateResults();
+            }
+        }
+        
+        updatePlayerRoll();
+        updateOppositionRoll();
+        updateTotalChart();
+        updateSearchQueryFromForms();
+        
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
+        pinputs.addEventListener('input', updatePlayerRoll);
+        pinputs.addEventListener('input', updateTotalChart);
+        pinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let oinputs = document.querySelector('#oinputs');
+        oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
+        oinputs.addEventListener('input', updateOppositionRoll);
+        oinputs.addEventListener('input', updateTotalChart);
+        oinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let dist_select = document.querySelector('#distSelect');
+        dist_select.addEventListener('input', updateTotalChart);
+    </script>
+    
+    <div style="max-width:1280px;">
+        <h2>Notes</h2>
+        
+        Brief explanation of the <i>Legends of the Wulin</i> dice system: Roll a pool of d10s with size equal to "Lake". Choose a matching set from the pool. The size of the matching set is the tens digit and the face of the matching pool is the ones digit; e.g. four 7s = 47. The "River" consists of stored dice with fixed faces that you can add to the pool.
+        
+        <h3>How does it work?</h3>
+        <p>
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            and of course, my own <a href="https://gitlab.com/highdiceroller/hdroller">hdroller</a> Python library.
+        </p>
+        
+        <p>
+            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+        </p>
+    </div>
+</body>
