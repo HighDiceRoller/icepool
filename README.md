@@ -18,7 +18,7 @@ pip install icepool
 
 ## API documentation
 
-[GitHub.](https://github.com/HighDiceRoller/icepool)
+[GitHub.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
 
 ## Examples
 
