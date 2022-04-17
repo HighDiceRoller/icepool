@@ -1,9 +1,10 @@
 {
     "jupyter-lite-schema-version": 0,
-        "jupyter-config-data": {
+    "jupyter-config-data": {
         "appName": "Icepool examples",
         "collaborative": true,
         "exposeAppInBrowser": true,
+        "faviconUrl": "favicon.ico",
         "disabledExtensions": [
             "@jupyterlab/server-proxy",
             "jupyterlab-server-proxy",

@@ -30,7 +30,7 @@ jobs:
           jupyter lite build
       - name: Copy Favicon
         run: |
-          cp favicon.png dist/favicon.png
+          cp favicon.* dist/
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
