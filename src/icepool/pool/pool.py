@@ -498,7 +498,7 @@ class DicePool():
         return tuple(self._iter_pop_min())
     
     def _pop_min(self):
-        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
+        """ Returns a sequence of pool, count, weight corresponding to removing the min outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._popped_min

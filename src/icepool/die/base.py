@@ -76,7 +76,13 @@ class BaseDie():
         
     @abstractmethod
     def markdown(self, include_weights=True):
-        """ Formats the die as a Markdown string. """
+        """ Formats the die as a Markdown string. 
+        
+        This will have the denominator and a table of outcomes and their probabilities.
+        
+        Args:
+            include_weights: Iff `True`, the table will have a column for weights.
+        """
     
     # Basic access.
     
