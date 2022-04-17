@@ -1,5 +1,6 @@
 {
     "LiteBuildConfig": {
+        "contents" : ["notebooks"],
         "federated_extensions" : [
             "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.1.0-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.1.0-pyhd8ed1ab_0.tar.bz2"
         ],
