@@ -33,13 +33,13 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             This operator is an alias for `DicePool.set_count_dice()`.
             See that method's docstring for details.
         max_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that maximum outcome, with all higher outcomes having 0 count.
+            That die will be limited to that maximum outcome, with all greater outcomes having 0 count.
             Values cannot be > the `max_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
             This can be used to efficiently roll a set of mixed standard dice.
             For example, `Pool(icepool.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.
         min_outcomes: A sequence of one outcome per die in the pool.
-            That die will be limited to that minimum outcome, with all lower outcomes having 0 count.
+            That die will be limited to that minimum outcome, with all lesser outcomes having 0 count.
             Values cannot be < the `min_outcome` of the fundamental die.
             A pool cannot limit both `min_outcomes` and `max_outcomes`.
     
