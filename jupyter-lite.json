@@ -4,6 +4,7 @@
         "appName": "Icepool examples",
         "collaborative": true,
         "exposeAppInBrowser": true,
+        "faviconUrl": "favicon.png",
         "disabledExtensions": [
             "@jupyterlab/server-proxy",
             "jupyterlab-server-proxy",
