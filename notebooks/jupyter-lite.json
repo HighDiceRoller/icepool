@@ -11,7 +11,7 @@
       "nbdime-jupyterlab"
     ],
     "exposeAppInBrowser": true,
-    "faviconUrl": "./lab/favicon.ico",
+    "faviconUrl": "favicon.ico",
     "federated_extensions": [
       {
         "extension": "./extension",
