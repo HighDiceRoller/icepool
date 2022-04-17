@@ -1,7 +1,7 @@
 {
     "jupyter-lite-schema-version": 0,
     "jupyter-config-data": {
-        "appName": "Icepool examples",
+        "appName": "Icepool Examples",
         "collaborative": true,
         "exposeAppInBrowser": true,
         "faviconUrl": "https://highdiceroller.github.io/icepool/notebooks/favicon.ico",
