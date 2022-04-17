@@ -1,8 +1,8 @@
 """ Package for computing dice probabilities.
 
-See [this JupyterLite distribution](https://highdiceroller.gitlab.io/icepool/notebooks/lab/index.html) for examples.
+See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for examples.
 
-[Visit the project page.](https://gitlab.com/highdiceroller/icepool)
+[Visit the project page.](https://github.com/HighDiceRoller/icepool)
 """
 
 __docformat__ = 'google'
