@@ -9,6 +9,10 @@ def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
 
 class PoolRoll(icepool.BasePool):
+    """ Represents a single, fixed roll of a dice pool.
+    
+    Like `DicePool`, this may be used as an argument to `EvalPool`.
+    """
     def __init__(self, *args, die=None):
         """
         Args:

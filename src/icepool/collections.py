@@ -21,8 +21,6 @@ class Weights():
                 raise TypeError(str(key) + ' is not a valid outcome.')
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' + type(value).__name__)
-            if value < 0:
-                raise ValueError('Values must not be negative.')
         
         self._d = { k : d[k] for k in sorted(d.keys()) }
         self._has_zero_weights = 0 in d.values()

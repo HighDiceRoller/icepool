@@ -148,6 +148,7 @@ class EvalPool(ABC):
         
         Returns:
             A die representing the distribution of the final score.
+            If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
         algorithm, direction = self._select_algorithm(*pools)
         
