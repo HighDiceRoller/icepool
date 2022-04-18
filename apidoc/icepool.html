@@ -472,6 +472,9 @@
                                 <a class="function" href="#DicePool.eval">eval</a>
                         </li>
                         <li>
+                                <a class="function" href="#DicePool.sample">sample</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#DicePool.sum">sum</a>
                         </li>
                 </ul>
@@ -6935,6 +6938,22 @@ of 2 d8s and 3 d6s.</li>
             <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Samples a roll from this pool.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A `PoolRoll` representing a single roll of this pool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">min_outcome</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">max_outcome</span><span class="p">)</span>
+            <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
+        <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">())</span>
+    
     <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
 <span class="sd">        </span>
@@ -7473,6 +7492,46 @@ Or it can be a <code><a href="#EvalPool.next_state">EvalPool.next_state()</a></c
 taking in <code>state, outcome, *counts</code> and returning the next state.
 In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> is constructed and used to evaluate this pool.</li>
 </ul>
+</div>
+
+
+                            </div>
+                            <div id="DicePool.sample" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DicePool.sample">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">sample</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Samples a roll from this pool.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A `PoolRoll` representing a single roll of this pool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">min_outcome</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">max_outcome</span><span class="p">)</span>
+            <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
+        <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">())</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Samples a roll from this pool.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A <code><a href="#PoolRoll">PoolRoll</a></code> representing a single roll of this pool.</p>
+</blockquote>
 </div>
 
 
