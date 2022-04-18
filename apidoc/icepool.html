@@ -797,7 +797,7 @@ icepool    </h1>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, no *args may be used.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;scalar&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, the result may only be a scalar die.&#39;</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">({</span><span class="n">i</span> <span class="o">+</span> <span class="n">min_outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weights</span><span class="p">)})</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({</span><span class="n">i</span> <span class="o">+</span> <span class="n">min_outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weights</span><span class="p">)})</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -855,10 +855,10 @@ icepool    </h1>
         <span class="n">ndim</span> <span class="o">=</span> <span class="n">_arg_ndim</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="s1">&#39;scalar&#39;</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">({</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">})</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">})</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">VectorDie</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">denominator_method</span> <span class="o">==</span> <span class="s1">&#39;reduce&#39;</span><span class="p">:</span>
@@ -1503,10 +1503,13 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Truncates the outcomes of this die to the given range.</span>
 <span class="sd">        </span>
+<span class="sd">        The endpoints are included in the result if applicable.</span>
+<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        </span>
 <span class="sd">        This effectively rerolls outcomes outside the given range.</span>
 <span class="sd">        If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.</span>
 <span class="sd">        </span>
-<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        Not to be confused with `trunc(die)`, which truncates the outcomes to integers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">min_outcome</span><span class="p">)</span>
@@ -1522,12 +1525,13 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Clips the outcomes of this die to the given values.</span>
 <span class="sd">        </span>
+<span class="sd">        The endpoints are included in the result if applicable.</span>
+<span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
+<span class="sd">        </span>
 <span class="sd">        This is not the same as rerolling outcomes beyond this range;</span>
 <span class="sd">        the outcome is simply adjusted to fit within the range.</span>
 <span class="sd">        This will typically cause some weight to bunch up at the endpoint.</span>
 <span class="sd">        If you want to reroll outcomes beyond this range, use `truncate()`.</span>
-<span class="sd">        </span>
-<span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -3138,10 +3142,13 @@ If omitted, rerolls an unlimited number of times.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Truncates the outcomes of this die to the given range.</span>
 <span class="sd">        </span>
+<span class="sd">        The endpoints are included in the result if applicable.</span>
+<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        </span>
 <span class="sd">        This effectively rerolls outcomes outside the given range.</span>
 <span class="sd">        If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.</span>
 <span class="sd">        </span>
-<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        Not to be confused with `trunc(die)`, which truncates the outcomes to integers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">min_outcome</span><span class="p">)</span>
@@ -3159,10 +3166,13 @@ If omitted, rerolls an unlimited number of times.</li>
 
             <div class="docstring"><p>Truncates the outcomes of this die to the given range.</p>
 
+<p>The endpoints are included in the result if applicable.
+If one of the arguments is not provided, that side will not be truncated.</p>
+
 <p>This effectively rerolls outcomes outside the given range.
 If instead you want to replace those outcomes with the nearest endpoint, use <code><a href="#BaseDie.clip">clip()</a></code>.</p>
 
-<p>If one of the arguments is not provided, that side will not be truncated.</p>
+<p>Not to be confused with <code>trunc(die)</code>, which truncates the outcomes to integers.</p>
 </div>
 
 
@@ -3180,12 +3190,13 @@ If instead you want to replace those outcomes with the nearest endpoint, use <co
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Clips the outcomes of this die to the given values.</span>
 <span class="sd">        </span>
+<span class="sd">        The endpoints are included in the result if applicable.</span>
+<span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
+<span class="sd">        </span>
 <span class="sd">        This is not the same as rerolling outcomes beyond this range;</span>
 <span class="sd">        the outcome is simply adjusted to fit within the range.</span>
 <span class="sd">        This will typically cause some weight to bunch up at the endpoint.</span>
 <span class="sd">        If you want to reroll outcomes beyond this range, use `truncate()`.</span>
-<span class="sd">        </span>
-<span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -3202,12 +3213,13 @@ If instead you want to replace those outcomes with the nearest endpoint, use <co
 
             <div class="docstring"><p>Clips the outcomes of this die to the given values.</p>
 
+<p>The endpoints are included in the result if applicable.
+If one of the arguments is not provided, that side will not be clipped.</p>
+
 <p>This is not the same as rerolling outcomes beyond this range;
 the outcome is simply adjusted to fit within the range.
 This will typically cause some weight to bunch up at the endpoint.
 If you want to reroll outcomes beyond this range, use <code><a href="#BaseDie.truncate">truncate()</a></code>.</p>
-
-<p>If one of the arguments is not provided, that side will not be clipped.</p>
 </div>
 
 
@@ -4147,7 +4159,7 @@ they are treated as unequal by this function.</p>
         <span class="k">return</span> <span class="s1">&#39;empty&#39;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">({})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({})</span>
         
     <span class="k">def</span> <span class="nf">_unary_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; There are no outcomes, so nothing happens. &quot;&quot;&quot;</span>
@@ -4183,7 +4195,7 @@ they are treated as unequal by this function.</p>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">({})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({})</span>
 </pre></div>
 
         </details>
@@ -4339,7 +4351,7 @@ they are treated as unequal by this function.</p>
 <span class="sd">        (which are imported into the top-level `icepool` module).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            data: A `Weights` mapping outcomes to weights.</span>
+<span class="sd">            data: A `Counts` mapping outcomes to weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
     
@@ -4563,7 +4575,7 @@ they are treated as unequal by this function.</p>
 <span class="sd">        (which are imported into the top-level `icepool` module).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            data: A `Weights` mapping outcomes to weights.</span>
+<span class="sd">            data: A `Counts` mapping outcomes to weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
 </pre></div>
@@ -4579,7 +4591,7 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>data:</strong>  A <code>Weights</code> mapping outcomes to weights.</li>
+<li><strong>data:</strong>  A <code>Counts</code> mapping outcomes to weights.</li>
 </ul>
 </div>
 
@@ -5208,7 +5220,7 @@ while not actually producing any additional information.</p>
 <span class="sd">        (which are imported into the top-level `icepool` module).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            data: A `Weights` mapping outcomes to weights.</span>
+<span class="sd">            data: A `Counts` mapping outcomes to weights.</span>
 <span class="sd">            ndim: The number of dimensions of this die.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
@@ -5388,7 +5400,7 @@ Methods that depend on a flat outcome order use tuple order.</p>
 <span class="sd">        (which are imported into the top-level `icepool` module).</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            data: A `Weights` mapping outcomes to weights.</span>
+<span class="sd">            data: A `Counts` mapping outcomes to weights.</span>
 <span class="sd">            ndim: The number of dimensions of this die.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
@@ -5406,7 +5418,7 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>data:</strong>  A <code>Weights</code> mapping outcomes to weights.</li>
+<li><strong>data:</strong>  A <code>Counts</code> mapping outcomes to weights.</li>
 <li><strong>ndim:</strong>  The number of dimensions of this die.</li>
 </ul>
 </div>
@@ -7690,7 +7702,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
             <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">0</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -7766,7 +7778,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
             <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">0</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
         </details>
