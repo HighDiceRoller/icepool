@@ -4,6 +4,7 @@ import icepool
 import icepool.math
 
 import bisect
+from collections import defaultdict
 from functools import cached_property
 import math
 
@@ -546,6 +547,22 @@ class DicePool(icepool.BasePool):
         if not isinstance(eval_or_func, icepool.EvalPool):
             eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
+    
+    def sample(self):
+        """ Samples a roll from this pool.
+        
+        Returns:
+            A `PoolRoll` representing a single roll of this pool.
+        """
+        raw_rolls = []
+        for min_outcome, max_outcome in zip(self.min_outcomes(True), self.max_outcomes(True)):
+            die = self.die().reroll(lambda x: x < min_outcome or x > max_outcome)
+            raw_rolls.append(die.sample())
+        raw_rolls = sorted(raw_rolls)
+        data = defaultdict(int)
+        for roll, count in zip(raw_rolls, self.count_dice()):
+            data[roll] += count
+        return icepool.PoolRoll(data, die=self.die())
     
     def sum(self):
         """ Convenience method to simply sum the dice in this pool.
