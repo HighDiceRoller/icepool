@@ -28,7 +28,7 @@ Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discu
 
 ## JupyterLite notebooks
 
-See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples.
+See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples. These include mechanics from published games, StackExchange, Reddit, and academic papers.
 
 ## Web applications
 
