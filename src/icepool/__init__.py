@@ -50,5 +50,6 @@ __all__ = ['Die',
     'Reroll',
     'BasePool',
     'Pool', 'standard_pool', 'DicePool',
+    'PoolRoll',
     'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun',
     'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
