@@ -426,6 +426,12 @@
                         <li>
                                 <a class="function" href="#BasePool.outcomes">outcomes</a>
                         </li>
+                        <li>
+                                <a class="function" href="#BasePool.eval">eval</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#BasePool.sum">sum</a>
+                        </li>
                 </ul>
 
             </li>
@@ -472,13 +478,7 @@
                                 <a class="function" href="#DicePool.has_counted_dice">has_counted_dice</a>
                         </li>
                         <li>
-                                <a class="function" href="#DicePool.eval">eval</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#DicePool.sample">sample</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#DicePool.sum">sum</a>
                         </li>
                 </ul>
 
@@ -6416,6 +6416,34 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
         <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the min outcome,</span>
 <span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
+<span class="sd">        if you plan to use an evaluation multiple times,</span>
+<span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
+<span class="sd">        rather than passing a function to this method directly.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
+<span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
+<span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
+<span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
+            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
+<span class="sd">        </span>
+<span class="sd">        This uses `icepool.sum_pool`.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A die representing the sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -6452,6 +6480,92 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
         </details>
 
             <div class="docstring"><p>The outcomes of the fundamental die (including those with zero weight).</p>
+</div>
+
+
+                            </div>
+                            <div id="BasePool.eval" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BasePool.eval">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">eval</span><span class="signature">(self, eval_or_func, /)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
+<span class="sd">        </span>
+<span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
+<span class="sd">        if you plan to use an evaluation multiple times,</span>
+<span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
+<span class="sd">        rather than passing a function to this method directly.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
+<span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
+<span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
+<span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
+            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Evaluates this pool using the given <code><a href="#EvalPool">EvalPool</a></code> or function.</p>
+
+<p>Note that each <code><a href="#EvalPool">EvalPool</a></code> instance carries its own cache;
+if you plan to use an evaluation multiple times,
+you may want to explicitly create an <code><a href="#EvalPool">EvalPool</a></code> instance
+rather than passing a function to this method directly.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func:</strong>  This can be an <code><a href="#EvalPool">EvalPool</a></code>, in which case it evaluates the pool directly.
+Or it can be a <code><a href="#EvalPool.next_state">EvalPool.next_state()</a></code>-like function,
+taking in <code>state, outcome, *counts</code> and returning the next state.
+In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> is constructed and used to evaluate this pool.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="BasePool.sum" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BasePool.sum">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">sum</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
+<span class="sd">        </span>
+<span class="sd">        This uses `icepool.sum_pool`.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A die representing the sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Convenience method to simply sum the dice in this pool.</p>
+
+<p>This uses <code><a href="#sum_pool">icepool.sum_pool</a></code>.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A die representing the sum.</p>
+</blockquote>
 </div>
 
 
@@ -7008,24 +7122,6 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
-<span class="sd">        </span>
-<span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
-<span class="sd">        if you plan to use an evaluation multiple times,</span>
-<span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
-<span class="sd">        rather than passing a function to this method directly.</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
-<span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
-<span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
-<span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
-            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Samples a roll from this pool.</span>
 <span class="sd">        </span>
@@ -7041,16 +7137,6 @@ of 2 d8s and 3 d6s.</li>
         <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">())</span>
-    
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
-<span class="sd">        </span>
-<span class="sd">        This uses `icepool.sum_pool`.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            A die representing the sum.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -7534,56 +7620,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 
 
                             </div>
-                            <div id="DicePool.eval" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.eval">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">eval</span><span class="signature">(self, eval_or_func, /)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
-<span class="sd">        </span>
-<span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
-<span class="sd">        if you plan to use an evaluation multiple times,</span>
-<span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
-<span class="sd">        rather than passing a function to this method directly.</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
-<span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
-<span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
-<span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
-            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Evaluates this pool using the given <code><a href="#EvalPool">EvalPool</a></code> or function.</p>
-
-<p>Note that each <code><a href="#EvalPool">EvalPool</a></code> instance carries its own cache;
-if you plan to use an evaluation multiple times,
-you may want to explicitly create an <code><a href="#EvalPool">EvalPool</a></code> instance
-rather than passing a function to this method directly.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>func:</strong>  This can be an <code><a href="#EvalPool">EvalPool</a></code>, in which case it evaluates the pool directly.
-Or it can be a <code><a href="#EvalPool.next_state">EvalPool.next_state()</a></code>-like function,
-taking in <code>state, outcome, *counts</code> and returning the next state.
-In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> is constructed and used to evaluate this pool.</li>
-</ul>
-</div>
-
-
-                            </div>
                             <div id="DicePool.sample" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#DicePool.sample">#&nbsp;&nbsp</a>
 
@@ -7624,41 +7660,15 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 
 
                             </div>
-                            <div id="DicePool.sum" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.sum">#&nbsp;&nbsp</a>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#BasePool">BasePool</a></dt>
+                                <dd id="DicePool.eval" class="function"><a href="#BasePool.eval">eval</a></dd>
+                <dd id="DicePool.sum" class="function"><a href="#BasePool.sum">sum</a></dd>
 
-        
-            <span class="def">def</span>
-            <span class="name">sum</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
-<span class="sd">        </span>
-<span class="sd">        This uses `icepool.sum_pool`.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            A die representing the sum.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Convenience method to simply sum the dice in this pool.</p>
-
-<p>This uses <code><a href="#sum_pool">icepool.sum_pool</a></code>.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>A die representing the sum.</p>
-</blockquote>
-</div>
-
-
+            </div>
+                                </dl>
                             </div>
                 </section>
                 <section id="PoolRoll">
@@ -7819,6 +7829,16 @@ and any outcomes within this die that are not provided will be set to zero count
 </div>
 
 
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#BasePool">BasePool</a></dt>
+                                <dd id="PoolRoll.eval" class="function"><a href="#BasePool.eval">eval</a></dd>
+                <dd id="PoolRoll.sum" class="function"><a href="#BasePool.sum">sum</a></dd>
+
+            </div>
+                                </dl>
                             </div>
                 </section>
                 <section id="EvalPool">
