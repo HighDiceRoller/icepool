@@ -1,6 +1,6 @@
 # <img width="32" height="32" src="https://highdiceroller.github.io/icepool/apps/favicon.png" /> Icepool
 
-A Python library for computing dice probabilities.
+A Python package for computing dice probabilities.
 
 ## Installing
 
@@ -10,27 +10,27 @@ pip install icepool
 
 ## Features
 
-* Implemented in pure Python for high interoperability.
-* Weights are Python `int`s, providing exact results even for large numbers of dice.
+* Pure Python implementation.
+* Exact fractional probabilities using Python `int`s.
 * Dice support all standard operators as well as an extensive library of functions.
-* Dice pool system allows for flexible yet efficient solutions to common problems.
-* Also handles multivariate distributions (though less tested).
+* Efficiently solves dice pool problems; depending on the problem, it can be more than 1000× as fast as multiset/sequence-based algorithms.
+* Supports multivariate distributions.
 
 ## API documentation
 
 [GitHub.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
 
-## Examples
+## JupyterLite notebooks
 
-### JupyterLite notebooks
+See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples.
 
-See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive examples.
-
-### Web applications
+## Web applications
 
 * [Ability score rolling method calculator](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
 * [*Cortex Prime* calculator](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
+
+## Inline examples
 
 ### *Advanced Dungeons & Dragons* 1st edition ability score methods
 
