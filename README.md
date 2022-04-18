@@ -2,12 +2,6 @@
 
 A Python package for computing dice probabilities.
 
-## Installing
-
-```
-pip install icepool
-```
-
 ## Features
 
 * Pure Python implementation.
@@ -15,6 +9,16 @@ pip install icepool
 * Dice support all standard operators as well as an extensive library of functions.
 * Efficiently solves dice pool problems; depending on the problem, it can be more than 1000× as fast as multiset/sequence-based algorithms.
 * Supports multivariate distributions.
+
+## Installing
+
+```
+pip install icepool
+```
+
+## Contact
+
+Feel free to write here or find me on [Twitter](https://twitter.com/highdiceroller).
 
 ## API documentation
 
