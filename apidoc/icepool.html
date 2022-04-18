@@ -7652,6 +7652,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the distribution of the final score.</span>
+<span class="sd">            If all pools are `PoolRoll`s, the result is a single outcome instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">algorithm</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_algorithm</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
@@ -8110,6 +8111,7 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the distribution of the final score.</span>
+<span class="sd">            If all pools are `PoolRoll`s, the result is a single outcome instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">algorithm</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_algorithm</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
@@ -8150,7 +8152,8 @@ Pools with <code>max_outcomes</code> and pools with <code>min_outcomes</code> ar
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A die representing the distribution of the final score.</p>
+  <p>A die representing the distribution of the final score.
+  If all pools are <code>PoolRoll</code>s, the result is a single outcome instead.</p>
 </blockquote>
 </div>
 
