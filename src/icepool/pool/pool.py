@@ -530,24 +530,6 @@ class DicePool(icepool.BasePool):
         """
         return any(self.count_dice())
     
-    def eval(self, eval_or_func, /):
-        """ Evaluates this pool using the given `EvalPool` or function.
-        
-        Note that each `EvalPool` instance carries its own cache;
-        if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `EvalPool` instance
-        rather than passing a function to this method directly.
-        
-        Args:
-            func: This can be an `EvalPool`, in which case it evaluates the pool directly.
-                Or it can be a `EvalPool.next_state()`-like function,
-                taking in `state, outcome, *counts` and returning the next state.
-                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.
-        """
-        if not isinstance(eval_or_func, icepool.EvalPool):
-            eval_or_func = icepool.WrapFuncEval(eval_or_func)
-        return eval_or_func.eval(self)
-    
     def sample(self):
         """ Samples a roll from this pool.
         
@@ -563,16 +545,6 @@ class DicePool(icepool.BasePool):
         for roll, count in zip(raw_rolls, self.count_dice()):
             data[roll] += count
         return icepool.PoolRoll(data, die=self.die())
-    
-    def sum(self):
-        """ Convenience method to simply sum the dice in this pool.
-        
-        This uses `icepool.sum_pool`.
-        
-        Returns:
-            A die representing the sum.
-        """
-        return icepool.sum_pool(self)
     
     @cached_property
     def _key_tuple(self):
