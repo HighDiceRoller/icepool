@@ -556,7 +556,7 @@ class DicePool(icepool.BasePool):
         """
         raw_rolls = []
         for min_outcome, max_outcome in zip(self.min_outcomes(True), self.max_outcomes(True)):
-            die = self.die().reroll(lambda x: x < min_outcome or x > max_outcome)
+            die = self.die().truncate(min_outcome, max_outcome)
             raw_rolls.append(die.sample())
         raw_rolls = sorted(raw_rolls)
         data = defaultdict(int)

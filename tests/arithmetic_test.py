@@ -47,13 +47,41 @@ def test_die_die_sub(a, b):
     expected = icepool.apply(lambda x, y: x - y, a, b)
     assert result.equals(expected)
 
-"""
 def test_clip():
     result = icepool.d6
     result = result.clip(2, 5)
-    expected = icepool.Die([2, 1, 1, 2], 2)
+    expected = icepool.Die(2, 2, 3, 4, 5, 5)
     assert result.equals(expected)
-"""
+
+def test_clip_skip():
+    result = icepool.d6 * 2
+    result = result.clip(3, 9)
+    expected = icepool.Die(3, 4, 6, 8, 9, 9)
+    assert result.equals(expected)
+    
+def test_clip_outside():
+    result = icepool.d6
+    result = result.clip(0, 7)
+    expected = icepool.Die(1, 2, 3, 4, 5, 6)
+    assert result.equals(expected)
+
+def test_truncate():
+    result = icepool.d6
+    result = result.truncate(2, 5)
+    expected = icepool.Die(2, 3, 4, 5)
+    assert result.equals(expected)
+
+def test_truncate_outside():
+    result = icepool.d6
+    result = result.truncate(0, 7)
+    expected = icepool.Die(1, 2, 3, 4, 5, 6)
+    assert result.equals(expected)
+
+def test_truncate_skip():
+    result = icepool.d6 * 2
+    result = result.truncate(3, 9)
+    expected = icepool.Die(4, 6, 8)
+    assert result.equals(expected)
 
 def test_abs_positive():
     result = icepool.d6.abs()

@@ -365,10 +365,32 @@ class BaseDie():
             not_outcomes = { not_outcome for not_outcome in self.outcomes() if not_outcome not in outcomes }
         return self.reroll(not_outcomes, max_depth=max_depth)
     
+    def truncate(self, min_outcome=None, max_outcome=None):
+        """ Truncates the outcomes of this die to the given range.
+        
+        This effectively rerolls outcomes outside the given range.
+        If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.
+        
+        If one of the arguments is not provided, that side will not be truncated.
+        """
+        if min_outcome is not None:
+            start = bisect.bisect_left(self.outcomes(), min_outcome)
+        else:
+            start = None
+        if max_outcome is not None:
+            stop = bisect.bisect_right(self.outcomes(), max_outcome)
+        else:
+            stop = None
+        data = { k : v for k, v in self.items()[start:stop] }
+        return icepool.Die(data, ndim=self.ndim())
+    
     def clip(self, min_outcome=None, max_outcome=None):
         """ Clips the outcomes of this die to the given values.
         
-        This is not the same as rerolling; the outcome is simply adjusted to fit within the range.
+        This is not the same as rerolling outcomes beyond this range;
+        the outcome is simply adjusted to fit within the range.
+        This will typically cause some weight to bunch up at the endpoint.
+        If you want to reroll outcomes beyond this range, use `truncate()`.
         
         If one of the arguments is not provided, that side will not be clipped.
         """
@@ -380,7 +402,7 @@ class BaseDie():
                 data[max_outcome] += weight
             else:
                 data[outcome] += weight
-        return icepool.Die(data, ndim=self.ndim()) 
+        return icepool.Die(data, ndim=self.ndim())
     
     def split(self, cond):
         """ Splits this die's items into two pieces based on `cond(outcome)`.
