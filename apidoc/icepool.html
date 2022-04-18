@@ -154,6 +154,9 @@
                                 <a class="function" href="#BaseDie.reroll_until">reroll_until</a>
                         </li>
                         <li>
+                                <a class="function" href="#BaseDie.truncate">truncate</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#BaseDie.clip">clip</a>
                         </li>
                         <li>
@@ -1497,10 +1500,32 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
             <span class="n">not_outcomes</span> <span class="o">=</span> <span class="p">{</span> <span class="n">not_outcome</span> <span class="k">for</span> <span class="n">not_outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">if</span> <span class="n">not_outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outcomes</span> <span class="p">}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="n">not_outcomes</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     
+    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Truncates the outcomes of this die to the given range.</span>
+<span class="sd">        </span>
+<span class="sd">        This effectively rerolls outcomes outside the given range.</span>
+<span class="sd">        If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.</span>
+<span class="sd">        </span>
+<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">min_outcome</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">max_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">max_outcome</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">k</span> <span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span> <span class="p">}</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
+    
     <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Clips the outcomes of this die to the given values.</span>
 <span class="sd">        </span>
-<span class="sd">        This is not the same as rerolling; the outcome is simply adjusted to fit within the range.</span>
+<span class="sd">        This is not the same as rerolling outcomes beyond this range;</span>
+<span class="sd">        the outcome is simply adjusted to fit within the range.</span>
+<span class="sd">        This will typically cause some weight to bunch up at the endpoint.</span>
+<span class="sd">        If you want to reroll outcomes beyond this range, use `truncate()`.</span>
 <span class="sd">        </span>
 <span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1512,7 +1537,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
                 <span class="n">data</span><span class="p">[</span><span class="n">max_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span> 
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
     
     <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cond</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Splits this die&#39;s items into two pieces based on `cond(outcome)`.</span>
@@ -3100,6 +3125,48 @@ If omitted, rerolls an unlimited number of times.</li>
 
 
                             </div>
+                            <div id="BaseDie.truncate" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BaseDie.truncate">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">truncate</span><span class="signature">(self, min_outcome=None, max_outcome=None)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Truncates the outcomes of this die to the given range.</span>
+<span class="sd">        </span>
+<span class="sd">        This effectively rerolls outcomes outside the given range.</span>
+<span class="sd">        If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.</span>
+<span class="sd">        </span>
+<span class="sd">        If one of the arguments is not provided, that side will not be truncated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">min_outcome</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">max_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">max_outcome</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">k</span> <span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span> <span class="p">}</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Truncates the outcomes of this die to the given range.</p>
+
+<p>This effectively rerolls outcomes outside the given range.
+If instead you want to replace those outcomes with the nearest endpoint, use <code><a href="#BaseDie.clip">clip()</a></code>.</p>
+
+<p>If one of the arguments is not provided, that side will not be truncated.</p>
+</div>
+
+
+                            </div>
                             <div id="BaseDie.clip" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#BaseDie.clip">#&nbsp;&nbsp</a>
 
@@ -3113,7 +3180,10 @@ If omitted, rerolls an unlimited number of times.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Clips the outcomes of this die to the given values.</span>
 <span class="sd">        </span>
-<span class="sd">        This is not the same as rerolling; the outcome is simply adjusted to fit within the range.</span>
+<span class="sd">        This is not the same as rerolling outcomes beyond this range;</span>
+<span class="sd">        the outcome is simply adjusted to fit within the range.</span>
+<span class="sd">        This will typically cause some weight to bunch up at the endpoint.</span>
+<span class="sd">        If you want to reroll outcomes beyond this range, use `truncate()`.</span>
 <span class="sd">        </span>
 <span class="sd">        If one of the arguments is not provided, that side will not be clipped.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3125,14 +3195,17 @@ If omitted, rerolls an unlimited number of times.</li>
                 <span class="n">data</span><span class="p">[</span><span class="n">max_outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span> 
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Clips the outcomes of this die to the given values.</p>
 
-<p>This is not the same as rerolling; the outcome is simply adjusted to fit within the range.</p>
+<p>This is not the same as rerolling outcomes beyond this range;
+the outcome is simply adjusted to fit within the range.
+This will typically cause some weight to bunch up at the endpoint.
+If you want to reroll outcomes beyond this range, use <code><a href="#BaseDie.truncate">truncate()</a></code>.</p>
 
 <p>If one of the arguments is not provided, that side will not be clipped.</p>
 </div>
@@ -4207,6 +4280,7 @@ they are treated as unequal by this function.</p>
                 <dd id="EmptyDie.nearest_ge" class="function"><a href="#BaseDie.nearest_ge">nearest_ge</a></dd>
                 <dd id="EmptyDie.reroll" class="function"><a href="#BaseDie.reroll">reroll</a></dd>
                 <dd id="EmptyDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
+                <dd id="EmptyDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="EmptyDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
                 <dd id="EmptyDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="EmptyDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
@@ -5072,6 +5146,7 @@ while not actually producing any additional information.</p>
                 <dd id="ScalarDie.nearest_ge" class="function"><a href="#BaseDie.nearest_ge">nearest_ge</a></dd>
                 <dd id="ScalarDie.reroll" class="function"><a href="#BaseDie.reroll">reroll</a></dd>
                 <dd id="ScalarDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
+                <dd id="ScalarDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="ScalarDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
                 <dd id="ScalarDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="ScalarDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
@@ -5829,6 +5904,7 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
                 <dd id="VectorDie.nearest_ge" class="function"><a href="#BaseDie.nearest_ge">nearest_ge</a></dd>
                 <dd id="VectorDie.reroll" class="function"><a href="#BaseDie.reroll">reroll</a></dd>
                 <dd id="VectorDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
+                <dd id="VectorDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="VectorDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
                 <dd id="VectorDie.split" class="function"><a href="#BaseDie.split">split</a></dd>
                 <dd id="VectorDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
@@ -6946,7 +7022,7 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
-            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">min_outcome</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">max_outcome</span><span class="p">)</span>
+            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">)</span>
             <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
@@ -7514,7 +7590,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
-            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">min_outcome</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">max_outcome</span><span class="p">)</span>
+            <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">)</span>
             <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
