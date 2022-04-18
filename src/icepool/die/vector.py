@@ -28,7 +28,7 @@ class VectorDie(icepool.die.base.BaseDie):
         (which are imported into the top-level `icepool` module).
         
         Args:
-            data: A `Weights` mapping outcomes to weights.
+            data: A `Counts` mapping outcomes to weights.
             ndim: The number of dimensions of this die.
         """
         self._data = data

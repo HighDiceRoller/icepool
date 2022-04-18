@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.die.base
-from icepool.collections import Weights
+from icepool.collections import Counts
 
 class EmptyDie(icepool.die.base.BaseDie):
     """ Die with no outcomes. """
@@ -11,7 +11,7 @@ class EmptyDie(icepool.die.base.BaseDie):
         return 'empty'
     
     def __init__(self):
-        self._data = Weights({})
+        self._data = Counts({})
         
     def _unary_op(self, op, *args, **kwargs):
         """ There are no outcomes, so nothing happens. """

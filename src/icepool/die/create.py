@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.collections import Weights
+from icepool.collections import Counts
 
 from collections import defaultdict
 import math
@@ -86,7 +86,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
             raise ValueError('If min_outcome is provided, no *args may be used.')
         if ndim not in [None, 'scalar']:
             raise ValueError('If min_outcome is provided, the result may only be a scalar die.')
-        data = Weights({i + min_outcome : weight for i, weight in enumerate(weights)})
+        data = Counts({i + min_outcome : weight for i, weight in enumerate(weights)})
         return icepool.ScalarDie(data)
     
     if weights is not None:
@@ -144,10 +144,10 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         ndim = _arg_ndim(arg, ndim)
     
     if ndim == 'scalar':
-        data = Weights(data)
+        data = Counts(data)
         result = icepool.ScalarDie(data)
     else:
-        data = Weights({ tuple(k) : v for k, v in data.items() })
+        data = Counts({ tuple(k) : v for k, v in data.items() })
         result = icepool.VectorDie(data, ndim)
     
     if denominator_method == 'reduce':

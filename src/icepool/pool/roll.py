@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 
 from collections import defaultdict
-from icepool.collections import Weights
+from icepool.collections import Counts
 
 def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
@@ -38,7 +38,7 @@ class PoolRoll(icepool.BasePool):
             for outcome in die.outcomes():
                 data[outcome] += 0
         
-        self._data = Weights(data)
+        self._data = Counts(data)
 
     def _is_single_roll(self):
         return True

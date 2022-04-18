@@ -4,7 +4,7 @@ import icepool
 
 from functools import cached_property
 
-class Weights():
+class Counts():
     """Immutable sorted dictionary whose values are integers.
     
     keys(), values(), and items() return tuples, which are subscriptable.

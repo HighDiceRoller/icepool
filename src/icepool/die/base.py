@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.collections import Slicer, Weights
+from icepool.collections import Slicer, Counts
 
 from abc import ABC, abstractmethod
 import bisect
@@ -368,10 +368,13 @@ class BaseDie():
     def truncate(self, min_outcome=None, max_outcome=None):
         """ Truncates the outcomes of this die to the given range.
         
+        The endpoints are included in the result if applicable.
+        If one of the arguments is not provided, that side will not be truncated.
+        
         This effectively rerolls outcomes outside the given range.
         If instead you want to replace those outcomes with the nearest endpoint, use `clip()`.
         
-        If one of the arguments is not provided, that side will not be truncated.
+        Not to be confused with `trunc(die)`, which truncates the outcomes to integers.
         """
         if min_outcome is not None:
             start = bisect.bisect_left(self.outcomes(), min_outcome)
@@ -387,12 +390,13 @@ class BaseDie():
     def clip(self, min_outcome=None, max_outcome=None):
         """ Clips the outcomes of this die to the given values.
         
+        The endpoints are included in the result if applicable.
+        If one of the arguments is not provided, that side will not be clipped.
+        
         This is not the same as rerolling outcomes beyond this range;
         the outcome is simply adjusted to fit within the range.
         This will typically cause some weight to bunch up at the endpoint.
         If you want to reroll outcomes beyond this range, use `truncate()`.
-        
-        If one of the arguments is not provided, that side will not be clipped.
         """
         data = defaultdict(int)
         for outcome, weight in self.items():

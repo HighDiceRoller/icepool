@@ -26,7 +26,7 @@ class ScalarDie(icepool.die.base.BaseDie):
         (which are imported into the top-level `icepool` module).
         
         Args:
-            data: A `Weights` mapping outcomes to weights.
+            data: A `Counts` mapping outcomes to weights.
         """
         self._data = data
     
