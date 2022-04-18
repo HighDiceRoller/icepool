@@ -2,6 +2,8 @@
 
 A Python package for computing dice probabilities.
 
+[GitHub.](https://github.com/HighDiceRoller/icepool)
+
 ## Features
 
 * Pure Python implementation.
@@ -18,7 +20,7 @@ pip install icepool
 
 ## Contact
 
-Feel free to write here or find me on [Twitter](https://twitter.com/highdiceroller).
+Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discussions) or [issue](https://github.com/HighDiceRoller/icepool/issues) on GitHub. You can also find me on [Twitter](https://twitter.com/highdiceroller) or [Reddit](https://www.reddit.com/user/HighDiceRoller).
 
 ## API documentation
 
