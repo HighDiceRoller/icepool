@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Copy Readme
         run: |
+          mkdir -p dist/
           cp README.* dist/
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.3
