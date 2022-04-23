@@ -396,6 +396,8 @@ class FindBestSet(EvalPool):
 class FindBestRun(EvalPool):
     """ A `EvalPool` that takes the best run (aka "straight") in a pool.
     
+    Outcomes must be `int`s.
+    
     This prioritizes run size, then the outcome.
     
     The outcomes are `(run_size, outcome)`.
@@ -405,12 +407,18 @@ class FindBestRun(EvalPool):
         """ Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
-        best_run, best_run_outcome, curr_run = state or (0, outcome, 0)
+        best_run, best_run_outcome, prev_run, prev_outcome = state or (0, outcome, 0, None)
         if count >= 1:
-            curr_run += 1
+            if prev_outcome is not None and outcome == prev_outcome + 1:
+                prev_run += 1
+            else:
+                prev_run = 1
+            prev_outcome = outcome
         else:
-            curr_run = 0
-        return max((curr_run, outcome), (best_run, best_run_outcome)) + (curr_run,)
+            prev_run = 0
+            prev_outcome = None
+        return max((prev_run, outcome), (best_run, best_run_outcome)) + (prev_run, prev_outcome)
+        
     
     def final_outcome(self, final_state, *pools):
         """ Returns the best run. """

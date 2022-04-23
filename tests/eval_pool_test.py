@@ -101,6 +101,11 @@ def test_runs():
             return 1, outcomes[2]
     expected = icepool.apply(func, icepool.d12, icepool.d10, icepool.d8)
     assert result.equals(expected)
+    
+def test_runs_skip():
+    die = icepool.Die(0, 10)
+    result = icepool.FindBestRun()(die.pool(10))
+    assert result.outcomes() == ((1, 0), (1, 10))
 
 class SumFixedDirection(icepool.EvalPool):
     def __init__(self, direction):
