@@ -492,6 +492,12 @@
                         <li>
                                 <a class="function" href="#PoolRoll.outcomes">outcomes</a>
                         </li>
+                        <li>
+                                <a class="function" href="#PoolRoll.keys">keys</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PoolRoll.items">items</a>
+                        </li>
                 </ul>
 
             </li>
@@ -7692,7 +7698,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">        Args:</span>
 <span class="sd">            *args: A sequence of:</span>
 <span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
-<span class="sd">                * Outcomes, with count 1.</span>
+<span class="sd">                * Outcomes, which are treated as having count 1.</span>
 <span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
 <span class="sd">            die: If provided, all args must be outcomes within this die,</span>
 <span class="sd">                and any outcomes within this die that are not provided will be set to zero count.</span>
@@ -7741,9 +7747,38 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}</span>
         <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">count</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    
+    <span class="c1"># Forwarding dict-like methods.</span>
+    
+    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;PoolRoll(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+    
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
+    
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 </pre></div>
 
         </details>
@@ -7768,7 +7803,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">        Args:</span>
 <span class="sd">            *args: A sequence of:</span>
 <span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
-<span class="sd">                * Outcomes, with count 1.</span>
+<span class="sd">                * Outcomes, which are treated as having count 1.</span>
 <span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
 <span class="sd">            die: If provided, all args must be outcomes within this die,</span>
 <span class="sd">                and any outcomes within this die that are not provided will be set to zero count.</span>
@@ -7799,7 +7834,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <li><strong>*args:</strong>  A sequence of:
 <ul>
 <li>Dict-likes, mapping outcomes to counts.</li>
-<li>Outcomes, with count 1.
+<li>Outcomes, which are treated as having count 1.
 Duplicate outcomes will have their counts accumulated.</li>
 </ul></li>
 <li><strong>die:</strong>  If provided, all args must be outcomes within this die,
@@ -7828,6 +7863,44 @@ and any outcomes within this die that are not provided will be set to zero count
             <div class="docstring"><p>The outcomes of the fundamental die (including those with zero weight).</p>
 </div>
 
+
+                            </div>
+                            <div id="PoolRoll.keys" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.keys">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">keys</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="PoolRoll.items" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.items">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">items</span><span class="signature">(self)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+    
 
                             </div>
                             <div class="inherited">
