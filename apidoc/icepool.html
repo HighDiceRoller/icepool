@@ -9001,17 +9001,15 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
 <span class="sd">        then saves the run to the state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">prev_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">prev_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">outcome</span>
+                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span><span class="p">)</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
         
     
     <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
@@ -9060,17 +9058,15 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
 <span class="sd">        then saves the run to the state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">prev_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">prev_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">outcome</span>
+                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span><span class="p">)</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 </pre></div>
 
         </details>
