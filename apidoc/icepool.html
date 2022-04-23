@@ -481,24 +481,6 @@
 
             </li>
             <li>
-                    <a class="class" href="#PoolRoll">PoolRoll</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#PoolRoll.__init__">PoolRoll</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#PoolRoll.outcomes">outcomes</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#PoolRoll.keys">keys</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#PoolRoll.items">items</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#EvalPool">EvalPool</a>
                             <ul class="memberlist">
                         <li>
@@ -696,7 +678,7 @@ icepool    </h1>
     <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
     <span class="s1">&#39;BasePool&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;DicePool&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;PoolRoll&#39;</span><span class="p">,</span>
+    <span class="c1"># &#39;PoolRoll&#39;,  # Not needed externally due to implicit casts</span>
     <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;WrapFuncEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestRun&#39;</span><span class="p">,</span>
     <span class="s1">&#39;d2&#39;</span><span class="p">,</span> <span class="s1">&#39;d3&#39;</span><span class="p">,</span> <span class="s1">&#39;d4&#39;</span><span class="p">,</span> <span class="s1">&#39;d6&#39;</span><span class="p">,</span> <span class="s1">&#39;d8&#39;</span><span class="p">,</span> <span class="s1">&#39;d10&#39;</span><span class="p">,</span> <span class="s1">&#39;d12&#39;</span><span class="p">,</span> <span class="s1">&#39;d20&#39;</span><span class="p">,</span> <span class="s1">&#39;d100&#39;</span><span class="p">]</span>
 </pre></div>
@@ -6328,6 +6310,8 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
 <span class="sd">    </span>
 <span class="sd">    * `DicePool`, which represents a pool of dice with random results.</span>
 <span class="sd">    * `PoolRoll`, which represents a single, fixed roll of a pool.</span>
+<span class="sd">        `PoolRoll` is only needed internally, as external dicts and sequences </span>
+<span class="sd">        will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="nd">@abstractmethod</span>
@@ -6405,7 +6389,9 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
 
 <ul>
 <li><code><a href="#DicePool">DicePool</a></code>, which represents a pool of dice with random results.</li>
-<li><code><a href="#PoolRoll">PoolRoll</a></code>, which represents a single, fixed roll of a pool.</li>
+<li><code>PoolRoll</code>, which represents a single, fixed roll of a pool.
+<code>PoolRoll</code> is only needed internally, as external dicts and sequences 
+will be implicitly cast to <code>PoolRoll</code> in <code><a href="#EvalPool.eval">EvalPool.eval()</a></code>.</li>
 </ul>
 </div>
 
@@ -7078,7 +7064,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="sd">&quot;&quot;&quot; Samples a roll from this pool.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            A `PoolRoll` representing a single roll of this pool.</span>
+<span class="sd">            A dict mapping outcomes to counts representing a single roll of this pool.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
@@ -7088,7 +7074,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -7586,7 +7572,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
         <span class="sd">&quot;&quot;&quot; Samples a roll from this pool.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            A `PoolRoll` representing a single roll of this pool.</span>
+<span class="sd">            A dict mapping outcomes to counts representing a single roll of this pool.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
@@ -7596,7 +7582,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
 </pre></div>
 
         </details>
@@ -7606,7 +7592,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A <code><a href="#PoolRoll">PoolRoll</a></code> representing a single roll of this pool.</p>
+  <p>A dict mapping outcomes to counts representing a single roll of this pool.</p>
 </blockquote>
 </div>
 
@@ -7618,223 +7604,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
                                     <div><dt><a href="#BasePool">BasePool</a></dt>
                                 <dd id="DicePool.eval" class="function"><a href="#BasePool.eval">eval</a></dd>
                 <dd id="DicePool.sum" class="function"><a href="#BasePool.sum">sum</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="PoolRoll">
-                                <div class="attr class">
-        <a class="headerlink" href="#PoolRoll">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">PoolRoll</span><wbr>(<span class="base"><a href="#BasePool">icepool.BasePool</a></span>):
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">PoolRoll</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">BasePool</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Represents a single, fixed roll of a dice pool.</span>
-<span class="sd">    </span>
-<span class="sd">    Like `DicePool`, this may be used as an argument to `EvalPool`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            arg: One of the following:</span>
-<span class="sd">                * A dict-like, mapping outcomes to counts.</span>
-<span class="sd">                * A sequence of outcomes, which are treated as having count 1</span>
-<span class="sd">                    per appearance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    
-    <span class="k">def</span> <span class="nf">_has_max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    
-    <span class="k">def</span> <span class="nf">_has_min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    
-    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="nf">_max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    
-    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    
-    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">}</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">count</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    
-    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">outcome</span> <span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">count</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    
-    <span class="c1"># Forwarding dict-like methods.</span>
-    
-    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;PoolRoll(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
-    
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
-    
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
-        
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Represents a single, fixed roll of a dice pool.</p>
-
-<p>Like <code><a href="#DicePool">DicePool</a></code>, this may be used as an argument to <code><a href="#EvalPool">EvalPool</a></code>.</p>
-</div>
-
-
-                            <div id="PoolRoll.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">PoolRoll</span><span class="signature">(arg, /)</span>
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            arg: One of the following:</span>
-<span class="sd">                * A dict-like, mapping outcomes to counts.</span>
-<span class="sd">                * A sequence of outcomes, which are treated as having count 1</span>
-<span class="sd">                    per appearance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><h6 id="args">Args</h6>
-
-<ul>
-<li><strong>arg:</strong>  One of the following:
-<ul>
-<li>A dict-like, mapping outcomes to counts.</li>
-<li>A sequence of outcomes, which are treated as having count 1
-per appearance.</li>
-</ul></li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="PoolRoll.outcomes" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.outcomes">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">outcomes</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>The outcomes of the fundamental die (including those with zero weight).</p>
-</div>
-
-
-                            </div>
-                            <div id="PoolRoll.keys" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.keys">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">keys</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="PoolRoll.items" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#PoolRoll.items">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">items</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#BasePool">BasePool</a></dt>
-                                <dd id="PoolRoll.eval" class="function"><a href="#BasePool.eval">eval</a></dd>
-                <dd id="PoolRoll.sum" class="function"><a href="#BasePool.sum">sum</a></dd>
 
             </div>
                                 </dl>
@@ -7984,7 +7753,12 @@ per appearance.</li>
 <span class="sd">        e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            *pools: One or more `DicePool`s to evaluate.</span>
+<span class="sd">            *pools: Each element may be one of the following:</span>
+<span class="sd">                * A `DicePool` representing possible rolls of a pool.</span>
+<span class="sd">                * A dict-like representing a single roll of a pool.</span>
+<span class="sd">                    The dict maps outcomes to counts.</span>
+<span class="sd">                * A sequence of outcomes representing a single roll of a pool. </span>
+<span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 <span class="sd">                Most evaluators will expect a fixed number of pools.</span>
 <span class="sd">                The outcomes of the pools must be mutually comparable.</span>
 <span class="sd">                Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.</span>
@@ -7993,6 +7767,10 @@ per appearance.</li>
 <span class="sd">            A die representing the distribution of the final score.</span>
 <span class="sd">            If all pools are `PoolRoll`s, the result is a single outcome instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Cast non-pool arguments to `BasePool`.</span>
+        <span class="n">pools</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">BasePool</span><span class="p">)</span> <span class="k">else</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">]</span>
+        
         <span class="n">algorithm</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_algorithm</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
         <span class="n">dist</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
@@ -8443,7 +8221,12 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 <span class="sd">        e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            *pools: One or more `DicePool`s to evaluate.</span>
+<span class="sd">            *pools: Each element may be one of the following:</span>
+<span class="sd">                * A `DicePool` representing possible rolls of a pool.</span>
+<span class="sd">                * A dict-like representing a single roll of a pool.</span>
+<span class="sd">                    The dict maps outcomes to counts.</span>
+<span class="sd">                * A sequence of outcomes representing a single roll of a pool. </span>
+<span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 <span class="sd">                Most evaluators will expect a fixed number of pools.</span>
 <span class="sd">                The outcomes of the pools must be mutually comparable.</span>
 <span class="sd">                Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.</span>
@@ -8452,6 +8235,10 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 <span class="sd">            A die representing the distribution of the final score.</span>
 <span class="sd">            If all pools are `PoolRoll`s, the result is a single outcome instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Cast non-pool arguments to `BasePool`.</span>
+        <span class="n">pools</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">BasePool</span><span class="p">)</span> <span class="k">else</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">]</span>
+        
         <span class="n">algorithm</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_algorithm</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
         <span class="n">dist</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">)</span>
@@ -8482,17 +8269,24 @@ e.g. <code>sum_pool(pool)</code> is an alias for <code>sum_pool.eval(pool)</code
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>*pools:</strong>  One or more <code><a href="#DicePool">DicePool</a></code>s to evaluate.
+<li><strong>*pools:</strong>  Each element may be one of the following:
+<ul>
+<li>A <code><a href="#DicePool">DicePool</a></code> representing possible rolls of a pool.</li>
+<li>A dict-like representing a single roll of a pool.
+The dict maps outcomes to counts.</li>
+<li>A sequence of outcomes representing a single roll of a pool. 
+Outcomes are treated as having 1 count per appearance.
 Most evaluators will expect a fixed number of pools.
 The outcomes of the pools must be mutually comparable.
 Pools with <code>max_outcomes</code> and pools with <code>min_outcomes</code> are not compatible.</li>
+</ul></li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
   <p>A die representing the distribution of the final score.
-  If all pools are <code><a href="#PoolRoll">PoolRoll</a></code>s, the result is a single outcome instead.</p>
+  If all pools are <code>PoolRoll</code>s, the result is a single outcome instead.</p>
 </blockquote>
 </div>
 
