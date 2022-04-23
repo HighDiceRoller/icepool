@@ -14,21 +14,21 @@ class PoolRoll(icepool.BasePool):
     
     Like `DicePool`, this may be used as an argument to `EvalPool`.
     """
-    def __init__(self, *args):
+    def __init__(self, arg, /):
         """
         Args:
-            *args: A sequence of:
-                * Dict-likes, mapping outcomes to counts.
-                * Outcomes, which are treated as having count 1.
-                Duplicate outcomes will have their counts accumulated.
+            arg: One of the following:
+                * A dict-like, mapping outcomes to counts.
+                * A sequence of outcomes, which are treated as having count 1
+                    per appearance.
         """
         data = defaultdict(int)
-        for arg in args:
-            if _is_dict(arg):
-                for key, value in arg.items():
-                    data[key] += value
-            else:
-                data[arg] += 1
+        if _is_dict(arg):
+            for outcome, count in arg.items():
+                data[outcome] += count
+        else:
+            for outcome in arg:
+                data[outcome] += 1
         
         self._data = Counts(data)
 
@@ -81,7 +81,7 @@ class PoolRoll(icepool.BasePool):
     def __eq__(self, other):
         try:
             other = icepool.PoolRoll(other)
-        except ValueError:
+        except TypeError:
             return False
         return self._key_tuple == other._key_tuple
     
