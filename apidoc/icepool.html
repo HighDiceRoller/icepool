@@ -133,9 +133,6 @@
                                 <a class="function" href="#BaseDie.scale_weights">scale_weights</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseDie.getitem">getitem</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#BaseDie.min_outcome">min_outcome</a>
                         </li>
                         <li>
@@ -1410,20 +1407,6 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     
     <span class="c1"># Rerolls and other outcome management.</span>
     
-    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Selects outcomes (and their associated weights) by (sorted) outcome index.</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            select: If this is a `slice`, the result is a `Die`.</span>
-<span class="sd">                If this is an `int`, the result is the `outcome, weight` at that index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">({</span><span class="n">outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">select</span><span class="p">]},</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">select</span><span class="p">]</span>
-    
-    <span class="fm">__getitem__</span> <span class="o">=</span> <span class="n">getitem</span>
-    
     <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the minimum possible outcome among the dice. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
@@ -1583,7 +1566,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">die</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">die</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1596,7 +1579,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">die</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">return</span> <span class="n">die</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
     
     <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2858,43 +2841,6 @@ Otherwise, the total will be 1.0.</li>
         </details>
 
             <div class="docstring"><p>Multiplies all weights by a constant.</p>
-</div>
-
-
-                            </div>
-                            <div id="BaseDie.getitem" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.getitem">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">getitem</span><span class="signature">(self, select)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Selects outcomes (and their associated weights) by (sorted) outcome index.</span>
-<span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            select: If this is a `slice`, the result is a `Die`.</span>
-<span class="sd">                If this is an `int`, the result is the `outcome, weight` at that index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">({</span><span class="n">outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">select</span><span class="p">]},</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()[</span><span class="n">select</span><span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Selects outcomes (and their associated weights) by (sorted) outcome index.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>select:</strong>  If this is a <code>slice</code>, the result is a <code><a href="#Die">Die</a></code>.
-If this is an <code>int</code>, the result is the <code>outcome, weight</code> at that index.</li>
-</ul>
 </div>
 
 
@@ -4291,7 +4237,6 @@ they are treated as unequal by this function.</p>
                 <dd id="EmptyDie.cvm_stat" class="function"><a href="#BaseDie.cvm_stat">cvm_stat</a></dd>
                 <dd id="EmptyDie.reduce" class="function"><a href="#BaseDie.reduce">reduce</a></dd>
                 <dd id="EmptyDie.scale_weights" class="function"><a href="#BaseDie.scale_weights">scale_weights</a></dd>
-                <dd id="EmptyDie.getitem" class="function"><a href="#BaseDie.getitem">getitem</a></dd>
                 <dd id="EmptyDie.min_outcome" class="function"><a href="#BaseDie.min_outcome">min_outcome</a></dd>
                 <dd id="EmptyDie.max_outcome" class="function"><a href="#BaseDie.max_outcome">max_outcome</a></dd>
                 <dd id="EmptyDie.nearest_le" class="function"><a href="#BaseDie.nearest_le">nearest_le</a></dd>
@@ -5157,7 +5102,6 @@ while not actually producing any additional information.</p>
                 <dd id="ScalarDie.cvm_stat" class="function"><a href="#BaseDie.cvm_stat">cvm_stat</a></dd>
                 <dd id="ScalarDie.reduce" class="function"><a href="#BaseDie.reduce">reduce</a></dd>
                 <dd id="ScalarDie.scale_weights" class="function"><a href="#BaseDie.scale_weights">scale_weights</a></dd>
-                <dd id="ScalarDie.getitem" class="function"><a href="#BaseDie.getitem">getitem</a></dd>
                 <dd id="ScalarDie.min_outcome" class="function"><a href="#BaseDie.min_outcome">min_outcome</a></dd>
                 <dd id="ScalarDie.max_outcome" class="function"><a href="#BaseDie.max_outcome">max_outcome</a></dd>
                 <dd id="ScalarDie.nearest_le" class="function"><a href="#BaseDie.nearest_le">nearest_le</a></dd>
@@ -5915,7 +5859,6 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
                 <dd id="VectorDie.cvm_stat" class="function"><a href="#BaseDie.cvm_stat">cvm_stat</a></dd>
                 <dd id="VectorDie.reduce" class="function"><a href="#BaseDie.reduce">reduce</a></dd>
                 <dd id="VectorDie.scale_weights" class="function"><a href="#BaseDie.scale_weights">scale_weights</a></dd>
-                <dd id="VectorDie.getitem" class="function"><a href="#BaseDie.getitem">getitem</a></dd>
                 <dd id="VectorDie.min_outcome" class="function"><a href="#BaseDie.min_outcome">min_outcome</a></dd>
                 <dd id="VectorDie.max_outcome" class="function"><a href="#BaseDie.max_outcome">max_outcome</a></dd>
                 <dd id="VectorDie.nearest_le" class="function"><a href="#BaseDie.nearest_le">nearest_le</a></dd>
@@ -6940,6 +6883,9 @@ of 2 d8s and 3 d6s.</li>
     
     <span class="fm">__getitem__</span> <span class="o">=</span> <span class="n">set_count_dice</span>
     
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;DicePool&#39; object is not iterable&quot;</span><span class="p">)</span>
+    
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_num_drop_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
@@ -7693,21 +7639,21 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">    </span>
 <span class="sd">    Like `DicePool`, this may be used as an argument to `EvalPool`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            *args: A sequence of:</span>
-<span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
-<span class="sd">                * Outcomes, which are treated as having count 1.</span>
-<span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
+<span class="sd">            arg: One of the following:</span>
+<span class="sd">                * A dict-like, mapping outcomes to counts.</span>
+<span class="sd">                * A sequence of outcomes, which are treated as having count 1</span>
+<span class="sd">                    per appearance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -7760,7 +7706,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
     
@@ -7784,26 +7730,26 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
                                         <div class="attr function"><a class="headerlink" href="#PoolRoll.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">PoolRoll</span><span class="signature">(*args)</span>
+            <span class="name">PoolRoll</span><span class="signature">(arg, /)</span>
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            *args: A sequence of:</span>
-<span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
-<span class="sd">                * Outcomes, which are treated as having count 1.</span>
-<span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
+<span class="sd">            arg: One of the following:</span>
+<span class="sd">                * A dict-like, mapping outcomes to counts.</span>
+<span class="sd">                * A sequence of outcomes, which are treated as having count 1</span>
+<span class="sd">                    per appearance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">_is_dict</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -7813,11 +7759,11 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
             <div class="docstring"><h6 id="args">Args</h6>
 
 <ul>
-<li><strong>*args:</strong>  A sequence of:
+<li><strong>arg:</strong>  One of the following:
 <ul>
-<li>Dict-likes, mapping outcomes to counts.</li>
-<li>Outcomes, which are treated as having count 1.
-Duplicate outcomes will have their counts accumulated.</li>
+<li>A dict-like, mapping outcomes to counts.</li>
+<li>A sequence of outcomes, which are treated as having count 1
+per appearance.</li>
 </ul></li>
 </ul>
 </div>
