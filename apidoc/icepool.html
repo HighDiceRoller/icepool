@@ -7896,10 +7896,10 @@ and any outcomes within this die that are not provided will be set to zero count
 <span class="sd">            state: A hashable object indicating the state before rolling the current outcome.</span>
 <span class="sd">                If there was no previous outcome, this will be `None`.</span>
 <span class="sd">            outcome: The current outcome.</span>
-<span class="sd">                `next_state` will see all outcomes in consecutive order,</span>
+<span class="sd">                `next_state` will see all outcomes in monotonic order,</span>
 <span class="sd">                either ascending or descending depending on `direction()`.</span>
 <span class="sd">                If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.</span>
-<span class="sd">                Interleaving outcomes between different pools is allowed but strongly discouraged.</span>
+<span class="sd">                Interleaving outcomes between different pools is allowed but discouraged.</span>
 <span class="sd">            *counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.</span>
 <span class="sd">                If there are multiple pools, it&#39;s possible that some outcomes will not appear in all pools.</span>
 <span class="sd">                In this case, the count for the pool(s) that do not have the outcome will be 0. </span>
@@ -8192,10 +8192,10 @@ Otherwise, values in the cache may be incorrect.</p>
 <span class="sd">            state: A hashable object indicating the state before rolling the current outcome.</span>
 <span class="sd">                If there was no previous outcome, this will be `None`.</span>
 <span class="sd">            outcome: The current outcome.</span>
-<span class="sd">                `next_state` will see all outcomes in consecutive order,</span>
+<span class="sd">                `next_state` will see all outcomes in monotonic order,</span>
 <span class="sd">                either ascending or descending depending on `direction()`.</span>
 <span class="sd">                If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.</span>
-<span class="sd">                Interleaving outcomes between different pools is allowed but strongly discouraged.</span>
+<span class="sd">                Interleaving outcomes between different pools is allowed but discouraged.</span>
 <span class="sd">            *counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.</span>
 <span class="sd">                If there are multiple pools, it&#39;s possible that some outcomes will not appear in all pools.</span>
 <span class="sd">                In this case, the count for the pool(s) that do not have the outcome will be 0. </span>
@@ -8226,10 +8226,10 @@ and the number of dice in each pool rolling that outcome.</p>
 <li><strong>state:</strong>  A hashable object indicating the state before rolling the current outcome.
 If there was no previous outcome, this will be <code>None</code>.</li>
 <li><strong>outcome:</strong>  The current outcome.
-<code><a href="#EvalPool.next_state">next_state</a></code> will see all outcomes in consecutive order,
+<code><a href="#EvalPool.next_state">next_state</a></code> will see all outcomes in monotonic order,
 either ascending or descending depending on <code><a href="#EvalPool.direction">direction()</a></code>.
 If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.
-Interleaving outcomes between different pools is allowed but strongly discouraged.</li>
+Interleaving outcomes between different pools is allowed but discouraged.</li>
 <li><p><strong>*counts:</strong>  One <code>int</code> for each pool indicating how many dice in that pool rolled the current outcome.
 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
 In this case, the count for the pool(s) that do not have the outcome will be 0. 
@@ -8653,10 +8653,10 @@ and the number of dice in each pool rolling that outcome.</p>
 <li><strong>state:</strong>  A hashable object indicating the state before rolling the current outcome.
 If there was no previous outcome, this will be <code>None</code>.</li>
 <li><strong>outcome:</strong>  The current outcome.
-<code><a href="#WrapFuncEval.next_state">next_state</a></code> will see all outcomes in consecutive order,
+<code><a href="#WrapFuncEval.next_state">next_state</a></code> will see all outcomes in monotonic order,
 either ascending or descending depending on <code><a href="#WrapFuncEval.direction">direction()</a></code>.
 If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.
-Interleaving outcomes between different pools is allowed but strongly discouraged.</li>
+Interleaving outcomes between different pools is allowed but discouraged.</li>
 <li><p><strong>*counts:</strong>  One <code>int</code> for each pool indicating how many dice in that pool rolled the current outcome.
 If there are multiple pools, it's possible that some outcomes will not appear in all pools.
 In this case, the count for the pool(s) that do not have the outcome will be 0. 
@@ -8937,6 +8937,8 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
 <span class="sd">    </span>
+<span class="sd">    Outcomes must be `int`s.</span>
+<span class="sd">    </span>
 <span class="sd">    This prioritizes run size, then the outcome.</span>
 <span class="sd">    </span>
 <span class="sd">    The outcomes are `(run_size, outcome)`.</span>
@@ -8946,12 +8948,18 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
 <span class="sd">        then saves the run to the state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">curr_run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">curr_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">prev_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">prev_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">outcome</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">curr_run</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">curr_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">curr_run</span><span class="p">,)</span>
+            <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span><span class="p">)</span>
+        
     
     <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
@@ -8965,6 +8973,8 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         </details>
 
             <div class="docstring"><p>A <code><a href="#EvalPool">EvalPool</a></code> that takes the best run (aka "straight") in a pool.</p>
+
+<p>Outcomes must be <code>int</code>s.</p>
 
 <p>This prioritizes run size, then the outcome.</p>
 
@@ -8997,12 +9007,17 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
         <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
 <span class="sd">        then saves the run to the state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">curr_run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">curr_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">prev_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">prev_run</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">outcome</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">curr_run</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">curr_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">curr_run</span><span class="p">,)</span>
+            <span class="n">prev_run</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">prev_outcome</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">prev_run</span><span class="p">,</span> <span class="n">prev_outcome</span><span class="p">)</span>
 </pre></div>
 
         </details>
