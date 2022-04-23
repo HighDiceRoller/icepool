@@ -6113,14 +6113,14 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
         
             <span class="def">def</span>
-            <span class="name">align_range</span><span class="signature">(*dice, ndim=None)</span>:
+            <span class="name">align_range</span><span class="signature">(*dice)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. &quot;&quot;&quot;</span>
-    <span class="n">dice</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">dice_with_common_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
+    <span class="n">dice</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">dice_with_common_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="s1">&#39;scalar&#39;</span><span class="p">)</span>
     <span class="n">outcomes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">),</span> <span class="n">icepool</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
 </pre></div>
@@ -9011,7 +9011,6 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
             <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
         
-    
     <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
