@@ -407,17 +407,15 @@ class FindBestRun(EvalPool):
         """ Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
-        best_run, best_run_outcome, prev_run, prev_outcome = state or (0, outcome, 0, None)
+        best_run, best_run_outcome, run, prev_outcome = state or (0, outcome, 0, outcome - 1)
         if count >= 1:
-            if prev_outcome is not None and outcome == prev_outcome + 1:
-                prev_run += 1
+            if outcome == prev_outcome + 1:
+                run += 1
             else:
-                prev_run = 1
-            prev_outcome = outcome
+                run = 1
         else:
-            prev_run = 0
-            prev_outcome = None
-        return max((prev_run, outcome), (best_run, best_run_outcome)) + (prev_run, prev_outcome)
+            run = 0
+        return max((run, outcome), (best_run, best_run_outcome)) + (run, outcome)
         
     
     def final_outcome(self, final_state, *pools):
