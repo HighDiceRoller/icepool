@@ -417,7 +417,6 @@ class FindBestRun(EvalPool):
             run = 0
         return max((run, outcome), (best_run, best_run_outcome)) + (run, outcome)
         
-    
     def final_outcome(self, final_state, *pools):
         """ Returns the best run. """
         return final_state[:2]

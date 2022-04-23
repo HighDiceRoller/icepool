@@ -112,9 +112,9 @@ def align(*dice, ndim=None):
     outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
-def align_range(*dice, ndim=None):
+def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice, ndim = icepool.dice_with_common_ndim(*dice)
+    dice, ndim = icepool.dice_with_common_ndim(*dice, ndim='scalar')
     outcomes = tuple(range(icepool.min_outcome(*dice), icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
