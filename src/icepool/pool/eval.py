@@ -141,7 +141,8 @@ class EvalPool(ABC):
         e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.
         
         Args:
-            *pools: One or more `DicePool`s to evaluate.
+            *pools: One or more `DicePool`s and/or `PoolRoll`s to evaluate.
+                Arguments that are neither will be cast to `PoolRoll`s.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
                 Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
@@ -150,6 +151,10 @@ class EvalPool(ABC):
             A die representing the distribution of the final score.
             If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
+        
+        # Cast non-pool arguments to `BasePool`.
+        pools = [pool if isinstance(pool, icepool.BasePool) else icepool.PoolRoll(pool) for pool in pools]
+        
         algorithm, direction = self._select_algorithm(*pools)
         
         dist = algorithm(direction, *pools)

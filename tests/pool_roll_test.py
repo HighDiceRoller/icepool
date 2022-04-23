@@ -20,3 +20,7 @@ def test_pool_roll_sum_duplicates():
 def test_pool_roll_sum_negative():
     roll = icepool.PoolRoll({1:-1, 2:-1, 3:-1, 4:-1})
     assert roll.sum() == -10
+
+def test_pool_cast():
+    assert icepool.sum_pool((1, 2, 3, 4)) == 10
+    assert icepool.sum_pool({1:1, 2:1, 3:1, 4:1}) == 10
