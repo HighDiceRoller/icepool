@@ -7142,7 +7142,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -7650,7 +7650,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">roll</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">roll</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
-        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolRoll</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -7693,15 +7693,13 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">    </span>
 <span class="sd">    Like `DicePool`, this may be used as an argument to `EvalPool`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            *args: A sequence of:</span>
 <span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
 <span class="sd">                * Outcomes, which are treated as having count 1.</span>
 <span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
-<span class="sd">            die: If provided, all args must be outcomes within this die,</span>
-<span class="sd">                and any outcomes within this die that are not provided will be set to zero count.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
@@ -7710,13 +7708,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
                     <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        
-        <span class="k">if</span> <span class="n">die</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">die</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Outcome </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1"> is not present in provided die.&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">0</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -7793,20 +7784,18 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
                                         <div class="attr function"><a class="headerlink" href="#PoolRoll.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">PoolRoll</span><span class="signature">(*args, die=None)</span>
+            <span class="name">PoolRoll</span><span class="signature">(*args)</span>
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">die</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            *args: A sequence of:</span>
 <span class="sd">                * Dict-likes, mapping outcomes to counts.</span>
 <span class="sd">                * Outcomes, which are treated as having count 1.</span>
 <span class="sd">                Duplicate outcomes will have their counts accumulated.</span>
-<span class="sd">            die: If provided, all args must be outcomes within this die,</span>
-<span class="sd">                and any outcomes within this die that are not provided will be set to zero count.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
@@ -7815,13 +7804,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
                     <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span><span class="p">[</span><span class="n">arg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        
-        <span class="k">if</span> <span class="n">die</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">die</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Outcome </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1"> is not present in provided die.&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">0</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
@@ -7837,8 +7819,6 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <li>Outcomes, which are treated as having count 1.
 Duplicate outcomes will have their counts accumulated.</li>
 </ul></li>
-<li><strong>die:</strong>  If provided, all args must be outcomes within this die,
-and any outcomes within this die that are not provided will be set to zero count.</li>
 </ul>
 </div>
 
