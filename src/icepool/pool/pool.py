@@ -342,6 +342,9 @@ class DicePool(icepool.BasePool):
     
     __getitem__ = set_count_dice
     
+    def __iter__(self):
+        raise TypeError("'DicePool' object is not iterable")
+    
     @cached_property
     def _num_drop_lowest(self):
         for i, count in enumerate(self.count_dice()):
