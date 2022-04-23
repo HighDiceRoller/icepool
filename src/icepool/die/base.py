@@ -269,20 +269,6 @@ class BaseDie():
     
     # Rerolls and other outcome management.
     
-    def getitem(self, select):
-        """ Selects outcomes (and their associated weights) by (sorted) outcome index.
-        
-        Args:
-            select: If this is a `slice`, the result is a `Die`.
-                If this is an `int`, the result is the `outcome, weight` at that index.
-        """
-        if isinstance(select, slice):
-            return icepool.Die({outcome : weight for outcome, weight in self.items()[select]}, ndim=self.ndim())
-        else:
-            return self.items()[select]
-    
-    __getitem__ = getitem
-    
     def min_outcome(*dice):
         """ Returns the minimum possible outcome among the dice. """
         return min(die.outcomes()[0] for die in dice)
@@ -442,7 +428,7 @@ class BaseDie():
     
     @cached_property
     def _popped_max(self):
-        die = self[:-1]
+        die = icepool.Die(*self.outcomes()[:-1], weights=self.weights()[:-1])
         return die, self.outcomes()[-1], self.weights()[-1]
     
     def _pop_max(self):
@@ -455,7 +441,7 @@ class BaseDie():
     
     @cached_property
     def _popped_min(self):
-        die = self[1:]
+        die = icepool.Die(*self.outcomes()[1:], weights=self.weights()[1:])
         return die, self.outcomes()[0], self.weights()[0]
     
     def _pop_min(self):
