@@ -537,7 +537,7 @@ class DicePool(icepool.BasePool):
         """ Samples a roll from this pool.
         
         Returns:
-            A `PoolRoll` representing a single roll of this pool.
+            A dict mapping outcomes to counts representing a single roll of this pool.
         """
         raw_rolls = []
         for min_outcome, max_outcome in zip(self.min_outcomes(True), self.max_outcomes(True)):
@@ -547,7 +547,7 @@ class DicePool(icepool.BasePool):
         data = defaultdict(int)
         for roll, count in zip(raw_rolls, self.count_dice()):
             data[roll] += count
-        return icepool.PoolRoll(data)
+        return data
     
     @cached_property
     def _key_tuple(self):

@@ -13,6 +13,9 @@ class PoolRoll(icepool.BasePool):
     """ Represents a single, fixed roll of a dice pool.
     
     Like `DicePool`, this may be used as an argument to `EvalPool`.
+    
+    `PoolRoll` is only needed internally, as external dicts and sequences 
+    will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.
     """
     def __init__(self, arg, /):
         """

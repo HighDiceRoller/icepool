@@ -141,8 +141,12 @@ class EvalPool(ABC):
         e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.
         
         Args:
-            *pools: One or more `DicePool`s and/or `PoolRoll`s to evaluate.
-                Arguments that are neither will be cast to `PoolRoll`s.
+            *pools: Each element may be one of the following:
+                * A `DicePool` representing possible rolls of a pool.
+                * A dict-like representing a single roll of a pool.
+                    The dict maps outcomes to counts.
+                * A sequence of outcomes representing a single roll of a pool. 
+                    Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
                 Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
