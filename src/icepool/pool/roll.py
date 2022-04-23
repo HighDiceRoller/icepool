@@ -1,9 +1,10 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.collections import Counts
 
 from collections import defaultdict
-from icepool.collections import Counts
+from functools import cached_property
 
 def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
@@ -18,7 +19,7 @@ class PoolRoll(icepool.BasePool):
         Args:
             *args: A sequence of:
                 * Dict-likes, mapping outcomes to counts.
-                * Outcomes, with count 1.
+                * Outcomes, which are treated as having count 1.
                 Duplicate outcomes will have their counts accumulated.
             die: If provided, all args must be outcomes within this die,
                 and any outcomes within this die that are not provided will be set to zero count.
@@ -67,6 +68,35 @@ class PoolRoll(icepool.BasePool):
         data = { outcome : count for outcome, count in self._data.items()[1:] }
         count = self._data.values()[0]
         return (PoolRoll(data), count, 1),
+    
+    # Forwarding dict-like methods.
+    
+    def keys(self):
+        return self._data.keys()
+        
+    def items(self):
+        return self._data.items()
+    
+    def __getitem__(self, key):
+        return self._data[key]
 
     def __str__(self):
         return f'PoolRoll({str(self._data)})'
+    
+    @cached_property
+    def _key_tuple(self):
+        return self._data.items()
+    
+    def __eq__(self, other):
+        try:
+            other = icepool.PoolRoll(other)
+        except ValueError:
+            return False
+        return self._key_tuple == other._key_tuple
+    
+    @cached_property
+    def _hash(self):
+        return hash(self._key_tuple)
+        
+    def __hash__(self):
+        return self._hash
