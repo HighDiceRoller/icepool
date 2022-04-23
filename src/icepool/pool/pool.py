@@ -544,7 +544,7 @@ class DicePool(icepool.BasePool):
         data = defaultdict(int)
         for roll, count in zip(raw_rolls, self.count_dice()):
             data[roll] += count
-        return icepool.PoolRoll(data, die=self.die())
+        return icepool.PoolRoll(data)
     
     @cached_property
     def _key_tuple(self):
