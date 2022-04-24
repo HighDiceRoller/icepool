@@ -2,15 +2,15 @@
 
 A Python package for computing dice probabilities.
 
-[GitHub.](https://github.com/HighDiceRoller/icepool)
+[GitHub repository.](https://github.com/HighDiceRoller/icepool)
 
 ## Features
 
 * Pure Python implementation.
 * Exact fractional probabilities using Python `int`s.
-* Dice support all standard operators as well as an extensive library of functions.
-* Efficiently solves dice pool problems; depending on the problem, it can be more than 1000× as fast as multiset/sequence-based algorithms.
-* Supports multivariate distributions.
+* Dice support all standard operators (+, -, <, >, etc.) as well as an extensive library of functions (rerolling, exploding, etc.)
+* Can outperform sequence/multiset-based algorithms on many dice pool problems.
+    In some cases it may be thousands or millions of times faster.
 
 ## Installing
 
@@ -18,13 +18,15 @@ A Python package for computing dice probabilities.
 pip install icepool
 ```
 
+The source is pure Python, so making a direct copy can work as well.
+
 ## Contact
 
 Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discussions) or [issue](https://github.com/HighDiceRoller/icepool/issues) on GitHub. You can also find me on [Twitter](https://twitter.com/highdiceroller) or [Reddit](https://www.reddit.com/user/HighDiceRoller).
 
 ## API documentation
 
-[GitHub.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
+[pdoc on GitHub.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
 
 ## JupyterLite notebooks
 
