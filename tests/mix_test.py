@@ -74,3 +74,7 @@ def test_sub_fixed_point():
     result = icepool.d100.sub(collatz, max_depth=None).reduce()
     expected = icepool.Die(1)
     assert result.equals(expected)
+
+def test_cond():
+    assert (icepool.d6 >= 4).cond(icepool.d6, icepool.d6+6).equals(icepool.d12, reduce=True)
+    assert (icepool.d6 - 3).cond(True, False).equals(icepool.d6 != 6, reduce=True)

@@ -394,23 +394,12 @@ class BaseDie():
                 data[outcome] += weight
         return icepool.Die(data, ndim=self.ndim())
     
-    def split(self, cond):
-        """ Splits this die's items into two pieces based on `cond(outcome)`.
+    def cond(self, outcome_if_true, outcome_if_false, /):
+        """ Conditional operator. Also known as the ternary operator.
         
-        The left result is all outcome-weight pairs where `cond(outcome)` is `True`.
-        The right result is all outcome-weight pairs where `cond(outcome)` is `False`.
-        
-        `cond` will be supplied with one argument per `ndim` if this is a `VectorDie`.
+        This replaces truthy outcomes to the first argument and falsy outcomes with the second argument.
         """
-        cond = self._wrap_unpack(cond)
-        data_true = {}
-        data_false = {}
-        for outcome, weight in self.items():
-            if cond(outcome):
-                data_true[outcome] = weight
-            else:
-                data_false[outcome] = weight
-        return icepool.Die(data_true, ndim=self.ndim()), icepool.Die(data_false, ndim=self.ndim())
+        return self.bool().sub(lambda x: outcome_if_true if x else outcome_if_false)
     
     def set_outcomes(self, outcomes):
         """ Sets the set of outcomes to the argument.
@@ -942,20 +931,27 @@ class BaseDie():
     
     __hash__ = None
     
-    def equals(self, other):
+    def equals(self, other, *, reduce=False):
         """ Returns `True` iff both dice have the same ndim, outcomes, and weights.
         
-        Note that dice are not reduced, e.g. a 2:2 coin is not `equals()` to a 1:1 coin. 
         Also, if one die has a zero-weight outcome and the other die does not contain that outcome,
         they are treated as unequal by this function.
         
         For the chance of two dice rolling the same outcome, use the `==` operator.
+        
+        Args:
+            reduce: If `True`, the dice will be reduced before comparing.
+                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin. 
         """
         try:
             other = icepool.Die(other, ndim=self.ndim())
         except ValueError:
             return False
-        return self.key_tuple() == other.key_tuple()
+        
+        if reduce:
+            return self.reduce().key_tuple() == other.reduce().key_tuple()
+        else:
+            return self.key_tuple() == other.key_tuple()
     
     # Strings.
     
