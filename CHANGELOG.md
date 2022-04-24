@@ -1,3 +1,17 @@
+## 0.8.0
+
+* `EvalPool.eval()` can now be provided with single rolls of a pool.
+    This can be a dict-like mapping individual die outcomes to counts or a sequence of individual die outcomes.
+* `EvalPool.next_state()` can not expect that the outcomes it sees are consecutive,
+    though they are guaranteed to be seen in monotonic order.
+* `FindBestRun()` no longer assumes consecutive outcomes.
+* Added `DicePool.sample()`.
+* Added `die.truncate()`.
+* `min_outcomes`, `max_outcomes` (for pool definitions) renamed to `truncate_min`, `truncate_max`.
+* Removed `die.getitem()`.
+* `DicePool` is no longer iterable, since there isn't an intuitive, unambiguous way of doing so.
+* `align_range()` now only operates on scalar outcomes.
+
 ## 0.7.0
 
 * Renamed from `hdroller` to `icepool`.
