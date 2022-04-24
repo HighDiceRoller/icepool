@@ -191,7 +191,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.7.0')
+                await micropip.install('icepool==0.8.0')
                 
                 import js
                 import pyodide
@@ -204,12 +204,12 @@
                 die_opposition_unaligned, hitch_opposition_unaligned = icepool.Die(0), icepool.Die(0)
                 
                 def calc_pool(prefix):
-                    max_outcomes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
+                    truncate_max = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
-                    die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, max_outcomes=max_outcomes)
+                    die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, truncate_max=truncate_max)
                     hitch = icepool.Die(0)
-                    for n in max_outcomes:
+                    for n in truncate_max:
                         hitch += icepool.coin(1, n)
                     return die, hitch
             `);
