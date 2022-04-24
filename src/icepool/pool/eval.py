@@ -94,8 +94,8 @@ class EvalPool(ABC):
     def direction(self, *pools):
         """ Optional function to determine the direction in which `next_state()` will see outcomes.
         
-        Note that an ascending (> 0) direction is not compatible with pools with `min_outcomes`,
-        and a descending (< 0) direction is not compatible with pools with `max_outcomes`.
+        Note that an ascending (> 0) direction is not compatible with pools with `truncate_min`,
+        and a descending (< 0) direction is not compatible with pools with `truncate_max`.
 
         The default is ascending order.
         
@@ -149,7 +149,7 @@ class EvalPool(ABC):
                     Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
-                Pools with `min_outcomes` and pools with `max_outcomes` are not compatible.
+                Pools with `truncate_min` and pools with `truncate_max` are not compatible.
         
         Returns:
             A die representing the distribution of the final score.
@@ -209,18 +209,18 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
             
         """
-        has_min_outcomes = any(pool._has_min_outcomes() for pool in pools)
-        has_max_outcomes = any(pool._has_max_outcomes() for pool in pools)
+        has_truncate_min = any(pool._has_truncate_min() for pool in pools)
+        has_truncate_max = any(pool._has_truncate_max() for pool in pools)
         
-        if has_min_outcomes and has_max_outcomes:
-            raise ValueError('A set of pools cannot be evaluated if they have both min_outcomes and max_outcomes.')
+        if has_truncate_min and has_truncate_max:
+            raise ValueError('A set of pools cannot be evaluated if they have both truncate_min and truncate_max.')
         
         direction = self.direction(*pools)
         
         if not direction:
-            if has_max_outcomes:
+            if has_truncate_max:
                 direction = 1
-            elif has_min_outcomes:
+            elif has_truncate_min:
                 direction = -1
             elif any(not pool._is_single_roll() for pool in pools):
                 num_drop_lowest = max(pool.num_drop_lowest() for pool in pools if not pool._is_single_roll())
@@ -232,7 +232,7 @@ class EvalPool(ABC):
             else:
                 direction = 1
         
-        if direction > 0 and has_min_outcomes or direction < 0 and has_max_outcomes:
+        if direction > 0 and has_truncate_min or direction < 0 and has_truncate_max:
             # Forced onto the less-preferred algorithm.
             return self._eval_internal_iterative, direction
         else:

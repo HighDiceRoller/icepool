@@ -30,7 +30,7 @@ def test_sum_descending():
     assert result.equals(expected)
 
 def test_sum_descending_limit_outcomes():
-    result = -SumPoolDescending().eval((-icepool.d12).pool(min_outcomes=[-8, -6]))
+    result = -SumPoolDescending().eval((-icepool.d12).pool(truncate_min=[-8, -6]))
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
@@ -51,10 +51,10 @@ def test_auto_direction_uniform():
     assert direction < 0
 
 # Above that, the auto direction should favor the wide-to-narrow ordering.
-def test_auto_direction_max_min_outcomes():
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d12.pool(min_outcomes=[8,6,6,6], count_dice=[0,1,1,1]))
+def test_auto_direction_max_truncate_min():
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d12.pool(truncate_min=[8,6,6,6], count_dice=[0,1,1,1]))
     assert direction < 0
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool(max_outcomes=[8,6,6,6], count_dice=[0,1,1,1]))
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool(truncate_max=[8,6,6,6], count_dice=[0,1,1,1]))
     assert direction > 0
 
 def sum_dice_func(state, outcome, count):
@@ -66,13 +66,13 @@ def test_wrap_func_eval():
     assert result.equals(expected)
 
 def test_max_outcome_rounding():
-    result = icepool.d12.pool(max_outcomes=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
-    expected = icepool.d12.pool(max_outcomes=[8, 8, 8, 6, 6]).sum()
+    result = icepool.d12.pool(truncate_max=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
+    expected = icepool.d12.pool(truncate_max=[8, 8, 8, 6, 6]).sum()
     assert result.equals(expected)
 
 def test_min_outcome_rounding():
-    result = icepool.d12.pool(min_outcomes=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
-    expected = icepool.d12.pool(min_outcomes=[9, 9, 9, 7, 6]).sum()
+    result = icepool.d12.pool(truncate_min=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
+    expected = icepool.d12.pool(truncate_min=[9, 9, 9, 7, 6]).sum()
     assert result.equals(expected)
 
 def test_standard_pool():
@@ -123,9 +123,9 @@ test_pools = [
     icepool.standard_pool(6,6,6,6)[0,1,1,1],
     icepool.standard_pool(6,6,6,6)[-1,0,0,1],
     icepool.standard_pool(12,10,8,8,6,6,6,4),
-    icepool.d12.pool(min_outcomes=[1,2,2,3]),
-    icepool.d12.pool(min_outcomes=[1,2,2,3])[0,0,0,1],
-    icepool.d12.pool(min_outcomes=[1,2,2,3])[1,0,0,0],
+    icepool.d12.pool(truncate_min=[1,2,2,3]),
+    icepool.d12.pool(truncate_min=[1,2,2,3])[0,0,0,1],
+    icepool.d12.pool(truncate_min=[1,2,2,3])[1,0,0,0],
     (3 @ icepool.d6).pool(12)[-6:],
 ]
 

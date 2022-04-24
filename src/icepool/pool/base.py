@@ -22,11 +22,11 @@ class BasePool(ABC):
         """ Returns `True` iff this is a single, fixed roll of a pool. """
     
     @abstractmethod
-    def _has_max_outcomes(self):
+    def _has_truncate_max(self):
         """ Returns `True` iff the pool has right-truncation. """
         
     @abstractmethod
-    def _has_min_outcomes(self):
+    def _has_truncate_min(self):
         """ Returns `True` iff the pool has left-truncation. """
     
     @abstractmethod

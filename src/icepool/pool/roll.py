@@ -38,10 +38,10 @@ class PoolRoll(icepool.BasePool):
     def _is_single_roll(self):
         return True
     
-    def _has_max_outcomes(self):
+    def _has_truncate_max(self):
         return False
     
-    def _has_min_outcomes(self):
+    def _has_truncate_min(self):
         return False
     
     def outcomes(self):

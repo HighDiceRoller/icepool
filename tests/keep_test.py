@@ -70,15 +70,15 @@ def test_keep_index(keep_index):
     expected = bf_keep(die, 4, keep_index)
     assert result.equals(expected)
 
-def test_max_outcomes():
+def test_truncate_max():
     die = icepool.d12
-    result = die.keep(max_outcomes=[8, 6])
+    result = die.keep(truncate_max=[8, 6])
     expected = icepool.d8 + icepool.d6
     assert result.equals(expected)
 
 def test_mixed_keep_highest():
     die = icepool.d12
-    result = die.keep_highest(max_outcomes=[8, 6, 4], num_keep=2)
+    result = die.keep_highest(truncate_max=[8, 6, 4], num_keep=2)
     def func(*outcomes):
         return sum(sorted(outcomes)[-2:])
     expected = icepool.apply(func, icepool.d8, icepool.d6, icepool.d4)
@@ -86,7 +86,7 @@ def test_mixed_keep_highest():
 
 def test_mixed_keep_lowest():
     die = -icepool.d12
-    result = -die.keep_lowest(min_outcomes=[-8, -6, -4], num_keep=2)
+    result = -die.keep_lowest(truncate_min=[-8, -6, -4], num_keep=2)
     def func(*outcomes):
         return sum(sorted(outcomes)[-2:])
     expected = icepool.apply(func, icepool.d8, icepool.d6, icepool.d4)
