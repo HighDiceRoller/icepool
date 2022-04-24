@@ -466,10 +466,10 @@
                                 <a class="function" href="#DicePool.num_drop_highest">num_drop_highest</a>
                         </li>
                         <li>
-                                <a class="function" href="#DicePool.min_outcomes">min_outcomes</a>
+                                <a class="function" href="#DicePool.truncate_min">truncate_min</a>
                         </li>
                         <li>
-                                <a class="function" href="#DicePool.max_outcomes">max_outcomes</a>
+                                <a class="function" href="#DicePool.truncate_max">truncate_max</a>
                         </li>
                         <li>
                                 <a class="function" href="#DicePool.has_counted_dice">has_counted_dice</a>
@@ -1710,52 +1710,52 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
         <span class="sd">&quot;&quot;&quot; Creates a pool from this die, as `icepool.Pool()`. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     
-    <span class="k">def</span> <span class="nf">keep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.</span>
+    <span class="k">def</span> <span class="nf">keep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly truncating the maximum outcomes, and sum some or all of the sorted results.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            count_dice: Only dice selected by this will be counted.</span>
 <span class="sd">                See `DicePool.count_dice()` for details.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">                This is not compatible with `max_outcomes`.</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
-<span class="sd">                This is not compatible with `min_outcomes`.</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">                This is not compatible with `truncate_max`.</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">                This is not compatible with `truncate_min`.</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A Die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_dice</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pool</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pool</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     
-    <span class="k">def</span> <span class="nf">keep_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.</span>
+    <span class="k">def</span> <span class="nf">keep_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly truncating the maximum outcomes, and sum the sorted results from the highest.</span>
 <span class="sd">        </span>
-<span class="sd">        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.</span>
+<span class="sd">        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should be provided.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            num_keep: The number of dice to keep.</span>
 <span class="sd">            num_drop: If provided, this many highest dice will be dropped before keeping.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">keep_highest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Faster algorithm for keeping just the single highest die. &quot;&quot;&quot;</span>
@@ -1763,29 +1763,29 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cweights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="n">num_dice</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">()),</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
     
-    <span class="k">def</span> <span class="nf">keep_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">keep_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.</span>
 <span class="sd">        </span>
-<span class="sd">        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.</span>
+<span class="sd">        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should be provided.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            num_keep: The number of dice to keep.</span>
 <span class="sd">            num_drop: If provided, this many lowest dice will be dropped before keeping.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">keep_lowest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Faster algorithm for keeping just the single lowest die. &quot;&quot;&quot;</span>
@@ -3547,31 +3547,31 @@ If not supplied, a default value will be used.</li>
     num_dice=None,
     count_dice=None,
     *,
-    min_outcomes=None,
-    max_outcomes=None
+    truncate_min=None,
+    truncate_max=None
 )</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly truncating the maximum outcomes, and sum some or all of the sorted results.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            count_dice: Only dice selected by this will be counted.</span>
 <span class="sd">                See `DicePool.count_dice()` for details.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">                This is not compatible with `max_outcomes`.</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
-<span class="sd">                This is not compatible with `min_outcomes`.</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">                This is not compatible with `truncate_max`.</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">                This is not compatible with `truncate_min`.</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A Die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_dice</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pool</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3580,7 +3580,7 @@ If not supplied, a default value will be used.</li>
 
         </details>
 
-            <div class="docstring"><p>Roll this die several times, possibly capping the maximum outcomes, and sum some or all of the sorted results.</p>
+            <div class="docstring"><p>Roll this die several times, possibly truncating the maximum outcomes, and sum some or all of the sorted results.</p>
 
 <h6 id="args">Args</h6>
 
@@ -3588,12 +3588,12 @@ If not supplied, a default value will be used.</li>
 <li><strong>num_dice:</strong>  The number of dice to roll. All dice will have the same outcomes as <code>self</code>.</li>
 <li><strong>count_dice:</strong>  Only dice selected by this will be counted.
 See <code><a href="#DicePool.count_dice">DicePool.count_dice()</a></code> for details.</li>
-<li><strong>min_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
-This is not compatible with <code>max_outcomes</code>.</li>
-<li><strong>max_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
-This is not compatible with <code>min_outcomes</code>.</li>
+<li><strong>truncate_min:</strong>  A sequence of one outcome per die.
+That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).
+This is not compatible with <code>truncate_max</code>.</li>
+<li><strong>truncate_max:</strong>  A sequence of one outcome per die.
+That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).
+This is not compatible with <code>truncate_min</code>.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -3616,43 +3616,43 @@ This is not compatible with <code>min_outcomes</code>.</li>
     num_keep=1,
     num_drop=0,
     *,
-    min_outcomes=None,
-    max_outcomes=None
+    truncate_min=None,
+    truncate_max=None
 )</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly truncating the maximum outcomes, and sum the sorted results from the highest.</span>
 <span class="sd">        </span>
-<span class="sd">        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.</span>
+<span class="sd">        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should be provided.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            num_keep: The number of dice to keep.</span>
 <span class="sd">            num_drop: If provided, this many highest dice will be dropped before keeping.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the highest.</p>
+            <div class="docstring"><p>Roll this die several times, possibly truncating the maximum outcomes, and sum the sorted results from the highest.</p>
 
-<p>Exactly one out of <code>num_dice</code>, <code>min_outcomes</code>, and <code>max_outcomes</code> should be provided.</p>
+<p>Exactly one out of <code>num_dice</code>, <code>truncate_min</code>, and <code>truncate_max</code> should be provided.</p>
 
 <h6 id="args">Args</h6>
 
@@ -3660,10 +3660,10 @@ This is not compatible with <code>min_outcomes</code>.</li>
 <li><strong>num_dice:</strong>  The number of dice to roll. All dice will have the same outcomes as <code>self</code>.</li>
 <li><strong>num_keep:</strong>  The number of dice to keep.</li>
 <li><strong>num_drop:</strong>  If provided, this many highest dice will be dropped before keeping.</li>
-<li><strong>min_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</li>
-<li><strong>max_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</li>
+<li><strong>truncate_min:</strong>  A sequence of one outcome per die.
+That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</li>
+<li><strong>truncate_max:</strong>  A sequence of one outcome per die.
+That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -3710,43 +3710,43 @@ That die will be limited to that maximum outcome, with all higher outcomes being
     num_keep=1,
     num_drop=0,
     *,
-    min_outcomes=None,
-    max_outcomes=None
+    truncate_min=None,
+    truncate_max=None
 )</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">keep_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_keep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.</span>
 <span class="sd">        </span>
-<span class="sd">        Exactly one out of `num_dice`, `min_outcomes`, and `max_outcomes` should be provided.</span>
+<span class="sd">        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should be provided.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_dice: The number of dice to roll. All dice will have the same outcomes as `self`.</span>
 <span class="sd">            num_keep: The number of dice to keep.</span>
 <span class="sd">            num_drop: If provided, this many lowest dice will be dropped before keeping.</span>
-<span class="sd">            min_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
-<span class="sd">            max_outcomes: A sequence of one outcome per die.</span>
-<span class="sd">                That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_min: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</span>
+<span class="sd">            truncate_max: A sequence of one outcome per die.</span>
+<span class="sd">                That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</span>
 <span class="sd">                </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the probability distribution of the sum.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">max_outcomes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">(</span><span class="n">num_dice</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Roll this die several times, possibly capping the maximum outcomes, and sum the sorted results from the lowest.</p>
 
-<p>Exactly one out of <code>num_dice</code>, <code>min_outcomes</code>, and <code>max_outcomes</code> should be provided.</p>
+<p>Exactly one out of <code>num_dice</code>, <code>truncate_min</code>, and <code>truncate_max</code> should be provided.</p>
 
 <h6 id="args">Args</h6>
 
@@ -3754,10 +3754,10 @@ That die will be limited to that maximum outcome, with all higher outcomes being
 <li><strong>num_dice:</strong>  The number of dice to roll. All dice will have the same outcomes as <code>self</code>.</li>
 <li><strong>num_keep:</strong>  The number of dice to keep.</li>
 <li><strong>num_drop:</strong>  If provided, this many lowest dice will be dropped before keeping.</li>
-<li><strong>min_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</li>
-<li><strong>max_outcomes:</strong>  A sequence of one outcome per die.
-That die will be limited to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</li>
+<li><strong>truncate_min:</strong>  A sequence of one outcome per die.
+That die will be truncated to that minimum outcome, with all lower outcomes being removed (i.e. rerolled).</li>
+<li><strong>truncate_max:</strong>  A sequence of one outcome per die.
+That die will be truncated to that maximum outcome, with all higher outcomes being removed (i.e. rerolled).</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -6319,11 +6319,11 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
         <span class="sd">&quot;&quot;&quot; Returns `True` iff this is a single, fixed roll of a pool. &quot;&quot;&quot;</span>
     
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_has_max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_has_truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has right-truncation. &quot;&quot;&quot;</span>
         
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_has_min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_has_truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has left-truncation. &quot;&quot;&quot;</span>
     
     <span class="nd">@abstractmethod</span>
@@ -6516,14 +6516,14 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
     num_dice=None,
     count_dice=None,
     *,
-    min_outcomes=None,
-    max_outcomes=None
+    truncate_min=None,
+    truncate_max=None
 )</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">Pool</span><span class="p">(</span><span class="n">die</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">Pool</span><span class="p">(</span><span class="n">die</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Factory function for `DicePool`.</span>
 <span class="sd">    </span>
 <span class="sd">    This should be used in conjunction with `EvalPool` to generate a result.</span>
@@ -6539,7 +6539,7 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
 <span class="sd">        die: The fundamental die of the pool.</span>
-<span class="sd">            If outcomes are not reachable by any die due to `min_outcomes` or `max_outcomes`,</span>
+<span class="sd">            If outcomes are not reachable by any die due to `truncate_min` or `truncate_max`,</span>
 <span class="sd">            they will have 0 count. Zero-weight outcomes will appear with zero weight,</span>
 <span class="sd">            but can still generate nonzero counts.</span>
 <span class="sd">        num_dice: An `int` that sets the number of dice in the pool.</span>
@@ -6549,32 +6549,33 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 <span class="sd">            Prefer to use the `DicePool`&#39;s `[]` operator after the fact rather than providing an argument here.</span>
 <span class="sd">            This operator is an alias for `DicePool.set_count_dice()`.</span>
 <span class="sd">            See that method&#39;s docstring for details.</span>
-<span class="sd">        max_outcomes: A sequence of one outcome per die in the pool.</span>
-<span class="sd">            That die will be limited to that maximum outcome, with all greater outcomes having 0 count.</span>
+<span class="sd">        truncate_max: A sequence of one outcome per die in the pool.</span>
+<span class="sd">            That die will be truncated to that maximum outcome, with all greater outcomes having 0 count.</span>
 <span class="sd">            Values cannot be &gt; the `max_outcome` of the fundamental die.</span>
-<span class="sd">            A pool cannot limit both `min_outcomes` and `max_outcomes`.</span>
+<span class="sd">            A pool cannot have both `truncate_min` and `truncate_max`.</span>
 <span class="sd">            This can be used to efficiently roll a set of mixed standard dice.</span>
-<span class="sd">            For example, `Pool(icepool.d12, max_outcomes=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.</span>
-<span class="sd">        min_outcomes: A sequence of one outcome per die in the pool.</span>
-<span class="sd">            That die will be limited to that minimum outcome, with all lesser outcomes having 0 count.</span>
+<span class="sd">            For example, `Pool(icepool.d12, truncate_max=[6, 6, 6, 8, 8])` would be a pool of 3d6 and 2d8.</span>
+<span class="sd">        truncate_min: A sequence of one outcome per die in the pool.</span>
+<span class="sd">            That die will be truncated to that minimum outcome, with all lesser outcomes having 0 count.</span>
 <span class="sd">            Values cannot be &lt; the `min_outcome` of the fundamental die.</span>
-<span class="sd">            A pool cannot limit both `min_outcomes` and `max_outcomes`.</span>
+<span class="sd">            A pool cannot have both `truncate_min` and `truncate_max`.</span>
 <span class="sd">    </span>
 <span class="sd">    Raises:</span>
-<span class="sd">        `ValueError` if arguments result in a conflicting number of dice, </span>
-<span class="sd">            or if `max_outcome` or `min_outcome` fall outside the range of the die.</span>
+<span class="sd">        `ValueError` if arguments result in a conflicting number of dice,</span>
+<span class="sd">        if both `truncate_min` and `truncate_max` are provided,</span>
+<span class="sd">        or if truncation would produce an empty die.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">if</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A pool cannot limit both min_outcomes and max_outcomes.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A pool cannot have both truncate_min and truncate_max.&#39;</span><span class="p">)</span>
     
     <span class="c1"># Compute num_dice and count_dice.</span>
     
-    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="p">(</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="p">(</span><span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">num_dice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_dice</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Conflicting values for the number of dice: &#39;</span> <span class="o">+</span>
-                    <span class="sa">f</span><span class="s1">&#39;num_dice=</span><span class="si">{</span><span class="n">num_dice</span><span class="si">}</span><span class="s1">, min_outcomes=</span><span class="si">{</span><span class="n">min_outcomes</span><span class="si">}</span><span class="s1">, max_outcomes=</span><span class="si">{</span><span class="n">max_outcomes</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s1">&#39;num_dice=</span><span class="si">{</span><span class="n">num_dice</span><span class="si">}</span><span class="s1">, truncate_min=</span><span class="si">{</span><span class="n">truncate_min</span><span class="si">}</span><span class="s1">, truncate_max=</span><span class="si">{</span><span class="n">truncate_max</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">num_dice</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
     
@@ -6590,34 +6591,34 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">count_dice</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_dice</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The length of count_dice=</span><span class="si">{</span><span class="n">count_dice</span><span class="si">}</span><span class="s1"> conflicts with num_dice=</span><span class="si">{</span><span class="n">num_dice</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
     
-    <span class="c1"># Put max/min outcomes into standard form.</span>
+    <span class="c1"># Put truncation into standard form.</span>
     <span class="c1"># This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.</span>
     <span class="c1"># Values will also be clipped to the range of the fundamental die.</span>
     
     <span class="k">if</span> <span class="n">num_dice</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">min_outcomes</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">max_outcomes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">truncate_min</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">truncate_max</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">min_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_outcomes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_outcomes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;min_outcomes cannot be &lt; the min_outcome of the die.&#39;</span><span class="p">)</span>
-                <span class="c1"># We can&#39;t trim the die to min_outcomes since it may upset the iteration order.</span>
-                <span class="n">min_outcomes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">nearest_ge</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">min_outcomes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">truncate_min</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">truncate_min</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;truncate_min cannot be &lt; the min_outcome of the die.&#39;</span><span class="p">)</span>
+                <span class="c1"># We can&#39;t truncate the die to truncate_min since it may upset the iteration order.</span>
+                <span class="n">truncate_min</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">nearest_ge</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">truncate_min</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># In this case, the min_outcomes don&#39;t actually do anything.</span>
-                <span class="n">min_outcomes</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">max_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_outcomes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_outcomes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;max_outcomes cannot be &gt; the max_outcome of the die.&#39;</span><span class="p">)</span>
-                <span class="c1"># We can&#39;t trim the die to max_outcomes since it may upset the iteration order.</span>
-                <span class="n">max_outcomes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">nearest_le</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">max_outcomes</span><span class="p">))</span>
+                <span class="c1"># In this case, the truncate_min don&#39;t actually do anything.</span>
+                <span class="n">truncate_min</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">truncate_max</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">truncate_max</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;truncate_max cannot be &gt; the max_outcome of the die.&#39;</span><span class="p">)</span>
+                <span class="c1"># We can&#39;t truncate the die to truncate_max since it may upset the iteration order.</span>
+                <span class="n">truncate_max</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">nearest_le</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">truncate_max</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># In this case, the max_outcomes don&#39;t actually do anything.</span>
-                <span class="n">max_outcomes</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="c1"># In this case, the truncate_max don&#39;t actually do anything.</span>
+                <span class="n">truncate_max</span> <span class="o">=</span> <span class="kc">None</span>
     
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">convert_to_die</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="k">lambda</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="n">outcome</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="n">state</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -6643,7 +6644,7 @@ The name of the actual class is <code><a href="#DicePool">DicePool</a></code>.</
 
 <ul>
 <li><strong>die:</strong>  The fundamental die of the pool.
-If outcomes are not reachable by any die due to <code>min_outcomes</code> or <code>max_outcomes</code>,
+If outcomes are not reachable by any die due to <code>truncate_min</code> or <code>truncate_max</code>,
 they will have 0 count. Zero-weight outcomes will appear with zero weight,
 but can still generate nonzero counts.</li>
 <li><strong>num_dice:</strong>  An <code>int</code> that sets the number of dice in the pool.
@@ -6653,23 +6654,24 @@ If no arguments are provided at all, this defaults to 0.</li>
 Prefer to use the <code><a href="#DicePool">DicePool</a></code>'s <code>[]</code> operator after the fact rather than providing an argument here.
 This operator is an alias for <code><a href="#DicePool.set_count_dice">DicePool.set_count_dice()</a></code>.
 See that method's docstring for details.</li>
-<li><strong>max_outcomes:</strong>  A sequence of one outcome per die in the pool.
-That die will be limited to that maximum outcome, with all greater outcomes having 0 count.
+<li><strong>truncate_max:</strong>  A sequence of one outcome per die in the pool.
+That die will be truncated to that maximum outcome, with all greater outcomes having 0 count.
 Values cannot be &gt; the <code><a href="#max_outcome">max_outcome</a></code> of the fundamental die.
-A pool cannot limit both <code>min_outcomes</code> and <code>max_outcomes</code>.
+A pool cannot have both <code>truncate_min</code> and <code>truncate_max</code>.
 This can be used to efficiently roll a set of mixed standard dice.
-For example, <code>Pool(<a href="#d12">icepool.d12</a>, max_outcomes=[6, 6, 6, 8, 8])</code> would be a pool of 3d6 and 2d8.</li>
-<li><strong>min_outcomes:</strong>  A sequence of one outcome per die in the pool.
-That die will be limited to that minimum outcome, with all lesser outcomes having 0 count.
+For example, <code>Pool(<a href="#d12">icepool.d12</a>, truncate_max=[6, 6, 6, 8, 8])</code> would be a pool of 3d6 and 2d8.</li>
+<li><strong>truncate_min:</strong>  A sequence of one outcome per die in the pool.
+That die will be truncated to that minimum outcome, with all lesser outcomes having 0 count.
 Values cannot be &lt; the <code><a href="#min_outcome">min_outcome</a></code> of the fundamental die.
-A pool cannot limit both <code>min_outcomes</code> and <code>max_outcomes</code>.</li>
+A pool cannot have both <code>truncate_min</code> and <code>truncate_max</code>.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><code>ValueError</code> if arguments result in a conflicting number of dice, 
-or if <code><a href="#max_outcome">max_outcome</a></code> or <code><a href="#min_outcome">min_outcome</a></code> fall outside the range of the die.</li>
+<li><code>ValueError</code> if arguments result in a conflicting number of dice,</li>
+<li>if both <code>truncate_min</code> and <code>truncate_max</code> are provided,</li>
+<li>or if truncation would produce an empty die.</li>
 </ul>
 </div>
 
@@ -6701,7 +6703,7 @@ or if <code><a href="#max_outcome">max_outcome</a></code> or <code><a href="#min
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d1</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">)),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">die_sizes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">)),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">die_sizes</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -6749,7 +6751,7 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        relative to the fundamental die.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Unchecked constructor.</span>
 <span class="sd">        </span>
 <span class="sd">        This should not be used directly. Use the `Pool()` factory function instead.</span>
@@ -6757,13 +6759,13 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        Args:</span>
 <span class="sd">            die: The fundamental die of the pool.</span>
 <span class="sd">            count_dice: At this point, this should be a tuple the length of the pool.</span>
-<span class="sd">            max_outcomes: At this point this should be a tuple the length of the pool or `None`.</span>
-<span class="sd">            min_outcomes: At this point this should be a tuple the length of the pool or `None`.</span>
+<span class="sd">            truncate_max: At this point this should be a tuple the length of the pool or `None`.</span>
+<span class="sd">            truncate_min: At this point this should be a tuple the length of the pool or `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_die</span> <span class="o">=</span> <span class="n">die</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count_dice</span> <span class="o">=</span> <span class="n">count_dice</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="o">=</span> <span class="n">max_outcomes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="o">=</span> <span class="n">min_outcomes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span> <span class="o">=</span> <span class="n">truncate_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span> <span class="o">=</span> <span class="n">truncate_min</span>
     
     <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -6808,10 +6810,10 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">            A `slice`. The selected dice are counted once each.</span>
 <span class="sd">                If provided, the third argument resizes the pool,</span>
 <span class="sd">                rather than being a step,</span>
-<span class="sd">                but only if the pool does not have `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                but only if the pool does not have `truncate_max` or `truncate_min`.</span>
 <span class="sd">            A sequence of one `int`s for each die.</span>
 <span class="sd">                Each die is counted that many times, which could be multiple or negative times.</span>
-<span class="sd">                This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                This may resize the pool, but only if the pool does not have `truncate_max` or `truncate_min`.</span>
 <span class="sd">                </span>
 <span class="sd">                Up to one `Ellipsis` (`...`) may be used.</span>
 <span class="sd">                If an `Ellipsis` is used, the size of the pool won&#39;t change. Instead:</span>
@@ -6832,7 +6834,7 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError:</span>
 <span class="sd">            </span>
-<span class="sd">                * If `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                * If `count_dice` would change the size of a pool with `truncate_max` or `truncate_min`.</span>
 <span class="sd">                * If more than one `Ellipsis` is used.</span>
 <span class="sd">        </span>
 <span class="sd">        For example, here are some ways of selecting the two highest dice out of 5:</span>
@@ -6857,11 +6859,11 @@ of 2 d8s and 3 d6s.</li>
         <span class="n">convert_to_die</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_dice</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="n">count_dice_tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">(),</span> <span class="n">count_dice</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">count_dice</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with max_outcomes.&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with min_outcomes.&#39;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">(),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(),</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with truncate_max.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with truncate_min.&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">(),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">(),</span> <span class="n">truncate_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">convert_to_die</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="k">lambda</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="n">outcome</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="n">state</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -6894,33 +6896,33 @@ of 2 d8s and 3 d6s.</li>
         <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the high side have a false truth value. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_highest</span>
     
-    <span class="k">def</span> <span class="nf">min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A tuple of sorted min outcomes, one for each die in the pool. </span>
+    <span class="k">def</span> <span class="nf">truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. </span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `min_outcomes`.</span>
+<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `truncate_min`.</span>
 <span class="sd">                If `True` this will return a `tuple` even in this case.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span>
     
-    <span class="k">def</span> <span class="nf">_has_min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_has_truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     
-    <span class="k">def</span> <span class="nf">max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A tuple of sorted max outcomes, one for each die in the pool. </span>
+    <span class="k">def</span> <span class="nf">truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool. </span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `max_outcomes`.</span>
+<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `truncate_max`.</span>
 <span class="sd">                If `True` this will return a `tuple` even in this case.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span>
     
-    <span class="k">def</span> <span class="nf">_has_max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_has_truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     
     <span class="k">def</span> <span class="nf">_iter_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -6935,10 +6937,10 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="c1"># The near-duplication of code with pop_max is unfortunate.</span>
-        <span class="c1"># However, the alternative of reversing the storage order of die_counts and min_outcomes seems even worse.</span>
+        <span class="c1"># However, the alternative of reversing the storage order of die_counts and truncate_min seems even worse.</span>
         
-        <span class="n">min_outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">min_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">())</span>
+        <span class="n">truncate_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">truncate_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">())</span>
         <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">_pop_min</span><span class="p">()</span>
         
         <span class="k">if</span> <span class="n">popped_die</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
@@ -6950,21 +6952,21 @@ of 2 d8s and 3 d6s.</li>
             <span class="k">return</span>
         
         <span class="c1"># Consider various numbers of dice rolling this outcome.</span>
-        <span class="n">popped_min_outcomes</span> <span class="o">=</span> <span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="n">num_possible_dice</span> <span class="o">+</span> <span class="n">min_outcomes</span><span class="p">[</span><span class="n">num_possible_dice</span><span class="p">:]</span>
+        <span class="n">popped_truncate_min</span> <span class="o">=</span> <span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="n">num_possible_dice</span> <span class="o">+</span> <span class="n">truncate_min</span><span class="p">[</span><span class="n">num_possible_dice</span><span class="p">:]</span>
         <span class="n">popped_count_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         
         <span class="n">comb_row</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb_row</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">single_weight</span><span class="p">)</span>
         <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_drop_highest</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">end_counted</span><span class="p">)]:</span>
-            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">popped_min_outcomes</span><span class="p">)</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">popped_truncate_min</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="n">popped_count_dice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">popped_min_outcomes</span> <span class="o">=</span> <span class="n">popped_min_outcomes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">popped_truncate_min</span> <span class="o">=</span> <span class="n">popped_truncate_min</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="n">popped_count_dice</span> <span class="o">=</span> <span class="n">popped_count_dice</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         
         <span class="k">if</span> <span class="n">end_counted</span> <span class="o">&gt;</span> <span class="n">num_possible_dice</span><span class="p">:</span>
-            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="n">popped_min_outcomes</span><span class="p">)</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">popped_truncate_min</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">comb_row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># In this case, we ran out of counted dice before running out of dice that could roll the outcome.</span>
@@ -6973,7 +6975,7 @@ of 2 d8s and 3 d6s.</li>
             <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[</span><span class="n">end_counted</span><span class="p">:]:</span>
                 <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">popped_die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
                 <span class="n">skip_weight</span> <span class="o">+=</span> <span class="n">weight</span>
-            <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">weight_ge</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">min_outcome</span> <span class="ow">in</span> <span class="n">min_outcomes</span><span class="p">[</span><span class="n">num_possible_dice</span><span class="p">:])</span>
+            <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">weight_ge</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">min_outcome</span> <span class="ow">in</span> <span class="n">truncate_min</span><span class="p">[</span><span class="n">num_possible_dice</span><span class="p">:])</span>
             <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="p">())</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">skip_weight</span>
     
@@ -6988,8 +6990,8 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">            * count: An `int` indicating the number of selected dice that rolled the removed outcome.</span>
 <span class="sd">            * weight: An `int` indicating the weight of that many dice rolling the removed outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">max_outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="n">max_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">())</span>
+        <span class="n">truncate_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">(</span><span class="n">always_tuple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">num_possible_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="n">truncate_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">())</span>
         <span class="n">num_unused_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="n">num_possible_dice</span>
         <span class="n">popped_die</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">single_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">_pop_max</span><span class="p">()</span>
         
@@ -7002,21 +7004,21 @@ of 2 d8s and 3 d6s.</li>
             <span class="k">return</span>
         
         <span class="c1"># Consider various numbers of dice rolling this outcome.</span>
-        <span class="n">popped_max_outcomes</span> <span class="o">=</span> <span class="n">max_outcomes</span><span class="p">[:</span><span class="n">num_unused_dice</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="n">num_possible_dice</span>
+        <span class="n">popped_truncate_max</span> <span class="o">=</span> <span class="n">truncate_max</span><span class="p">[:</span><span class="n">num_unused_dice</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="n">num_possible_dice</span>
         <span class="n">popped_count_dice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         
         <span class="n">comb_row</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb_row</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">single_weight</span><span class="p">)</span>
         <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">end_counted</span><span class="p">)]:</span>
-            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">popped_max_outcomes</span><span class="p">)</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">popped_truncate_max</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="n">popped_count_dice</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">popped_max_outcomes</span> <span class="o">=</span> <span class="n">popped_max_outcomes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">popped_truncate_max</span> <span class="o">=</span> <span class="n">popped_truncate_max</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">popped_count_dice</span> <span class="o">=</span> <span class="n">popped_count_dice</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
         <span class="k">if</span> <span class="n">end_counted</span> <span class="o">&gt;</span> <span class="n">num_possible_dice</span><span class="p">:</span>
-            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="n">popped_max_outcomes</span><span class="p">)</span>
+            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">popped_truncate_max</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">comb_row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># In this case, we ran out of counted dice before running out of dice that could roll the outcome.</span>
@@ -7025,14 +7027,14 @@ of 2 d8s and 3 d6s.</li>
             <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[</span><span class="n">end_counted</span><span class="p">:]:</span>
                 <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">popped_die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
                 <span class="n">skip_weight</span> <span class="o">+=</span> <span class="n">weight</span>
-            <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">weight_le</span><span class="p">(</span><span class="n">max_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="n">max_outcomes</span><span class="p">[:</span><span class="n">num_unused_dice</span><span class="p">])</span>
+            <span class="n">skip_weight</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">popped_die</span><span class="o">.</span><span class="n">weight_le</span><span class="p">(</span><span class="n">max_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="n">truncate_max</span><span class="p">[:</span><span class="n">num_unused_dice</span><span class="p">])</span>
             <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="p">())</span>
             <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">skip_weight</span>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_min is not valid with min_outcomes.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_min is not valid with truncate_min.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_pop_min</span><span class="p">())</span>
     
     <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -7043,8 +7045,8 @@ of 2 d8s and 3 d6s.</li>
         
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_max is not valid with min_outcomes.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pop_max is not valid with truncate_min.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter_pop_max</span><span class="p">())</span>
     
     <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -7067,7 +7069,7 @@ of 2 d8s and 3 d6s.</li>
 <span class="sd">            A dict mapping outcomes to counts representing a single roll of this pool.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
             <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">)</span>
             <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
@@ -7078,7 +7080,7 @@ of 2 d8s and 3 d6s.</li>
     
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">DicePool</span><span class="p">):</span> <span class="k">return</span> <span class="kc">False</span>
@@ -7092,7 +7094,7 @@ of 2 d8s and 3 d6s.</li>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">())])</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">())])</span>
 </pre></div>
 
         </details>
@@ -7116,12 +7118,12 @@ relative to the fundamental die.</li>
                                         <div class="attr function"><a class="headerlink" href="#DicePool.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">DicePool</span><span class="signature">(die, count_dice, *, min_outcomes, max_outcomes)</span>
+            <span class="name">DicePool</span><span class="signature">(die, count_dice, *, truncate_min, truncate_max)</span>
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">min_outcomes</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">truncate_min</span><span class="p">,</span> <span class="n">truncate_max</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Unchecked constructor.</span>
 <span class="sd">        </span>
 <span class="sd">        This should not be used directly. Use the `Pool()` factory function instead.</span>
@@ -7129,13 +7131,13 @@ relative to the fundamental die.</li>
 <span class="sd">        Args:</span>
 <span class="sd">            die: The fundamental die of the pool.</span>
 <span class="sd">            count_dice: At this point, this should be a tuple the length of the pool.</span>
-<span class="sd">            max_outcomes: At this point this should be a tuple the length of the pool or `None`.</span>
-<span class="sd">            min_outcomes: At this point this should be a tuple the length of the pool or `None`.</span>
+<span class="sd">            truncate_max: At this point this should be a tuple the length of the pool or `None`.</span>
+<span class="sd">            truncate_min: At this point this should be a tuple the length of the pool or `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_die</span> <span class="o">=</span> <span class="n">die</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count_dice</span> <span class="o">=</span> <span class="n">count_dice</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="o">=</span> <span class="n">max_outcomes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="o">=</span> <span class="n">min_outcomes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span> <span class="o">=</span> <span class="n">truncate_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span> <span class="o">=</span> <span class="n">truncate_min</span>
 </pre></div>
 
         </details>
@@ -7149,8 +7151,8 @@ relative to the fundamental die.</li>
 <ul>
 <li><strong>die:</strong>  The fundamental die of the pool.</li>
 <li><strong>count_dice:</strong>  At this point, this should be a tuple the length of the pool.</li>
-<li><strong>max_outcomes:</strong>  At this point this should be a tuple the length of the pool or <code>None</code>.</li>
-<li><strong>min_outcomes:</strong>  At this point this should be a tuple the length of the pool or <code>None</code>.</li>
+<li><strong>truncate_max:</strong>  At this point this should be a tuple the length of the pool or <code>None</code>.</li>
+<li><strong>truncate_min:</strong>  At this point this should be a tuple the length of the pool or <code>None</code>.</li>
 </ul>
 </div>
 
@@ -7272,10 +7274,10 @@ relative to the fundamental die.</li>
 <span class="sd">            A `slice`. The selected dice are counted once each.</span>
 <span class="sd">                If provided, the third argument resizes the pool,</span>
 <span class="sd">                rather than being a step,</span>
-<span class="sd">                but only if the pool does not have `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                but only if the pool does not have `truncate_max` or `truncate_min`.</span>
 <span class="sd">            A sequence of one `int`s for each die.</span>
 <span class="sd">                Each die is counted that many times, which could be multiple or negative times.</span>
-<span class="sd">                This may resize the pool, but only if the pool does not have `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                This may resize the pool, but only if the pool does not have `truncate_max` or `truncate_min`.</span>
 <span class="sd">                </span>
 <span class="sd">                Up to one `Ellipsis` (`...`) may be used.</span>
 <span class="sd">                If an `Ellipsis` is used, the size of the pool won&#39;t change. Instead:</span>
@@ -7296,7 +7298,7 @@ relative to the fundamental die.</li>
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError:</span>
 <span class="sd">            </span>
-<span class="sd">                * If `count_dice` would change the size of a pool with `max_outcomes` or `min_outcomes`.</span>
+<span class="sd">                * If `count_dice` would change the size of a pool with `truncate_max` or `truncate_min`.</span>
 <span class="sd">                * If more than one `Ellipsis` is used.</span>
 <span class="sd">        </span>
 <span class="sd">        For example, here are some ways of selecting the two highest dice out of 5:</span>
@@ -7321,11 +7323,11 @@ relative to the fundamental die.</li>
         <span class="n">convert_to_die</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_dice</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
         <span class="n">count_dice</span> <span class="o">=</span> <span class="n">count_dice_tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">(),</span> <span class="n">count_dice</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">count_dice</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with max_outcomes.&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with min_outcomes.&#39;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">(),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">max_outcomes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(),</span> <span class="n">min_outcomes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with truncate_max.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot change the size of a pool with truncate_min.&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">(),</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">(),</span> <span class="n">truncate_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">convert_to_die</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="k">lambda</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="n">outcome</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="n">state</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -7354,10 +7356,10 @@ In this case, the result will be a die, not a pool.</li>
 <li>A <code>slice</code>. The selected dice are counted once each.
 If provided, the third argument resizes the pool,
 rather than being a step,
-but only if the pool does not have <code><a href="#DicePool.max_outcomes">max_outcomes</a></code> or <code><a href="#DicePool.min_outcomes">min_outcomes</a></code>.</li>
+but only if the pool does not have <code><a href="#DicePool.truncate_max">truncate_max</a></code> or <code><a href="#DicePool.truncate_min">truncate_min</a></code>.</li>
 <li><p>A sequence of one <code>int</code>s for each die.
 Each die is counted that many times, which could be multiple or negative times.
-This may resize the pool, but only if the pool does not have <code><a href="#DicePool.max_outcomes">max_outcomes</a></code> or <code><a href="#DicePool.min_outcomes">min_outcomes</a></code>.</p>
+This may resize the pool, but only if the pool does not have <code><a href="#DicePool.truncate_max">truncate_max</a></code> or <code><a href="#DicePool.truncate_min">truncate_min</a></code>.</p>
 
 <p>Up to one <code>Ellipsis</code> (<code>...</code>) may be used.
 If an <code>Ellipsis</code> is used, the size of the pool won't change. Instead:</p>
@@ -7381,7 +7383,7 @@ On a pool consisting of a single single die this would have the -1 and 1 cancel 
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>ValueError:</strong>   * If <code><a href="#DicePool.count_dice">count_dice</a></code> would change the size of a pool with <code><a href="#DicePool.max_outcomes">max_outcomes</a></code> or <code><a href="#DicePool.min_outcomes">min_outcomes</a></code>.
+<li><strong>ValueError:</strong>   * If <code><a href="#DicePool.count_dice">count_dice</a></code> would change the size of a pool with <code><a href="#DicePool.truncate_max">truncate_max</a></code> or <code><a href="#DicePool.truncate_min">truncate_min</a></code>.
 <ul>
 <li>If more than one <code>Ellipsis</code> is used.</li>
 </ul></li>
@@ -7459,72 +7461,72 @@ On a pool consisting of a single single die this would have the -1 and 1 cancel 
 
 
                             </div>
-                            <div id="DicePool.min_outcomes" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.min_outcomes">#&nbsp;&nbsp</a>
+                            <div id="DicePool.truncate_min" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DicePool.truncate_min">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">min_outcomes</span><span class="signature">(self, always_tuple=False)</span>:
+            <span class="name">truncate_min</span><span class="signature">(self, always_tuple=False)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">min_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A tuple of sorted min outcomes, one for each die in the pool. </span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. </span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `min_outcomes`.</span>
+<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `truncate_min`.</span>
 <span class="sd">                If `True` this will return a `tuple` even in this case.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_outcomes</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_min</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A tuple of sorted min outcomes, one for each die in the pool. </p>
+            <div class="docstring"><p>A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. </p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>always_tuple:</strong>  If <code>False</code>, this will return <code>None</code> if there are no die-specific <code><a href="#DicePool.min_outcomes">min_outcomes</a></code>.
+<li><strong>always_tuple:</strong>  If <code>False</code>, this will return <code>None</code> if there are no die-specific <code><a href="#DicePool.truncate_min">truncate_min</a></code>.
 If <code>True</code> this will return a <code>tuple</code> even in this case.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="DicePool.max_outcomes" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.max_outcomes">#&nbsp;&nbsp</a>
+                            <div id="DicePool.truncate_max" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#DicePool.truncate_max">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">max_outcomes</span><span class="signature">(self, always_tuple=False)</span>:
+            <span class="name">truncate_max</span><span class="signature">(self, always_tuple=False)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">max_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A tuple of sorted max outcomes, one for each die in the pool. </span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool. </span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `max_outcomes`.</span>
+<span class="sd">            always_tuple: If `False`, this will return `None` if there are no die-specific `truncate_max`.</span>
 <span class="sd">                If `True` this will return a `tuple` even in this case.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">always_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(),)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_outcomes</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truncate_max</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A tuple of sorted max outcomes, one for each die in the pool. </p>
+            <div class="docstring"><p>A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool. </p>
 
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>always_tuple:</strong>  If <code>False</code>, this will return <code>None</code> if there are no die-specific <code><a href="#DicePool.max_outcomes">max_outcomes</a></code>.
+<li><strong>always_tuple:</strong>  If <code>False</code>, this will return <code>None</code> if there are no die-specific <code><a href="#DicePool.truncate_max">truncate_max</a></code>.
 If <code>True</code> this will return a <code>tuple</code> even in this case.</li>
 </ul>
 </div>
@@ -7575,7 +7577,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">            A dict mapping outcomes to counts representing a single roll of this pool.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcomes</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">truncate_min</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate_max</span><span class="p">(</span><span class="kc">True</span><span class="p">)):</span>
             <span class="n">die</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">die</span><span class="p">()</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">)</span>
             <span class="n">raw_rolls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
         <span class="n">raw_rolls</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">raw_rolls</span><span class="p">)</span>
@@ -7706,8 +7708,8 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
     <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Optional function to determine the direction in which `next_state()` will see outcomes.</span>
 <span class="sd">        </span>
-<span class="sd">        Note that an ascending (&gt; 0) direction is not compatible with pools with `min_outcomes`,</span>
-<span class="sd">        and a descending (&lt; 0) direction is not compatible with pools with `max_outcomes`.</span>
+<span class="sd">        Note that an ascending (&gt; 0) direction is not compatible with pools with `truncate_min`,</span>
+<span class="sd">        and a descending (&lt; 0) direction is not compatible with pools with `truncate_max`.</span>
 
 <span class="sd">        The default is ascending order.</span>
 <span class="sd">        </span>
@@ -7761,7 +7763,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 <span class="sd">                Most evaluators will expect a fixed number of pools.</span>
 <span class="sd">                The outcomes of the pools must be mutually comparable.</span>
-<span class="sd">                Pools with `min_outcomes` and pools with `max_outcomes` are not compatible.</span>
+<span class="sd">                Pools with `truncate_min` and pools with `truncate_max` are not compatible.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the distribution of the final score.</span>
@@ -7821,18 +7823,18 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 <span class="sd">                1 for ascending and -1 for descending.</span>
 <span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">has_min_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_min_outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
-        <span class="n">has_max_outcomes</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_max_outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+        <span class="n">has_truncate_min</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_truncate_min</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+        <span class="n">has_truncate_max</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_has_truncate_max</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">has_min_outcomes</span> <span class="ow">and</span> <span class="n">has_max_outcomes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A set of pools cannot be evaluated if they have both min_outcomes and max_outcomes.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_truncate_min</span> <span class="ow">and</span> <span class="n">has_truncate_max</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A set of pools cannot be evaluated if they have both truncate_min and truncate_max.&#39;</span><span class="p">)</span>
         
         <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span><span class="o">*</span><span class="n">pools</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="n">direction</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">has_max_outcomes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">has_truncate_max</span><span class="p">:</span>
                 <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">has_min_outcomes</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">has_truncate_min</span><span class="p">:</span>
                 <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
             <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
                 <span class="n">num_drop_lowest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">())</span>
@@ -7844,7 +7846,7 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
         
-        <span class="k">if</span> <span class="n">direction</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_min_outcomes</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_max_outcomes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_min</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_max</span><span class="p">:</span>
             <span class="c1"># Forced onto the less-preferred algorithm.</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal_iterative</span><span class="p">,</span> <span class="n">direction</span>
         <span class="k">else</span><span class="p">:</span>
@@ -8102,8 +8104,8 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Optional function to determine the direction in which `next_state()` will see outcomes.</span>
 <span class="sd">        </span>
-<span class="sd">        Note that an ascending (&gt; 0) direction is not compatible with pools with `min_outcomes`,</span>
-<span class="sd">        and a descending (&lt; 0) direction is not compatible with pools with `max_outcomes`.</span>
+<span class="sd">        Note that an ascending (&gt; 0) direction is not compatible with pools with `truncate_min`,</span>
+<span class="sd">        and a descending (&lt; 0) direction is not compatible with pools with `truncate_max`.</span>
 
 <span class="sd">        The default is ascending order.</span>
 <span class="sd">        </span>
@@ -8125,8 +8127,8 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <div class="docstring"><p>Optional function to determine the direction in which <code><a href="#EvalPool.next_state">next_state()</a></code> will see outcomes.</p>
 
-<p>Note that an ascending (&gt; 0) direction is not compatible with pools with <code>min_outcomes</code>,
-and a descending (&lt; 0) direction is not compatible with pools with <code>max_outcomes</code>.</p>
+<p>Note that an ascending (&gt; 0) direction is not compatible with pools with <code>truncate_min</code>,
+and a descending (&lt; 0) direction is not compatible with pools with <code>truncate_max</code>.</p>
 
 <p>The default is ascending order.</p>
 
@@ -8230,7 +8232,7 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 <span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 <span class="sd">                Most evaluators will expect a fixed number of pools.</span>
 <span class="sd">                The outcomes of the pools must be mutually comparable.</span>
-<span class="sd">                Pools with `min_outcomes` and pools with `max_outcomes` are not compatible.</span>
+<span class="sd">                Pools with `truncate_min` and pools with `truncate_max` are not compatible.</span>
 <span class="sd">        </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A die representing the distribution of the final score.</span>
@@ -8279,7 +8281,7 @@ The dict maps outcomes to counts.</li>
 Outcomes are treated as having 1 count per appearance.
 Most evaluators will expect a fixed number of pools.
 The outcomes of the pools must be mutually comparable.
-Pools with <code>min_outcomes</code> and pools with <code>max_outcomes</code> are not compatible.</li>
+Pools with <code>truncate_min</code> and pools with <code>truncate_max</code> are not compatible.</li>
 </ul></li>
 </ul>
 
