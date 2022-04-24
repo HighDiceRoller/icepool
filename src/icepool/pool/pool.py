@@ -8,7 +8,7 @@ from collections import defaultdict
 from functools import cached_property
 import math
 
-def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes=None):
+def Pool(die, num_dice=None, count_dice=None, *, min_outcomes=None, max_outcomes=None):
     """ Factory function for `DicePool`.
     
     This should be used in conjunction with `EvalPool` to generate a result.
@@ -50,8 +50,8 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             or if `max_outcome` or `min_outcome` fall outside the range of the die.
     """
     
-    if max_outcomes is not None and min_outcomes is not None:
-        raise ValueError('A pool cannot limit both max_outcomes and min_outcomes.')
+    if min_outcomes is not None and max_outcomes is not None:
+        raise ValueError('A pool cannot limit both min_outcomes and max_outcomes.')
     
     # Compute num_dice and count_dice.
     
@@ -80,18 +80,9 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
     # Values will also be clipped to the range of the fundamental die.
     
     if num_dice == 0:
-        max_outcomes = None
         min_outcomes = None
+        max_outcomes = None
     else:
-        if max_outcomes is not None:
-            if min(max_outcomes) < die.max_outcome():
-                if max(max_outcomes) > die.max_outcome():
-                    raise ValueError('max_outcomes cannot be > the max_outcome of the die.')
-                # We can't trim the die to max_outcomes since it may upset the iteration order.
-                max_outcomes = tuple(sorted(die.nearest_le(outcome) for outcome in max_outcomes))
-            else:
-                # In this case, the max_outcomes don't actually do anything.
-                max_outcomes = None
         if min_outcomes is not None:
             if max(min_outcomes) > die.min_outcome():
                 if min(min_outcomes) < die.min_outcome():
@@ -101,8 +92,17 @@ def Pool(die, num_dice=None, count_dice=None, *, max_outcomes=None, min_outcomes
             else:
                 # In this case, the min_outcomes don't actually do anything.
                 min_outcomes = None
+        if max_outcomes is not None:
+            if min(max_outcomes) < die.max_outcome():
+                if max(max_outcomes) > die.max_outcome():
+                    raise ValueError('max_outcomes cannot be > the max_outcome of the die.')
+                # We can't trim the die to max_outcomes since it may upset the iteration order.
+                max_outcomes = tuple(sorted(die.nearest_le(outcome) for outcome in max_outcomes))
+            else:
+                # In this case, the max_outcomes don't actually do anything.
+                max_outcomes = None
     
-    result = _pool_cached_unchecked(die, count_dice, max_outcomes, min_outcomes)
+    result = _pool_cached_unchecked(die, count_dice, min_outcomes, max_outcomes)
     if convert_to_die:
         return result.eval(lambda state, outcome, count: outcome if count else state)
     else:
@@ -178,16 +178,16 @@ def count_dice_tuple(num_dice, count_dice):
 
 _pool_cache = {}
 
-def _pool_cached_unchecked(die, count_dice, max_outcomes=None, min_outcomes=None):
+def _pool_cached_unchecked(die, count_dice, min_outcomes=None, max_outcomes=None):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
     """
-    key = (die.key_tuple(), count_dice, max_outcomes, min_outcomes)
+    key = (die.key_tuple(), count_dice, min_outcomes, max_outcomes)
     if key in _pool_cache:
         return _pool_cache[key]
     else:
-        result = DicePool(die, count_dice, max_outcomes=max_outcomes, min_outcomes=min_outcomes)
+        result = DicePool(die, count_dice, min_outcomes=min_outcomes, max_outcomes=max_outcomes)
     _pool_cache[key] = result
     return result
 
@@ -222,7 +222,7 @@ class DicePool(icepool.BasePool):
         relative to the fundamental die.
     """
     
-    def __init__(self, die, count_dice, *, max_outcomes, min_outcomes):
+    def __init__(self, die, count_dice, *, min_outcomes, max_outcomes):
         """ Unchecked constructor.
         
         This should not be used directly. Use the `Pool()` factory function instead.
@@ -247,12 +247,12 @@ class DicePool(icepool.BasePool):
     
     def outcomes(self):
         return self.die().outcomes()
+        
+    def _min_outcome(self):
+        return self.die().min_outcome()
     
     def _max_outcome(self):
         return self.die().max_outcome()
-    
-    def _min_outcome(self):
-        return self.die().min_outcome()
         
     def count_dice(self):
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
@@ -367,20 +367,6 @@ class DicePool(icepool.BasePool):
         """ How many elements of count_dice on the high side have a false truth value. """
         return self._num_drop_highest
     
-    def max_outcomes(self, always_tuple=False):
-        """ A tuple of sorted max outcomes, one for each die in the pool. 
-        
-        Args:
-            always_tuple: If `False`, this will return `None` if there are no die-specific `max_outcomes`.
-                If `True` this will return a `tuple` even in this case.
-        """
-        if self._max_outcomes is None and always_tuple:
-            return (self.die().max_outcome(),) * self.num_dice()
-        return self._max_outcomes
-    
-    def _has_max_outcomes(self):
-        return self._max_outcomes is not None
-    
     def min_outcomes(self, always_tuple=False):
         """ A tuple of sorted min outcomes, one for each die in the pool. 
         
@@ -395,57 +381,19 @@ class DicePool(icepool.BasePool):
     def _has_min_outcomes(self):
         return self._min_outcomes is not None
     
-    def _iter_pop_max(self):
+    def max_outcomes(self, always_tuple=False):
+        """ A tuple of sorted max outcomes, one for each die in the pool. 
+        
+        Args:
+            always_tuple: If `False`, this will return `None` if there are no die-specific `max_outcomes`.
+                If `True` this will return a `tuple` even in this case.
         """
-        Yields:
-            From 0 to the number of dice that can roll this outcome inclusive:
-            * pool: A `DicePool` resulting from removing that many dice from this `DicePool`, while also removing the max outcome.
-                If there is only one outcome with weight remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
-                If the outcome has zero weight, only one result will be yielded, corresponding to zero dice rolling that outcome.
-                If there are no outcomes remaining, this will be `None`.
-            * count: An `int` indicating the number of selected dice that rolled the removed outcome.
-            * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
-        """
-        max_outcomes = self.max_outcomes(always_tuple=True)
-        num_possible_dice = self.num_dice() - bisect.bisect_left(max_outcomes, self.die().max_outcome())
-        num_unused_dice = self.num_dice() - num_possible_dice
-        popped_die, outcome, single_weight = self.die()._pop_max()
-        
-        if popped_die.is_empty():
-            # This is the last outcome. All dice must roll this outcome.
-            pool = _pool_cached_unchecked(popped_die, count_dice=())
-            remaining_count = sum(self.count_dice())
-            weight = single_weight ** num_possible_dice
-            yield pool, remaining_count, weight
-            return
-        
-        # Consider various numbers of dice rolling this outcome.
-        popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
-        popped_count_dice = self.count_dice()
-        count = 0
-        
-        comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
-        end_counted = self.num_dice() - self.num_drop_lowest()
-        for weight in comb_row[:min(num_possible_dice, end_counted)]:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
-            yield pool, count, weight
-            count += popped_count_dice[-1]
-            popped_max_outcomes = popped_max_outcomes[:-1]
-            popped_count_dice = popped_count_dice[:-1]
-        
-        if end_counted > num_possible_dice:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
-            yield pool, count, comb_row[-1]
-        else:
-            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
-            # We empty the rest of the pool immediately since no more dice can contribute counts.
-            skip_weight = 0
-            for weight in comb_row[end_counted:]:
-                skip_weight *= popped_die.denominator()
-                skip_weight += weight
-            skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in max_outcomes[:num_unused_dice])
-            pool = _pool_cached_unchecked(popped_die, count_dice=())
-            yield pool, count, skip_weight
+        if self._max_outcomes is None and always_tuple:
+            return (self.die().max_outcome(),) * self.num_dice()
+        return self._max_outcomes
+    
+    def _has_max_outcomes(self):
+        return self._max_outcomes is not None
     
     def _iter_pop_min(self):
         """
@@ -502,17 +450,57 @@ class DicePool(icepool.BasePool):
             pool = _pool_cached_unchecked(popped_die, count_dice=())
             yield pool, count, skip_weight
     
-    @cached_property
-    def _popped_max(self):
-        if self.min_outcomes() is not None:
-            raise ValueError('pop_max is not valid with min_outcomes.')
-        return tuple(self._iter_pop_max())
-    
-    def _pop_max(self):
-        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
-        with count and weight corresponding to various numbers of dice rolling that outcome.
+    def _iter_pop_max(self):
         """
-        return self._popped_max
+        Yields:
+            From 0 to the number of dice that can roll this outcome inclusive:
+            * pool: A `DicePool` resulting from removing that many dice from this `DicePool`, while also removing the max outcome.
+                If there is only one outcome with weight remaining, only one result will be yielded, corresponding to all dice rolling that outcome.
+                If the outcome has zero weight, only one result will be yielded, corresponding to zero dice rolling that outcome.
+                If there are no outcomes remaining, this will be `None`.
+            * count: An `int` indicating the number of selected dice that rolled the removed outcome.
+            * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
+        """
+        max_outcomes = self.max_outcomes(always_tuple=True)
+        num_possible_dice = self.num_dice() - bisect.bisect_left(max_outcomes, self.die().max_outcome())
+        num_unused_dice = self.num_dice() - num_possible_dice
+        popped_die, outcome, single_weight = self.die()._pop_max()
+        
+        if popped_die.is_empty():
+            # This is the last outcome. All dice must roll this outcome.
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
+            remaining_count = sum(self.count_dice())
+            weight = single_weight ** num_possible_dice
+            yield pool, remaining_count, weight
+            return
+        
+        # Consider various numbers of dice rolling this outcome.
+        popped_max_outcomes = max_outcomes[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
+        popped_count_dice = self.count_dice()
+        count = 0
+        
+        comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
+        end_counted = self.num_dice() - self.num_drop_lowest()
+        for weight in comb_row[:min(num_possible_dice, end_counted)]:
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            yield pool, count, weight
+            count += popped_count_dice[-1]
+            popped_max_outcomes = popped_max_outcomes[:-1]
+            popped_count_dice = popped_count_dice[:-1]
+        
+        if end_counted > num_possible_dice:
+            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, max_outcomes=popped_max_outcomes)
+            yield pool, count, comb_row[-1]
+        else:
+            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
+            # We empty the rest of the pool immediately since no more dice can contribute counts.
+            skip_weight = 0
+            for weight in comb_row[end_counted:]:
+                skip_weight *= popped_die.denominator()
+                skip_weight += weight
+            skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in max_outcomes[:num_unused_dice])
+            pool = _pool_cached_unchecked(popped_die, count_dice=())
+            yield pool, count, skip_weight
     
     @cached_property
     def _popped_min(self):
@@ -525,6 +513,18 @@ class DicePool(icepool.BasePool):
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._popped_min
+        
+    @cached_property
+    def _popped_max(self):
+        if self.min_outcomes() is not None:
+            raise ValueError('pop_max is not valid with min_outcomes.')
+        return tuple(self._iter_pop_max())
+    
+    def _pop_max(self):
+        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
+        with count and weight corresponding to various numbers of dice rolling that outcome.
+        """
+        return self._popped_max
         
     def has_counted_dice(self):
         """ Returns `True` iff any of the remaining dice are counted a nonzero number of times.

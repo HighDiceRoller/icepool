@@ -149,7 +149,7 @@ class EvalPool(ABC):
                     Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
-                Pools with `max_outcomes` and pools with `min_outcomes` are not compatible.
+                Pools with `min_outcomes` and pools with `max_outcomes` are not compatible.
         
         Returns:
             A die representing the distribution of the final score.
@@ -209,10 +209,11 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
             
         """
-        has_max_outcomes = any(pool._has_max_outcomes() for pool in pools)
         has_min_outcomes = any(pool._has_min_outcomes() for pool in pools)
-        if has_max_outcomes and has_min_outcomes:
-            raise ValueError('Pools cannot be evaluated if they have both max_outcomes and min_outcomes.')
+        has_max_outcomes = any(pool._has_max_outcomes() for pool in pools)
+        
+        if has_min_outcomes and has_max_outcomes:
+            raise ValueError('A set of pools cannot be evaluated if they have both min_outcomes and max_outcomes.')
         
         direction = self.direction(*pools)
         
@@ -231,7 +232,7 @@ class EvalPool(ABC):
             else:
                 direction = 1
         
-        if direction < 0 and has_max_outcomes or direction > 0 and has_min_outcomes:
+        if direction > 0 and has_min_outcomes or direction < 0 and has_max_outcomes:
             # Forced onto the less-preferred algorithm.
             return self._eval_internal_iterative, direction
         else:
