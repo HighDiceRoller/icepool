@@ -908,7 +908,7 @@ class BaseDie():
         which if considered to have a truth value,
         would imply that dice are sortable by that operator.
         """
-        raise TypeError('A die does not have a truth value.')
+        raise TypeError('A die does not have a truth value. If this is in the conditional of an if-statement, you probably want to use die.cond() instead.')
     
     def __reversed__(self):
         raise TypeError('A die cannot be reversed.')
