@@ -460,12 +460,6 @@
                                 <a class="function" href="#DicePool.set_count_dice">set_count_dice</a>
                         </li>
                         <li>
-                                <a class="function" href="#DicePool.num_drop_lowest">num_drop_lowest</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#DicePool.num_drop_highest">num_drop_highest</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#DicePool.truncate_min">truncate_min</a>
                         </li>
                         <li>
@@ -1517,7 +1511,7 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 </span><span id="BaseDie-397"><a href="#BaseDie-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">cond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
 </span><span id="BaseDie-398"><a href="#BaseDie-398"><span class="linenos">398</span></a>        <span class="sd">&quot;&quot;&quot; Conditional operator. Also known as the ternary operator.</span>
 </span><span id="BaseDie-399"><a href="#BaseDie-399"><span class="linenos">399</span></a><span class="sd">        </span>
-</span><span id="BaseDie-400"><a href="#BaseDie-400"><span class="linenos">400</span></a><span class="sd">        This replaces truthy outcomes to the first argument and falsy outcomes with the second argument.</span>
+</span><span id="BaseDie-400"><a href="#BaseDie-400"><span class="linenos">400</span></a><span class="sd">        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</span>
 </span><span id="BaseDie-401"><a href="#BaseDie-401"><span class="linenos">401</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="BaseDie-402"><a href="#BaseDie-402"><span class="linenos">402</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outcome_if_true</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="n">outcome_if_false</span><span class="p">)</span>
 </span><span id="BaseDie-403"><a href="#BaseDie-403"><span class="linenos">403</span></a>    
@@ -3167,7 +3161,7 @@ If you want to reroll outcomes beyond this range, use <code><a href="#BaseDie.tr
             <div class="pdoc-code codehilite"><pre><span></span><span id="BaseDie.cond-397"><a href="#BaseDie.cond-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">cond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
 </span><span id="BaseDie.cond-398"><a href="#BaseDie.cond-398"><span class="linenos">398</span></a>        <span class="sd">&quot;&quot;&quot; Conditional operator. Also known as the ternary operator.</span>
 </span><span id="BaseDie.cond-399"><a href="#BaseDie.cond-399"><span class="linenos">399</span></a><span class="sd">        </span>
-</span><span id="BaseDie.cond-400"><a href="#BaseDie.cond-400"><span class="linenos">400</span></a><span class="sd">        This replaces truthy outcomes to the first argument and falsy outcomes with the second argument.</span>
+</span><span id="BaseDie.cond-400"><a href="#BaseDie.cond-400"><span class="linenos">400</span></a><span class="sd">        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</span>
 </span><span id="BaseDie.cond-401"><a href="#BaseDie.cond-401"><span class="linenos">401</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="BaseDie.cond-402"><a href="#BaseDie.cond-402"><span class="linenos">402</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outcome_if_true</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="n">outcome_if_false</span><span class="p">)</span>
 </span></pre></div>
@@ -3176,7 +3170,7 @@ If you want to reroll outcomes beyond this range, use <code><a href="#BaseDie.tr
 
             <div class="docstring"><p>Conditional operator. Also known as the ternary operator.</p>
 
-<p>This replaces truthy outcomes to the first argument and falsy outcomes with the second argument.</p>
+<p>This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</p>
 </div>
 
 
@@ -6296,82 +6290,104 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool-7"><a href="#BasePool-7"><span class="linenos"> 7</span></a><span class="k">class</span> <span class="nc">BasePool</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-</span><span id="BasePool-8"><a href="#BasePool-8"><span class="linenos"> 8</span></a>    <span class="sd">&quot;&quot;&quot; Abstract base class for dice pools.</span>
-</span><span id="BasePool-9"><a href="#BasePool-9"><span class="linenos"> 9</span></a><span class="sd">    </span>
-</span><span id="BasePool-10"><a href="#BasePool-10"><span class="linenos">10</span></a><span class="sd">    This provides the methods needed to run the dice pool algorithm.</span>
-</span><span id="BasePool-11"><a href="#BasePool-11"><span class="linenos">11</span></a><span class="sd">    </span>
-</span><span id="BasePool-12"><a href="#BasePool-12"><span class="linenos">12</span></a><span class="sd">    There are two subclasses:</span>
-</span><span id="BasePool-13"><a href="#BasePool-13"><span class="linenos">13</span></a><span class="sd">    </span>
-</span><span id="BasePool-14"><a href="#BasePool-14"><span class="linenos">14</span></a><span class="sd">    * `DicePool`, which represents a pool of dice with random results.</span>
-</span><span id="BasePool-15"><a href="#BasePool-15"><span class="linenos">15</span></a><span class="sd">    * `PoolRoll`, which represents a single, fixed roll of a pool.</span>
-</span><span id="BasePool-16"><a href="#BasePool-16"><span class="linenos">16</span></a><span class="sd">        `PoolRoll` is only needed internally, as external dicts and sequences </span>
-</span><span id="BasePool-17"><a href="#BasePool-17"><span class="linenos">17</span></a><span class="sd">        will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.</span>
-</span><span id="BasePool-18"><a href="#BasePool-18"><span class="linenos">18</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="BasePool-19"><a href="#BasePool-19"><span class="linenos">19</span></a>    
-</span><span id="BasePool-20"><a href="#BasePool-20"><span class="linenos">20</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-21"><a href="#BasePool-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-22"><a href="#BasePool-22"><span class="linenos">22</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff this is a single, fixed roll of a pool. &quot;&quot;&quot;</span>
-</span><span id="BasePool-23"><a href="#BasePool-23"><span class="linenos">23</span></a>    
-</span><span id="BasePool-24"><a href="#BasePool-24"><span class="linenos">24</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-25"><a href="#BasePool-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">_has_truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-26"><a href="#BasePool-26"><span class="linenos">26</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has right-truncation. &quot;&quot;&quot;</span>
-</span><span id="BasePool-27"><a href="#BasePool-27"><span class="linenos">27</span></a>        
-</span><span id="BasePool-28"><a href="#BasePool-28"><span class="linenos">28</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-29"><a href="#BasePool-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">_has_truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-30"><a href="#BasePool-30"><span class="linenos">30</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has left-truncation. &quot;&quot;&quot;</span>
-</span><span id="BasePool-31"><a href="#BasePool-31"><span class="linenos">31</span></a>    
-</span><span id="BasePool-32"><a href="#BasePool-32"><span class="linenos">32</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-33"><a href="#BasePool-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-34"><a href="#BasePool-34"><span class="linenos">34</span></a>        <span class="sd">&quot;&quot;&quot; The outcomes of the fundamental die (including those with zero weight). &quot;&quot;&quot;</span>
-</span><span id="BasePool-35"><a href="#BasePool-35"><span class="linenos">35</span></a>        
-</span><span id="BasePool-36"><a href="#BasePool-36"><span class="linenos">36</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-37"><a href="#BasePool-37"><span class="linenos">37</span></a>    <span class="k">def</span> <span class="nf">_max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-38"><a href="#BasePool-38"><span class="linenos">38</span></a>        <span class="sd">&quot;&quot;&quot; The maximum outcome of the fundamental die. &quot;&quot;&quot;</span>
-</span><span id="BasePool-39"><a href="#BasePool-39"><span class="linenos">39</span></a>        
-</span><span id="BasePool-40"><a href="#BasePool-40"><span class="linenos">40</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-41"><a href="#BasePool-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-42"><a href="#BasePool-42"><span class="linenos">42</span></a>        <span class="sd">&quot;&quot;&quot; The minimum outcome of the fundamental die. &quot;&quot;&quot;</span>
-</span><span id="BasePool-43"><a href="#BasePool-43"><span class="linenos">43</span></a>    
-</span><span id="BasePool-44"><a href="#BasePool-44"><span class="linenos">44</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-45"><a href="#BasePool-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-46"><a href="#BasePool-46"><span class="linenos">46</span></a>        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
-</span><span id="BasePool-47"><a href="#BasePool-47"><span class="linenos">47</span></a><span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
-</span><span id="BasePool-48"><a href="#BasePool-48"><span class="linenos">48</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool-49"><a href="#BasePool-49"><span class="linenos">49</span></a>    
-</span><span id="BasePool-50"><a href="#BasePool-50"><span class="linenos">50</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="BasePool-51"><a href="#BasePool-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-52"><a href="#BasePool-52"><span class="linenos">52</span></a>        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the min outcome,</span>
-</span><span id="BasePool-53"><a href="#BasePool-53"><span class="linenos">53</span></a><span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
-</span><span id="BasePool-54"><a href="#BasePool-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool-55"><a href="#BasePool-55"><span class="linenos">55</span></a>    
-</span><span id="BasePool-56"><a href="#BasePool-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="BasePool-57"><a href="#BasePool-57"><span class="linenos">57</span></a>        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
-</span><span id="BasePool-58"><a href="#BasePool-58"><span class="linenos">58</span></a><span class="sd">        </span>
-</span><span id="BasePool-59"><a href="#BasePool-59"><span class="linenos">59</span></a><span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
-</span><span id="BasePool-60"><a href="#BasePool-60"><span class="linenos">60</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
-</span><span id="BasePool-61"><a href="#BasePool-61"><span class="linenos">61</span></a><span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
-</span><span id="BasePool-62"><a href="#BasePool-62"><span class="linenos">62</span></a><span class="sd">        rather than passing a function to this method directly.</span>
-</span><span id="BasePool-63"><a href="#BasePool-63"><span class="linenos">63</span></a><span class="sd">        </span>
-</span><span id="BasePool-64"><a href="#BasePool-64"><span class="linenos">64</span></a><span class="sd">        Args:</span>
-</span><span id="BasePool-65"><a href="#BasePool-65"><span class="linenos">65</span></a><span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
-</span><span id="BasePool-66"><a href="#BasePool-66"><span class="linenos">66</span></a><span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
-</span><span id="BasePool-67"><a href="#BasePool-67"><span class="linenos">67</span></a><span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
-</span><span id="BasePool-68"><a href="#BasePool-68"><span class="linenos">68</span></a><span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
-</span><span id="BasePool-69"><a href="#BasePool-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool-70"><a href="#BasePool-70"><span class="linenos">70</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="BasePool-71"><a href="#BasePool-71"><span class="linenos">71</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-</span><span id="BasePool-72"><a href="#BasePool-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="BasePool-73"><a href="#BasePool-73"><span class="linenos">73</span></a>
-</span><span id="BasePool-74"><a href="#BasePool-74"><span class="linenos">74</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool-75"><a href="#BasePool-75"><span class="linenos">75</span></a>        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
-</span><span id="BasePool-76"><a href="#BasePool-76"><span class="linenos">76</span></a><span class="sd">        </span>
-</span><span id="BasePool-77"><a href="#BasePool-77"><span class="linenos">77</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
-</span><span id="BasePool-78"><a href="#BasePool-78"><span class="linenos">78</span></a><span class="sd">        </span>
-</span><span id="BasePool-79"><a href="#BasePool-79"><span class="linenos">79</span></a><span class="sd">        Returns:</span>
-</span><span id="BasePool-80"><a href="#BasePool-80"><span class="linenos">80</span></a><span class="sd">            A die representing the sum.</span>
-</span><span id="BasePool-81"><a href="#BasePool-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool-82"><a href="#BasePool-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool-7"><a href="#BasePool-7"><span class="linenos">  7</span></a><span class="k">class</span> <span class="nc">BasePool</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="BasePool-8"><a href="#BasePool-8"><span class="linenos">  8</span></a>    <span class="sd">&quot;&quot;&quot; Abstract base class for dice pools.</span>
+</span><span id="BasePool-9"><a href="#BasePool-9"><span class="linenos">  9</span></a><span class="sd">    </span>
+</span><span id="BasePool-10"><a href="#BasePool-10"><span class="linenos"> 10</span></a><span class="sd">    This provides the methods needed to run the dice pool algorithm.</span>
+</span><span id="BasePool-11"><a href="#BasePool-11"><span class="linenos"> 11</span></a><span class="sd">    </span>
+</span><span id="BasePool-12"><a href="#BasePool-12"><span class="linenos"> 12</span></a><span class="sd">    There are two subclasses:</span>
+</span><span id="BasePool-13"><a href="#BasePool-13"><span class="linenos"> 13</span></a><span class="sd">    </span>
+</span><span id="BasePool-14"><a href="#BasePool-14"><span class="linenos"> 14</span></a><span class="sd">    * `DicePool`, which represents a pool of dice with random results.</span>
+</span><span id="BasePool-15"><a href="#BasePool-15"><span class="linenos"> 15</span></a><span class="sd">    * `PoolRoll`, which represents a single, fixed roll of a pool.</span>
+</span><span id="BasePool-16"><a href="#BasePool-16"><span class="linenos"> 16</span></a><span class="sd">        `PoolRoll` is only needed internally, as external dicts and sequences </span>
+</span><span id="BasePool-17"><a href="#BasePool-17"><span class="linenos"> 17</span></a><span class="sd">        will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.</span>
+</span><span id="BasePool-18"><a href="#BasePool-18"><span class="linenos"> 18</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="BasePool-19"><a href="#BasePool-19"><span class="linenos"> 19</span></a>    
+</span><span id="BasePool-20"><a href="#BasePool-20"><span class="linenos"> 20</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-21"><a href="#BasePool-21"><span class="linenos"> 21</span></a>    <span class="k">def</span> <span class="nf">_is_single_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-22"><a href="#BasePool-22"><span class="linenos"> 22</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff this is a single, fixed roll of a pool. &quot;&quot;&quot;</span>
+</span><span id="BasePool-23"><a href="#BasePool-23"><span class="linenos"> 23</span></a>    
+</span><span id="BasePool-24"><a href="#BasePool-24"><span class="linenos"> 24</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-25"><a href="#BasePool-25"><span class="linenos"> 25</span></a>    <span class="k">def</span> <span class="nf">_has_truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-26"><a href="#BasePool-26"><span class="linenos"> 26</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has truncated min outcomes. &quot;&quot;&quot;</span>
+</span><span id="BasePool-27"><a href="#BasePool-27"><span class="linenos"> 27</span></a>    
+</span><span id="BasePool-28"><a href="#BasePool-28"><span class="linenos"> 28</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-29"><a href="#BasePool-29"><span class="linenos"> 29</span></a>    <span class="k">def</span> <span class="nf">_has_truncate_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-30"><a href="#BasePool-30"><span class="linenos"> 30</span></a>        <span class="sd">&quot;&quot;&quot; Returns `True` iff the pool has truncated max outcomes. &quot;&quot;&quot;</span>
+</span><span id="BasePool-31"><a href="#BasePool-31"><span class="linenos"> 31</span></a>    
+</span><span id="BasePool-32"><a href="#BasePool-32"><span class="linenos"> 32</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-33"><a href="#BasePool-33"><span class="linenos"> 33</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-34"><a href="#BasePool-34"><span class="linenos"> 34</span></a>        <span class="sd">&quot;&quot;&quot; The outcomes of the fundamental die (including those with zero weight). &quot;&quot;&quot;</span>
+</span><span id="BasePool-35"><a href="#BasePool-35"><span class="linenos"> 35</span></a>    
+</span><span id="BasePool-36"><a href="#BasePool-36"><span class="linenos"> 36</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-37"><a href="#BasePool-37"><span class="linenos"> 37</span></a>    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-38"><a href="#BasePool-38"><span class="linenos"> 38</span></a>        <span class="sd">&quot;&quot;&quot; The minimum outcome of the fundamental die. &quot;&quot;&quot;</span>
+</span><span id="BasePool-39"><a href="#BasePool-39"><span class="linenos"> 39</span></a>    
+</span><span id="BasePool-40"><a href="#BasePool-40"><span class="linenos"> 40</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-41"><a href="#BasePool-41"><span class="linenos"> 41</span></a>    <span class="k">def</span> <span class="nf">_max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-42"><a href="#BasePool-42"><span class="linenos"> 42</span></a>        <span class="sd">&quot;&quot;&quot; The maximum outcome of the fundamental die. &quot;&quot;&quot;</span>
+</span><span id="BasePool-43"><a href="#BasePool-43"><span class="linenos"> 43</span></a>        
+</span><span id="BasePool-44"><a href="#BasePool-44"><span class="linenos"> 44</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-45"><a href="#BasePool-45"><span class="linenos"> 45</span></a>    <span class="k">def</span> <span class="nf">_direction_score_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-46"><a href="#BasePool-46"><span class="linenos"> 46</span></a>        <span class="sd">&quot;&quot;&quot; Returns a number indicating how preferred iterating in the ascending direction is.</span>
+</span><span id="BasePool-47"><a href="#BasePool-47"><span class="linenos"> 47</span></a><span class="sd">        </span>
+</span><span id="BasePool-48"><a href="#BasePool-48"><span class="linenos"> 48</span></a><span class="sd">        This is only called when there is no truncation.</span>
+</span><span id="BasePool-49"><a href="#BasePool-49"><span class="linenos"> 49</span></a><span class="sd">        </span>
+</span><span id="BasePool-50"><a href="#BasePool-50"><span class="linenos"> 50</span></a><span class="sd">        If the pool does not care at all about direction, the result is 0.</span>
+</span><span id="BasePool-51"><a href="#BasePool-51"><span class="linenos"> 51</span></a><span class="sd">        </span>
+</span><span id="BasePool-52"><a href="#BasePool-52"><span class="linenos"> 52</span></a><span class="sd">        The collective score is summed.</span>
+</span><span id="BasePool-53"><a href="#BasePool-53"><span class="linenos"> 53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-54"><a href="#BasePool-54"><span class="linenos"> 54</span></a>    
+</span><span id="BasePool-55"><a href="#BasePool-55"><span class="linenos"> 55</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-56"><a href="#BasePool-56"><span class="linenos"> 56</span></a>    <span class="k">def</span> <span class="nf">_direction_score_descending</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-57"><a href="#BasePool-57"><span class="linenos"> 57</span></a>        <span class="sd">&quot;&quot;&quot; Returns a number indicating how preferred iterating in the descending direction is.</span>
+</span><span id="BasePool-58"><a href="#BasePool-58"><span class="linenos"> 58</span></a><span class="sd">        </span>
+</span><span id="BasePool-59"><a href="#BasePool-59"><span class="linenos"> 59</span></a><span class="sd">        This is only called when there is no truncation.</span>
+</span><span id="BasePool-60"><a href="#BasePool-60"><span class="linenos"> 60</span></a><span class="sd">        </span>
+</span><span id="BasePool-61"><a href="#BasePool-61"><span class="linenos"> 61</span></a><span class="sd">        If the pool does not care at all about direction, the result is 0.</span>
+</span><span id="BasePool-62"><a href="#BasePool-62"><span class="linenos"> 62</span></a><span class="sd">        </span>
+</span><span id="BasePool-63"><a href="#BasePool-63"><span class="linenos"> 63</span></a><span class="sd">        The collective score is summed.</span>
+</span><span id="BasePool-64"><a href="#BasePool-64"><span class="linenos"> 64</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-65"><a href="#BasePool-65"><span class="linenos"> 65</span></a>    
+</span><span id="BasePool-66"><a href="#BasePool-66"><span class="linenos"> 66</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-67"><a href="#BasePool-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-68"><a href="#BasePool-68"><span class="linenos"> 68</span></a>        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the min outcome,</span>
+</span><span id="BasePool-69"><a href="#BasePool-69"><span class="linenos"> 69</span></a><span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
+</span><span id="BasePool-70"><a href="#BasePool-70"><span class="linenos"> 70</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-71"><a href="#BasePool-71"><span class="linenos"> 71</span></a>    
+</span><span id="BasePool-72"><a href="#BasePool-72"><span class="linenos"> 72</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="BasePool-73"><a href="#BasePool-73"><span class="linenos"> 73</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-74"><a href="#BasePool-74"><span class="linenos"> 74</span></a>        <span class="sd">&quot;&quot;&quot; Returns a sequence of pool, count, weight corresponding to removing the max outcome,</span>
+</span><span id="BasePool-75"><a href="#BasePool-75"><span class="linenos"> 75</span></a><span class="sd">        with count and weight corresponding to various numbers of dice rolling that outcome.</span>
+</span><span id="BasePool-76"><a href="#BasePool-76"><span class="linenos"> 76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-77"><a href="#BasePool-77"><span class="linenos"> 77</span></a>    
+</span><span id="BasePool-78"><a href="#BasePool-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="BasePool-79"><a href="#BasePool-79"><span class="linenos"> 79</span></a>        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
+</span><span id="BasePool-80"><a href="#BasePool-80"><span class="linenos"> 80</span></a><span class="sd">        </span>
+</span><span id="BasePool-81"><a href="#BasePool-81"><span class="linenos"> 81</span></a><span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
+</span><span id="BasePool-82"><a href="#BasePool-82"><span class="linenos"> 82</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
+</span><span id="BasePool-83"><a href="#BasePool-83"><span class="linenos"> 83</span></a><span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
+</span><span id="BasePool-84"><a href="#BasePool-84"><span class="linenos"> 84</span></a><span class="sd">        rather than passing a function to this method directly.</span>
+</span><span id="BasePool-85"><a href="#BasePool-85"><span class="linenos"> 85</span></a><span class="sd">        </span>
+</span><span id="BasePool-86"><a href="#BasePool-86"><span class="linenos"> 86</span></a><span class="sd">        Args:</span>
+</span><span id="BasePool-87"><a href="#BasePool-87"><span class="linenos"> 87</span></a><span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
+</span><span id="BasePool-88"><a href="#BasePool-88"><span class="linenos"> 88</span></a><span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
+</span><span id="BasePool-89"><a href="#BasePool-89"><span class="linenos"> 89</span></a><span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
+</span><span id="BasePool-90"><a href="#BasePool-90"><span class="linenos"> 90</span></a><span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
+</span><span id="BasePool-91"><a href="#BasePool-91"><span class="linenos"> 91</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-92"><a href="#BasePool-92"><span class="linenos"> 92</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="BasePool-93"><a href="#BasePool-93"><span class="linenos"> 93</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+</span><span id="BasePool-94"><a href="#BasePool-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="BasePool-95"><a href="#BasePool-95"><span class="linenos"> 95</span></a>
+</span><span id="BasePool-96"><a href="#BasePool-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool-97"><a href="#BasePool-97"><span class="linenos"> 97</span></a>        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
+</span><span id="BasePool-98"><a href="#BasePool-98"><span class="linenos"> 98</span></a><span class="sd">        </span>
+</span><span id="BasePool-99"><a href="#BasePool-99"><span class="linenos"> 99</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
+</span><span id="BasePool-100"><a href="#BasePool-100"><span class="linenos">100</span></a><span class="sd">        </span>
+</span><span id="BasePool-101"><a href="#BasePool-101"><span class="linenos">101</span></a><span class="sd">        Returns:</span>
+</span><span id="BasePool-102"><a href="#BasePool-102"><span class="linenos">102</span></a><span class="sd">            A die representing the sum.</span>
+</span><span id="BasePool-103"><a href="#BasePool-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool-104"><a href="#BasePool-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -6424,23 +6440,23 @@ will be implicitly cast to <code>PoolRoll</code> in <code><a href="#EvalPool.eva
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool.eval-56"><a href="#BasePool.eval-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="BasePool.eval-57"><a href="#BasePool.eval-57"><span class="linenos">57</span></a>        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
-</span><span id="BasePool.eval-58"><a href="#BasePool.eval-58"><span class="linenos">58</span></a><span class="sd">        </span>
-</span><span id="BasePool.eval-59"><a href="#BasePool.eval-59"><span class="linenos">59</span></a><span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
-</span><span id="BasePool.eval-60"><a href="#BasePool.eval-60"><span class="linenos">60</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
-</span><span id="BasePool.eval-61"><a href="#BasePool.eval-61"><span class="linenos">61</span></a><span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
-</span><span id="BasePool.eval-62"><a href="#BasePool.eval-62"><span class="linenos">62</span></a><span class="sd">        rather than passing a function to this method directly.</span>
-</span><span id="BasePool.eval-63"><a href="#BasePool.eval-63"><span class="linenos">63</span></a><span class="sd">        </span>
-</span><span id="BasePool.eval-64"><a href="#BasePool.eval-64"><span class="linenos">64</span></a><span class="sd">        Args:</span>
-</span><span id="BasePool.eval-65"><a href="#BasePool.eval-65"><span class="linenos">65</span></a><span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
-</span><span id="BasePool.eval-66"><a href="#BasePool.eval-66"><span class="linenos">66</span></a><span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
-</span><span id="BasePool.eval-67"><a href="#BasePool.eval-67"><span class="linenos">67</span></a><span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
-</span><span id="BasePool.eval-68"><a href="#BasePool.eval-68"><span class="linenos">68</span></a><span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
-</span><span id="BasePool.eval-69"><a href="#BasePool.eval-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool.eval-70"><a href="#BasePool.eval-70"><span class="linenos">70</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="BasePool.eval-71"><a href="#BasePool.eval-71"><span class="linenos">71</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-</span><span id="BasePool.eval-72"><a href="#BasePool.eval-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool.eval-78"><a href="#BasePool.eval-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="BasePool.eval-79"><a href="#BasePool.eval-79"><span class="linenos">79</span></a>        <span class="sd">&quot;&quot;&quot; Evaluates this pool using the given `EvalPool` or function.</span>
+</span><span id="BasePool.eval-80"><a href="#BasePool.eval-80"><span class="linenos">80</span></a><span class="sd">        </span>
+</span><span id="BasePool.eval-81"><a href="#BasePool.eval-81"><span class="linenos">81</span></a><span class="sd">        Note that each `EvalPool` instance carries its own cache;</span>
+</span><span id="BasePool.eval-82"><a href="#BasePool.eval-82"><span class="linenos">82</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
+</span><span id="BasePool.eval-83"><a href="#BasePool.eval-83"><span class="linenos">83</span></a><span class="sd">        you may want to explicitly create an `EvalPool` instance</span>
+</span><span id="BasePool.eval-84"><a href="#BasePool.eval-84"><span class="linenos">84</span></a><span class="sd">        rather than passing a function to this method directly.</span>
+</span><span id="BasePool.eval-85"><a href="#BasePool.eval-85"><span class="linenos">85</span></a><span class="sd">        </span>
+</span><span id="BasePool.eval-86"><a href="#BasePool.eval-86"><span class="linenos">86</span></a><span class="sd">        Args:</span>
+</span><span id="BasePool.eval-87"><a href="#BasePool.eval-87"><span class="linenos">87</span></a><span class="sd">            func: This can be an `EvalPool`, in which case it evaluates the pool directly.</span>
+</span><span id="BasePool.eval-88"><a href="#BasePool.eval-88"><span class="linenos">88</span></a><span class="sd">                Or it can be a `EvalPool.next_state()`-like function,</span>
+</span><span id="BasePool.eval-89"><a href="#BasePool.eval-89"><span class="linenos">89</span></a><span class="sd">                taking in `state, outcome, *counts` and returning the next state.</span>
+</span><span id="BasePool.eval-90"><a href="#BasePool.eval-90"><span class="linenos">90</span></a><span class="sd">                In this case a temporary `WrapFuncEval` is constructed and used to evaluate this pool.</span>
+</span><span id="BasePool.eval-91"><a href="#BasePool.eval-91"><span class="linenos">91</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool.eval-92"><a href="#BasePool.eval-92"><span class="linenos">92</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="BasePool.eval-93"><a href="#BasePool.eval-93"><span class="linenos">93</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+</span><span id="BasePool.eval-94"><a href="#BasePool.eval-94"><span class="linenos">94</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -6474,15 +6490,15 @@ In this case a temporary <code><a href="#WrapFuncEval">WrapFuncEval</a></code> i
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool.sum-74"><a href="#BasePool.sum-74"><span class="linenos">74</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="BasePool.sum-75"><a href="#BasePool.sum-75"><span class="linenos">75</span></a>        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
-</span><span id="BasePool.sum-76"><a href="#BasePool.sum-76"><span class="linenos">76</span></a><span class="sd">        </span>
-</span><span id="BasePool.sum-77"><a href="#BasePool.sum-77"><span class="linenos">77</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
-</span><span id="BasePool.sum-78"><a href="#BasePool.sum-78"><span class="linenos">78</span></a><span class="sd">        </span>
-</span><span id="BasePool.sum-79"><a href="#BasePool.sum-79"><span class="linenos">79</span></a><span class="sd">        Returns:</span>
-</span><span id="BasePool.sum-80"><a href="#BasePool.sum-80"><span class="linenos">80</span></a><span class="sd">            A die representing the sum.</span>
-</span><span id="BasePool.sum-81"><a href="#BasePool.sum-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BasePool.sum-82"><a href="#BasePool.sum-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BasePool.sum-96"><a href="#BasePool.sum-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="BasePool.sum-97"><a href="#BasePool.sum-97"><span class="linenos"> 97</span></a>        <span class="sd">&quot;&quot;&quot; Convenience method to simply sum the dice in this pool.</span>
+</span><span id="BasePool.sum-98"><a href="#BasePool.sum-98"><span class="linenos"> 98</span></a><span class="sd">        </span>
+</span><span id="BasePool.sum-99"><a href="#BasePool.sum-99"><span class="linenos"> 99</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
+</span><span id="BasePool.sum-100"><a href="#BasePool.sum-100"><span class="linenos">100</span></a><span class="sd">        </span>
+</span><span id="BasePool.sum-101"><a href="#BasePool.sum-101"><span class="linenos">101</span></a><span class="sd">        Returns:</span>
+</span><span id="BasePool.sum-102"><a href="#BasePool.sum-102"><span class="linenos">102</span></a><span class="sd">            A die representing the sum.</span>
+</span><span id="BasePool.sum-103"><a href="#BasePool.sum-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BasePool.sum-104"><a href="#BasePool.sum-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -6871,25 +6887,25 @@ of 2 d8s and 3 d6s.</li>
 </span><span id="DicePool-348"><a href="#DicePool-348"><span class="linenos">348</span></a>    
 </span><span id="DicePool-349"><a href="#DicePool-349"><span class="linenos">349</span></a>    <span class="nd">@cached_property</span>
 </span><span id="DicePool-350"><a href="#DicePool-350"><span class="linenos">350</span></a>    <span class="k">def</span> <span class="nf">_num_drop_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool-351"><a href="#DicePool-351"><span class="linenos">351</span></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
-</span><span id="DicePool-352"><a href="#DicePool-352"><span class="linenos">352</span></a>            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
-</span><span id="DicePool-353"><a href="#DicePool-353"><span class="linenos">353</span></a>                <span class="k">return</span> <span class="n">i</span>
-</span><span id="DicePool-354"><a href="#DicePool-354"><span class="linenos">354</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-</span><span id="DicePool-355"><a href="#DicePool-355"><span class="linenos">355</span></a>    
-</span><span id="DicePool-356"><a href="#DicePool-356"><span class="linenos">356</span></a>    <span class="k">def</span> <span class="nf">num_drop_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool-357"><a href="#DicePool-357"><span class="linenos">357</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the low side have a false truth value. &quot;&quot;&quot;</span>
-</span><span id="DicePool-358"><a href="#DicePool-358"><span class="linenos">358</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_lowest</span>
+</span><span id="DicePool-351"><a href="#DicePool-351"><span class="linenos">351</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the low side are falsy. &quot;&quot;&quot;</span>
+</span><span id="DicePool-352"><a href="#DicePool-352"><span class="linenos">352</span></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">()):</span>
+</span><span id="DicePool-353"><a href="#DicePool-353"><span class="linenos">353</span></a>            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
+</span><span id="DicePool-354"><a href="#DicePool-354"><span class="linenos">354</span></a>                <span class="k">return</span> <span class="n">i</span>
+</span><span id="DicePool-355"><a href="#DicePool-355"><span class="linenos">355</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
+</span><span id="DicePool-356"><a href="#DicePool-356"><span class="linenos">356</span></a>    
+</span><span id="DicePool-357"><a href="#DicePool-357"><span class="linenos">357</span></a>    <span class="k">def</span> <span class="nf">_direction_score_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="DicePool-358"><a href="#DicePool-358"><span class="linenos">358</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_lowest</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
 </span><span id="DicePool-359"><a href="#DicePool-359"><span class="linenos">359</span></a>    
 </span><span id="DicePool-360"><a href="#DicePool-360"><span class="linenos">360</span></a>    <span class="nd">@cached_property</span>
 </span><span id="DicePool-361"><a href="#DicePool-361"><span class="linenos">361</span></a>    <span class="k">def</span> <span class="nf">_num_drop_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool-362"><a href="#DicePool-362"><span class="linenos">362</span></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">())):</span>
-</span><span id="DicePool-363"><a href="#DicePool-363"><span class="linenos">363</span></a>            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
-</span><span id="DicePool-364"><a href="#DicePool-364"><span class="linenos">364</span></a>                <span class="k">return</span> <span class="n">i</span>
-</span><span id="DicePool-365"><a href="#DicePool-365"><span class="linenos">365</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
-</span><span id="DicePool-366"><a href="#DicePool-366"><span class="linenos">366</span></a>    
-</span><span id="DicePool-367"><a href="#DicePool-367"><span class="linenos">367</span></a>    <span class="k">def</span> <span class="nf">num_drop_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool-368"><a href="#DicePool-368"><span class="linenos">368</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the high side have a false truth value. &quot;&quot;&quot;</span>
-</span><span id="DicePool-369"><a href="#DicePool-369"><span class="linenos">369</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_highest</span>
+</span><span id="DicePool-362"><a href="#DicePool-362"><span class="linenos">362</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the high side are falsy. &quot;&quot;&quot;</span>
+</span><span id="DicePool-363"><a href="#DicePool-363"><span class="linenos">363</span></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count_dice</span><span class="p">())):</span>
+</span><span id="DicePool-364"><a href="#DicePool-364"><span class="linenos">364</span></a>            <span class="k">if</span> <span class="n">count</span><span class="p">:</span>
+</span><span id="DicePool-365"><a href="#DicePool-365"><span class="linenos">365</span></a>                <span class="k">return</span> <span class="n">i</span>
+</span><span id="DicePool-366"><a href="#DicePool-366"><span class="linenos">366</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span>
+</span><span id="DicePool-367"><a href="#DicePool-367"><span class="linenos">367</span></a>    
+</span><span id="DicePool-368"><a href="#DicePool-368"><span class="linenos">368</span></a>    <span class="k">def</span> <span class="nf">_direction_score_descending</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="DicePool-369"><a href="#DicePool-369"><span class="linenos">369</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_highest</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
 </span><span id="DicePool-370"><a href="#DicePool-370"><span class="linenos">370</span></a>    
 </span><span id="DicePool-371"><a href="#DicePool-371"><span class="linenos">371</span></a>    <span class="k">def</span> <span class="nf">truncate_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">always_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 </span><span id="DicePool-372"><a href="#DicePool-372"><span class="linenos">372</span></a>        <span class="sd">&quot;&quot;&quot; A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. </span>
@@ -6952,7 +6968,7 @@ of 2 d8s and 3 d6s.</li>
 </span><span id="DicePool-429"><a href="#DicePool-429"><span class="linenos">429</span></a>        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="DicePool-430"><a href="#DicePool-430"><span class="linenos">430</span></a>        
 </span><span id="DicePool-431"><a href="#DicePool-431"><span class="linenos">431</span></a>        <span class="n">comb_row</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb_row</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">single_weight</span><span class="p">)</span>
-</span><span id="DicePool-432"><a href="#DicePool-432"><span class="linenos">432</span></a>        <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_drop_highest</span><span class="p">()</span>
+</span><span id="DicePool-432"><a href="#DicePool-432"><span class="linenos">432</span></a>        <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_highest</span>
 </span><span id="DicePool-433"><a href="#DicePool-433"><span class="linenos">433</span></a>        <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">end_counted</span><span class="p">)]:</span>
 </span><span id="DicePool-434"><a href="#DicePool-434"><span class="linenos">434</span></a>            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_min</span><span class="o">=</span><span class="n">popped_truncate_min</span><span class="p">)</span>
 </span><span id="DicePool-435"><a href="#DicePool-435"><span class="linenos">435</span></a>            <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
@@ -7004,7 +7020,7 @@ of 2 d8s and 3 d6s.</li>
 </span><span id="DicePool-481"><a href="#DicePool-481"><span class="linenos">481</span></a>        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="DicePool-482"><a href="#DicePool-482"><span class="linenos">482</span></a>        
 </span><span id="DicePool-483"><a href="#DicePool-483"><span class="linenos">483</span></a>        <span class="n">comb_row</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb_row</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">single_weight</span><span class="p">)</span>
-</span><span id="DicePool-484"><a href="#DicePool-484"><span class="linenos">484</span></a>        <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span>
+</span><span id="DicePool-484"><a href="#DicePool-484"><span class="linenos">484</span></a>        <span class="n">end_counted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_lowest</span>
 </span><span id="DicePool-485"><a href="#DicePool-485"><span class="linenos">485</span></a>        <span class="k">for</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">comb_row</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">num_possible_dice</span><span class="p">,</span> <span class="n">end_counted</span><span class="p">)]:</span>
 </span><span id="DicePool-486"><a href="#DicePool-486"><span class="linenos">486</span></a>            <span class="n">pool</span> <span class="o">=</span> <span class="n">_pool_cached_unchecked</span><span class="p">(</span><span class="n">popped_die</span><span class="p">,</span> <span class="n">count_dice</span><span class="o">=</span><span class="n">popped_count_dice</span><span class="p">,</span> <span class="n">truncate_max</span><span class="o">=</span><span class="n">popped_truncate_max</span><span class="p">)</span>
 </span><span id="DicePool-487"><a href="#DicePool-487"><span class="linenos">487</span></a>            <span class="k">yield</span> <span class="n">pool</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
@@ -7412,50 +7428,6 @@ On a pool consisting of a single single die this would have the -1 and 1 cancel 
 
 
                             </div>
-                            <div id="DicePool.num_drop_lowest" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.num_drop_lowest">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">num_drop_lowest</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DicePool.num_drop_lowest-356"><a href="#DicePool.num_drop_lowest-356"><span class="linenos">356</span></a>    <span class="k">def</span> <span class="nf">num_drop_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool.num_drop_lowest-357"><a href="#DicePool.num_drop_lowest-357"><span class="linenos">357</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the low side have a false truth value. &quot;&quot;&quot;</span>
-</span><span id="DicePool.num_drop_lowest-358"><a href="#DicePool.num_drop_lowest-358"><span class="linenos">358</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_lowest</span>
-</span></pre></div>
-
-        </details>
-
-            <div class="docstring"><p>How many elements of count_dice on the low side have a false truth value.</p>
-</div>
-
-
-                            </div>
-                            <div id="DicePool.num_drop_highest" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#DicePool.num_drop_highest">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">num_drop_highest</span><span class="signature">(self)</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DicePool.num_drop_highest-367"><a href="#DicePool.num_drop_highest-367"><span class="linenos">367</span></a>    <span class="k">def</span> <span class="nf">num_drop_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="DicePool.num_drop_highest-368"><a href="#DicePool.num_drop_highest-368"><span class="linenos">368</span></a>        <span class="sd">&quot;&quot;&quot; How many elements of count_dice on the high side have a false truth value. &quot;&quot;&quot;</span>
-</span><span id="DicePool.num_drop_highest-369"><a href="#DicePool.num_drop_highest-369"><span class="linenos">369</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_drop_highest</span>
-</span></pre></div>
-
-        </details>
-
-            <div class="docstring"><p>How many elements of count_dice on the high side have a false truth value.</p>
-</div>
-
-
-                            </div>
                             <div id="DicePool.truncate_min" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#DicePool.truncate_min">#&nbsp;&nbsp</a>
 
@@ -7831,81 +7803,79 @@ If <code>True</code> this will return a <code>tuple</code> even in this case.</l
 </span><span id="EvalPool-222"><a href="#EvalPool-222"><span class="linenos">222</span></a>                <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
 </span><span id="EvalPool-223"><a href="#EvalPool-223"><span class="linenos">223</span></a>            <span class="k">elif</span> <span class="n">has_truncate_min</span><span class="p">:</span>
 </span><span id="EvalPool-224"><a href="#EvalPool-224"><span class="linenos">224</span></a>                <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-</span><span id="EvalPool-225"><a href="#EvalPool-225"><span class="linenos">225</span></a>            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-226"><a href="#EvalPool-226"><span class="linenos">226</span></a>                <span class="n">num_drop_lowest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_lowest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">())</span>
-</span><span id="EvalPool-227"><a href="#EvalPool-227"><span class="linenos">227</span></a>                <span class="n">num_drop_highest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">num_drop_highest</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pool</span><span class="o">.</span><span class="n">_is_single_roll</span><span class="p">())</span>
-</span><span id="EvalPool-228"><a href="#EvalPool-228"><span class="linenos">228</span></a>                <span class="k">if</span> <span class="n">num_drop_lowest</span> <span class="o">&gt;=</span> <span class="n">num_drop_highest</span><span class="p">:</span>
-</span><span id="EvalPool-229"><a href="#EvalPool-229"><span class="linenos">229</span></a>                    <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="EvalPool-225"><a href="#EvalPool-225"><span class="linenos">225</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="EvalPool-226"><a href="#EvalPool-226"><span class="linenos">226</span></a>                <span class="n">score_ascending</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_direction_score_ascending</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+</span><span id="EvalPool-227"><a href="#EvalPool-227"><span class="linenos">227</span></a>                <span class="n">score_descending</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">_direction_score_descending</span><span class="p">()</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">)</span>
+</span><span id="EvalPool-228"><a href="#EvalPool-228"><span class="linenos">228</span></a>                <span class="k">if</span> <span class="n">score_ascending</span> <span class="o">&lt;</span> <span class="n">score_descending</span><span class="p">:</span>
+</span><span id="EvalPool-229"><a href="#EvalPool-229"><span class="linenos">229</span></a>                    <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 </span><span id="EvalPool-230"><a href="#EvalPool-230"><span class="linenos">230</span></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="EvalPool-231"><a href="#EvalPool-231"><span class="linenos">231</span></a>                    <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-</span><span id="EvalPool-232"><a href="#EvalPool-232"><span class="linenos">232</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="EvalPool-233"><a href="#EvalPool-233"><span class="linenos">233</span></a>                <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="EvalPool-234"><a href="#EvalPool-234"><span class="linenos">234</span></a>        
-</span><span id="EvalPool-235"><a href="#EvalPool-235"><span class="linenos">235</span></a>        <span class="k">if</span> <span class="n">direction</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_min</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_max</span><span class="p">:</span>
-</span><span id="EvalPool-236"><a href="#EvalPool-236"><span class="linenos">236</span></a>            <span class="c1"># Forced onto the less-preferred algorithm.</span>
-</span><span id="EvalPool-237"><a href="#EvalPool-237"><span class="linenos">237</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal_iterative</span><span class="p">,</span> <span class="n">direction</span>
-</span><span id="EvalPool-238"><a href="#EvalPool-238"><span class="linenos">238</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="EvalPool-239"><a href="#EvalPool-239"><span class="linenos">239</span></a>            <span class="c1"># Use the preferred algorithm.</span>
-</span><span id="EvalPool-240"><a href="#EvalPool-240"><span class="linenos">240</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal</span><span class="p">,</span> <span class="n">direction</span>
-</span><span id="EvalPool-241"><a href="#EvalPool-241"><span class="linenos">241</span></a>    
-</span><span id="EvalPool-242"><a href="#EvalPool-242"><span class="linenos">242</span></a>    <span class="k">def</span> <span class="nf">_eval_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-243"><a href="#EvalPool-243"><span class="linenos">243</span></a>        <span class="sd">&quot;&quot;&quot; Internal algorithm for iterating in the more-preferred direction,</span>
-</span><span id="EvalPool-244"><a href="#EvalPool-244"><span class="linenos">244</span></a><span class="sd">        i.e. giving outcomes to `next_state()` from wide to narrow. </span>
+</span><span id="EvalPool-231"><a href="#EvalPool-231"><span class="linenos">231</span></a>                    <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="EvalPool-232"><a href="#EvalPool-232"><span class="linenos">232</span></a>        
+</span><span id="EvalPool-233"><a href="#EvalPool-233"><span class="linenos">233</span></a>        <span class="k">if</span> <span class="n">direction</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_min</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">has_truncate_max</span><span class="p">:</span>
+</span><span id="EvalPool-234"><a href="#EvalPool-234"><span class="linenos">234</span></a>            <span class="c1"># Forced onto the less-preferred algorithm.</span>
+</span><span id="EvalPool-235"><a href="#EvalPool-235"><span class="linenos">235</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal_iterative</span><span class="p">,</span> <span class="n">direction</span>
+</span><span id="EvalPool-236"><a href="#EvalPool-236"><span class="linenos">236</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="EvalPool-237"><a href="#EvalPool-237"><span class="linenos">237</span></a>            <span class="c1"># Use the preferred algorithm.</span>
+</span><span id="EvalPool-238"><a href="#EvalPool-238"><span class="linenos">238</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal</span><span class="p">,</span> <span class="n">direction</span>
+</span><span id="EvalPool-239"><a href="#EvalPool-239"><span class="linenos">239</span></a>    
+</span><span id="EvalPool-240"><a href="#EvalPool-240"><span class="linenos">240</span></a>    <span class="k">def</span> <span class="nf">_eval_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="EvalPool-241"><a href="#EvalPool-241"><span class="linenos">241</span></a>        <span class="sd">&quot;&quot;&quot; Internal algorithm for iterating in the more-preferred direction,</span>
+</span><span id="EvalPool-242"><a href="#EvalPool-242"><span class="linenos">242</span></a><span class="sd">        i.e. giving outcomes to `next_state()` from wide to narrow. </span>
+</span><span id="EvalPool-243"><a href="#EvalPool-243"><span class="linenos">243</span></a><span class="sd">        </span>
+</span><span id="EvalPool-244"><a href="#EvalPool-244"><span class="linenos">244</span></a><span class="sd">        All intermediate return values are cached in the instance.</span>
 </span><span id="EvalPool-245"><a href="#EvalPool-245"><span class="linenos">245</span></a><span class="sd">        </span>
-</span><span id="EvalPool-246"><a href="#EvalPool-246"><span class="linenos">246</span></a><span class="sd">        All intermediate return values are cached in the instance.</span>
-</span><span id="EvalPool-247"><a href="#EvalPool-247"><span class="linenos">247</span></a><span class="sd">        </span>
-</span><span id="EvalPool-248"><a href="#EvalPool-248"><span class="linenos">248</span></a><span class="sd">        Arguments:</span>
-</span><span id="EvalPool-249"><a href="#EvalPool-249"><span class="linenos">249</span></a><span class="sd">            direction: The direction in which to send outcomes to `next_state()`.</span>
-</span><span id="EvalPool-250"><a href="#EvalPool-250"><span class="linenos">250</span></a><span class="sd">            *pools: One or more `DicePool`s to evaluate.</span>
-</span><span id="EvalPool-251"><a href="#EvalPool-251"><span class="linenos">251</span></a><span class="sd">                This *does* change recursively.</span>
-</span><span id="EvalPool-252"><a href="#EvalPool-252"><span class="linenos">252</span></a><span class="sd">            </span>
-</span><span id="EvalPool-253"><a href="#EvalPool-253"><span class="linenos">253</span></a><span class="sd">        Returns:</span>
-</span><span id="EvalPool-254"><a href="#EvalPool-254"><span class="linenos">254</span></a><span class="sd">            A dict `{ state : weight }` describing the probability distribution over states.</span>
-</span><span id="EvalPool-255"><a href="#EvalPool-255"><span class="linenos">255</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="EvalPool-256"><a href="#EvalPool-256"><span class="linenos">256</span></a>        <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">pools</span><span class="p">)</span>
-</span><span id="EvalPool-257"><a href="#EvalPool-257"><span class="linenos">257</span></a>        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
-</span><span id="EvalPool-258"><a href="#EvalPool-258"><span class="linenos">258</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+</span><span id="EvalPool-246"><a href="#EvalPool-246"><span class="linenos">246</span></a><span class="sd">        Arguments:</span>
+</span><span id="EvalPool-247"><a href="#EvalPool-247"><span class="linenos">247</span></a><span class="sd">            direction: The direction in which to send outcomes to `next_state()`.</span>
+</span><span id="EvalPool-248"><a href="#EvalPool-248"><span class="linenos">248</span></a><span class="sd">            *pools: One or more `DicePool`s to evaluate.</span>
+</span><span id="EvalPool-249"><a href="#EvalPool-249"><span class="linenos">249</span></a><span class="sd">                This *does* change recursively.</span>
+</span><span id="EvalPool-250"><a href="#EvalPool-250"><span class="linenos">250</span></a><span class="sd">            </span>
+</span><span id="EvalPool-251"><a href="#EvalPool-251"><span class="linenos">251</span></a><span class="sd">        Returns:</span>
+</span><span id="EvalPool-252"><a href="#EvalPool-252"><span class="linenos">252</span></a><span class="sd">            A dict `{ state : weight }` describing the probability distribution over states.</span>
+</span><span id="EvalPool-253"><a href="#EvalPool-253"><span class="linenos">253</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="EvalPool-254"><a href="#EvalPool-254"><span class="linenos">254</span></a>        <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">pools</span><span class="p">)</span>
+</span><span id="EvalPool-255"><a href="#EvalPool-255"><span class="linenos">255</span></a>        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+</span><span id="EvalPool-256"><a href="#EvalPool-256"><span class="linenos">256</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+</span><span id="EvalPool-257"><a href="#EvalPool-257"><span class="linenos">257</span></a>        
+</span><span id="EvalPool-258"><a href="#EvalPool-258"><span class="linenos">258</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="EvalPool-259"><a href="#EvalPool-259"><span class="linenos">259</span></a>        
-</span><span id="EvalPool-260"><a href="#EvalPool-260"><span class="linenos">260</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span><span id="EvalPool-261"><a href="#EvalPool-261"><span class="linenos">261</span></a>        
-</span><span id="EvalPool-262"><a href="#EvalPool-262"><span class="linenos">262</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-263"><a href="#EvalPool-263"><span class="linenos">263</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span> <span class="kc">None</span> <span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
-</span><span id="EvalPool-264"><a href="#EvalPool-264"><span class="linenos">264</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="EvalPool-265"><a href="#EvalPool-265"><span class="linenos">265</span></a>            <span class="n">outcome</span><span class="p">,</span> <span class="n">iterators</span> <span class="o">=</span> <span class="n">_pop_pools</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">pools</span><span class="p">)</span>
-</span><span id="EvalPool-266"><a href="#EvalPool-266"><span class="linenos">266</span></a>            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">iterators</span><span class="p">):</span>
-</span><span id="EvalPool-267"><a href="#EvalPool-267"><span class="linenos">267</span></a>                <span class="n">prev_pools</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
-</span><span id="EvalPool-268"><a href="#EvalPool-268"><span class="linenos">268</span></a>                <span class="n">prod_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="EvalPool-269"><a href="#EvalPool-269"><span class="linenos">269</span></a>                <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">prev_pools</span><span class="p">)</span>
-</span><span id="EvalPool-270"><a href="#EvalPool-270"><span class="linenos">270</span></a>                <span class="k">for</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">prev_weight</span> <span class="ow">in</span> <span class="n">prev</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="EvalPool-271"><a href="#EvalPool-271"><span class="linenos">271</span></a>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="EvalPool-272"><a href="#EvalPool-272"><span class="linenos">272</span></a>                    <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="EvalPool-273"><a href="#EvalPool-273"><span class="linenos">273</span></a>                        <span class="n">result</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="n">prev_weight</span> <span class="o">*</span> <span class="n">prod_weight</span>
-</span><span id="EvalPool-274"><a href="#EvalPool-274"><span class="linenos">274</span></a>        
-</span><span id="EvalPool-275"><a href="#EvalPool-275"><span class="linenos">275</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
-</span><span id="EvalPool-276"><a href="#EvalPool-276"><span class="linenos">276</span></a>        <span class="k">return</span> <span class="n">result</span>
-</span><span id="EvalPool-277"><a href="#EvalPool-277"><span class="linenos">277</span></a>    
-</span><span id="EvalPool-278"><a href="#EvalPool-278"><span class="linenos">278</span></a>    <span class="k">def</span> <span class="nf">_eval_internal_iterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-279"><a href="#EvalPool-279"><span class="linenos">279</span></a>        <span class="sd">&quot;&quot;&quot; Internal algorithm for iterating in the less-preferred direction,</span>
-</span><span id="EvalPool-280"><a href="#EvalPool-280"><span class="linenos">280</span></a><span class="sd">        i.e. giving outcomes to `next_state()` from narrow to wide.</span>
-</span><span id="EvalPool-281"><a href="#EvalPool-281"><span class="linenos">281</span></a><span class="sd">        </span>
-</span><span id="EvalPool-282"><a href="#EvalPool-282"><span class="linenos">282</span></a><span class="sd">        This algorithm does not perform persistent memoization.</span>
-</span><span id="EvalPool-283"><a href="#EvalPool-283"><span class="linenos">283</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="EvalPool-284"><a href="#EvalPool-284"><span class="linenos">284</span></a>        <span class="n">dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span><span id="EvalPool-285"><a href="#EvalPool-285"><span class="linenos">285</span></a>        <span class="n">dist</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">pools</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="EvalPool-286"><a href="#EvalPool-286"><span class="linenos">286</span></a>        <span class="c1"># This is only safe because all pools are guaranteed to pop outcomes at the same rate.</span>
-</span><span id="EvalPool-287"><a href="#EvalPool-287"><span class="linenos">287</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-288"><a href="#EvalPool-288"><span class="linenos">288</span></a>            <span class="n">next_dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span><span id="EvalPool-289"><a href="#EvalPool-289"><span class="linenos">289</span></a>            <span class="k">for</span> <span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">prev_pools</span><span class="p">),</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="EvalPool-290"><a href="#EvalPool-290"><span class="linenos">290</span></a>                <span class="c1"># The direction flip here is the only purpose of this algorithm.</span>
-</span><span id="EvalPool-291"><a href="#EvalPool-291"><span class="linenos">291</span></a>                <span class="n">outcome</span><span class="p">,</span> <span class="n">iterators</span> <span class="o">=</span> <span class="n">_pop_pools</span><span class="p">(</span><span class="o">-</span><span class="n">direction</span><span class="p">,</span> <span class="n">prev_pools</span><span class="p">)</span>
-</span><span id="EvalPool-292"><a href="#EvalPool-292"><span class="linenos">292</span></a>                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">iterators</span><span class="p">):</span>
-</span><span id="EvalPool-293"><a href="#EvalPool-293"><span class="linenos">293</span></a>                    <span class="n">pools</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
-</span><span id="EvalPool-294"><a href="#EvalPool-294"><span class="linenos">294</span></a>                    <span class="n">prod_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="EvalPool-295"><a href="#EvalPool-295"><span class="linenos">295</span></a>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="EvalPool-296"><a href="#EvalPool-296"><span class="linenos">296</span></a>                    <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="EvalPool-297"><a href="#EvalPool-297"><span class="linenos">297</span></a>                        <span class="n">next_dist</span><span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">pools</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">prod_weight</span>
-</span><span id="EvalPool-298"><a href="#EvalPool-298"><span class="linenos">298</span></a>            <span class="n">dist</span> <span class="o">=</span> <span class="n">next_dist</span>
-</span><span id="EvalPool-299"><a href="#EvalPool-299"><span class="linenos">299</span></a>        <span class="k">return</span> <span class="p">{</span> <span class="n">state</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">}</span>
+</span><span id="EvalPool-260"><a href="#EvalPool-260"><span class="linenos">260</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+</span><span id="EvalPool-261"><a href="#EvalPool-261"><span class="linenos">261</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span> <span class="kc">None</span> <span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span id="EvalPool-262"><a href="#EvalPool-262"><span class="linenos">262</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="EvalPool-263"><a href="#EvalPool-263"><span class="linenos">263</span></a>            <span class="n">outcome</span><span class="p">,</span> <span class="n">iterators</span> <span class="o">=</span> <span class="n">_pop_pools</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">pools</span><span class="p">)</span>
+</span><span id="EvalPool-264"><a href="#EvalPool-264"><span class="linenos">264</span></a>            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">iterators</span><span class="p">):</span>
+</span><span id="EvalPool-265"><a href="#EvalPool-265"><span class="linenos">265</span></a>                <span class="n">prev_pools</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+</span><span id="EvalPool-266"><a href="#EvalPool-266"><span class="linenos">266</span></a>                <span class="n">prod_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="EvalPool-267"><a href="#EvalPool-267"><span class="linenos">267</span></a>                <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_internal</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">prev_pools</span><span class="p">)</span>
+</span><span id="EvalPool-268"><a href="#EvalPool-268"><span class="linenos">268</span></a>                <span class="k">for</span> <span class="n">prev_state</span><span class="p">,</span> <span class="n">prev_weight</span> <span class="ow">in</span> <span class="n">prev</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="EvalPool-269"><a href="#EvalPool-269"><span class="linenos">269</span></a>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="EvalPool-270"><a href="#EvalPool-270"><span class="linenos">270</span></a>                    <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="EvalPool-271"><a href="#EvalPool-271"><span class="linenos">271</span></a>                        <span class="n">result</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="n">prev_weight</span> <span class="o">*</span> <span class="n">prod_weight</span>
+</span><span id="EvalPool-272"><a href="#EvalPool-272"><span class="linenos">272</span></a>        
+</span><span id="EvalPool-273"><a href="#EvalPool-273"><span class="linenos">273</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+</span><span id="EvalPool-274"><a href="#EvalPool-274"><span class="linenos">274</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="EvalPool-275"><a href="#EvalPool-275"><span class="linenos">275</span></a>    
+</span><span id="EvalPool-276"><a href="#EvalPool-276"><span class="linenos">276</span></a>    <span class="k">def</span> <span class="nf">_eval_internal_iterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="EvalPool-277"><a href="#EvalPool-277"><span class="linenos">277</span></a>        <span class="sd">&quot;&quot;&quot; Internal algorithm for iterating in the less-preferred direction,</span>
+</span><span id="EvalPool-278"><a href="#EvalPool-278"><span class="linenos">278</span></a><span class="sd">        i.e. giving outcomes to `next_state()` from narrow to wide.</span>
+</span><span id="EvalPool-279"><a href="#EvalPool-279"><span class="linenos">279</span></a><span class="sd">        </span>
+</span><span id="EvalPool-280"><a href="#EvalPool-280"><span class="linenos">280</span></a><span class="sd">        This algorithm does not perform persistent memoization.</span>
+</span><span id="EvalPool-281"><a href="#EvalPool-281"><span class="linenos">281</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="EvalPool-282"><a href="#EvalPool-282"><span class="linenos">282</span></a>        <span class="n">dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span id="EvalPool-283"><a href="#EvalPool-283"><span class="linenos">283</span></a>        <span class="n">dist</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">pools</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="EvalPool-284"><a href="#EvalPool-284"><span class="linenos">284</span></a>        <span class="c1"># This is only safe because all pools are guaranteed to pop outcomes at the same rate.</span>
+</span><span id="EvalPool-285"><a href="#EvalPool-285"><span class="linenos">285</span></a>        <span class="k">while</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">pool</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">):</span>
+</span><span id="EvalPool-286"><a href="#EvalPool-286"><span class="linenos">286</span></a>            <span class="n">next_dist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span id="EvalPool-287"><a href="#EvalPool-287"><span class="linenos">287</span></a>            <span class="k">for</span> <span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">prev_pools</span><span class="p">),</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="EvalPool-288"><a href="#EvalPool-288"><span class="linenos">288</span></a>                <span class="c1"># The direction flip here is the only purpose of this algorithm.</span>
+</span><span id="EvalPool-289"><a href="#EvalPool-289"><span class="linenos">289</span></a>                <span class="n">outcome</span><span class="p">,</span> <span class="n">iterators</span> <span class="o">=</span> <span class="n">_pop_pools</span><span class="p">(</span><span class="o">-</span><span class="n">direction</span><span class="p">,</span> <span class="n">prev_pools</span><span class="p">)</span>
+</span><span id="EvalPool-290"><a href="#EvalPool-290"><span class="linenos">290</span></a>                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">iterators</span><span class="p">):</span>
+</span><span id="EvalPool-291"><a href="#EvalPool-291"><span class="linenos">291</span></a>                    <span class="n">pools</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+</span><span id="EvalPool-292"><a href="#EvalPool-292"><span class="linenos">292</span></a>                    <span class="n">prod_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="EvalPool-293"><a href="#EvalPool-293"><span class="linenos">293</span></a>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">prev_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="EvalPool-294"><a href="#EvalPool-294"><span class="linenos">294</span></a>                    <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="EvalPool-295"><a href="#EvalPool-295"><span class="linenos">295</span></a>                        <span class="n">next_dist</span><span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">pools</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">prod_weight</span>
+</span><span id="EvalPool-296"><a href="#EvalPool-296"><span class="linenos">296</span></a>            <span class="n">dist</span> <span class="o">=</span> <span class="n">next_dist</span>
+</span><span id="EvalPool-297"><a href="#EvalPool-297"><span class="linenos">297</span></a>        <span class="k">return</span> <span class="p">{</span> <span class="n">state</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">dist</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="p">}</span>
 </span></pre></div>
 
         </details>
@@ -8357,22 +8327,22 @@ a function that takes one argument and sums that many d6s.
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval-351"><a href="#WrapFuncEval-351"><span class="linenos">351</span></a><span class="k">class</span> <span class="nc">WrapFuncEval</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="WrapFuncEval-352"><a href="#WrapFuncEval-352"><span class="linenos">352</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` created from a single provided function.</span>
-</span><span id="WrapFuncEval-353"><a href="#WrapFuncEval-353"><span class="linenos">353</span></a><span class="sd">    </span>
-</span><span id="WrapFuncEval-354"><a href="#WrapFuncEval-354"><span class="linenos">354</span></a><span class="sd">    `next_state()` simply calls that function.</span>
-</span><span id="WrapFuncEval-355"><a href="#WrapFuncEval-355"><span class="linenos">355</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="WrapFuncEval-356"><a href="#WrapFuncEval-356"><span class="linenos">356</span></a>    
-</span><span id="WrapFuncEval-357"><a href="#WrapFuncEval-357"><span class="linenos">357</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="WrapFuncEval-358"><a href="#WrapFuncEval-358"><span class="linenos">358</span></a>        <span class="sd">&quot;&quot;&quot; Constructs a new instance given the function that should be called for `next_state()`.</span>
-</span><span id="WrapFuncEval-359"><a href="#WrapFuncEval-359"><span class="linenos">359</span></a><span class="sd">        Args:</span>
-</span><span id="WrapFuncEval-360"><a href="#WrapFuncEval-360"><span class="linenos">360</span></a><span class="sd">            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,</span>
-</span><span id="WrapFuncEval-361"><a href="#WrapFuncEval-361"><span class="linenos">361</span></a><span class="sd">                and return the next state.</span>
-</span><span id="WrapFuncEval-362"><a href="#WrapFuncEval-362"><span class="linenos">362</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="WrapFuncEval-363"><a href="#WrapFuncEval-363"><span class="linenos">363</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
-</span><span id="WrapFuncEval-364"><a href="#WrapFuncEval-364"><span class="linenos">364</span></a>    
-</span><span id="WrapFuncEval-365"><a href="#WrapFuncEval-365"><span class="linenos">365</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="WrapFuncEval-366"><a href="#WrapFuncEval-366"><span class="linenos">366</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval-349"><a href="#WrapFuncEval-349"><span class="linenos">349</span></a><span class="k">class</span> <span class="nc">WrapFuncEval</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="WrapFuncEval-350"><a href="#WrapFuncEval-350"><span class="linenos">350</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` created from a single provided function.</span>
+</span><span id="WrapFuncEval-351"><a href="#WrapFuncEval-351"><span class="linenos">351</span></a><span class="sd">    </span>
+</span><span id="WrapFuncEval-352"><a href="#WrapFuncEval-352"><span class="linenos">352</span></a><span class="sd">    `next_state()` simply calls that function.</span>
+</span><span id="WrapFuncEval-353"><a href="#WrapFuncEval-353"><span class="linenos">353</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="WrapFuncEval-354"><a href="#WrapFuncEval-354"><span class="linenos">354</span></a>    
+</span><span id="WrapFuncEval-355"><a href="#WrapFuncEval-355"><span class="linenos">355</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="WrapFuncEval-356"><a href="#WrapFuncEval-356"><span class="linenos">356</span></a>        <span class="sd">&quot;&quot;&quot; Constructs a new instance given the function that should be called for `next_state()`.</span>
+</span><span id="WrapFuncEval-357"><a href="#WrapFuncEval-357"><span class="linenos">357</span></a><span class="sd">        Args:</span>
+</span><span id="WrapFuncEval-358"><a href="#WrapFuncEval-358"><span class="linenos">358</span></a><span class="sd">            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,</span>
+</span><span id="WrapFuncEval-359"><a href="#WrapFuncEval-359"><span class="linenos">359</span></a><span class="sd">                and return the next state.</span>
+</span><span id="WrapFuncEval-360"><a href="#WrapFuncEval-360"><span class="linenos">360</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="WrapFuncEval-361"><a href="#WrapFuncEval-361"><span class="linenos">361</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+</span><span id="WrapFuncEval-362"><a href="#WrapFuncEval-362"><span class="linenos">362</span></a>    
+</span><span id="WrapFuncEval-363"><a href="#WrapFuncEval-363"><span class="linenos">363</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="WrapFuncEval-364"><a href="#WrapFuncEval-364"><span class="linenos">364</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -8392,13 +8362,13 @@ a function that takes one argument and sums that many d6s.
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval.__init__-357"><a href="#WrapFuncEval.__init__-357"><span class="linenos">357</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="WrapFuncEval.__init__-358"><a href="#WrapFuncEval.__init__-358"><span class="linenos">358</span></a>        <span class="sd">&quot;&quot;&quot; Constructs a new instance given the function that should be called for `next_state()`.</span>
-</span><span id="WrapFuncEval.__init__-359"><a href="#WrapFuncEval.__init__-359"><span class="linenos">359</span></a><span class="sd">        Args:</span>
-</span><span id="WrapFuncEval.__init__-360"><a href="#WrapFuncEval.__init__-360"><span class="linenos">360</span></a><span class="sd">            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,</span>
-</span><span id="WrapFuncEval.__init__-361"><a href="#WrapFuncEval.__init__-361"><span class="linenos">361</span></a><span class="sd">                and return the next state.</span>
-</span><span id="WrapFuncEval.__init__-362"><a href="#WrapFuncEval.__init__-362"><span class="linenos">362</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="WrapFuncEval.__init__-363"><a href="#WrapFuncEval.__init__-363"><span class="linenos">363</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval.__init__-355"><a href="#WrapFuncEval.__init__-355"><span class="linenos">355</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="WrapFuncEval.__init__-356"><a href="#WrapFuncEval.__init__-356"><span class="linenos">356</span></a>        <span class="sd">&quot;&quot;&quot; Constructs a new instance given the function that should be called for `next_state()`.</span>
+</span><span id="WrapFuncEval.__init__-357"><a href="#WrapFuncEval.__init__-357"><span class="linenos">357</span></a><span class="sd">        Args:</span>
+</span><span id="WrapFuncEval.__init__-358"><a href="#WrapFuncEval.__init__-358"><span class="linenos">358</span></a><span class="sd">            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,</span>
+</span><span id="WrapFuncEval.__init__-359"><a href="#WrapFuncEval.__init__-359"><span class="linenos">359</span></a><span class="sd">                and return the next state.</span>
+</span><span id="WrapFuncEval.__init__-360"><a href="#WrapFuncEval.__init__-360"><span class="linenos">360</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="WrapFuncEval.__init__-361"><a href="#WrapFuncEval.__init__-361"><span class="linenos">361</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="o">=</span> <span class="n">func</span>
 </span></pre></div>
 
         </details>
@@ -8425,8 +8395,8 @@ and return the next state.</li>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval.next_state-365"><a href="#WrapFuncEval.next_state-365"><span class="linenos">365</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="WrapFuncEval.next_state-366"><a href="#WrapFuncEval.next_state-366"><span class="linenos">366</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEval.next_state-363"><a href="#WrapFuncEval.next_state-363"><span class="linenos">363</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="WrapFuncEval.next_state-364"><a href="#WrapFuncEval.next_state-364"><span class="linenos">364</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -8493,18 +8463,18 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool-368"><a href="#SumPool-368"><span class="linenos">368</span></a><span class="k">class</span> <span class="nc">SumPool</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="SumPool-369"><a href="#SumPool-369"><span class="linenos">369</span></a>    <span class="sd">&quot;&quot;&quot; A simple `EvalPool` that just sums the dice in a pool. &quot;&quot;&quot;</span>
-</span><span id="SumPool-370"><a href="#SumPool-370"><span class="linenos">370</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumPool-371"><a href="#SumPool-371"><span class="linenos">371</span></a>        <span class="sd">&quot;&quot;&quot; Add the dice to the running total. &quot;&quot;&quot;</span>
-</span><span id="SumPool-372"><a href="#SumPool-372"><span class="linenos">372</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumPool-373"><a href="#SumPool-373"><span class="linenos">373</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumPool-374"><a href="#SumPool-374"><span class="linenos">374</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumPool-375"><a href="#SumPool-375"><span class="linenos">375</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumPool-376"><a href="#SumPool-376"><span class="linenos">376</span></a>    
-</span><span id="SumPool-377"><a href="#SumPool-377"><span class="linenos">377</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="SumPool-378"><a href="#SumPool-378"><span class="linenos">378</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="SumPool-379"><a href="#SumPool-379"><span class="linenos">379</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool-366"><a href="#SumPool-366"><span class="linenos">366</span></a><span class="k">class</span> <span class="nc">SumPool</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="SumPool-367"><a href="#SumPool-367"><span class="linenos">367</span></a>    <span class="sd">&quot;&quot;&quot; A simple `EvalPool` that just sums the dice in a pool. &quot;&quot;&quot;</span>
+</span><span id="SumPool-368"><a href="#SumPool-368"><span class="linenos">368</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumPool-369"><a href="#SumPool-369"><span class="linenos">369</span></a>        <span class="sd">&quot;&quot;&quot; Add the dice to the running total. &quot;&quot;&quot;</span>
+</span><span id="SumPool-370"><a href="#SumPool-370"><span class="linenos">370</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumPool-371"><a href="#SumPool-371"><span class="linenos">371</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumPool-372"><a href="#SumPool-372"><span class="linenos">372</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumPool-373"><a href="#SumPool-373"><span class="linenos">373</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumPool-374"><a href="#SumPool-374"><span class="linenos">374</span></a>    
+</span><span id="SumPool-375"><a href="#SumPool-375"><span class="linenos">375</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="SumPool-376"><a href="#SumPool-376"><span class="linenos">376</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="SumPool-377"><a href="#SumPool-377"><span class="linenos">377</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
         </details>
@@ -8534,12 +8504,12 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool.next_state-370"><a href="#SumPool.next_state-370"><span class="linenos">370</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumPool.next_state-371"><a href="#SumPool.next_state-371"><span class="linenos">371</span></a>        <span class="sd">&quot;&quot;&quot; Add the dice to the running total. &quot;&quot;&quot;</span>
-</span><span id="SumPool.next_state-372"><a href="#SumPool.next_state-372"><span class="linenos">372</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumPool.next_state-373"><a href="#SumPool.next_state-373"><span class="linenos">373</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumPool.next_state-374"><a href="#SumPool.next_state-374"><span class="linenos">374</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumPool.next_state-375"><a href="#SumPool.next_state-375"><span class="linenos">375</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool.next_state-368"><a href="#SumPool.next_state-368"><span class="linenos">368</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumPool.next_state-369"><a href="#SumPool.next_state-369"><span class="linenos">369</span></a>        <span class="sd">&quot;&quot;&quot; Add the dice to the running total. &quot;&quot;&quot;</span>
+</span><span id="SumPool.next_state-370"><a href="#SumPool.next_state-370"><span class="linenos">370</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumPool.next_state-371"><a href="#SumPool.next_state-371"><span class="linenos">371</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumPool.next_state-372"><a href="#SumPool.next_state-372"><span class="linenos">372</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumPool.next_state-373"><a href="#SumPool.next_state-373"><span class="linenos">373</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
 </span></pre></div>
 
         </details>
@@ -8559,9 +8529,9 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool.direction-377"><a href="#SumPool.direction-377"><span class="linenos">377</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="SumPool.direction-378"><a href="#SumPool.direction-378"><span class="linenos">378</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="SumPool.direction-379"><a href="#SumPool.direction-379"><span class="linenos">379</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumPool.direction-375"><a href="#SumPool.direction-375"><span class="linenos">375</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="SumPool.direction-376"><a href="#SumPool.direction-376"><span class="linenos">376</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="SumPool.direction-377"><a href="#SumPool.direction-377"><span class="linenos">377</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
         </details>
@@ -8605,27 +8575,27 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-384"><a href="#FindBestSet-384"><span class="linenos">384</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestSet-385"><a href="#FindBestSet-385"><span class="linenos">385</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` that takes the best matching set in a pool.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-382"><a href="#FindBestSet-382"><span class="linenos">382</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestSet-383"><a href="#FindBestSet-383"><span class="linenos">383</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` that takes the best matching set in a pool.</span>
+</span><span id="FindBestSet-384"><a href="#FindBestSet-384"><span class="linenos">384</span></a><span class="sd">    </span>
+</span><span id="FindBestSet-385"><a href="#FindBestSet-385"><span class="linenos">385</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
 </span><span id="FindBestSet-386"><a href="#FindBestSet-386"><span class="linenos">386</span></a><span class="sd">    </span>
-</span><span id="FindBestSet-387"><a href="#FindBestSet-387"><span class="linenos">387</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
-</span><span id="FindBestSet-388"><a href="#FindBestSet-388"><span class="linenos">388</span></a><span class="sd">    </span>
-</span><span id="FindBestSet-389"><a href="#FindBestSet-389"><span class="linenos">389</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
-</span><span id="FindBestSet-390"><a href="#FindBestSet-390"><span class="linenos">390</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-391"><a href="#FindBestSet-391"><span class="linenos">391</span></a>    
-</span><span id="FindBestSet-392"><a href="#FindBestSet-392"><span class="linenos">392</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet-393"><a href="#FindBestSet-393"><span class="linenos">393</span></a>        <span class="sd">&quot;&quot;&quot; Replace the last best set if this one is better. </span>
-</span><span id="FindBestSet-394"><a href="#FindBestSet-394"><span class="linenos">394</span></a><span class="sd">        </span>
-</span><span id="FindBestSet-395"><a href="#FindBestSet-395"><span class="linenos">395</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet-396"><a href="#FindBestSet-396"><span class="linenos">396</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-397"><a href="#FindBestSet-397"><span class="linenos">397</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet-398"><a href="#FindBestSet-398"><span class="linenos">398</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet-399"><a href="#FindBestSet-399"><span class="linenos">399</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet-400"><a href="#FindBestSet-400"><span class="linenos">400</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
-</span><span id="FindBestSet-401"><a href="#FindBestSet-401"><span class="linenos">401</span></a>    
-</span><span id="FindBestSet-402"><a href="#FindBestSet-402"><span class="linenos">402</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet-403"><a href="#FindBestSet-403"><span class="linenos">403</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-404"><a href="#FindBestSet-404"><span class="linenos">404</span></a>        <span class="k">return</span> <span class="mi">0</span>
+</span><span id="FindBestSet-387"><a href="#FindBestSet-387"><span class="linenos">387</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
+</span><span id="FindBestSet-388"><a href="#FindBestSet-388"><span class="linenos">388</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-389"><a href="#FindBestSet-389"><span class="linenos">389</span></a>    
+</span><span id="FindBestSet-390"><a href="#FindBestSet-390"><span class="linenos">390</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet-391"><a href="#FindBestSet-391"><span class="linenos">391</span></a>        <span class="sd">&quot;&quot;&quot; Replace the last best set if this one is better. </span>
+</span><span id="FindBestSet-392"><a href="#FindBestSet-392"><span class="linenos">392</span></a><span class="sd">        </span>
+</span><span id="FindBestSet-393"><a href="#FindBestSet-393"><span class="linenos">393</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet-394"><a href="#FindBestSet-394"><span class="linenos">394</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-395"><a href="#FindBestSet-395"><span class="linenos">395</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet-396"><a href="#FindBestSet-396"><span class="linenos">396</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet-397"><a href="#FindBestSet-397"><span class="linenos">397</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet-398"><a href="#FindBestSet-398"><span class="linenos">398</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+</span><span id="FindBestSet-399"><a href="#FindBestSet-399"><span class="linenos">399</span></a>    
+</span><span id="FindBestSet-400"><a href="#FindBestSet-400"><span class="linenos">400</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet-401"><a href="#FindBestSet-401"><span class="linenos">401</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-402"><a href="#FindBestSet-402"><span class="linenos">402</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
         </details>
@@ -8659,15 +8629,15 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-392"><a href="#FindBestSet.next_state-392"><span class="linenos">392</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet.next_state-393"><a href="#FindBestSet.next_state-393"><span class="linenos">393</span></a>        <span class="sd">&quot;&quot;&quot; Replace the last best set if this one is better. </span>
-</span><span id="FindBestSet.next_state-394"><a href="#FindBestSet.next_state-394"><span class="linenos">394</span></a><span class="sd">        </span>
-</span><span id="FindBestSet.next_state-395"><a href="#FindBestSet.next_state-395"><span class="linenos">395</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet.next_state-396"><a href="#FindBestSet.next_state-396"><span class="linenos">396</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.next_state-397"><a href="#FindBestSet.next_state-397"><span class="linenos">397</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-398"><a href="#FindBestSet.next_state-398"><span class="linenos">398</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet.next_state-399"><a href="#FindBestSet.next_state-399"><span class="linenos">399</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-400"><a href="#FindBestSet.next_state-400"><span class="linenos">400</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-390"><a href="#FindBestSet.next_state-390"><span class="linenos">390</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet.next_state-391"><a href="#FindBestSet.next_state-391"><span class="linenos">391</span></a>        <span class="sd">&quot;&quot;&quot; Replace the last best set if this one is better. </span>
+</span><span id="FindBestSet.next_state-392"><a href="#FindBestSet.next_state-392"><span class="linenos">392</span></a><span class="sd">        </span>
+</span><span id="FindBestSet.next_state-393"><a href="#FindBestSet.next_state-393"><span class="linenos">393</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet.next_state-394"><a href="#FindBestSet.next_state-394"><span class="linenos">394</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.next_state-395"><a href="#FindBestSet.next_state-395"><span class="linenos">395</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-396"><a href="#FindBestSet.next_state-396"><span class="linenos">396</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet.next_state-397"><a href="#FindBestSet.next_state-397"><span class="linenos">397</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-398"><a href="#FindBestSet.next_state-398"><span class="linenos">398</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
 </span></pre></div>
 
         </details>
@@ -8689,9 +8659,9 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-402"><a href="#FindBestSet.direction-402"><span class="linenos">402</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet.direction-403"><a href="#FindBestSet.direction-403"><span class="linenos">403</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.direction-404"><a href="#FindBestSet.direction-404"><span class="linenos">404</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-400"><a href="#FindBestSet.direction-400"><span class="linenos">400</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet.direction-401"><a href="#FindBestSet.direction-401"><span class="linenos">401</span></a>        <span class="sd">&quot;&quot;&quot; This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.direction-402"><a href="#FindBestSet.direction-402"><span class="linenos">402</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
         </details>
@@ -8725,37 +8695,37 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-406"><a href="#FindBestRun-406"><span class="linenos">406</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestRun-407"><a href="#FindBestRun-407"><span class="linenos">407</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-404"><a href="#FindBestRun-404"><span class="linenos">404</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestRun-405"><a href="#FindBestRun-405"><span class="linenos">405</span></a>    <span class="sd">&quot;&quot;&quot; A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
+</span><span id="FindBestRun-406"><a href="#FindBestRun-406"><span class="linenos">406</span></a><span class="sd">    </span>
+</span><span id="FindBestRun-407"><a href="#FindBestRun-407"><span class="linenos">407</span></a><span class="sd">    Outcomes must be `int`s.</span>
 </span><span id="FindBestRun-408"><a href="#FindBestRun-408"><span class="linenos">408</span></a><span class="sd">    </span>
-</span><span id="FindBestRun-409"><a href="#FindBestRun-409"><span class="linenos">409</span></a><span class="sd">    Outcomes must be `int`s.</span>
+</span><span id="FindBestRun-409"><a href="#FindBestRun-409"><span class="linenos">409</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
 </span><span id="FindBestRun-410"><a href="#FindBestRun-410"><span class="linenos">410</span></a><span class="sd">    </span>
-</span><span id="FindBestRun-411"><a href="#FindBestRun-411"><span class="linenos">411</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
-</span><span id="FindBestRun-412"><a href="#FindBestRun-412"><span class="linenos">412</span></a><span class="sd">    </span>
-</span><span id="FindBestRun-413"><a href="#FindBestRun-413"><span class="linenos">413</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
-</span><span id="FindBestRun-414"><a href="#FindBestRun-414"><span class="linenos">414</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-415"><a href="#FindBestRun-415"><span class="linenos">415</span></a>    
-</span><span id="FindBestRun-416"><a href="#FindBestRun-416"><span class="linenos">416</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun-417"><a href="#FindBestRun-417"><span class="linenos">417</span></a>        <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun-418"><a href="#FindBestRun-418"><span class="linenos">418</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun-419"><a href="#FindBestRun-419"><span class="linenos">419</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-420"><a href="#FindBestRun-420"><span class="linenos">420</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun-421"><a href="#FindBestRun-421"><span class="linenos">421</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-422"><a href="#FindBestRun-422"><span class="linenos">422</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-423"><a href="#FindBestRun-423"><span class="linenos">423</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-424"><a href="#FindBestRun-424"><span class="linenos">424</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-425"><a href="#FindBestRun-425"><span class="linenos">425</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-426"><a href="#FindBestRun-426"><span class="linenos">426</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-427"><a href="#FindBestRun-427"><span class="linenos">427</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun-428"><a href="#FindBestRun-428"><span class="linenos">428</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
-</span><span id="FindBestRun-429"><a href="#FindBestRun-429"><span class="linenos">429</span></a>        
-</span><span id="FindBestRun-430"><a href="#FindBestRun-430"><span class="linenos">430</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-431"><a href="#FindBestRun-431"><span class="linenos">431</span></a>        <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-432"><a href="#FindBestRun-432"><span class="linenos">432</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-</span><span id="FindBestRun-433"><a href="#FindBestRun-433"><span class="linenos">433</span></a>    
-</span><span id="FindBestRun-434"><a href="#FindBestRun-434"><span class="linenos">434</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-435"><a href="#FindBestRun-435"><span class="linenos">435</span></a>        <span class="sd">&quot;&quot;&quot; This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-436"><a href="#FindBestRun-436"><span class="linenos">436</span></a>        <span class="k">return</span> <span class="mi">1</span>
+</span><span id="FindBestRun-411"><a href="#FindBestRun-411"><span class="linenos">411</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
+</span><span id="FindBestRun-412"><a href="#FindBestRun-412"><span class="linenos">412</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-413"><a href="#FindBestRun-413"><span class="linenos">413</span></a>    
+</span><span id="FindBestRun-414"><a href="#FindBestRun-414"><span class="linenos">414</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun-415"><a href="#FindBestRun-415"><span class="linenos">415</span></a>        <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun-416"><a href="#FindBestRun-416"><span class="linenos">416</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun-417"><a href="#FindBestRun-417"><span class="linenos">417</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-418"><a href="#FindBestRun-418"><span class="linenos">418</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun-419"><a href="#FindBestRun-419"><span class="linenos">419</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-420"><a href="#FindBestRun-420"><span class="linenos">420</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-421"><a href="#FindBestRun-421"><span class="linenos">421</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-422"><a href="#FindBestRun-422"><span class="linenos">422</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-423"><a href="#FindBestRun-423"><span class="linenos">423</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-424"><a href="#FindBestRun-424"><span class="linenos">424</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-425"><a href="#FindBestRun-425"><span class="linenos">425</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun-426"><a href="#FindBestRun-426"><span class="linenos">426</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+</span><span id="FindBestRun-427"><a href="#FindBestRun-427"><span class="linenos">427</span></a>        
+</span><span id="FindBestRun-428"><a href="#FindBestRun-428"><span class="linenos">428</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-429"><a href="#FindBestRun-429"><span class="linenos">429</span></a>        <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-430"><a href="#FindBestRun-430"><span class="linenos">430</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="FindBestRun-431"><a href="#FindBestRun-431"><span class="linenos">431</span></a>    
+</span><span id="FindBestRun-432"><a href="#FindBestRun-432"><span class="linenos">432</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-433"><a href="#FindBestRun-433"><span class="linenos">433</span></a>        <span class="sd">&quot;&quot;&quot; This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-434"><a href="#FindBestRun-434"><span class="linenos">434</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
         </details>
@@ -8791,19 +8761,19 @@ can replace this variadic parameter with a fixed number of named parameters.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-416"><a href="#FindBestRun.next_state-416"><span class="linenos">416</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun.next_state-417"><a href="#FindBestRun.next_state-417"><span class="linenos">417</span></a>        <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun.next_state-418"><a href="#FindBestRun.next_state-418"><span class="linenos">418</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun.next_state-419"><a href="#FindBestRun.next_state-419"><span class="linenos">419</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.next_state-420"><a href="#FindBestRun.next_state-420"><span class="linenos">420</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun.next_state-421"><a href="#FindBestRun.next_state-421"><span class="linenos">421</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-422"><a href="#FindBestRun.next_state-422"><span class="linenos">422</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-423"><a href="#FindBestRun.next_state-423"><span class="linenos">423</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-424"><a href="#FindBestRun.next_state-424"><span class="linenos">424</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-425"><a href="#FindBestRun.next_state-425"><span class="linenos">425</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-426"><a href="#FindBestRun.next_state-426"><span class="linenos">426</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-427"><a href="#FindBestRun.next_state-427"><span class="linenos">427</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun.next_state-428"><a href="#FindBestRun.next_state-428"><span class="linenos">428</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-414"><a href="#FindBestRun.next_state-414"><span class="linenos">414</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun.next_state-415"><a href="#FindBestRun.next_state-415"><span class="linenos">415</span></a>        <span class="sd">&quot;&quot;&quot; Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun.next_state-416"><a href="#FindBestRun.next_state-416"><span class="linenos">416</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun.next_state-417"><a href="#FindBestRun.next_state-417"><span class="linenos">417</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.next_state-418"><a href="#FindBestRun.next_state-418"><span class="linenos">418</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun.next_state-419"><a href="#FindBestRun.next_state-419"><span class="linenos">419</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-420"><a href="#FindBestRun.next_state-420"><span class="linenos">420</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-421"><a href="#FindBestRun.next_state-421"><span class="linenos">421</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-422"><a href="#FindBestRun.next_state-422"><span class="linenos">422</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-423"><a href="#FindBestRun.next_state-423"><span class="linenos">423</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-424"><a href="#FindBestRun.next_state-424"><span class="linenos">424</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-425"><a href="#FindBestRun.next_state-425"><span class="linenos">425</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun.next_state-426"><a href="#FindBestRun.next_state-426"><span class="linenos">426</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -8824,9 +8794,9 @@ then saves the run to the state.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-430"><a href="#FindBestRun.final_outcome-430"><span class="linenos">430</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.final_outcome-431"><a href="#FindBestRun.final_outcome-431"><span class="linenos">431</span></a>        <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.final_outcome-432"><a href="#FindBestRun.final_outcome-432"><span class="linenos">432</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-428"><a href="#FindBestRun.final_outcome-428"><span class="linenos">428</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.final_outcome-429"><a href="#FindBestRun.final_outcome-429"><span class="linenos">429</span></a>        <span class="sd">&quot;&quot;&quot; Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.final_outcome-430"><a href="#FindBestRun.final_outcome-430"><span class="linenos">430</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 </span></pre></div>
 
         </details>
@@ -8846,9 +8816,9 @@ then saves the run to the state.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-434"><a href="#FindBestRun.direction-434"><span class="linenos">434</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.direction-435"><a href="#FindBestRun.direction-435"><span class="linenos">435</span></a>        <span class="sd">&quot;&quot;&quot; This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.direction-436"><a href="#FindBestRun.direction-436"><span class="linenos">436</span></a>        <span class="k">return</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-432"><a href="#FindBestRun.direction-432"><span class="linenos">432</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.direction-433"><a href="#FindBestRun.direction-433"><span class="linenos">433</span></a>        <span class="sd">&quot;&quot;&quot; This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.direction-434"><a href="#FindBestRun.direction-434"><span class="linenos">434</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
         </details>
