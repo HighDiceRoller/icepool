@@ -22,34 +22,56 @@ class BasePool(ABC):
         """ Returns `True` iff this is a single, fixed roll of a pool. """
     
     @abstractmethod
-    def _has_truncate_max(self):
-        """ Returns `True` iff the pool has right-truncation. """
-        
-    @abstractmethod
     def _has_truncate_min(self):
-        """ Returns `True` iff the pool has left-truncation. """
+        """ Returns `True` iff the pool has truncated min outcomes. """
+    
+    @abstractmethod
+    def _has_truncate_max(self):
+        """ Returns `True` iff the pool has truncated max outcomes. """
     
     @abstractmethod
     def outcomes(self):
         """ The outcomes of the fundamental die (including those with zero weight). """
-        
-    @abstractmethod
-    def _max_outcome(self):
-        """ The maximum outcome of the fundamental die. """
-        
+    
     @abstractmethod
     def _min_outcome(self):
         """ The minimum outcome of the fundamental die. """
     
     @abstractmethod
-    def _pop_max(self):
-        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
-        with count and weight corresponding to various numbers of dice rolling that outcome.
+    def _max_outcome(self):
+        """ The maximum outcome of the fundamental die. """
+        
+    @abstractmethod
+    def _direction_score_ascending(self):
+        """ Returns a number indicating how preferred iterating in the ascending direction is.
+        
+        This is only called when there is no truncation.
+        
+        If the pool does not care at all about direction, the result is 0.
+        
+        The collective score is summed.
+        """
+    
+    @abstractmethod
+    def _direction_score_descending(self):
+        """ Returns a number indicating how preferred iterating in the descending direction is.
+        
+        This is only called when there is no truncation.
+        
+        If the pool does not care at all about direction, the result is 0.
+        
+        The collective score is summed.
         """
     
     @abstractmethod
     def _pop_min(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the min outcome,
+        with count and weight corresponding to various numbers of dice rolling that outcome.
+        """
+    
+    @abstractmethod
+    def _pop_max(self):
+        """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
     

@@ -131,7 +131,9 @@ test_pools = [
 
 eval_ascending = SumFixedDirection(1)
 eval_descending = SumFixedDirection(-1)
+eval_auto = SumFixedDirection(0)
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_sum_direction(pool):
     assert eval_ascending.eval(pool).equals(eval_descending.eval(pool))
+    assert eval_ascending.eval(pool).equals(eval_auto.eval(pool))

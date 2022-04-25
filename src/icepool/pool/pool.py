@@ -348,25 +348,25 @@ class DicePool(icepool.BasePool):
     
     @cached_property
     def _num_drop_lowest(self):
+        """ How many elements of count_dice on the low side are falsy. """
         for i, count in enumerate(self.count_dice()):
             if count:
                 return i
         return self.num_dice()
     
-    def num_drop_lowest(self):
-        """ How many elements of count_dice on the low side have a false truth value. """
-        return self._num_drop_lowest
+    def _direction_score_ascending(self):
+        return self._num_drop_lowest * len(self.outcomes())
     
     @cached_property
     def _num_drop_highest(self):
+        """ How many elements of count_dice on the high side are falsy. """
         for i, count in enumerate(reversed(self.count_dice())):
             if count:
                 return i
         return self.num_dice()
     
-    def num_drop_highest(self):
-        """ How many elements of count_dice on the high side have a false truth value. """
-        return self._num_drop_highest
+    def _direction_score_descending(self):
+        return self._num_drop_highest * len(self.outcomes())
     
     def truncate_min(self, always_tuple=False):
         """ A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. 
@@ -429,7 +429,7 @@ class DicePool(icepool.BasePool):
         count = 0
         
         comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
-        end_counted = self.num_dice() - self.num_drop_highest()
+        end_counted = self.num_dice() - self._num_drop_highest
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
             pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_min=popped_truncate_min)
             yield pool, count, weight
@@ -481,7 +481,7 @@ class DicePool(icepool.BasePool):
         count = 0
         
         comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
-        end_counted = self.num_dice() - self.num_drop_lowest()
+        end_counted = self.num_dice() - self._num_drop_lowest
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
             pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_max=popped_truncate_max)
             yield pool, count, weight

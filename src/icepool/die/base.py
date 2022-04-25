@@ -397,7 +397,7 @@ class BaseDie():
     def cond(self, outcome_if_true, outcome_if_false, /):
         """ Conditional operator. Also known as the ternary operator.
         
-        This replaces truthy outcomes to the first argument and falsy outcomes with the second argument.
+        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.
         """
         return self.bool().sub(lambda x: outcome_if_true if x else outcome_if_false)
     

@@ -222,15 +222,13 @@ class EvalPool(ABC):
                 direction = 1
             elif has_truncate_min:
                 direction = -1
-            elif any(not pool._is_single_roll() for pool in pools):
-                num_drop_lowest = max(pool.num_drop_lowest() for pool in pools if not pool._is_single_roll())
-                num_drop_highest = max(pool.num_drop_highest() for pool in pools if not pool._is_single_roll())
-                if num_drop_lowest >= num_drop_highest:
-                    direction = 1
-                else:
-                    direction = -1
             else:
-                direction = 1
+                score_ascending = sum(pool._direction_score_ascending() for pool in pools)
+                score_descending = sum(pool._direction_score_descending() for pool in pools)
+                if score_ascending < score_descending:
+                    direction = -1
+                else:
+                    direction = 1
         
         if direction > 0 and has_truncate_min or direction < 0 and has_truncate_max:
             # Forced onto the less-preferred algorithm.

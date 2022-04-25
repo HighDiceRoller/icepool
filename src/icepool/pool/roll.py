@@ -5,6 +5,7 @@ from icepool.collections import Counts
 
 from collections import defaultdict
 from functools import cached_property
+import math
 
 def _is_dict(arg):
     return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
@@ -37,30 +38,36 @@ class PoolRoll(icepool.BasePool):
 
     def _is_single_roll(self):
         return True
-    
-    def _has_truncate_max(self):
+        
+    def _has_truncate_min(self):
         return False
     
-    def _has_truncate_min(self):
+    def _has_truncate_max(self):
         return False
     
     def outcomes(self):
         return self._data.keys()
     
-    def _max_outcome(self):
-        return self._data.keys()[-1]
-    
     def _min_outcome(self):
         return self._data.keys()[0]
     
-    def _pop_max(self):
-        data = { outcome : count for outcome, count in self._data.items()[:-1] }
-        count = self._data.values()[-1]
-        return (PoolRoll(data), count, 1),
+    def _max_outcome(self):
+        return self._data.keys()[-1]
+        
+    def _direction_score_ascending(self):
+        return 0
+    
+    def _direction_score_descending(self):
+        return 0
     
     def _pop_min(self):
         data = { outcome : count for outcome, count in self._data.items()[1:] }
         count = self._data.values()[0]
+        return (PoolRoll(data), count, 1),
+    
+    def _pop_max(self):
+        data = { outcome : count for outcome, count in self._data.items()[:-1] }
+        count = self._data.values()[-1]
         return (PoolRoll(data), count, 1),
     
     # Forwarding dict-like methods.
