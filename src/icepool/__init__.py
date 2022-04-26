@@ -15,7 +15,7 @@ __docformat__ = 'google'
 # Expose certain names at top-level.
 
 from icepool.die.create import Die, dice_with_common_ndim
-from icepool.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply
+from icepool.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply, cartesian_product
 
 import icepool.die.base
 
@@ -46,7 +46,7 @@ __all__ = ['Die',
     'BaseDie', 'EmptyDie', 'ScalarDie', 'VectorDie',
     'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
-    'apply', 'dice_with_common_ndim',
+    'apply', 'cartesian_product', 'dice_with_common_ndim',
     'Reroll',
     'BasePool',
     'Pool', 'standard_pool', 'DicePool',

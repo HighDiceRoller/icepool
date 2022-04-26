@@ -109,6 +109,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     if len(args) == 0:
         return icepool.EmptyDie()
     elif len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
+        if ndim is not None and args[0].ndim() != ndim:
+            raise ValueError(f'Mismatch between requested ndim={ndim} and die with ndim={args[0].ndim()}')
         # Single unmodified die: just return the existing instance.
         return args[0]
     

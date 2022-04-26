@@ -88,7 +88,7 @@ class VectorDie(icepool.die.base.BaseDie):
     # These apply to a single dimension `i`.
     
     def _apply_to_dim(self, func, i, *args, **kwargs):
-        return func(self[i], *args, **kwargs)
+        return func(self.dim[i], *args, **kwargs)
     
     def median_left(self, i):
         return self._apply_to_dim(icepool.ScalarDie.median_left, i)
@@ -131,13 +131,13 @@ class VectorDie(icepool.die.base.BaseDie):
     # Joint statistics.
     
     def covariance(self, i, j):
-        mean_i = self[i].mean()
-        mean_j = self[j].mean()
+        mean_i = self.dim[i].mean()
+        mean_j = self.dim[j].mean()
         return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight for outcome, weight in self.items()) / self.denominator()
     
     def correlation(self, i, j):
-        sd_i = self[i].standard_deviation()
-        sd_j = self[j].standard_deviation()
+        sd_i = self.dim[i].standard_deviation()
+        sd_j = self.dim[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
     
     def __repr__(self):

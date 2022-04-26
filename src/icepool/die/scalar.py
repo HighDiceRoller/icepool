@@ -172,29 +172,6 @@ class ScalarDie(icepool.die.base.BaseDie):
     def excess_kurtosis(self):
         return self.standardized_moment(4.0) - 3.0
     
-    def cartesian_product(*dice):
-        """
-        Produces a `VectorDie` from the Cartesian product of the input `ScalarDie`.
-        
-        This is usually not recommended, as it takes space and time exponential in the number of dice,
-        while not actually producing any additional information.
-        
-        Args:
-            *dice: Multiple dice or a single iterable of dice.
-        
-        Raises:
-            `TypeError` if any of the input dice are already `VectorDie`.
-        """
-        if any(die.ndim > 1 for die in dice):
-            raise TypeError('cartesian_product() is only valid on ScalarDie.')
-        
-        data = defaultdict(int)
-        for t in itertools.product(*(die.items() for die in dice)):
-            outcomes, weights = zip(*t)
-            data[outcomes] += math.prod(weights)
-        
-        return icepool.Die(data, ndim=len(dice))
-    
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()})'
     
