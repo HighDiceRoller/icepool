@@ -66,8 +66,7 @@ class BaseDie():
             * The `@` operator rolls the left die, then rolls the right die that many times and sums the outcomes.
                 Only the left side will be cast to a die; the right side must already be a die.
             * `==` and `!=` are applied across outcomes like the other operators.
-                Unfortunately this means dice are not hashable by normal means.
-                Custom functions can use `key_tuple()`, `equals()` and `hash()` as workarounds.
+                They also set the truth value of the die according to whether the die themselves are the same.
         """
     
     @abstractmethod
@@ -836,13 +835,19 @@ class BaseDie():
         other = icepool.Die(other, ndim=self.ndim())
         return self._binary_op(other, operator.gt)
     
+    # Equality operators. These additionally set the truth value of the result.
+    
     def __eq__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self._binary_op(other, operator.eq)
+        result = self._binary_op(other, operator.eq)
+        result._truth_value = self.equals(other)
+        return result
     
     def __ne__(self, other):
         other = icepool.Die(other, ndim=self.ndim())
-        return self._binary_op(other, operator.ne)
+        result = self._binary_op(other, operator.ne)
+        result._truth_value = not self.equals(other)
+        return result
     
     @staticmethod
     def _sign(x):
@@ -901,19 +906,16 @@ class BaseDie():
     
     # Invalid operations.
     
-    def __bool__(self):
-        """ Dice are not considered to have truth values. 
-        
-        The result of a comparator operation is a die,
-        which if considered to have a truth value,
-        would imply that dice are sortable by that operator.
-        """
-        raise TypeError('A die does not have a truth value. If this is in the conditional of an if-statement, you probably want to use die.cond() instead.')
-    
     def __reversed__(self):
         raise TypeError('A die cannot be reversed.')
     
     # Equality and hashing.
+    
+    def __bool__(self):
+        if hasattr(self, '_truth_value'):
+            return self._truth_value
+        else:
+            raise ValueError('A die only has a truth value if it is the result of == or !=. If this is in the conditional of an if-statement, you probably want to use die.cond() instead.')
     
     @cached_property
     def _key_tuple(self):
@@ -923,21 +925,22 @@ class BaseDie():
         """ Returns a tuple that uniquely (as `equals()`) identifies this die. """
         return self._key_tuple
 
-    def hash(self):
-        """ A true __hash__ doesn't work because we used the __eq__ operator 
-        for determining the chance two dice will roll equal to each other.
-        """
+    @cached_property
+    def _hash(self):
         return hash(self.key_tuple())
-    
-    __hash__ = None
+        
+    def __hash__(self):
+        return self._hash
     
     def equals(self, other, *, reduce=False):
-        """ Returns `True` iff both dice have the same ndim, outcomes, and weights.
+        """ Returns `True` iff both dice have the same ndim, outcomes, and weights. Truth value does NOT matter.
         
-        Also, if one die has a zero-weight outcome and the other die does not contain that outcome,
+        If one die has a zero-weight outcome and the other die does not contain that outcome,
         they are treated as unequal by this function.
         
-        For the chance of two dice rolling the same outcome, use the `==` operator.
+        The `==` and `!=` operators have a dual purpose; they return a die representing the result of the operator as normal,
+        but the die additionally has a truth value determined by this method.
+        Only dice returned by these methods have a truth value.
         
         Args:
             reduce: If `True`, the dice will be reduced before comparing.
