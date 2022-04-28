@@ -31,7 +31,10 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     Args:
         *args: Each of these arguments can be one of the following:
             * A die. Its current `ndim` will be ignored, but this may change in the future.
+                The outcomes of the die will be "flattened" into the result;
+                a die object will never contain a die as an outcome.
             * A dict-like that maps outcomes to weights.
+                The outcomes of the dict-like will be "flattened" into the result.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
             * A tuple of outcomes. Any arguments that are dice or dicts will expand the tuple
@@ -48,8 +51,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 If you want each element in the sequence to be a separate outcome,
                 you need to unpack it into separate arguments.
         weights: Controls the relative weight of the arguments.
-            If not provided, each argument will end up with the same total weight,
-            unless they have zero weight to begin with.
+            If an argument expands into multiple outcomes, the weight is shared among those outcomes.
+            If not provided, each argument will end up with the same total weight.
             For example, `Die(d6, 7)` is the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
         min_outcome: If used, there must be zero `*args`, and `weights` must be provided.
             The outcomes of the result will be integers starting at `min_outcome`,
@@ -62,7 +65,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
             the result will have that many dimensions.
             Otherwise the result will be scalar.
         denominator_method: How to determine the denominator of the result
-            if the arguments themselves contain weights.
+            if the arguments themselves contain weights. This is also used for dict-like arguments.
             From greatest to least:
             * 'prod': Product of the individual argument denominators, times the total of `weights`.
                 This is like rolling all of the possible dice, and then selecting a result.
