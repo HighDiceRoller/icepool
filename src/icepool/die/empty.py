@@ -8,7 +8,7 @@ class EmptyDie(icepool.die.base.BaseDie):
     """ Die with no outcomes. """
     
     def ndim(self):
-        return 'empty'
+        return icepool.Empty
     
     def __init__(self):
         self._data = Counts({})

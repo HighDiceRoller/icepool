@@ -62,7 +62,7 @@ class VectorDie(icepool.die.base.BaseDie):
         if hasattr(test_select, '__len__'):
             ndim = len(test_select)
         else:
-            ndim = 'scalar'
+            ndim = icepool.Scalar
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[outcome[select]] += weight
@@ -78,11 +78,11 @@ class VectorDie(icepool.die.base.BaseDie):
     
     def all(self):
         """ Returns a die representing whether all dimensions are true. """
-        return self.sub(lambda *outcome: all(outcome), ndim='scalar')
+        return self.sub(lambda *outcome: all(outcome), ndim=icepool.Scalar)
     
     def any(self):
         """ Returns a die representing whether any dimension is true. """
-        return self.sub(lambda *outcome: any(outcome), ndim='scalar')
+        return self.sub(lambda *outcome: any(outcome), ndim=icepool.Scalar)
     
     # Statistics.
     # These apply to a single dimension `i`.

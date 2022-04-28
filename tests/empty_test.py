@@ -13,7 +13,7 @@ empty_dice = [icepool.Die(), icepool.Die(icepool.Reroll), icepool.Die({})]
 def test_create_empty(die):
     result = die
     assert result.is_empty()
-    assert result.ndim() == 'empty'
+    assert result.ndim() == icepool.Empty
 
 def test_op_empty():
     result = icepool.d6 + {}

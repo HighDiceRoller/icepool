@@ -16,7 +16,7 @@ class ScalarDie(icepool.die.base.BaseDie):
     """
     
     def ndim(self):
-        return 'scalar'
+        return icepool.Scalar
     
     def __init__(self, data):
         """ Constructor.
@@ -35,14 +35,14 @@ class ScalarDie(icepool.die.base.BaseDie):
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
-        return icepool.Die(data, ndim='scalar')
+        return icepool.Die(data, ndim=icepool.Scalar)
     
     def _binary_op(self, other, op, *args, **kwargs):
         """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other, weight_other) in itertools.product(self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args, **kwargs)] += weight_self * weight_other
-        return icepool.Die(data, ndim='scalar')
+        return icepool.Die(data, ndim=icepool.Scalar)
     
     def _wrap_unpack(self, func):
         return func

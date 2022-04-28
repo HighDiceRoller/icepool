@@ -37,9 +37,13 @@ from icepool.pool.eval import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBes
 import enum
 
 class SpecialValue(enum.Enum):
-    Reroll = 'Reroll'
+    Reroll = 'Reroll'  # Indicates an outcome should be rerolled (with no max depth).
+    Scalar = 'Scalar'  # A `ndim` indicating a non-vector die.
+    Empty = 'Empty'    # A `ndim` indicating a die with no outcomes.
 
 Reroll = SpecialValue.Reroll
+Scalar = SpecialValue.Scalar
+Empty = SpecialValue.Empty
 
 __all__ = ['Die',
     'standard', 'd', '__getattr__', 'bernoulli', 'coin',
@@ -47,7 +51,7 @@ __all__ = ['Die',
     'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',
     'lowest', 'highest', 'max_outcome', 'min_outcome',
     'apply', 'dice_with_common_ndim',
-    'Reroll',
+    'Reroll', 'Scalar', 'Empty',
     'BasePool',
     'Pool', 'standard_pool', 'DicePool',
     # 'PoolRoll',  # Not needed externally due to implicit casts

@@ -64,10 +64,10 @@ def test_denominator_lcm_weighted():
     assert result.denominator() == 36
 
 def test_scalar_vector():
-    assert icepool.Die({}, ndim='scalar').ndim() == 'empty'
-    assert icepool.Die({}, ndim=3).ndim() == 'empty'
-    assert icepool.Die({icepool.Reroll : 1}, ndim='scalar').ndim() == 'empty'
+    assert icepool.Die({}, ndim=icepool.Scalar).ndim() == icepool.Empty
+    assert icepool.Die({}, ndim=3).ndim() == icepool.Empty
+    assert icepool.Die({icepool.Reroll : 1}, ndim=icepool.Scalar).ndim() == icepool.Empty
     assert icepool.Die((1, 2, 3)).ndim() == 3
-    assert icepool.Die((1, 2, 3), ndim='scalar').ndim() == 'scalar'
-    assert icepool.Die('test').ndim() == 'scalar'
+    assert icepool.Die((1, 2, 3), ndim=icepool.Scalar).ndim() == icepool.Scalar
+    assert icepool.Die('test').ndim() == icepool.Scalar
     

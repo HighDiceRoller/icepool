@@ -41,7 +41,7 @@ class BaseDie():
     def ndim(self):
         """ Returns the number of dimensions if this is a `VectorDie`.
         
-        Otherwise, returns `'scalar'` for a `ScalarDie` and `'empty'` for an `EmptyDie`.
+        Otherwise, returns `'icepool.Scalar'` for a `ScalarDie` and `'icepool.Empty'` for an `EmptyDie`.
         """
     
     # Abstract methods.

@@ -20,7 +20,7 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(weights=[1] * num_sides, min_outcome=1, ndim='scalar')
+    return icepool.Die(weights=[1] * num_sides, min_outcome=1, ndim=icepool.Scalar)
     
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
@@ -54,7 +54,7 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return icepool.Die({False : d - n, True : n}, ndim='scalar')
+    return icepool.Die({False : d - n, True : n}, ndim=icepool.Scalar)
 
 coin = bernoulli
 
@@ -114,7 +114,7 @@ def align(*dice, ndim=None):
 
 def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice, ndim = icepool.dice_with_common_ndim(*dice, ndim='scalar')
+    dice, ndim = icepool.dice_with_common_ndim(*dice, ndim=icepool.Scalar)
     outcomes = tuple(range(icepool.min_outcome(*dice), icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 

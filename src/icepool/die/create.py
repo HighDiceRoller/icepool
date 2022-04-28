@@ -54,7 +54,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         min_outcome: If used, there must be zero `*args`, and `weights` must be provided.
             The outcomes of the result will be integers starting at `min_outcome`,
             one per weight in `weights` with that weight.
-        ndim: If set to `'scalar'`, the die will be scalar.
+        ndim: If set to `icepool.Scalar`, the die will be scalar.
             If set to an `int`, the die will have that many dimensions if the outcomes allow,
                 and raise `ValueError` otherwise.
             If not provided, the number of dimensions will be automatically detected:
@@ -83,7 +83,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
             raise ValueError('If min_outcome is provided, weights must also be provided.')
         if len(args) > 0:
             raise ValueError('If min_outcome is provided, no *args may be used.')
-        if ndim not in [None, 'scalar']:
+        if ndim not in [None, icepool.Scalar]:
             raise ValueError('If min_outcome is provided, the result may only be a scalar die.')
         data = Counts({i + min_outcome : weight for i, weight in enumerate(weights)})
         return icepool.ScalarDie(data)
@@ -117,17 +117,17 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 if ndim is None:
                     ndim = len(outcome)
                 elif ndim != len(outcome):
-                    ndim = 'scalar'
+                    ndim = icepool.Scalar
                     break
             else:
-                ndim = 'scalar'
+                ndim = icepool.Scalar
                 break
-    elif ndim != 'scalar':
+    elif ndim != icepool.Scalar:
         for outcome in data.keys():
             if not _is_tuple(outcome) or len(outcome) != ndim:
                 raise ValueError(f'Outcome {outcome} is incompatible with requested ndim {ndim}')
     
-    if ndim == 'scalar':
+    if ndim == icepool.Scalar:
         data = Counts(data)
         result = icepool.ScalarDie(data)
     else:
@@ -227,6 +227,6 @@ def dice_with_common_ndim(*args, ndim=None):
             return first_pass, first_pass[0].ndim()
         else:
             # Otherwise remake them as scalar.
-            return tuple(Die(arg, ndim='scalar') for die in first_pass), 'scalar'
+            return tuple(Die(arg, ndim=icepool.Scalar) for die in first_pass), icepool.Scalar
     else:
         return tuple(Die(arg, ndim=ndim) for arg in args), ndim
