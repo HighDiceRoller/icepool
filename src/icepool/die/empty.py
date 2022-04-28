@@ -11,6 +11,12 @@ class EmptyDie(icepool.die.base.BaseDie):
         return icepool.Empty
     
     def __init__(self):
+        """ Constructor.
+        
+        Dice should not be constructed directly;
+        instead, use one of the methods defined in `icepool.die.func` 
+        (which are imported into the top-level `icepool` module).
+        """
         self._data = Counts({})
         
     def _unary_op(self, op, *args, **kwargs):
