@@ -37,7 +37,8 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 The outcomes of the dict-like will be "flattened" into the result.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
-            * A tuple of outcomes. Any arguments that are dice or dicts will expand the tuple
+            * A tuple of outcomes. Nesting tuples is not recommended.
+                Any arguments that are dice or dicts will expand the tuple
                 according to their independent joint distribution.
                 For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.
                 Use this sparingly since it may create a large number of outcomes.
@@ -60,7 +61,7 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         ndim: If set to `icepool.Scalar`, the die will be scalar.
             If set to an `int`, the die will have that many dimensions if the outcomes allow,
                 and raise `ValueError` otherwise.
-            If not provided, the number of dimensions will be automatically detected:
+            If `None` (default), the number of dimensions will be automatically detected:
             If all arguments are `tuple`s of the same length,
             the result will have that many dimensions.
             Otherwise the result will be scalar.
