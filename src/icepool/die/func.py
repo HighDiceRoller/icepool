@@ -145,25 +145,3 @@ def apply(func, *dice, ndim=None):
             final_weights.append(final_weight)
     
     return icepool.Die(*final_outcomes, weights=final_weights, ndim=ndim)
-
-def cartesian_product(*dice):
-    """
-    Produces a `VectorDie` from the Cartesian product of the input `ScalarDie`s.
-    
-    This is usually not recommended, as it takes space and time exponential in the number of dice,
-    while not actually producing any additional information.
-    
-    Args:
-        *dice: Multiple dice or a single iterable of dice.
-    
-    Raises:
-        `ValueError` if any of the input dice are already `VectorDie`.
-    """
-    dice = [icepool.Die(die, ndim='scalar') for die in dice]
-    
-    data = defaultdict(int)
-    for t in itertools.product(*(die.items() for die in dice)):
-        outcomes, weights = zip(*t)
-        data[outcomes] += math.prod(weights)
-    
-    return icepool.Die(data, ndim=len(dice))

@@ -4,6 +4,7 @@ import icepool
 from icepool.collections import Counts
 
 from collections import defaultdict
+import itertools
 import math
 
 def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lcm'):
@@ -29,6 +30,16 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     
     Args:
         *args: Each of these arguments can be one of the following:
+            * A die. Its current `ndim` will be ignored, but this may change in the future.
+            * A dict-like that maps outcomes to weights.
+                This option will be taken in preference to treating the dict-like itself as an outcome
+                even if the dict-like itself is hashable and comparable.
+            * A tuple of outcomes. Any arguments that are dice or dicts will expand the tuple
+                according to their independent joint distribution.
+                For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.
+                Use this sparingly since it may create a large number of outcomes.
+            * `icepool.Reroll`, which will drop itself
+                and the corresponding element of `weights` from consideration.
             * A single outcome, which must be hashable and comparable.
                 The same outcome can appear multiple times,
                 in which case it will be weighted proportionally higher.
@@ -36,29 +47,17 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 Note: An argument that is a sequence will be treated as a single outcome.
                 If you want each element in the sequence to be a separate outcome,
                 you need to unpack it into separate arguments.
-            * A die. The `ndim` of the die must be preserved, or this is a `ValueError`.
-                The outcomes of the die will be "flattened" in the result die.
-            * A dict-like that maps outcomes to weights.
-                This option will be taken in preference to treating the dict-like itself as an outcome
-                even if the dict-like itself is hashable and comparable.
-                
-                Not recommended options:
-                
-                * If you want to use the dict-like itself as an outcome, wrap it in another dict.
-                * The dict itself can contain `icepool.Reroll`.
-                    This will only reroll within the dict, not the entire construction.
-            * `icepool.Reroll`, which will drop itself
-                and the corresponding element of `weights` from consideration.
         weights: Controls the relative weight of the arguments.
             If not provided, each argument will end up with the same total weight,
             unless they have zero weight to begin with.
             For example, `Die(d6, 7)` is the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
-        min_outcome: If used, there must be zero `*args` and `weights` must be provided.
+        min_outcome: If used, there must be zero `*args`, and `weights` must be provided.
             The outcomes of the result will be integers starting at `min_outcome`,
             one per weight in `weights` with that weight.
-        ndim: If set to `'scalar'`, the die will be forced to be scalar.
-            If set to an `int`, the die will be forced to be vector with that number of dimensions.
-            If not provided, this will be automatically detected.
+        ndim: If set to `'scalar'`, the die will be scalar.
+            If set to an `int`, the die will have that many dimensions if the outcomes allow,
+                and raise `ValueError` otherwise.
+            If not provided, the number of dimensions will be automatically detected:
             If all arguments are `tuple`s of the same length,
             the result will have that many dimensions.
             Otherwise the result will be scalar.
@@ -74,11 +73,11 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 is used to help determine the result of the selected argument.
             * 'reduce': `reduce()` is called at the end.
     Raises:
-        `ValueError` if `ndim` is set but is not consistent with `*args`,
-            or there is a mismatch between the `ndim` of die arguments.
+        `ValueError` if `ndim` is set but is not consistent with `*args`.
             Furthermore, `None` is not a valid outcome for a die.
     """
     
+    # Special case: consecutive outcomes.
     if min_outcome is not None:
         if weights is None:
             raise ValueError('If min_outcome is provided, weights must also be provided.')
@@ -95,16 +94,6 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     else:
         weights = (1,) * len(args)
     
-    # Remove rerolls.
-    args_weights = tuple(zip(*((arg, weight) for arg, weight in zip(args, weights) if arg is not icepool.Reroll)))
-    if len(args_weights) == 0:
-        args, weights = (), ()
-    else:
-        args, weights = args_weights
-    for arg in args:
-        if _is_dict(arg) and icepool.Reroll in arg:
-            del arg[icepool.Reroll]
-    
     # Special cases.
     if len(args) == 0:
         return icepool.EmptyDie()
@@ -114,42 +103,35 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         # Single unmodified die: just return the existing instance.
         return args[0]
     
-    # Total weights.
-    arg_denominators = [_arg_denominator(arg) for arg in args]
-    
-    if denominator_method == 'prod':
-        denominator_prod = math.prod(d for d in arg_denominators if d > 0)
-    elif denominator_method == 'lcm':
-        denominator_prod = math.lcm(*(d for d in arg_denominators if d > 0))
-    elif denominator_method in ['lcm_weighted', 'reduce']:
-        denominator_prod = math.lcm(*(d // math.gcd(d, w) for d, w in zip(arg_denominators, weights) if d > 0))
-    else:
-        raise ValueError(f'Invalid denominator_method {denominator_method}.')
-    
-    # Compute ndim.
-    ndim = _calc_ndim(*args, ndim=ndim)
-    
-    # Make data.
-    data = defaultdict(int)
-    for arg, arg_denominator, w in zip(args, arg_denominators, weights):
-        factor = denominator_prod * w // arg_denominator if arg_denominator else 0
-        if _is_die(arg) or _is_dict(arg):
-            for outcome, weight in arg.items():
-                data[outcome] += weight * factor
-        else:
-            data[arg] += factor
+    # Expand data.
+    subdatas = [_expand(arg, denominator_method) for arg in args]
+    data = _merge_subdatas(subdatas, weights, denominator_method)
     
     if len(data) == 0:
         return icepool.EmptyDie()
     
-    for arg in args:
-        ndim = _arg_ndim(arg, ndim)
+    # Compute ndim.
+    if ndim == None:
+        for outcome in data.keys():
+            if _is_tuple(outcome):
+                if ndim is None:
+                    ndim = len(outcome)
+                elif ndim != len(outcome):
+                    ndim = 'scalar'
+                    break
+            else:
+                ndim = 'scalar'
+                break
+    elif ndim != 'scalar':
+        for outcome in data.keys():
+            if not _is_tuple(outcome) or len(outcome) != ndim:
+                raise ValueError(f'Outcome {outcome} is incompatible with requested ndim {ndim}')
     
     if ndim == 'scalar':
         data = Counts(data)
         result = icepool.ScalarDie(data)
     else:
-        data = Counts({ tuple(k) : v for k, v in data.items() })
+        data = Counts(data)
         result = icepool.VectorDie(data, ndim)
     
     if denominator_method == 'reduce':
@@ -157,75 +139,70 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     
     return result
 
+def _expand(arg, denominator_method):
+    """ Expands the argument to a dict mapping outcomes to weights.
+    
+    The outcomes are valid outcomes for a die.
+    """
+    if _is_die(arg):
+        return _expand_die(arg)
+    elif _is_dict(arg):
+        return _expand_dict(arg, denominator_method)
+    elif _is_tuple(arg):
+        return _expand_tuple(arg, denominator_method)
+    else:
+        return _expand_scalar(arg)
+
 def _is_die(arg):
     return isinstance(arg, icepool.BaseDie)
 
-def _is_dict(arg):
-    return hasattr(arg, 'keys') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
+def _expand_die(arg):
+    return arg._data
 
+def _is_dict(arg):
+    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
+    
+def _expand_dict(arg, denominator_method):
+    subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
+    weights = [x for x in arg.values()]
+    return _merge_subdatas(subdatas, weights, denominator_method)
+    
 def _is_tuple(arg):
     return type(arg) is tuple
 
-def _arg_denominator(arg):
-    if _is_die(arg):
-        return arg.denominator()
-    elif _is_dict(arg):
-        return sum(arg.values())
+def _expand_tuple(arg, denominator_method):
+    subdatas = [_expand(x, denominator_method) for x in arg]
+    data = defaultdict(int)
+    for t in itertools.product(*(subdata.items() for subdata in subdatas)):
+        outcomes, weights = zip(*t)
+        data[outcomes] += math.prod(weights)
+    return data
+    
+def _expand_scalar(arg):
+    if arg is icepool.Reroll:
+        return {}
     else:
-        return 1
+        return { arg : 1 }
 
-def _calc_ndim(*args, ndim):
-    """ Computes the common `ndim` of the arguments. 
+def _merge_subdatas(subdatas, weights, denominator_method):
+    subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
     
-    Args:
-        *args: Args to find the common `ndim` of.
-        ndim: The required ndim of the results.
-    
-    Returns:
-        The common `ndim` of the arguments.  
-        May return `None` if no `ndim` is found.
-    
-    Raises:
-        `ValueError` if the arguments include conflicting `ndim`s.
-    """
-    for arg in args:
-        ndim = _arg_ndim(arg, ndim)
-    return ndim 
-
-def _arg_ndim(arg, ndim):
-    """ Checks the ndim of a single argument. """
-    if _is_die(arg):
-        if arg.is_empty():
-            return ndim
-        elif ndim is None:
-            return arg.ndim()
-        elif arg.ndim() != ndim:
-            raise ValueError(f'Argument die has ndim={arg.ndim()} inconsistent with other ndim={ndim}.')
-        return ndim
-    elif ndim == 'scalar':
-        return 'scalar'
-    elif _is_dict(arg):
-        for outcome in arg.keys():
-            # No recursion to nested dicts.
-            if _is_tuple(outcome):
-                if ndim is None:
-                    ndim = len(outcome)
-                elif len(outcome) != ndim:
-                    return 'scalar'
-            else:
-                return 'scalar'
-        return ndim
-    elif _is_tuple(arg):
-        # Arg is a sequence.
-        if ndim is None:
-            return len(arg)
-        elif len(arg) != ndim:
-            return 'scalar'
-        else:
-            return ndim
+    if denominator_method == 'prod':
+        denominator_prod = math.prod(d for d in subdata_denominators if d > 0)
+    elif denominator_method == 'lcm':
+        denominator_prod = math.lcm(*(d for d in subdata_denominators if d > 0))
+    elif denominator_method in ['lcm_weighted', 'reduce']:
+        denominator_prod = math.lcm(*(d // math.gcd(d, w) for d, w in zip(subdata_denominators, weights) if d > 0))
     else:
-        # Arg is a scalar.
-        return 'scalar'
+        raise ValueError(f'Invalid denominator_method {denominator_method}.')
+    
+    data = defaultdict(int)
+    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators, weights):
+        factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
+        for outcome, weight in subdata.items():
+            data[outcome] += weight * factor
+    
+    return data
 
 def dice_with_common_ndim(*args, ndim=None):
     """ Converts the arguments to dice with a common `ndim`.
@@ -240,5 +217,16 @@ def dice_with_common_ndim(*args, ndim=None):
     Raises:
         `ValueError` if the arguments include conflicting `ndim`s.
     """
-    ndim = _calc_ndim(*args, ndim=ndim)
-    return tuple(Die(arg, ndim=ndim) for arg in args), ndim
+    if ndim is None:
+        if len(args) == 0:
+            return (), None
+        # First pass: All dice get to be vector if possible.
+        first_pass = tuple(Die(arg) for arg in args)
+        if all(die.ndim() == first_pass[0].ndim() for die in first_pass):
+            # If all dice end up with same ndim, return that.
+            return first_pass, first_pass[0].ndim()
+        else:
+            # Otherwise remake them as scalar.
+            return tuple(Die(arg, ndim='scalar') for die in first_pass), 'scalar'
+    else:
+        return tuple(Die(arg, ndim=ndim) for arg in args), ndim
