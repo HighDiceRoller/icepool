@@ -85,17 +85,12 @@ class ScalarDie(icepool.die.base.BaseDie):
             raise TypeError(f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.')
         return self.d(other)
     
-    def if_else(self, true_die, false_die, *, ndim=None, denominator_method='lcm'):
-        """ If the result of `self` has a true value, roll `true_die`, else roll `false_die`.
+    def if_else(self, outcome_if_true, outcome_if_false, /, *, ndim=None, denominator_method='lcm'):
+        """ Ternary conditional operator.
         
-        Also known as the ternary conditional operator.
-        
-        Args:
-            true_die: The die to roll if `self.bool()` rolls `True`.
-            false_die: The die to roll if `self.bool()` rolls `False`.
-            denominator_method: As `icepool.Die()`.
+        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.
         """
-        return self.sub(lambda outcome: true_die if bool(outcome) else false_die, ndim=ndim, denominator_method=denominator_method)
+        return self.bool().sub(lambda x: outcome_if_true if x else outcome_if_false, ndim=ndim, denominator_method=denominator_method)
     
     # Statistics.
     

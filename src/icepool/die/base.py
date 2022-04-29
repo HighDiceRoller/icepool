@@ -393,13 +393,6 @@ class BaseDie():
                 data[outcome] += weight
         return icepool.Die(data, ndim=self.ndim())
     
-    def if_else(self, outcome_if_true, outcome_if_false, /):
-        """ Ternary conditional operator.
-        
-        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.
-        """
-        return self.bool().sub(lambda x: outcome_if_true if x else outcome_if_false)
-    
     def set_outcomes(self, outcomes):
         """ Sets the set of outcomes to the argument.
         
