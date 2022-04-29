@@ -75,6 +75,6 @@ def test_sub_fixed_point():
     expected = icepool.Die(1)
     assert result.equals(expected)
 
-def test_cond():
-    assert (icepool.d6 >= 4).cond(icepool.d6, icepool.d6+6).equals(icepool.d12, reduce=True)
-    assert (icepool.d6 - 3).cond(True, False).equals(icepool.d6 != 6, reduce=True)
+def test_if_else():
+    assert (icepool.d6 >= 4).if_else(icepool.d6, icepool.d6+6).equals(icepool.d12, reduce=True)
+    assert (icepool.d6 - 3).if_else(True, False).equals(icepool.d6 != 6, reduce=True)
