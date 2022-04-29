@@ -157,7 +157,7 @@
                                 <a class="function" href="#BaseDie.clip">clip</a>
                         </li>
                         <li>
-                                <a class="function" href="#BaseDie.cond">cond</a>
+                                <a class="function" href="#BaseDie.if_else">if_else</a>
                         </li>
                         <li>
                                 <a class="function" href="#BaseDie.set_outcomes">set_outcomes</a>
@@ -730,7 +730,7 @@ icepool    </h1>
 </span><span id="Die-37"><a href="#Die-37"><span class="linenos"> 37</span></a><span class="sd">                The outcomes of the dict-like will be &quot;flattened&quot; into the result.</span>
 </span><span id="Die-38"><a href="#Die-38"><span class="linenos"> 38</span></a><span class="sd">                This option will be taken in preference to treating the dict-like itself as an outcome</span>
 </span><span id="Die-39"><a href="#Die-39"><span class="linenos"> 39</span></a><span class="sd">                even if the dict-like itself is hashable and comparable.</span>
-</span><span id="Die-40"><a href="#Die-40"><span class="linenos"> 40</span></a><span class="sd">            * A tuple of outcomes. Nesting tuples is not recommended.</span>
+</span><span id="Die-40"><a href="#Die-40"><span class="linenos"> 40</span></a><span class="sd">            * A tuple of outcomes. Any inner nested tuples will be treated as scalar.</span>
 </span><span id="Die-41"><a href="#Die-41"><span class="linenos"> 41</span></a><span class="sd">                Any arguments that are dice or dicts will expand the tuple</span>
 </span><span id="Die-42"><a href="#Die-42"><span class="linenos"> 42</span></a><span class="sd">                according to their independent joint distribution.</span>
 </span><span id="Die-43"><a href="#Die-43"><span class="linenos"> 43</span></a><span class="sd">                For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.</span>
@@ -758,83 +758,84 @@ icepool    </h1>
 </span><span id="Die-65"><a href="#Die-65"><span class="linenos"> 65</span></a><span class="sd">            If all arguments are `tuple`s of the same length,</span>
 </span><span id="Die-66"><a href="#Die-66"><span class="linenos"> 66</span></a><span class="sd">            the result will have that many dimensions.</span>
 </span><span id="Die-67"><a href="#Die-67"><span class="linenos"> 67</span></a><span class="sd">            Otherwise the result will be scalar.</span>
-</span><span id="Die-68"><a href="#Die-68"><span class="linenos"> 68</span></a><span class="sd">        denominator_method: How to determine the denominator of the result</span>
-</span><span id="Die-69"><a href="#Die-69"><span class="linenos"> 69</span></a><span class="sd">            if the arguments themselves contain weights. This is also used for dict-like arguments.</span>
-</span><span id="Die-70"><a href="#Die-70"><span class="linenos"> 70</span></a><span class="sd">            From greatest to least:</span>
-</span><span id="Die-71"><a href="#Die-71"><span class="linenos"> 71</span></a><span class="sd">            * &#39;prod&#39;: Product of the individual argument denominators, times the total of `weights`.</span>
-</span><span id="Die-72"><a href="#Die-72"><span class="linenos"> 72</span></a><span class="sd">                This is like rolling all of the possible dice, and then selecting a result.</span>
-</span><span id="Die-73"><a href="#Die-73"><span class="linenos"> 73</span></a><span class="sd">            * &#39;lcm&#39; (default): LCM of the individual argument denominators, times the total of `weights`.</span>
-</span><span id="Die-74"><a href="#Die-74"><span class="linenos"> 74</span></a><span class="sd">                This is like rolling `weights` first, then selecting an argument to roll.</span>
-</span><span id="Die-75"><a href="#Die-75"><span class="linenos"> 75</span></a><span class="sd">            * &#39;lcm_weighted&#39;: LCM of the individual (argument denominators times corresponding element of `weights`).</span>
-</span><span id="Die-76"><a href="#Die-76"><span class="linenos"> 76</span></a><span class="sd">                This is like rolling the above, but the specific weight rolled</span>
-</span><span id="Die-77"><a href="#Die-77"><span class="linenos"> 77</span></a><span class="sd">                is used to help determine the result of the selected argument.</span>
-</span><span id="Die-78"><a href="#Die-78"><span class="linenos"> 78</span></a><span class="sd">            * &#39;reduce&#39;: `reduce()` is called at the end.</span>
-</span><span id="Die-79"><a href="#Die-79"><span class="linenos"> 79</span></a><span class="sd">    Raises:</span>
-</span><span id="Die-80"><a href="#Die-80"><span class="linenos"> 80</span></a><span class="sd">        `ValueError` if `ndim` is set but is not consistent with `*args`.</span>
-</span><span id="Die-81"><a href="#Die-81"><span class="linenos"> 81</span></a><span class="sd">            Furthermore, `None` is not a valid outcome for a die.</span>
-</span><span id="Die-82"><a href="#Die-82"><span class="linenos"> 82</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Die-83"><a href="#Die-83"><span class="linenos"> 83</span></a>    
-</span><span id="Die-84"><a href="#Die-84"><span class="linenos"> 84</span></a>    <span class="c1"># Special case: consecutive outcomes.</span>
-</span><span id="Die-85"><a href="#Die-85"><span class="linenos"> 85</span></a>    <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-86"><a href="#Die-86"><span class="linenos"> 86</span></a>        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-87"><a href="#Die-87"><span class="linenos"> 87</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, weights must also be provided.&#39;</span><span class="p">)</span>
-</span><span id="Die-88"><a href="#Die-88"><span class="linenos"> 88</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-89"><a href="#Die-89"><span class="linenos"> 89</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, no *args may be used.&#39;</span><span class="p">)</span>
-</span><span id="Die-90"><a href="#Die-90"><span class="linenos"> 90</span></a>        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">]:</span>
-</span><span id="Die-91"><a href="#Die-91"><span class="linenos"> 91</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, the result may only be a scalar die.&#39;</span><span class="p">)</span>
-</span><span id="Die-92"><a href="#Die-92"><span class="linenos"> 92</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({</span><span class="n">i</span> <span class="o">+</span> <span class="n">min_outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weights</span><span class="p">)})</span>
-</span><span id="Die-93"><a href="#Die-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="Die-94"><a href="#Die-94"><span class="linenos"> 94</span></a>    
-</span><span id="Die-95"><a href="#Die-95"><span class="linenos"> 95</span></a>    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-96"><a href="#Die-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-</span><span id="Die-97"><a href="#Die-97"><span class="linenos"> 97</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If weights are provided, there must be exactly one weight per argument.&#39;</span><span class="p">)</span>
-</span><span id="Die-98"><a href="#Die-98"><span class="linenos"> 98</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-99"><a href="#Die-99"><span class="linenos"> 99</span></a>        <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-</span><span id="Die-100"><a href="#Die-100"><span class="linenos">100</span></a>    
-</span><span id="Die-101"><a href="#Die-101"><span class="linenos">101</span></a>    <span class="c1"># Special cases.</span>
-</span><span id="Die-102"><a href="#Die-102"><span class="linenos">102</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-103"><a href="#Die-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EmptyDie</span><span class="p">()</span>
-</span><span id="Die-104"><a href="#Die-104"><span class="linenos">104</span></a>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_is_die</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="Die-105"><a href="#Die-105"><span class="linenos">105</span></a>        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="o">!=</span> <span class="n">ndim</span><span class="p">:</span>
-</span><span id="Die-106"><a href="#Die-106"><span class="linenos">106</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch between requested ndim=</span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s1"> and die with ndim=</span><span class="si">{</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="Die-107"><a href="#Die-107"><span class="linenos">107</span></a>        <span class="c1"># Single unmodified die: just return the existing instance.</span>
-</span><span id="Die-108"><a href="#Die-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="Die-109"><a href="#Die-109"><span class="linenos">109</span></a>    
-</span><span id="Die-110"><a href="#Die-110"><span class="linenos">110</span></a>    <span class="c1"># Expand data.</span>
-</span><span id="Die-111"><a href="#Die-111"><span class="linenos">111</span></a>    <span class="n">subdatas</span> <span class="o">=</span> <span class="p">[</span><span class="n">_expand</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">denominator_method</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
-</span><span id="Die-112"><a href="#Die-112"><span class="linenos">112</span></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">_merge_subdatas</span><span class="p">(</span><span class="n">subdatas</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">denominator_method</span><span class="p">)</span>
-</span><span id="Die-113"><a href="#Die-113"><span class="linenos">113</span></a>    
-</span><span id="Die-114"><a href="#Die-114"><span class="linenos">114</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-115"><a href="#Die-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EmptyDie</span><span class="p">()</span>
-</span><span id="Die-116"><a href="#Die-116"><span class="linenos">116</span></a>    
-</span><span id="Die-117"><a href="#Die-117"><span class="linenos">117</span></a>    <span class="c1"># Compute ndim.</span>
-</span><span id="Die-118"><a href="#Die-118"><span class="linenos">118</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-119"><a href="#Die-119"><span class="linenos">119</span></a>        <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-</span><span id="Die-120"><a href="#Die-120"><span class="linenos">120</span></a>            <span class="k">if</span> <span class="n">_is_tuple</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Die-121"><a href="#Die-121"><span class="linenos">121</span></a>                <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-122"><a href="#Die-122"><span class="linenos">122</span></a>                    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="Die-123"><a href="#Die-123"><span class="linenos">123</span></a>                <span class="k">elif</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Die-124"><a href="#Die-124"><span class="linenos">124</span></a>                    <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
-</span><span id="Die-125"><a href="#Die-125"><span class="linenos">125</span></a>                    <span class="k">break</span>
-</span><span id="Die-126"><a href="#Die-126"><span class="linenos">126</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-127"><a href="#Die-127"><span class="linenos">127</span></a>                <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
-</span><span id="Die-128"><a href="#Die-128"><span class="linenos">128</span></a>                <span class="k">break</span>
-</span><span id="Die-129"><a href="#Die-129"><span class="linenos">129</span></a>    <span class="k">elif</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">:</span>
-</span><span id="Die-130"><a href="#Die-130"><span class="linenos">130</span></a>        <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-</span><span id="Die-131"><a href="#Die-131"><span class="linenos">131</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_tuple</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ndim</span><span class="p">:</span>
-</span><span id="Die-132"><a href="#Die-132"><span class="linenos">132</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Outcome </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1"> is incompatible with requested ndim </span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span id="Die-133"><a href="#Die-133"><span class="linenos">133</span></a>    
-</span><span id="Die-134"><a href="#Die-134"><span class="linenos">134</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">:</span>
-</span><span id="Die-135"><a href="#Die-135"><span class="linenos">135</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="Die-136"><a href="#Die-136"><span class="linenos">136</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="Die-137"><a href="#Die-137"><span class="linenos">137</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-138"><a href="#Die-138"><span class="linenos">138</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="Die-139"><a href="#Die-139"><span class="linenos">139</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">VectorDie</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
-</span><span id="Die-140"><a href="#Die-140"><span class="linenos">140</span></a>    
-</span><span id="Die-141"><a href="#Die-141"><span class="linenos">141</span></a>    <span class="k">if</span> <span class="n">denominator_method</span> <span class="o">==</span> <span class="s1">&#39;reduce&#39;</span><span class="p">:</span>
-</span><span id="Die-142"><a href="#Die-142"><span class="linenos">142</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
-</span><span id="Die-143"><a href="#Die-143"><span class="linenos">143</span></a>    
-</span><span id="Die-144"><a href="#Die-144"><span class="linenos">144</span></a>    <span class="k">return</span> <span class="n">result</span>
+</span><span id="Die-68"><a href="#Die-68"><span class="linenos"> 68</span></a><span class="sd">            Regardless of `ndim`, any inner nested tuples will be treated as scalar.</span>
+</span><span id="Die-69"><a href="#Die-69"><span class="linenos"> 69</span></a><span class="sd">        denominator_method: How to determine the denominator of the result</span>
+</span><span id="Die-70"><a href="#Die-70"><span class="linenos"> 70</span></a><span class="sd">            if the arguments themselves contain weights. This is also used for dict-like arguments.</span>
+</span><span id="Die-71"><a href="#Die-71"><span class="linenos"> 71</span></a><span class="sd">            From greatest to least:</span>
+</span><span id="Die-72"><a href="#Die-72"><span class="linenos"> 72</span></a><span class="sd">            * &#39;prod&#39;: Product of the individual argument denominators, times the total of `weights`.</span>
+</span><span id="Die-73"><a href="#Die-73"><span class="linenos"> 73</span></a><span class="sd">                This is like rolling all of the possible dice, and then selecting a result.</span>
+</span><span id="Die-74"><a href="#Die-74"><span class="linenos"> 74</span></a><span class="sd">            * &#39;lcm&#39; (default): LCM of the individual argument denominators, times the total of `weights`.</span>
+</span><span id="Die-75"><a href="#Die-75"><span class="linenos"> 75</span></a><span class="sd">                This is like rolling `weights` first, then selecting an argument to roll.</span>
+</span><span id="Die-76"><a href="#Die-76"><span class="linenos"> 76</span></a><span class="sd">            * &#39;lcm_weighted&#39;: LCM of the individual (argument denominators times corresponding element of `weights`).</span>
+</span><span id="Die-77"><a href="#Die-77"><span class="linenos"> 77</span></a><span class="sd">                This is like rolling the above, but the specific weight rolled</span>
+</span><span id="Die-78"><a href="#Die-78"><span class="linenos"> 78</span></a><span class="sd">                is used to help determine the result of the selected argument.</span>
+</span><span id="Die-79"><a href="#Die-79"><span class="linenos"> 79</span></a><span class="sd">            * &#39;reduce&#39;: `reduce()` is called at the end.</span>
+</span><span id="Die-80"><a href="#Die-80"><span class="linenos"> 80</span></a><span class="sd">    Raises:</span>
+</span><span id="Die-81"><a href="#Die-81"><span class="linenos"> 81</span></a><span class="sd">        `ValueError` if `ndim` is set but is not consistent with `*args`.</span>
+</span><span id="Die-82"><a href="#Die-82"><span class="linenos"> 82</span></a><span class="sd">            Furthermore, `None` is not a valid outcome for a die.</span>
+</span><span id="Die-83"><a href="#Die-83"><span class="linenos"> 83</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Die-84"><a href="#Die-84"><span class="linenos"> 84</span></a>    
+</span><span id="Die-85"><a href="#Die-85"><span class="linenos"> 85</span></a>    <span class="c1"># Special case: consecutive outcomes.</span>
+</span><span id="Die-86"><a href="#Die-86"><span class="linenos"> 86</span></a>    <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-87"><a href="#Die-87"><span class="linenos"> 87</span></a>        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-88"><a href="#Die-88"><span class="linenos"> 88</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, weights must also be provided.&#39;</span><span class="p">)</span>
+</span><span id="Die-89"><a href="#Die-89"><span class="linenos"> 89</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-90"><a href="#Die-90"><span class="linenos"> 90</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, no *args may be used.&#39;</span><span class="p">)</span>
+</span><span id="Die-91"><a href="#Die-91"><span class="linenos"> 91</span></a>        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">]:</span>
+</span><span id="Die-92"><a href="#Die-92"><span class="linenos"> 92</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If min_outcome is provided, the result may only be a scalar die.&#39;</span><span class="p">)</span>
+</span><span id="Die-93"><a href="#Die-93"><span class="linenos"> 93</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">({</span><span class="n">i</span> <span class="o">+</span> <span class="n">min_outcome</span> <span class="p">:</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weights</span><span class="p">)})</span>
+</span><span id="Die-94"><a href="#Die-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Die-95"><a href="#Die-95"><span class="linenos"> 95</span></a>    
+</span><span id="Die-96"><a href="#Die-96"><span class="linenos"> 96</span></a>    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-97"><a href="#Die-97"><span class="linenos"> 97</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+</span><span id="Die-98"><a href="#Die-98"><span class="linenos"> 98</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If weights are provided, there must be exactly one weight per argument.&#39;</span><span class="p">)</span>
+</span><span id="Die-99"><a href="#Die-99"><span class="linenos"> 99</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-100"><a href="#Die-100"><span class="linenos">100</span></a>        <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</span><span id="Die-101"><a href="#Die-101"><span class="linenos">101</span></a>    
+</span><span id="Die-102"><a href="#Die-102"><span class="linenos">102</span></a>    <span class="c1"># Special cases.</span>
+</span><span id="Die-103"><a href="#Die-103"><span class="linenos">103</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-104"><a href="#Die-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EmptyDie</span><span class="p">()</span>
+</span><span id="Die-105"><a href="#Die-105"><span class="linenos">105</span></a>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_is_die</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="Die-106"><a href="#Die-106"><span class="linenos">106</span></a>        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="o">!=</span> <span class="n">ndim</span><span class="p">:</span>
+</span><span id="Die-107"><a href="#Die-107"><span class="linenos">107</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch between requested ndim=</span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s1"> and die with ndim=</span><span class="si">{</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="Die-108"><a href="#Die-108"><span class="linenos">108</span></a>        <span class="c1"># Single unmodified die: just return the existing instance.</span>
+</span><span id="Die-109"><a href="#Die-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="Die-110"><a href="#Die-110"><span class="linenos">110</span></a>    
+</span><span id="Die-111"><a href="#Die-111"><span class="linenos">111</span></a>    <span class="c1"># Expand data.</span>
+</span><span id="Die-112"><a href="#Die-112"><span class="linenos">112</span></a>    <span class="n">subdatas</span> <span class="o">=</span> <span class="p">[</span><span class="n">_expand</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">denominator_method</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+</span><span id="Die-113"><a href="#Die-113"><span class="linenos">113</span></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">_merge_subdatas</span><span class="p">(</span><span class="n">subdatas</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">denominator_method</span><span class="p">)</span>
+</span><span id="Die-114"><a href="#Die-114"><span class="linenos">114</span></a>    
+</span><span id="Die-115"><a href="#Die-115"><span class="linenos">115</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-116"><a href="#Die-116"><span class="linenos">116</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">EmptyDie</span><span class="p">()</span>
+</span><span id="Die-117"><a href="#Die-117"><span class="linenos">117</span></a>    
+</span><span id="Die-118"><a href="#Die-118"><span class="linenos">118</span></a>    <span class="c1"># Compute ndim.</span>
+</span><span id="Die-119"><a href="#Die-119"><span class="linenos">119</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-120"><a href="#Die-120"><span class="linenos">120</span></a>        <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span id="Die-121"><a href="#Die-121"><span class="linenos">121</span></a>            <span class="k">if</span> <span class="n">_is_tuple</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Die-122"><a href="#Die-122"><span class="linenos">122</span></a>                <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-123"><a href="#Die-123"><span class="linenos">123</span></a>                    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Die-124"><a href="#Die-124"><span class="linenos">124</span></a>                <span class="k">elif</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Die-125"><a href="#Die-125"><span class="linenos">125</span></a>                    <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
+</span><span id="Die-126"><a href="#Die-126"><span class="linenos">126</span></a>                    <span class="k">break</span>
+</span><span id="Die-127"><a href="#Die-127"><span class="linenos">127</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-128"><a href="#Die-128"><span class="linenos">128</span></a>                <span class="n">ndim</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
+</span><span id="Die-129"><a href="#Die-129"><span class="linenos">129</span></a>                <span class="k">break</span>
+</span><span id="Die-130"><a href="#Die-130"><span class="linenos">130</span></a>    <span class="k">elif</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">:</span>
+</span><span id="Die-131"><a href="#Die-131"><span class="linenos">131</span></a>        <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span id="Die-132"><a href="#Die-132"><span class="linenos">132</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_tuple</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ndim</span><span class="p">:</span>
+</span><span id="Die-133"><a href="#Die-133"><span class="linenos">133</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Outcome </span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1"> is incompatible with requested ndim </span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="Die-134"><a href="#Die-134"><span class="linenos">134</span></a>    
+</span><span id="Die-135"><a href="#Die-135"><span class="linenos">135</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">:</span>
+</span><span id="Die-136"><a href="#Die-136"><span class="linenos">136</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Die-137"><a href="#Die-137"><span class="linenos">137</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ScalarDie</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Die-138"><a href="#Die-138"><span class="linenos">138</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-139"><a href="#Die-139"><span class="linenos">139</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counts</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Die-140"><a href="#Die-140"><span class="linenos">140</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">VectorDie</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="p">)</span>
+</span><span id="Die-141"><a href="#Die-141"><span class="linenos">141</span></a>    
+</span><span id="Die-142"><a href="#Die-142"><span class="linenos">142</span></a>    <span class="k">if</span> <span class="n">denominator_method</span> <span class="o">==</span> <span class="s1">&#39;reduce&#39;</span><span class="p">:</span>
+</span><span id="Die-143"><a href="#Die-143"><span class="linenos">143</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+</span><span id="Die-144"><a href="#Die-144"><span class="linenos">144</span></a>    
+</span><span id="Die-145"><a href="#Die-145"><span class="linenos">145</span></a>    <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
         </details>
@@ -876,7 +877,7 @@ a die object will never contain a die as an outcome.</li>
 The outcomes of the dict-like will be "flattened" into the result.
 This option will be taken in preference to treating the dict-like itself as an outcome
 even if the dict-like itself is hashable and comparable.</li>
-<li>A tuple of outcomes. Nesting tuples is not recommended.
+<li>A tuple of outcomes. Any inner nested tuples will be treated as scalar.
 Any arguments that are dice or dicts will expand the tuple
 according to their independent joint distribution.
 For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.
@@ -904,7 +905,8 @@ If set to an <code>int</code>, the die will have that many dimensions if the out
 If <code>None</code> (default), the number of dimensions will be automatically detected:
 If all arguments are <code>tuple</code>s of the same length,
 the result will have that many dimensions.
-Otherwise the result will be scalar.</li>
+Otherwise the result will be scalar.
+Regardless of <code>ndim</code>, any inner nested tuples will be treated as scalar.</li>
 <li><strong>denominator_method:</strong>  How to determine the denominator of the result
 if the arguments themselves contain weights. This is also used for dict-like arguments.
 From greatest to least:
@@ -1497,8 +1499,8 @@ Furthermore, <code>None</code> is not a valid outcome for a die.</li>
 </span><span id="BaseDie-393"><a href="#BaseDie-393"><span class="linenos">393</span></a>                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
 </span><span id="BaseDie-394"><a href="#BaseDie-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">())</span>
 </span><span id="BaseDie-395"><a href="#BaseDie-395"><span class="linenos">395</span></a>    
-</span><span id="BaseDie-396"><a href="#BaseDie-396"><span class="linenos">396</span></a>    <span class="k">def</span> <span class="nf">cond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="BaseDie-397"><a href="#BaseDie-397"><span class="linenos">397</span></a>        <span class="sd">&quot;&quot;&quot; Conditional operator. Also known as the ternary operator.</span>
+</span><span id="BaseDie-396"><a href="#BaseDie-396"><span class="linenos">396</span></a>    <span class="k">def</span> <span class="nf">if_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="BaseDie-397"><a href="#BaseDie-397"><span class="linenos">397</span></a>        <span class="sd">&quot;&quot;&quot; Ternary conditional operator.</span>
 </span><span id="BaseDie-398"><a href="#BaseDie-398"><span class="linenos">398</span></a><span class="sd">        </span>
 </span><span id="BaseDie-399"><a href="#BaseDie-399"><span class="linenos">399</span></a><span class="sd">        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</span>
 </span><span id="BaseDie-400"><a href="#BaseDie-400"><span class="linenos">400</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -3141,27 +3143,27 @@ If you want to reroll outcomes beyond this range, use <code><a href="#BaseDie.tr
 
 
                             </div>
-                            <div id="BaseDie.cond" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseDie.cond">#&nbsp;&nbsp</a>
+                            <div id="BaseDie.if_else" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#BaseDie.if_else">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">cond</span><span class="signature">(self, outcome_if_true, outcome_if_false, /)</span>:
+            <span class="name">if_else</span><span class="signature">(self, outcome_if_true, outcome_if_false, /)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseDie.cond-396"><a href="#BaseDie.cond-396"><span class="linenos">396</span></a>    <span class="k">def</span> <span class="nf">cond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="BaseDie.cond-397"><a href="#BaseDie.cond-397"><span class="linenos">397</span></a>        <span class="sd">&quot;&quot;&quot; Conditional operator. Also known as the ternary operator.</span>
-</span><span id="BaseDie.cond-398"><a href="#BaseDie.cond-398"><span class="linenos">398</span></a><span class="sd">        </span>
-</span><span id="BaseDie.cond-399"><a href="#BaseDie.cond-399"><span class="linenos">399</span></a><span class="sd">        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</span>
-</span><span id="BaseDie.cond-400"><a href="#BaseDie.cond-400"><span class="linenos">400</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="BaseDie.cond-401"><a href="#BaseDie.cond-401"><span class="linenos">401</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outcome_if_true</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="n">outcome_if_false</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="BaseDie.if_else-396"><a href="#BaseDie.if_else-396"><span class="linenos">396</span></a>    <span class="k">def</span> <span class="nf">if_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="BaseDie.if_else-397"><a href="#BaseDie.if_else-397"><span class="linenos">397</span></a>        <span class="sd">&quot;&quot;&quot; Ternary conditional operator.</span>
+</span><span id="BaseDie.if_else-398"><a href="#BaseDie.if_else-398"><span class="linenos">398</span></a><span class="sd">        </span>
+</span><span id="BaseDie.if_else-399"><a href="#BaseDie.if_else-399"><span class="linenos">399</span></a><span class="sd">        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</span>
+</span><span id="BaseDie.if_else-400"><a href="#BaseDie.if_else-400"><span class="linenos">400</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="BaseDie.if_else-401"><a href="#BaseDie.if_else-401"><span class="linenos">401</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outcome_if_true</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="n">outcome_if_false</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
 
-            <div class="docstring"><p>Conditional operator. Also known as the ternary operator.</p>
+            <div class="docstring"><p>Ternary conditional operator.</p>
 
 <p>This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.</p>
 </div>
@@ -4206,7 +4208,7 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
                 <dd id="EmptyDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
                 <dd id="EmptyDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="EmptyDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
-                <dd id="EmptyDie.cond" class="function"><a href="#BaseDie.cond">cond</a></dd>
+                <dd id="EmptyDie.if_else" class="function"><a href="#BaseDie.if_else">if_else</a></dd>
                 <dd id="EmptyDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="EmptyDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
                 <dd id="EmptyDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
@@ -4991,7 +4993,6 @@ in this case, use <code><a href="#ScalarDie.ppf_left">ppf_left</a></code> or <co
                 <dd id="ScalarDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
                 <dd id="ScalarDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="ScalarDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
-                <dd id="ScalarDie.cond" class="function"><a href="#BaseDie.cond">cond</a></dd>
                 <dd id="ScalarDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="ScalarDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
                 <dd id="ScalarDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
@@ -5747,7 +5748,7 @@ instead, use one of the methods defined in <code>icepool.die.func</code>
                 <dd id="VectorDie.reroll_until" class="function"><a href="#BaseDie.reroll_until">reroll_until</a></dd>
                 <dd id="VectorDie.truncate" class="function"><a href="#BaseDie.truncate">truncate</a></dd>
                 <dd id="VectorDie.clip" class="function"><a href="#BaseDie.clip">clip</a></dd>
-                <dd id="VectorDie.cond" class="function"><a href="#BaseDie.cond">cond</a></dd>
+                <dd id="VectorDie.if_else" class="function"><a href="#BaseDie.if_else">if_else</a></dd>
                 <dd id="VectorDie.set_outcomes" class="function"><a href="#BaseDie.set_outcomes">set_outcomes</a></dd>
                 <dd id="VectorDie.trim" class="function"><a href="#BaseDie.trim">trim</a></dd>
                 <dd id="VectorDie.sub" class="function"><a href="#BaseDie.sub">sub</a></dd>
@@ -6134,32 +6135,32 @@ In particular, for pools use <code><a href="#Pool">icepool.Pool</a></code> and <
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="dice_with_common_ndim-211"><a href="#dice_with_common_ndim-211"><span class="linenos">211</span></a><span class="k">def</span> <span class="nf">dice_with_common_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="dice_with_common_ndim-212"><a href="#dice_with_common_ndim-212"><span class="linenos">212</span></a>    <span class="sd">&quot;&quot;&quot; Converts the arguments to dice with a common `ndim`.</span>
-</span><span id="dice_with_common_ndim-213"><a href="#dice_with_common_ndim-213"><span class="linenos">213</span></a><span class="sd">    </span>
-</span><span id="dice_with_common_ndim-214"><a href="#dice_with_common_ndim-214"><span class="linenos">214</span></a><span class="sd">    Args:</span>
-</span><span id="dice_with_common_ndim-215"><a href="#dice_with_common_ndim-215"><span class="linenos">215</span></a><span class="sd">        *args: Args to be converted to dice.</span>
-</span><span id="dice_with_common_ndim-216"><a href="#dice_with_common_ndim-216"><span class="linenos">216</span></a><span class="sd">        ndim: The required `ndim` of the results.</span>
-</span><span id="dice_with_common_ndim-217"><a href="#dice_with_common_ndim-217"><span class="linenos">217</span></a><span class="sd">    </span>
-</span><span id="dice_with_common_ndim-218"><a href="#dice_with_common_ndim-218"><span class="linenos">218</span></a><span class="sd">    Returns:</span>
-</span><span id="dice_with_common_ndim-219"><a href="#dice_with_common_ndim-219"><span class="linenos">219</span></a><span class="sd">        dice, ndim: A tuple containing one die per arg, and the common `ndim`,</span>
-</span><span id="dice_with_common_ndim-220"><a href="#dice_with_common_ndim-220"><span class="linenos">220</span></a><span class="sd">    </span>
-</span><span id="dice_with_common_ndim-221"><a href="#dice_with_common_ndim-221"><span class="linenos">221</span></a><span class="sd">    Raises:</span>
-</span><span id="dice_with_common_ndim-222"><a href="#dice_with_common_ndim-222"><span class="linenos">222</span></a><span class="sd">        `ValueError` if the arguments include conflicting `ndim`s.</span>
-</span><span id="dice_with_common_ndim-223"><a href="#dice_with_common_ndim-223"><span class="linenos">223</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="dice_with_common_ndim-224"><a href="#dice_with_common_ndim-224"><span class="linenos">224</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="dice_with_common_ndim-225"><a href="#dice_with_common_ndim-225"><span class="linenos">225</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="dice_with_common_ndim-226"><a href="#dice_with_common_ndim-226"><span class="linenos">226</span></a>            <span class="k">return</span> <span class="p">(),</span> <span class="kc">None</span>
-</span><span id="dice_with_common_ndim-227"><a href="#dice_with_common_ndim-227"><span class="linenos">227</span></a>        <span class="c1"># First pass: All dice get to be vector if possible.</span>
-</span><span id="dice_with_common_ndim-228"><a href="#dice_with_common_ndim-228"><span class="linenos">228</span></a>        <span class="n">first_pass</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-</span><span id="dice_with_common_ndim-229"><a href="#dice_with_common_ndim-229"><span class="linenos">229</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="o">==</span> <span class="n">first_pass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">first_pass</span><span class="p">):</span>
-</span><span id="dice_with_common_ndim-230"><a href="#dice_with_common_ndim-230"><span class="linenos">230</span></a>            <span class="c1"># If all dice end up with same ndim, return that.</span>
-</span><span id="dice_with_common_ndim-231"><a href="#dice_with_common_ndim-231"><span class="linenos">231</span></a>            <span class="k">return</span> <span class="n">first_pass</span><span class="p">,</span> <span class="n">first_pass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span>
-</span><span id="dice_with_common_ndim-232"><a href="#dice_with_common_ndim-232"><span class="linenos">232</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="dice_with_common_ndim-233"><a href="#dice_with_common_ndim-233"><span class="linenos">233</span></a>            <span class="c1"># Otherwise remake them as scalar.</span>
-</span><span id="dice_with_common_ndim-234"><a href="#dice_with_common_ndim-234"><span class="linenos">234</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">first_pass</span><span class="p">),</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
-</span><span id="dice_with_common_ndim-235"><a href="#dice_with_common_ndim-235"><span class="linenos">235</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="dice_with_common_ndim-236"><a href="#dice_with_common_ndim-236"><span class="linenos">236</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">),</span> <span class="n">ndim</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="dice_with_common_ndim-212"><a href="#dice_with_common_ndim-212"><span class="linenos">212</span></a><span class="k">def</span> <span class="nf">dice_with_common_ndim</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="dice_with_common_ndim-213"><a href="#dice_with_common_ndim-213"><span class="linenos">213</span></a>    <span class="sd">&quot;&quot;&quot; Converts the arguments to dice with a common `ndim`.</span>
+</span><span id="dice_with_common_ndim-214"><a href="#dice_with_common_ndim-214"><span class="linenos">214</span></a><span class="sd">    </span>
+</span><span id="dice_with_common_ndim-215"><a href="#dice_with_common_ndim-215"><span class="linenos">215</span></a><span class="sd">    Args:</span>
+</span><span id="dice_with_common_ndim-216"><a href="#dice_with_common_ndim-216"><span class="linenos">216</span></a><span class="sd">        *args: Args to be converted to dice.</span>
+</span><span id="dice_with_common_ndim-217"><a href="#dice_with_common_ndim-217"><span class="linenos">217</span></a><span class="sd">        ndim: The required `ndim` of the results.</span>
+</span><span id="dice_with_common_ndim-218"><a href="#dice_with_common_ndim-218"><span class="linenos">218</span></a><span class="sd">    </span>
+</span><span id="dice_with_common_ndim-219"><a href="#dice_with_common_ndim-219"><span class="linenos">219</span></a><span class="sd">    Returns:</span>
+</span><span id="dice_with_common_ndim-220"><a href="#dice_with_common_ndim-220"><span class="linenos">220</span></a><span class="sd">        dice, ndim: A tuple containing one die per arg, and the common `ndim`,</span>
+</span><span id="dice_with_common_ndim-221"><a href="#dice_with_common_ndim-221"><span class="linenos">221</span></a><span class="sd">    </span>
+</span><span id="dice_with_common_ndim-222"><a href="#dice_with_common_ndim-222"><span class="linenos">222</span></a><span class="sd">    Raises:</span>
+</span><span id="dice_with_common_ndim-223"><a href="#dice_with_common_ndim-223"><span class="linenos">223</span></a><span class="sd">        `ValueError` if the arguments include conflicting `ndim`s.</span>
+</span><span id="dice_with_common_ndim-224"><a href="#dice_with_common_ndim-224"><span class="linenos">224</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="dice_with_common_ndim-225"><a href="#dice_with_common_ndim-225"><span class="linenos">225</span></a>    <span class="k">if</span> <span class="n">ndim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="dice_with_common_ndim-226"><a href="#dice_with_common_ndim-226"><span class="linenos">226</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="dice_with_common_ndim-227"><a href="#dice_with_common_ndim-227"><span class="linenos">227</span></a>            <span class="k">return</span> <span class="p">(),</span> <span class="kc">None</span>
+</span><span id="dice_with_common_ndim-228"><a href="#dice_with_common_ndim-228"><span class="linenos">228</span></a>        <span class="c1"># First pass: All dice get to be vector if possible.</span>
+</span><span id="dice_with_common_ndim-229"><a href="#dice_with_common_ndim-229"><span class="linenos">229</span></a>        <span class="n">first_pass</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+</span><span id="dice_with_common_ndim-230"><a href="#dice_with_common_ndim-230"><span class="linenos">230</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="o">==</span> <span class="n">first_pass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">first_pass</span><span class="p">):</span>
+</span><span id="dice_with_common_ndim-231"><a href="#dice_with_common_ndim-231"><span class="linenos">231</span></a>            <span class="c1"># If all dice end up with same ndim, return that.</span>
+</span><span id="dice_with_common_ndim-232"><a href="#dice_with_common_ndim-232"><span class="linenos">232</span></a>            <span class="k">return</span> <span class="n">first_pass</span><span class="p">,</span> <span class="n">first_pass</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ndim</span><span class="p">()</span>
+</span><span id="dice_with_common_ndim-233"><a href="#dice_with_common_ndim-233"><span class="linenos">233</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="dice_with_common_ndim-234"><a href="#dice_with_common_ndim-234"><span class="linenos">234</span></a>            <span class="c1"># Otherwise remake them as scalar.</span>
+</span><span id="dice_with_common_ndim-235"><a href="#dice_with_common_ndim-235"><span class="linenos">235</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">first_pass</span><span class="p">),</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Scalar</span>
+</span><span id="dice_with_common_ndim-236"><a href="#dice_with_common_ndim-236"><span class="linenos">236</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="dice_with_common_ndim-237"><a href="#dice_with_common_ndim-237"><span class="linenos">237</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Die</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">),</span> <span class="n">ndim</span>
 </span></pre></div>
 
         </details>
