@@ -1,3 +1,10 @@
+## 0.9.0
+
+* Die and dict arguments to `Die()` are now expanded, including when nested.
+* Add `Die.if_else()` method, which acts as a ternary conditional operator on outcomes.
+* Dice are now hashable. `==` and `!=` return dice with truth values based on whether the two dice have identical outcomes and weights.
+* `ndim` now uses singletons `icepool.Scalar` and `icepool.Empty`.
+
 ## 0.8.0
 
 * `EvalPool.eval()` can now be provided with single rolls of a pool.
