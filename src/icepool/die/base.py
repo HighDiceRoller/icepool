@@ -915,7 +915,7 @@ class BaseDie():
         if hasattr(self, '_truth_value'):
             return self._truth_value
         else:
-            raise ValueError('A die only has a truth value if it is the result of == or !=. If this is in the conditional of an if-statement, you probably want to use die.cond() instead.')
+            raise ValueError('A die only has a truth value if it is the result of == or !=. If this is in the conditional of an if-statement, you probably want to use die.if_else() instead.')
     
     @cached_property
     def _key_tuple(self):
