@@ -37,14 +37,16 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
                 The outcomes of the dict-like will be "flattened" into the result.
                 This option will be taken in preference to treating the dict-like itself as an outcome
                 even if the dict-like itself is hashable and comparable.
-            * A tuple of outcomes. Any inner nested tuples will be treated as scalar.
+            * A tuple of outcomes, which produces a joint distribution.
+                Any inner nested tuples will be treated as scalar.
                 Any arguments that are dice or dicts will expand the tuple
                 according to their independent joint distribution.
                 For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.
                 Use this sparingly since it may create a large number of outcomes.
             * `icepool.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
-            * A single outcome, which must be hashable and comparable.
+            * Anything else will be treated as a single outcome.
+                These must be hashable and mutually comparable with all other outcomes (after expansion).
                 The same outcome can appear multiple times,
                 in which case it will be weighted proportionally higher.
             
