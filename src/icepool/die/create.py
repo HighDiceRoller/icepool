@@ -33,6 +33,8 @@ def Die(*args,
     * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
     * Give the faces as args: `Die(1, 2, 3, 4, 5, 6)`
     
+    All weights must be non-negative, though they can be zero.
+    
     Args:
         *args: Each of these arguments can be one of the following:
             * A die. Its current `ndim` will be ignored, but this may change in 
@@ -224,6 +226,8 @@ def _expand_scalar(arg):
 
 
 def _merge_subdatas(subdatas, weights, denominator_method):
+    if any(x < 0 for x in weights):
+        raise ValueError('Weights cannot be negative.')
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
 
     if denominator_method == 'prod':

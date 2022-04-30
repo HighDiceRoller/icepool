@@ -70,4 +70,10 @@ def test_scalar_vector():
     assert icepool.Die((1, 2, 3)).ndim() == 3
     assert icepool.Die((1, 2, 3), ndim=icepool.Scalar).ndim() == icepool.Scalar
     assert icepool.Die('test').ndim() == icepool.Scalar
+
+def test_negative_weight_exception():
+    with pytest.raises(ValueError):
+        icepool.Die({1: -1})
     
+    with pytest.raises(ValueError):
+        icepool.Die(1, weights=[-1])
