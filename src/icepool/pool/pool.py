@@ -8,7 +8,13 @@ from collections import defaultdict
 from functools import cached_property
 import math
 
-def Pool(die, num_dice=None, count_dice=None, *, truncate_min=None, truncate_max=None):
+
+def Pool(die,
+         num_dice=None,
+         count_dice=None,
+         *,
+         truncate_min=None,
+         truncate_max=None):
     """ Factory function for `DicePool`.
     
     This should be used in conjunction with `EvalPool` to generate a result.
@@ -50,22 +56,25 @@ def Pool(die, num_dice=None, count_dice=None, *, truncate_min=None, truncate_max
         if both `truncate_min` and `truncate_max` are provided,
         or if truncation would produce an empty die.
     """
-    
+
     if truncate_min is not None and truncate_max is not None:
-        raise ValueError('A pool cannot have both truncate_min and truncate_max.')
-    
+        raise ValueError(
+            'A pool cannot have both truncate_min and truncate_max.')
+
     # Compute num_dice and count_dice.
-    
+
     for seq in (truncate_min, truncate_max):
         if hasattr(seq, '__len__'):
             if num_dice is not None and num_dice != len(seq):
-                raise ValueError('Conflicting values for the number of dice: ' +
-                    f'num_dice={num_dice}, truncate_min={truncate_min}, truncate_max={truncate_max}')
+                raise ValueError(
+                    'Conflicting values for the number of dice: ' +
+                    f'num_dice={num_dice}, truncate_min={truncate_min}, truncate_max={truncate_max}'
+                )
             else:
                 num_dice = len(seq)
-    
+
     convert_to_die = isinstance(count_dice, int)
-    
+
     if num_dice is None:
         # Default to zero dice, unless count_dice has something to say.
         count_dice = count_dice_tuple(0, count_dice)
@@ -74,12 +83,14 @@ def Pool(die, num_dice=None, count_dice=None, *, truncate_min=None, truncate_max
         # Must match num_dice.
         count_dice = count_dice_tuple(num_dice, count_dice)
         if len(count_dice) != num_dice:
-            raise ValueError(f'The length of count_dice={count_dice} conflicts with num_dice={num_dice}.')
-    
+            raise ValueError(
+                f'The length of count_dice={count_dice} conflicts with num_dice={num_dice}.'
+            )
+
     # Put truncation into standard form.
     # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
     # Values will also be clipped to the range of the fundamental die.
-    
+
     if num_dice == 0:
         truncate_min = None
         truncate_max = None
@@ -87,27 +98,33 @@ def Pool(die, num_dice=None, count_dice=None, *, truncate_min=None, truncate_max
         if truncate_min is not None:
             if max(truncate_min) > die.min_outcome():
                 if min(truncate_min) < die.min_outcome():
-                    raise ValueError('truncate_min cannot be < the min_outcome of the die.')
+                    raise ValueError(
+                        'truncate_min cannot be < the min_outcome of the die.')
                 # We can't truncate the die to truncate_min since it may upset the iteration order.
-                truncate_min = tuple(sorted(die.nearest_ge(outcome) for outcome in truncate_min))
+                truncate_min = tuple(
+                    sorted(die.nearest_ge(outcome) for outcome in truncate_min))
             else:
                 # In this case, the truncate_min don't actually do anything.
                 truncate_min = None
         if truncate_max is not None:
             if min(truncate_max) < die.max_outcome():
                 if max(truncate_max) > die.max_outcome():
-                    raise ValueError('truncate_max cannot be > the max_outcome of the die.')
+                    raise ValueError(
+                        'truncate_max cannot be > the max_outcome of the die.')
                 # We can't truncate the die to truncate_max since it may upset the iteration order.
-                truncate_max = tuple(sorted(die.nearest_le(outcome) for outcome in truncate_max))
+                truncate_max = tuple(
+                    sorted(die.nearest_le(outcome) for outcome in truncate_max))
             else:
                 # In this case, the truncate_max don't actually do anything.
                 truncate_max = None
-    
+
     result = _pool_cached_unchecked(die, count_dice, truncate_min, truncate_max)
     if convert_to_die:
-        return result.eval(lambda state, outcome, count: outcome if count else state)
+        return result.eval(lambda state, outcome, count: outcome
+                           if count else state)
     else:
         return result
+
 
 def count_dice_tuple(num_dice, count_dice):
     """ Expresses `count_dice` as a tuple.
@@ -143,13 +160,15 @@ def count_dice_tuple(num_dice, count_dice):
                 if split is None:
                     split = i
                 else:
-                    raise ValueError('Cannot use more than one Ellipsis (...) for count_dice.')
+                    raise ValueError(
+                        'Cannot use more than one Ellipsis (...) for count_dice.'
+                    )
 
         if split is None:
             return tuple(count_dice)
-        
+
         extra_dice = num_dice - len(count_dice) + 1
-        
+
         if split == 0:
             # Ellipsis on left.
             count_dice = count_dice[1:]
@@ -175,11 +194,17 @@ def count_dice_tuple(num_dice, count_dice):
                     result[i] += count_dice[i]
                 return tuple(result)
             else:
-                return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(count_dice[split+1:])
+                return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(
+                    count_dice[split + 1:])
+
 
 _pool_cache = {}
 
-def _pool_cached_unchecked(die, count_dice, truncate_min=None, truncate_max=None):
+
+def _pool_cached_unchecked(die,
+                           count_dice,
+                           truncate_min=None,
+                           truncate_max=None):
     """ Cached, unchecked constructor for dice pools.
     
     This should not be used directly. Use the `Pool()` factory function instead.
@@ -188,9 +213,13 @@ def _pool_cached_unchecked(die, count_dice, truncate_min=None, truncate_max=None
     if key in _pool_cache:
         return _pool_cache[key]
     else:
-        result = DicePool(die, count_dice, truncate_min=truncate_min, truncate_max=truncate_max)
+        result = DicePool(die,
+                          count_dice,
+                          truncate_min=truncate_min,
+                          truncate_max=truncate_max)
     _pool_cache[key] = result
     return result
+
 
 def standard_pool(*die_sizes, count_dice=None):
     """ Creates a pool of standard dice.
@@ -208,7 +237,10 @@ def standard_pool(*die_sizes, count_dice=None):
     """
     if len(die_sizes) == 0:
         return Pool(icepool.d1, num_dice=0)
-    return Pool(icepool.d(max(die_sizes)), count_dice=count_dice, truncate_max=die_sizes)
+    return Pool(icepool.d(max(die_sizes)),
+                count_dice=count_dice,
+                truncate_max=die_sizes)
+
 
 class DicePool(icepool.BasePool):
     """ A pool is a set of (semi-)identical dice that are rolled in no particular order
@@ -222,7 +254,7 @@ class DicePool(icepool.BasePool):
     * Possibly limiting the max or min outcomes of dice in the pool (but not both)
         relative to the fundamental die.
     """
-    
+
     def __init__(self, die, count_dice, *, truncate_min, truncate_max):
         """ Unchecked constructor.
         
@@ -238,31 +270,31 @@ class DicePool(icepool.BasePool):
         self._count_dice = count_dice
         self._truncate_max = truncate_max
         self._truncate_min = truncate_min
-    
+
     def _is_single_roll(self):
         return False
-    
+
     def die(self):
         """ The fundamental die of the pool. """
         return self._die
-    
+
     def outcomes(self):
         return self.die().outcomes()
-        
+
     def _min_outcome(self):
         return self.die().min_outcome()
-    
+
     def _max_outcome(self):
         return self.die().max_outcome()
-        
+
     def count_dice(self):
         """ A tuple indicating how many times each of the dice, sorted from lowest to highest, counts. """
         return self._count_dice
-    
+
     def num_dice(self):
         """ The number of dice in this pool (before dropping or counting multiple times). """
         return len(self._count_dice)
-    
+
     def set_count_dice(self, count_dice):
         """ Returns a pool with the selected dice counted.
         
@@ -332,20 +364,26 @@ class DicePool(icepool.BasePool):
         count_dice = count_dice_tuple(self.num_dice(), count_dice)
         if len(count_dice) != self.num_dice():
             if self.truncate_max() is not None:
-                raise ValueError('Cannot change the size of a pool with truncate_max.')
+                raise ValueError(
+                    'Cannot change the size of a pool with truncate_max.')
             if self.truncate_min() is not None:
-                raise ValueError('Cannot change the size of a pool with truncate_min.')
-        result = _pool_cached_unchecked(self.die(), count_dice=count_dice, truncate_max=self.truncate_max(), truncate_min=self.truncate_min())
+                raise ValueError(
+                    'Cannot change the size of a pool with truncate_min.')
+        result = _pool_cached_unchecked(self.die(),
+                                        count_dice=count_dice,
+                                        truncate_max=self.truncate_max(),
+                                        truncate_min=self.truncate_min())
         if convert_to_die:
-            return result.eval(lambda state, outcome, count: outcome if count else state)
+            return result.eval(lambda state, outcome, count: outcome
+                               if count else state)
         else:
             return result
-    
+
     __getitem__ = set_count_dice
-    
+
     def __iter__(self):
         raise TypeError("'DicePool' object is not iterable")
-    
+
     @cached_property
     def _num_drop_lowest(self):
         """ How many elements of count_dice on the low side are falsy. """
@@ -353,10 +391,10 @@ class DicePool(icepool.BasePool):
             if count:
                 return i
         return self.num_dice()
-    
+
     def _direction_score_ascending(self):
         return self._num_drop_lowest * len(self.outcomes())
-    
+
     @cached_property
     def _num_drop_highest(self):
         """ How many elements of count_dice on the high side are falsy. """
@@ -364,10 +402,10 @@ class DicePool(icepool.BasePool):
             if count:
                 return i
         return self.num_dice()
-    
+
     def _direction_score_descending(self):
         return self._num_drop_highest * len(self.outcomes())
-    
+
     def truncate_min(self, always_tuple=False):
         """ A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. 
         
@@ -378,10 +416,10 @@ class DicePool(icepool.BasePool):
         if self._truncate_min is None and always_tuple:
             return (self.die().min_outcome(),) * self.num_dice()
         return self._truncate_min
-    
+
     def _has_truncate_min(self):
         return self._truncate_min is not None
-    
+
     def truncate_max(self, always_tuple=False):
         """ A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool. 
         
@@ -392,10 +430,10 @@ class DicePool(icepool.BasePool):
         if self._truncate_max is None and always_tuple:
             return (self.die().max_outcome(),) * self.num_dice()
         return self._truncate_max
-    
+
     def _has_truncate_max(self):
         return self._truncate_max is not None
-    
+
     def _iter_pop_min(self):
         """
         Yields:
@@ -407,38 +445,44 @@ class DicePool(icepool.BasePool):
             * count: An `int` indicating the number of selected dice that rolled the removed outcome.
             * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
-        
+
         # The near-duplication of code with pop_max is unfortunate.
         # However, the alternative of reversing the storage order of die_counts and truncate_min seems even worse.
-        
+
         truncate_min = self.truncate_min(always_tuple=True)
-        num_possible_dice = bisect.bisect_right(truncate_min, self.die().min_outcome())
+        num_possible_dice = bisect.bisect_right(truncate_min,
+                                                self.die().min_outcome())
         popped_die, outcome, single_weight = self.die()._pop_min()
-        
+
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
             pool = _pool_cached_unchecked(popped_die, count_dice=())
             remaining_count = sum(self.count_dice())
-            weight = single_weight ** num_possible_dice
+            weight = single_weight**num_possible_dice
             yield pool, remaining_count, weight
             return
-        
+
         # Consider various numbers of dice rolling this outcome.
-        popped_truncate_min = (popped_die.min_outcome(),) * num_possible_dice + truncate_min[num_possible_dice:]
+        popped_truncate_min = (popped_die.min_outcome(
+        ),) * num_possible_dice + truncate_min[num_possible_dice:]
         popped_count_dice = self.count_dice()
         count = 0
-        
+
         comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self._num_drop_highest
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_min=popped_truncate_min)
+            pool = _pool_cached_unchecked(popped_die,
+                                          count_dice=popped_count_dice,
+                                          truncate_min=popped_truncate_min)
             yield pool, count, weight
             count += popped_count_dice[0]
             popped_truncate_min = popped_truncate_min[1:]
             popped_count_dice = popped_count_dice[1:]
-        
+
         if end_counted > num_possible_dice:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_min=popped_truncate_min)
+            pool = _pool_cached_unchecked(popped_die,
+                                          count_dice=popped_count_dice,
+                                          truncate_min=popped_truncate_min)
             yield pool, count, comb_row[-1]
         else:
             # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
@@ -447,10 +491,12 @@ class DicePool(icepool.BasePool):
             for weight in comb_row[end_counted:]:
                 skip_weight *= popped_die.denominator()
                 skip_weight += weight
-            skip_weight *= math.prod(popped_die.weight_ge(min_outcome) for min_outcome in truncate_min[num_possible_dice:])
+            skip_weight *= math.prod(
+                popped_die.weight_ge(min_outcome)
+                for min_outcome in truncate_min[num_possible_dice:])
             pool = _pool_cached_unchecked(popped_die, count_dice=())
             yield pool, count, skip_weight
-    
+
     def _iter_pop_max(self):
         """
         Yields:
@@ -463,34 +509,41 @@ class DicePool(icepool.BasePool):
             * weight: An `int` indicating the weight of that many dice rolling the removed outcome.
         """
         truncate_max = self.truncate_max(always_tuple=True)
-        num_possible_dice = self.num_dice() - bisect.bisect_left(truncate_max, self.die().max_outcome())
+        num_possible_dice = self.num_dice() - bisect.bisect_left(
+            truncate_max,
+            self.die().max_outcome())
         num_unused_dice = self.num_dice() - num_possible_dice
         popped_die, outcome, single_weight = self.die()._pop_max()
-        
+
         if popped_die.is_empty():
             # This is the last outcome. All dice must roll this outcome.
             pool = _pool_cached_unchecked(popped_die, count_dice=())
             remaining_count = sum(self.count_dice())
-            weight = single_weight ** num_possible_dice
+            weight = single_weight**num_possible_dice
             yield pool, remaining_count, weight
             return
-        
+
         # Consider various numbers of dice rolling this outcome.
-        popped_truncate_max = truncate_max[:num_unused_dice] + (popped_die.max_outcome(),) * num_possible_dice
+        popped_truncate_max = truncate_max[:num_unused_dice] + (
+            popped_die.max_outcome(),) * num_possible_dice
         popped_count_dice = self.count_dice()
         count = 0
-        
+
         comb_row = icepool.math.comb_row(num_possible_dice, single_weight)
         end_counted = self.num_dice() - self._num_drop_lowest
         for weight in comb_row[:min(num_possible_dice, end_counted)]:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_max=popped_truncate_max)
+            pool = _pool_cached_unchecked(popped_die,
+                                          count_dice=popped_count_dice,
+                                          truncate_max=popped_truncate_max)
             yield pool, count, weight
             count += popped_count_dice[-1]
             popped_truncate_max = popped_truncate_max[:-1]
             popped_count_dice = popped_count_dice[:-1]
-        
+
         if end_counted > num_possible_dice:
-            pool = _pool_cached_unchecked(popped_die, count_dice=popped_count_dice, truncate_max=popped_truncate_max)
+            pool = _pool_cached_unchecked(popped_die,
+                                          count_dice=popped_count_dice,
+                                          truncate_max=popped_truncate_max)
             yield pool, count, comb_row[-1]
         else:
             # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
@@ -499,41 +552,43 @@ class DicePool(icepool.BasePool):
             for weight in comb_row[end_counted:]:
                 skip_weight *= popped_die.denominator()
                 skip_weight += weight
-            skip_weight *= math.prod(popped_die.weight_le(max_outcome) for max_outcome in truncate_max[:num_unused_dice])
+            skip_weight *= math.prod(
+                popped_die.weight_le(max_outcome)
+                for max_outcome in truncate_max[:num_unused_dice])
             pool = _pool_cached_unchecked(popped_die, count_dice=())
             yield pool, count, skip_weight
-    
+
     @cached_property
     def _popped_min(self):
         if self.truncate_max() is not None:
             raise ValueError('pop_min is not valid with truncate_min.')
         return tuple(self._iter_pop_min())
-    
+
     def _pop_min(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the min outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._popped_min
-        
+
     @cached_property
     def _popped_max(self):
         if self.truncate_min() is not None:
             raise ValueError('pop_max is not valid with truncate_min.')
         return tuple(self._iter_pop_max())
-    
+
     def _pop_max(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
         return self._popped_max
-        
+
     def has_counted_dice(self):
         """ Returns `True` iff any of the remaining dice are counted a nonzero number of times.
         
         This is used to skip to the base case when there are no more dice to consider.
         """
         return any(self.count_dice())
-    
+
     def sample(self):
         """ Samples a roll from this pool.
         
@@ -541,7 +596,8 @@ class DicePool(icepool.BasePool):
             A dict mapping outcomes to counts representing a single roll of this pool.
         """
         raw_rolls = []
-        for min_outcome, max_outcome in zip(self.truncate_min(True), self.truncate_max(True)):
+        for min_outcome, max_outcome in zip(self.truncate_min(True),
+                                            self.truncate_max(True)):
             die = self.die().truncate(min_outcome, max_outcome)
             raw_rolls.append(die.sample())
         raw_rolls = sorted(raw_rolls)
@@ -549,21 +605,28 @@ class DicePool(icepool.BasePool):
         for roll, count in zip(raw_rolls, self.count_dice()):
             data[roll] += count
         return data
-    
+
     @cached_property
     def _key_tuple(self):
-        return self.die().key_tuple(), self.count_dice(), self.truncate_min(), self.truncate_max()
-    
+        return self.die().key_tuple(), self.count_dice(), self.truncate_min(
+        ), self.truncate_max()
+
     def __eq__(self, other):
-        if not isinstance(other, DicePool): return False
+        if not isinstance(other, DicePool):
+            return False
         return self._key_tuple == other._key_tuple
-    
+
     @cached_property
     def _hash(self):
         return hash(self._key_tuple)
-        
+
     def __hash__(self):
         return self._hash
 
     def __str__(self):
-        return '\n'.join([str(self.die()), str(self.count_dice()), str(self.truncate_min()), str(self.truncate_max())])
+        return '\n'.join([
+            str(self.die()),
+            str(self.count_dice()),
+            str(self.truncate_min()),
+            str(self.truncate_max())
+        ])

@@ -6,6 +6,7 @@ from collections import defaultdict
 import itertools
 import math
 
+
 def standard(num_sides):
     """ A standard die.
     
@@ -20,8 +21,11 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(weights=[1] * num_sides, min_outcome=1, ndim=icepool.Scalar)
-    
+    return icepool.Die(weights=[1] * num_sides,
+                       min_outcome=1,
+                       ndim=icepool.Scalar)
+
+
 def d(arg):
     """ Converts the argument to a standard die if it is not already a die.
     
@@ -43,6 +47,7 @@ def d(arg):
     else:
         raise TypeError('The argument to d() must be an int or a die.')
 
+
 def __getattr__(key):
     """ Implements the `dX` syntax for standard die with no parentheses, e.g. `icepool.d6`. """
     if key[0] == 'd':
@@ -52,11 +57,14 @@ def __getattr__(key):
             pass
     raise AttributeError(key)
 
+
 def bernoulli(n, d):
     """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return icepool.Die({False : d - n, True : n}, ndim=icepool.Scalar)
+    return icepool.Die({False: d - n, True: n}, ndim=icepool.Scalar)
+
 
 coin = bernoulli
+
 
 def from_cweights(outcomes, cweights, *, ndim=None):
     """ Constructs a die from cumulative weights. """
@@ -66,7 +74,8 @@ def from_cweights(outcomes, cweights, *, ndim=None):
         d[outcome] = weight - prev
         prev = weight
     return icepool.Die(d, ndim=ndim)
-    
+
+
 def from_sweights(outcomes, sweights, *, ndim=None):
     """ Constructs a die from survival weights. """
     prev = 0
@@ -75,6 +84,7 @@ def from_sweights(outcomes, sweights, *, ndim=None):
         d[outcome] = weight - prev
         prev = weight
     return icepool.Die(d, ndim=ndim)
+
 
 def from_rv(rv, outcomes, denominator, **kwargs):
     """ Constructs a die from a rv object (as `scipy.stats`).
@@ -89,11 +99,13 @@ def from_rv(rv, outcomes, denominator, **kwargs):
         # Continuous distributions use midpoints.
         midpoints = [(a + b) / 2 for a, b in zip(outcomes[:-1], outcomes[1:])]
         cdf = rv.cdf(midpoints, **kwargs)
-        cweights = tuple(int(round(x * denominator)) for x in cdf) + (denominator,)
+        cweights = tuple(
+            int(round(x * denominator)) for x in cdf) + (denominator,)
     else:
         cdf = rv.cdf(outcomes, **kwargs)
         cweights = tuple(int(round(x * denominator)) for x in cdf)
     return from_cweights(outcomes, cweights)
+
 
 def align(*dice, ndim=None):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
@@ -109,14 +121,19 @@ def align(*dice, ndim=None):
         `ValueError` if the dice are of mixed ndims.
     """
     dice, ndim = icepool.dice_with_common_ndim(*dice)
-    outcomes = set(itertools.chain.from_iterable(die.outcomes() for die in dice))
+    outcomes = set(itertools.chain.from_iterable(
+        die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
+
 
 def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
     dice, ndim = icepool.dice_with_common_ndim(*dice, ndim=icepool.Scalar)
-    outcomes = tuple(range(icepool.min_outcome(*dice), icepool.max_outcome(*dice) + 1))
+    outcomes = tuple(
+        range(icepool.min_outcome(*dice),
+              icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
+
 
 def apply(func, *dice, ndim=None):
     """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
@@ -143,5 +160,5 @@ def apply(func, *dice, ndim=None):
         if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)
             final_weights.append(final_weight)
-    
+
     return icepool.Die(*final_outcomes, weights=final_weights, ndim=ndim)

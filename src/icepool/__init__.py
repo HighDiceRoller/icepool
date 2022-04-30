@@ -36,24 +36,60 @@ from icepool.pool.eval import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBes
 
 import enum
 
+
 class SpecialValue(enum.Enum):
     Reroll = 'Reroll'  # Indicates an outcome should be rerolled (with no max depth).
     Scalar = 'Scalar'  # A `ndim` indicating a non-vector die.
-    Empty = 'Empty'    # A `ndim` indicating a die with no outcomes.
+    Empty = 'Empty'  # A `ndim` indicating a die with no outcomes.
+
 
 Reroll = SpecialValue.Reroll
 Scalar = SpecialValue.Scalar
 Empty = SpecialValue.Empty
 
-__all__ = ['Die',
-    'standard', 'd', '__getattr__', 'bernoulli', 'coin',
-    'BaseDie', 'EmptyDie', 'ScalarDie', 'VectorDie',
-    'from_cweights', 'from_sweights', 'from_rv', 'align', 'align_range',
-    'lowest', 'highest', 'max_outcome', 'min_outcome',
-    'apply', 'dice_with_common_ndim',
-    'Reroll', 'Scalar', 'Empty',
+__all__ = [
+    'Die',
+    'standard',
+    'd',
+    '__getattr__',
+    'bernoulli',
+    'coin',
+    'BaseDie',
+    'EmptyDie',
+    'ScalarDie',
+    'VectorDie',
+    'from_cweights',
+    'from_sweights',
+    'from_rv',
+    'align',
+    'align_range',
+    'lowest',
+    'highest',
+    'max_outcome',
+    'min_outcome',
+    'apply',
+    'dice_with_common_ndim',
+    'Reroll',
+    'Scalar',
+    'Empty',
     'BasePool',
-    'Pool', 'standard_pool', 'DicePool',
+    'Pool',
+    'standard_pool',
+    'DicePool',
     # 'PoolRoll',  # Not needed externally due to implicit casts
-    'EvalPool', 'WrapFuncEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun',
-    'd2', 'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100']
+    'EvalPool',
+    'WrapFuncEval',
+    'SumPool',
+    'sum_pool',
+    'FindBestSet',
+    'FindBestRun',
+    'd2',
+    'd3',
+    'd4',
+    'd6',
+    'd8',
+    'd10',
+    'd12',
+    'd20',
+    'd100'
+]

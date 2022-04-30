@@ -8,6 +8,7 @@ from functools import cached_property
 import itertools
 import math
 
+
 class EvalPool(ABC):
     """ An abstract, immutable, callable class for evaulating one or more `DicePool`s.
     
@@ -38,7 +39,7 @@ class EvalPool(ABC):
     in any way that affects the return values of these methods.
     Otherwise, values in the cache may be incorrect.
     """
-    
+
     @abstractmethod
     def next_state(self, state, outcome, *counts):
         """ State transition function.
@@ -69,7 +70,7 @@ class EvalPool(ABC):
             The special value `icepool.Reroll` can be used to immediately remove the state from consideration,
             effectively performing a full reroll of the pool.
         """
-    
+
     def final_outcome(self, final_state, *pools):
         """ Optional function to generate a final outcome from a final state.
         
@@ -90,7 +91,7 @@ class EvalPool(ABC):
             As usual for `Die()`, this could itself be a die or `icepool.Reroll`.
         """
         return final_state
-    
+
     def direction(self, *pools):
         """ Optional function to determine the direction in which `next_state()` will see outcomes.
         
@@ -111,7 +112,7 @@ class EvalPool(ABC):
             * 0 if the order may be determined automatically.
         """
         return 1
-    
+
     def ndim(self, *pools):
         """ Optional function to specify the number of dimensions of the output die.
         
@@ -128,12 +129,12 @@ class EvalPool(ABC):
             or `None` if this should be determined automatically by `Die()`.
         """
         return None
-    
+
     @cached_property
     def _cache(self):
         """ A cache of (direction, pools) -> weight distribution over states. """
         return {}
-    
+
     def eval(self, *pools):
         """ Evaluates pools.
         
@@ -155,14 +156,18 @@ class EvalPool(ABC):
             A die representing the distribution of the final score.
             If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
-        
+
         # Cast non-pool arguments to `BasePool`.
-        pools = [pool if isinstance(pool, icepool.BasePool) else icepool.PoolRoll(pool) for pool in pools]
-        
+        pools = [
+            pool
+            if isinstance(pool, icepool.BasePool) else icepool.PoolRoll(pool)
+            for pool in pools
+        ]
+
         algorithm, direction = self._select_algorithm(*pools)
-        
+
         dist = algorithm(direction, *pools)
-        
+
         if all(pool._is_single_roll() for pool in pools):
             for state in dist.keys():
                 # Return a single outcome.
@@ -175,11 +180,13 @@ class EvalPool(ABC):
                 if outcome is not icepool.Reroll:
                     final_outcomes.append(outcome)
                     final_weights.append(weight)
-            
-            return icepool.Die(*final_outcomes, weights=final_weights, ndim=self.ndim(*pools))
-    
+
+            return icepool.Die(*final_outcomes,
+                               weights=final_weights,
+                               ndim=self.ndim(*pools))
+
     __call__ = eval
-    
+
     def bind_dice(self, *dice):
         """ Binds one die for each pool.
         
@@ -194,12 +201,14 @@ class EvalPool(ABC):
             A function that takes in one `num_dice` per pool,
             then runs this `EvalPool` for pools of that size using the bound dice.
         """
+
         def bound_eval(*num_dices):
-            pools = (die.pool(num_dice) for die, num_dice in zip(dice, num_dices))
+            pools = (
+                die.pool(num_dice) for die, num_dice in zip(dice, num_dices))
             return self.eval(*pools)
-        
+
         return bound_eval
-    
+
     def _select_algorithm(self, *pools):
         """ Selects an algorithm and iteration direction.
         
@@ -211,32 +220,36 @@ class EvalPool(ABC):
         """
         has_truncate_min = any(pool._has_truncate_min() for pool in pools)
         has_truncate_max = any(pool._has_truncate_max() for pool in pools)
-        
+
         if has_truncate_min and has_truncate_max:
-            raise ValueError('A set of pools cannot be evaluated if they have both truncate_min and truncate_max.')
-        
+            raise ValueError(
+                'A set of pools cannot be evaluated if they have both truncate_min and truncate_max.'
+            )
+
         direction = self.direction(*pools)
-        
+
         if not direction:
             if has_truncate_max:
                 direction = 1
             elif has_truncate_min:
                 direction = -1
             else:
-                score_ascending = sum(pool._direction_score_ascending() for pool in pools)
-                score_descending = sum(pool._direction_score_descending() for pool in pools)
+                score_ascending = sum(
+                    pool._direction_score_ascending() for pool in pools)
+                score_descending = sum(
+                    pool._direction_score_descending() for pool in pools)
                 if score_ascending < score_descending:
                     direction = -1
                 else:
                     direction = 1
-        
+
         if direction > 0 and has_truncate_min or direction < 0 and has_truncate_max:
             # Forced onto the less-preferred algorithm.
             return self._eval_internal_iterative, direction
         else:
             # Use the preferred algorithm.
             return self._eval_internal, direction
-    
+
     def _eval_internal(self, direction, *pools):
         """ Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow. 
@@ -254,11 +267,11 @@ class EvalPool(ABC):
         cache_key = (direction, pools)
         if cache_key in self._cache:
             return self._cache[cache_key]
-        
+
         result = defaultdict(int)
-        
+
         if all(len(pool.outcomes()) == 0 for pool in pools):
-            result = { None : 1 }
+            result = {None: 1}
         else:
             outcome, iterators = _pop_pools(direction, pools)
             for p in itertools.product(*iterators):
@@ -269,10 +282,10 @@ class EvalPool(ABC):
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
-        
+
         self._cache[cache_key] = result
         return result
-    
+
     def _eval_internal_iterative(self, direction, *pools):
         """ Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
@@ -294,8 +307,9 @@ class EvalPool(ABC):
                     if state is not icepool.Reroll:
                         next_dist[state, pools] += weight * prod_weight
             dist = next_dist
-        return { state : weight for (state, _), weight in dist.items() }
-    
+        return {state: weight for (state, _), weight in dist.items()}
+
+
 def _pop_pools(side, pools):
     """ Pops a single outcome from the pools.
     
@@ -304,13 +318,16 @@ def _pop_pools(side, pools):
         * A tuple of iterators over the possible resulting pools, counts, and weights.
     """
     if side >= 0:
-        outcome = max(pool._max_outcome() for pool in pools if len(pool.outcomes()) > 0)
+        outcome = max(
+            pool._max_outcome() for pool in pools if len(pool.outcomes()) > 0)
         iterators = tuple(_pop_pool_max(outcome, pool) for pool in pools)
     else:
-        outcome = min(pool._min_outcome() for pool in pools if len(pool.outcomes()) > 0)
+        outcome = min(
+            pool._min_outcome() for pool in pools if len(pool.outcomes()) > 0)
         iterators = tuple(_pop_pool_min(outcome, pool) for pool in pools)
-    
+
     return outcome, iterators
+
 
 def _pop_pool_max(outcome, pool):
     """ Iterates over possible numbers of dice that could roll an outcome.
@@ -328,7 +345,8 @@ def _pop_pool_max(outcome, pool):
         yield pool, 0, 1
     else:
         yield from pool._pop_max()
-        
+
+
 def _pop_pool_min(outcome, pool):
     """ Iterates over possible numbers of dice that could roll an outcome.
     
@@ -346,12 +364,13 @@ def _pop_pool_min(outcome, pool):
     else:
         yield from pool._pop_min()
 
+
 class WrapFuncEval(EvalPool):
     """ A `EvalPool` created from a single provided function.
     
     `next_state()` simply calls that function.
     """
-    
+
     def __init__(self, func, /):
         """ Constructs a new instance given the function that should be called for `next_state()`.
         Args:
@@ -359,25 +378,29 @@ class WrapFuncEval(EvalPool):
                 and return the next state.
         """
         self._func = func
-    
+
     def next_state(self, state, outcome, *counts):
         return self._func(state, outcome, *counts)
 
+
 class SumPool(EvalPool):
     """ A simple `EvalPool` that just sums the dice in a pool. """
+
     def next_state(self, state, outcome, count):
         """ Add the dice to the running total. """
         if state is None:
             return outcome * count
         else:
             return state + outcome * count
-    
+
     def direction(self, *pools):
         """ This eval doesn't care about direction. """
         return 0
 
+
 """ A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
+
 
 class FindBestSet(EvalPool):
     """ A `EvalPool` that takes the best matching set in a pool.
@@ -386,7 +409,7 @@ class FindBestSet(EvalPool):
     
     The outcomes are `(set_size, outcome)`.
     """
-    
+
     def next_state(self, state, outcome, count):
         """ Replace the last best set if this one is better. 
         
@@ -396,10 +419,11 @@ class FindBestSet(EvalPool):
             return count, outcome
         else:
             return max(state, (count, outcome))
-    
+
     def direction(self, *pools):
         """ This eval doesn't care about direction. """
         return 0
+
 
 class FindBestRun(EvalPool):
     """ A `EvalPool` that takes the best run (aka "straight") in a pool.
@@ -410,12 +434,13 @@ class FindBestRun(EvalPool):
     
     The outcomes are `(run_size, outcome)`.
     """
-    
+
     def next_state(self, state, outcome, count):
         """ Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
-        best_run, best_run_outcome, run, prev_outcome = state or (0, outcome, 0, outcome - 1)
+        best_run, best_run_outcome, run, prev_outcome = state or (0, outcome, 0,
+                                                                  outcome - 1)
         if count >= 1:
             if outcome == prev_outcome + 1:
                 run += 1
@@ -423,12 +448,13 @@ class FindBestRun(EvalPool):
                 run = 1
         else:
             run = 0
-        return max((run, outcome), (best_run, best_run_outcome)) + (run, outcome)
-        
+        return max((run, outcome),
+                   (best_run, best_run_outcome)) + (run, outcome)
+
     def final_outcome(self, final_state, *pools):
         """ Returns the best run. """
         return final_state[:2]
-    
+
     def direction(self, *pools):
         """ This only considers outcomes in ascending order. """
         return 1

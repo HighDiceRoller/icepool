@@ -7,7 +7,12 @@ from collections import defaultdict
 import itertools
 import math
 
-def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lcm'):
+
+def Die(*args,
+        weights=None,
+        min_outcome=None,
+        ndim=None,
+        denominator_method='lcm'):
     """ Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
@@ -83,40 +88,49 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
         `ValueError` if `ndim` is set but is not consistent with `*args`.
             Furthermore, `None` is not a valid outcome for a die.
     """
-    
+
     # Special case: consecutive outcomes.
     if min_outcome is not None:
         if weights is None:
-            raise ValueError('If min_outcome is provided, weights must also be provided.')
+            raise ValueError(
+                'If min_outcome is provided, weights must also be provided.')
         if len(args) > 0:
-            raise ValueError('If min_outcome is provided, no *args may be used.')
+            raise ValueError(
+                'If min_outcome is provided, no *args may be used.')
         if ndim not in [None, icepool.Scalar]:
-            raise ValueError('If min_outcome is provided, the result may only be a scalar die.')
-        data = Counts({i + min_outcome : weight for i, weight in enumerate(weights)})
+            raise ValueError(
+                'If min_outcome is provided, the result may only be a scalar die.'
+            )
+        data = Counts(
+            {i + min_outcome: weight for i, weight in enumerate(weights)})
         return icepool.ScalarDie(data)
-    
+
     if weights is not None:
         if len(weights) != len(args):
-            raise ValueError('If weights are provided, there must be exactly one weight per argument.')
+            raise ValueError(
+                'If weights are provided, there must be exactly one weight per argument.'
+            )
     else:
         weights = (1,) * len(args)
-    
+
     # Special cases.
     if len(args) == 0:
         return icepool.EmptyDie()
     elif len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
         if ndim is not None and args[0].ndim() != ndim:
-            raise ValueError(f'Mismatch between requested ndim={ndim} and die with ndim={args[0].ndim()}')
+            raise ValueError(
+                f'Mismatch between requested ndim={ndim} and die with ndim={args[0].ndim()}'
+            )
         # Single unmodified die: just return the existing instance.
         return args[0]
-    
+
     # Expand data.
     subdatas = [_expand(arg, denominator_method) for arg in args]
     data = _merge_subdatas(subdatas, weights, denominator_method)
-    
+
     if len(data) == 0:
         return icepool.EmptyDie()
-    
+
     # Compute ndim.
     if ndim == None:
         for outcome in data.keys():
@@ -132,19 +146,22 @@ def Die(*args, weights=None, min_outcome=None, ndim=None, denominator_method='lc
     elif ndim != icepool.Scalar:
         for outcome in data.keys():
             if not _is_tuple(outcome) or len(outcome) != ndim:
-                raise ValueError(f'Outcome {outcome} is incompatible with requested ndim {ndim}')
-    
+                raise ValueError(
+                    f'Outcome {outcome} is incompatible with requested ndim {ndim}'
+                )
+
     if ndim == icepool.Scalar:
         data = Counts(data)
         result = icepool.ScalarDie(data)
     else:
         data = Counts(data)
         result = icepool.VectorDie(data, ndim)
-    
+
     if denominator_method == 'reduce':
         result = result.reduce()
-    
+
     return result
+
 
 def _expand(arg, denominator_method):
     """ Expands the argument to a dict mapping outcomes to weights.
@@ -160,22 +177,29 @@ def _expand(arg, denominator_method):
     else:
         return _expand_scalar(arg)
 
+
 def _is_die(arg):
     return isinstance(arg, icepool.BaseDie)
+
 
 def _expand_die(arg):
     return arg._data
 
+
 def _is_dict(arg):
-    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(arg, 'items') and hasattr(arg, '__getitem__')
-    
+    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
+        arg, 'items') and hasattr(arg, '__getitem__')
+
+
 def _expand_dict(arg, denominator_method):
     subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
     weights = [x for x in arg.values()]
     return _merge_subdatas(subdatas, weights, denominator_method)
-    
+
+
 def _is_tuple(arg):
     return type(arg) is tuple
+
 
 def _expand_tuple(arg, denominator_method):
     subdatas = [_expand(x, denominator_method) for x in arg]
@@ -184,32 +208,39 @@ def _expand_tuple(arg, denominator_method):
         outcomes, weights = zip(*t)
         data[outcomes] += math.prod(weights)
     return data
-    
+
+
 def _expand_scalar(arg):
     if arg is icepool.Reroll:
         return {}
     else:
-        return { arg : 1 }
+        return {arg: 1}
+
 
 def _merge_subdatas(subdatas, weights, denominator_method):
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
-    
+
     if denominator_method == 'prod':
         denominator_prod = math.prod(d for d in subdata_denominators if d > 0)
     elif denominator_method == 'lcm':
         denominator_prod = math.lcm(*(d for d in subdata_denominators if d > 0))
     elif denominator_method in ['lcm_weighted', 'reduce']:
-        denominator_prod = math.lcm(*(d // math.gcd(d, w) for d, w in zip(subdata_denominators, weights) if d > 0))
+        denominator_prod = math.lcm(
+            *(d // math.gcd(d, w)
+              for d, w in zip(subdata_denominators, weights)
+              if d > 0))
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')
-    
+
     data = defaultdict(int)
-    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators, weights):
+    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
+                                               weights):
         factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
         for outcome, weight in subdata.items():
             data[outcome] += weight * factor
-    
+
     return data
+
 
 def dice_with_common_ndim(*args, ndim=None):
     """ Converts the arguments to dice with a common `ndim`.
@@ -234,6 +265,7 @@ def dice_with_common_ndim(*args, ndim=None):
             return first_pass, first_pass[0].ndim()
         else:
             # Otherwise remake them as scalar.
-            return tuple(Die(die, ndim=icepool.Scalar) for die in first_pass), icepool.Scalar
+            return tuple(Die(die, ndim=icepool.Scalar)
+                         for die in first_pass), icepool.Scalar
     else:
         return tuple(Die(arg, ndim=ndim) for arg in args), ndim

@@ -4,6 +4,7 @@ import icepool
 
 from abc import ABC, abstractmethod
 
+
 class BasePool(ABC):
     """ Abstract base class for dice pools.
     
@@ -16,31 +17,31 @@ class BasePool(ABC):
         `PoolRoll` is only needed internally, as external dicts and sequences 
         will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.
     """
-    
+
     @abstractmethod
     def _is_single_roll(self):
         """ Returns `True` iff this is a single, fixed roll of a pool. """
-    
+
     @abstractmethod
     def _has_truncate_min(self):
         """ Returns `True` iff the pool has truncated min outcomes. """
-    
+
     @abstractmethod
     def _has_truncate_max(self):
         """ Returns `True` iff the pool has truncated max outcomes. """
-    
+
     @abstractmethod
     def outcomes(self):
         """ The outcomes of the fundamental die (including those with zero weight). """
-    
+
     @abstractmethod
     def _min_outcome(self):
         """ The minimum outcome of the fundamental die. """
-    
+
     @abstractmethod
     def _max_outcome(self):
         """ The maximum outcome of the fundamental die. """
-        
+
     @abstractmethod
     def _direction_score_ascending(self):
         """ Returns a number indicating how preferred iterating in the ascending direction is.
@@ -51,7 +52,7 @@ class BasePool(ABC):
         
         The collective score is summed.
         """
-    
+
     @abstractmethod
     def _direction_score_descending(self):
         """ Returns a number indicating how preferred iterating in the descending direction is.
@@ -62,19 +63,19 @@ class BasePool(ABC):
         
         The collective score is summed.
         """
-    
+
     @abstractmethod
     def _pop_min(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the min outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
-    
+
     @abstractmethod
     def _pop_max(self):
         """ Returns a sequence of pool, count, weight corresponding to removing the max outcome,
         with count and weight corresponding to various numbers of dice rolling that outcome.
         """
-    
+
     def eval(self, eval_or_func, /):
         """ Evaluates this pool using the given `EvalPool` or function.
         
@@ -102,4 +103,3 @@ class BasePool(ABC):
             A die representing the sum.
         """
         return icepool.sum_pool(self)
-    
