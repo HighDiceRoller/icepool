@@ -11,7 +11,7 @@ import math
 
 
 class ScalarDie(icepool.die.base.BaseDie):
-    """ Univariate die.
+    """Univariate die.
     
     Outcomes are scalars and operations are performed directly on the outcomes.
     """
@@ -20,7 +20,7 @@ class ScalarDie(icepool.die.base.BaseDie):
         return icepool.Scalar
 
     def __init__(self, data):
-        """ Constructor.
+        """Constructor.
         
         Dice should not be constructed directly;
         instead, use one of the methods defined in `icepool.die.func` 
@@ -32,14 +32,12 @@ class ScalarDie(icepool.die.base.BaseDie):
         self._data = data
 
     def _unary_op(self, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation on the outcomes. """
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
         return icepool.Die(data, ndim=icepool.Scalar)
 
     def _binary_op(self, other, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation on pairs of outcomes from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other,
                                           weight_other) in itertools.product(
@@ -54,10 +52,10 @@ class ScalarDie(icepool.die.base.BaseDie):
     # Special operators.
 
     def d(self, other, *, ndim=None):
-        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        """Roll the left die, then roll the right die that many times and sum the outcomes. 
         
-        If an `int` is provided for the right side, it becomes a standard die with that many faces.
-        Otherwise it is cast to a die.
+        If an `int` is provided for the right side, it becomes a standard die 
+        with that many faces. Otherwise it is cast to a die.
         """
         if isinstance(other, int):
             other = icepool.standard(other)
@@ -77,14 +75,15 @@ class ScalarDie(icepool.die.base.BaseDie):
         return icepool.Die(data, ndim=other.ndim())
 
     def __matmul__(self, other):
-        """ Roll the left die, then roll the right die that many times and sum the outcomes. 
+        """Roll the left die, then roll the right die that many times and sum the outcomes. 
         
         Unlike other operators, this does not work for built-in types on the right side.
         For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
         
-        This is because all other operators convert their right side to a die using die,
-        so `6` would become a constant 6, while  `d()` converts `int`s to a standard die with that many sides,
-        so `6` would become a d6. Thus the right-side conversion of `@` would be ambiguous.
+        This is because all other operators convert their right side to a die 
+        using die, so `6` would become a constant 6, while  `d()` converts 
+        `int`s to a standard die with that many sides, so `6` would become a d6.
+        Thus the right-side conversion of `@` would be ambiguous.
         """
         if not isinstance(other, icepool.die.base.BaseDie):
             raise TypeError(
@@ -99,9 +98,10 @@ class ScalarDie(icepool.die.base.BaseDie):
                 *,
                 ndim=None,
                 denominator_method='lcm'):
-        """ Ternary conditional operator.
+        """Ternary conditional operator.
         
-        This replaces truthy outcomes with the first argument and falsy outcomes with the second argument.
+        This replaces truthy outcomes with the first argument and falsy outcomes 
+        with the second argument.
         """
         return self.bool().sub(lambda x: outcome_if_true
                                if x else outcome_if_false,
@@ -111,19 +111,19 @@ class ScalarDie(icepool.die.base.BaseDie):
     # Statistics.
 
     def median_left(self):
-        """ Returns the median.
+        """Returns the median.
         
         If the median lies between two outcomes, returns the lower of the two. """
         return self.ppf_left(1, 2)
 
     def median_right(self):
-        """ Returns the median.
+        """Returns the median.
         
         If the median lies between two outcomes, returns the higher of the two. """
         return self.ppf_right(1, 2)
 
     def median(self):
-        """ Returns the median.
+        """Returns the median.
         
         If the median lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
@@ -132,7 +132,7 @@ class ScalarDie(icepool.die.base.BaseDie):
         return self.ppf(1, 2)
 
     def ppf_left(self, n, d=100):
-        """ Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the lower of the two.
         """
@@ -143,7 +143,7 @@ class ScalarDie(icepool.die.base.BaseDie):
         return self.outcomes()[index]
 
     def ppf_right(self, n, d=100):
-        """ Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the higher of the two.
         """
@@ -154,7 +154,7 @@ class ScalarDie(icepool.die.base.BaseDie):
         return self.outcomes()[index]
 
     def ppf(self, n, d=100):
-        """ Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the cdf.
         
         If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;

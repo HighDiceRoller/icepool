@@ -1,13 +1,15 @@
 """ Package for computing dice probabilities.
 
-See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for examples.
+See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) 
+for examples.
 
 [Visit the project page.](https://github.com/HighDiceRoller/icepool)
 
 General conventions:
 
 * Unless explictly specified otherwise, all sorting is in ascending order.
-* The words "min" and "max" refer to outcomes, and the words "low" and "high" refer to dice in a pool.
+* The words "min" and "max" refer to outcomes, and the words "low" and "high" 
+refer to dice in a pool.
 """
 
 __docformat__ = 'google'
@@ -15,7 +17,9 @@ __docformat__ = 'google'
 # Expose certain names at top-level.
 
 from icepool.die.create import Die, dice_with_common_ndim
-from icepool.die.func import standard, d, __getattr__, bernoulli, coin, from_cweights, from_sweights, from_rv, align, align_range, apply
+from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
+                              from_cweights, from_sweights, from_rv, align,
+                              align_range, apply)
 
 import icepool.die.base
 

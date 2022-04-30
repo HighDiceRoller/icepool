@@ -13,7 +13,7 @@ def Die(*args,
         min_outcome=None,
         ndim=None,
         denominator_method='lcm'):
-    """ Factory for constructing a die.
+    """Factory for constructing a die.
     
     This is capitalized because it is the preferred way of getting a new instance,
     and so that you can use `from icepool import Die` while leaving the name `die` free.
@@ -35,54 +35,60 @@ def Die(*args,
     
     Args:
         *args: Each of these arguments can be one of the following:
-            * A die. Its current `ndim` will be ignored, but this may change in the future.
-                The outcomes of the die will be "flattened" into the result;
-                a die object will never contain a die as an outcome.
+            * A die. Its current `ndim` will be ignored, but this may change in 
+                the future. The outcomes of the die will be "flattened" into the 
+                result; a die object will never contain a die as an outcome.
             * A dict-like that maps outcomes to weights.
                 The outcomes of the dict-like will be "flattened" into the result.
-                This option will be taken in preference to treating the dict-like itself as an outcome
-                even if the dict-like itself is hashable and comparable.
+                This option will be taken in preference to treating the dict-like 
+                itself as an outcome even if the dict-like itself is hashable 
+                and comparable.
             * A tuple of outcomes, which produces a joint distribution.
                 Any inner nested tuples will be treated as scalar.
                 Any arguments that are dice or dicts will expand the tuple
                 according to their independent joint distribution.
-                For example, (d6, d6) will expand to 36 ordered tuples with weight 1 each.
-                Use this sparingly since it may create a large number of outcomes.
+                For example, (d6, d6) will expand to 36 ordered tuples with 
+                weight 1 each. Use this sparingly since it may create a large 
+                number of outcomes.
             * `icepool.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
             * Anything else will be treated as a single outcome.
-                These must be hashable and mutually comparable with all other outcomes (after expansion).
-                The same outcome can appear multiple times,
-                in which case it will be weighted proportionally higher.
+                These must be hashable and mutually comparable with all other 
+                outcomes (after expansion). The same outcome can appear multiple 
+                times, in which case it will be weighted proportionally higher.
             
-                Note: An argument that is a sequence will be treated as a single outcome.
-                If you want each element in the sequence to be a separate outcome,
-                you need to unpack it into separate arguments.
+                Note: An argument that is a sequence will be treated as a single 
+                outcome. If you want each element in the sequence to be a 
+                separate outcome, you need to unpack it into separate arguments.
         weights: Controls the relative weight of the arguments.
-            If an argument expands into multiple outcomes, the weight is shared among those outcomes.
-            If not provided, each argument will end up with the same total weight.
-            For example, `Die(d6, 7)` is the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
-        min_outcome: If used, there must be zero `*args`, and `weights` must be provided.
-            The outcomes of the result will be integers starting at `min_outcome`,
-            one per weight in `weights` with that weight.
+            If an argument expands into multiple outcomes, the weight is shared 
+            among those outcomes. If not provided, each argument will end up 
+            with the same total weight. For example, `Die(d6, 7)` is the same as 
+            `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
+        min_outcome: If used, there must be zero `*args`, and `weights` must be 
+            provided. The outcomes of the result will be integers starting at 
+            `min_outcome`,one per weight in `weights` with that weight.
         ndim: If set to `icepool.Scalar`, the die will be scalar.
-            If set to an `int`, the die will have that many dimensions if the outcomes allow,
-                and raise `ValueError` otherwise.
-            If `None` (default), the number of dimensions will be automatically detected:
-            If all arguments are `tuple`s of the same length,
-            the result will have that many dimensions.
-            Otherwise the result will be scalar.
-            Regardless of `ndim`, any inner nested tuples will be treated as scalar.
+            If set to an `int`, the die will have that many dimensions if the 
+            outcomes allow, and raise `ValueError` otherwise.
+            If `None` (default), the number of dimensions will be automatically 
+            detected: If all arguments are `tuple`s of the same length,
+            the result will have that many dimensions. Otherwise the result will 
+            be scalar. Regardless of `ndim`, any inner nested tuples will be 
+            treated as scalar.
         denominator_method: How to determine the denominator of the result
-            if the arguments themselves contain weights. This is also used for dict-like arguments.
-            From greatest to least:
-            * 'prod': Product of the individual argument denominators, times the total of `weights`.
-                This is like rolling all of the possible dice, and then selecting a result.
-            * 'lcm' (default): LCM of the individual argument denominators, times the total of `weights`.
-                This is like rolling `weights` first, then selecting an argument to roll.
-            * 'lcm_weighted': LCM of the individual (argument denominators times corresponding element of `weights`).
-                This is like rolling the above, but the specific weight rolled
-                is used to help determine the result of the selected argument.
+            if the arguments themselves contain weights. This is also used for 
+            dict-like arguments. From greatest to least:
+            * 'prod': Product of the individual argument denominators, times the 
+                total of `weights`. This is like rolling all of the possible 
+                dice, and then selecting a result.
+            * 'lcm' (default): LCM of the individual argument denominators, 
+                times the total of `weights`. This is like rolling `weights` 
+                first, then selecting an argument to roll.
+            * 'lcm_weighted': LCM of the individual (argument denominators times 
+                corresponding element of `weights`). This is like rolling the 
+                above, but the specific weight rolled is used to help determine 
+                the result of the selected argument.
             * 'reduce': `reduce()` is called at the end.
     Raises:
         `ValueError` if `ndim` is set but is not consistent with `*args`.
@@ -164,7 +170,7 @@ def Die(*args,
 
 
 def _expand(arg, denominator_method):
-    """ Expands the argument to a dict mapping outcomes to weights.
+    """Expands the argument to a dict mapping outcomes to weights.
     
     The outcomes are valid outcomes for a die.
     """
@@ -243,7 +249,7 @@ def _merge_subdatas(subdatas, weights, denominator_method):
 
 
 def dice_with_common_ndim(*args, ndim=None):
-    """ Converts the arguments to dice with a common `ndim`.
+    """Converts the arguments to dice with a common `ndim`.
     
     Args:
         *args: Args to be converted to dice.

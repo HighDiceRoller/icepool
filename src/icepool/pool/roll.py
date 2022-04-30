@@ -14,7 +14,7 @@ def _is_dict(arg):
 
 
 class PoolRoll(icepool.BasePool):
-    """ Represents a single, fixed roll of a dice pool.
+    """Represents a single, fixed roll of a dice pool.
     
     Like `DicePool`, this may be used as an argument to `EvalPool`.
     

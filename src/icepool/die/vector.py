@@ -10,19 +10,20 @@ import itertools
 
 
 class VectorDie(icepool.die.base.BaseDie):
-    """ Multivariate die.
+    """Multivariate die.
     
     Outcomes are tuples. Most methods and operators are performed elementwise.
     Methods that depend on a flat outcome order use tuple order.
     
-    Statistical methods other than `mode()` take in an argument `i` specifying which dimension to take the statistic over.
+    Statistical methods other than `mode()` take in an argument `i` specifying 
+    which dimension to take the statistic over.
     """
 
     def ndim(self):
         return self._ndim
 
     def __init__(self, data, ndim):
-        """ Constructor.
+        """Constructor.
         
         Dice should not be constructed directly;
         instead, use one of the methods defined in `icepool.die.func` 
@@ -36,7 +37,6 @@ class VectorDie(icepool.die.base.BaseDie):
         self._ndim = ndim
 
     def _unary_op(self, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation elementwise on the outcome sequences. """
         data = defaultdict(int)
         for outcome, weight in self.items():
             new_outcome = tuple(op(x, *args, **kwargs) for x in outcome)
@@ -44,7 +44,6 @@ class VectorDie(icepool.die.base.BaseDie):
         return icepool.Die(data, ndim=self.ndim())
 
     def _binary_op(self, other, op, *args, **kwargs):
-        """ Returns a die representing the effect of performing the operation elementwise on pairs of outcome sequences from the two dice. """
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other,
                                           weight_other) in itertools.product(
@@ -64,7 +63,7 @@ class VectorDie(icepool.die.base.BaseDie):
         return unpacked_func
 
     def marginal(self, select):
-        """ Returns the marginal distribution over selected dimensions of the die. """
+        """Returns the marginal distribution over selected dimensions of the die. """
         test_select = ([None] * self.ndim())[select]
         if hasattr(test_select, '__len__'):
             ndim = len(test_select)
@@ -77,18 +76,18 @@ class VectorDie(icepool.die.base.BaseDie):
 
     @cached_property
     def dim(self):
-        """ Subscript this to produce a marginal distribution.
+        """Subscript this to produce a marginal distribution.
         
         For example, `die.dim[0]` will extract the 0th dimension.
         """
         return Slicer(self.marginal)
 
     def all(self):
-        """ Returns a die representing whether all dimensions are true. """
+        """Returns a die representing whether all dimensions are true. """
         return self.sub(lambda *outcome: all(outcome), ndim=icepool.Scalar)
 
     def any(self):
-        """ Returns a die representing whether any dimension is true. """
+        """Returns a die representing whether any dimension is true. """
         return self.sub(lambda *outcome: any(outcome), ndim=icepool.Scalar)
 
     # Statistics.
@@ -154,7 +153,7 @@ class VectorDie(icepool.die.base.BaseDie):
         ).__qualname__ + f'({self._data.__repr__()}, ndim={self.ndim()})'
 
     def markdown(self, include_weights=True):
-        """ Formats the die as a Markdown table. """
+        """Formats the die as a Markdown table. """
         outcome_lengths = []
         for i in range(self.ndim()):
             outcome_length = max(

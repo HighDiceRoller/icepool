@@ -10,7 +10,7 @@ import math
 
 
 class EvalPool(ABC):
-    """ An abstract, immutable, callable class for evaulating one or more `DicePool`s.
+    """An abstract, immutable, callable class for evaulating one or more `DicePool`s.
     
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result of the roll
@@ -42,7 +42,7 @@ class EvalPool(ABC):
 
     @abstractmethod
     def next_state(self, state, outcome, *counts):
-        """ State transition function.
+        """State transition function.
         
         This should produce a state given the previous state, an outcome,
         and the number of dice in each pool rolling that outcome.
@@ -50,41 +50,46 @@ class EvalPool(ABC):
         Make sure to handle the base case where `state is None`.
         
         Args:
-            state: A hashable object indicating the state before rolling the current outcome.
-                If there was no previous outcome, this will be `None`.
+            state: A hashable object indicating the state before rolling the 
+                current outcome. If there was no previous outcome, this will be 
+                `None`.
             outcome: The current outcome.
                 `next_state` will see all outcomes in monotonic order,
                 either ascending or descending depending on `direction()`.
-                If there are multiple pools, the set of outcomes is the union of the outcomes of the invididual pools.
-                Interleaving outcomes between different pools is allowed but discouraged.
-            *counts: One `int` for each pool indicating how many dice in that pool rolled the current outcome.
-                If there are multiple pools, it's possible that some outcomes will not appear in all pools.
-                In this case, the count for the pool(s) that do not have the outcome will be 0. 
-                Zero-weight outcomes count as having that outcome.
+                If there are multiple pools, the set of outcomes is the union of 
+                the outcomes of the invididual pools.
+            *counts: One `int` for each pool indicating how many dice in that 
+                pool rolled the current outcome. If there are multiple pools, 
+                it's possible that some outcomes will not appear in all pools.
+                In this case, the count for the pool(s) that do not have the 
+                outcome will be 0. Zero-weight outcomes count as having that outcome.
                 
                 Most subclasses will expect a fixed number of pools and 
-                can replace this variadic parameter with a fixed number of named parameters.
+                can replace this variadic parameter with a fixed number of named 
+                parameters.
         
         Returns:
             A hashable object indicating the next state.
-            The special value `icepool.Reroll` can be used to immediately remove the state from consideration,
-            effectively performing a full reroll of the pool.
+            The special value `icepool.Reroll` can be used to immediately remove 
+            the state from consideration, effectively performing a full reroll 
+            of the pool.
         """
 
     def final_outcome(self, final_state, *pools):
-        """ Optional function to generate a final outcome from a final state.
+        """Optional function to generate a final outcome from a final state.
         
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a die,
         and if all pools consist of empty dice, the final state will be `None`.
-        Subclasses that want to handle this case should explicitly define what happens.
+        Subclasses that want to handle this case should explicitly define what
+        happens.
         
         Args:
             final_state: A state after all outcomes have been processed.
             *pools: One or more `DicePool`s being evaluated.
-            
                 Most subclasses will expect a fixed number of pools and 
-                can replace this variadic parameter with a fixed number of named parameters.
+                can replace this variadic parameter with a fixed number of named
+                parameters.
             
         Returns:
             A final outcome that will be used as part of constructing the result die.
@@ -93,7 +98,7 @@ class EvalPool(ABC):
         return final_state
 
     def direction(self, *pools):
-        """ Optional function to determine the direction in which `next_state()` will see outcomes.
+        """Optional function to determine the direction in which `next_state()` will see outcomes.
         
         Note that an ascending (> 0) direction is not compatible with pools with `truncate_min`,
         and a descending (< 0) direction is not compatible with pools with `truncate_max`.
@@ -102,9 +107,9 @@ class EvalPool(ABC):
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
-            
                 Most subclasses will expect a fixed number of pools and 
-                can replace this variadic parameter with a fixed number of named parameters.
+                can replace this variadic parameter with a fixed number of named 
+                parameters.
             
         Returns:
             * > 0 if `next_state()` should always see the outcomes in ascending order.
@@ -114,15 +119,16 @@ class EvalPool(ABC):
         return 1
 
     def ndim(self, *pools):
-        """ Optional function to specify the number of dimensions of the output die.
+        """Optional function to specify the number of dimensions of the output die.
         
-        If not provided, the ndim of the result will be determined automatically as per `Die()`.
+        If not provided, the ndim of the result will be determined automatically 
+        as per `Die()`.
         
         Args:
             *pools: One or more `DicePool`s being evaluated.
-                
                 Most subclasses will expect a fixed number of pools and 
-                can replace this variadic parameter with a fixed number of named parameters.
+                can replace this variadic parameter with a fixed number of 
+                named parameters.
         
         Returns:
             The number of dimensions that the output die should have,
@@ -132,11 +138,11 @@ class EvalPool(ABC):
 
     @cached_property
     def _cache(self):
-        """ A cache of (direction, pools) -> weight distribution over states. """
+        """A cache of (direction, pools) -> weight distribution over states. """
         return {}
 
     def eval(self, *pools):
-        """ Evaluates pools.
+        """Evaluates pools.
         
         You can call the `EvalPool` object directly for the same effect,
         e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.
@@ -150,7 +156,8 @@ class EvalPool(ABC):
                     Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
-                Pools with `truncate_min` and pools with `truncate_max` are not compatible.
+                Pools with `truncate_min` and pools with `truncate_max` are not 
+                compatible.
         
         Returns:
             A die representing the distribution of the final score.
@@ -188,7 +195,7 @@ class EvalPool(ABC):
     __call__ = eval
 
     def bind_dice(self, *dice):
-        """ Binds one die for each pool.
+        """Binds one die for each pool.
         
         For example, `sum_d6s = sum_pool.bind_dice(icepool.d6)` would produce
         a function that takes one argument and sums that many d6s.
@@ -210,7 +217,7 @@ class EvalPool(ABC):
         return bound_eval
 
     def _select_algorithm(self, *pools):
-        """ Selects an algorithm and iteration direction.
+        """Selects an algorithm and iteration direction.
         
         Returns:
             * The algorithm to use (`_eval_internal*`).
@@ -251,7 +258,7 @@ class EvalPool(ABC):
             return self._eval_internal, direction
 
     def _eval_internal(self, direction, *pools):
-        """ Internal algorithm for iterating in the more-preferred direction,
+        """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow. 
         
         All intermediate return values are cached in the instance.
@@ -262,7 +269,8 @@ class EvalPool(ABC):
                 This *does* change recursively.
             
         Returns:
-            A dict `{ state : weight }` describing the probability distribution over states.
+            A dict `{ state : weight }` describing the probability distribution 
+                over states.
         """
         cache_key = (direction, pools)
         if cache_key in self._cache:
@@ -287,7 +295,7 @@ class EvalPool(ABC):
         return result
 
     def _eval_internal_iterative(self, direction, *pools):
-        """ Internal algorithm for iterating in the less-preferred direction,
+        """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
         
         This algorithm does not perform persistent memoization.
@@ -311,7 +319,7 @@ class EvalPool(ABC):
 
 
 def _pop_pools(side, pools):
-    """ Pops a single outcome from the pools.
+    """Pops a single outcome from the pools.
     
     Returns:
         * The popped outcome.
@@ -330,15 +338,17 @@ def _pop_pools(side, pools):
 
 
 def _pop_pool_max(outcome, pool):
-    """ Iterates over possible numbers of dice that could roll an outcome.
+    """Iterates over possible numbers of dice that could roll an outcome.
     
     Args:
         outcome: The max outcome.
         pool: The `DicePool` under consideration.
     
     Yields:
-        prev_pool: The remainder of the pool after taking out the dice that rolled the current outcome.
-        count: How many dice rolled the current outcome, or 0 if the outcome is not in this pool.
+        prev_pool: The remainder of the pool after taking out the dice that 
+            rolled the current outcome.
+        count: How many dice rolled the current outcome, or 0 if the outcome is 
+            not in this pool.
         weight: The weight of that many dice rolling the current outcome.
     """
     if outcome not in pool.outcomes():
@@ -348,15 +358,17 @@ def _pop_pool_max(outcome, pool):
 
 
 def _pop_pool_min(outcome, pool):
-    """ Iterates over possible numbers of dice that could roll an outcome.
+    """Iterates over possible numbers of dice that could roll an outcome.
     
     Args:
         outcome: The min outcome.
         pool: The `DicePool` under consideration.
     
     Yields:
-        prev_pool: The remainder of the pool after taking out the dice that rolled the current outcome.
-        count: How many dice rolled the current outcome, or 0 if the outcome is not in this pool.
+        prev_pool: The remainder of the pool after taking out the dice that 
+            rolled the current outcome.
+        count: How many dice rolled the current outcome, or 0 if the outcome is 
+            not in this pool.
         weight: The weight of that many dice rolling the current outcome.
     """
     if outcome not in pool.outcomes():
@@ -366,16 +378,16 @@ def _pop_pool_min(outcome, pool):
 
 
 class WrapFuncEval(EvalPool):
-    """ A `EvalPool` created from a single provided function.
+    """A `EvalPool` created from a single provided function.
     
     `next_state()` simply calls that function.
     """
 
     def __init__(self, func, /):
-        """ Constructs a new instance given the function that should be called for `next_state()`.
+        """Constructs a new instance given the function that should be called for `next_state()`.
         Args:
-            func(state, outcome, *counts): This should take the same arguments as `next_state()`, minus `self`,
-                and return the next state.
+            func(state, outcome, *counts): This should take the same arguments 
+                as `next_state()`, minus `self`, and return the next state.
         """
         self._func = func
 
@@ -384,26 +396,26 @@ class WrapFuncEval(EvalPool):
 
 
 class SumPool(EvalPool):
-    """ A simple `EvalPool` that just sums the dice in a pool. """
+    """A simple `EvalPool` that just sums the dice in a pool. """
 
     def next_state(self, state, outcome, count):
-        """ Add the dice to the running total. """
+        """Add the dice to the running total. """
         if state is None:
             return outcome * count
         else:
             return state + outcome * count
 
     def direction(self, *pools):
-        """ This eval doesn't care about direction. """
+        """This eval doesn't care about direction. """
         return 0
 
 
-""" A shared `SumPool` object for caching results. """
+"""A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
 
 
 class FindBestSet(EvalPool):
-    """ A `EvalPool` that takes the best matching set in a pool.
+    """A `EvalPool` that takes the best matching set in a pool.
     
     This prioritizes set size, then the outcome.
     
@@ -411,7 +423,7 @@ class FindBestSet(EvalPool):
     """
 
     def next_state(self, state, outcome, count):
-        """ Replace the last best set if this one is better. 
+        """Replace the last best set if this one is better. 
         
         Note the use of tuple comparison, which priortizes elements to the left.
         """
@@ -421,12 +433,12 @@ class FindBestSet(EvalPool):
             return max(state, (count, outcome))
 
     def direction(self, *pools):
-        """ This eval doesn't care about direction. """
+        """This eval doesn't care about direction. """
         return 0
 
 
 class FindBestRun(EvalPool):
-    """ A `EvalPool` that takes the best run (aka "straight") in a pool.
+    """A `EvalPool` that takes the best run (aka "straight") in a pool.
     
     Outcomes must be `int`s.
     
@@ -436,7 +448,7 @@ class FindBestRun(EvalPool):
     """
 
     def next_state(self, state, outcome, count):
-        """ Increments the current run if at least one die rolled this outcome,
+        """Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
         best_run, best_run_outcome, run, prev_outcome = state or (0, outcome, 0,
@@ -452,9 +464,9 @@ class FindBestRun(EvalPool):
                    (best_run, best_run_outcome)) + (run, outcome)
 
     def final_outcome(self, final_state, *pools):
-        """ Returns the best run. """
+        """Returns the best run. """
         return final_state[:2]
 
     def direction(self, *pools):
-        """ This only considers outcomes in ascending order. """
+        """This only considers outcomes in ascending order. """
         return 1

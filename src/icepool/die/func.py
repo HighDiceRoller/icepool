@@ -8,9 +8,10 @@ import math
 
 
 def standard(num_sides):
-    """ A standard die.
+    """A standard die.
     
-    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive, with weight 1 each. 
+    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,
+    with weight 1 each. 
     
     Don't confuse this with `icepool.Die()`:
     
@@ -27,7 +28,7 @@ def standard(num_sides):
 
 
 def d(arg):
-    """ Converts the argument to a standard die if it is not already a die.
+    """Converts the argument to a standard die if it is not already a die.
     
     Args:
         arg: Either:
@@ -49,7 +50,10 @@ def d(arg):
 
 
 def __getattr__(key):
-    """ Implements the `dX` syntax for standard die with no parentheses, e.g. `icepool.d6`. """
+    """Implements the `dX` syntax for standard die with no parentheses.
+    
+    For example, `icepool.d6`.
+    """
     if key[0] == 'd':
         try:
             return standard(int(key[1:]))
@@ -59,7 +63,7 @@ def __getattr__(key):
 
 
 def bernoulli(n, d):
-    """ A die that rolls `True` with chance `n / d`, and `False` otherwise. """
+    """A die that rolls `True` with chance `n / d`, and `False` otherwise. """
     return icepool.Die({False: d - n, True: n}, ndim=icepool.Scalar)
 
 
@@ -67,7 +71,7 @@ coin = bernoulli
 
 
 def from_cweights(outcomes, cweights, *, ndim=None):
-    """ Constructs a die from cumulative weights. """
+    """Constructs a die from cumulative weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
@@ -77,7 +81,7 @@ def from_cweights(outcomes, cweights, *, ndim=None):
 
 
 def from_sweights(outcomes, sweights, *, ndim=None):
-    """ Constructs a die from survival weights. """
+    """Constructs a die from survival weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(reversed(outcomes), reversed(tuple(sweights))):
@@ -87,10 +91,11 @@ def from_sweights(outcomes, sweights, *, ndim=None):
 
 
 def from_rv(rv, outcomes, denominator, **kwargs):
-    """ Constructs a die from a rv object (as `scipy.stats`).
+    """Constructs a die from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
-        outcomes: An iterable of `int`s or `float`s that will be the outcomes of the resulting die.
+        outcomes: An iterable of `int`s or `float`s that will be the outcomes 
+            of the resulting die.
             If the distribution is discrete, outcomes must be `int`s.
         denominator: The denominator of the resulting die will be set to this.
         **kwargs: These will be provided to `rv.cdf()`.
@@ -136,17 +141,20 @@ def align_range(*dice):
 
 
 def apply(func, *dice, ndim=None):
-    """ Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
+    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient for large numbers of dice.
-    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead if possible.
+    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead 
+    if possible.
     
     Args:
-        func: A function that takes one argument per input die and returns an argument to `Die()`.
+        func: A function that takes one argument per input die and returns an 
+            argument to `Die()`.
         ndim: If supplied, the result will have this many dimensions.
     
     Returns:
-        A die constructed from the outputs of `func` and the product of the weights of the dice.
+        A die constructed from the outputs of `func` and the product of the 
+        weights of the dice.
     """
     # No common ndim required for the inputs in this case.
     dice = [icepool.Die(die) for die in dice]

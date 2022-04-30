@@ -5,7 +5,7 @@ from functools import cache
 
 @cache
 def comb_row(n, b):
-    """ Returns a tuple of n+1 elements, where the kth element is equal to math.comb(n, k) * b ** k.
+    """Returns a tuple of n+1 elements, where the kth element is equal to math.comb(n, k) * b ** k.
     
     The results are cached.
     """

@@ -29,7 +29,7 @@ class Counts():
         self._has_zero_weights = 0 in d.values()
 
     def has_zero_weights(self):
-        """ Returns `True` iff `self` contains at least one zero weight. """
+        """Returns `True` iff `self` contains at least one zero weight. """
         return self._has_zero_weights
 
     def __len__(self):
