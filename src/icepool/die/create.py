@@ -234,6 +234,6 @@ def dice_with_common_ndim(*args, ndim=None):
             return first_pass, first_pass[0].ndim()
         else:
             # Otherwise remake them as scalar.
-            return tuple(Die(arg, ndim=icepool.Scalar) for die in first_pass), icepool.Scalar
+            return tuple(Die(die, ndim=icepool.Scalar) for die in first_pass), icepool.Scalar
     else:
         return tuple(Die(arg, ndim=ndim) for arg in args), ndim
