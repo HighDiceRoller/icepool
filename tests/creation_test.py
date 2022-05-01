@@ -71,37 +71,41 @@ def test_scalar_vector():
     assert icepool.Die((1, 2, 3), ndim=icepool.Scalar).ndim() == icepool.Scalar
     assert icepool.Die('test').ndim() == icepool.Scalar
 
-def test_negative_weight_exception():
+def test_negative_weight_error():
     with pytest.raises(ValueError):
         icepool.Die({1: -1})
     
     with pytest.raises(ValueError):
         icepool.Die(1, weights=[-1])
 
-def test_mismatched_ndim_exception_tuple():
+def test_mismatched_ndim_error_tuple():
     with pytest.raises(ValueError):
         icepool.Die((1, 2), ndim=3)
 
 
-def test_mismatched_ndim_exception_scalar_vs_vector():
+def test_mismatched_ndim_error_scalar_vs_vector():
     with pytest.raises(ValueError):
         icepool.Die(icepool.d6, ndim=3)
 
 
-def test_mismatched_ndim_exception_vector_vs_scalar():
+def test_mismatched_ndim_error_vector_vs_scalar():
     die = icepool.Die((1, 2), (3, 4))
     with pytest.raises(ValueError):
         icepool.Die(die, ndim=icepool.Scalar)
 
 
-def test_mismatched_ndim_exception_mismatched_dice():
+def test_mismatched_ndim_error_mismatched_dice():
     vector_die = icepool.Die((1, 2), (3, 4))
     with pytest.raises(ValueError):
         icepool.Die(vector_die, icepool.d6)
 
 
-def test_mismatched_ndim_exception_mismatched_in_dict():
+def test_mismatched_ndim_error_mismatched_in_dict():
     vector_die = icepool.Die((1, 2), (3, 4))
     with pytest.raises(ValueError):
         icepool.Die({vector_die: 1, icepool.d6: 1 })
 
+def test_vector_inside_tuple_error():
+    vector_die = icepool.Die((1, 2), (3, 4))
+    with pytest.raises(ValueError):
+        icepool.Die((vector_die,))

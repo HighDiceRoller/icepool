@@ -51,7 +51,8 @@ def Die(*args,
                 according to their independent joint distribution.
                 For example, (d6, d6) will expand to 36 ordered tuples with 
                 weight 1 each. Use this sparingly since it may create a large 
-                number of outcomes.
+                number of outcomes. Vector dice cannot be nested inside a tuple
+                outcome.
             * `icepool.Reroll`, which will drop itself
                 and the corresponding element of `weights` from consideration.
             * Anything else will be treated as a single outcome.
@@ -134,11 +135,11 @@ def Die(*args,
         return icepool.EmptyDie()
 
     # Compute ndim.
-    if die_ndim is not None:
+    if die_ndim not in [None, icepool.Empty]:
         if ndim is None:
             ndim = die_ndim
         elif ndim != die_ndim:
-            raise ValueError(f'Requested ndim {ndim} is incompatible with the ndim of a die argument {die_ndim}')
+            raise ValueError(f'Requested ndim {ndim} is incompatible with that of an argument die {die_ndim}')
     
     if ndim is None:
         for outcome in data.keys():
@@ -160,7 +161,7 @@ def Die(*args,
                     )
                 else:
                     raise ValueError(
-                        f'Outcome {outcome} is incompatible with the ndim of a die argument {die_ndim}'
+                        f'Outcome {outcome} is incompatible with that of an argument die {die_ndim}'
                     )
                 
 
@@ -221,7 +222,10 @@ def _is_tuple(arg):
 
 
 def _expand_tuple(arg, denominator_method):
-    subdatas, _ = zip(*[_expand(x, denominator_method) for x in arg])
+    subdatas, die_ndims = zip(*[_expand(x, denominator_method) for x in arg])
+    die_ndim = _merge_die_ndims(die_ndims)
+    if isinstance(die_ndim, int):
+        raise ValueError('Vector dice cannot be nested inside tuple outcomes.')
     data = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
         outcomes, weights = zip(*t)
