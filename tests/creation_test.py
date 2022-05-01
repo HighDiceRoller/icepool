@@ -77,3 +77,31 @@ def test_negative_weight_exception():
     
     with pytest.raises(ValueError):
         icepool.Die(1, weights=[-1])
+
+def test_mismatched_ndim_exception_tuple():
+    with pytest.raises(ValueError):
+        icepool.Die((1, 2), ndim=3)
+
+
+def test_mismatched_ndim_exception_scalar_vs_vector():
+    with pytest.raises(ValueError):
+        icepool.Die(icepool.d6, ndim=3)
+
+
+def test_mismatched_ndim_exception_vector_vs_scalar():
+    die = icepool.Die((1, 2), (3, 4))
+    with pytest.raises(ValueError):
+        icepool.Die(die, ndim=icepool.Scalar)
+
+
+def test_mismatched_ndim_exception_mismatched_dice():
+    vector_die = icepool.Die((1, 2), (3, 4))
+    with pytest.raises(ValueError):
+        icepool.Die(vector_die, icepool.d6)
+
+
+def test_mismatched_ndim_exception_mismatched_in_dict():
+    vector_die = icepool.Die((1, 2), (3, 4))
+    with pytest.raises(ValueError):
+        icepool.Die({vector_die: 1, icepool.d6: 1 })
+

@@ -37,9 +37,9 @@ def Die(*args,
     
     Args:
         *args: Each of these arguments can be one of the following:
-            * A die. Its current `ndim` will be ignored, but this may change in 
-                the future. The outcomes of the die will be "flattened" into the 
+            * A die. The outcomes of the die will be "flattened" into the 
                 result; a die object will never contain a die as an outcome.
+                `Die()` cannot change the `ndim` of any die not in a tuple.
             * A dict-like that maps outcomes to weights.
                 The outcomes of the dict-like will be "flattened" into the result.
                 This option will be taken in preference to treating the dict-like 
@@ -58,10 +58,6 @@ def Die(*args,
                 These must be hashable and mutually comparable with all other 
                 outcomes (after expansion). The same outcome can appear multiple 
                 times, in which case it will be weighted proportionally higher.
-            
-                Note: An argument that is a sequence will be treated as a single 
-                outcome. If you want each element in the sequence to be a 
-                separate outcome, you need to unpack it into separate arguments.
         weights: Controls the relative weight of the arguments.
             If an argument expands into multiple outcomes, the weight is shared 
             among those outcomes. If not provided, each argument will end up 
@@ -124,23 +120,27 @@ def Die(*args,
     # Special cases.
     if len(args) == 0:
         return icepool.EmptyDie()
-    elif len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
-        if ndim is not None and args[0].ndim() != ndim:
-            raise ValueError(
-                f'Mismatch between requested ndim={ndim} and die with ndim={args[0].ndim()}'
-            )
+    elif (len(args) == 1 and _is_die(args[0]) and weights[0] == 1 
+          and (ndim is None or ndim == args[0].ndim())):
         # Single unmodified die: just return the existing instance.
         return args[0]
 
     # Expand data.
-    subdatas = [_expand(arg, denominator_method) for arg in args]
+    subdatas, die_ndims = zip(*[_expand(arg, denominator_method) for arg in args])
+    die_ndim = _merge_die_ndims(die_ndims)
     data = _merge_subdatas(subdatas, weights, denominator_method)
 
     if len(data) == 0:
         return icepool.EmptyDie()
 
     # Compute ndim.
-    if ndim == None:
+    if die_ndim is not None:
+        if ndim is None:
+            ndim = die_ndim
+        elif ndim != die_ndim:
+            raise ValueError(f'Requested ndim {ndim} is incompatible with the ndim of a die argument {die_ndim}')
+    
+    if ndim is None:
         for outcome in data.keys():
             if _is_tuple(outcome):
                 if ndim is None:
@@ -154,9 +154,15 @@ def Die(*args,
     elif ndim != icepool.Scalar:
         for outcome in data.keys():
             if not _is_tuple(outcome) or len(outcome) != ndim:
-                raise ValueError(
-                    f'Outcome {outcome} is incompatible with requested ndim {ndim}'
-                )
+                if die_ndim is None:
+                    raise ValueError(
+                        f'Outcome {outcome} is incompatible with requested ndim {ndim}'
+                    )
+                else:
+                    raise ValueError(
+                        f'Outcome {outcome} is incompatible with the ndim of a die argument {die_ndim}'
+                    )
+                
 
     if ndim == icepool.Scalar:
         data = Counts(data)
@@ -173,6 +179,8 @@ def Die(*args,
 
 def _expand(arg, denominator_method):
     """Expands the argument to a dict mapping outcomes to weights.
+    
+    Also returns the `ndim` of the dice at this tuple level.
     
     The outcomes are valid outcomes for a die.
     """
@@ -191,7 +199,7 @@ def _is_die(arg):
 
 
 def _expand_die(arg):
-    return arg._data
+    return arg._data, arg.ndim()
 
 
 def _is_dict(arg):
@@ -200,9 +208,12 @@ def _is_dict(arg):
 
 
 def _expand_dict(arg, denominator_method):
-    subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
+    if len(arg) == 0:
+        return {}, None
+    subdatas, die_ndims = zip(*[_expand(k, denominator_method) for k, v in arg.items()])
+    die_ndim = _merge_die_ndims(die_ndims)
     weights = [x for x in arg.values()]
-    return _merge_subdatas(subdatas, weights, denominator_method)
+    return _merge_subdatas(subdatas, weights, denominator_method), die_ndim
 
 
 def _is_tuple(arg):
@@ -210,19 +221,19 @@ def _is_tuple(arg):
 
 
 def _expand_tuple(arg, denominator_method):
-    subdatas = [_expand(x, denominator_method) for x in arg]
+    subdatas, _ = zip(*[_expand(x, denominator_method) for x in arg])
     data = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
         outcomes, weights = zip(*t)
         data[outcomes] += math.prod(weights)
-    return data
+    return data, None
 
 
 def _expand_scalar(arg):
     if arg is icepool.Reroll:
-        return {}
+        return {}, None
     else:
-        return {arg: 1}
+        return {arg: 1}, None
 
 
 def _merge_subdatas(subdatas, weights, denominator_method):
@@ -250,6 +261,18 @@ def _merge_subdatas(subdatas, weights, denominator_method):
             data[outcome] += weight * factor
 
     return data
+
+
+def _merge_die_ndims(die_ndims):
+    result = None
+    for die_ndim in die_ndims:
+        if die_ndim in [None, icepool.Empty]:
+            pass
+        elif result is None:
+            result = die_ndim
+        elif die_ndim != result:
+            raise ValueError('Die() expanded to top-level dice with conflicting ndims.')
+    return result
 
 
 def dice_with_common_ndim(*args, ndim=None):
