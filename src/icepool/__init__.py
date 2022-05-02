@@ -1,6 +1,6 @@
 """ Package for computing dice probabilities.
 
-See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) 
+See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html)
 for examples.
 
 [Visit the project page.](https://github.com/HighDiceRoller/icepool)
@@ -8,7 +8,7 @@ for examples.
 General conventions:
 
 * Unless explictly specified otherwise, all sorting is in ascending order.
-* The words "min" and "max" refer to outcomes, and the words "low" and "high" 
+* The words "min" and "max" refer to outcomes, and the words "low" and "high"
 refer to dice in a pool.
 """
 

@@ -1,6 +1,6 @@
 def markdown(die, *, include_weights=True, unpack_outcomes=True):
     """Formats the die as a Markdown table.
-    
+
     Args:
         include_weights: If `True`, a column will be emitted for the weights.
             Otherwise, only probabilities will be emitted.

@@ -16,7 +16,7 @@ import random
 
 
 class Die():
-    """A mapping of sorted outcomes to nonnegative `int` weights.
+    """An immutable mapping of outcomes to nonnegative `int` weights.
     
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.
@@ -32,7 +32,7 @@ class Die():
     
     However, zero-weight outcomes have a computational cost like any other
     outcome. Unless you have a specific use case in mind, it's best to leave
-    them out if not necessary.
+    them out.
     
     Most operators and methods will not introduce zero-weight outcomes if their
     arguments do not have any.
@@ -69,43 +69,45 @@ class Die():
                 * A die. The outcomes of the die will be "flattened" into the 
                     result; a die object will never contain a die as an outcome.
                 * A dict-like that maps outcomes to weights.
-                    The outcomes of the dict-like will be "flattened" into the result.
-                    This option will be taken in preference to treating the dict-like 
-                    itself as an outcome even if the dict-like itself is hashable 
-                    and comparable.
+                    The outcomes of the dict-like will be "flattened" into the 
+                    result. This option will be taken in preference to treating 
+                    the dict-like  itself as an outcome even if the dict-like 
+                    itself is hashable and comparable.
                 * A tuple of outcomes, which produces a joint distribution.
                     Any arguments that are dice or dicts will expand the tuple
                     according to their independent joint distribution.
                     For example, (d6, d6) will expand to 36 ordered tuples with 
-                    weight 1 each. Use this sparingly since it may create a large 
-                    number of outcomes.
+                    weight 1 each. Use this sparingly since it may create a 
+                    large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `weights` from consideration.
                 * Anything else will be treated as a single outcome.
                     These must be hashable and mutually comparable with all other 
-                    outcomes (after expansion). The same outcome can appear multiple 
-                    times, in which case it will be weighted proportionally higher.
+                    outcomes (after expansion). The same outcome can appear 
+                    multiple times, in which case it will be weighted 
+                    proportionally higher.
             weights: Controls the relative weight of the arguments.
-                If an argument expands into multiple outcomes, the weight is shared 
-                among those outcomes. If not provided, each argument will end up 
-                with the same total weight. For example, `Die(d6, 7)` is the same as 
-                `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
-            min_outcome: If used, there must be zero `*args`, and `weights` must be 
-                provided. The outcomes of the result will be integers starting at 
-                `min_outcome`,one per weight in `weights` with that weight.
+                If an argument expands into multiple outcomes, the weight is 
+                shared among those outcomes. If not provided, each argument will
+                end up  with the same total weight. For example, `Die(d6, 7)` is 
+                the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
+            min_outcome: If used, there must be zero `*args`, and `weights` must 
+                be provided. The outcomes of the result will be integers 
+                starting at `min_outcome`,one per weight in `weights` with that 
+                weight.
             denominator_method: How to determine the denominator of the result
-                if the arguments themselves contain weights. This is also used for 
-                dict-like arguments. From greatest to least:
-                * 'prod': Product of the individual argument denominators, times the 
-                    total of `weights`. This is like rolling all of the possible 
-                    dice, and then selecting a result.
+                if the arguments themselves contain weights. This is also used  
+                for dict-like arguments. From greatest to least:
+                * 'prod': Product of the individual argument denominators, times 
+                    the total of `weights`. This is like rolling all of the 
+                    possible dice, and then selecting a result.
                 * 'lcm' (default): LCM of the individual argument denominators, 
                     times the total of `weights`. This is like rolling `weights` 
                     first, then selecting an argument to roll.
-                * 'lcm_weighted': LCM of the individual (argument denominators times 
-                    corresponding element of `weights`). This is like rolling the 
-                    above, but the specific weight rolled is used to help determine 
-                    the result of the selected argument.
+                * 'lcm_weighted': LCM of the individual (argument denominators 
+                    times corresponding element of `weights`). This is like
+                     rolling the above, but the specific weight rolled is used 
+                    to help determine the result of the selected argument.
                 * 'reduce': `reduce()` is called at the end.
         Raises:
             `ValueError`: `None` is not a valid outcome for a die.
@@ -886,7 +888,8 @@ class Die():
                      truncate_max=None):
         """Roll several of this die and sum the sorted results from the highest.
         
-        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should be provided.
+        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
+        be provided.
         
         Args:
             num_dice: The number of dice to roll. All dice will have the same 

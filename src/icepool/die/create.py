@@ -47,7 +47,7 @@ def expand_die_args(*args,
 
 def _expand(arg, denominator_method):
     """Expands the argument to a dict mapping outcomes to weights.
-    
+
     The outcomes are valid outcomes for a die.
     """
     if _is_die(arg):

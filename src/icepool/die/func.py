@@ -9,12 +9,12 @@ import math
 
 def standard(num_sides):
     """A standard die.
-    
+
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,
-    with weight 1 each. 
-    
+    with weight 1 each.
+
     Don't confuse this with `icepool.Die()`:
-    
+
     * `icepool.Die(6)`: A die that always rolls the integer 6.
     * `icepool.d(6)`: A d6.
     """
@@ -22,21 +22,20 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(weights=[1] * num_sides,
-                       min_outcome=1)
+    return icepool.Die(weights=[1] * num_sides, min_outcome=1)
 
 
 def d(arg):
     """Converts the argument to a standard die if it is not already a die.
-    
+
     Args:
         arg: Either:
             * An `int`, which produces a standard die.
             * A die, which is returned itself.
-    
+
     Returns:
         A die.
-        
+
     Raises:
         `TypeError` if the argument is not an `int` or a die.
     """
@@ -50,8 +49,11 @@ def d(arg):
 
 def __getattr__(key):
     """Implements the `dX` syntax for standard die with no parentheses.
-    
+
     For example, `icepool.d6`.
+
+    Note that this behavior can't be imported into the global scope, but the
+    function `d()` can be.
     """
     if key[0] == 'd':
         try:
@@ -93,7 +95,7 @@ def from_rv(rv, outcomes, denominator, **kwargs):
     """Constructs a die from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
-        outcomes: An iterable of `int`s or `float`s that will be the outcomes 
+        outcomes: An iterable of `int`s or `float`s that will be the outcomes
             of the resulting die.
             If the distribution is discrete, outcomes must be `int`s.
         denominator: The denominator of the resulting die will be set to this.
@@ -112,11 +114,11 @@ def from_rv(rv, outcomes, denominator, **kwargs):
 
 
 def align(*dice):
-    """Pads all the dice with zero weights so that all have the same set of outcomes.
-    
+    """Pads dice with zero weights so that all have the same set of outcomes.
+
     Args:
-        *dice: Multiple dice or a single iterable of dice.
-    
+        *dice: One die per argument.
+
     Returns:
         A tuple of aligned dice.
     """
@@ -127,7 +129,14 @@ def align(*dice):
 
 
 def align_range(*dice):
-    """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
+    """Pads dice with zero weights so that all have the same set of consecutive `int` outcomes.
+
+    Args:
+        *dice: One die per argument.
+
+    Returns:
+        A tuple of aligned dice.
+    """
     dice = [icepool.Die(die) for die in dice]
     outcomes = tuple(
         range(icepool.min_outcome(*dice),
@@ -137,17 +146,17 @@ def align_range(*dice):
 
 def apply(func, *dice):
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
-    
+
     This is flexible but not very efficient for large numbers of dice.
-    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead 
+    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead
     if possible.
-    
+
     Args:
-        func: A function that takes one argument per input die and returns an 
+        func: A function that takes one argument per input die and returns an
             argument to `Die()`.
-    
+
     Returns:
-        A die constructed from the outputs of `func` and the product of the 
+        A die constructed from the outputs of `func` and the product of the
         weights of the dice.
     """
     dice = [icepool.Die(die) for die in dice]

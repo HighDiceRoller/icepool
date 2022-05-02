@@ -16,46 +16,46 @@ def Pool(die,
          truncate_min=None,
          truncate_max=None):
     """Factory function that creates a `DicePool` instance.
-    
+
     This should be used in conjunction with `EvalPool` to generate a result.
-    
+
     You can use `die.pool(num_dice=None, ...)` for the same effect as this function.
-    
-    All instances are cached. The members of the actual instance may not match 
-    the arguments exactly; instead, they may be optimized to values that give 
+
+    All instances are cached. The members of the actual instance may not match
+    the arguments exactly; instead, they may be optimized to values that give
     the same result as far as `EvalPool` is concerned.
-    
+
     This is capitalized because it is the preferred way of getting a new instance,
-    and so that you can use `from icepool import Pool` while leaving the name 
+    and so that you can use `from icepool import Pool` while leaving the name
    `pool` free. The name of the actual class is `DicePool`.
-    
+
     Args:
         die: The fundamental die of the pool.
-            If outcomes are not reachable by any die due to `truncate_min` or 
-            `truncate_max`, they will have 0 count. Zero-weight outcomes will 
+            If outcomes are not reachable by any die due to `truncate_min` or
+            `truncate_max`, they will have 0 count. Zero-weight outcomes will
             appear with zero weight, but can still generate nonzero counts.
         num_dice: An `int` that sets the number of dice in the pool.
-            If not provided, the number of dice will be inferred from the other 
+            If not provided, the number of dice will be inferred from the other
             arguments. If no arguments are provided at all, this defaults to 0.
-        count_dice: Determines which of the **sorted** dice will be counted, 
-            and how many times. Prefer to use the `DicePool`'s `[]` operator 
+        count_dice: Determines which of the **sorted** dice will be counted,
+            and how many times. Prefer to use the `DicePool`'s `[]` operator
             after the fact rather than providing an argument here.
             This operator is an alias for `DicePool.set_count_dice()`.
             See that method's docstring for details.
         truncate_max: A sequence of one outcome per die in the pool.
-            That die will be truncated to that maximum outcome, with all greater 
-            outcomes having 0 count. Values cannot be > the `max_outcome` of the 
+            That die will be truncated to that maximum outcome, with all greater
+            outcomes having 0 count. Values cannot be > the `max_outcome` of the
             fundamental die. A pool cannot have both `truncate_min` and
-            `truncate_max`.This can be used to efficiently roll a set of mixed 
-            standard dice. For example, 
-            `Pool(icepool.d12, truncate_max=[6, 6, 6, 8, 8])` 
+            `truncate_max`.This can be used to efficiently roll a set of mixed
+            standard dice. For example,
+            `Pool(icepool.d12, truncate_max=[6, 6, 6, 8, 8])`
             would be a pool of 3d6 and 2d8.
         truncate_min: A sequence of one outcome per die in the pool.
-            That die will be truncated to that minimum outcome, with all lesser 
-            outcomes having 0 count. Values cannot be < the `min_outcome` of the 
-            fundamental die. A pool cannot have both `truncate_min` and 
+            That die will be truncated to that minimum outcome, with all lesser
+            outcomes having 0 count. Values cannot be < the `min_outcome` of the
+            fundamental die. A pool cannot have both `truncate_min` and
             `truncate_max`.
-    
+
     Raises:
         `ValueError` if arguments result in a conflicting number of dice,
         if both `truncate_min` and `truncate_max` are provided,
@@ -136,9 +136,9 @@ def Pool(die,
 
 def count_dice_tuple(num_dice, count_dice):
     """Expresses `count_dice` as a tuple.
-    
+
     See `DicePool.set_count_dice()` for details.
-    
+
     Args:
         `num_dice`: An `int` specifying the number of dice.
         `count_dice`: Raw specification for how the dice are to be counted.
@@ -215,7 +215,7 @@ def _pool_cached_unchecked(die,
                            truncate_min=None,
                            truncate_max=None):
     """Cached, unchecked constructor for dice pools.
-    
+
     This should not be used directly. Use the `Pool()` factory function instead.
     """
     key = (die.key_tuple(), count_dice, truncate_min, truncate_max)
@@ -232,16 +232,16 @@ def _pool_cached_unchecked(die,
 
 def standard_pool(*die_sizes, count_dice=None):
     """Creates a pool of standard dice.
-    
+
     For example, `standard_pool(8, 8, 6, 6, 6)` would be a pool of 2 d8s and 3 d6s.
-    
+
     If no die sizes are given, the pool will consist of zero d1s.
-    
+
     Args:
         *die_sizes: The size of each die in the pool.
         count_dice: Which dice will be counted, as `Pool()`.
             As with `Pool()`, you can also use the `[]` operator after the fact.
-            For example, `standard_pool(8, 8, 6, 6, 6)[-2:]` would keep the 
+            For example, `standard_pool(8, 8, 6, 6, 6)[-2:]` would keep the
             highest two dice of 2 d8s and 3 d6s.
     """
     if len(die_sizes) == 0:
@@ -253,22 +253,22 @@ def standard_pool(*die_sizes, count_dice=None):
 
 class DicePool(icepool.BasePool):
     """Represents set of (mostly) indistiguishable dice.
-    
+
     A pool is defined by:
 
     * A fundamental die.
     * The number of dice in the pool.
-    * Which of the sorted positions are counted (possibly multiple or negative 
+    * Which of the sorted positions are counted (possibly multiple or negative
         times).
-    * Possibly truncating the max or min outcomes of dice in the pool 
+    * Possibly truncating the max or min outcomes of dice in the pool
         (but not both) relative to the fundamental die.
     """
 
     def __init__(self, die, count_dice, *, truncate_min, truncate_max):
         """Unchecked constructor.
-        
+
         This should not be used directly. Use the `Pool()` factory function instead.
-        
+
         Args:
             die: The fundamental die of the pool.
             count_dice: At this point this should be a tuple the length of the pool.
@@ -306,16 +306,16 @@ class DicePool(icepool.BasePool):
 
     def set_count_dice(self, count_dice):
         """Returns a pool with the selected dice counted.
-        
+
         You can use `pool[count_dice]` for the same effect as this method.
-        
+
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
-        
+
         This is always an absolute selection on all `num_dice`,
         not a relative selection on already-selected dice,
         which would be ambiguous in the presence of multiple or negative counts.
-        
+
         Args:
             `None`: All dice will be counted once.
             An `int`. This will count only the die at the specified index (once).
@@ -325,13 +325,13 @@ class DicePool(icepool.BasePool):
                 rather than being a step,
                 but only if the pool does not have `truncate_max` or `truncate_min`.
             A sequence of one `int`s for each die.
-                Each die is counted that many times, which could be multiple or 
+                Each die is counted that many times, which could be multiple or
                 negative times. This may resize the pool, but only if the pool
                 does not have `truncate_max` or `truncate_min`.
-                
+
                 Up to one `Ellipsis` (`...`) may be used.
                 If an `Ellipsis` is used, the size of the pool won't change. Instead:
-                
+
                 * If `count_dice` is shorter than `num_dice`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
                     E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
@@ -340,36 +340,36 @@ class DicePool(icepool.BasePool):
                 * If `count_dice` is longer than `num_dice` and the `Ellipsis` is on one side,
                     elements will be dropped from `count_dice` on the side with the `Ellipsis`.
                     E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-                * If `count_dice` is longer than `num_dice` and the `Ellipsis` 
-                    is in the middle, the counts will be as the sum of two 
+                * If `count_dice` is longer than `num_dice` and the `Ellipsis`
+                    is in the middle, the counts will be as the sum of two
                     one-sided `Ellipsis`.
                     E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                    On a pool consisting of a single single die this would have 
+                    On a pool consisting of a single single die this would have
                     the -1 and 1 cancel each other out.
-        
+
         Raises:
             ValueError:
                 * If `count_dice` would change the size of a pool with
                     `truncate_max` or `truncate_min`.
                 * If more than one `Ellipsis` is used.
-        
+
         For example, here are some ways of selecting the two highest dice out of 5:
-        
+
         * `pool[3:5]`
         * `pool[3:]`
         * `pool[-2:]`
         * `pool[..., 1, 1]`
-        
-        These will also select the two highest dice out of 5, and will also 
+
+        These will also select the two highest dice out of 5, and will also
         resize the pool to 5 dice first:
-        
+
         * `pool[3::5]`
         * `pool[3:5:5]`
         * `pool[-2::5]`
         * `pool[0, 0, 0, 1, 1]`
-        
+
         These will count the highest as a positive and the lowest as a negative:
-        
+
         * `pool[-1, 0, 0, 0, 1]`
         * `pool[-1, ..., 1]`
         """
@@ -420,11 +420,11 @@ class DicePool(icepool.BasePool):
         return self._num_drop_highest * len(self.outcomes())
 
     def truncate_min(self, always_tuple=False):
-        """A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool. 
-        
+        """A sorted tuple of thresholds below which outcomes are truncated, one for each die in the pool.
+
         Args:
-            always_tuple: If `False`, this will return `None` if there are no 
-                die-specific `truncate_min`. If `True` this will return a 
+            always_tuple: If `False`, this will return `None` if there are no
+                die-specific `truncate_min`. If `True` this will return a
                 `tuple` even in this case.
         """
         if self._truncate_min is None and always_tuple:
@@ -435,11 +435,11 @@ class DicePool(icepool.BasePool):
         return self._truncate_min is not None
 
     def truncate_max(self, always_tuple=False):
-        """A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool. 
-        
+        """A sorted tuple of thresholds above which outcomes are truncated, one for each die in the pool.
+
         Args:
-            always_tuple: If `False`, this will return `None` if there are no 
-                die-specific `truncate_min`. If `True` this will return a 
+            always_tuple: If `False`, this will return `None` if there are no
+                die-specific `truncate_min`. If `True` this will return a
                 `tuple` even in this case.
         """
         if self._truncate_max is None and always_tuple:
@@ -453,14 +453,14 @@ class DicePool(icepool.BasePool):
         """
         Yields:
             From 0 to the number of dice that can roll this outcome inclusive:
-            * pool: A `DicePool` resulting from removing that many dice from 
+            * pool: A `DicePool` resulting from removing that many dice from
                 this `DicePool`, while also removing the min outcome.
-                If there is only one outcome with weight remaining, only one 
+                If there is only one outcome with weight remaining, only one
                 result will be yielded, corresponding to all dice rolling that outcome.
-                If the outcome has zero weight, only one result will be yielded, 
+                If the outcome has zero weight, only one result will be yielded,
                 corresponding to zero dice rolling that outcome.
                 If there are no outcomes remaining, this will be `None`.
-            * count: An `int` indicating the number of selected dice that rolled 
+            * count: An `int` indicating the number of selected dice that rolled
                 the removed outcome.
             * weight: An `int` indicating the weight of that many dice rolling
                 the removed outcome.
@@ -521,17 +521,17 @@ class DicePool(icepool.BasePool):
         """
         Yields:
             From 0 to the number of dice that can roll this outcome inclusive:
-            * pool: A `DicePool` resulting from removing that many dice from 
+            * pool: A `DicePool` resulting from removing that many dice from
                 this `DicePool`, while also removing the max outcome.
-                If there is only one outcome with weight remaining, only one 
-                result will be yielded, corresponding to all dice rolling that 
+                If there is only one outcome with weight remaining, only one
+                result will be yielded, corresponding to all dice rolling that
                 outcome.
-                If the outcome has zero weight, only one result will be yielded, 
+                If the outcome has zero weight, only one result will be yielded,
                 corresponding to zero dice rolling that outcome.
                 If there are no outcomes remaining, this will be `None`.
-            * count: An `int` indicating the number of selected dice that rolled 
+            * count: An `int` indicating the number of selected dice that rolled
                 the removed outcome.
-            * weight: An `int` indicating the weight of that many dice rolling 
+            * weight: An `int` indicating the weight of that many dice rolling
                 the removed outcome.
         """
         truncate_max = self.truncate_max(always_tuple=True)
@@ -612,14 +612,14 @@ class DicePool(icepool.BasePool):
 
     def has_counted_dice(self):
         """Returns `True` iff any of the remaining dice are counted a nonzero number of times.
-        
+
         This is used to skip to the base case when there are no more dice to consider.
         """
         return any(self.count_dice())
 
     def sample(self):
         """Samples a roll from this pool.
-        
+
         Returns:
             A dict mapping outcomes to counts representing a single roll of this pool.
         """
