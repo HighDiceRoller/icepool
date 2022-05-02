@@ -23,8 +23,7 @@ def standard(num_sides):
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
     return icepool.Die(weights=[1] * num_sides,
-                       min_outcome=1,
-                       ndim=icepool.Scalar)
+                       min_outcome=1)
 
 
 def d(arg):
@@ -43,7 +42,7 @@ def d(arg):
     """
     if isinstance(arg, int):
         return standard(arg)
-    elif isinstance(arg, icepool.BaseDie):
+    elif isinstance(arg, icepool.Die):
         return arg
     else:
         raise TypeError('The argument to d() must be an int or a die.')
@@ -64,30 +63,30 @@ def __getattr__(key):
 
 def bernoulli(n, d):
     """A die that rolls `True` with chance `n / d`, and `False` otherwise. """
-    return icepool.Die({False: d - n, True: n}, ndim=icepool.Scalar)
+    return icepool.Die({False: d - n, True: n})
 
 
 coin = bernoulli
 
 
-def from_cweights(outcomes, cweights, *, ndim=None):
+def from_cweights(outcomes, cweights):
     """Constructs a die from cumulative weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(outcomes, cweights):
         d[outcome] = weight - prev
         prev = weight
-    return icepool.Die(d, ndim=ndim)
+    return icepool.Die(d)
 
 
-def from_sweights(outcomes, sweights, *, ndim=None):
+def from_sweights(outcomes, sweights):
     """Constructs a die from survival weights. """
     prev = 0
     d = {}
     for outcome, weight in zip(reversed(outcomes), reversed(tuple(sweights))):
         d[outcome] = weight - prev
         prev = weight
-    return icepool.Die(d, ndim=ndim)
+    return icepool.Die(d)
 
 
 def from_rv(rv, outcomes, denominator, **kwargs):
@@ -112,20 +111,16 @@ def from_rv(rv, outcomes, denominator, **kwargs):
     return from_cweights(outcomes, cweights)
 
 
-def align(*dice, ndim=None):
+def align(*dice):
     """Pads all the dice with zero weights so that all have the same set of outcomes.
     
     Args:
         *dice: Multiple dice or a single iterable of dice.
-        ndim: The number of dimensions of the result.
     
     Returns:
         A tuple of aligned dice.
-    
-    Raises:
-        `ValueError` if the dice are of mixed ndims.
     """
-    dice, ndim = icepool.dice_with_common_ndim(*dice)
+    dice = [icepool.Die(die) for die in dice]
     outcomes = set(itertools.chain.from_iterable(
         die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -133,14 +128,14 @@ def align(*dice, ndim=None):
 
 def align_range(*dice):
     """Pads all the dice with zero weights so that all have the same set of consecutive `int` outcomes. """
-    dice, ndim = icepool.dice_with_common_ndim(*dice, ndim=icepool.Scalar)
+    dice = [icepool.Die(die) for die in dice]
     outcomes = tuple(
         range(icepool.min_outcome(*dice),
               icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def apply(func, *dice, ndim=None):
+def apply(func, *dice):
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
     
     This is flexible but not very efficient for large numbers of dice.
@@ -150,13 +145,11 @@ def apply(func, *dice, ndim=None):
     Args:
         func: A function that takes one argument per input die and returns an 
             argument to `Die()`.
-        ndim: If supplied, the result will have this many dimensions.
     
     Returns:
         A die constructed from the outputs of `func` and the product of the 
         weights of the dice.
     """
-    # No common ndim required for the inputs in this case.
     dice = [icepool.Die(die) for die in dice]
     final_outcomes = []
     final_weights = []
@@ -169,4 +162,4 @@ def apply(func, *dice, ndim=None):
             final_outcomes.append(final_outcome)
             final_weights.append(final_weight)
 
-    return icepool.Die(*final_outcomes, weights=final_weights, ndim=ndim)
+    return icepool.Die(*final_outcomes, weights=final_weights)

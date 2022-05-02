@@ -3,6 +3,7 @@ __docformat__ = 'google'
 import icepool
 
 from functools import cached_property
+import math
 
 
 class Counts():
@@ -67,12 +68,11 @@ class Counts():
 
     def __repr__(self):
         return type(self).__qualname__ + f'({repr(self._d)})'
-
-
-class Slicer():
-
-    def __init__(self, bound_func):
-        self._func = bound_func
-
-    def __getitem__(self, select):
-        return self._func(select)
+        
+    def reduce(self):
+        """Divides all counts by their greatest common denominator."""
+        gcd = math.gcd(*self.values())
+        if gcd <= 1:
+            return self
+        data = {outcome: weight // gcd for outcome, weight in self.items()}
+        return Counts(data)

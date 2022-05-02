@@ -16,22 +16,18 @@ __docformat__ = 'google'
 
 # Expose certain names at top-level.
 
-from icepool.die.create import Die, dice_with_common_ndim
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
                               from_cweights, from_sweights, from_rv, align,
                               align_range, apply)
 
-import icepool.die.base
+import icepool.die.die
 
-from icepool.die.base import BaseDie
-from icepool.die.empty import EmptyDie
-from icepool.die.scalar import ScalarDie
-from icepool.die.vector import VectorDie
+from icepool.die.die import Die
 
-highest = icepool.die.base.BaseDie.highest
-lowest = icepool.die.base.BaseDie.lowest
-max_outcome = icepool.die.base.BaseDie.max_outcome
-min_outcome = icepool.die.base.BaseDie.min_outcome
+highest = icepool.die.die.Die.highest
+lowest = icepool.die.die.Die.lowest
+max_outcome = icepool.die.die.Die.max_outcome
+min_outcome = icepool.die.die.Die.min_outcome
 
 from icepool.pool.base import BasePool
 from icepool.pool.pool import Pool, standard_pool, DicePool
@@ -43,25 +39,17 @@ import enum
 
 class SpecialValue(enum.Enum):
     Reroll = 'Reroll'  # Indicates an outcome should be rerolled (with no max depth).
-    Scalar = 'Scalar'  # A `ndim` indicating a non-vector die.
-    Empty = 'Empty'  # A `ndim` indicating a die with no outcomes.
 
 
 Reroll = SpecialValue.Reroll
-Scalar = SpecialValue.Scalar
-Empty = SpecialValue.Empty
 
 __all__ = [
-    'Die',
     'standard',
     'd',
     '__getattr__',
     'bernoulli',
     'coin',
-    'BaseDie',
-    'EmptyDie',
-    'ScalarDie',
-    'VectorDie',
+    'Die',
     'from_cweights',
     'from_sweights',
     'from_rv',
@@ -72,10 +60,7 @@ __all__ = [
     'max_outcome',
     'min_outcome',
     'apply',
-    'dice_with_common_ndim',
     'Reroll',
-    'Scalar',
-    'Empty',
     'BasePool',
     'Pool',
     'standard_pool',

@@ -118,24 +118,6 @@ class EvalPool(ABC):
         """
         return 1
 
-    def ndim(self, *pools):
-        """Optional function to specify the number of dimensions of the output die.
-        
-        If not provided, the ndim of the result will be determined automatically 
-        as per `Die()`.
-        
-        Args:
-            *pools: One or more `DicePool`s being evaluated.
-                Most subclasses will expect a fixed number of pools and 
-                can replace this variadic parameter with a fixed number of 
-                named parameters.
-        
-        Returns:
-            The number of dimensions that the output die should have,
-            or `None` if this should be determined automatically by `Die()`.
-        """
-        return None
-
     @cached_property
     def _cache(self):
         """A cache of (direction, pools) -> weight distribution over states. """
@@ -189,8 +171,7 @@ class EvalPool(ABC):
                     final_weights.append(weight)
 
             return icepool.Die(*final_outcomes,
-                               weights=final_weights,
-                               ndim=self.ndim(*pools))
+                               weights=final_weights)
 
     __call__ = eval
 
