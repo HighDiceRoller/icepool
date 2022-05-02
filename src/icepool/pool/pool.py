@@ -15,7 +15,7 @@ def Pool(die,
          *,
          truncate_min=None,
          truncate_max=None):
-    """Factory function for `DicePool`.
+    """Factory function that creates a `DicePool` instance.
     
     This should be used in conjunction with `EvalPool` to generate a result.
     
@@ -93,7 +93,8 @@ def Pool(die,
             )
 
     # Put truncation into standard form.
-    # This is either a sorted tuple, or `None` if there is no (effective) limit to the die size on that side.
+    # This is either a sorted tuple, or `None` if there is no (effective) limit
+    # to the die size on that side.
     # Values will also be clipped to the range of the fundamental die.
 
     if num_dice == 0:
@@ -105,7 +106,8 @@ def Pool(die,
                 if min(truncate_min) < die.min_outcome():
                     raise ValueError(
                         'truncate_min cannot be < the min_outcome of the die.')
-                # We can't truncate the die to truncate_min since it may upset the iteration order.
+                # We can't truncate the die to truncate_min since it may upset
+                # the iteration order.
                 truncate_min = tuple(
                     sorted(die.nearest_ge(outcome) for outcome in truncate_min))
             else:
@@ -116,7 +118,8 @@ def Pool(die,
                 if max(truncate_max) > die.max_outcome():
                     raise ValueError(
                         'truncate_max cannot be > the max_outcome of the die.')
-                # We can't truncate the die to truncate_max since it may upset the iteration order.
+                # We can't truncate the die to truncate_max since it may upset
+                # the iteration order.
                 truncate_max = tuple(
                     sorted(die.nearest_le(outcome) for outcome in truncate_max))
             else:
@@ -152,7 +155,8 @@ def count_dice_tuple(num_dice, count_dice):
         return tuple(result)
     elif isinstance(count_dice, slice):
         if count_dice.step is not None:
-            # "Step" is not useful here, so we repurpose it to set the number of dice.
+            # "Step" is not useful here, so we repurpose it to set the number
+            # of dice.
             num_dice = count_dice.step
             count_dice = slice(count_dice.start, count_dice.stop)
         result = [0] * num_dice
@@ -248,16 +252,16 @@ def standard_pool(*die_sizes, count_dice=None):
 
 
 class DicePool(icepool.BasePool):
-    """A pool is a set of (semi-)identical dice that are rolled in no particular order
-    and sorted only after the fact.
+    """Represents set of (mostly) indistiguishable dice.
     
     A pool is defined by:
 
     * A fundamental die.
     * The number of dice in the pool.
-    * Which of the sorted positions are counted (possibly multiple or negative times).
-    * Possibly limiting the max or min outcomes of dice in the pool (but not both)
-        relative to the fundamental die.
+    * Which of the sorted positions are counted (possibly multiple or negative 
+        times).
+    * Possibly truncating the max or min outcomes of dice in the pool 
+        (but not both) relative to the fundamental die.
     """
 
     def __init__(self, die, count_dice, *, truncate_min, truncate_max):
@@ -267,7 +271,7 @@ class DicePool(icepool.BasePool):
         
         Args:
             die: The fundamental die of the pool.
-            count_dice: At this point, this should be a tuple the length of the pool.
+            count_dice: At this point this should be a tuple the length of the pool.
             truncate_max: At this point this should be a tuple the length of the pool or `None`.
             truncate_min: At this point this should be a tuple the length of the pool or `None`.
         """

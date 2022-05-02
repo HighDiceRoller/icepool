@@ -127,7 +127,7 @@ class Die():
         
         The result is a die.
 
-        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil`.
+        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil, []`.
         """
         data = defaultdict(int)
         for outcome, weight in self.items():
