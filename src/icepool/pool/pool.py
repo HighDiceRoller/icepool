@@ -505,8 +505,10 @@ class DicePool(icepool.BasePool):
                                           truncate_min=popped_truncate_min)
             yield pool, count, comb_row[-1]
         else:
-            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
-            # We empty the rest of the pool immediately since no more dice can contribute counts.
+            # In this case, we ran out of counted dice before running out of
+            # dice that could roll the outcome.
+            # We empty the rest of the pool immediately since no more dice can
+            # contribute counts.
             skip_weight = 0
             for weight in comb_row[end_counted:]:
                 skip_weight *= popped_die.denominator()
@@ -572,8 +574,10 @@ class DicePool(icepool.BasePool):
                                           truncate_max=popped_truncate_max)
             yield pool, count, comb_row[-1]
         else:
-            # In this case, we ran out of counted dice before running out of dice that could roll the outcome.
-            # We empty the rest of the pool immediately since no more dice can contribute counts.
+            # In this case, we ran out of counted dice before running out of
+            # dice that could roll the outcome.
+            # We empty the rest of the pool immediately since no more dice can
+            # contribute counts.
             skip_weight = 0
             for weight in comb_row[end_counted:]:
                 skip_weight *= popped_die.denominator()
