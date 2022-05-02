@@ -1,7 +1,5 @@
 __docformat__ = 'google'
 
-from xml.etree.ElementInclude import include
-
 
 def _header_strings(die, include_weights, unpack_outcomes):
     """Generates a list of strings for the header."""
