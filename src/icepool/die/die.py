@@ -116,11 +116,7 @@ class Die():
                                      min_outcome=min_outcome,
                                      denominator_method=denominator_method)
 
-    def __new__(cls,
-                *args,
-                weights=None,
-                min_outcome=None,
-                denominator_method='lcm'):
+    def __new__(cls, *args, weights=None, **kwargs):
         if weights is None and len(args) == 1 and isinstance(args[0], Die):
             return args[0]
         return super(Die, cls).__new__(cls)

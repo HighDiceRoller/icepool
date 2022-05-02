@@ -8,10 +8,7 @@ import itertools
 import math
 
 
-def expand_die_args(*args,
-                    weights=None,
-                    min_outcome=None,
-                    denominator_method='lcm'):
+def expand_die_args(*args, weights, min_outcome, denominator_method):
     """Helper function to expand arguments to Die()."""
 
     # Special case: consecutive outcomes.
