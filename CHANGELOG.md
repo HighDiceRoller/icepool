@@ -1,3 +1,9 @@
+## 0.9.1
+
+* This will probably be the last version with a `VectorDie` distinction.
+* Dice cannot have negative weights.
+* `VectorDie` cannot be nested inside tuple outcomes.
+
 ## 0.9.0
 
 * Die and dict arguments to `Die()` are now expanded, including when nested.
