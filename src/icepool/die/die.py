@@ -1,6 +1,5 @@
 __docformat__ = 'google'
 
-from attr import has
 import icepool
 from icepool.collections import Counts
 from icepool.die.create import expand_die_args
@@ -17,26 +16,26 @@ import random
 
 class Die():
     """An immutable mapping of outcomes to nonnegative `int` weights.
-    
+
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.
-    
+
     It *is* (mostly) well-defined to have a die with zero-weight outcomes,
     even though this is not a proper probability distribution.
     These can be useful in a few cases, such as:
-    
+
     * `DicePool` and `EvalPool` will iterate through zero-weight outcomes
         with 0 `count`, rather than `None` or skipping that outcome.
     * `icepool.align()` and the like are convenient for making dice share the
         same set of outcomes.
-    
+
     However, zero-weight outcomes have a computational cost like any other
     outcome. Unless you have a specific use case in mind, it's best to leave
     them out.
-    
+
     Most operators and methods will not introduce zero-weight outcomes if their
     arguments do not have any.
-    
+
     It's also possible to have "empty" dice with no outcomes at all,
     though these have little use other than being sentinel values.
     """
@@ -47,66 +46,66 @@ class Die():
                  min_outcome=None,
                  denominator_method='lcm'):
         """Constructor for a die..
-        
+
         Don't confuse this with `icepool.d()`:
-        
+
         * `icepool.Die(6)`: A die that always rolls the `int` 6.
         * `icepool.d(6)`: A d6.
-        
+
         Here are some different ways of constructing a d6:
-        
+
         * Just import it: `from icepool import d6`
         * Use the `d()` function: `icepool.d(6)`
         * Use a d6 that you already have: `Die(d6)`
         * Mix a d3 and a d3+3: `Die(d3, d3+3)`
         * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
         * Give the faces as args: `Die(1, 2, 3, 4, 5, 6)`
-        
+
         All weights must be non-negative, though they can be zero.
-        
+
         Args:
             *args: Each of these arguments can be one of the following:
-                * A die. The outcomes of the die will be "flattened" into the 
+                * A die. The outcomes of the die will be "flattened" into the
                     result; a die object will never contain a die as an outcome.
                 * A dict-like that maps outcomes to weights.
-                    The outcomes of the dict-like will be "flattened" into the 
-                    result. This option will be taken in preference to treating 
-                    the dict-like  itself as an outcome even if the dict-like 
+                    The outcomes of the dict-like will be "flattened" into the
+                    result. This option will be taken in preference to treating
+                    the dict-like  itself as an outcome even if the dict-like
                     itself is hashable and comparable.
                 * A tuple of outcomes, which produces a joint distribution.
                     Any arguments that are dice or dicts will expand the tuple
                     according to their independent joint distribution.
-                    For example, (d6, d6) will expand to 36 ordered tuples with 
-                    weight 1 each. Use this sparingly since it may create a 
+                    For example, (d6, d6) will expand to 36 ordered tuples with
+                    weight 1 each. Use this sparingly since it may create a
                     large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `weights` from consideration.
                 * Anything else will be treated as a single outcome.
-                    These must be hashable and mutually comparable with all other 
-                    outcomes (after expansion). The same outcome can appear 
-                    multiple times, in which case it will be weighted 
+                    These must be hashable and mutually comparable with all other
+                    outcomes (after expansion). The same outcome can appear
+                    multiple times, in which case it will be weighted
                     proportionally higher.
             weights: Controls the relative weight of the arguments.
-                If an argument expands into multiple outcomes, the weight is 
+                If an argument expands into multiple outcomes, the weight is
                 shared among those outcomes. If not provided, each argument will
-                end up  with the same total weight. For example, `Die(d6, 7)` is 
+                end up  with the same total weight. For example, `Die(d6, 7)` is
                 the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
-            min_outcome: If used, there must be zero `*args`, and `weights` must 
-                be provided. The outcomes of the result will be integers 
-                starting at `min_outcome`,one per weight in `weights` with that 
+            min_outcome: If used, there must be zero `*args`, and `weights` must
+                be provided. The outcomes of the result will be integers
+                starting at `min_outcome`,one per weight in `weights` with that
                 weight.
             denominator_method: How to determine the denominator of the result
-                if the arguments themselves contain weights. This is also used  
+                if the arguments themselves contain weights. This is also used
                 for dict-like arguments. From greatest to least:
-                * 'prod': Product of the individual argument denominators, times 
-                    the total of `weights`. This is like rolling all of the 
+                * 'prod': Product of the individual argument denominators, times
+                    the total of `weights`. This is like rolling all of the
                     possible dice, and then selecting a result.
-                * 'lcm' (default): LCM of the individual argument denominators, 
-                    times the total of `weights`. This is like rolling `weights` 
+                * 'lcm' (default): LCM of the individual argument denominators,
+                    times the total of `weights`. This is like rolling `weights`
                     first, then selecting an argument to roll.
-                * 'lcm_weighted': LCM of the individual (argument denominators 
+                * 'lcm_weighted': LCM of the individual (argument denominators
                     times corresponding element of `weights`). This is like
-                     rolling the above, but the specific weight rolled is used 
+                     rolling the above, but the specific weight rolled is used
                     to help determine the result of the selected argument.
                 * 'reduce': `reduce()` is called at the end.
         Raises:
@@ -128,7 +127,7 @@ class Die():
 
     def unary_op(self, op, *args, **kwargs):
         """Performs the operation on the outcomes.
-        
+
         The result is a die.
 
         This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil, []`.
@@ -142,19 +141,19 @@ class Die():
         """Performs the operation on pairs of outcomes.
 
         The result is a die.
-        
+
         The other operand is cast to a die before performing the operation.
-        
+
         This is used for the operators
         `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`.
         Note that `*` multiplies outcomes directly;
         it is not the same as `@` or `d()`.
-        
+
         Special operators:
             * The `@` operator rolls the left die, then rolls the right die that
-                many times and sums the outcomes. Only the left side will be 
+                many times and sums the outcomes. Only the left side will be
                 cast to a die; the right side must already be a die.
-            * `==` and `!=` are applied across outcomes like the other 
+            * `==` and `!=` are applied across outcomes like the other
                 operators. They also set the truth value of the die according to
                 whether the die themselves are the same.
         """
@@ -182,8 +181,8 @@ class Die():
     @cached_property
     def _outcome_len(self):
         """Returns the common length of the outcomes.
-        
-        If any outcome has no length, the outcomes have mixed length, or the 
+
+        If any outcome has no length, the outcomes have mixed length, or the
         die is empty, the result is `None`.
         """
         result = None
@@ -233,8 +232,8 @@ class Die():
         return tuple(weight / self.denominator() for weight in self.weights())
 
     def pmf(self, percent=False):
-        """Probability mass function. The probability of rolling each outcome in order. 
-        
+        """Probability mass function. The probability of rolling each outcome in order.
+
         Args:
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
@@ -268,8 +267,8 @@ class Die():
         return tuple(weight / self.denominator() for weight in self.cweights())
 
     def cdf(self, percent=False):
-        """Cumulative distribution function. The chance of rolling <= each outcome in order. 
-        
+        """Cumulative distribution function. The chance of rolling <= each outcome in order.
+
         Args:
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
@@ -284,8 +283,8 @@ class Die():
         return tuple(weight / self.denominator() for weight in self.sweights())
 
     def sf(self, percent=False):
-        """Survival function. The chance of rolling >= each outcome in order. 
-        
+        """Survival function. The chance of rolling >= each outcome in order.
+
         Args:
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
@@ -339,7 +338,7 @@ class Die():
 
     def mode(self):
         """Returns a tuple containing the most common outcome(s) of the die.
-        
+
         These are sorted from lowest to highest.
         """
         return tuple(outcome for outcome, weight in self.items()
@@ -361,19 +360,19 @@ class Die():
 
     def median_left(self):
         """Returns the median.
-        
+
         If the median lies between two outcomes, returns the lower of the two. """
         return self.ppf_left(1, 2)
 
     def median_right(self):
         """Returns the median.
-        
+
         If the median lies between two outcomes, returns the higher of the two. """
         return self.ppf_right(1, 2)
 
     def median(self):
         """Returns the median.
-        
+
         If the median lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
         in this case, use `median_left` or `median_right` instead.
@@ -382,7 +381,7 @@ class Die():
 
     def ppf_left(self, n, d=100):
         """Returns a quantile, `n / d` of the way through the cdf.
-        
+
         If the result lies between two outcomes, returns the lower of the two.
         """
         index = bisect.bisect_left(self.cweights(),
@@ -393,7 +392,7 @@ class Die():
 
     def ppf_right(self, n, d=100):
         """Returns a quantile, `n / d` of the way through the cdf.
-        
+
         If the result lies between two outcomes, returns the higher of the two.
         """
         index = bisect.bisect_right(self.cweights(),
@@ -404,7 +403,7 @@ class Die():
 
     def ppf(self, n, d=100):
         """Returns a quantile, `n / d` of the way through the cdf.
-        
+
         If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
         in this case, use `ppf_left` or `ppf_right` instead.
@@ -476,8 +475,8 @@ class Die():
         return max(die.outcomes()[-1] for die in dice)
 
     def nearest_le(self, outcome):
-        """Returns the nearest outcome that is <= the argument. 
-        
+        """Returns the nearest outcome that is <= the argument.
+
         Returns `None` if there is no such outcome.
         """
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
@@ -486,8 +485,8 @@ class Die():
         return self.outcomes()[index]
 
     def nearest_ge(self, outcome):
-        """Returns the nearest outcome that is >= the argument. 
-        
+        """Returns the nearest outcome that is >= the argument.
+
         Returns `None` if there is no such outcome.
         """
         index = bisect.bisect_left(self.outcomes(), outcome)
@@ -497,7 +496,7 @@ class Die():
 
     def reroll(self, outcomes=None, *, max_depth=None):
         """Rerolls the given outcomes.
-        
+
         Args:
             outcomes: Selects which outcomes to reroll. Options:
                 * A callable that takes an outcome and returns `True` if it
@@ -506,7 +505,7 @@ class Die():
                 * If not provided, the min outcome will be rerolled.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
-        
+
         Returns:
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
@@ -541,9 +540,9 @@ class Die():
 
     def reroll_until(self, outcomes, *, max_depth=None):
         """Rerolls until getting one of the given outcomes.
-        
+
         Essentially the complement of `reroll()`.
-        
+
         Args:
             outcomes: Selects which outcomes to reroll until. Options:
                 * A callable that takes an outcome and returns `True` if it
@@ -551,7 +550,7 @@ class Die():
                 * A set of outcomes to reroll until.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
-        
+
         Returns:
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
@@ -569,14 +568,14 @@ class Die():
 
     def truncate(self, min_outcome=None, max_outcome=None):
         """Truncates the outcomes of this die to the given range.
-        
+
         The endpoints are included in the result if applicable.
         If one of the arguments is not provided, that side will not be truncated.
-        
+
         This effectively rerolls outcomes outside the given range.
         If instead you want to replace those outcomes with the nearest endpoint,
         use `clip()`.
-        
+
         Not to be confused with `trunc(die)`, which performs integer truncation
         on each outcome.
         """
@@ -593,10 +592,10 @@ class Die():
 
     def clip(self, min_outcome=None, max_outcome=None):
         """Clips the outcomes of this die to the given values.
-        
+
         The endpoints are included in the result if applicable.
         If one of the arguments is not provided, that side will not be clipped.
-        
+
         This is not the same as rerolling outcomes beyond this range;
         the outcome is simply adjusted to fit within the range.
         This will typically cause some weight to bunch up at the endpoint.
@@ -614,7 +613,7 @@ class Die():
 
     def set_outcomes(self, outcomes):
         """Sets the set of outcomes to the argument.
-        
+
         This may remove outcomes (if they are not present in the argument)
         and/or add zero-weight outcomes (if they are not present in this die).
         """
@@ -633,7 +632,7 @@ class Die():
 
     def _pop_min(self):
         """Removes the min outcome and return the result, along with the popped outcome, and the popped weight.
-        
+
         Raises:
             `IndexError` if this die has no outcome to pop.
         """
@@ -646,7 +645,7 @@ class Die():
 
     def _pop_max(self):
         """Removes the max outcome and return the result, along with the popped outcome, and the popped weight.
-        
+
         Raises:
             `IndexError` if this die has no outcome to pop.
         """
@@ -656,11 +655,11 @@ class Die():
 
     def sub(self, repl, /, *, max_depth=1, denominator_method='lcm'):
         """Changes outcomes of the die to other outcomes.
-        
+
         You can think of this as `sub`stituting outcomes of this die for other
-        outcomes or dice. Or, as executing a `sub`routine based on the roll of 
+        outcomes or dice. Or, as executing a `sub`routine based on the roll of
         this die.
-        
+
         Args:
             repl: One of the following:
                 * A map from old outcomes to new outcomes.
@@ -668,11 +667,11 @@ class Die():
                 * A callable mapping old outcomes to new outcomes.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            max_depth: `sub()` will be repeated with the same argument on the 
+            max_depth: `sub()` will be repeated with the same argument on the
                 result this many times.
                 If set to `None`, this will repeat until a fixed point is reached.
             denominator_method: As `icepool.Die()`.
-        
+
         Returns:
             The relabeled die.
         """
@@ -709,11 +708,11 @@ class Die():
 
     def explode(self, outcomes=None, *, max_depth=None):
         """Causes outcomes to be rolled again and added to the total.
-        
+
         Args:
             outcomes: Which outcomes to explode. Options:
                 * An iterable containing outcomes to explode.
-                * A callable that takes an outcome and returns `True` if it 
+                * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
             max_depth: The maximum number of additional dice to roll.
@@ -753,8 +752,8 @@ class Die():
                 *,
                 denominator_method='lcm'):
         """Ternary conditional operator.
-        
-        This replaces truthy outcomes with the first argument and falsy outcomes 
+
+        This replaces truthy outcomes with the first argument and falsy outcomes
         with the second argument.
         """
         return self.bool().sub(lambda x: outcome_if_true
@@ -765,8 +764,8 @@ class Die():
 
     def lowest(*dice):
         """Roll all the dice and take the lowest.
-        
-        The maximum outcome is equal to the highest maximum outcome among all 
+
+        The maximum outcome is equal to the highest maximum outcome among all
         input dice.
         """
         dice = [Die(die) for die in dice]
@@ -779,8 +778,8 @@ class Die():
 
     def highest(*dice):
         """Roll all the dice and take the highest.
-        
-        The minimum outcome is equal to the highest minimum outcome among all 
+
+        The minimum outcome is equal to the highest minimum outcome among all
         input dice.
         """
         dice = [Die(die) for die in dice]
@@ -796,9 +795,9 @@ class Die():
         return {}
 
     def repeat_and_sum(self, num_dice):
-        """Roll this die `num_dice` times and sum the results. 
-        
-        If `num_dice` is negative, roll the die `abs(num_dice)` times and negate 
+        """Roll this die `num_dice` times and sum the results.
+
+        If `num_dice` is negative, roll the die `abs(num_dice)` times and negate
         the result.
         """
         if num_dice in self._repeat_and_sum_cache:
@@ -818,9 +817,9 @@ class Die():
         return result
 
     def d(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes. 
-        
-        If an `int` is provided for the right side, it becomes a standard die 
+        """Roll the left die, then roll the right die that many times and sum the outcomes.
+
+        If an `int` is provided for the right side, it becomes a standard die
         with that many faces. Otherwise it is cast to a die.
         """
         if isinstance(other, int):
@@ -851,21 +850,21 @@ class Die():
              truncate_min=None,
              truncate_max=None):
         """Roll several of this die and sum some or all of the sorted results.
-        
+
         Args:
-            num_dice: The number of dice to roll. All dice will have the same 
+            num_dice: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
             count_dice: Only dice selected by this will be counted.
                 See `DicePool.count_dice()` for details.
             truncate_min: A sequence of one outcome per die.
-                That die will be truncated to that minimum outcome, with all 
+                That die will be truncated to that minimum outcome, with all
                 lower outcomes being removed (i.e. rerolled).
                 This is not compatible with `truncate_max`.
             truncate_max: A sequence of one outcome per die.
-                That die will be truncated to that maximum outcome, with all 
+                That die will be truncated to that maximum outcome, with all
                 higher outcomes being removed (i.e. rerolled).
                 This is not compatible with `truncate_min`.
-                
+
         Returns:
             A Die representing the probability distribution of the sum.
         """
@@ -887,23 +886,23 @@ class Die():
                      truncate_min=None,
                      truncate_max=None):
         """Roll several of this die and sum the sorted results from the highest.
-        
+
         Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
         be provided.
-        
+
         Args:
-            num_dice: The number of dice to roll. All dice will have the same 
+            num_dice: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
             num_keep: The number of dice to keep.
             num_drop: If provided, this many highest dice will be dropped before
                 keeping.
             truncate_min: A sequence of one outcome per die.
-                That die will be truncated to that minimum outcome, with all 
+                That die will be truncated to that minimum outcome, with all
                 lower outcomes being removed (i.e. rerolled).
             truncate_max: A sequence of one outcome per die.
-                That die will be truncated to that maximum outcome, with all 
+                That die will be truncated to that maximum outcome, with all
                 higher outcomes being removed (i.e. rerolled).
-                
+
         Returns:
             A die representing the probability distribution of the sum.
         """
@@ -932,10 +931,10 @@ class Die():
                     truncate_min=None,
                     truncate_max=None):
         """Roll several of this die and sum the sorted results from the lowest.
-        
+
         Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
         be provided.
-        
+
         Args:
             num_dice: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
@@ -948,7 +947,7 @@ class Die():
             truncate_max: A sequence of one outcome per die.
                 That die will be truncated to that maximum outcome, with all
                 higher outcomes being removed (i.e. rerolled).
-                
+
         Returns:
             A die representing the probability distribution of the sum.
         """
@@ -1005,13 +1004,13 @@ class Die():
         return type(x)()
 
     def zero(self):
-        """Zeros all outcomes of this die. 
-        
-        This is done by calling the constructor for each outcome's type with no 
+        """Zeros all outcomes of this die.
+
+        This is done by calling the constructor for each outcome's type with no
         arguments.
-        
+
         The result will have a single outcome with weight 1.
-        
+
         Raises:
             `ValueError` if the zeros did not resolve to a single outcome.
         """
@@ -1022,14 +1021,14 @@ class Die():
 
     def zero_outcome(self):
         """Returns a zero-outcome for this die.
-        
+
         E.g. `0` for a die whose outcomes are `int`s.
         """
         return self.zero().outcomes()[0]
 
     def bool(self):
         """Takes `bool()` of all outcomes.
-        
+
         Note the die as a whole is not considered to have a truth value.
         """
         return self.unary_op(bool)
@@ -1176,7 +1175,7 @@ class Die():
 
     def sign(self):
         """Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.
-        
+
         Note that for `float`s, +0.0, -0.0, and nan all become 0.
         """
         return self.unary_op(Die._sign)
@@ -1187,8 +1186,8 @@ class Die():
 
     def cmp(self, other):
         """Returns a die with possible outcomes 1, -1, and 0.
-        
-        The weights are equal to the positive outcome of `self > other`, 
+
+        The weights are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
         """
         return self.binary_op(other, Die._cmp)
@@ -1196,13 +1195,13 @@ class Die():
     # Special operators.
 
     def __matmul__(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes. 
-        
+        """Roll the left die, then roll the right die that many times and sum the outcomes.
+
         Unlike other operators, this does not work for built-in types on the right side.
         For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
-        
-        This is because all other operators convert their right side to a die 
-        using die, so `6` would become a constant 6, while  `d()` converts 
+
+        This is because all other operators convert their right side to a die
+        using die, so `6` would become a constant 6, while  `d()` converts
         `int`s to a standard die with that many sides, so `6` would become a d6.
         Thus the right-side conversion of `@` would be ambiguous.
         """
@@ -1213,14 +1212,14 @@ class Die():
         return self.d(other)
 
     def __rmatmul__(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes. 
-        
+        """Roll the left die, then roll the right die that many times and sum the outcomes.
+
         Unlike other operators, this does not work for built-in types on the right side.
         For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
-        
-        This is because all other operators convert their right side to a die 
-        using `Die()`, so `6` would become a constant 6, while  `d()` converts 
-        `int`s to a standard die with that many sides, so `6` would become a d6. 
+
+        This is because all other operators convert their right side to a die
+        using `Die()`, so `6` would become a constant 6, while  `d()` converts
+        `int`s to a standard die with that many sides, so `6` would become a d6.
         Thus the right-side conversion of `@` would be ambiguous.
         """
         other = icepool.Die(other)
@@ -1229,8 +1228,8 @@ class Die():
     # Rolling.
 
     def sample(self):
-        """Returns a random roll of this die. 
-        
+        """Returns a random roll of this die.
+
         Do not use for security purposes.
         """
         # We don't use random.choices since that is based on floats rather than ints.
@@ -1279,20 +1278,20 @@ class Die():
 
     def equals(self, other, *, reduce=False):
         """Returns `True` iff both dice have the same outcomes and weights.
-        
+
         Truth value does NOT matter.
-        
-        If one die has a zero-weight outcome and the other die does not contain 
+
+        If one die has a zero-weight outcome and the other die does not contain
         that outcome, they are treated as unequal by this function.
-        
-        The `==` and `!=` operators have a dual purpose; they return a die 
+
+        The `==` and `!=` operators have a dual purpose; they return a die
         representing the result of the operator as normal,
         but the die additionally has a truth value determined by this method.
         Only dice returned by these methods have a truth value.
-        
+
         Args:
             reduce: If `True`, the dice will be reduced before comparing.
-                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin. 
+                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         try:
             other = icepool.Die(other)
