@@ -4,6 +4,7 @@ from attr import has
 import icepool
 from icepool.collections import Counts
 from icepool.die.create import expand_die_args
+from icepool.die.format import markdown
 
 import bisect
 from collections import defaultdict
@@ -1305,88 +1306,10 @@ class Die():
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()})'
 
-    def markdown(self, *, include_weights=True, unpack_outcomes=True):
-        """Formats the die as a Markdown table.
-        
-        Args:
-            include_weights: If `True`, a column will be emitted for the weights.
-                Otherwise, only probabilities will be emitted.
-            unpack_outcomes: If `True` and all outcomes have a common length,
-                outcomes will be unpacked, producing one column per element.
-        """
-        if unpack_outcomes and self.outcome_len() is not None:
-            outcome_lengths = []
-            for i in range(self.outcome_len()):
-                outcome_length = max(
-                    tuple(len(str(outcome[i])) for outcome in self.outcomes()) +
-                    (len(f'Outcome[{i}]'),))
-                outcome_lengths.append(outcome_length)
-            result = ''
-            result += f'Denominator: {self.denominator()}\n\n'
-            result += '|'
-            for i in range(self.outcome_len()):
-                result += ' ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')
-                                      ) + f'Outcome[{i}]' + ' |'
-            if include_weights:
-                weight_length = max(
-                    tuple(len(str(weight)) for weight in self.weights()) +
-                    (len('Weight'),))
-                result += ' ' + ' ' * (weight_length -
-                                       len('Weight')) + 'Weight |'
-            if self.denominator() > 0:
-                result += ' Probability |'
-            result += '\n'
-            result += '|'
-            for i in range(self.outcome_len()):
-                result += '-' + '-' * outcome_lengths[i] + ':|'
-            if include_weights:
-                result += '-' + '-' * weight_length + ':|'
-            if self.denominator() > 0:
-                result += '------------:|'
-            result += '\n'
-            for outcome, weight, p in zip(self.outcomes(), self.weights(),
-                                          self.pmf()):
-                result += '|'
-                for i, x in enumerate(outcome):
-                    result += f' {str(x):>{outcome_lengths[i]}} |'
-                if include_weights:
-                    result += f' {weight:>{weight_length}} |'
-                if self.denominator() > 0:
-                    result += f' {p:11.6%} |'
-                result += '\n'
-            return result
-        else:
-            outcome_length = max(
-                tuple(len(str(outcome)) for outcome in self.outcomes()) +
-                (len('Outcome'),))
-            result = ''
-            result += f'Denominator: {self.denominator()}\n\n'
-            result += '| ' + ' ' * (outcome_length -
-                                    len('Outcome')) + 'Outcome |'
-            if include_weights:
-                weight_length = max(
-                    tuple(len(str(weight)) for weight in self.weights()) +
-                    (len('Weight'),))
-                result += ' ' + ' ' * (weight_length -
-                                       len('Weight')) + 'Weight |'
-            if self.denominator() > 0:
-                result += ' Probability |'
-            result += '\n'
-            result += '|-' + '-' * outcome_length + ':|'
-            if include_weights:
-                result += '-' + '-' * weight_length + ':|'
-            if self.denominator() > 0:
-                result += '------------:|'
-            result += '\n'
-            for outcome, weight, p in zip(self.outcomes(), self.weights(),
-                                          self.pmf()):
-                result += f'| {str(outcome):>{outcome_length}} |'
-                if include_weights:
-                    result += f' {weight:>{weight_length}} |'
-                if self.denominator() > 0:
-                    result += f' {p:11.6%} |'
-                result += '\n'
-            return result
-
     def __str__(self):
         return self.markdown(include_weights=self.denominator() < 10**30)
+
+    def markdown(self, *, include_weights=True, unpack_outcomes=True):
+        return markdown(self,
+                        include_weights=include_weights,
+                        unpack_outcomes=unpack_outcomes)
