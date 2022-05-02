@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from attr import has
 import icepool
 from icepool.collections import Counts
 from icepool.die.create import expand_die_args
@@ -139,8 +140,7 @@ class Die():
 
         The result is a die.
         
-        The other operand is cast to a die (using `icepool.Die`) before
-        performing the operation.
+        The other operand is cast to a die before performing the operation.
         
         This is used for the operators
         `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`.
@@ -176,7 +176,26 @@ class Die():
         """Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
 
-    __len__ = num_outcomes
+    @cached_property
+    def _outcome_len(self):
+        """Returns the common length of the outcomes.
+        
+        If any outcome has no length, the outcomes have mixed length, or the 
+        die is empty, the result is `None`.
+        """
+        result = None
+        for outcome in self.outcomes():
+            try:
+                if result is None:
+                    result = len(outcome)
+                elif len(outcome) != result:
+                    return None
+            except TypeError:
+                return None
+        return result
+
+    def outcome_len(self):
+        return self._outcome_len
 
     def is_empty(self):
         """Returns `True` if this die has no outcomes. """
@@ -1220,6 +1239,11 @@ class Die():
     def __iter__(self):
         raise TypeError('A die is not iterable.')
 
+    def __len__(self):
+        raise TypeError(
+            'len() of a die is ambiguous. Use die.num_outcomes() or die.outcome_len() instead.'
+        )
+
     def __reversed__(self):
         raise TypeError('A die cannot be reversed.')
 
@@ -1281,36 +1305,88 @@ class Die():
     def __repr__(self):
         return type(self).__qualname__ + f'({self._data.__repr__()})'
 
-    def markdown(self, include_weights=True):
-        outcome_length = max(
-            tuple(len(str(outcome)) for outcome in self.outcomes()) +
-            (len('Outcome'),))
-        result = ''
-        result += f'Denominator: {self.denominator()}\n\n'
-        result += '| ' + ' ' * (outcome_length - len('Outcome')) + 'Outcome |'
-        if include_weights:
-            weight_length = max(
-                tuple(len(str(weight)) for weight in self.weights()) +
-                (len('Weight'),))
-            result += ' ' + ' ' * (weight_length - len('Weight')) + 'Weight |'
-        if self.denominator() > 0:
-            result += ' Probability |'
-        result += '\n'
-        result += '|-' + '-' * outcome_length + ':|'
-        if include_weights:
-            result += '-' + '-' * weight_length + ':|'
-        if self.denominator() > 0:
-            result += '------------:|'
-        result += '\n'
-        for outcome, weight, p in zip(self.outcomes(), self.weights(),
-                                      self.pmf()):
-            result += f'| {str(outcome):>{outcome_length}} |'
+    def markdown(self, *, include_weights=True, unpack_outcomes=True):
+        """Formats the die as a Markdown table.
+        
+        Args:
+            include_weights: If `True`, a column will be emitted for the weights.
+                Otherwise, only probabilities will be emitted.
+            unpack_outcomes: If `True` and all outcomes have a common length,
+                outcomes will be unpacked, producing one column per element.
+        """
+        if unpack_outcomes and self.outcome_len() is not None:
+            outcome_lengths = []
+            for i in range(self.outcome_len()):
+                outcome_length = max(
+                    tuple(len(str(outcome[i])) for outcome in self.outcomes()) +
+                    (len(f'Outcome[{i}]'),))
+                outcome_lengths.append(outcome_length)
+            result = ''
+            result += f'Denominator: {self.denominator()}\n\n'
+            result += '|'
+            for i in range(self.outcome_len()):
+                result += ' ' + ' ' * (outcome_lengths[i] - len(f'Outcome[{i}]')
+                                      ) + f'Outcome[{i}]' + ' |'
             if include_weights:
-                result += f' {weight:>{weight_length}} |'
+                weight_length = max(
+                    tuple(len(str(weight)) for weight in self.weights()) +
+                    (len('Weight'),))
+                result += ' ' + ' ' * (weight_length -
+                                       len('Weight')) + 'Weight |'
             if self.denominator() > 0:
-                result += f' {p:11.6%} |'
+                result += ' Probability |'
             result += '\n'
-        return result
+            result += '|'
+            for i in range(self.outcome_len()):
+                result += '-' + '-' * outcome_lengths[i] + ':|'
+            if include_weights:
+                result += '-' + '-' * weight_length + ':|'
+            if self.denominator() > 0:
+                result += '------------:|'
+            result += '\n'
+            for outcome, weight, p in zip(self.outcomes(), self.weights(),
+                                          self.pmf()):
+                result += '|'
+                for i, x in enumerate(outcome):
+                    result += f' {str(x):>{outcome_lengths[i]}} |'
+                if include_weights:
+                    result += f' {weight:>{weight_length}} |'
+                if self.denominator() > 0:
+                    result += f' {p:11.6%} |'
+                result += '\n'
+            return result
+        else:
+            outcome_length = max(
+                tuple(len(str(outcome)) for outcome in self.outcomes()) +
+                (len('Outcome'),))
+            result = ''
+            result += f'Denominator: {self.denominator()}\n\n'
+            result += '| ' + ' ' * (outcome_length -
+                                    len('Outcome')) + 'Outcome |'
+            if include_weights:
+                weight_length = max(
+                    tuple(len(str(weight)) for weight in self.weights()) +
+                    (len('Weight'),))
+                result += ' ' + ' ' * (weight_length -
+                                       len('Weight')) + 'Weight |'
+            if self.denominator() > 0:
+                result += ' Probability |'
+            result += '\n'
+            result += '|-' + '-' * outcome_length + ':|'
+            if include_weights:
+                result += '-' + '-' * weight_length + ':|'
+            if self.denominator() > 0:
+                result += '------------:|'
+            result += '\n'
+            for outcome, weight, p in zip(self.outcomes(), self.weights(),
+                                          self.pmf()):
+                result += f'| {str(outcome):>{outcome_length}} |'
+                if include_weights:
+                    result += f' {weight:>{weight_length}} |'
+                if self.denominator() > 0:
+                    result += f' {p:11.6%} |'
+                result += '\n'
+            return result
 
     def __str__(self):
         return self.markdown(include_weights=self.denominator() < 10**30)
