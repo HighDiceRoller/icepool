@@ -68,7 +68,7 @@ class Counts():
 
     def __repr__(self):
         return type(self).__qualname__ + f'({repr(self._d)})'
-        
+
     def reduce(self):
         """Divides all counts by their greatest common denominator."""
         gcd = math.gcd(*self.values())

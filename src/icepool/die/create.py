@@ -12,7 +12,8 @@ def expand_die_args(*args,
                     weights=None,
                     min_outcome=None,
                     denominator_method='lcm'):
-    
+    """Helper function to expand arguments to Die()."""
+
     # Special case: consecutive outcomes.
     if min_outcome is not None:
         if weights is None:
@@ -24,7 +25,7 @@ def expand_die_args(*args,
         data = Counts(
             {i + min_outcome: weight for i, weight in enumerate(weights)})
         return data
-    
+
     if weights is not None:
         if len(weights) != len(args):
             raise ValueError(
@@ -42,7 +43,7 @@ def expand_die_args(*args,
     data = _merge_subdatas(subdatas, weights, denominator_method)
 
     return Counts(data)
-    
+
 
 def _expand(arg, denominator_method):
     """Expands the argument to a dict mapping outcomes to weights.
@@ -128,4 +129,3 @@ def _merge_subdatas(subdatas, weights, denominator_method):
         data = data.reduce()
 
     return data
-
