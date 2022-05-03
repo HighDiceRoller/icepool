@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-05-02T03:21:58.718753Z",
+      "created": "2022-05-03T04:45:50.048393Z",
       "format": null,
-      "last_modified": "2022-05-02T03:21:38.834606Z",
+      "last_modified": "2022-05-03T04:45:33.496123Z",
       "mimetype": null,
       "name": "odds_of_rolling_high_all_the_time.ipynb",
       "path": "stack_exchange/odds_of_rolling_high_all_the_time.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-02T03:21:58.718753Z",
+      "created": "2022-05-03T04:45:50.048393Z",
       "format": null,
-      "last_modified": "2022-05-02T03:21:38.834606Z",
+      "last_modified": "2022-05-03T04:45:33.496123Z",
       "mimetype": null,
       "name": "dependent_dice_rolls.ipynb",
       "path": "stack_exchange/dependent_dice_rolls.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-02T03:21:58.718753Z",
+      "created": "2022-05-03T04:45:50.048393Z",
       "format": null,
-      "last_modified": "2022-05-02T03:21:38.834606Z",
+      "last_modified": "2022-05-03T04:45:33.496123Z",
       "mimetype": null,
       "name": "risk_attrition.ipynb",
       "path": "stack_exchange/risk_attrition.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-02T03:21:58.718753Z",
+      "created": "2022-05-03T04:45:50.048393Z",
       "format": null,
-      "last_modified": "2022-05-02T03:21:38.834606Z",
+      "last_modified": "2022-05-03T04:45:33.496123Z",
       "mimetype": null,
       "name": "contains_subset.ipynb",
       "path": "stack_exchange/contains_subset.ipynb",
@@ -50,9 +50,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-02T03:21:58.722753Z",
+      "created": "2022-05-03T04:45:50.048393Z",
       "format": null,
-      "last_modified": "2022-05-02T03:21:38.834606Z",
+      "last_modified": "2022-05-03T04:45:33.496123Z",
       "mimetype": null,
       "name": "triangleish.ipynb",
       "path": "stack_exchange/triangleish.ipynb",
@@ -61,9 +61,9 @@
       "writable": true
     }
   ],
-  "created": "2022-05-02T03:21:58.722753Z",
+  "created": "2022-05-03T04:45:50.048393Z",
   "format": "json",
-  "last_modified": "2022-05-02T03:21:58.722753Z",
+  "last_modified": "2022-05-03T04:45:50.048393Z",
   "mimetype": null,
   "name": "stack_exchange",
   "path": "stack_exchange",
