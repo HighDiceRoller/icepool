@@ -1,6 +1,7 @@
 name: Deploy API Doc
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

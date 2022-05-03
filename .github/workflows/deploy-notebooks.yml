@@ -1,6 +1,7 @@
 name: Deploy Notebooks
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
