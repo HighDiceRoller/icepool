@@ -1,3 +1,12 @@
+## 0.10.0
+
+Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
+
+* There is now only one `Die` class; it behaves similarly to how `ScalarDie` used to.
+* There is no more `ndim`.
+* The `[]` operator now forwards to the outcome, acting similar to what `VectorDie.dim[]` used to do.
+* Removed `PoolEval.bind_dice()`. It was cute, but I'm not convinced it was worth spending API on.
+
 ## 0.9.1
 
 * This will probably be the last version with a `VectorDie` distinction.
