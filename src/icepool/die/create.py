@@ -123,6 +123,8 @@ def _merge_subdatas(subdatas, weights, denominator_method):
             data[outcome] += weight * factor
 
     if denominator_method == 'reduce':
-        data = data.reduce()
+        gcd = math.gcd(*data.values())
+        if gcd > 1:
+            data = {outcome: weight // gcd for outcome, weight in data.items()}
 
     return data

@@ -54,15 +54,17 @@ def test_denominator_method(args, weights):
     prod = icepool.Die(*args, weights=weights, denominator_method='prod')
     lcm = icepool.Die(*args, weights=weights, denominator_method='lcm')
     lcm_weighted = icepool.Die(*args, weights=weights, denominator_method='lcm_weighted')
-    assert prod.reduce().equals(lcm.reduce())
-    assert prod.reduce().equals(lcm_weighted.reduce())
+    reduced = icepool.Die(*args, weights=weights, denominator_method='reduce')
+    assert prod.reduce().equals(reduced)
+    assert lcm.reduce().equals(reduced)
+    assert lcm_weighted.reduce().equals(reduced)
     assert prod.denominator() >= lcm.denominator()
     assert lcm.denominator() >= lcm_weighted.denominator()
+    assert lcm_weighted.denominator() >= reduced.denominator()
 
 def test_denominator_lcm_weighted():
     result = icepool.Die(icepool.d6, icepool.d8, icepool.d10, icepool.d12, weights=(3, 4, 5, 6), denominator_method='lcm_weighted')
     assert result.denominator() == 36
-
 
 def test_negative_weight_error():
     with pytest.raises(ValueError):
