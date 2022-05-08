@@ -159,6 +159,8 @@ def apply(func, *dice):
         A die constructed from the outputs of `func` and the product of the
         weights of the dice.
     """
+    if len(dice) == 0:
+        return icepool.Die()
     dice = [icepool.Die(die) for die in dice]
     final_outcomes = []
     final_weights = []

@@ -12,3 +12,8 @@ def test_apply_die():
     result = icepool.apply(lambda x: icepool.d6 + x, icepool.d6)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
+
+def test_apply_no_dice():
+    result = icepool.apply(lambda: 1)
+    expected = icepool.Die({})
+    assert result.equals(expected)
