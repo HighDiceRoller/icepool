@@ -174,28 +174,6 @@ class EvalPool(ABC):
 
     __call__ = eval
 
-    def bind_dice(self, *dice):
-        """Binds one die for each pool.
-
-        For example, `sum_d6s = sum_pool.bind_dice(icepool.d6)` would produce
-        a function that takes one argument and sums that many d6s.
-        `sum_d6s(3)` would then be the same as `3 @ icepool.d6`.
-
-        Args:
-            *dice: One die for each pool taken by this `EvalPool`.
-
-        Returns:
-            A function that takes in one `num_dice` per pool,
-            then runs this `EvalPool` for pools of that size using the bound dice.
-        """
-
-        def bound_eval(*num_dices):
-            pools = (
-                die.pool(num_dice) for die, num_dice in zip(dice, num_dices))
-            return self.eval(*pools)
-
-        return bound_eval
-
     def _select_algorithm(self, *pools):
         """Selects an algorithm and iteration direction.
 
