@@ -1,3 +1,9 @@
+## 0.10.1
+
+* Fix denominator_method='reduce' in die creation.
+* Fix outcomes consisting of empty tuple `()`.
+* `apply()` with no dice produces an empty die.
+
 ## 0.10.0
 
 Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
