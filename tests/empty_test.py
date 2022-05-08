@@ -23,3 +23,8 @@ def test_mix_empty():
     result = icepool.Die(icepool.d6, {})
     expected = icepool.d6
     assert result.equals(expected)
+
+def test_apply_empty():
+    result = icepool.apply(lambda x, y: 0, icepool.Die({}), icepool.Die({}))
+    expected = icepool.Die({})
+    assert result.equals(expected)

@@ -83,6 +83,8 @@ def _is_tuple(arg):
 
 
 def _expand_tuple(arg, denominator_method):
+    if len(arg) == 0:
+        return {() : 1}
     subdatas = [_expand(x, denominator_method) for x in arg]
     data = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
