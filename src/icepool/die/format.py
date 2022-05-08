@@ -10,7 +10,7 @@ def _header_strings(die, include_weights, unpack_outcomes):
     else:
         header.append('Outcome')
     if include_weights:
-        header.append('Weights')
+        header.append('Weight')
     header.append('Probability')
     return header, [len(s) for s in header]
 
