@@ -44,601 +44,613 @@
     },
     {
       "name": "@jupyterlab/application",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/application-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/attachments",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
+      "licenseId": "BSD-3-Clause",
+      "extractedText": ""
+    },
+    {
+      "name": "@jupyterlab/cell-toolbar",
+      "versionInfo": "3.4.0",
+      "licenseId": "BSD-3-Clause",
+      "extractedText": ""
+    },
+    {
+      "name": "@jupyterlab/cell-toolbar-extension",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cells",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/celltags",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/celltags-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codeeditor",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/coreutils",
-      "versionInfo": "5.3.2",
+      "versionInfo": "5.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docprovider",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docregistry",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/documentsearch",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/help-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/javascript-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/json-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mathjax2",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mathjax2-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/nbformat",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/observables",
-      "versionInfo": "4.3.2",
+      "versionInfo": "4.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/outputarea",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/pdf-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/property-inspector",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-interfaces",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/services",
-      "versionInfo": "6.3.2",
+      "versionInfo": "6.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingregistry",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/shared-models",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/shortcuts-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statedb",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-dark-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-light-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc",
-      "versionInfo": "5.3.2",
+      "versionInfo": "5.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc-extension",
-      "versionInfo": "5.3.2",
+      "versionInfo": "5.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/vega5-extension",
-      "versionInfo": "3.3.2",
+      "versionInfo": "3.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-lab",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-repl",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-retro",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/contents",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/iframe-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/kernel",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/licenses",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/localforage",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/repl-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/retro-application-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server-extension",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/session",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/settings",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/translation",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/ui-components",
-      "versionInfo": "0.1.0-beta.6",
+      "versionInfo": "0.1.0-beta.7",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -674,9 +686,9 @@
     },
     {
       "name": "@lumino/datagrid",
-      "versionInfo": "0.20.1",
+      "versionInfo": "0.34.1",
       "licenseId": "BSD-3-Clause",
-      "extractedText": "Copyright (c) 2019 Project Jupyter Contributors\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this\n   list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice,\n   this list of conditions and the following disclaimer in the documentation\n   and/or other materials provided with the distribution.\n\n3. Neither the name of the copyright holder nor the names of its\n   contributors may be used to endorse or promote products derived from\n   this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\nCopyright (c) 2014-2017, PhosphorJS Contributors\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n* Neither the name of the copyright holder nor the names of its\n  contributors may be used to endorse or promote products derived from\n  this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
+      "extractedText": ""
     },
     {
       "name": "@lumino/disposable",
@@ -740,43 +752,43 @@
     },
     {
       "name": "@retrolab/application",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/application-extension",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/docmanager-extension",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/help-extension",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/notebook-extension",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/tree-extension",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@retrolab/ui-components",
-      "versionInfo": "0.3.20",
+      "versionInfo": "0.3.21",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
