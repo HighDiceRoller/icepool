@@ -251,7 +251,7 @@ def standard_pool(*die_sizes, count_dice=None):
                 truncate_max=die_sizes)
 
 
-class DicePool(icepool.BasePool):
+class DicePool(icepool.PoolBase):
     """Represents set of (mostly) indistiguishable dice.
 
     A pool is defined by:

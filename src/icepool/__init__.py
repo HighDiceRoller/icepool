@@ -29,7 +29,7 @@ lowest = icepool.die.die.Die.lowest
 max_outcome = icepool.die.die.Die.max_outcome
 min_outcome = icepool.die.die.Die.min_outcome
 
-from icepool.pool.base import BasePool
+from icepool.pool.base import PoolBase
 from icepool.pool.pool import Pool, standard_pool, DicePool
 from icepool.pool.roll import PoolRoll
 from icepool.pool.eval import EvalPool, WrapFuncEval, SumPool, sum_pool, FindBestSet, FindBestRun
@@ -61,7 +61,7 @@ __all__ = [
     'min_outcome',
     'apply',
     'Reroll',
-    'BasePool',
+    'PoolBase',
     'Pool',
     'standard_pool',
     'DicePool',

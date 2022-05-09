@@ -146,10 +146,10 @@ class EvalPool(ABC):
             If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
 
-        # Cast non-pool arguments to `BasePool`.
+        # Cast non-pool arguments to `PoolBase`.
         pools = [
             pool
-            if isinstance(pool, icepool.BasePool) else icepool.PoolRoll(pool)
+            if isinstance(pool, icepool.PoolBase) else icepool.PoolRoll(pool)
             for pool in pools
         ]
 

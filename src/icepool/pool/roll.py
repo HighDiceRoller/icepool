@@ -13,7 +13,7 @@ def _is_dict(arg):
         arg, '__getitem__')
 
 
-class PoolRoll(icepool.BasePool):
+class PoolRoll(icepool.PoolBase):
     """Represents a single, fixed roll of a dice pool.
 
     Like `DicePool`, this may be used as an argument to `EvalPool`.

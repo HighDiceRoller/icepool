@@ -5,7 +5,7 @@ import icepool
 from abc import ABC, abstractmethod
 
 
-class BasePool(ABC):
+class PoolBase(ABC):
     """Abstract base class for dice pools.
 
     This provides the methods needed to run the dice pool algorithm.
