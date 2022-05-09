@@ -17,7 +17,7 @@ class EvalPool(ABC):
     given one outcome at a time along with how many dice rolled that outcome.
     An example sequence of calls, as far as `next_state()` is concerned, is:
 
-    1. `state = next_state(state=None, 1, how_many_dice_rolled_1)`
+    1. `state = next_state(state=None, outcome=1, count=how_many_dice_rolled_1)`
     2. `state = next_state(state, 2, how_many_dice_rolled_2)`
     3. `state = next_state(state, 3, how_many_dice_rolled_3)`
     4. `state = next_state(state, 4, how_many_dice_rolled_4)`

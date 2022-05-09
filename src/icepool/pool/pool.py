@@ -313,6 +313,26 @@ class Pool(icepool.PoolBase):
         not a relative selection on already-selected dice,
         which would be ambiguous in the presence of multiple or negative counts.
 
+        For example, here are some ways of selecting the two highest dice out of 5:
+
+        * `pool[3:5]`
+        * `pool[3:]`
+        * `pool[-2:]`
+        * `pool[..., 1, 1]`
+
+        These will also select the two highest dice out of 5, and will also
+        resize the pool to 5 dice first:
+
+        * `pool[3::5]`
+        * `pool[3:5:5]`
+        * `pool[-2::5]`
+        * `pool[0, 0, 0, 1, 1]`
+
+        These will count the highest as a positive and the lowest as a negative:
+
+        * `pool[-1, 0, 0, 0, 1]`
+        * `pool[-1, ..., 1]`
+
         Args:
             `None`: All dice will be counted once.
             An `int`. This will count only the die at the specified index (once).
@@ -345,30 +365,9 @@ class Pool(icepool.PoolBase):
                     the -1 and 1 cancel each other out.
 
         Raises:
-            ValueError:
-                * If `count_dice` would change the size of a pool with
-                    `truncate_max` or `truncate_min`.
-                * If more than one `Ellipsis` is used.
-
-        For example, here are some ways of selecting the two highest dice out of 5:
-
-        * `pool[3:5]`
-        * `pool[3:]`
-        * `pool[-2:]`
-        * `pool[..., 1, 1]`
-
-        These will also select the two highest dice out of 5, and will also
-        resize the pool to 5 dice first:
-
-        * `pool[3::5]`
-        * `pool[3:5:5]`
-        * `pool[-2::5]`
-        * `pool[0, 0, 0, 1, 1]`
-
-        These will count the highest as a positive and the lowest as a negative:
-
-        * `pool[-1, 0, 0, 0, 1]`
-        * `pool[-1, ..., 1]`
+            ValueError:  If `count_dice` would change the size of a pool with
+                `truncate_max` or `truncate_min`, or if more than one `Ellipsis`
+                is used.
         """
         convert_to_die = isinstance(count_dice, int)
         count_dice = count_dice_tuple(self.num_dice(), count_dice)
