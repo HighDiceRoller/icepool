@@ -164,7 +164,6 @@ def apply(func, *dice):
     dice = [icepool.Die(die) for die in dice]
     final_outcomes = []
     final_weights = []
-    data = defaultdict(int)
     for t in itertools.product(*(die.items() for die in dice)):
         outcomes, weights = zip(*t)
         final_outcome = func(*outcomes)
