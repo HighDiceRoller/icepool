@@ -131,7 +131,9 @@ class Die():
         
         If the outcomes of this die are tuples, the operation is performed 
         element-wise rather than on the entire outcome tuple. The behvaior 
-        of operators on nested tuples is undefined.
+        of operators on nested tuples is undefined. If you need some other
+        specific behavior, use your own outcome class, or use `sub()` rather
+        than an operator.
 
         This is used for the standard unary operators 
         `-, +, abs, ~, round, trunc, floor, ceil`
@@ -179,7 +181,9 @@ class Die():
 
         If the outcomes of this die are tuples, the operation is performed
         element-wise rather than on entire tuples. The behvaior 
-        of operators on nested tuples is undefined.
+        of operators on nested tuples is undefined. If you need some other
+        specific behavior, use your own outcome class, or use `sub()` rather
+        than an operator.
 
         By the time this is called, the other operand has already been 
         converted to a die.
