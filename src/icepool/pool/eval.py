@@ -10,7 +10,7 @@ import math
 
 
 class EvalPool(ABC):
-    """An abstract, immutable, callable class for evaulating one or more `DicePool`s.
+    """An abstract, immutable, callable class for evaulating one or more `Pool`s.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result of the roll
@@ -86,7 +86,7 @@ class EvalPool(ABC):
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *pools: One or more `DicePool`s being evaluated.
+            *pools: One or more `Pool`s being evaluated.
                 Most subclasses will expect a fixed number of pools and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -106,7 +106,7 @@ class EvalPool(ABC):
         The default is ascending order.
 
         Args:
-            *pools: One or more `DicePool`s being evaluated.
+            *pools: One or more `Pool`s being evaluated.
                 Most subclasses will expect a fixed number of pools and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -131,7 +131,7 @@ class EvalPool(ABC):
 
         Args:
             *pools: Each element may be one of the following:
-                * A `DicePool` representing possible rolls of a pool.
+                * A `Pool` representing possible rolls of a pool.
                 * A dict-like representing a single roll of a pool.
                     The dict maps outcomes to counts.
                 * A sequence of outcomes representing a single roll of a pool.
@@ -223,7 +223,7 @@ class EvalPool(ABC):
 
         Arguments:
             direction: The direction in which to send outcomes to `next_state()`.
-            *pools: One or more `DicePool`s to evaluate.
+            *pools: One or more `Pool`s to evaluate.
                 This *does* change recursively.
 
         Returns:
@@ -300,7 +300,7 @@ def _pop_pool_max(outcome, pool):
 
     Args:
         outcome: The max outcome.
-        pool: The `DicePool` under consideration.
+        pool: The `Pool` under consideration.
 
     Yields:
         prev_pool: The remainder of the pool after taking out the dice that
@@ -320,7 +320,7 @@ def _pop_pool_min(outcome, pool):
 
     Args:
         outcome: The min outcome.
-        pool: The `DicePool` under consideration.
+        pool: The `Pool` under consideration.
 
     Yields:
         prev_pool: The remainder of the pool after taking out the dice that

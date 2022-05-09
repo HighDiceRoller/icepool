@@ -12,7 +12,7 @@ class PoolBase(ABC):
 
     There are two subclasses:
 
-    * `DicePool`, which represents a pool of dice with random results.
+    * `Pool`, which represents a pool of dice with random results.
     * `PoolRoll`, which represents a single, fixed roll of a pool.
         `PoolRoll` is only needed internally, as external dicts and sequences
         will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.
