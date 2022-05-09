@@ -3,10 +3,12 @@ __docformat__ = 'google'
 import icepool
 
 from collections import defaultdict
+from functools import cache
 import itertools
 import math
 
 
+@cache
 def standard(num_sides):
     """A standard die.
 
@@ -22,7 +24,7 @@ def standard(num_sides):
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(weights=[1] * num_sides, min_outcome=1)
+    return icepool.Die(*range(1, num_sides + 1))
 
 
 def d(arg):
