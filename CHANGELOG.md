@@ -1,3 +1,8 @@
+## 0.10.2
+
+* Operators other than `[]` are performed element-wise on tuples.
+* Rename `DicePool` to just `Pool`. Merge the old factory function into the constructor.
+
 ## 0.10.1
 
 * Fix denominator_method='reduce' in die creation.
