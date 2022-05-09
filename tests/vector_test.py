@@ -25,6 +25,10 @@ def test_vector_matmul():
     expected = icepool.Die((2 @ icepool.d6, 2 @ icepool.d8))
     assert result.equals(expected)
     
-def test_binary_op_mismatch_outcome_len():
+def test_binary_op_mismatch_scalar_vector():
     with pytest.raises(ValueError):
         result = icepool.d6 + icepool.Die((icepool.d6, icepool.d8))
+
+def test_binary_op_mismatch_otucome_len():
+    with pytest.raises(ValueError):
+        result = icepool.Die((icepool.d6, icepool.d8)) + (1, 2, 3)

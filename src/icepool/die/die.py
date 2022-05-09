@@ -212,7 +212,8 @@ class Die():
             if self.outcome_len() is None or other.outcome_len() is None:
                 raise ValueError('Operators on tuple outcomes are only valid when all outcomes are the same length.')
             if self.outcome_len() != other.outcome_len():
-                raise ValueError('Binary operators on tuple outcomes are only valid when the outcomes in both dice are the same length.')
+                raise ValueError('Binary operators on tuple outcomes are only valid when the outcome length'
+                                f'of the left-side die ({self.outcome_len()}) is equal to that of the right-side die ({other.outcome_len()}).')
             return self.binary_op_vector(other, op, *args, **kwargs)
         else:
             return self.binary_op_scalar(other, op, *args, **kwargs)
