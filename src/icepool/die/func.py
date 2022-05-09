@@ -147,13 +147,24 @@ def align_range(*dice):
 def apply(func, *dice):
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
 
-    This is flexible but not very efficient for large numbers of dice.
-    In particular, for pools use `icepool.Pool` and `icepool.EvalPool` instead
-    if possible.
+    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
+
+    `apply()` is flexible but not very efficient for more than two dice.
+    Instead of using a large number of arguments:
+    * If the problem is easy to solve by considering one additional die at a
+        time, try using `apply()` or  `Die.sub()` repeatedly with only two dice
+        at a time. Store the running result in the left die and update using
+        the result of the right die.
+    * If the problem is easy to solve by considering how many dice rolled each
+        outcome, one outcome at a time, try using
+        `icepool.Pool` and `icepool.EvalPool`.
 
     Args:
         func: A function that takes one argument per input die and returns an
             argument to `Die()`.
+        *dice: Any number of dice (or objects convertible to dice).
+            `func` will be called with all possible joint outcomes of `dice`,
+            with one argument per die.
 
     Returns:
         A die constructed from the outputs of `func` and the product of the
