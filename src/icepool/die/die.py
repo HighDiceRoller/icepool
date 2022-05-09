@@ -74,9 +74,9 @@ class Die():
                     itself is hashable and comparable.
                 * A tuple of outcomes. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and 
-                    `Die.binary_op` for details. This element-wise behavior is 
-                    not recursive; mixing operators and nested tuples is not
-                    recommended.
+                    `Die.binary_op` for details. The behvaior of operators on
+                    nested tuples is undefined; mixing operators and nested 
+                    tuples is not recommended.
                     
                     Any tuple elements that are dice or dicts will expand the tuple
                     according to their independent joint distribution.
@@ -130,8 +130,8 @@ class Die():
         """Performs the unary operation on the outcomes.
         
         If the outcomes of this die are tuples, the operation is performed 
-        element-wise rather than on the entire outcome tuple. This
-        element-wise behavior is not recursive.
+        element-wise rather than on the entire outcome tuple. The behvaior 
+        of operators on nested tuples is undefined.
 
         This is used for the standard unary operators 
         `-, +, abs, ~, round, trunc, floor, ceil`
@@ -178,8 +178,8 @@ class Die():
         """Performs the operation on pairs of outcomes.
 
         If the outcomes of this die are tuples, the operation is performed
-        element-wise rather than on entire tuples. This element-wise 
-        behavior is not recursive.
+        element-wise rather than on entire tuples. The behvaior 
+        of operators on nested tuples is undefined.
 
         By the time this is called, the other operand has already been 
         converted to a die.
