@@ -82,18 +82,18 @@ class Die():
                     according to their independent joint distribution.
                     For example, (d6, d6) will expand to 36 ordered tuples with
                     weight 1 each. Use this carefully since it may create a
-                    large number of outcomes. 
+                    large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `weights` from consideration.
-                * Anything else will be treated as a single outcome.
-                    These must be hashable and mutually comparable with all other
-                    outcomes (after expansion). The same outcome can appear
-                    multiple times, in which case it will be weighted
-                    proportionally higher.
+                * Anything else, including non-tuple sequences, will be treated 
+                    as a single outcome. These must be hashable and mutually 
+                    comparable with all other outcomes (after expansion). 
+                    The same outcome can appear multiple times, in which case 
+                    the corresponding weights will be accumulated.
             weights: Controls the relative weight of the arguments.
                 If an argument expands into multiple outcomes, the weight is
                 shared among those outcomes. If not provided, each argument will
-                end up  with the same total weight. For example, `Die(d6, 7)` is
+                end up with the same total weight. For example, `Die(d6, 7)` is
                 the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
             min_outcome: If used, there must be zero `*args`, and `weights` must
                 be provided. The outcomes of the result will be integers
@@ -110,9 +110,9 @@ class Die():
                     first, then selecting an argument to roll.
                 * 'lcm_weighted': LCM of the individual (argument denominators
                     times corresponding element of `weights`). This is like
-                     rolling the above, but the specific weight rolled is used
+                    rolling the above, but the specific weight rolled is used
                     to help determine the result of the selected argument.
-                * 'reduce': `reduce()` is called at the end.
+                * 'reduce': The final weights are divided by their GCD.
         Raises:
             `ValueError`: `None` is not a valid outcome for a die.
         """
@@ -212,7 +212,7 @@ class Die():
             if self.outcome_len() is None or other.outcome_len() is None:
                 raise ValueError('Operators on tuple outcomes are only valid when all outcomes are the same length.')
             if self.outcome_len() != other.outcome_len():
-                raise ValueError('Binary operators on tuple outcomes are only valid when the outcome length'
+                raise ValueError('Binary operators on tuple outcomes are only valid when the outcome length '
                                 f'of the left-side die ({self.outcome_len()}) is equal to that of the right-side die ({other.outcome_len()}).')
             return self.binary_op_vector(other, op, *args, **kwargs)
         else:
