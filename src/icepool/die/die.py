@@ -72,12 +72,17 @@ class Die():
                     result. This option will be taken in preference to treating
                     the dict-like  itself as an outcome even if the dict-like
                     itself is hashable and comparable.
-                * A tuple of outcomes, which produces a joint distribution.
-                    Any arguments that are dice or dicts will expand the tuple
+                * A tuple of outcomes. Operators on dice with tuple outcomes
+                    are performed element-wise. See `Die.unary_op` and 
+                    `Die.binary_op` for details. This element-wise behavior is 
+                    not recursive; mixing operators and nested tuples is not
+                    recommended.
+                    
+                    Any tuple elements that are dice or dicts will expand the tuple
                     according to their independent joint distribution.
                     For example, (d6, d6) will expand to 36 ordered tuples with
-                    weight 1 each. Use this sparingly since it may create a
-                    large number of outcomes.
+                    weight 1 each. Use this carefully since it may create a
+                    large number of outcomes. 
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `weights` from consideration.
                 * Anything else will be treated as a single outcome.
@@ -120,45 +125,121 @@ class Die():
         if weights is None and len(args) == 1 and isinstance(args[0], Die):
             return args[0]
         return super(Die, cls).__new__(cls)
-
+        
     def unary_op(self, op, *args, **kwargs):
-        """Performs the operation on the outcomes.
+        """Performs the unary operation on the outcomes.
+        
+        If the outcomes of this die are tuples, the operation is performed 
+        element-wise rather than on the entire outcome tuple. This
+        element-wise behavior is not recursive.
 
-        The result is a die.
+        This is used for the standard unary operators 
+        `-, +, abs, ~, round, trunc, floor, ceil`
+        as well as the additional methods
+        `zero, bool`.
+        
+        Returns:
+            A die representing the result.
+            
+        Raises:
+            ValueError if tuples are of mismatched length.
+        """
+        if self.has_tuple_outcomes():
+            if self.outcome_len() is None:
+                raise ValueError('Operators on tuple outcomes are only valid when all outcomes are the same length.')
+            return self.unary_op_vector(op, *args, **kwargs)
+        else:
+            return self.unary_op_scalar(op, *args, **kwargs)
 
-        This is used for the operators `-, +, abs, ~, round, trunc, floor, ceil, []`.
+    def unary_op_scalar(self, op, *args, **kwargs):
+        """Specialization of unary_op for non-tuple outcomes.
+        
+        The `[]` operator always uses the "scalar" (non-element-wise) version.
         """
         data = defaultdict(int)
         for outcome, weight in self.items():
             data[op(outcome, *args, **kwargs)] += weight
         return icepool.Die(data)
+    
+    def unary_op_vector(self, op, *args, **kwargs):
+        """Specialization of unary_op for tuple outcomes.
+        
+        This performs the operation element-wise.
+        
+        The `[]` operator always uses the "scalar" (non-element-wise) version.
+        """
+        data = defaultdict(int)
+        for outcome, weight in self.items():
+            new_outcome = tuple(op(x, *args, **kwargs) for x in outcome)
+            data[new_outcome] += weight
+        return icepool.Die(data)
 
     def binary_op(self, other, op, *args, **kwargs):
         """Performs the operation on pairs of outcomes.
 
-        The result is a die.
+        If the outcomes of this die are tuples, the operation is performed
+        element-wise rather than on entire tuples. This element-wise 
+        behavior is not recursive.
 
-        The other operand is cast to a die before performing the operation.
+        By the time this is called, the other operand has already been 
+        converted to a die.
 
-        This is used for the operators
-        `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`.
+        This is used for the standard binary operators
+        `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`,
+        as well as the additional method `cmp`.
         Note that `*` multiplies outcomes directly;
         it is not the same as `@` or `d()`.
+        
+        `==` and `!=` additionally set the truth value of the die according to
+        whether the dice themselves are the same or not.
 
-        Special operators:
-            * The `@` operator rolls the left die, then rolls the right die that
-                many times and sums the outcomes. Only the left side will be
-                cast to a die; the right side must already be a die.
-            * `==` and `!=` are applied across outcomes like the other
-                operators. They also set the truth value of the die according to
-                whether the die themselves are the same.
+        The `@` operator does NOT use this method directly.
+        It rolls the left die, which must have integer outcomes,
+        then rolls the right die that many times and sums the outcomes.
+        Only the sum is performed  element-wise. Only the left side will be
+        converted to a die; the right side must already be a die.
+        
+        Returns:
+            A die representing the result.
+        
+        Raises:
+            ValueError if tuples are of mismatched length within one of the dice 
+            or between the dice.
         """
+        if self.has_tuple_outcomes() or other.has_tuple_outcomes():
+            if not (self.has_tuple_outcomes() and other.has_tuple_outcomes()):
+                raise ValueError('Tuple outcomes cannot operate with non-tuple outcomes.')
+            if self.outcome_len() is None or other.outcome_len() is None:
+                raise ValueError('Operators on tuple outcomes are only valid when all outcomes are the same length.')
+            if self.outcome_len() != other.outcome_len():
+                raise ValueError('Binary operators on tuple outcomes are only valid when the outcomes in both dice are the same length.')
+            return self.binary_op_vector(other, op, *args, **kwargs)
+        else:
+            return self.binary_op_scalar(other, op, *args, **kwargs)
+
+    def binary_op_scalar(self, other, op, *args, **kwargs):
+        """Specialization of binary_op for non-tuple outcomes."""
         data = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other,
                                           weight_other) in itertools.product(
                                               self.items(), other.items()):
             data[op(outcome_self, outcome_other, *args,
                     **kwargs)] += weight_self * weight_other
+        return icepool.Die(data)
+    
+    def binary_op_vector(self, other, op, *args, **kwargs):
+        """Specialization of binary_op for tuple outcomes.
+        
+        This performs the operation element-wise.
+        """
+        data = defaultdict(int)
+        for (outcome_self, weight_self), (outcome_other,
+                                          weight_other) in itertools.product(
+                                              self.items(), other.items()):
+            new_outcome = tuple(
+                op(x, y, *args, **kwargs)
+                for x, y in zip(outcome_self, outcome_other))
+            data[new_outcome] += weight_self * weight_other
         return icepool.Die(data)
 
     # Basic access.
@@ -173,6 +254,14 @@ class Die():
     def num_outcomes(self):
         """Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
+
+    @cached_property
+    def _has_tuple_outcomes(self):
+        return any(type(outcome) == tuple for outcome in self.outcomes())
+
+    def has_tuple_outcomes(self):
+        """Returns True iff at least one outcome is a tuple. """
+        return self._has_tuple_outcomes
 
     @cached_property
     def _outcome_len(self):
@@ -992,8 +1081,11 @@ class Die():
     def __ceil__(self):
         return self.unary_op(math.ceil)
 
-    def __getitem__(self, index):
-        return self.unary_op(operator.getitem, index)
+    def marginal(self, index_or_slice, /):
+        """Marginal distribution; equivalently, indexes/slices outcomes."""
+        return self.unary_op_scalar(operator.getitem, index_or_slice)
+
+    __getitem__ = marginal
 
     @staticmethod
     def _zero(x):
