@@ -422,8 +422,8 @@ class SumPool(EvalPool):
         return 0
 
 
-"""A shared `SumPool` object for caching results. """
 sum_pool = SumPool()
+"""A shared `SumPool` object for caching results. """
 
 
 class FindBestSet(EvalPool):
