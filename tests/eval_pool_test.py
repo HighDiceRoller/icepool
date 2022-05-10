@@ -137,3 +137,9 @@ eval_auto = SumFixedDirection(0)
 def test_sum_direction(pool):
     assert eval_ascending.eval(pool).equals(eval_descending.eval(pool))
     assert eval_ascending.eval(pool).equals(eval_auto.eval(pool))
+
+def test_joint_eval():
+    test_eval = icepool.JointEval(icepool.sum_pool, icepool.sum_pool)
+    result = test_eval(icepool.d6.pool(3))
+    expected = (3 @ icepool.d6).sub(lambda x: (x, x))
+    assert result.equals(expected)

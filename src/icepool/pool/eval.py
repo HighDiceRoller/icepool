@@ -336,7 +336,7 @@ def _pop_pool_min(outcome, pool):
 
 
 class WrapFuncEval(EvalPool):
-    """A `EvalPool` created from a single provided function.
+    """An `EvalPool` created from a single provided function.
 
     `next_state()` simply calls that function.
     """
@@ -351,6 +351,60 @@ class WrapFuncEval(EvalPool):
 
     def next_state(self, state, outcome, *counts):
         return self._func(state, outcome, *counts)
+
+
+class JointEval(EvalPool):
+    """EXPERIMENTAL: An `EvalPool` that jointly evaluates subevals on the same roll(s) of a pool.
+
+    It may be more efficient to write the joint evaluation directly; this is
+    provided as a convenience.
+    """
+
+    def __init__(self, *subevals):
+        self._subevals = subevals
+
+    def next_state(self, state, outcome, *counts):
+        """Runs `next_state` for all subevals.
+
+        The state is a tuple of the substates.
+        """
+        if state is None:
+            return tuple(
+                subeval.next_state(None, outcome, *counts)
+                for subeval in self._subevals)
+        else:
+            return tuple(
+                subeval.next_state(substate, outcome, *counts)
+                for subeval, substate in zip(self._subevals, state))
+
+    def final_outcome(self, final_state, *pools):
+        """Runs `final_state` for all subevals.
+
+        The final outcome is a tuple of the final suboutcomes.
+        """
+        return tuple(
+            subeval.final_outcome(final_substate, *pools)
+            for subeval, final_substate in zip(self._subevals, final_state))
+
+    def direction(self, *pools):
+        """Determines the common direction of the subevals.
+
+        Raises:
+            ValueError: If subevals have conflicting directions, i.e. some are
+                ascending and others are descending.
+        """
+        subdirections = tuple(
+            subeval.direction(*pools) for subeval in self._subevals)
+        ascending = any(x > 0 for x in subdirections)
+        descending = any(x < 0 for x in subdirections)
+        if ascending and descending:
+            raise ValueError('Sub-evals have conflicting directions.')
+        elif ascending:
+            return 1
+        elif descending:
+            return -1
+        else:
+            return 0
 
 
 class SumPool(EvalPool):
