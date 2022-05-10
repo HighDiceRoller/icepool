@@ -85,6 +85,7 @@ class Die():
                     large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `weights` from consideration.
+                    If inside a tuple, the tuple will be dropped.
                 * Anything else, including non-tuple sequences, will be treated
                     as a single outcome. These must be hashable and mutually
                     comparable with all other outcomes (after expansion).

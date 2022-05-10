@@ -76,3 +76,7 @@ def test_negative_weight_error():
 def test_empty_tuple():
     result = icepool.Die(())
     assert result.equals(result + ())
+
+def test_reroll_tuple():
+    result = icepool.Die((1, icepool.Reroll))
+    assert result.equals(icepool.Die())
