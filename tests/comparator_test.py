@@ -35,12 +35,12 @@ def test_ne():
 
 def test_sign():
     result = (icepool.d6 - 3).sign()
-    expected = icepool.Die(weights=[2, 1, 3], min_outcome=-1)
+    expected = icepool.Die(-1, 0, 1, weights=[2, 1, 3])
     assert result.equals(expected)
 
 def test_cmp():
     result = icepool.d6.cmp(icepool.d6 - 1)
-    expected = icepool.Die(weights=[10, 5, 21], min_outcome=-1)
+    expected = icepool.Die(-1, 0, 1, weights=[10, 5, 21])
     assert result.equals(expected)
 
 def test_weight_le():
@@ -67,7 +67,7 @@ def test_weight_ge_max():
 def test_weight_gt_max():
     assert icepool.d6.weight_gt(6) == 0
 
-die_spaced = icepool.Die(weights=[1, 0, 0, 1, 0, 0, 1], min_outcome=-3)
+die_spaced = icepool.Die(*range(-3, 4), weights=[1, 0, 0, 1, 0, 0, 1])
 
 def test_weight_le_zero_weight():
     assert die_spaced.weight_le(-1) == 1

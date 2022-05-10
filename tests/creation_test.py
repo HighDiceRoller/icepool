@@ -23,7 +23,7 @@ def test_list_no_min_outcome():
     assert result.equals(expected)
 
 def test_zero_outcomes():
-    die = icepool.Die(weights=[0, 1, 1, 1, 1, 1, 1], min_outcome=0)
+    die = icepool.Die(*range(7), weights=[0, 1, 1, 1, 1, 1, 1])
     other = icepool.d6
     assert die.has_zero_weights()
     assert not die.equals(other)

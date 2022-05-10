@@ -24,7 +24,7 @@ def test_mix_weight():
     
 def test_mix_mixed():
     die = icepool.Die(icepool.d4, icepool.d6)
-    assert die.pmf() == icepool.Die(weights=[5, 5, 5, 5, 2, 2], min_outcome=1).pmf()
+    assert die.pmf() == icepool.Die(*range(1, 7), weights=[5, 5, 5, 5, 2, 2]).pmf()
 
 def test_mix_reroll():
     result = icepool.Die(1,2,3,4,icepool.Reroll,icepool.Reroll)
@@ -37,7 +37,7 @@ def test_mix_dict_reroll():
     expected = icepool.d4
     assert result.equals(expected)
 
-expected_d6x1 = icepool.Die(weights=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1], min_outcome=1).trim()
+expected_d6x1 = icepool.Die(*range(1, 13), weights=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
 
 def test_sub_array():
     die = icepool.d6.sub([5, 4, 1, 2, 3, icepool.d6 + 6])

@@ -19,5 +19,5 @@ def test_xor():
 
 def test_ifelse():
     result = icepool.coin(1, 2).if_else(icepool.d8, icepool.d6).reduce()
-    expected = icepool.Die(weights=[14, 14, 14, 14, 14, 14, 6, 6], min_outcome=1).reduce()
+    expected = icepool.Die(*range(1, 9), weights=[14, 14, 14, 14, 14, 14, 6, 6]).reduce()
     assert result.equals(expected)
