@@ -40,11 +40,7 @@ class Die():
     though these have little use other than being sentinel values.
     """
 
-    def __new__(cls,
-                *args,
-                weights=None,
-                min_outcome=None,
-                denominator_method='lcm'):
+    def __new__(cls, *args, weights=None, denominator_method='lcm'):
         """Constructor for a die..
 
         Don't confuse this with `icepool.d()`:
@@ -76,8 +72,8 @@ class Die():
                     are performed element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
 
-                    Any tuple elements that are dice or dicts will expand the tuple
-                    according to their independent joint distribution.
+                    Any tuple elements that are dice or dicts will expand the
+                    tuple according to their independent joint distribution.
                     For example, (d6, d6) will expand to 36 ordered tuples with
                     weight 1 each. Use this carefully since it may create a
                     large number of outcomes.
@@ -130,6 +126,9 @@ class Die():
         `-, +, abs, ~, round, trunc, floor, ceil`
         as well as the additional methods
         `zero, bool`.
+
+        This is NOT used for the `[]` operator, which is NOT performed
+        element-wise.
 
         Returns:
             A die representing the result.
@@ -210,11 +209,6 @@ class Die():
 
     @cached_property
     def _outcome_len(self):
-        """Returns the common length of the outcomes.
-
-        If any outcome has no length, the outcomes have mixed length, or the
-        die is empty, the result is `None`.
-        """
         result = None
         for outcome in self.outcomes():
             try:
@@ -227,6 +221,11 @@ class Die():
         return result
 
     def outcome_len(self):
+        """Returns the common length of the outcomes.
+
+        If any outcome has no length, the outcomes have mixed length, or the
+        die is empty, the result is `None`.
+        """
         return self._outcome_len
 
     def is_empty(self):
