@@ -36,10 +36,12 @@ import enum
 
 
 class SpecialValue(enum.Enum):
-    Reroll = 'Reroll'  # Indicates an outcome should be rerolled (with no max depth).
+    Reroll = 'Reroll'
+    """Indicates an outcome should be rerolled (with no max depth)."""
 
 
 Reroll = SpecialValue.Reroll
+"""Indicates an outcome should be rerolled (with no max depth)."""
 
 __all__ = [
     'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'Die', 'from_cweights',
