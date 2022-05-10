@@ -1,9 +1,9 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.die.format
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.die.create import expand_die_args
-from icepool.die.format import markdown
 
 import bisect
 from collections import defaultdict
@@ -1344,6 +1344,18 @@ class Die():
         return self.markdown(include_weights=self.denominator() < 10**30)
 
     def markdown(self, *, include_weights=True, unpack_outcomes=True):
-        return markdown(self,
-                        include_weights=include_weights,
-                        unpack_outcomes=unpack_outcomes)
+        return icepool.die.format.markdown(self,
+                                           include_weights=include_weights,
+                                           unpack_outcomes=unpack_outcomes)
+
+    def csv(self,
+            *,
+            include_weights=True,
+            unpack_outcomes=True,
+            dialect='excel',
+            **fmtparams):
+        return icepool.die.format.csv(self,
+                                      include_weights=include_weights,
+                                      unpack_outcomes=unpack_outcomes,
+                                      dialect=dialect,
+                                      **fmtparams)
