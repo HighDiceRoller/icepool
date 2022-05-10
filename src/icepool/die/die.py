@@ -1338,12 +1338,22 @@ class Die():
     # Strings.
 
     def __repr__(self):
-        return type(self).__qualname__ + f'({self._data.__repr__()})'
+        inner = ', '.join(
+            f'{outcome}: {weight}' for outcome, weight in self.items())
+        return type(self).__qualname__ + '({' + inner + '})'
 
     def __str__(self):
         return self.markdown(include_weights=self.denominator() < 10**30)
 
     def markdown(self, *, include_weights=True, unpack_outcomes=True):
+        """Formats the die as a Markdown table.
+
+        Args:
+            include_weights: If `True`, a column will be emitted for the weights.
+                Otherwise, only probabilities will be emitted.
+            unpack_outcomes: If `True` and all outcomes have a common length,
+                outcomes will be unpacked, producing one column per element.
+        """
         return icepool.die.format.markdown(self,
                                            include_weights=include_weights,
                                            unpack_outcomes=unpack_outcomes)
@@ -1354,6 +1364,15 @@ class Die():
             unpack_outcomes=True,
             dialect='excel',
             **fmtparams):
+        """Formats the die as a comma-separated-values string.
+
+        Args:
+            include_weights: If `True`, a column will be emitted for the
+                weights. Otherwise, only probabilities will be emitted.
+            unpack_outcomes: If `True` and all outcomes have a common length,
+                outcomes will be unpacked, producing one column per element.
+            dialect, **fmtparams: Will be sent to `csv.writer()`.
+        """
         return icepool.die.format.csv(self,
                                       include_weights=include_weights,
                                       unpack_outcomes=unpack_outcomes,
