@@ -8,21 +8,8 @@ import itertools
 import math
 
 
-def expand_die_args(*args, weights, min_outcome, denominator_method):
+def expand_die_args(*args, weights, denominator_method):
     """Helper function to expand arguments to Die()."""
-
-    # Special case: consecutive outcomes.
-    if min_outcome is not None:
-        if weights is None:
-            raise ValueError(
-                'If min_outcome is provided, weights must also be provided.')
-        if len(args) > 0:
-            raise ValueError(
-                'If min_outcome is provided, no *args may be used.')
-        data = Counts(
-            {i + min_outcome: weight for i, weight in enumerate(weights)})
-        return data
-
     if weights is not None:
         if len(weights) != len(args):
             raise ValueError(
@@ -84,7 +71,7 @@ def _is_tuple(arg):
 
 def _expand_tuple(arg, denominator_method):
     if len(arg) == 0:
-        return {() : 1}
+        return {(): 1}
     subdatas = [_expand(x, denominator_method) for x in arg]
     data = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):

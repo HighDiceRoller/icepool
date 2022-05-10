@@ -95,10 +95,6 @@ class Die():
                 shared among those outcomes. If not provided, each argument will
                 end up with the same total weight. For example, `Die(d6, 7)` is
                 the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
-            min_outcome: If used, there must be zero `*args`, and `weights` must
-                be provided. The outcomes of the result will be integers
-                starting at `min_outcome`,one per weight in `weights` with that
-                weight.
             denominator_method: How to determine the denominator of the result
                 if the arguments themselves contain weights. This is also used
                 for dict-like arguments. From greatest to least:
@@ -121,7 +117,6 @@ class Die():
         self = super(Die, cls).__new__(cls)
         self._data = expand_die_args(*args,
                                      weights=weights,
-                                     min_outcome=min_outcome,
                                      denominator_method=denominator_method)
         return self
 
