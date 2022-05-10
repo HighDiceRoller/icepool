@@ -24,11 +24,24 @@ def test_vector_matmul():
     result = 2 @ icepool.Die((icepool.d6, icepool.d8))
     expected = icepool.Die((2 @ icepool.d6, 2 @ icepool.d8))
     assert result.equals(expected)
+
+def test_nested_unary_elementwise():
+    result = icepool.Die((((1,),),))
+    result = -result
+    assert result[0][0][0].equals(icepool.Die(-1))
     
+def test_nested_binary_elementwise():
+    result = icepool.Die((((icepool.d6,),),))
+    result = result + result
+    assert result[0][0][0].equals(2 @ icepool.d6)
+
 def test_binary_op_mismatch_scalar_vector():
     with pytest.raises(ValueError):
         result = icepool.d6 + icepool.Die((icepool.d6, icepool.d8))
 
-def test_binary_op_mismatch_otucome_len():
+def test_binary_op_mismatch_outcome_len():
     with pytest.raises(ValueError):
         result = icepool.Die((icepool.d6, icepool.d8)) + (1, 2, 3)
+
+
+    
