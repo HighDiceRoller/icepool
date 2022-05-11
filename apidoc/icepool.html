@@ -175,7 +175,7 @@
                                 <a class="function" href="#Die.correlation">correlation</a>
                         </li>
                         <li>
-                                <a class="function" href="#Die.reduce">reduce</a>
+                                <a class="function" href="#Die.reduce_weights">reduce_weights</a>
                         </li>
                         <li>
                                 <a class="function" href="#Die.scale_weights">scale_weights</a>
@@ -314,6 +314,12 @@
             </li>
             <li>
                     <a class="function" href="#min_outcome">min_outcome</a>
+            </li>
+            <li>
+                    <a class="function" href="#reduce">reduce</a>
+            </li>
+            <li>
+                    <a class="function" href="#accumulate">accumulate</a>
             </li>
             <li>
                     <a class="function" href="#apply">apply</a>
@@ -555,7 +561,7 @@ refer to dice in a pool.</li>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">icepool.die.func</span> <span class="kn">import</span> <span class="p">(</span><span class="n">standard</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">bernoulli</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>                              <span class="n">from_cweights</span><span class="p">,</span> <span class="n">from_sweights</span><span class="p">,</span> <span class="n">from_rv</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>                              <span class="n">align_range</span><span class="p">,</span> <span class="n">apply</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>                              <span class="n">align_range</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="n">apply</span><span class="p">)</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">icepool.die.die</span> <span class="kn">import</span> <span class="n">Die</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
@@ -583,10 +589,10 @@ refer to dice in a pool.</li>
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cweights&#39;</span><span class="p">,</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;from_sweights&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;PoolBase&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;WrapFuncEval&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestRun&#39;</span><span class="p">,</span> <span class="s1">&#39;d2&#39;</span><span class="p">,</span> <span class="s1">&#39;d3&#39;</span><span class="p">,</span> <span class="s1">&#39;d4&#39;</span><span class="p">,</span> <span class="s1">&#39;d6&#39;</span><span class="p">,</span> <span class="s1">&#39;d8&#39;</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="s1">&#39;d10&#39;</span><span class="p">,</span> <span class="s1">&#39;d12&#39;</span><span class="p">,</span> <span class="s1">&#39;d20&#39;</span><span class="p">,</span> <span class="s1">&#39;d100&#39;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;PoolBase&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;WrapFuncEval&#39;</span><span class="p">,</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestRun&#39;</span><span class="p">,</span> <span class="s1">&#39;d2&#39;</span><span class="p">,</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="s1">&#39;d3&#39;</span><span class="p">,</span> <span class="s1">&#39;d4&#39;</span><span class="p">,</span> <span class="s1">&#39;d6&#39;</span><span class="p">,</span> <span class="s1">&#39;d8&#39;</span><span class="p">,</span> <span class="s1">&#39;d10&#39;</span><span class="p">,</span> <span class="s1">&#39;d12&#39;</span><span class="p">,</span> <span class="s1">&#39;d20&#39;</span><span class="p">,</span> <span class="s1">&#39;d100&#39;</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="p">]</span>
 </span></pre></div>
 
@@ -1262,7 +1268,7 @@ function <code><a href="#d">d()</a></code> can be.</p>
 </span><span id="Die-482"><a href="#Die-482"><span class="linenos"> 482</span></a>
 </span><span id="Die-483"><a href="#Die-483"><span class="linenos"> 483</span></a>    <span class="c1"># Weight management.</span>
 </span><span id="Die-484"><a href="#Die-484"><span class="linenos"> 484</span></a>
-</span><span id="Die-485"><a href="#Die-485"><span class="linenos"> 485</span></a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die-485"><a href="#Die-485"><span class="linenos"> 485</span></a>    <span class="k">def</span> <span class="nf">reduce_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Die-486"><a href="#Die-486"><span class="linenos"> 486</span></a>        <span class="sd">&quot;&quot;&quot;Divides all weights by their greatest common denominator. &quot;&quot;&quot;</span>
 </span><span id="Die-487"><a href="#Die-487"><span class="linenos"> 487</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">())</span>
 </span><span id="Die-488"><a href="#Die-488"><span class="linenos"> 488</span></a>
@@ -1508,7 +1514,7 @@ function <code><a href="#d">d()</a></code> can be.</p>
 </span><span id="Die-728"><a href="#Die-728"><span class="linenos"> 728</span></a>            <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span>
 </span><span id="Die-729"><a href="#Die-729"><span class="linenos"> 729</span></a>                            <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="Die-730"><a href="#Die-730"><span class="linenos"> 730</span></a>                            <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
-</span><span id="Die-731"><a href="#Die-731"><span class="linenos"> 731</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="nb">next</span><span class="o">.</span><span class="n">reduce</span><span class="p">()):</span>
+</span><span id="Die-731"><a href="#Die-731"><span class="linenos"> 731</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="nb">next</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()):</span>
 </span><span id="Die-732"><a href="#Die-732"><span class="linenos"> 732</span></a>                <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die-733"><a href="#Die-733"><span class="linenos"> 733</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die-734"><a href="#Die-734"><span class="linenos"> 734</span></a>                <span class="k">return</span> <span class="nb">next</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span>
@@ -1829,7 +1835,7 @@ function <code><a href="#d">d()</a></code> can be.</p>
 </span><span id="Die-1049"><a href="#Die-1049"><span class="linenos">1049</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
 </span><span id="Die-1050"><a href="#Die-1050"><span class="linenos">1050</span></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="Die-1051"><a href="#Die-1051"><span class="linenos">1051</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
-</span><span id="Die-1052"><a href="#Die-1052"><span class="linenos">1052</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+</span><span id="Die-1052"><a href="#Die-1052"><span class="linenos">1052</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span>
 </span><span id="Die-1053"><a href="#Die-1053"><span class="linenos">1053</span></a>
 </span><span id="Die-1054"><a href="#Die-1054"><span class="linenos">1054</span></a>    <span class="k">def</span> <span class="nf">zero_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Die-1055"><a href="#Die-1055"><span class="linenos">1055</span></a>        <span class="sd">&quot;&quot;&quot;Returns a zero-outcome for this die.</span>
@@ -2111,53 +2117,54 @@ function <code><a href="#d">d()</a></code> can be.</p>
 </span><span id="Die-1331"><a href="#Die-1331"><span class="linenos">1331</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die-1332"><a href="#Die-1332"><span class="linenos">1332</span></a>
 </span><span id="Die-1333"><a href="#Die-1333"><span class="linenos">1333</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die-1334"><a href="#Die-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die-1335"><a href="#Die-1335"><span class="linenos">1335</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1336"><a href="#Die-1336"><span class="linenos">1336</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die-1337"><a href="#Die-1337"><span class="linenos">1337</span></a>
-</span><span id="Die-1338"><a href="#Die-1338"><span class="linenos">1338</span></a>    <span class="c1"># Strings.</span>
-</span><span id="Die-1339"><a href="#Die-1339"><span class="linenos">1339</span></a>
-</span><span id="Die-1340"><a href="#Die-1340"><span class="linenos">1340</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die-1341"><a href="#Die-1341"><span class="linenos">1341</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="Die-1342"><a href="#Die-1342"><span class="linenos">1342</span></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="Die-1343"><a href="#Die-1343"><span class="linenos">1343</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
-</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>
-</span><span id="Die-1345"><a href="#Die-1345"><span class="linenos">1345</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">include_weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">)</span>
-</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>
-</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>    <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
-</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a>
-</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
-</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
-</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>
-</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>    <span class="k">def</span> <span class="nf">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>            <span class="o">*</span><span class="p">,</span>
-</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>            <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>            <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>            <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel&#39;</span><span class="p">,</span>
-</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>            <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
-</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
-</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>
-</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
-</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
-</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
-</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
-</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
+</span><span id="Die-1334"><a href="#Die-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
+</span><span id="Die-1335"><a href="#Die-1335"><span class="linenos">1335</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die-1336"><a href="#Die-1336"><span class="linenos">1336</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1337"><a href="#Die-1337"><span class="linenos">1337</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die-1338"><a href="#Die-1338"><span class="linenos">1338</span></a>
+</span><span id="Die-1339"><a href="#Die-1339"><span class="linenos">1339</span></a>    <span class="c1"># Strings.</span>
+</span><span id="Die-1340"><a href="#Die-1340"><span class="linenos">1340</span></a>
+</span><span id="Die-1341"><a href="#Die-1341"><span class="linenos">1341</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die-1342"><a href="#Die-1342"><span class="linenos">1342</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="Die-1343"><a href="#Die-1343"><span class="linenos">1343</span></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
+</span><span id="Die-1345"><a href="#Die-1345"><span class="linenos">1345</span></a>
+</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">include_weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">)</span>
+</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>
+</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>    <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
+</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>
+</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">        Args:</span>
+</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
+</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
+</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
+</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
+</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
+</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
+</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>
+</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>            <span class="o">*</span><span class="p">,</span>
+</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>            <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>            <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>            <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel&#39;</span><span class="p">,</span>
+</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>            <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
+</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
+</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>
+</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a><span class="sd">        Args:</span>
+</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
+</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
+</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
+</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
+</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
+</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
+</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
+</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
+</span><span id="Die-1381"><a href="#Die-1381"><span class="linenos">1381</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -3538,19 +3545,19 @@ in this case, use <code><a href="#Die.ppf_left">ppf_left</a></code> or <code><a 
     
 
                             </div>
-                            <div id="Die.reduce" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Die.reduce">#&nbsp;&nbsp</a>
+                            <div id="Die.reduce_weights" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Die.reduce_weights">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">reduce</span><span class="signature">(self)</span>:
+            <span class="name">reduce_weights</span><span class="signature">(self)</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.reduce-485"><a href="#Die.reduce-485"><span class="linenos">485</span></a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die.reduce-486"><a href="#Die.reduce-486"><span class="linenos">486</span></a>        <span class="sd">&quot;&quot;&quot;Divides all weights by their greatest common denominator. &quot;&quot;&quot;</span>
-</span><span id="Die.reduce-487"><a href="#Die.reduce-487"><span class="linenos">487</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">())</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.reduce_weights-485"><a href="#Die.reduce_weights-485"><span class="linenos">485</span></a>    <span class="k">def</span> <span class="nf">reduce_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die.reduce_weights-486"><a href="#Die.reduce_weights-486"><span class="linenos">486</span></a>        <span class="sd">&quot;&quot;&quot;Divides all weights by their greatest common denominator. &quot;&quot;&quot;</span>
+</span><span id="Die.reduce_weights-487"><a href="#Die.reduce_weights-487"><span class="linenos">487</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">())</span>
 </span></pre></div>
 
         </details>
@@ -4048,7 +4055,7 @@ and/or add zero-weight outcomes (if they are not present in this die).</p>
 </span><span id="Die.sub-728"><a href="#Die.sub-728"><span class="linenos">728</span></a>            <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span>
 </span><span id="Die.sub-729"><a href="#Die.sub-729"><span class="linenos">729</span></a>                            <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="Die.sub-730"><a href="#Die.sub-730"><span class="linenos">730</span></a>                            <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
-</span><span id="Die.sub-731"><a href="#Die.sub-731"><span class="linenos">731</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="nb">next</span><span class="o">.</span><span class="n">reduce</span><span class="p">()):</span>
+</span><span id="Die.sub-731"><a href="#Die.sub-731"><span class="linenos">731</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="nb">next</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()):</span>
 </span><span id="Die.sub-732"><a href="#Die.sub-732"><span class="linenos">732</span></a>                <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die.sub-733"><a href="#Die.sub-733"><span class="linenos">733</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die.sub-734"><a href="#Die.sub-734"><span class="linenos">734</span></a>                <span class="k">return</span> <span class="nb">next</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span>
@@ -4759,7 +4766,7 @@ higher outcomes being removed (i.e. rerolled).</li>
 </span><span id="Die.zero-1049"><a href="#Die.zero-1049"><span class="linenos">1049</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
 </span><span id="Die.zero-1050"><a href="#Die.zero-1050"><span class="linenos">1050</span></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="Die.zero-1051"><a href="#Die.zero-1051"><span class="linenos">1051</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
-</span><span id="Die.zero-1052"><a href="#Die.zero-1052"><span class="linenos">1052</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
+</span><span id="Die.zero-1052"><a href="#Die.zero-1052"><span class="linenos">1052</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span>
 </span></pre></div>
 
         </details>
@@ -4975,9 +4982,10 @@ arguments.</p>
 </span><span id="Die.equals-1331"><a href="#Die.equals-1331"><span class="linenos">1331</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die.equals-1332"><a href="#Die.equals-1332"><span class="linenos">1332</span></a>
 </span><span id="Die.equals-1333"><a href="#Die.equals-1333"><span class="linenos">1333</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die.equals-1334"><a href="#Die.equals-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die.equals-1335"><a href="#Die.equals-1335"><span class="linenos">1335</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die.equals-1336"><a href="#Die.equals-1336"><span class="linenos">1336</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die.equals-1334"><a href="#Die.equals-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
+</span><span id="Die.equals-1335"><a href="#Die.equals-1335"><span class="linenos">1335</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die.equals-1336"><a href="#Die.equals-1336"><span class="linenos">1336</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die.equals-1337"><a href="#Die.equals-1337"><span class="linenos">1337</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span></pre></div>
 
         </details>
@@ -5014,18 +5022,18 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.markdown-1348"><a href="#Die.markdown-1348"><span class="linenos">1348</span></a>    <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-</span><span id="Die.markdown-1349"><a href="#Die.markdown-1349"><span class="linenos">1349</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
-</span><span id="Die.markdown-1350"><a href="#Die.markdown-1350"><span class="linenos">1350</span></a>
-</span><span id="Die.markdown-1351"><a href="#Die.markdown-1351"><span class="linenos">1351</span></a><span class="sd">        Args:</span>
-</span><span id="Die.markdown-1352"><a href="#Die.markdown-1352"><span class="linenos">1352</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
-</span><span id="Die.markdown-1353"><a href="#Die.markdown-1353"><span class="linenos">1353</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die.markdown-1354"><a href="#Die.markdown-1354"><span class="linenos">1354</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die.markdown-1355"><a href="#Die.markdown-1355"><span class="linenos">1355</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die.markdown-1356"><a href="#Die.markdown-1356"><span class="linenos">1356</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.markdown-1357"><a href="#Die.markdown-1357"><span class="linenos">1357</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.markdown-1358"><a href="#Die.markdown-1358"><span class="linenos">1358</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die.markdown-1359"><a href="#Die.markdown-1359"><span class="linenos">1359</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.markdown-1349"><a href="#Die.markdown-1349"><span class="linenos">1349</span></a>    <span class="k">def</span> <span class="nf">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+</span><span id="Die.markdown-1350"><a href="#Die.markdown-1350"><span class="linenos">1350</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
+</span><span id="Die.markdown-1351"><a href="#Die.markdown-1351"><span class="linenos">1351</span></a>
+</span><span id="Die.markdown-1352"><a href="#Die.markdown-1352"><span class="linenos">1352</span></a><span class="sd">        Args:</span>
+</span><span id="Die.markdown-1353"><a href="#Die.markdown-1353"><span class="linenos">1353</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
+</span><span id="Die.markdown-1354"><a href="#Die.markdown-1354"><span class="linenos">1354</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
+</span><span id="Die.markdown-1355"><a href="#Die.markdown-1355"><span class="linenos">1355</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
+</span><span id="Die.markdown-1356"><a href="#Die.markdown-1356"><span class="linenos">1356</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
+</span><span id="Die.markdown-1357"><a href="#Die.markdown-1357"><span class="linenos">1357</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.markdown-1358"><a href="#Die.markdown-1358"><span class="linenos">1358</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die.markdown-1359"><a href="#Die.markdown-1359"><span class="linenos">1359</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
+</span><span id="Die.markdown-1360"><a href="#Die.markdown-1360"><span class="linenos">1360</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -5061,26 +5069,26 @@ outcomes will be unpacked, producing one column per element.</li>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.csv-1361"><a href="#Die.csv-1361"><span class="linenos">1361</span></a>    <span class="k">def</span> <span class="nf">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.csv-1362"><a href="#Die.csv-1362"><span class="linenos">1362</span></a>            <span class="o">*</span><span class="p">,</span>
-</span><span id="Die.csv-1363"><a href="#Die.csv-1363"><span class="linenos">1363</span></a>            <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die.csv-1364"><a href="#Die.csv-1364"><span class="linenos">1364</span></a>            <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die.csv-1365"><a href="#Die.csv-1365"><span class="linenos">1365</span></a>            <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel&#39;</span><span class="p">,</span>
-</span><span id="Die.csv-1366"><a href="#Die.csv-1366"><span class="linenos">1366</span></a>            <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
-</span><span id="Die.csv-1367"><a href="#Die.csv-1367"><span class="linenos">1367</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
-</span><span id="Die.csv-1368"><a href="#Die.csv-1368"><span class="linenos">1368</span></a>
-</span><span id="Die.csv-1369"><a href="#Die.csv-1369"><span class="linenos">1369</span></a><span class="sd">        Args:</span>
-</span><span id="Die.csv-1370"><a href="#Die.csv-1370"><span class="linenos">1370</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
-</span><span id="Die.csv-1371"><a href="#Die.csv-1371"><span class="linenos">1371</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die.csv-1372"><a href="#Die.csv-1372"><span class="linenos">1372</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die.csv-1373"><a href="#Die.csv-1373"><span class="linenos">1373</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die.csv-1374"><a href="#Die.csv-1374"><span class="linenos">1374</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
-</span><span id="Die.csv-1375"><a href="#Die.csv-1375"><span class="linenos">1375</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.csv-1376"><a href="#Die.csv-1376"><span class="linenos">1376</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.csv-1377"><a href="#Die.csv-1377"><span class="linenos">1377</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die.csv-1378"><a href="#Die.csv-1378"><span class="linenos">1378</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
-</span><span id="Die.csv-1379"><a href="#Die.csv-1379"><span class="linenos">1379</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
-</span><span id="Die.csv-1380"><a href="#Die.csv-1380"><span class="linenos">1380</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.csv-1362"><a href="#Die.csv-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die.csv-1363"><a href="#Die.csv-1363"><span class="linenos">1363</span></a>            <span class="o">*</span><span class="p">,</span>
+</span><span id="Die.csv-1364"><a href="#Die.csv-1364"><span class="linenos">1364</span></a>            <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Die.csv-1365"><a href="#Die.csv-1365"><span class="linenos">1365</span></a>            <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Die.csv-1366"><a href="#Die.csv-1366"><span class="linenos">1366</span></a>            <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel&#39;</span><span class="p">,</span>
+</span><span id="Die.csv-1367"><a href="#Die.csv-1367"><span class="linenos">1367</span></a>            <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
+</span><span id="Die.csv-1368"><a href="#Die.csv-1368"><span class="linenos">1368</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
+</span><span id="Die.csv-1369"><a href="#Die.csv-1369"><span class="linenos">1369</span></a>
+</span><span id="Die.csv-1370"><a href="#Die.csv-1370"><span class="linenos">1370</span></a><span class="sd">        Args:</span>
+</span><span id="Die.csv-1371"><a href="#Die.csv-1371"><span class="linenos">1371</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
+</span><span id="Die.csv-1372"><a href="#Die.csv-1372"><span class="linenos">1372</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
+</span><span id="Die.csv-1373"><a href="#Die.csv-1373"><span class="linenos">1373</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
+</span><span id="Die.csv-1374"><a href="#Die.csv-1374"><span class="linenos">1374</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
+</span><span id="Die.csv-1375"><a href="#Die.csv-1375"><span class="linenos">1375</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
+</span><span id="Die.csv-1376"><a href="#Die.csv-1376"><span class="linenos">1376</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.csv-1377"><a href="#Die.csv-1377"><span class="linenos">1377</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Die.csv-1378"><a href="#Die.csv-1378"><span class="linenos">1378</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
+</span><span id="Die.csv-1379"><a href="#Die.csv-1379"><span class="linenos">1379</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
+</span><span id="Die.csv-1380"><a href="#Die.csv-1380"><span class="linenos">1380</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
+</span><span id="Die.csv-1381"><a href="#Die.csv-1381"><span class="linenos">1381</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -5408,6 +5416,116 @@ input dice.</p>
 
 
                 </section>
+                <section id="reduce">
+                            <div class="attr function"><a class="headerlink" href="#reduce">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">reduce</span><span class="signature">(func, dice, *, initial=None)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="reduce-149"><a href="#reduce-149"><span class="linenos">149</span></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="reduce-150"><a href="#reduce-150"><span class="linenos">150</span></a>    <span class="sd">&quot;&quot;&quot;Applies a function of two arguments cumulatively to a sequence of dice.</span>
+</span><span id="reduce-151"><a href="#reduce-151"><span class="linenos">151</span></a>
+</span><span id="reduce-152"><a href="#reduce-152"><span class="linenos">152</span></a><span class="sd">    Analogous to `functools.reduce()`.</span>
+</span><span id="reduce-153"><a href="#reduce-153"><span class="linenos">153</span></a>
+</span><span id="reduce-154"><a href="#reduce-154"><span class="linenos">154</span></a><span class="sd">    Args:</span>
+</span><span id="reduce-155"><a href="#reduce-155"><span class="linenos">155</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
+</span><span id="reduce-156"><a href="#reduce-156"><span class="linenos">156</span></a><span class="sd">            which are an outcome from each of two dice.</span>
+</span><span id="reduce-157"><a href="#reduce-157"><span class="linenos">157</span></a><span class="sd">        dice: A sequence dice to apply the function to, from left to right.</span>
+</span><span id="reduce-158"><a href="#reduce-158"><span class="linenos">158</span></a><span class="sd">        initial: If provided, this will be placed at the front of the dice.</span>
+</span><span id="reduce-159"><a href="#reduce-159"><span class="linenos">159</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="reduce-160"><a href="#reduce-160"><span class="linenos">160</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="reduce-161"><a href="#reduce-161"><span class="linenos">161</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="reduce-162"><a href="#reduce-162"><span class="linenos">162</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
+</span><span id="reduce-163"><a href="#reduce-163"><span class="linenos">163</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="reduce-164"><a href="#reduce-164"><span class="linenos">164</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
+</span><span id="reduce-165"><a href="#reduce-165"><span class="linenos">165</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
+</span><span id="reduce-166"><a href="#reduce-166"><span class="linenos">166</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
+</span><span id="reduce-167"><a href="#reduce-167"><span class="linenos">167</span></a>    <span class="k">return</span> <span class="n">result</span>
+</span></pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Applies a function of two arguments cumulatively to a sequence of dice.</p>
+
+<p>Analogous to <code>functools.reduce()</code>.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func:</strong>  The function to apply. The function should take two arguments,
+which are an outcome from each of two dice.</li>
+<li><strong>dice:</strong>  A sequence dice to apply the function to, from left to right.</li>
+<li><strong>initial:</strong>  If provided, this will be placed at the front of the dice.</li>
+</ul>
+</div>
+
+
+                </section>
+                <section id="accumulate">
+                            <div class="attr function"><a class="headerlink" href="#accumulate">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">accumulate</span><span class="signature">(func, dice, *, initial=None)</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="accumulate-170"><a href="#accumulate-170"><span class="linenos">170</span></a><span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="accumulate-171"><a href="#accumulate-171"><span class="linenos">171</span></a>    <span class="sd">&quot;&quot;&quot;Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.</span>
+</span><span id="accumulate-172"><a href="#accumulate-172"><span class="linenos">172</span></a>
+</span><span id="accumulate-173"><a href="#accumulate-173"><span class="linenos">173</span></a><span class="sd">    Analogous to `itertools.accumulate()`, though with no default function and</span>
+</span><span id="accumulate-174"><a href="#accumulate-174"><span class="linenos">174</span></a><span class="sd">    the same parameter order as `reduce()`.</span>
+</span><span id="accumulate-175"><a href="#accumulate-175"><span class="linenos">175</span></a>
+</span><span id="accumulate-176"><a href="#accumulate-176"><span class="linenos">176</span></a><span class="sd">    The number of results is equal to the number of elements of `dice`, with</span>
+</span><span id="accumulate-177"><a href="#accumulate-177"><span class="linenos">177</span></a><span class="sd">    one additional element if `initial` is provided.</span>
+</span><span id="accumulate-178"><a href="#accumulate-178"><span class="linenos">178</span></a>
+</span><span id="accumulate-179"><a href="#accumulate-179"><span class="linenos">179</span></a><span class="sd">    Args:</span>
+</span><span id="accumulate-180"><a href="#accumulate-180"><span class="linenos">180</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
+</span><span id="accumulate-181"><a href="#accumulate-181"><span class="linenos">181</span></a><span class="sd">            which are an outcome from each of two dice.</span>
+</span><span id="accumulate-182"><a href="#accumulate-182"><span class="linenos">182</span></a><span class="sd">        dice: A sequence dice to apply the function to, from left to right.</span>
+</span><span id="accumulate-183"><a href="#accumulate-183"><span class="linenos">183</span></a><span class="sd">        initial: If provided, this will be placed at the front of the dice.</span>
+</span><span id="accumulate-184"><a href="#accumulate-184"><span class="linenos">184</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="accumulate-185"><a href="#accumulate-185"><span class="linenos">185</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="accumulate-186"><a href="#accumulate-186"><span class="linenos">186</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="accumulate-187"><a href="#accumulate-187"><span class="linenos">187</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
+</span><span id="accumulate-188"><a href="#accumulate-188"><span class="linenos">188</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="accumulate-189"><a href="#accumulate-189"><span class="linenos">189</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="accumulate-190"><a href="#accumulate-190"><span class="linenos">190</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
+</span><span id="accumulate-191"><a href="#accumulate-191"><span class="linenos">191</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span id="accumulate-192"><a href="#accumulate-192"><span class="linenos">192</span></a>            <span class="k">return</span>
+</span><span id="accumulate-193"><a href="#accumulate-193"><span class="linenos">193</span></a>    <span class="k">yield</span> <span class="n">result</span>
+</span><span id="accumulate-194"><a href="#accumulate-194"><span class="linenos">194</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
+</span><span id="accumulate-195"><a href="#accumulate-195"><span class="linenos">195</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
+</span><span id="accumulate-196"><a href="#accumulate-196"><span class="linenos">196</span></a>        <span class="k">yield</span> <span class="n">result</span>
+</span></pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.</p>
+
+<p>Analogous to <code>itertools.accumulate()</code>, though with no default function and
+the same parameter order as <code><a href="#reduce">reduce()</a></code>.</p>
+
+<p>The number of results is equal to the number of elements of <code>dice</code>, with
+one additional element if <code>initial</code> is provided.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func:</strong>  The function to apply. The function should take two arguments,
+which are an outcome from each of two dice.</li>
+<li><strong>dice:</strong>  A sequence dice to apply the function to, from left to right.</li>
+<li><strong>initial:</strong>  If provided, this will be placed at the front of the dice.</li>
+</ul>
+</div>
+
+
+                </section>
                 <section id="apply">
                             <div class="attr function"><a class="headerlink" href="#apply">#&nbsp;&nbsp</a>
 
@@ -5418,46 +5536,44 @@ input dice.</p>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-149"><a href="#apply-149"><span class="linenos">149</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">):</span>
-</span><span id="apply-150"><a href="#apply-150"><span class="linenos">150</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.</span>
-</span><span id="apply-151"><a href="#apply-151"><span class="linenos">151</span></a>
-</span><span id="apply-152"><a href="#apply-152"><span class="linenos">152</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
-</span><span id="apply-153"><a href="#apply-153"><span class="linenos">153</span></a>
-</span><span id="apply-154"><a href="#apply-154"><span class="linenos">154</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than two dice.</span>
-</span><span id="apply-155"><a href="#apply-155"><span class="linenos">155</span></a><span class="sd">    Instead of using a large number of arguments:</span>
-</span><span id="apply-156"><a href="#apply-156"><span class="linenos">156</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
-</span><span id="apply-157"><a href="#apply-157"><span class="linenos">157</span></a><span class="sd">        time, try using `apply()` or  `Die.sub()` repeatedly with only two dice</span>
-</span><span id="apply-158"><a href="#apply-158"><span class="linenos">158</span></a><span class="sd">        at a time. Store the running result in the left die and update using</span>
-</span><span id="apply-159"><a href="#apply-159"><span class="linenos">159</span></a><span class="sd">        the result of the right die.</span>
-</span><span id="apply-160"><a href="#apply-160"><span class="linenos">160</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
-</span><span id="apply-161"><a href="#apply-161"><span class="linenos">161</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
-</span><span id="apply-162"><a href="#apply-162"><span class="linenos">162</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
-</span><span id="apply-163"><a href="#apply-163"><span class="linenos">163</span></a>
-</span><span id="apply-164"><a href="#apply-164"><span class="linenos">164</span></a><span class="sd">    Args:</span>
-</span><span id="apply-165"><a href="#apply-165"><span class="linenos">165</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
-</span><span id="apply-166"><a href="#apply-166"><span class="linenos">166</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply-167"><a href="#apply-167"><span class="linenos">167</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
-</span><span id="apply-168"><a href="#apply-168"><span class="linenos">168</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
-</span><span id="apply-169"><a href="#apply-169"><span class="linenos">169</span></a><span class="sd">            with one argument per die.</span>
-</span><span id="apply-170"><a href="#apply-170"><span class="linenos">170</span></a>
-</span><span id="apply-171"><a href="#apply-171"><span class="linenos">171</span></a><span class="sd">    Returns:</span>
-</span><span id="apply-172"><a href="#apply-172"><span class="linenos">172</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
-</span><span id="apply-173"><a href="#apply-173"><span class="linenos">173</span></a><span class="sd">        weights of the dice.</span>
-</span><span id="apply-174"><a href="#apply-174"><span class="linenos">174</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply-175"><a href="#apply-175"><span class="linenos">175</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="apply-176"><a href="#apply-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">()</span>
-</span><span id="apply-177"><a href="#apply-177"><span class="linenos">177</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="apply-178"><a href="#apply-178"><span class="linenos">178</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-179"><a href="#apply-179"><span class="linenos">179</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-180"><a href="#apply-180"><span class="linenos">180</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
-</span><span id="apply-181"><a href="#apply-181"><span class="linenos">181</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-</span><span id="apply-182"><a href="#apply-182"><span class="linenos">182</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="apply-183"><a href="#apply-183"><span class="linenos">183</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="apply-184"><a href="#apply-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="apply-185"><a href="#apply-185"><span class="linenos">185</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
-</span><span id="apply-186"><a href="#apply-186"><span class="linenos">186</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
-</span><span id="apply-187"><a href="#apply-187"><span class="linenos">187</span></a>
-</span><span id="apply-188"><a href="#apply-188"><span class="linenos">188</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-199"><a href="#apply-199"><span class="linenos">199</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">):</span>
+</span><span id="apply-200"><a href="#apply-200"><span class="linenos">200</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.</span>
+</span><span id="apply-201"><a href="#apply-201"><span class="linenos">201</span></a>
+</span><span id="apply-202"><a href="#apply-202"><span class="linenos">202</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
+</span><span id="apply-203"><a href="#apply-203"><span class="linenos">203</span></a>
+</span><span id="apply-204"><a href="#apply-204"><span class="linenos">204</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than two dice.</span>
+</span><span id="apply-205"><a href="#apply-205"><span class="linenos">205</span></a><span class="sd">    Instead of using a large number of arguments:</span>
+</span><span id="apply-206"><a href="#apply-206"><span class="linenos">206</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
+</span><span id="apply-207"><a href="#apply-207"><span class="linenos">207</span></a><span class="sd">        time, try using `reduce()` instead.</span>
+</span><span id="apply-208"><a href="#apply-208"><span class="linenos">208</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
+</span><span id="apply-209"><a href="#apply-209"><span class="linenos">209</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
+</span><span id="apply-210"><a href="#apply-210"><span class="linenos">210</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
+</span><span id="apply-211"><a href="#apply-211"><span class="linenos">211</span></a>
+</span><span id="apply-212"><a href="#apply-212"><span class="linenos">212</span></a><span class="sd">    Args:</span>
+</span><span id="apply-213"><a href="#apply-213"><span class="linenos">213</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
+</span><span id="apply-214"><a href="#apply-214"><span class="linenos">214</span></a><span class="sd">            argument to `Die()`.</span>
+</span><span id="apply-215"><a href="#apply-215"><span class="linenos">215</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
+</span><span id="apply-216"><a href="#apply-216"><span class="linenos">216</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
+</span><span id="apply-217"><a href="#apply-217"><span class="linenos">217</span></a><span class="sd">            with one argument per die.</span>
+</span><span id="apply-218"><a href="#apply-218"><span class="linenos">218</span></a>
+</span><span id="apply-219"><a href="#apply-219"><span class="linenos">219</span></a><span class="sd">    Returns:</span>
+</span><span id="apply-220"><a href="#apply-220"><span class="linenos">220</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
+</span><span id="apply-221"><a href="#apply-221"><span class="linenos">221</span></a><span class="sd">        weights of the dice.</span>
+</span><span id="apply-222"><a href="#apply-222"><span class="linenos">222</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="apply-223"><a href="#apply-223"><span class="linenos">223</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="apply-224"><a href="#apply-224"><span class="linenos">224</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">()</span>
+</span><span id="apply-225"><a href="#apply-225"><span class="linenos">225</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="apply-226"><a href="#apply-226"><span class="linenos">226</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-227"><a href="#apply-227"><span class="linenos">227</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-228"><a href="#apply-228"><span class="linenos">228</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
+</span><span id="apply-229"><a href="#apply-229"><span class="linenos">229</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+</span><span id="apply-230"><a href="#apply-230"><span class="linenos">230</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="apply-231"><a href="#apply-231"><span class="linenos">231</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="apply-232"><a href="#apply-232"><span class="linenos">232</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="apply-233"><a href="#apply-233"><span class="linenos">233</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
+</span><span id="apply-234"><a href="#apply-234"><span class="linenos">234</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
+</span><span id="apply-235"><a href="#apply-235"><span class="linenos">235</span></a>
+</span><span id="apply-236"><a href="#apply-236"><span class="linenos">236</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
@@ -5471,9 +5587,7 @@ Instead of using a large number of arguments:</p>
 
 <ul>
 <li>If the problem is easy to solve by considering one additional die at a
-time, try using <code><a href="#apply">apply()</a></code> or  <code><a href="#Die.sub">Die.sub()</a></code> repeatedly with only two dice
-at a time. Store the running result in the left die and update using
-the result of the right die.</li>
+time, try using <code><a href="#reduce">reduce()</a></code> instead.</li>
 <li>If the problem is easy to solve by considering how many dice rolled each
 outcome, one outcome at a time, try using
 <code><a href="#Pool">icepool.Pool</a></code> and <code><a href="#EvalPool">icepool.EvalPool</a></code>.</li>
