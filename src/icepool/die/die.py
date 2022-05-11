@@ -1344,9 +1344,9 @@ class Die():
         return type(self).__qualname__ + '({' + inner + '})'
 
     def __str__(self):
-        return self.markdown(include_weights=self.denominator() < 10**30)
+        return self.format_markdown(include_weights=self.denominator() < 10**30)
 
-    def markdown(self, *, include_weights=True, unpack_outcomes=True):
+    def format_markdown(self, *, include_weights=True, unpack_outcomes=True):
         """Formats the die as a Markdown table.
 
         Args:
@@ -1359,12 +1359,12 @@ class Die():
                                            include_weights=include_weights,
                                            unpack_outcomes=unpack_outcomes)
 
-    def csv(self,
-            *,
-            include_weights=True,
-            unpack_outcomes=True,
-            dialect='excel',
-            **fmtparams):
+    def format_csv(self,
+                   *,
+                   include_weights=True,
+                   unpack_outcomes=True,
+                   dialect='excel',
+                   **fmtparams):
         """Formats the die as a comma-separated-values string.
 
         Args:
