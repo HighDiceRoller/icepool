@@ -146,6 +146,56 @@ def align_range(*dice):
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
+def reduce(func, dice, *, initial=None):
+    """Applies a function of two arguments cumulatively to a sequence of dice.
+
+    Analogous to `functools.reduce()`.
+
+    Args:
+        func: The function to apply. The function should take two arguments,
+            which are an outcome from each of two dice.
+        dice: A sequence dice to apply the function to, from left to right.
+        initial: If provided, this will be placed at the front of the dice.
+    """
+    iter_dice = iter(dice)
+    if initial is not None:
+        result = initial
+    else:
+        result = next(iter_dice)
+    for die in iter_dice:
+        result = apply(func, result, die)
+    return result
+
+
+def accumulate(func, dice, *, initial=None):
+    """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
+
+    Analogous to `itertools.accumulate()`, though with no default function and
+    the same parameter order as `reduce()`.
+
+    The number of results is equal to the number of elements of `dice`, with
+    one additional element if `initial` is provided.
+
+    Args:
+        func: The function to apply. The function should take two arguments,
+            which are an outcome from each of two dice.
+        dice: A sequence dice to apply the function to, from left to right.
+        initial: If provided, this will be placed at the front of the dice.
+    """
+    iter_dice = iter(dice)
+    if initial is not None:
+        result = initial
+    else:
+        try:
+            result = next(iter_dice)
+        except StopIteration:
+            return
+    yield result
+    for die in iter_dice:
+        result = apply(func, result, die)
+        yield result
+
+
 def apply(func, *dice):
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
 
@@ -154,9 +204,7 @@ def apply(func, *dice):
     `apply()` is flexible but not very efficient for more than two dice.
     Instead of using a large number of arguments:
     * If the problem is easy to solve by considering one additional die at a
-        time, try using `apply()` or  `Die.sub()` repeatedly with only two dice
-        at a time. Store the running result in the left die and update using
-        the result of the right die.
+        time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
         `icepool.Pool` and `icepool.EvalPool`.
