@@ -41,7 +41,7 @@ class Die():
     """
 
     def __new__(cls, *args, weights=None, denominator_method='lcm'):
-        """Constructor for a die..
+        """Constructor for a die.
 
         Don't confuse this with `icepool.d()`:
 
@@ -826,7 +826,7 @@ class Die():
     def lowest(*dice):
         """Roll all the dice and take the lowest.
 
-        The maximum outcome is equal to the highest maximum outcome among all
+        The maximum outcome is equal to the least maximum outcome among all
         input dice.
         """
         dice = [Die(die) for die in dice]
@@ -840,7 +840,7 @@ class Die():
     def highest(*dice):
         """Roll all the dice and take the highest.
 
-        The minimum outcome is equal to the highest minimum outcome among all
+        The minimum outcome is equal to the greatest minimum outcome among all
         input dice.
         """
         dice = [Die(die) for die in dice]

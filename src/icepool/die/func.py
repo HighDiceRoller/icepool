@@ -161,7 +161,8 @@ def align_range(*dice):
 def reduce(func, dice, *, initial=None):
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
-    Analogous to `functools.reduce()`.
+    Analogous to
+    [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce).
 
     The function is applied non-elementwise to tuple outcomes.
 
@@ -185,7 +186,9 @@ def reduce(func, dice, *, initial=None):
 def accumulate(func, dice, *, initial=None):
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
-    Analogous to `itertools.accumulate()`, though with no default function and
+    Analogous to
+    [`itertools.accumulate()`](https://docs.python.org/3/library/itertools.html#itertools.accumulate)
+    , though with no default function and
     the same parameter order as `reduce()`.
 
     The number of results is equal to the number of elements of `dice`, with
