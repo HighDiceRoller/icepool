@@ -781,7 +781,7 @@ from icepool import d6  # ok
 </span><span id="Die-41"><a href="#Die-41"><span class="linenos">  41</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="Die-42"><a href="#Die-42"><span class="linenos">  42</span></a>
 </span><span id="Die-43"><a href="#Die-43"><span class="linenos">  43</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denominator_method</span><span class="o">=</span><span class="s1">&#39;lcm&#39;</span><span class="p">):</span>
-</span><span id="Die-44"><a href="#Die-44"><span class="linenos">  44</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a die..</span>
+</span><span id="Die-44"><a href="#Die-44"><span class="linenos">  44</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a die.</span>
 </span><span id="Die-45"><a href="#Die-45"><span class="linenos">  45</span></a>
 </span><span id="Die-46"><a href="#Die-46"><span class="linenos">  46</span></a><span class="sd">        Don&#39;t confuse this with `icepool.d()`:</span>
 </span><span id="Die-47"><a href="#Die-47"><span class="linenos">  47</span></a>
@@ -1566,7 +1566,7 @@ from icepool import d6  # ok
 </span><span id="Die-826"><a href="#Die-826"><span class="linenos"> 826</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="Die-827"><a href="#Die-827"><span class="linenos"> 827</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the lowest.</span>
 </span><span id="Die-828"><a href="#Die-828"><span class="linenos"> 828</span></a>
-</span><span id="Die-829"><a href="#Die-829"><span class="linenos"> 829</span></a><span class="sd">        The maximum outcome is equal to the highest maximum outcome among all</span>
+</span><span id="Die-829"><a href="#Die-829"><span class="linenos"> 829</span></a><span class="sd">        The maximum outcome is equal to the least maximum outcome among all</span>
 </span><span id="Die-830"><a href="#Die-830"><span class="linenos"> 830</span></a><span class="sd">        input dice.</span>
 </span><span id="Die-831"><a href="#Die-831"><span class="linenos"> 831</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-832"><a href="#Die-832"><span class="linenos"> 832</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -1580,7 +1580,7 @@ from icepool import d6  # ok
 </span><span id="Die-840"><a href="#Die-840"><span class="linenos"> 840</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="Die-841"><a href="#Die-841"><span class="linenos"> 841</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the highest.</span>
 </span><span id="Die-842"><a href="#Die-842"><span class="linenos"> 842</span></a>
-</span><span id="Die-843"><a href="#Die-843"><span class="linenos"> 843</span></a><span class="sd">        The minimum outcome is equal to the highest minimum outcome among all</span>
+</span><span id="Die-843"><a href="#Die-843"><span class="linenos"> 843</span></a><span class="sd">        The minimum outcome is equal to the greatest minimum outcome among all</span>
 </span><span id="Die-844"><a href="#Die-844"><span class="linenos"> 844</span></a><span class="sd">        input dice.</span>
 </span><span id="Die-845"><a href="#Die-845"><span class="linenos"> 845</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-846"><a href="#Die-846"><span class="linenos"> 846</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -2193,7 +2193,7 @@ though these have little use other than being sentinel values.</p>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.__init__-43"><a href="#Die.__init__-43"><span class="linenos"> 43</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">denominator_method</span><span class="o">=</span><span class="s1">&#39;lcm&#39;</span><span class="p">):</span>
-</span><span id="Die.__init__-44"><a href="#Die.__init__-44"><span class="linenos"> 44</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a die..</span>
+</span><span id="Die.__init__-44"><a href="#Die.__init__-44"><span class="linenos"> 44</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a die.</span>
 </span><span id="Die.__init__-45"><a href="#Die.__init__-45"><span class="linenos"> 45</span></a>
 </span><span id="Die.__init__-46"><a href="#Die.__init__-46"><span class="linenos"> 46</span></a><span class="sd">        Don&#39;t confuse this with `icepool.d()`:</span>
 </span><span id="Die.__init__-47"><a href="#Die.__init__-47"><span class="linenos"> 47</span></a>
@@ -2270,7 +2270,7 @@ though these have little use other than being sentinel values.</p>
 
         </details>
 
-            <div class="docstring"><p>Constructor for a die..</p>
+            <div class="docstring"><p>Constructor for a die.</p>
 
 <p>Don't confuse this with <code><a href="#d">icepool.d()</a></code>:</p>
 
@@ -4254,7 +4254,7 @@ with the second argument.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.lowest-826"><a href="#Die.lowest-826"><span class="linenos">826</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="Die.lowest-827"><a href="#Die.lowest-827"><span class="linenos">827</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the lowest.</span>
 </span><span id="Die.lowest-828"><a href="#Die.lowest-828"><span class="linenos">828</span></a>
-</span><span id="Die.lowest-829"><a href="#Die.lowest-829"><span class="linenos">829</span></a><span class="sd">        The maximum outcome is equal to the highest maximum outcome among all</span>
+</span><span id="Die.lowest-829"><a href="#Die.lowest-829"><span class="linenos">829</span></a><span class="sd">        The maximum outcome is equal to the least maximum outcome among all</span>
 </span><span id="Die.lowest-830"><a href="#Die.lowest-830"><span class="linenos">830</span></a><span class="sd">        input dice.</span>
 </span><span id="Die.lowest-831"><a href="#Die.lowest-831"><span class="linenos">831</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.lowest-832"><a href="#Die.lowest-832"><span class="linenos">832</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -4270,7 +4270,7 @@ with the second argument.</p>
 
             <div class="docstring"><p>Roll all the dice and take the lowest.</p>
 
-<p>The maximum outcome is equal to the highest maximum outcome among all
+<p>The maximum outcome is equal to the least maximum outcome among all
 input dice.</p>
 </div>
 
@@ -4289,7 +4289,7 @@ input dice.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.highest-840"><a href="#Die.highest-840"><span class="linenos">840</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="Die.highest-841"><a href="#Die.highest-841"><span class="linenos">841</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the highest.</span>
 </span><span id="Die.highest-842"><a href="#Die.highest-842"><span class="linenos">842</span></a>
-</span><span id="Die.highest-843"><a href="#Die.highest-843"><span class="linenos">843</span></a><span class="sd">        The minimum outcome is equal to the highest minimum outcome among all</span>
+</span><span id="Die.highest-843"><a href="#Die.highest-843"><span class="linenos">843</span></a><span class="sd">        The minimum outcome is equal to the greatest minimum outcome among all</span>
 </span><span id="Die.highest-844"><a href="#Die.highest-844"><span class="linenos">844</span></a><span class="sd">        input dice.</span>
 </span><span id="Die.highest-845"><a href="#Die.highest-845"><span class="linenos">845</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.highest-846"><a href="#Die.highest-846"><span class="linenos">846</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -4305,7 +4305,7 @@ input dice.</p>
 
             <div class="docstring"><p>Roll all the dice and take the highest.</p>
 
-<p>The minimum outcome is equal to the highest minimum outcome among all
+<p>The minimum outcome is equal to the greatest minimum outcome among all
 input dice.</p>
 </div>
 
@@ -5345,7 +5345,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="lowest-826"><a href="#lowest-826"><span class="linenos">826</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="lowest-827"><a href="#lowest-827"><span class="linenos">827</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the lowest.</span>
 </span><span id="lowest-828"><a href="#lowest-828"><span class="linenos">828</span></a>
-</span><span id="lowest-829"><a href="#lowest-829"><span class="linenos">829</span></a><span class="sd">        The maximum outcome is equal to the highest maximum outcome among all</span>
+</span><span id="lowest-829"><a href="#lowest-829"><span class="linenos">829</span></a><span class="sd">        The maximum outcome is equal to the least maximum outcome among all</span>
 </span><span id="lowest-830"><a href="#lowest-830"><span class="linenos">830</span></a><span class="sd">        input dice.</span>
 </span><span id="lowest-831"><a href="#lowest-831"><span class="linenos">831</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="lowest-832"><a href="#lowest-832"><span class="linenos">832</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -5361,7 +5361,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
             <div class="docstring"><p>Roll all the dice and take the lowest.</p>
 
-<p>The maximum outcome is equal to the highest maximum outcome among all
+<p>The maximum outcome is equal to the least maximum outcome among all
 input dice.</p>
 </div>
 
@@ -5380,7 +5380,7 @@ input dice.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="highest-840"><a href="#highest-840"><span class="linenos">840</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="highest-841"><a href="#highest-841"><span class="linenos">841</span></a>        <span class="sd">&quot;&quot;&quot;Roll all the dice and take the highest.</span>
 </span><span id="highest-842"><a href="#highest-842"><span class="linenos">842</span></a>
-</span><span id="highest-843"><a href="#highest-843"><span class="linenos">843</span></a><span class="sd">        The minimum outcome is equal to the highest minimum outcome among all</span>
+</span><span id="highest-843"><a href="#highest-843"><span class="linenos">843</span></a><span class="sd">        The minimum outcome is equal to the greatest minimum outcome among all</span>
 </span><span id="highest-844"><a href="#highest-844"><span class="linenos">844</span></a><span class="sd">        input dice.</span>
 </span><span id="highest-845"><a href="#highest-845"><span class="linenos">845</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="highest-846"><a href="#highest-846"><span class="linenos">846</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
@@ -5396,7 +5396,7 @@ input dice.</p>
 
             <div class="docstring"><p>Roll all the dice and take the highest.</p>
 
-<p>The minimum outcome is equal to the highest minimum outcome among all
+<p>The minimum outcome is equal to the greatest minimum outcome among all
 input dice.</p>
 </div>
 
@@ -5459,32 +5459,34 @@ input dice.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="reduce-161"><a href="#reduce-161"><span class="linenos">161</span></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="reduce-162"><a href="#reduce-162"><span class="linenos">162</span></a>    <span class="sd">&quot;&quot;&quot;Applies a function of two arguments cumulatively to a sequence of dice.</span>
 </span><span id="reduce-163"><a href="#reduce-163"><span class="linenos">163</span></a>
-</span><span id="reduce-164"><a href="#reduce-164"><span class="linenos">164</span></a><span class="sd">    Analogous to `functools.reduce()`.</span>
-</span><span id="reduce-165"><a href="#reduce-165"><span class="linenos">165</span></a>
-</span><span id="reduce-166"><a href="#reduce-166"><span class="linenos">166</span></a><span class="sd">    The function is applied non-elementwise to tuple outcomes.</span>
-</span><span id="reduce-167"><a href="#reduce-167"><span class="linenos">167</span></a>
-</span><span id="reduce-168"><a href="#reduce-168"><span class="linenos">168</span></a><span class="sd">    Args:</span>
-</span><span id="reduce-169"><a href="#reduce-169"><span class="linenos">169</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
-</span><span id="reduce-170"><a href="#reduce-170"><span class="linenos">170</span></a><span class="sd">            which are an outcome from each of two dice.</span>
-</span><span id="reduce-171"><a href="#reduce-171"><span class="linenos">171</span></a><span class="sd">        dice: A sequence of dice to apply the function to, from left to right.</span>
-</span><span id="reduce-172"><a href="#reduce-172"><span class="linenos">172</span></a><span class="sd">        initial: If provided, this will be placed at the front of the sequence</span>
-</span><span id="reduce-173"><a href="#reduce-173"><span class="linenos">173</span></a><span class="sd">            of dice.</span>
-</span><span id="reduce-174"><a href="#reduce-174"><span class="linenos">174</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="reduce-175"><a href="#reduce-175"><span class="linenos">175</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="reduce-176"><a href="#reduce-176"><span class="linenos">176</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="reduce-177"><a href="#reduce-177"><span class="linenos">177</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
-</span><span id="reduce-178"><a href="#reduce-178"><span class="linenos">178</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="reduce-179"><a href="#reduce-179"><span class="linenos">179</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
-</span><span id="reduce-180"><a href="#reduce-180"><span class="linenos">180</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
-</span><span id="reduce-181"><a href="#reduce-181"><span class="linenos">181</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
-</span><span id="reduce-182"><a href="#reduce-182"><span class="linenos">182</span></a>    <span class="k">return</span> <span class="n">result</span>
+</span><span id="reduce-164"><a href="#reduce-164"><span class="linenos">164</span></a><span class="sd">    Analogous to</span>
+</span><span id="reduce-165"><a href="#reduce-165"><span class="linenos">165</span></a><span class="sd">    [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce).</span>
+</span><span id="reduce-166"><a href="#reduce-166"><span class="linenos">166</span></a>
+</span><span id="reduce-167"><a href="#reduce-167"><span class="linenos">167</span></a><span class="sd">    The function is applied non-elementwise to tuple outcomes.</span>
+</span><span id="reduce-168"><a href="#reduce-168"><span class="linenos">168</span></a>
+</span><span id="reduce-169"><a href="#reduce-169"><span class="linenos">169</span></a><span class="sd">    Args:</span>
+</span><span id="reduce-170"><a href="#reduce-170"><span class="linenos">170</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
+</span><span id="reduce-171"><a href="#reduce-171"><span class="linenos">171</span></a><span class="sd">            which are an outcome from each of two dice.</span>
+</span><span id="reduce-172"><a href="#reduce-172"><span class="linenos">172</span></a><span class="sd">        dice: A sequence of dice to apply the function to, from left to right.</span>
+</span><span id="reduce-173"><a href="#reduce-173"><span class="linenos">173</span></a><span class="sd">        initial: If provided, this will be placed at the front of the sequence</span>
+</span><span id="reduce-174"><a href="#reduce-174"><span class="linenos">174</span></a><span class="sd">            of dice.</span>
+</span><span id="reduce-175"><a href="#reduce-175"><span class="linenos">175</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="reduce-176"><a href="#reduce-176"><span class="linenos">176</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="reduce-177"><a href="#reduce-177"><span class="linenos">177</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="reduce-178"><a href="#reduce-178"><span class="linenos">178</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
+</span><span id="reduce-179"><a href="#reduce-179"><span class="linenos">179</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="reduce-180"><a href="#reduce-180"><span class="linenos">180</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
+</span><span id="reduce-181"><a href="#reduce-181"><span class="linenos">181</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
+</span><span id="reduce-182"><a href="#reduce-182"><span class="linenos">182</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
+</span><span id="reduce-183"><a href="#reduce-183"><span class="linenos">183</span></a>    <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
         </details>
 
             <div class="docstring"><p>Applies a function of two arguments cumulatively to a sequence of dice.</p>
 
-<p>Analogous to <code>functools.reduce()</code>.</p>
+<p>Analogous to
+<a href="https://docs.python.org/3/library/functools.html#functools.reduce"><code>functools.reduce()</code></a>.</p>
 
 <p>The function is applied non-elementwise to tuple outcomes.</p>
 
@@ -5511,43 +5513,47 @@ of dice.</li>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="accumulate-185"><a href="#accumulate-185"><span class="linenos">185</span></a><span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="accumulate-186"><a href="#accumulate-186"><span class="linenos">186</span></a>    <span class="sd">&quot;&quot;&quot;Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.</span>
-</span><span id="accumulate-187"><a href="#accumulate-187"><span class="linenos">187</span></a>
-</span><span id="accumulate-188"><a href="#accumulate-188"><span class="linenos">188</span></a><span class="sd">    Analogous to `itertools.accumulate()`, though with no default function and</span>
-</span><span id="accumulate-189"><a href="#accumulate-189"><span class="linenos">189</span></a><span class="sd">    the same parameter order as `reduce()`.</span>
-</span><span id="accumulate-190"><a href="#accumulate-190"><span class="linenos">190</span></a>
-</span><span id="accumulate-191"><a href="#accumulate-191"><span class="linenos">191</span></a><span class="sd">    The number of results is equal to the number of elements of `dice`, with</span>
-</span><span id="accumulate-192"><a href="#accumulate-192"><span class="linenos">192</span></a><span class="sd">    one additional element if `initial` is provided.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="accumulate-186"><a href="#accumulate-186"><span class="linenos">186</span></a><span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dice</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="accumulate-187"><a href="#accumulate-187"><span class="linenos">187</span></a>    <span class="sd">&quot;&quot;&quot;Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.</span>
+</span><span id="accumulate-188"><a href="#accumulate-188"><span class="linenos">188</span></a>
+</span><span id="accumulate-189"><a href="#accumulate-189"><span class="linenos">189</span></a><span class="sd">    Analogous to</span>
+</span><span id="accumulate-190"><a href="#accumulate-190"><span class="linenos">190</span></a><span class="sd">    [`itertools.accumulate()`](https://docs.python.org/3/library/itertools.html#itertools.accumulate)</span>
+</span><span id="accumulate-191"><a href="#accumulate-191"><span class="linenos">191</span></a><span class="sd">    , though with no default function and</span>
+</span><span id="accumulate-192"><a href="#accumulate-192"><span class="linenos">192</span></a><span class="sd">    the same parameter order as `reduce()`.</span>
 </span><span id="accumulate-193"><a href="#accumulate-193"><span class="linenos">193</span></a>
-</span><span id="accumulate-194"><a href="#accumulate-194"><span class="linenos">194</span></a><span class="sd">    The function is applied non-elementwise to tuple outcomes.</span>
-</span><span id="accumulate-195"><a href="#accumulate-195"><span class="linenos">195</span></a>
-</span><span id="accumulate-196"><a href="#accumulate-196"><span class="linenos">196</span></a><span class="sd">    Args:</span>
-</span><span id="accumulate-197"><a href="#accumulate-197"><span class="linenos">197</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
-</span><span id="accumulate-198"><a href="#accumulate-198"><span class="linenos">198</span></a><span class="sd">            which are an outcome from each of two dice.</span>
-</span><span id="accumulate-199"><a href="#accumulate-199"><span class="linenos">199</span></a><span class="sd">        dice: A sequence of dice to apply the function to, from left to right.</span>
-</span><span id="accumulate-200"><a href="#accumulate-200"><span class="linenos">200</span></a><span class="sd">        initial: If provided, this will be placed at the front of the sequence</span>
-</span><span id="accumulate-201"><a href="#accumulate-201"><span class="linenos">201</span></a><span class="sd">            of dice.</span>
-</span><span id="accumulate-202"><a href="#accumulate-202"><span class="linenos">202</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="accumulate-203"><a href="#accumulate-203"><span class="linenos">203</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="accumulate-204"><a href="#accumulate-204"><span class="linenos">204</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="accumulate-205"><a href="#accumulate-205"><span class="linenos">205</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
-</span><span id="accumulate-206"><a href="#accumulate-206"><span class="linenos">206</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="accumulate-207"><a href="#accumulate-207"><span class="linenos">207</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="accumulate-208"><a href="#accumulate-208"><span class="linenos">208</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
-</span><span id="accumulate-209"><a href="#accumulate-209"><span class="linenos">209</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-</span><span id="accumulate-210"><a href="#accumulate-210"><span class="linenos">210</span></a>            <span class="k">return</span>
-</span><span id="accumulate-211"><a href="#accumulate-211"><span class="linenos">211</span></a>    <span class="k">yield</span> <span class="n">result</span>
-</span><span id="accumulate-212"><a href="#accumulate-212"><span class="linenos">212</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
-</span><span id="accumulate-213"><a href="#accumulate-213"><span class="linenos">213</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
-</span><span id="accumulate-214"><a href="#accumulate-214"><span class="linenos">214</span></a>        <span class="k">yield</span> <span class="n">result</span>
+</span><span id="accumulate-194"><a href="#accumulate-194"><span class="linenos">194</span></a><span class="sd">    The number of results is equal to the number of elements of `dice`, with</span>
+</span><span id="accumulate-195"><a href="#accumulate-195"><span class="linenos">195</span></a><span class="sd">    one additional element if `initial` is provided.</span>
+</span><span id="accumulate-196"><a href="#accumulate-196"><span class="linenos">196</span></a>
+</span><span id="accumulate-197"><a href="#accumulate-197"><span class="linenos">197</span></a><span class="sd">    The function is applied non-elementwise to tuple outcomes.</span>
+</span><span id="accumulate-198"><a href="#accumulate-198"><span class="linenos">198</span></a>
+</span><span id="accumulate-199"><a href="#accumulate-199"><span class="linenos">199</span></a><span class="sd">    Args:</span>
+</span><span id="accumulate-200"><a href="#accumulate-200"><span class="linenos">200</span></a><span class="sd">        func: The function to apply. The function should take two arguments,</span>
+</span><span id="accumulate-201"><a href="#accumulate-201"><span class="linenos">201</span></a><span class="sd">            which are an outcome from each of two dice.</span>
+</span><span id="accumulate-202"><a href="#accumulate-202"><span class="linenos">202</span></a><span class="sd">        dice: A sequence of dice to apply the function to, from left to right.</span>
+</span><span id="accumulate-203"><a href="#accumulate-203"><span class="linenos">203</span></a><span class="sd">        initial: If provided, this will be placed at the front of the sequence</span>
+</span><span id="accumulate-204"><a href="#accumulate-204"><span class="linenos">204</span></a><span class="sd">            of dice.</span>
+</span><span id="accumulate-205"><a href="#accumulate-205"><span class="linenos">205</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="accumulate-206"><a href="#accumulate-206"><span class="linenos">206</span></a>    <span class="n">iter_dice</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="accumulate-207"><a href="#accumulate-207"><span class="linenos">207</span></a>    <span class="k">if</span> <span class="n">initial</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="accumulate-208"><a href="#accumulate-208"><span class="linenos">208</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">initial</span>
+</span><span id="accumulate-209"><a href="#accumulate-209"><span class="linenos">209</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="accumulate-210"><a href="#accumulate-210"><span class="linenos">210</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="accumulate-211"><a href="#accumulate-211"><span class="linenos">211</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iter_dice</span><span class="p">)</span>
+</span><span id="accumulate-212"><a href="#accumulate-212"><span class="linenos">212</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span id="accumulate-213"><a href="#accumulate-213"><span class="linenos">213</span></a>            <span class="k">return</span>
+</span><span id="accumulate-214"><a href="#accumulate-214"><span class="linenos">214</span></a>    <span class="k">yield</span> <span class="n">result</span>
+</span><span id="accumulate-215"><a href="#accumulate-215"><span class="linenos">215</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">iter_dice</span><span class="p">:</span>
+</span><span id="accumulate-216"><a href="#accumulate-216"><span class="linenos">216</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span>
+</span><span id="accumulate-217"><a href="#accumulate-217"><span class="linenos">217</span></a>        <span class="k">yield</span> <span class="n">result</span>
 </span></pre></div>
 
         </details>
 
             <div class="docstring"><p>Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.</p>
 
-<p>Analogous to <code>itertools.accumulate()</code>, though with no default function and
+<p>Analogous to
+<a href="https://docs.python.org/3/library/itertools.html#itertools.accumulate"><code>itertools.accumulate()</code></a>
+, though with no default function and
 the same parameter order as <code><a href="#reduce">reduce()</a></code>.</p>
 
 <p>The number of results is equal to the number of elements of <code>dice</code>, with
@@ -5578,44 +5584,44 @@ of dice.</li>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-217"><a href="#apply-217"><span class="linenos">217</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">):</span>
-</span><span id="apply-218"><a href="#apply-218"><span class="linenos">218</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.</span>
-</span><span id="apply-219"><a href="#apply-219"><span class="linenos">219</span></a>
-</span><span id="apply-220"><a href="#apply-220"><span class="linenos">220</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
-</span><span id="apply-221"><a href="#apply-221"><span class="linenos">221</span></a>
-</span><span id="apply-222"><a href="#apply-222"><span class="linenos">222</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than two dice.</span>
-</span><span id="apply-223"><a href="#apply-223"><span class="linenos">223</span></a><span class="sd">    Instead of using a large number of arguments:</span>
-</span><span id="apply-224"><a href="#apply-224"><span class="linenos">224</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
-</span><span id="apply-225"><a href="#apply-225"><span class="linenos">225</span></a><span class="sd">        time, try using `reduce()` instead.</span>
-</span><span id="apply-226"><a href="#apply-226"><span class="linenos">226</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
-</span><span id="apply-227"><a href="#apply-227"><span class="linenos">227</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
-</span><span id="apply-228"><a href="#apply-228"><span class="linenos">228</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
-</span><span id="apply-229"><a href="#apply-229"><span class="linenos">229</span></a>
-</span><span id="apply-230"><a href="#apply-230"><span class="linenos">230</span></a><span class="sd">    Args:</span>
-</span><span id="apply-231"><a href="#apply-231"><span class="linenos">231</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
-</span><span id="apply-232"><a href="#apply-232"><span class="linenos">232</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply-233"><a href="#apply-233"><span class="linenos">233</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
-</span><span id="apply-234"><a href="#apply-234"><span class="linenos">234</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
-</span><span id="apply-235"><a href="#apply-235"><span class="linenos">235</span></a><span class="sd">            with one argument per die.</span>
-</span><span id="apply-236"><a href="#apply-236"><span class="linenos">236</span></a>
-</span><span id="apply-237"><a href="#apply-237"><span class="linenos">237</span></a><span class="sd">    Returns:</span>
-</span><span id="apply-238"><a href="#apply-238"><span class="linenos">238</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
-</span><span id="apply-239"><a href="#apply-239"><span class="linenos">239</span></a><span class="sd">        weights of the dice.</span>
-</span><span id="apply-240"><a href="#apply-240"><span class="linenos">240</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply-241"><a href="#apply-241"><span class="linenos">241</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="apply-242"><a href="#apply-242"><span class="linenos">242</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">()</span>
-</span><span id="apply-243"><a href="#apply-243"><span class="linenos">243</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="apply-244"><a href="#apply-244"><span class="linenos">244</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-245"><a href="#apply-245"><span class="linenos">245</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-246"><a href="#apply-246"><span class="linenos">246</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
-</span><span id="apply-247"><a href="#apply-247"><span class="linenos">247</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-</span><span id="apply-248"><a href="#apply-248"><span class="linenos">248</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="apply-249"><a href="#apply-249"><span class="linenos">249</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="apply-250"><a href="#apply-250"><span class="linenos">250</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="apply-251"><a href="#apply-251"><span class="linenos">251</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
-</span><span id="apply-252"><a href="#apply-252"><span class="linenos">252</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
-</span><span id="apply-253"><a href="#apply-253"><span class="linenos">253</span></a>
-</span><span id="apply-254"><a href="#apply-254"><span class="linenos">254</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-220"><a href="#apply-220"><span class="linenos">220</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">):</span>
+</span><span id="apply-221"><a href="#apply-221"><span class="linenos">221</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.</span>
+</span><span id="apply-222"><a href="#apply-222"><span class="linenos">222</span></a>
+</span><span id="apply-223"><a href="#apply-223"><span class="linenos">223</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
+</span><span id="apply-224"><a href="#apply-224"><span class="linenos">224</span></a>
+</span><span id="apply-225"><a href="#apply-225"><span class="linenos">225</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than two dice.</span>
+</span><span id="apply-226"><a href="#apply-226"><span class="linenos">226</span></a><span class="sd">    Instead of using a large number of arguments:</span>
+</span><span id="apply-227"><a href="#apply-227"><span class="linenos">227</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
+</span><span id="apply-228"><a href="#apply-228"><span class="linenos">228</span></a><span class="sd">        time, try using `reduce()` instead.</span>
+</span><span id="apply-229"><a href="#apply-229"><span class="linenos">229</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
+</span><span id="apply-230"><a href="#apply-230"><span class="linenos">230</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
+</span><span id="apply-231"><a href="#apply-231"><span class="linenos">231</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
+</span><span id="apply-232"><a href="#apply-232"><span class="linenos">232</span></a>
+</span><span id="apply-233"><a href="#apply-233"><span class="linenos">233</span></a><span class="sd">    Args:</span>
+</span><span id="apply-234"><a href="#apply-234"><span class="linenos">234</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
+</span><span id="apply-235"><a href="#apply-235"><span class="linenos">235</span></a><span class="sd">            argument to `Die()`.</span>
+</span><span id="apply-236"><a href="#apply-236"><span class="linenos">236</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
+</span><span id="apply-237"><a href="#apply-237"><span class="linenos">237</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
+</span><span id="apply-238"><a href="#apply-238"><span class="linenos">238</span></a><span class="sd">            with one argument per die.</span>
+</span><span id="apply-239"><a href="#apply-239"><span class="linenos">239</span></a>
+</span><span id="apply-240"><a href="#apply-240"><span class="linenos">240</span></a><span class="sd">    Returns:</span>
+</span><span id="apply-241"><a href="#apply-241"><span class="linenos">241</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
+</span><span id="apply-242"><a href="#apply-242"><span class="linenos">242</span></a><span class="sd">        weights of the dice.</span>
+</span><span id="apply-243"><a href="#apply-243"><span class="linenos">243</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="apply-244"><a href="#apply-244"><span class="linenos">244</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="apply-245"><a href="#apply-245"><span class="linenos">245</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">()</span>
+</span><span id="apply-246"><a href="#apply-246"><span class="linenos">246</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="apply-247"><a href="#apply-247"><span class="linenos">247</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-248"><a href="#apply-248"><span class="linenos">248</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-249"><a href="#apply-249"><span class="linenos">249</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
+</span><span id="apply-250"><a href="#apply-250"><span class="linenos">250</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+</span><span id="apply-251"><a href="#apply-251"><span class="linenos">251</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="apply-252"><a href="#apply-252"><span class="linenos">252</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="apply-253"><a href="#apply-253"><span class="linenos">253</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="apply-254"><a href="#apply-254"><span class="linenos">254</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
+</span><span id="apply-255"><a href="#apply-255"><span class="linenos">255</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
+</span><span id="apply-256"><a href="#apply-256"><span class="linenos">256</span></a>
+</span><span id="apply-257"><a href="#apply-257"><span class="linenos">257</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
 </span></pre></div>
 
         </details>
