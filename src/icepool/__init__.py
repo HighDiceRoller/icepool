@@ -44,10 +44,9 @@ Reroll = SpecialValue.Reroll
 """Indicates an outcome should be rerolled (with no max depth)."""
 
 __all__ = [
-    'standard', 'd', '__getattr__', 'bernoulli', 'coin', 'Die', 'from_cweights',
+    'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
     'max_outcome', 'min_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
     'PoolBase', 'Pool', 'standard_pool', 'EvalPool', 'WrapFuncEval',
-    'JointEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun', 'd2',
-    'd3', 'd4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100'
+    'JointEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun'
 ]

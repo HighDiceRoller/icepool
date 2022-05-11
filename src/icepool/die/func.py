@@ -30,6 +30,18 @@ def standard(num_sides):
 def d(arg):
     """Converts the argument to a standard die if it is not already a die.
 
+    You may also use e.g. `icepool.d6` without the parentheses. However, this
+    alternative behavior cannot be imported into the global scope:
+
+    ```
+    import icepool
+    from icepool import d
+    d(6)                    # ok
+    icepool.d6              # ok
+    d6                      # not ok
+    from icepool import d6  # ok
+    ```
+
     Args:
         arg: Either:
             * An `int`, which produces a standard die.
