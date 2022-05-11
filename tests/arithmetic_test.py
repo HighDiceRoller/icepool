@@ -114,7 +114,7 @@ def test_div():
     assert result.equals(expected)
 
 def test_reduce():
-    result = icepool.Die(*range(3), weights=[2, 4, 6]).reduce()
+    result = icepool.Die(*range(3), weights=[2, 4, 6]).reduce_weights()
     expected = icepool.Die(*range(3), weights=[1, 2, 3])
     assert result.equals(expected)
 

@@ -33,7 +33,7 @@ def test_mix_reroll():
 
 def test_mix_dict_reroll():
     data = {1:1, 2:1, 3:1, 4:1, icepool.Reroll:10}
-    result = icepool.Die(data, data).reduce()
+    result = icepool.Die(data, data).reduce_weights()
     expected = icepool.d4
     assert result.equals(expected)
 
@@ -57,7 +57,7 @@ def test_sub_mix():
     assert result.equals(expected)
 
 def test_sub_max_depth():
-    result = (icepool.d8 - 1).sub(lambda x: x // 2, max_depth=2).reduce()
+    result = (icepool.d8 - 1).sub(lambda x: x // 2, max_depth=2).reduce_weights()
     expected = icepool.d2 - 1
     assert result.equals(expected)
 
@@ -71,7 +71,7 @@ def collatz(x):
 
 def test_sub_fixed_point():
     # Collatz conjecture.
-    result = icepool.d100.sub(collatz, max_depth=None).reduce()
+    result = icepool.d100.sub(collatz, max_depth=None).reduce_weights()
     expected = icepool.Die(1)
     assert result.equals(expected)
 

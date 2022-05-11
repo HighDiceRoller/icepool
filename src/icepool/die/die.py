@@ -482,7 +482,7 @@ class Die():
 
     # Weight management.
 
-    def reduce(self):
+    def reduce_weights(self):
         """Divides all weights by their greatest common denominator. """
         return icepool.Die(self._data.reduce())
 
@@ -728,7 +728,7 @@ class Die():
             next = self.sub(repl,
                             max_depth=1,
                             denominator_method=denominator_method)
-            if self.reduce().equals(next.reduce()):
+            if self.reduce_weights().equals(next.reduce_weights()):
                 return self
             else:
                 return next.sub(repl,
@@ -1049,7 +1049,7 @@ class Die():
         result = self.unary_op(Die._zero)
         if result.num_outcomes() != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
-        return result.reduce()
+        return result.reduce_weights()
 
     def zero_outcome(self):
         """Returns a zero-outcome for this die.
@@ -1331,7 +1331,8 @@ class Die():
             return False
 
         if reduce:
-            return self.reduce().key_tuple() == other.reduce().key_tuple()
+            return self.reduce_weights().key_tuple() == other.reduce_weights(
+            ).key_tuple()
         else:
             return self.key_tuple() == other.key_tuple()
 
