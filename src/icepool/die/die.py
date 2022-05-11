@@ -523,7 +523,7 @@ class Die():
             return None
         return self.outcomes()[index]
 
-    def reroll(self, outcomes=None, *, max_depth=None):
+    def reroll(self, outcomes=None, *, max_depth=None, star=0):
         """Rerolls the given outcomes.
 
         Args:
@@ -534,6 +534,9 @@ class Die():
                 * If not provided, the min outcome will be rerolled.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
+            star: If set to `True` or 1, outcomes will be unpacked as
+                `*outcome` before giving it to the `outcomes` function.
+                If `outcomes` is not a callable, this has no effect.
 
         Returns:
             A die representing the reroll.
@@ -542,9 +545,14 @@ class Die():
         if outcomes is None:
             outcomes = {self.min_outcome()}
         elif callable(outcomes):
-            outcomes = {
-                outcome for outcome in self.outcomes() if outcomes(outcome)
-            }
+            if star:
+                outcomes = {
+                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                }
+            else:
+                outcomes = {
+                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                }
 
         if max_depth is None:
             data = {
@@ -567,7 +575,7 @@ class Die():
             }
         return icepool.Die(data)
 
-    def reroll_until(self, outcomes, *, max_depth=None):
+    def reroll_until(self, outcomes, *, max_depth=None, star=0):
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -579,15 +587,25 @@ class Die():
                 * A set of outcomes to reroll until.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
+            star: If set to `True` or 1, outcomes will be unpacked as
+                `*outcome` before giving it to the `outcomes` function.
+                If `outcomes` is not a callable, this has no effect.
 
         Returns:
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
         """
         if callable(outcomes):
-            not_outcomes = {
-                outcome for outcome in self.outcomes() if not outcomes(outcome)
-            }
+            if star:
+                not_outcomes = {
+                    outcome for outcome in self.outcomes()
+                    if not outcomes(*outcome)
+                }
+            else:
+                not_outcomes = {
+                    outcome for outcome in self.outcomes()
+                    if not outcomes(outcome)
+                }
         else:
             not_outcomes = {
                 not_outcome for not_outcome in self.outcomes()
@@ -682,7 +700,7 @@ class Die():
 
     # Mixtures.
 
-    def sub(self, repl, /, *, max_depth=1, denominator_method='lcm'):
+    def sub(self, repl, /, *, max_depth=1, star=0, denominator_method='lcm'):
         """Changes outcomes of the die to other outcomes.
 
         You can think of this as `sub`stituting outcomes of this die for other
@@ -697,8 +715,11 @@ class Die():
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
             max_depth: `sub()` will be repeated with the same argument on the
-                result this many times.
-                If set to `None`, this will repeat until a fixed point is reached.
+                result this many times. If set to `None`, this will repeat until
+                a fixed point is reached.
+            star: If set to `True` or 1, outcomes will be unpacked as
+                `*outcome` before giving it to the `repl` function. If `repl`
+                is not a callable, this has no effect.
             denominator_method: As `icepool.Die()`.
 
         Returns:
@@ -711,7 +732,10 @@ class Die():
                 repl = [(repl[outcome] if outcome in repl else outcome)
                         for outcome in self.outcomes()]
             elif callable(repl):
-                repl = [repl(outcome) for outcome in self.outcomes()]
+                if star:
+                    repl = [repl(*outcome) for outcome in self.outcomes()]
+                else:
+                    repl = [repl(outcome) for outcome in self.outcomes()]
 
             return icepool.Die(*repl,
                                weights=self.weights(),
@@ -735,7 +759,7 @@ class Die():
                                 max_depth=None,
                                 denominator_method=denominator_method)
 
-    def explode(self, outcomes=None, *, max_depth=None):
+    def explode(self, outcomes=None, *, max_depth=None, star=0):
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
@@ -746,13 +770,21 @@ class Die():
                 * If not supplied, the max outcome will explode.
             max_depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
+            star: If set to `True` or 1, outcomes will be unpacked as
+                `*outcome` before giving it to the `outcomes` function.
+                If `outcomes` is not a callable, this has no effect.
         """
         if outcomes is None:
             outcomes = {self.max_outcome()}
         elif callable(outcomes):
-            outcomes = {
-                outcome for outcome in self.outcomes() if outcomes(outcome)
-            }
+            if star:
+                outcomes = {
+                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                }
+            else:
+                outcomes = {
+                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                }
 
         if len(outcomes) == 0:
             return self

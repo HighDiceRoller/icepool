@@ -43,5 +43,27 @@ def test_binary_op_mismatch_outcome_len():
     with pytest.raises(ValueError):
         result = icepool.Die((icepool.d6, icepool.d8)) + (1, 2, 3)
 
+def test_sub_star():
+    result = icepool.Die((icepool.d6, icepool.d6)).sub(lambda a, b: a + b, star=1)
+    expected = 2 @ icepool.d6
+    assert result.equals(expected)
 
-    
+def test_reroll_star():
+    result = icepool.Die((icepool.d6, icepool.d6))
+    result = result.reroll(lambda a, b: a == 6 and b == 6, star=1)
+    result = result.sub(lambda a, b: a + b, star=1)
+    expected = (2 @ icepool.d6).reroll({12})
+    assert result.equals(expected)
+
+def test_reroll_until_star():
+    result = icepool.Die((icepool.d6, icepool.d6))
+    result = result.reroll_until(lambda a, b: a == 6 and b == 6, star=1)
+    result = result.sub(lambda a, b: a + b, star=1)
+    expected = (2 @ icepool.d6).reroll_until({12})
+    assert result.equals(expected)
+
+def test_explode_star():
+    base = icepool.Die((icepool.d6, icepool.d6))
+    result = base.explode(lambda a, b: a == 6 and b == 6, star=1)
+    expected = base.explode()
+    assert result.equals(expected)
