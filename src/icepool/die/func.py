@@ -151,11 +151,14 @@ def reduce(func, dice, *, initial=None):
 
     Analogous to `functools.reduce()`.
 
+    The function is applied non-elementwise to tuple outcomes.
+
     Args:
         func: The function to apply. The function should take two arguments,
             which are an outcome from each of two dice.
-        dice: A sequence dice to apply the function to, from left to right.
-        initial: If provided, this will be placed at the front of the dice.
+        dice: A sequence of dice to apply the function to, from left to right.
+        initial: If provided, this will be placed at the front of the sequence
+            of dice.
     """
     iter_dice = iter(dice)
     if initial is not None:
@@ -176,11 +179,14 @@ def accumulate(func, dice, *, initial=None):
     The number of results is equal to the number of elements of `dice`, with
     one additional element if `initial` is provided.
 
+    The function is applied non-elementwise to tuple outcomes.
+
     Args:
         func: The function to apply. The function should take two arguments,
             which are an outcome from each of two dice.
-        dice: A sequence dice to apply the function to, from left to right.
-        initial: If provided, this will be placed at the front of the dice.
+        dice: A sequence of dice to apply the function to, from left to right.
+        initial: If provided, this will be placed at the front of the sequence
+            of dice.
     """
     iter_dice = iter(dice)
     if initial is not None:
