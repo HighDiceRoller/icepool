@@ -100,8 +100,9 @@ class EvalPool(ABC):
     def direction(self, *pools):
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
-        Note that an ascending (> 0) direction is not compatible with pools with `truncate_min`,
-        and a descending (< 0) direction is not compatible with pools with `truncate_max`.
+        Note that an ascending (> 0) direction is not compatible with pools with
+        `truncate_min`, and a descending (< 0) direction is not compatible with
+        pools with `truncate_max`.
 
         The default is ascending order.
 
@@ -139,7 +140,7 @@ class EvalPool(ABC):
                 Most evaluators will expect a fixed number of pools.
                 The outcomes of the pools must be mutually comparable.
                 Pools with `truncate_min` and pools with `truncate_max` are not
-                compatible.
+                compatible with each other.
 
         Returns:
             A die representing the distribution of the final score.
