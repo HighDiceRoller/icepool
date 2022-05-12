@@ -1,3 +1,14 @@
+## 0.11.0
+
+* Removed `min_outcome` parameter from die construction.
+* Operations on tuple outcomes are now performed recursively, to match the fact that die expansion on construction is recursive.
+* Renamed `Die.reduce()` to `Die.reduce_weights()`.
+* Added `reduce()` and `accumulate()` functions analogous to the functions of the same name from functools/itertools.
+* Add CSV output.
+* Renamed `Die.markdown()` to `Die.format_markdown()`.
+* Added `star` parameter to `sub`, `explode`, `reroll`, `reroll_until` methods. If set, this unpacks outcomes before giving them to the supplied function.
+* Added experimental `JointEval` class for performing two evals on the same roll of a pool.
+
 ## 0.10.2
 
 * Operators other than `[]` are performed element-wise on tuples.
