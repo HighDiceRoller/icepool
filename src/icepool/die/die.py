@@ -66,8 +66,8 @@ class Die():
                 * A dict-like that maps outcomes to weights.
                     The outcomes of the dict-like will be "flattened" into the
                     result. This option will be taken in preference to treating
-                    the dict-like  itself as an outcome even if the dict-like
-                    itself is hashable and comparable.
+                    the dict-like itself as an outcome even if the dict-like
+                    itself is hashable and total orderable.
                 * A tuple of outcomes. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
@@ -81,8 +81,8 @@ class Die():
                     and the corresponding element of `weights` from consideration.
                     If inside a tuple, the tuple will be dropped.
                 * Anything else, including non-tuple sequences, will be treated
-                    as a single outcome. These must be hashable and mutually
-                    comparable with all other outcomes (after expansion).
+                    as a single outcome. Each outcome must be hashable, and the
+                    set of outcomes must be total orderable (after expansion).
                     The same outcome can appear multiple times, in which case
                     the corresponding weights will be accumulated.
             weights: Controls the relative weight of the arguments.
