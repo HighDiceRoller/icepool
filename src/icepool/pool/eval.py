@@ -138,7 +138,7 @@ class EvalPool(ABC):
                 * A sequence of outcomes representing a single roll of a pool.
                     Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
-                The union of the outcomes of the pools must be total orderable.
+                The union of the outcomes of the pools must be totally orderable.
                 Pools with `truncate_min` and pools with `truncate_max` are not
                 compatible with each other.
 
