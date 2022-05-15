@@ -806,8 +806,8 @@ from icepool import d6  # ok
 </span><span id="Die-66"><a href="#Die-66"><span class="linenos">  66</span></a><span class="sd">                * A dict-like that maps outcomes to weights.</span>
 </span><span id="Die-67"><a href="#Die-67"><span class="linenos">  67</span></a><span class="sd">                    The outcomes of the dict-like will be &quot;flattened&quot; into the</span>
 </span><span id="Die-68"><a href="#Die-68"><span class="linenos">  68</span></a><span class="sd">                    result. This option will be taken in preference to treating</span>
-</span><span id="Die-69"><a href="#Die-69"><span class="linenos">  69</span></a><span class="sd">                    the dict-like  itself as an outcome even if the dict-like</span>
-</span><span id="Die-70"><a href="#Die-70"><span class="linenos">  70</span></a><span class="sd">                    itself is hashable and comparable.</span>
+</span><span id="Die-69"><a href="#Die-69"><span class="linenos">  69</span></a><span class="sd">                    the dict-like itself as an outcome even if the dict-like</span>
+</span><span id="Die-70"><a href="#Die-70"><span class="linenos">  70</span></a><span class="sd">                    itself is hashable and total orderable.</span>
 </span><span id="Die-71"><a href="#Die-71"><span class="linenos">  71</span></a><span class="sd">                * A tuple of outcomes. Operators on dice with tuple outcomes</span>
 </span><span id="Die-72"><a href="#Die-72"><span class="linenos">  72</span></a><span class="sd">                    are performed element-wise. See `Die.unary_op` and</span>
 </span><span id="Die-73"><a href="#Die-73"><span class="linenos">  73</span></a><span class="sd">                    `Die.binary_op` for details.</span>
@@ -821,8 +821,8 @@ from icepool import d6  # ok
 </span><span id="Die-81"><a href="#Die-81"><span class="linenos">  81</span></a><span class="sd">                    and the corresponding element of `weights` from consideration.</span>
 </span><span id="Die-82"><a href="#Die-82"><span class="linenos">  82</span></a><span class="sd">                    If inside a tuple, the tuple will be dropped.</span>
 </span><span id="Die-83"><a href="#Die-83"><span class="linenos">  83</span></a><span class="sd">                * Anything else, including non-tuple sequences, will be treated</span>
-</span><span id="Die-84"><a href="#Die-84"><span class="linenos">  84</span></a><span class="sd">                    as a single outcome. These must be hashable and mutually</span>
-</span><span id="Die-85"><a href="#Die-85"><span class="linenos">  85</span></a><span class="sd">                    comparable with all other outcomes (after expansion).</span>
+</span><span id="Die-84"><a href="#Die-84"><span class="linenos">  84</span></a><span class="sd">                    as a single outcome. Each outcome must be hashable, and the</span>
+</span><span id="Die-85"><a href="#Die-85"><span class="linenos">  85</span></a><span class="sd">                    set of outcomes must be total orderable (after expansion).</span>
 </span><span id="Die-86"><a href="#Die-86"><span class="linenos">  86</span></a><span class="sd">                    The same outcome can appear multiple times, in which case</span>
 </span><span id="Die-87"><a href="#Die-87"><span class="linenos">  87</span></a><span class="sd">                    the corresponding weights will be accumulated.</span>
 </span><span id="Die-88"><a href="#Die-88"><span class="linenos">  88</span></a><span class="sd">            weights: Controls the relative weight of the arguments.</span>
@@ -2218,8 +2218,8 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-66"><a href="#Die.__init__-66"><span class="linenos"> 66</span></a><span class="sd">                * A dict-like that maps outcomes to weights.</span>
 </span><span id="Die.__init__-67"><a href="#Die.__init__-67"><span class="linenos"> 67</span></a><span class="sd">                    The outcomes of the dict-like will be &quot;flattened&quot; into the</span>
 </span><span id="Die.__init__-68"><a href="#Die.__init__-68"><span class="linenos"> 68</span></a><span class="sd">                    result. This option will be taken in preference to treating</span>
-</span><span id="Die.__init__-69"><a href="#Die.__init__-69"><span class="linenos"> 69</span></a><span class="sd">                    the dict-like  itself as an outcome even if the dict-like</span>
-</span><span id="Die.__init__-70"><a href="#Die.__init__-70"><span class="linenos"> 70</span></a><span class="sd">                    itself is hashable and comparable.</span>
+</span><span id="Die.__init__-69"><a href="#Die.__init__-69"><span class="linenos"> 69</span></a><span class="sd">                    the dict-like itself as an outcome even if the dict-like</span>
+</span><span id="Die.__init__-70"><a href="#Die.__init__-70"><span class="linenos"> 70</span></a><span class="sd">                    itself is hashable and total orderable.</span>
 </span><span id="Die.__init__-71"><a href="#Die.__init__-71"><span class="linenos"> 71</span></a><span class="sd">                * A tuple of outcomes. Operators on dice with tuple outcomes</span>
 </span><span id="Die.__init__-72"><a href="#Die.__init__-72"><span class="linenos"> 72</span></a><span class="sd">                    are performed element-wise. See `Die.unary_op` and</span>
 </span><span id="Die.__init__-73"><a href="#Die.__init__-73"><span class="linenos"> 73</span></a><span class="sd">                    `Die.binary_op` for details.</span>
@@ -2233,8 +2233,8 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-81"><a href="#Die.__init__-81"><span class="linenos"> 81</span></a><span class="sd">                    and the corresponding element of `weights` from consideration.</span>
 </span><span id="Die.__init__-82"><a href="#Die.__init__-82"><span class="linenos"> 82</span></a><span class="sd">                    If inside a tuple, the tuple will be dropped.</span>
 </span><span id="Die.__init__-83"><a href="#Die.__init__-83"><span class="linenos"> 83</span></a><span class="sd">                * Anything else, including non-tuple sequences, will be treated</span>
-</span><span id="Die.__init__-84"><a href="#Die.__init__-84"><span class="linenos"> 84</span></a><span class="sd">                    as a single outcome. These must be hashable and mutually</span>
-</span><span id="Die.__init__-85"><a href="#Die.__init__-85"><span class="linenos"> 85</span></a><span class="sd">                    comparable with all other outcomes (after expansion).</span>
+</span><span id="Die.__init__-84"><a href="#Die.__init__-84"><span class="linenos"> 84</span></a><span class="sd">                    as a single outcome. Each outcome must be hashable, and the</span>
+</span><span id="Die.__init__-85"><a href="#Die.__init__-85"><span class="linenos"> 85</span></a><span class="sd">                    set of outcomes must be total orderable (after expansion).</span>
 </span><span id="Die.__init__-86"><a href="#Die.__init__-86"><span class="linenos"> 86</span></a><span class="sd">                    The same outcome can appear multiple times, in which case</span>
 </span><span id="Die.__init__-87"><a href="#Die.__init__-87"><span class="linenos"> 87</span></a><span class="sd">                    the corresponding weights will be accumulated.</span>
 </span><span id="Die.__init__-88"><a href="#Die.__init__-88"><span class="linenos"> 88</span></a><span class="sd">            weights: Controls the relative weight of the arguments.</span>
@@ -2303,8 +2303,8 @@ result; a die object will never contain a die as an outcome.</li>
 <li>A dict-like that maps outcomes to weights.
 The outcomes of the dict-like will be "flattened" into the
 result. This option will be taken in preference to treating
-the dict-like  itself as an outcome even if the dict-like
-itself is hashable and comparable.</li>
+the dict-like itself as an outcome even if the dict-like
+itself is hashable and total orderable.</li>
 <li><p>A tuple of outcomes. Operators on dice with tuple outcomes
 are performed element-wise. See <code><a href="#Die.unary_op">Die.unary_op</a></code> and
 <code><a href="#Die.binary_op">Die.binary_op</a></code> for details.</p>
@@ -2318,8 +2318,8 @@ large number of outcomes.</p></li>
 and the corresponding element of <code><a href="#Die.weights">weights</a></code> from consideration.
 If inside a tuple, the tuple will be dropped.</li>
 <li>Anything else, including non-tuple sequences, will be treated
-as a single outcome. These must be hashable and mutually
-comparable with all other outcomes (after expansion).
+as a single outcome. Each outcome must be hashable, and the
+set of outcomes must be total orderable (after expansion).
 The same outcome can appear multiple times, in which case
 the corresponding weights will be accumulated.</li>
 </ul></li>
@@ -7183,7 +7183,7 @@ highest two dice of 2 d8s and 3 d6s.</li>
 </span><span id="EvalPool-138"><a href="#EvalPool-138"><span class="linenos">138</span></a><span class="sd">                * A sequence of outcomes representing a single roll of a pool.</span>
 </span><span id="EvalPool-139"><a href="#EvalPool-139"><span class="linenos">139</span></a><span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 </span><span id="EvalPool-140"><a href="#EvalPool-140"><span class="linenos">140</span></a><span class="sd">                Most evaluators will expect a fixed number of pools.</span>
-</span><span id="EvalPool-141"><a href="#EvalPool-141"><span class="linenos">141</span></a><span class="sd">                The outcomes of the pools must be mutually comparable.</span>
+</span><span id="EvalPool-141"><a href="#EvalPool-141"><span class="linenos">141</span></a><span class="sd">                The union of the outcomes of the pools must be total orderable.</span>
 </span><span id="EvalPool-142"><a href="#EvalPool-142"><span class="linenos">142</span></a><span class="sd">                Pools with `truncate_min` and pools with `truncate_max` are not</span>
 </span><span id="EvalPool-143"><a href="#EvalPool-143"><span class="linenos">143</span></a><span class="sd">                compatible with each other.</span>
 </span><span id="EvalPool-144"><a href="#EvalPool-144"><span class="linenos">144</span></a>
@@ -7599,7 +7599,7 @@ parameters.</li>
 </span><span id="EvalPool.eval-138"><a href="#EvalPool.eval-138"><span class="linenos">138</span></a><span class="sd">                * A sequence of outcomes representing a single roll of a pool.</span>
 </span><span id="EvalPool.eval-139"><a href="#EvalPool.eval-139"><span class="linenos">139</span></a><span class="sd">                    Outcomes are treated as having 1 count per appearance.</span>
 </span><span id="EvalPool.eval-140"><a href="#EvalPool.eval-140"><span class="linenos">140</span></a><span class="sd">                Most evaluators will expect a fixed number of pools.</span>
-</span><span id="EvalPool.eval-141"><a href="#EvalPool.eval-141"><span class="linenos">141</span></a><span class="sd">                The outcomes of the pools must be mutually comparable.</span>
+</span><span id="EvalPool.eval-141"><a href="#EvalPool.eval-141"><span class="linenos">141</span></a><span class="sd">                The union of the outcomes of the pools must be total orderable.</span>
 </span><span id="EvalPool.eval-142"><a href="#EvalPool.eval-142"><span class="linenos">142</span></a><span class="sd">                Pools with `truncate_min` and pools with `truncate_max` are not</span>
 </span><span id="EvalPool.eval-143"><a href="#EvalPool.eval-143"><span class="linenos">143</span></a><span class="sd">                compatible with each other.</span>
 </span><span id="EvalPool.eval-144"><a href="#EvalPool.eval-144"><span class="linenos">144</span></a>
@@ -7653,7 +7653,7 @@ The dict maps outcomes to counts.</li>
 <li>A sequence of outcomes representing a single roll of a pool.
 Outcomes are treated as having 1 count per appearance.
 Most evaluators will expect a fixed number of pools.
-The outcomes of the pools must be mutually comparable.
+The union of the outcomes of the pools must be total orderable.
 Pools with <code>truncate_min</code> and pools with <code>truncate_max</code> are not
 compatible with each other.</li>
 </ul></li>
