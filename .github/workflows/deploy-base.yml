@@ -1,4 +1,4 @@
-name: Deploy Readme
+name: Deploy Base
 
 on:
   workflow_dispatch:
@@ -6,6 +6,8 @@ on:
     branches:
       - main
     paths:
+      - 'favicon.*'
+      - 'index.html'
       - 'README.*'
 
 jobs:
@@ -17,6 +19,8 @@ jobs:
       - name: Copy Readme
         run: |
           mkdir -p dist/
+          cp favicon.* dist/
+          cp index.html dist/
           cp README.* dist/
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.3
