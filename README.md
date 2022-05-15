@@ -1,4 +1,4 @@
-# <img width="32" height="32" src="https://highdiceroller.github.io/icepool/apps/favicon.png" /> Icepool
+# <img width="32" height="32" src="https://highdiceroller.github.io/icepool/favicon.png" /> Icepool
 
 A Python package for computing dice probabilities.
 
