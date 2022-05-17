@@ -29,7 +29,7 @@ min_outcome = Die.min_outcome
 
 from icepool.pool.base import PoolBase
 from icepool.pool.pool import Pool, standard_pool
-from icepool.pool.eval import EvalPool, WrapFuncEval, JointEval, SumPool, sum_pool, FindBestSet, FindBestRun
+from icepool.pool.eval import EvalPool, WrapFuncEval, JointEval, SumPool, sum_pool, enumerate_pool, FindBestSet, FindBestRun
 from icepool.pool.roll import PoolRoll  # Not used externally.
 
 import enum
@@ -48,5 +48,6 @@ __all__ = [
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
     'max_outcome', 'min_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
     'PoolBase', 'Pool', 'standard_pool', 'EvalPool', 'WrapFuncEval',
-    'JointEval', 'SumPool', 'sum_pool', 'FindBestSet', 'FindBestRun'
+    'JointEval', 'SumPool', 'sum_pool', 'enumerate_pool', 'FindBestSet',
+    'FindBestRun'
 ]

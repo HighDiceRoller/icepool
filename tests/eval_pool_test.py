@@ -143,3 +143,11 @@ def test_joint_eval():
     result = test_eval(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).sub(lambda x: (x, x))
     assert result.equals(expected)
+
+@pytest.mark.parametrize('pool', test_pools)
+def test_enumerate_pool(pool):
+    if any(x < 0 for x in pool.count_dice()):
+        with pytest.raises(ValueError):
+            icepool.enumerate_pool(pool)
+    else:
+        assert icepool.enumerate_pool(pool).sub(sum).equals(pool.sum())

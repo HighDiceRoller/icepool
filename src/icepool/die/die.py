@@ -881,7 +881,7 @@ class Die():
         """Roll the left die, then roll the right die that many times and sum the outcomes.
 
         If an `int` is provided for the right side, it becomes a standard die
-        with that many faces. Otherwise it is cast to a die.
+        with that many faces. Otherwise it is converted to a die.
         """
         if isinstance(other, int):
             other = icepool.standard(other)

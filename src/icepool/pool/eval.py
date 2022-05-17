@@ -427,6 +427,33 @@ sum_pool = SumPool()
 """A shared `SumPool` object for caching results. """
 
 
+class EnumeratePool(EvalPool):
+    """A `EvalPool` that enumerates all possible (sorted) rolls of a single pool."""
+
+    def __init__(self, direction=1):
+        """`direction` determines the sort order.
+
+        Positive for ascending and negative for descending.
+        """
+        self._direction = direction
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            return (outcome,) * count
+        else:
+            return state + (outcome,) * count
+
+    def direction(self, pool):
+        if any(x < 0 for x in pool.count_dice()):
+            raise ValueError(
+                'EnumeratePool is not compatible with negative counts.')
+        return self._direction
+
+
+enumerate_pool = EnumeratePool()
+"""A shared `EnumeratePool` object for caching results. """
+
+
 class FindBestSet(EvalPool):
     """A `EvalPool` that takes the best matching set in a pool.
 
