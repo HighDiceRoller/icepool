@@ -1,3 +1,7 @@
+## 0.11.1
+
+* Update PyPi classifiers.
+
 ## 0.11.0
 
 * Removed `min_outcome` parameter from die construction.

@@ -1,7 +1,10 @@
 import _context
 
 import icepool
+import icepool.die.keep
 import pytest
+
+from icepool import d4, d6, d8, d10, d12
 
 max_tuple_length = 5
 max_num_values = 5
@@ -135,3 +138,21 @@ def test_lowest():
     result = icepool.lowest(icepool.d6, icepool.d6)
     expected = icepool.d6.keep_lowest(2, 1)
     assert result.equals(expected)
+
+def test_common_truncation_identical():
+    assert icepool.die.keep._common_truncation(d6, d6, d6) == 0
+
+def test_common_truncation_max():
+    assert icepool.die.keep._common_truncation(d6, d8, d12) == 1
+
+def test_common_truncation_min():
+    assert icepool.die.keep._common_truncation(-d6, -d8, -d12) == -1
+
+def test_common_truncation_mixed():
+    assert icepool.die.keep._common_truncation(d6, d4 + 1) == None
+
+def test_common_truncation_mixed2():
+    assert icepool.die.keep._common_truncation(d6, d4, d4 + 2) == None
+
+def test_common_truncation_mixed2():
+    assert icepool.die.keep._common_truncation(-d6, d8, -d12) == None
