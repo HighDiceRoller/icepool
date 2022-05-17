@@ -445,6 +445,9 @@
                     <a class="variable" href="#sum_pool">sum_pool</a>
             </li>
             <li>
+                    <a class="variable" href="#enumerate_pool">enumerate_pool</a>
+            </li>
+            <li>
                     <a class="class" href="#FindBestSet">FindBestSet</a>
                             <ul class="memberlist">
                         <li>
@@ -544,7 +547,7 @@ refer to dice in a pool.</li>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="kn">from</span> <span class="nn">icepool.pool.base</span> <span class="kn">import</span> <span class="n">PoolBase</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="kn">from</span> <span class="nn">icepool.pool.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="kn">from</span> <span class="nn">icepool.pool.eval</span> <span class="kn">import</span> <span class="n">EvalPool</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">JointEval</span><span class="p">,</span> <span class="n">SumPool</span><span class="p">,</span> <span class="n">sum_pool</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="kn">from</span> <span class="nn">icepool.pool.eval</span> <span class="kn">import</span> <span class="n">EvalPool</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">JointEval</span><span class="p">,</span> <span class="n">SumPool</span><span class="p">,</span> <span class="n">sum_pool</span><span class="p">,</span> <span class="n">enumerate_pool</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="kn">from</span> <span class="nn">icepool.pool.roll</span> <span class="kn">import</span> <span class="n">PoolRoll</span>  <span class="c1"># Not used externally.</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="kn">import</span> <span class="nn">enum</span>
@@ -563,8 +566,9 @@ refer to dice in a pool.</li>
 </span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;from_sweights&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="s1">&#39;PoolBase&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;WrapFuncEval&#39;</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestRun&#39;</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="p">]</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;enumerate_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;FindBestSet&#39;</span><span class="p">,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="s1">&#39;FindBestRun&#39;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1622,7 +1626,7 @@ from icepool import d6  # ok
 </span><span id="Die-882"><a href="#Die-882"><span class="linenos"> 882</span></a>        <span class="sd">&quot;&quot;&quot;Roll the left die, then roll the right die that many times and sum the outcomes.</span>
 </span><span id="Die-883"><a href="#Die-883"><span class="linenos"> 883</span></a>
 </span><span id="Die-884"><a href="#Die-884"><span class="linenos"> 884</span></a><span class="sd">        If an `int` is provided for the right side, it becomes a standard die</span>
-</span><span id="Die-885"><a href="#Die-885"><span class="linenos"> 885</span></a><span class="sd">        with that many faces. Otherwise it is cast to a die.</span>
+</span><span id="Die-885"><a href="#Die-885"><span class="linenos"> 885</span></a><span class="sd">        with that many faces. Otherwise it is converted to a die.</span>
 </span><span id="Die-886"><a href="#Die-886"><span class="linenos"> 886</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-887"><a href="#Die-887"><span class="linenos"> 887</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
 </span><span id="Die-888"><a href="#Die-888"><span class="linenos"> 888</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">standard</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -4362,7 +4366,7 @@ the result.</p>
 </span><span id="Die.d-882"><a href="#Die.d-882"><span class="linenos">882</span></a>        <span class="sd">&quot;&quot;&quot;Roll the left die, then roll the right die that many times and sum the outcomes.</span>
 </span><span id="Die.d-883"><a href="#Die.d-883"><span class="linenos">883</span></a>
 </span><span id="Die.d-884"><a href="#Die.d-884"><span class="linenos">884</span></a><span class="sd">        If an `int` is provided for the right side, it becomes a standard die</span>
-</span><span id="Die.d-885"><a href="#Die.d-885"><span class="linenos">885</span></a><span class="sd">        with that many faces. Otherwise it is cast to a die.</span>
+</span><span id="Die.d-885"><a href="#Die.d-885"><span class="linenos">885</span></a><span class="sd">        with that many faces. Otherwise it is converted to a die.</span>
 </span><span id="Die.d-886"><a href="#Die.d-886"><span class="linenos">886</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.d-887"><a href="#Die.d-887"><span class="linenos">887</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
 </span><span id="Die.d-888"><a href="#Die.d-888"><span class="linenos">888</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">standard</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -4386,7 +4390,7 @@ the result.</p>
             <div class="docstring"><p>Roll the left die, then roll the right die that many times and sum the outcomes.</p>
 
 <p>If an <code>int</code> is provided for the right side, it becomes a standard die
-with that many faces. Otherwise it is cast to a die.</p>
+with that many faces. Otherwise it is converted to a die.</p>
 </div>
 
 
@@ -5660,7 +5664,7 @@ with one argument per die.</li>
 </span><span id="PoolBase-16"><a href="#PoolBase-16"><span class="linenos"> 16</span></a><span class="sd">    * `Pool`, which represents a pool of dice with random results.</span>
 </span><span id="PoolBase-17"><a href="#PoolBase-17"><span class="linenos"> 17</span></a><span class="sd">    * `PoolRoll`, which represents a single, fixed roll of a pool.</span>
 </span><span id="PoolBase-18"><a href="#PoolBase-18"><span class="linenos"> 18</span></a><span class="sd">        `PoolRoll` is only needed internally, as external dicts and sequences</span>
-</span><span id="PoolBase-19"><a href="#PoolBase-19"><span class="linenos"> 19</span></a><span class="sd">        will be implicitly cast to `PoolRoll` in `EvalPool.eval()`.</span>
+</span><span id="PoolBase-19"><a href="#PoolBase-19"><span class="linenos"> 19</span></a><span class="sd">        will be implicitly converted to `PoolRoll` in `EvalPool.eval()`.</span>
 </span><span id="PoolBase-20"><a href="#PoolBase-20"><span class="linenos"> 20</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="PoolBase-21"><a href="#PoolBase-21"><span class="linenos"> 21</span></a>
 </span><span id="PoolBase-22"><a href="#PoolBase-22"><span class="linenos"> 22</span></a>    <span class="nd">@abstractmethod</span>
@@ -5764,7 +5768,7 @@ with one argument per die.</li>
 <li><code><a href="#Pool">Pool</a></code>, which represents a pool of dice with random results.</li>
 <li><code>PoolRoll</code>, which represents a single, fixed roll of a pool.
 <code>PoolRoll</code> is only needed internally, as external dicts and sequences
-will be implicitly cast to <code>PoolRoll</code> in <code><a href="#EvalPool.eval">EvalPool.eval()</a></code>.</li>
+will be implicitly converted to <code>PoolRoll</code> in <code><a href="#EvalPool.eval">EvalPool.eval()</a></code>.</li>
 </ul>
 </div>
 
@@ -8084,6 +8088,17 @@ ascending and others are descending.</li>
     
 
                 </section>
+                <section id="enumerate_pool">
+                    <div class="attr variable">
+            <span class="name">enumerate_pool</span><span class="default_value"> = &lt;icepool.pool.eval.EnumeratePool object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#enumerate_pool"></a>
+    
+    
+
+                </section>
                 <section id="FindBestSet">
                             <input id="FindBestSet-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
@@ -8095,27 +8110,27 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-431"><a href="#FindBestSet-431"><span class="linenos">431</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestSet-432"><a href="#FindBestSet-432"><span class="linenos">432</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best matching set in a pool.</span>
-</span><span id="FindBestSet-433"><a href="#FindBestSet-433"><span class="linenos">433</span></a>
-</span><span id="FindBestSet-434"><a href="#FindBestSet-434"><span class="linenos">434</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
-</span><span id="FindBestSet-435"><a href="#FindBestSet-435"><span class="linenos">435</span></a>
-</span><span id="FindBestSet-436"><a href="#FindBestSet-436"><span class="linenos">436</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
-</span><span id="FindBestSet-437"><a href="#FindBestSet-437"><span class="linenos">437</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-438"><a href="#FindBestSet-438"><span class="linenos">438</span></a>
-</span><span id="FindBestSet-439"><a href="#FindBestSet-439"><span class="linenos">439</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet-440"><a href="#FindBestSet-440"><span class="linenos">440</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
-</span><span id="FindBestSet-441"><a href="#FindBestSet-441"><span class="linenos">441</span></a>
-</span><span id="FindBestSet-442"><a href="#FindBestSet-442"><span class="linenos">442</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet-443"><a href="#FindBestSet-443"><span class="linenos">443</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-444"><a href="#FindBestSet-444"><span class="linenos">444</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet-445"><a href="#FindBestSet-445"><span class="linenos">445</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet-446"><a href="#FindBestSet-446"><span class="linenos">446</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet-447"><a href="#FindBestSet-447"><span class="linenos">447</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
-</span><span id="FindBestSet-448"><a href="#FindBestSet-448"><span class="linenos">448</span></a>
-</span><span id="FindBestSet-449"><a href="#FindBestSet-449"><span class="linenos">449</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet-450"><a href="#FindBestSet-450"><span class="linenos">450</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-451"><a href="#FindBestSet-451"><span class="linenos">451</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-458"><a href="#FindBestSet-458"><span class="linenos">458</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestSet-459"><a href="#FindBestSet-459"><span class="linenos">459</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best matching set in a pool.</span>
+</span><span id="FindBestSet-460"><a href="#FindBestSet-460"><span class="linenos">460</span></a>
+</span><span id="FindBestSet-461"><a href="#FindBestSet-461"><span class="linenos">461</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
+</span><span id="FindBestSet-462"><a href="#FindBestSet-462"><span class="linenos">462</span></a>
+</span><span id="FindBestSet-463"><a href="#FindBestSet-463"><span class="linenos">463</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
+</span><span id="FindBestSet-464"><a href="#FindBestSet-464"><span class="linenos">464</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-465"><a href="#FindBestSet-465"><span class="linenos">465</span></a>
+</span><span id="FindBestSet-466"><a href="#FindBestSet-466"><span class="linenos">466</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet-467"><a href="#FindBestSet-467"><span class="linenos">467</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
+</span><span id="FindBestSet-468"><a href="#FindBestSet-468"><span class="linenos">468</span></a>
+</span><span id="FindBestSet-469"><a href="#FindBestSet-469"><span class="linenos">469</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet-470"><a href="#FindBestSet-470"><span class="linenos">470</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-471"><a href="#FindBestSet-471"><span class="linenos">471</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet-472"><a href="#FindBestSet-472"><span class="linenos">472</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet-473"><a href="#FindBestSet-473"><span class="linenos">473</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet-474"><a href="#FindBestSet-474"><span class="linenos">474</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+</span><span id="FindBestSet-475"><a href="#FindBestSet-475"><span class="linenos">475</span></a>
+</span><span id="FindBestSet-476"><a href="#FindBestSet-476"><span class="linenos">476</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet-477"><a href="#FindBestSet-477"><span class="linenos">477</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-478"><a href="#FindBestSet-478"><span class="linenos">478</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -8150,15 +8165,15 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-439"><a href="#FindBestSet.next_state-439"><span class="linenos">439</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet.next_state-440"><a href="#FindBestSet.next_state-440"><span class="linenos">440</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
-</span><span id="FindBestSet.next_state-441"><a href="#FindBestSet.next_state-441"><span class="linenos">441</span></a>
-</span><span id="FindBestSet.next_state-442"><a href="#FindBestSet.next_state-442"><span class="linenos">442</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet.next_state-443"><a href="#FindBestSet.next_state-443"><span class="linenos">443</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.next_state-444"><a href="#FindBestSet.next_state-444"><span class="linenos">444</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-445"><a href="#FindBestSet.next_state-445"><span class="linenos">445</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet.next_state-446"><a href="#FindBestSet.next_state-446"><span class="linenos">446</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-447"><a href="#FindBestSet.next_state-447"><span class="linenos">447</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-466"><a href="#FindBestSet.next_state-466"><span class="linenos">466</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet.next_state-467"><a href="#FindBestSet.next_state-467"><span class="linenos">467</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
+</span><span id="FindBestSet.next_state-468"><a href="#FindBestSet.next_state-468"><span class="linenos">468</span></a>
+</span><span id="FindBestSet.next_state-469"><a href="#FindBestSet.next_state-469"><span class="linenos">469</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet.next_state-470"><a href="#FindBestSet.next_state-470"><span class="linenos">470</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.next_state-471"><a href="#FindBestSet.next_state-471"><span class="linenos">471</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-472"><a href="#FindBestSet.next_state-472"><span class="linenos">472</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet.next_state-473"><a href="#FindBestSet.next_state-473"><span class="linenos">473</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-474"><a href="#FindBestSet.next_state-474"><span class="linenos">474</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -8180,9 +8195,9 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet.direction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-449"><a href="#FindBestSet.direction-449"><span class="linenos">449</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet.direction-450"><a href="#FindBestSet.direction-450"><span class="linenos">450</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.direction-451"><a href="#FindBestSet.direction-451"><span class="linenos">451</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-476"><a href="#FindBestSet.direction-476"><span class="linenos">476</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet.direction-477"><a href="#FindBestSet.direction-477"><span class="linenos">477</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.direction-478"><a href="#FindBestSet.direction-478"><span class="linenos">478</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -8213,39 +8228,39 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestRun"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-454"><a href="#FindBestRun-454"><span class="linenos">454</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestRun-455"><a href="#FindBestRun-455"><span class="linenos">455</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
-</span><span id="FindBestRun-456"><a href="#FindBestRun-456"><span class="linenos">456</span></a>
-</span><span id="FindBestRun-457"><a href="#FindBestRun-457"><span class="linenos">457</span></a><span class="sd">    Outcomes must be `int`s.</span>
-</span><span id="FindBestRun-458"><a href="#FindBestRun-458"><span class="linenos">458</span></a>
-</span><span id="FindBestRun-459"><a href="#FindBestRun-459"><span class="linenos">459</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
-</span><span id="FindBestRun-460"><a href="#FindBestRun-460"><span class="linenos">460</span></a>
-</span><span id="FindBestRun-461"><a href="#FindBestRun-461"><span class="linenos">461</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
-</span><span id="FindBestRun-462"><a href="#FindBestRun-462"><span class="linenos">462</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-463"><a href="#FindBestRun-463"><span class="linenos">463</span></a>
-</span><span id="FindBestRun-464"><a href="#FindBestRun-464"><span class="linenos">464</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun-465"><a href="#FindBestRun-465"><span class="linenos">465</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun-466"><a href="#FindBestRun-466"><span class="linenos">466</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun-467"><a href="#FindBestRun-467"><span class="linenos">467</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-468"><a href="#FindBestRun-468"><span class="linenos">468</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="FindBestRun-469"><a href="#FindBestRun-469"><span class="linenos">469</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun-470"><a href="#FindBestRun-470"><span class="linenos">470</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-471"><a href="#FindBestRun-471"><span class="linenos">471</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-472"><a href="#FindBestRun-472"><span class="linenos">472</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-473"><a href="#FindBestRun-473"><span class="linenos">473</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-474"><a href="#FindBestRun-474"><span class="linenos">474</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-475"><a href="#FindBestRun-475"><span class="linenos">475</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-476"><a href="#FindBestRun-476"><span class="linenos">476</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun-477"><a href="#FindBestRun-477"><span class="linenos">477</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
-</span><span id="FindBestRun-478"><a href="#FindBestRun-478"><span class="linenos">478</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
-</span><span id="FindBestRun-479"><a href="#FindBestRun-479"><span class="linenos">479</span></a>
-</span><span id="FindBestRun-480"><a href="#FindBestRun-480"><span class="linenos">480</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-481"><a href="#FindBestRun-481"><span class="linenos">481</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-482"><a href="#FindBestRun-482"><span class="linenos">482</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-481"><a href="#FindBestRun-481"><span class="linenos">481</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestRun-482"><a href="#FindBestRun-482"><span class="linenos">482</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
 </span><span id="FindBestRun-483"><a href="#FindBestRun-483"><span class="linenos">483</span></a>
-</span><span id="FindBestRun-484"><a href="#FindBestRun-484"><span class="linenos">484</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-485"><a href="#FindBestRun-485"><span class="linenos">485</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-486"><a href="#FindBestRun-486"><span class="linenos">486</span></a>        <span class="k">return</span> <span class="mi">1</span>
+</span><span id="FindBestRun-484"><a href="#FindBestRun-484"><span class="linenos">484</span></a><span class="sd">    Outcomes must be `int`s.</span>
+</span><span id="FindBestRun-485"><a href="#FindBestRun-485"><span class="linenos">485</span></a>
+</span><span id="FindBestRun-486"><a href="#FindBestRun-486"><span class="linenos">486</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
+</span><span id="FindBestRun-487"><a href="#FindBestRun-487"><span class="linenos">487</span></a>
+</span><span id="FindBestRun-488"><a href="#FindBestRun-488"><span class="linenos">488</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
+</span><span id="FindBestRun-489"><a href="#FindBestRun-489"><span class="linenos">489</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-490"><a href="#FindBestRun-490"><span class="linenos">490</span></a>
+</span><span id="FindBestRun-491"><a href="#FindBestRun-491"><span class="linenos">491</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun-492"><a href="#FindBestRun-492"><span class="linenos">492</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun-493"><a href="#FindBestRun-493"><span class="linenos">493</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun-494"><a href="#FindBestRun-494"><span class="linenos">494</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-495"><a href="#FindBestRun-495"><span class="linenos">495</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="FindBestRun-496"><a href="#FindBestRun-496"><span class="linenos">496</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun-497"><a href="#FindBestRun-497"><span class="linenos">497</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-498"><a href="#FindBestRun-498"><span class="linenos">498</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-499"><a href="#FindBestRun-499"><span class="linenos">499</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-500"><a href="#FindBestRun-500"><span class="linenos">500</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-501"><a href="#FindBestRun-501"><span class="linenos">501</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-502"><a href="#FindBestRun-502"><span class="linenos">502</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-503"><a href="#FindBestRun-503"><span class="linenos">503</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun-504"><a href="#FindBestRun-504"><span class="linenos">504</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
+</span><span id="FindBestRun-505"><a href="#FindBestRun-505"><span class="linenos">505</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+</span><span id="FindBestRun-506"><a href="#FindBestRun-506"><span class="linenos">506</span></a>
+</span><span id="FindBestRun-507"><a href="#FindBestRun-507"><span class="linenos">507</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-508"><a href="#FindBestRun-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-509"><a href="#FindBestRun-509"><span class="linenos">509</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="FindBestRun-510"><a href="#FindBestRun-510"><span class="linenos">510</span></a>
+</span><span id="FindBestRun-511"><a href="#FindBestRun-511"><span class="linenos">511</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-512"><a href="#FindBestRun-512"><span class="linenos">512</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-513"><a href="#FindBestRun-513"><span class="linenos">513</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
 
@@ -8282,21 +8297,21 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestRun.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-464"><a href="#FindBestRun.next_state-464"><span class="linenos">464</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun.next_state-465"><a href="#FindBestRun.next_state-465"><span class="linenos">465</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun.next_state-466"><a href="#FindBestRun.next_state-466"><span class="linenos">466</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun.next_state-467"><a href="#FindBestRun.next_state-467"><span class="linenos">467</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.next_state-468"><a href="#FindBestRun.next_state-468"><span class="linenos">468</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="FindBestRun.next_state-469"><a href="#FindBestRun.next_state-469"><span class="linenos">469</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun.next_state-470"><a href="#FindBestRun.next_state-470"><span class="linenos">470</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-471"><a href="#FindBestRun.next_state-471"><span class="linenos">471</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-472"><a href="#FindBestRun.next_state-472"><span class="linenos">472</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-473"><a href="#FindBestRun.next_state-473"><span class="linenos">473</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-474"><a href="#FindBestRun.next_state-474"><span class="linenos">474</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-475"><a href="#FindBestRun.next_state-475"><span class="linenos">475</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-476"><a href="#FindBestRun.next_state-476"><span class="linenos">476</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun.next_state-477"><a href="#FindBestRun.next_state-477"><span class="linenos">477</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
-</span><span id="FindBestRun.next_state-478"><a href="#FindBestRun.next_state-478"><span class="linenos">478</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-491"><a href="#FindBestRun.next_state-491"><span class="linenos">491</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun.next_state-492"><a href="#FindBestRun.next_state-492"><span class="linenos">492</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun.next_state-493"><a href="#FindBestRun.next_state-493"><span class="linenos">493</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun.next_state-494"><a href="#FindBestRun.next_state-494"><span class="linenos">494</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.next_state-495"><a href="#FindBestRun.next_state-495"><span class="linenos">495</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="FindBestRun.next_state-496"><a href="#FindBestRun.next_state-496"><span class="linenos">496</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun.next_state-497"><a href="#FindBestRun.next_state-497"><span class="linenos">497</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-498"><a href="#FindBestRun.next_state-498"><span class="linenos">498</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-499"><a href="#FindBestRun.next_state-499"><span class="linenos">499</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-500"><a href="#FindBestRun.next_state-500"><span class="linenos">500</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-501"><a href="#FindBestRun.next_state-501"><span class="linenos">501</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-502"><a href="#FindBestRun.next_state-502"><span class="linenos">502</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-503"><a href="#FindBestRun.next_state-503"><span class="linenos">503</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun.next_state-504"><a href="#FindBestRun.next_state-504"><span class="linenos">504</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
+</span><span id="FindBestRun.next_state-505"><a href="#FindBestRun.next_state-505"><span class="linenos">505</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -8317,9 +8332,9 @@ then saves the run to the state.</p>
 
     </div>
     <a class="headerlink" href="#FindBestRun.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-480"><a href="#FindBestRun.final_outcome-480"><span class="linenos">480</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.final_outcome-481"><a href="#FindBestRun.final_outcome-481"><span class="linenos">481</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.final_outcome-482"><a href="#FindBestRun.final_outcome-482"><span class="linenos">482</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-507"><a href="#FindBestRun.final_outcome-507"><span class="linenos">507</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.final_outcome-508"><a href="#FindBestRun.final_outcome-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.final_outcome-509"><a href="#FindBestRun.final_outcome-509"><span class="linenos">509</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -8339,9 +8354,9 @@ then saves the run to the state.</p>
 
     </div>
     <a class="headerlink" href="#FindBestRun.direction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-484"><a href="#FindBestRun.direction-484"><span class="linenos">484</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.direction-485"><a href="#FindBestRun.direction-485"><span class="linenos">485</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.direction-486"><a href="#FindBestRun.direction-486"><span class="linenos">486</span></a>        <span class="k">return</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-511"><a href="#FindBestRun.direction-511"><span class="linenos">511</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.direction-512"><a href="#FindBestRun.direction-512"><span class="linenos">512</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.direction-513"><a href="#FindBestRun.direction-513"><span class="linenos">513</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
 
