@@ -8110,27 +8110,27 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-458"><a href="#FindBestSet-458"><span class="linenos">458</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestSet-459"><a href="#FindBestSet-459"><span class="linenos">459</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best matching set in a pool.</span>
-</span><span id="FindBestSet-460"><a href="#FindBestSet-460"><span class="linenos">460</span></a>
-</span><span id="FindBestSet-461"><a href="#FindBestSet-461"><span class="linenos">461</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
-</span><span id="FindBestSet-462"><a href="#FindBestSet-462"><span class="linenos">462</span></a>
-</span><span id="FindBestSet-463"><a href="#FindBestSet-463"><span class="linenos">463</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
-</span><span id="FindBestSet-464"><a href="#FindBestSet-464"><span class="linenos">464</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet-461"><a href="#FindBestSet-461"><span class="linenos">461</span></a><span class="k">class</span> <span class="nc">FindBestSet</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestSet-462"><a href="#FindBestSet-462"><span class="linenos">462</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best matching set in a pool.</span>
+</span><span id="FindBestSet-463"><a href="#FindBestSet-463"><span class="linenos">463</span></a>
+</span><span id="FindBestSet-464"><a href="#FindBestSet-464"><span class="linenos">464</span></a><span class="sd">    This prioritizes set size, then the outcome.</span>
 </span><span id="FindBestSet-465"><a href="#FindBestSet-465"><span class="linenos">465</span></a>
-</span><span id="FindBestSet-466"><a href="#FindBestSet-466"><span class="linenos">466</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet-467"><a href="#FindBestSet-467"><span class="linenos">467</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
+</span><span id="FindBestSet-466"><a href="#FindBestSet-466"><span class="linenos">466</span></a><span class="sd">    The outcomes are `(set_size, outcome)`.</span>
+</span><span id="FindBestSet-467"><a href="#FindBestSet-467"><span class="linenos">467</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="FindBestSet-468"><a href="#FindBestSet-468"><span class="linenos">468</span></a>
-</span><span id="FindBestSet-469"><a href="#FindBestSet-469"><span class="linenos">469</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet-470"><a href="#FindBestSet-470"><span class="linenos">470</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-471"><a href="#FindBestSet-471"><span class="linenos">471</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet-472"><a href="#FindBestSet-472"><span class="linenos">472</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet-473"><a href="#FindBestSet-473"><span class="linenos">473</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet-474"><a href="#FindBestSet-474"><span class="linenos">474</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
-</span><span id="FindBestSet-475"><a href="#FindBestSet-475"><span class="linenos">475</span></a>
-</span><span id="FindBestSet-476"><a href="#FindBestSet-476"><span class="linenos">476</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet-477"><a href="#FindBestSet-477"><span class="linenos">477</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet-478"><a href="#FindBestSet-478"><span class="linenos">478</span></a>        <span class="k">return</span> <span class="mi">0</span>
+</span><span id="FindBestSet-469"><a href="#FindBestSet-469"><span class="linenos">469</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet-470"><a href="#FindBestSet-470"><span class="linenos">470</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
+</span><span id="FindBestSet-471"><a href="#FindBestSet-471"><span class="linenos">471</span></a>
+</span><span id="FindBestSet-472"><a href="#FindBestSet-472"><span class="linenos">472</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet-473"><a href="#FindBestSet-473"><span class="linenos">473</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-474"><a href="#FindBestSet-474"><span class="linenos">474</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet-475"><a href="#FindBestSet-475"><span class="linenos">475</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet-476"><a href="#FindBestSet-476"><span class="linenos">476</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet-477"><a href="#FindBestSet-477"><span class="linenos">477</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+</span><span id="FindBestSet-478"><a href="#FindBestSet-478"><span class="linenos">478</span></a>
+</span><span id="FindBestSet-479"><a href="#FindBestSet-479"><span class="linenos">479</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet-480"><a href="#FindBestSet-480"><span class="linenos">480</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet-481"><a href="#FindBestSet-481"><span class="linenos">481</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -8165,15 +8165,15 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-466"><a href="#FindBestSet.next_state-466"><span class="linenos">466</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestSet.next_state-467"><a href="#FindBestSet.next_state-467"><span class="linenos">467</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
-</span><span id="FindBestSet.next_state-468"><a href="#FindBestSet.next_state-468"><span class="linenos">468</span></a>
-</span><span id="FindBestSet.next_state-469"><a href="#FindBestSet.next_state-469"><span class="linenos">469</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
-</span><span id="FindBestSet.next_state-470"><a href="#FindBestSet.next_state-470"><span class="linenos">470</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.next_state-471"><a href="#FindBestSet.next_state-471"><span class="linenos">471</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-472"><a href="#FindBestSet.next_state-472"><span class="linenos">472</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
-</span><span id="FindBestSet.next_state-473"><a href="#FindBestSet.next_state-473"><span class="linenos">473</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestSet.next_state-474"><a href="#FindBestSet.next_state-474"><span class="linenos">474</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.next_state-469"><a href="#FindBestSet.next_state-469"><span class="linenos">469</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestSet.next_state-470"><a href="#FindBestSet.next_state-470"><span class="linenos">470</span></a>        <span class="sd">&quot;&quot;&quot;Replace the last best set if this one is better.</span>
+</span><span id="FindBestSet.next_state-471"><a href="#FindBestSet.next_state-471"><span class="linenos">471</span></a>
+</span><span id="FindBestSet.next_state-472"><a href="#FindBestSet.next_state-472"><span class="linenos">472</span></a><span class="sd">        Note the use of tuple comparison, which priortizes elements to the left.</span>
+</span><span id="FindBestSet.next_state-473"><a href="#FindBestSet.next_state-473"><span class="linenos">473</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.next_state-474"><a href="#FindBestSet.next_state-474"><span class="linenos">474</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-475"><a href="#FindBestSet.next_state-475"><span class="linenos">475</span></a>            <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">outcome</span>
+</span><span id="FindBestSet.next_state-476"><a href="#FindBestSet.next_state-476"><span class="linenos">476</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestSet.next_state-477"><a href="#FindBestSet.next_state-477"><span class="linenos">477</span></a>            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -8195,9 +8195,9 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestSet.direction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-476"><a href="#FindBestSet.direction-476"><span class="linenos">476</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestSet.direction-477"><a href="#FindBestSet.direction-477"><span class="linenos">477</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
-</span><span id="FindBestSet.direction-478"><a href="#FindBestSet.direction-478"><span class="linenos">478</span></a>        <span class="k">return</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestSet.direction-479"><a href="#FindBestSet.direction-479"><span class="linenos">479</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestSet.direction-480"><a href="#FindBestSet.direction-480"><span class="linenos">480</span></a>        <span class="sd">&quot;&quot;&quot;This eval doesn&#39;t care about direction. &quot;&quot;&quot;</span>
+</span><span id="FindBestSet.direction-481"><a href="#FindBestSet.direction-481"><span class="linenos">481</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -8228,39 +8228,39 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestRun"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-481"><a href="#FindBestRun-481"><span class="linenos">481</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
-</span><span id="FindBestRun-482"><a href="#FindBestRun-482"><span class="linenos">482</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
-</span><span id="FindBestRun-483"><a href="#FindBestRun-483"><span class="linenos">483</span></a>
-</span><span id="FindBestRun-484"><a href="#FindBestRun-484"><span class="linenos">484</span></a><span class="sd">    Outcomes must be `int`s.</span>
-</span><span id="FindBestRun-485"><a href="#FindBestRun-485"><span class="linenos">485</span></a>
-</span><span id="FindBestRun-486"><a href="#FindBestRun-486"><span class="linenos">486</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
-</span><span id="FindBestRun-487"><a href="#FindBestRun-487"><span class="linenos">487</span></a>
-</span><span id="FindBestRun-488"><a href="#FindBestRun-488"><span class="linenos">488</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
-</span><span id="FindBestRun-489"><a href="#FindBestRun-489"><span class="linenos">489</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun-484"><a href="#FindBestRun-484"><span class="linenos">484</span></a><span class="k">class</span> <span class="nc">FindBestRun</span><span class="p">(</span><span class="n">EvalPool</span><span class="p">):</span>
+</span><span id="FindBestRun-485"><a href="#FindBestRun-485"><span class="linenos">485</span></a>    <span class="sd">&quot;&quot;&quot;A `EvalPool` that takes the best run (aka &quot;straight&quot;) in a pool.</span>
+</span><span id="FindBestRun-486"><a href="#FindBestRun-486"><span class="linenos">486</span></a>
+</span><span id="FindBestRun-487"><a href="#FindBestRun-487"><span class="linenos">487</span></a><span class="sd">    Outcomes must be `int`s.</span>
+</span><span id="FindBestRun-488"><a href="#FindBestRun-488"><span class="linenos">488</span></a>
+</span><span id="FindBestRun-489"><a href="#FindBestRun-489"><span class="linenos">489</span></a><span class="sd">    This prioritizes run size, then the outcome.</span>
 </span><span id="FindBestRun-490"><a href="#FindBestRun-490"><span class="linenos">490</span></a>
-</span><span id="FindBestRun-491"><a href="#FindBestRun-491"><span class="linenos">491</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun-492"><a href="#FindBestRun-492"><span class="linenos">492</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun-493"><a href="#FindBestRun-493"><span class="linenos">493</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun-494"><a href="#FindBestRun-494"><span class="linenos">494</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-495"><a href="#FindBestRun-495"><span class="linenos">495</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="FindBestRun-496"><a href="#FindBestRun-496"><span class="linenos">496</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun-497"><a href="#FindBestRun-497"><span class="linenos">497</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-498"><a href="#FindBestRun-498"><span class="linenos">498</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun-499"><a href="#FindBestRun-499"><span class="linenos">499</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-500"><a href="#FindBestRun-500"><span class="linenos">500</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-501"><a href="#FindBestRun-501"><span class="linenos">501</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun-502"><a href="#FindBestRun-502"><span class="linenos">502</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun-503"><a href="#FindBestRun-503"><span class="linenos">503</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun-504"><a href="#FindBestRun-504"><span class="linenos">504</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
-</span><span id="FindBestRun-505"><a href="#FindBestRun-505"><span class="linenos">505</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
-</span><span id="FindBestRun-506"><a href="#FindBestRun-506"><span class="linenos">506</span></a>
-</span><span id="FindBestRun-507"><a href="#FindBestRun-507"><span class="linenos">507</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-508"><a href="#FindBestRun-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-509"><a href="#FindBestRun-509"><span class="linenos">509</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-</span><span id="FindBestRun-510"><a href="#FindBestRun-510"><span class="linenos">510</span></a>
-</span><span id="FindBestRun-511"><a href="#FindBestRun-511"><span class="linenos">511</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun-512"><a href="#FindBestRun-512"><span class="linenos">512</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun-513"><a href="#FindBestRun-513"><span class="linenos">513</span></a>        <span class="k">return</span> <span class="mi">1</span>
+</span><span id="FindBestRun-491"><a href="#FindBestRun-491"><span class="linenos">491</span></a><span class="sd">    The outcomes are `(run_size, outcome)`.</span>
+</span><span id="FindBestRun-492"><a href="#FindBestRun-492"><span class="linenos">492</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-493"><a href="#FindBestRun-493"><span class="linenos">493</span></a>
+</span><span id="FindBestRun-494"><a href="#FindBestRun-494"><span class="linenos">494</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun-495"><a href="#FindBestRun-495"><span class="linenos">495</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun-496"><a href="#FindBestRun-496"><span class="linenos">496</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun-497"><a href="#FindBestRun-497"><span class="linenos">497</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-498"><a href="#FindBestRun-498"><span class="linenos">498</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="FindBestRun-499"><a href="#FindBestRun-499"><span class="linenos">499</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun-500"><a href="#FindBestRun-500"><span class="linenos">500</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-501"><a href="#FindBestRun-501"><span class="linenos">501</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun-502"><a href="#FindBestRun-502"><span class="linenos">502</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-503"><a href="#FindBestRun-503"><span class="linenos">503</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-504"><a href="#FindBestRun-504"><span class="linenos">504</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun-505"><a href="#FindBestRun-505"><span class="linenos">505</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun-506"><a href="#FindBestRun-506"><span class="linenos">506</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun-507"><a href="#FindBestRun-507"><span class="linenos">507</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
+</span><span id="FindBestRun-508"><a href="#FindBestRun-508"><span class="linenos">508</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+</span><span id="FindBestRun-509"><a href="#FindBestRun-509"><span class="linenos">509</span></a>
+</span><span id="FindBestRun-510"><a href="#FindBestRun-510"><span class="linenos">510</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-511"><a href="#FindBestRun-511"><span class="linenos">511</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-512"><a href="#FindBestRun-512"><span class="linenos">512</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+</span><span id="FindBestRun-513"><a href="#FindBestRun-513"><span class="linenos">513</span></a>
+</span><span id="FindBestRun-514"><a href="#FindBestRun-514"><span class="linenos">514</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun-515"><a href="#FindBestRun-515"><span class="linenos">515</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun-516"><a href="#FindBestRun-516"><span class="linenos">516</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
 
@@ -8297,21 +8297,21 @@ ascending and others are descending.</li>
 
     </div>
     <a class="headerlink" href="#FindBestRun.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-491"><a href="#FindBestRun.next_state-491"><span class="linenos">491</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="FindBestRun.next_state-492"><a href="#FindBestRun.next_state-492"><span class="linenos">492</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
-</span><span id="FindBestRun.next_state-493"><a href="#FindBestRun.next_state-493"><span class="linenos">493</span></a><span class="sd">        then saves the run to the state.</span>
-</span><span id="FindBestRun.next_state-494"><a href="#FindBestRun.next_state-494"><span class="linenos">494</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.next_state-495"><a href="#FindBestRun.next_state-495"><span class="linenos">495</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="FindBestRun.next_state-496"><a href="#FindBestRun.next_state-496"><span class="linenos">496</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="FindBestRun.next_state-497"><a href="#FindBestRun.next_state-497"><span class="linenos">497</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-498"><a href="#FindBestRun.next_state-498"><span class="linenos">498</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-499"><a href="#FindBestRun.next_state-499"><span class="linenos">499</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-500"><a href="#FindBestRun.next_state-500"><span class="linenos">500</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-501"><a href="#FindBestRun.next_state-501"><span class="linenos">501</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="FindBestRun.next_state-502"><a href="#FindBestRun.next_state-502"><span class="linenos">502</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FindBestRun.next_state-503"><a href="#FindBestRun.next_state-503"><span class="linenos">503</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="FindBestRun.next_state-504"><a href="#FindBestRun.next_state-504"><span class="linenos">504</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
-</span><span id="FindBestRun.next_state-505"><a href="#FindBestRun.next_state-505"><span class="linenos">505</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.next_state-494"><a href="#FindBestRun.next_state-494"><span class="linenos">494</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="FindBestRun.next_state-495"><a href="#FindBestRun.next_state-495"><span class="linenos">495</span></a>        <span class="sd">&quot;&quot;&quot;Increments the current run if at least one die rolled this outcome,</span>
+</span><span id="FindBestRun.next_state-496"><a href="#FindBestRun.next_state-496"><span class="linenos">496</span></a><span class="sd">        then saves the run to the state.</span>
+</span><span id="FindBestRun.next_state-497"><a href="#FindBestRun.next_state-497"><span class="linenos">497</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.next_state-498"><a href="#FindBestRun.next_state-498"><span class="linenos">498</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">prev_outcome</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="FindBestRun.next_state-499"><a href="#FindBestRun.next_state-499"><span class="linenos">499</span></a>                                                                  <span class="n">outcome</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="FindBestRun.next_state-500"><a href="#FindBestRun.next_state-500"><span class="linenos">500</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-501"><a href="#FindBestRun.next_state-501"><span class="linenos">501</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="o">==</span> <span class="n">prev_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-502"><a href="#FindBestRun.next_state-502"><span class="linenos">502</span></a>                <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-503"><a href="#FindBestRun.next_state-503"><span class="linenos">503</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-504"><a href="#FindBestRun.next_state-504"><span class="linenos">504</span></a>                <span class="n">run</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="FindBestRun.next_state-505"><a href="#FindBestRun.next_state-505"><span class="linenos">505</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FindBestRun.next_state-506"><a href="#FindBestRun.next_state-506"><span class="linenos">506</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="FindBestRun.next_state-507"><a href="#FindBestRun.next_state-507"><span class="linenos">507</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">((</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span>
+</span><span id="FindBestRun.next_state-508"><a href="#FindBestRun.next_state-508"><span class="linenos">508</span></a>                   <span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">best_run_outcome</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -8332,9 +8332,9 @@ then saves the run to the state.</p>
 
     </div>
     <a class="headerlink" href="#FindBestRun.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-507"><a href="#FindBestRun.final_outcome-507"><span class="linenos">507</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.final_outcome-508"><a href="#FindBestRun.final_outcome-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.final_outcome-509"><a href="#FindBestRun.final_outcome-509"><span class="linenos">509</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.final_outcome-510"><a href="#FindBestRun.final_outcome-510"><span class="linenos">510</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.final_outcome-511"><a href="#FindBestRun.final_outcome-511"><span class="linenos">511</span></a>        <span class="sd">&quot;&quot;&quot;Returns the best run. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.final_outcome-512"><a href="#FindBestRun.final_outcome-512"><span class="linenos">512</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -8354,9 +8354,9 @@ then saves the run to the state.</p>
 
     </div>
     <a class="headerlink" href="#FindBestRun.direction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-511"><a href="#FindBestRun.direction-511"><span class="linenos">511</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="FindBestRun.direction-512"><a href="#FindBestRun.direction-512"><span class="linenos">512</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
-</span><span id="FindBestRun.direction-513"><a href="#FindBestRun.direction-513"><span class="linenos">513</span></a>        <span class="k">return</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FindBestRun.direction-514"><a href="#FindBestRun.direction-514"><span class="linenos">514</span></a>    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
+</span><span id="FindBestRun.direction-515"><a href="#FindBestRun.direction-515"><span class="linenos">515</span></a>        <span class="sd">&quot;&quot;&quot;This only considers outcomes in ascending order. &quot;&quot;&quot;</span>
+</span><span id="FindBestRun.direction-516"><a href="#FindBestRun.direction-516"><span class="linenos">516</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span></pre></div>
 
 
