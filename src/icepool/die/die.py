@@ -1073,7 +1073,7 @@ class Die():
         This is done by calling the constructor for each outcome's type with no
         arguments.
 
-        The result will have a single outcome with weight 1.
+        The result will have the same denominator as this die.
 
         Raises:
             `ValueError` if the zeros did not resolve to a single outcome.
@@ -1081,7 +1081,7 @@ class Die():
         result = self.unary_op(Die._zero)
         if result.num_outcomes() != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
-        return result.reduce_weights()
+        return result
 
     def zero_outcome(self):
         """Returns a zero-outcome for this die.
