@@ -428,7 +428,10 @@ sum_pool = SumPool()
 
 
 class EnumeratePool(EvalPool):
-    """A `EvalPool` that enumerates all possible (sorted) rolls of a single pool."""
+    """A `EvalPool` that enumerates all possible (sorted) rolls of a single pool.
+
+    This is expensive and not recommended unless few dice are being kept.
+    """
 
     def __init__(self, direction=1):
         """`direction` determines the sort order.

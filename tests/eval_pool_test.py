@@ -3,6 +3,8 @@ import _context
 import icepool
 import pytest
 
+from icepool import d6
+
 class SumRerollIfAnyOnes(icepool.EvalPool):
     def next_state(self, state, outcome, count):
         if outcome == 1 and count > 0:
@@ -144,10 +146,17 @@ def test_joint_eval():
     expected = (3 @ icepool.d6).sub(lambda x: (x, x))
     assert result.equals(expected)
 
+def test_enumerate_pool_vs_cartesian_product():
+    result = icepool.enumerate_pool(d6.pool(3))
+    expected = icepool.Die((d6, d6, d6)).sub(lambda x: tuple(sorted(x)))
+    assert result.equals(expected)
+
 @pytest.mark.parametrize('pool', test_pools)
-def test_enumerate_pool(pool):
+def test_enumerate_pool_vs_sum(pool):
     if any(x < 0 for x in pool.count_dice()):
         with pytest.raises(ValueError):
             icepool.enumerate_pool(pool)
     else:
-        assert icepool.enumerate_pool(pool).sub(sum).equals(pool.sum())
+        result = icepool.enumerate_pool(pool).sub(sum)
+        expected = pool.sum()
+        assert result.equals(expected)
