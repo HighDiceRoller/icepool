@@ -173,6 +173,7 @@ def reduce(func, dice, *, initial=None):
         initial: If provided, this will be placed at the front of the sequence
             of dice.
     """
+    # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result = initial
@@ -203,6 +204,7 @@ def accumulate(func, dice, *, initial=None):
         initial: If provided, this will be placed at the front of the sequence
             of dice.
     """
+    # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result = initial
