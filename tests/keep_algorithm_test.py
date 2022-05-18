@@ -4,11 +4,12 @@ import icepool
 import icepool.die.keep
 import pytest
 
-from icepool import d4, d6, d8, d10, d12
+from icepool import d4, d6, d8, d10, d12, d20
 
 test_dice = [
     (),
     (d6,),
+    (d20, 10),
     (d6, d6, d6),
     (d4, d6, d8, d10),
     (-d4, -d6, -d8, -d10),
