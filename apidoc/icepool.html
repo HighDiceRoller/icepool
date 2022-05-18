@@ -1818,7 +1818,7 @@ from icepool import d6  # ok
 </span><span id="Die-1074"><a href="#Die-1074"><span class="linenos">1074</span></a><span class="sd">        This is done by calling the constructor for each outcome&#39;s type with no</span>
 </span><span id="Die-1075"><a href="#Die-1075"><span class="linenos">1075</span></a><span class="sd">        arguments.</span>
 </span><span id="Die-1076"><a href="#Die-1076"><span class="linenos">1076</span></a>
-</span><span id="Die-1077"><a href="#Die-1077"><span class="linenos">1077</span></a><span class="sd">        The result will have a single outcome with weight 1.</span>
+</span><span id="Die-1077"><a href="#Die-1077"><span class="linenos">1077</span></a><span class="sd">        The result will have the same denominator as this die.</span>
 </span><span id="Die-1078"><a href="#Die-1078"><span class="linenos">1078</span></a>
 </span><span id="Die-1079"><a href="#Die-1079"><span class="linenos">1079</span></a><span class="sd">        Raises:</span>
 </span><span id="Die-1080"><a href="#Die-1080"><span class="linenos">1080</span></a><span class="sd">            `ValueError` if the zeros did not resolve to a single outcome.</span>
@@ -1826,7 +1826,7 @@ from icepool import d6  # ok
 </span><span id="Die-1082"><a href="#Die-1082"><span class="linenos">1082</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
 </span><span id="Die-1083"><a href="#Die-1083"><span class="linenos">1083</span></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="Die-1084"><a href="#Die-1084"><span class="linenos">1084</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
-</span><span id="Die-1085"><a href="#Die-1085"><span class="linenos">1085</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span>
+</span><span id="Die-1085"><a href="#Die-1085"><span class="linenos">1085</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span><span id="Die-1086"><a href="#Die-1086"><span class="linenos">1086</span></a>
 </span><span id="Die-1087"><a href="#Die-1087"><span class="linenos">1087</span></a>    <span class="k">def</span> <span class="nf">zero_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Die-1088"><a href="#Die-1088"><span class="linenos">1088</span></a>        <span class="sd">&quot;&quot;&quot;Returns a zero-outcome for this die.</span>
@@ -4763,7 +4763,7 @@ higher outcomes being removed (i.e. rerolled).</li>
 </span><span id="Die.zero-1074"><a href="#Die.zero-1074"><span class="linenos">1074</span></a><span class="sd">        This is done by calling the constructor for each outcome&#39;s type with no</span>
 </span><span id="Die.zero-1075"><a href="#Die.zero-1075"><span class="linenos">1075</span></a><span class="sd">        arguments.</span>
 </span><span id="Die.zero-1076"><a href="#Die.zero-1076"><span class="linenos">1076</span></a>
-</span><span id="Die.zero-1077"><a href="#Die.zero-1077"><span class="linenos">1077</span></a><span class="sd">        The result will have a single outcome with weight 1.</span>
+</span><span id="Die.zero-1077"><a href="#Die.zero-1077"><span class="linenos">1077</span></a><span class="sd">        The result will have the same denominator as this die.</span>
 </span><span id="Die.zero-1078"><a href="#Die.zero-1078"><span class="linenos">1078</span></a>
 </span><span id="Die.zero-1079"><a href="#Die.zero-1079"><span class="linenos">1079</span></a><span class="sd">        Raises:</span>
 </span><span id="Die.zero-1080"><a href="#Die.zero-1080"><span class="linenos">1080</span></a><span class="sd">            `ValueError` if the zeros did not resolve to a single outcome.</span>
@@ -4771,7 +4771,7 @@ higher outcomes being removed (i.e. rerolled).</li>
 </span><span id="Die.zero-1082"><a href="#Die.zero-1082"><span class="linenos">1082</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">)</span>
 </span><span id="Die.zero-1083"><a href="#Die.zero-1083"><span class="linenos">1083</span></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">num_outcomes</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="Die.zero-1084"><a href="#Die.zero-1084"><span class="linenos">1084</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;zero() did not resolve to a single outcome.&#39;</span><span class="p">)</span>
-</span><span id="Die.zero-1085"><a href="#Die.zero-1085"><span class="linenos">1085</span></a>        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span>
+</span><span id="Die.zero-1085"><a href="#Die.zero-1085"><span class="linenos">1085</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -4780,7 +4780,7 @@ higher outcomes being removed (i.e. rerolled).</li>
 <p>This is done by calling the constructor for each outcome's type with no
 arguments.</p>
 
-<p>The result will have a single outcome with weight 1.</p>
+<p>The result will have the same denominator as this die.</p>
 
 <h6 id="raises">Raises</h6>
 
