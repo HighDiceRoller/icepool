@@ -824,29 +824,29 @@ class Die():
     # Pools.
 
     @cached_property
-    def _repeat_and_sum_cache(self):
+    def _sum_cache(self):
         return {}
 
-    def repeat_and_sum(self, num_dice):
+    def sum(self, num_dice):
         """Roll this die `num_dice` times and sum the results.
 
         If `num_dice` is negative, roll the die `abs(num_dice)` times and negate
         the result.
         """
-        if num_dice in self._repeat_and_sum_cache:
-            return self._repeat_and_sum_cache[num_dice]
+        if num_dice in self._sum_cache:
+            return self._sum_cache[num_dice]
 
         if num_dice < 0:
-            result = -self.repeat_and_sum(-num_dice)
+            result = -self.sum(-num_dice)
         elif num_dice == 0:
             result = self.zero()
         elif num_dice == 1:
             result = self
         else:
             # Binary split seems to perform much worse.
-            result = self + self.repeat_and_sum(num_dice - 1)
+            result = self + self.sum(num_dice - 1)
 
-        self._repeat_and_sum_cache[num_dice] = result
+        self._sum_cache[num_dice] = result
         return result
 
     def d(self, other):
@@ -866,7 +866,7 @@ class Die():
                                 abs(self.max_outcome()))
         for die_count, die_count_weight in self.items():
             factor = other.denominator()**(max_abs_die_count - abs(die_count))
-            subresult = other.repeat_and_sum(die_count)
+            subresult = other.sum(die_count)
             for outcome, subresult_weight in subresult.items():
                 data[outcome] += subresult_weight * die_count_weight * factor
 
