@@ -44,7 +44,7 @@ Reroll = SpecialValue.Reroll
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
-    'max_outcome', 'min_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
+    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
     'PoolBase', 'Pool', 'standard_pool', 'EvalPool', 'WrapFuncEval',
     'JointEval', 'SumPool', 'FindBestSet', 'FindBestRun'
 ]
