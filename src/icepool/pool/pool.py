@@ -197,8 +197,8 @@ class Pool(icepool.PoolBase):
     def __new__(cls,
                 die,
                 num_dice=None,
-                count_dice=None,
                 *,
+                count_dice=None,
                 truncate_min=None,
                 truncate_max=None):
         """Constructor for a pool.
