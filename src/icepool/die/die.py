@@ -881,8 +881,8 @@ class Die():
 
     def keep(self,
              num_dice=None,
-             count_dice=None,
              *,
+             count_dice=None,
              truncate_min=None,
              truncate_max=None):
         """Roll several of this die and sum some or all of the sorted results.
@@ -948,7 +948,7 @@ class Die():
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
         return self.keep(num_dice,
-                         count_dice,
+                         count_dice=count_dice,
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 
@@ -993,7 +993,7 @@ class Die():
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
         return self.keep(num_dice,
-                         count_dice,
+                         count_dice=count_dice,
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 

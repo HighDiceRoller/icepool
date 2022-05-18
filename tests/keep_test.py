@@ -69,7 +69,7 @@ def test_lowest_drop_highest(num_keep):
 @pytest.mark.parametrize('keep_index', range(0, 4))
 def test_keep_index(keep_index):
     die = icepool.d12
-    result = die.keep(4, keep_index)
+    result = die.keep(4, count_dice=keep_index)
     expected = bf_keep(die, 4, keep_index)
     assert result.equals(expected)
 
