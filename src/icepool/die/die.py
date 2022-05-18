@@ -933,13 +933,13 @@ class Die():
         else:
             return pool.sum()
 
-    def highest(self,
-                num_dice=None,
-                num_keep=1,
-                num_drop=0,
-                *,
-                truncate_min=None,
-                truncate_max=None):
+    def keep_highest(self,
+                     num_dice=None,
+                     num_keep=1,
+                     num_drop=0,
+                     *,
+                     truncate_min=None,
+                     truncate_max=None):
         """Roll several of this die and sum the sorted results from the highest.
 
         Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
@@ -962,7 +962,7 @@ class Die():
             A die representing the probability distribution of the sum.
         """
         if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
-            return self._highest_single(num_dice)
+            return self._keep_highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
@@ -971,20 +971,20 @@ class Die():
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 
-    def _highest_single(self, num_dice=None):
+    def _keep_highest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single highest die. """
         if num_dice is None:
             return self.zero()
         return icepool.from_cweights(self.outcomes(),
                                      (x**num_dice for x in self.cweights()))
 
-    def lowest(self,
-               num_dice=None,
-               num_keep=1,
-               num_drop=0,
-               *,
-               truncate_min=None,
-               truncate_max=None):
+    def keep_lowest(self,
+                    num_dice=None,
+                    num_keep=1,
+                    num_drop=0,
+                    *,
+                    truncate_min=None,
+                    truncate_max=None):
         """Roll several of this die and sum the sorted results from the lowest.
 
         Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
@@ -1007,7 +1007,8 @@ class Die():
             A die representing the probability distribution of the sum.
         """
         if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
-            return self._lowest_single(num_dice)
+            return self._keep_lowest_single(num_dice)
+
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
@@ -1016,7 +1017,7 @@ class Die():
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 
-    def _lowest_single(self, num_dice=None):
+    def _keep_lowest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single lowest die. """
         if num_dice is None:
             return self.zero()

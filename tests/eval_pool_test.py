@@ -36,13 +36,13 @@ def test_sum_descending_limit_outcomes():
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
-def test_sum_descending_highest():
+def test_sum_descending_keep_highest():
     result = SumPoolDescending().eval(icepool.d6.pool()[0, 1, 1, 1])
-    expected = icepool.d6.highest(4, 3)
+    expected = icepool.d6.keep_highest(4, 3)
     assert result.equals(expected)
 
 def test_zero_weight_outcomes():
-    result = icepool.Die(*range(5), weights=[0, 1, 0, 1, 0]).highest(3, 2)
+    result = icepool.Die(*range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
 # The auto direction should maximize skips.
@@ -64,7 +64,7 @@ def sum_dice_func(state, outcome, count):
 
 def test_wrap_func_eval():
     result = icepool.d6.pool()[0,0,1,1,1].eval(sum_dice_func)
-    expected = icepool.d6.highest(5, 3)
+    expected = icepool.d6.keep_highest(5, 3)
     assert result.equals(expected)
 
 def test_max_outcome_rounding():
