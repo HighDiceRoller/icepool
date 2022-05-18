@@ -6,6 +6,14 @@ import math
 
 
 def lowest(*dice, num_keep=1, num_drop=0):
+    """The lowest outcome or sum of the lowest outcomes among the dice.
+
+    Args:
+        *dice: The dice to be considered.
+        num_keep: The number of lowest dice will be summed.
+        num_drop: This number of lowest dice will be dropped before keeping dice
+            to be summed.
+    """
     if num_keep < 0:
         raise ValueError(f'num_drop={num_keep} cannot be negative.')
     if num_drop < 0:
@@ -37,6 +45,14 @@ def lowest(*dice, num_keep=1, num_drop=0):
 
 
 def highest(*dice, num_keep=1, num_drop=0):
+    """The highest outcome or sum of the highest outcomes among the dice.
+
+    Args:
+        *dice: The dice to be considered.
+        num_keep: The number of highest dice will be summed.
+        num_drop: This number of highest dice will be dropped before keeping dice
+            to be summed.
+    """
     if num_keep < 0:
         raise ValueError(f'num_drop={num_keep} cannot be negative.')
     if num_drop < 0:

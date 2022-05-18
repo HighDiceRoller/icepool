@@ -22,8 +22,8 @@ from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
 
 from icepool.die.die import Die
 
-highest = Die.highest
-lowest = Die.lowest
+from icepool.die.keep import lowest, highest
+
 max_outcome = Die.max_outcome
 min_outcome = Die.min_outcome
 
