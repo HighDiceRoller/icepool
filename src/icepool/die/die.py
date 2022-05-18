@@ -962,7 +962,7 @@ class Die():
             A die representing the probability distribution of the sum.
         """
         if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
-            return self.highest_single(num_dice)
+            return self._highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
@@ -971,7 +971,7 @@ class Die():
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 
-    def highest_single(self, num_dice=None):
+    def _highest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single highest die. """
         if num_dice is None:
             return self.zero()
@@ -1007,7 +1007,7 @@ class Die():
             A die representing the probability distribution of the sum.
         """
         if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
-            return self.lowest_single(num_dice)
+            return self._lowest_single(num_dice)
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
@@ -1016,7 +1016,7 @@ class Die():
                          truncate_min=truncate_min,
                          truncate_max=truncate_max)
 
-    def lowest_single(self, num_dice=None):
+    def _lowest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single lowest die. """
         if num_dice is None:
             return self.zero()
