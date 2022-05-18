@@ -1,0 +1,28 @@
+{
+  "icepool": {
+    "releases": {
+      "0.11.0": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "afb2c1164a1ea1f2b4f12381bf062012",
+            "sha256": "dc648b5f7ff8be8388d41a76a734d39b22e258107f7966e1f02a65fde8b6ad12"
+          },
+          "downloads": -1,
+          "filename": "icepool-0.11.0-py3-none-any.whl",
+          "has_sig": false,
+          "md5_digest": "afb2c1164a1ea1f2b4f12381bf062012",
+          "packagetype": "bdist_wheel",
+          "python_version": "py3",
+          "requires_python": ">=3.9",
+          "size": 36040,
+          "upload_time": "2022-05-12T06:31:21Z",
+          "upload_time_iso_8601": "2022-05-12T06:31:21Z",
+          "url": "./icepool-0.11.0-py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ]
+    }
+  }
+}
