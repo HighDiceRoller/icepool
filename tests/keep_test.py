@@ -140,19 +140,19 @@ def test_lowest():
     assert result.equals(expected)
 
 def test_common_truncation_identical():
-    assert icepool.die.keep._common_truncation(d6, d6, d6) == (0, d6, None)
+    assert icepool.die.keep._common_truncation(d6, d6, d6) == (d6, {'num_dice' : 3})
 
 def test_common_truncation_max():
-    assert icepool.die.keep._common_truncation(d6, d8, d12) == (1, d12, (6, 8, 12))
+    assert icepool.die.keep._common_truncation(d6, d8, d12) == (d12, {'truncate_max' : (6, 8, 12)})
 
 def test_common_truncation_min():
-    assert icepool.die.keep._common_truncation(-d6, -d8, -d12) == (-1, -d12, (-6, -8, -12))
+    assert icepool.die.keep._common_truncation(-d6, -d8, -d12) == (-d12, {'truncate_min' : (-6, -8, -12)})
 
 def test_common_truncation_mixed():
-    assert icepool.die.keep._common_truncation(d6, d4 + 1) == (None, None, None)
+    assert icepool.die.keep._common_truncation(d6, d4 + 1) == (None, None)
 
 def test_common_truncation_mixed2():
-    assert icepool.die.keep._common_truncation(d6, d4, d4 + 2) == (None, None, None)
+    assert icepool.die.keep._common_truncation(d6, d4, d4 + 2) == (None, None)
 
 def test_common_truncation_mixed3():
-    assert icepool.die.keep._common_truncation(-d6, d8, -d12) == (None, None, None)
+    assert icepool.die.keep._common_truncation(-d6, d8, -d12) == (None, None)
