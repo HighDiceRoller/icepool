@@ -73,6 +73,12 @@ def test_keep_index(keep_index):
     expected = bf_keep(die, 4, keep_index)
     assert result.equals(expected)
 
+def test_keep_all():
+    die = icepool.d12
+    result = die.keep(3)
+    expected = 3 @ icepool.d12
+    assert result.equals(expected)
+
 def test_truncate_max():
     die = icepool.d12
     result = die.keep(truncate_max=[8, 6])

@@ -827,7 +827,7 @@ class Die():
     def _sum_cache(self):
         return {}
 
-    def sum(self, num_dice):
+    def _sum_all(self, num_dice):
         """Roll this die `num_dice` times and sum the results.
 
         If `num_dice` is negative, roll the die `abs(num_dice)` times and negate
@@ -840,17 +840,30 @@ class Die():
             return self._sum_cache[num_dice]
 
         if num_dice < 0:
-            result = -self.sum(-num_dice)
+            result = -self._sum_all(-num_dice)
         elif num_dice == 0:
             result = self.zero()
         elif num_dice == 1:
             result = self
         else:
             # Binary split seems to perform much worse.
-            result = self + self.sum(num_dice - 1)
+            result = self + self._sum_all(num_dice - 1)
 
         self._sum_cache[num_dice] = result
         return result
+
+    def _sum_truncate(self, truncate_min, truncate_max):
+        """Sums truncated copies of this die.
+
+        At least one truncation should be provided.
+        """
+        if truncate_min is None:
+            truncate_min = ()
+        elif truncate_max is None:
+            truncate_max = ()
+        return sum(
+            self.truncate(a, b)
+            for a, b in itertools.zip_longest(truncate_min, truncate_max))
 
     def d(self, other):
         """Roll the left die, then roll the right die that many times and sum the outcomes.
@@ -869,7 +882,7 @@ class Die():
                                 abs(self.max_outcome()))
         for die_count, die_count_weight in self.items():
             factor = other.denominator()**(max_abs_die_count - abs(die_count))
-            subresult = other.sum(die_count)
+            subresult = other._sum_all(die_count)
             for outcome, subresult_weight in subresult.items():
                 data[outcome] += subresult_weight * die_count_weight * factor
 
@@ -904,6 +917,12 @@ class Die():
         Returns:
             A Die representing the probability distribution of the sum.
         """
+        if count_dice is None:
+            if truncate_min is None and truncate_max is None:
+                return self._sum_all(num_dice)
+            else:
+                return self._sum_truncate(truncate_min, truncate_max)
+
         pool = icepool.Pool(self,
                             num_dice,
                             count_dice=count_dice,

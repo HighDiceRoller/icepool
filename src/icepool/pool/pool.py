@@ -14,7 +14,10 @@ def canonicalize_pool_args(die, num_dice, count_dice, truncate_min,
     """Converts arguments to `Pool()` into a standard form.
 
     Returns:
-        `die, count_dice, truncate_min, truncate_max`: Canonicalized arguments.
+        die:
+        count_dice: In tuple form.
+        truncate_min: In tuple form, or `None` if there is no truncation on this side.
+        truncate_max: In tuple form, or `None` if there is no truncation on this side.
         convert_to_die: Iff `True`, `Pool()` should return a `Die` rather than
             a `Pool`.
     """
