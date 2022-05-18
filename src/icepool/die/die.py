@@ -832,6 +832,9 @@ class Die():
 
         If `num_dice` is negative, roll the die `abs(num_dice)` times and negate
         the result.
+
+        If you instead want to replace tuple (or other sequence) outcomes with
+        their sum, use `die.sub(sum)`.
         """
         if num_dice in self._sum_cache:
             return self._sum_cache[num_dice]
