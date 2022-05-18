@@ -17,15 +17,13 @@ __docformat__ = 'google'
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              from_cweights, from_sweights, from_rv, align,
-                              align_range, reduce, accumulate, apply)
+                              from_cweights, from_sweights, from_rv,
+                              min_outcome, max_outcome, align, align_range,
+                              reduce, accumulate, apply)
 
 from icepool.die.die import Die
 
 from icepool.die.keep import lowest, highest
-
-max_outcome = Die.max_outcome
-min_outcome = Die.min_outcome
 
 from icepool.pool.base import PoolBase
 from icepool.pool.pool import Pool, standard_pool

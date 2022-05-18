@@ -495,13 +495,13 @@ class Die():
 
     # Rerolls and other outcome management.
 
-    def min_outcome(*dice):
-        """Returns the minimum possible outcome among the dice. """
-        return min(die.outcomes()[0] for die in dice)
+    def min_outcome(self):
+        """Returns the minimum possible outcome of this die."""
+        return self.outcomes()[0]
 
-    def max_outcome(*dice):
-        """Returns the maximum possible outcome among the dice. """
-        return max(die.outcomes()[-1] for die in dice)
+    def max_outcome(self):
+        """Returns the maximum possible outcome of this die."""
+        return self.outcomes()[-1]
 
     def nearest_le(self, outcome):
         """Returns the nearest outcome that is <= the argument.
@@ -822,34 +822,6 @@ class Die():
                                denominator_method=denominator_method)
 
     # Pools.
-
-    def lowest(*dice):
-        """Roll all the dice and take the lowest.
-
-        The maximum outcome is equal to the least maximum outcome among all
-        input dice.
-        """
-        dice = [Die(die) for die in dice]
-        max_outcome = min(die.max_outcome() for die in dice)
-        dice = [die.clip(max_outcome=max_outcome) for die in dice]
-        dice = icepool.align(*dice)
-        sweights = tuple(
-            math.prod(t) for t in zip(*(die.sweights() for die in dice)))
-        return icepool.from_sweights(dice[0].outcomes(), sweights)
-
-    def highest(*dice):
-        """Roll all the dice and take the highest.
-
-        The minimum outcome is equal to the greatest minimum outcome among all
-        input dice.
-        """
-        dice = [Die(die) for die in dice]
-        min_outcome = max(die.min_outcome() for die in dice)
-        dice = [die.clip(min_outcome=min_outcome) for die in dice]
-        dice = icepool.align(*dice)
-        cweights = tuple(
-            math.prod(t) for t in zip(*(die.cweights() for die in dice)))
-        return icepool.from_cweights(dice[0].outcomes(), cweights)
 
     @cached_property
     def _repeat_and_sum_cache(self):

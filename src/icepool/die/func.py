@@ -127,6 +127,16 @@ def from_rv(rv, outcomes, denominator, **kwargs):
     return from_cweights(outcomes, cweights)
 
 
+def min_outcome(*dice):
+    """Returns the minimum possible outcome among the dice. """
+    return min(die.outcomes()[0] for die in dice)
+
+
+def max_outcome(*dice):
+    """Returns the maximum possible outcome among the dice. """
+    return max(die.outcomes()[-1] for die in dice)
+
+
 def align(*dice):
     """Pads dice with zero weights so that all have the same set of outcomes.
 
