@@ -1,0 +1,73 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-05-18T04:15:02.345227Z",
+      "format": null,
+      "last_modified": "2022-05-18T04:14:41.776439Z",
+      "mimetype": null,
+      "name": "contains_subset.ipynb",
+      "path": "stack_exchange/contains_subset.ipynb",
+      "size": 2328,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-05-18T04:15:02.345227Z",
+      "format": null,
+      "last_modified": "2022-05-18T04:14:41.776439Z",
+      "mimetype": null,
+      "name": "triangleish.ipynb",
+      "path": "stack_exchange/triangleish.ipynb",
+      "size": 62780,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-05-18T04:15:02.345227Z",
+      "format": null,
+      "last_modified": "2022-05-18T04:14:41.776439Z",
+      "mimetype": null,
+      "name": "odds_of_rolling_high_all_the_time.ipynb",
+      "path": "stack_exchange/odds_of_rolling_high_all_the_time.ipynb",
+      "size": 3365,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-05-18T04:15:02.345227Z",
+      "format": null,
+      "last_modified": "2022-05-18T04:14:41.776439Z",
+      "mimetype": null,
+      "name": "dependent_dice_rolls.ipynb",
+      "path": "stack_exchange/dependent_dice_rolls.ipynb",
+      "size": 7126,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-05-18T04:15:02.345227Z",
+      "format": null,
+      "last_modified": "2022-05-18T04:14:41.776439Z",
+      "mimetype": null,
+      "name": "risk_attrition.ipynb",
+      "path": "stack_exchange/risk_attrition.ipynb",
+      "size": 6123,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2022-05-18T04:15:02.345227Z",
+  "format": "json",
+  "last_modified": "2022-05-18T04:15:02.345227Z",
+  "mimetype": null,
+  "name": "stack_exchange",
+  "path": "stack_exchange",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

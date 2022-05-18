@@ -1,17 +1,31 @@
 {
-  "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "appName": "JupyterLite",
+    "appName": "Icepool Examples",
+    "appUrl": "./lab",
     "appVersion": "0.1.0-beta.7",
     "baseUrl": "./",
-    "appUrl": "./lab",
-    "faviconUrl": "./lab/favicon.ico",
-    "federated_extensions": [],
+    "collaborative": true,
+    "disabledExtensions": [
+      "@jupyterlab/server-proxy",
+      "jupyterlab-server-proxy",
+      "nbdime-jupyterlab"
+    ],
+    "exposeAppInBrowser": true,
+    "faviconUrl": "https://highdiceroller.github.io/icepool/notebooks/favicon.ico",
+    "federated_extensions": [
+      {
+        "extension": "./extension",
+        "liteExtension": false,
+        "load": "static/remoteEntry.3421943a0ce73f10909d.js",
+        "name": "@jupyter-widgets/jupyterlab-manager"
+      }
+    ],
     "fullLabextensionsUrl": "./extensions",
     "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
     "fullStaticUrl": "./build",
     "licensesUrl": "./lab/api/licenses",
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
     "preferredPath": "/"
-  }
+  },
+  "jupyter-lite-schema-version": 0
 }
