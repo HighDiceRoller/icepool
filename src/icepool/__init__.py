@@ -48,6 +48,5 @@ __all__ = [
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
     'max_outcome', 'min_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
     'PoolBase', 'Pool', 'standard_pool', 'EvalPool', 'WrapFuncEval',
-    'JointEval', 'SumPool', 'sum_pool', 'enumerate_pool', 'FindBestSet',
-    'FindBestRun'
+    'JointEval', 'SumPool', 'FindBestSet', 'FindBestRun'
 ]
