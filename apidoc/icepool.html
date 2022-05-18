@@ -229,13 +229,7 @@
                                 <a class="function" href="#Die.highest">highest</a>
                         </li>
                         <li>
-                                <a class="function" href="#Die.highest_single">highest_single</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Die.lowest">lowest</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Die.lowest_single">lowest_single</a>
                         </li>
                         <li>
                                 <a class="function" href="#Die.abs">abs</a>
@@ -1689,7 +1683,7 @@ from icepool import d6  # ok
 </span><span id="Die-963"><a href="#Die-963"><span class="linenos"> 963</span></a><span class="sd">            A die representing the probability distribution of the sum.</span>
 </span><span id="Die-964"><a href="#Die-964"><span class="linenos"> 964</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-965"><a href="#Die-965"><span class="linenos"> 965</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-966"><a href="#Die-966"><span class="linenos"> 966</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
+</span><span id="Die-966"><a href="#Die-966"><span class="linenos"> 966</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
 </span><span id="Die-967"><a href="#Die-967"><span class="linenos"> 967</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span>
 </span><span id="Die-968"><a href="#Die-968"><span class="linenos"> 968</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
 </span><span id="Die-969"><a href="#Die-969"><span class="linenos"> 969</span></a>        <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
@@ -1698,7 +1692,7 @@ from icepool import d6  # ok
 </span><span id="Die-972"><a href="#Die-972"><span class="linenos"> 972</span></a>                         <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span>
 </span><span id="Die-973"><a href="#Die-973"><span class="linenos"> 973</span></a>                         <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
 </span><span id="Die-974"><a href="#Die-974"><span class="linenos"> 974</span></a>
-</span><span id="Die-975"><a href="#Die-975"><span class="linenos"> 975</span></a>    <span class="k">def</span> <span class="nf">highest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="Die-975"><a href="#Die-975"><span class="linenos"> 975</span></a>    <span class="k">def</span> <span class="nf">_highest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="Die-976"><a href="#Die-976"><span class="linenos"> 976</span></a>        <span class="sd">&quot;&quot;&quot;Faster algorithm for keeping just the single highest die. &quot;&quot;&quot;</span>
 </span><span id="Die-977"><a href="#Die-977"><span class="linenos"> 977</span></a>        <span class="k">if</span> <span class="n">num_dice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-978"><a href="#Die-978"><span class="linenos"> 978</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
@@ -1734,7 +1728,7 @@ from icepool import d6  # ok
 </span><span id="Die-1008"><a href="#Die-1008"><span class="linenos">1008</span></a><span class="sd">            A die representing the probability distribution of the sum.</span>
 </span><span id="Die-1009"><a href="#Die-1009"><span class="linenos">1009</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-1010"><a href="#Die-1010"><span class="linenos">1010</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die-1011"><a href="#Die-1011"><span class="linenos">1011</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
+</span><span id="Die-1011"><a href="#Die-1011"><span class="linenos">1011</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
 </span><span id="Die-1012"><a href="#Die-1012"><span class="linenos">1012</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
 </span><span id="Die-1013"><a href="#Die-1013"><span class="linenos">1013</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
 </span><span id="Die-1014"><a href="#Die-1014"><span class="linenos">1014</span></a>        <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
@@ -1743,7 +1737,7 @@ from icepool import d6  # ok
 </span><span id="Die-1017"><a href="#Die-1017"><span class="linenos">1017</span></a>                         <span class="n">truncate_min</span><span class="o">=</span><span class="n">truncate_min</span><span class="p">,</span>
 </span><span id="Die-1018"><a href="#Die-1018"><span class="linenos">1018</span></a>                         <span class="n">truncate_max</span><span class="o">=</span><span class="n">truncate_max</span><span class="p">)</span>
 </span><span id="Die-1019"><a href="#Die-1019"><span class="linenos">1019</span></a>
-</span><span id="Die-1020"><a href="#Die-1020"><span class="linenos">1020</span></a>    <span class="k">def</span> <span class="nf">lowest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="Die-1020"><a href="#Die-1020"><span class="linenos">1020</span></a>    <span class="k">def</span> <span class="nf">_lowest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="Die-1021"><a href="#Die-1021"><span class="linenos">1021</span></a>        <span class="sd">&quot;&quot;&quot;Faster algorithm for keeping just the single lowest die. &quot;&quot;&quot;</span>
 </span><span id="Die-1022"><a href="#Die-1022"><span class="linenos">1022</span></a>        <span class="k">if</span> <span class="n">num_dice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-1023"><a href="#Die-1023"><span class="linenos">1023</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
@@ -4402,7 +4396,7 @@ This is not compatible with <code>truncate_min</code>.</li>
 </span><span id="Die.highest-963"><a href="#Die.highest-963"><span class="linenos">963</span></a><span class="sd">            A die representing the probability distribution of the sum.</span>
 </span><span id="Die.highest-964"><a href="#Die.highest-964"><span class="linenos">964</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.highest-965"><a href="#Die.highest-965"><span class="linenos">965</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.highest-966"><a href="#Die.highest-966"><span class="linenos">966</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
+</span><span id="Die.highest-966"><a href="#Die.highest-966"><span class="linenos">966</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_highest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
 </span><span id="Die.highest-967"><a href="#Die.highest-967"><span class="linenos">967</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">))</span>
 </span><span id="Die.highest-968"><a href="#Die.highest-968"><span class="linenos">968</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
 </span><span id="Die.highest-969"><a href="#Die.highest-969"><span class="linenos">969</span></a>        <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
@@ -4439,31 +4433,6 @@ higher outcomes being removed (i.e. rerolled).</li>
 <blockquote>
   <p>A die representing the probability distribution of the sum.</p>
 </blockquote>
-</div>
-
-
-                            </div>
-                            <div id="Die.highest_single" class="classattr">
-                                        <input id="Die.highest_single-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">highest_single</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span></span>)</span>
-
-                <label class="view-source-button" for="Die.highest_single-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Die.highest_single"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.highest_single-975"><a href="#Die.highest_single-975"><span class="linenos">975</span></a>    <span class="k">def</span> <span class="nf">highest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="Die.highest_single-976"><a href="#Die.highest_single-976"><span class="linenos">976</span></a>        <span class="sd">&quot;&quot;&quot;Faster algorithm for keeping just the single highest die. &quot;&quot;&quot;</span>
-</span><span id="Die.highest_single-977"><a href="#Die.highest_single-977"><span class="linenos">977</span></a>        <span class="k">if</span> <span class="n">num_dice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.highest_single-978"><a href="#Die.highest_single-978"><span class="linenos">978</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
-</span><span id="Die.highest_single-979"><a href="#Die.highest_single-979"><span class="linenos">979</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cweights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span>
-</span><span id="Die.highest_single-980"><a href="#Die.highest_single-980"><span class="linenos">980</span></a>                                     <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="n">num_dice</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">()))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Faster algorithm for keeping just the single highest die.</p>
 </div>
 
 
@@ -4508,7 +4477,7 @@ higher outcomes being removed (i.e. rerolled).</li>
 </span><span id="Die.lowest-1008"><a href="#Die.lowest-1008"><span class="linenos">1008</span></a><span class="sd">            A die representing the probability distribution of the sum.</span>
 </span><span id="Die.lowest-1009"><a href="#Die.lowest-1009"><span class="linenos">1009</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.lowest-1010"><a href="#Die.lowest-1010"><span class="linenos">1010</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">num_drop</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">truncate_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">truncate_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.lowest-1011"><a href="#Die.lowest-1011"><span class="linenos">1011</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
+</span><span id="Die.lowest-1011"><a href="#Die.lowest-1011"><span class="linenos">1011</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lowest_single</span><span class="p">(</span><span class="n">num_dice</span><span class="p">)</span>
 </span><span id="Die.lowest-1012"><a href="#Die.lowest-1012"><span class="linenos">1012</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="n">num_drop</span> <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
 </span><span id="Die.lowest-1013"><a href="#Die.lowest-1013"><span class="linenos">1013</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="n">num_keep</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_drop</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
 </span><span id="Die.lowest-1014"><a href="#Die.lowest-1014"><span class="linenos">1014</span></a>        <span class="n">count_dice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
@@ -4545,31 +4514,6 @@ higher outcomes being removed (i.e. rerolled).</li>
 <blockquote>
   <p>A die representing the probability distribution of the sum.</p>
 </blockquote>
-</div>
-
-
-                            </div>
-                            <div id="Die.lowest_single" class="classattr">
-                                        <input id="Die.lowest_single-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">lowest_single</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span></span>)</span>
-
-                <label class="view-source-button" for="Die.lowest_single-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Die.lowest_single"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.lowest_single-1020"><a href="#Die.lowest_single-1020"><span class="linenos">1020</span></a>    <span class="k">def</span> <span class="nf">lowest_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_dice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="Die.lowest_single-1021"><a href="#Die.lowest_single-1021"><span class="linenos">1021</span></a>        <span class="sd">&quot;&quot;&quot;Faster algorithm for keeping just the single lowest die. &quot;&quot;&quot;</span>
-</span><span id="Die.lowest_single-1022"><a href="#Die.lowest_single-1022"><span class="linenos">1022</span></a>        <span class="k">if</span> <span class="n">num_dice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.lowest_single-1023"><a href="#Die.lowest_single-1023"><span class="linenos">1023</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
-</span><span id="Die.lowest_single-1024"><a href="#Die.lowest_single-1024"><span class="linenos">1024</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_sweights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span>
-</span><span id="Die.lowest_single-1025"><a href="#Die.lowest_single-1025"><span class="linenos">1025</span></a>                                     <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="n">num_dice</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweights</span><span class="p">()))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Faster algorithm for keeping just the single lowest die.</p>
 </div>
 
 
