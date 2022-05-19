@@ -1,5 +1,12 @@
-## 0.11.1
+## 0.12.0
 
+* Free-function form of `lowest`, `highest` now selects between algorithms for better performance and generality.
+* Removed `die.lowest, `die.highest`.
+* `die.min_outcome`, `die.max_outcome` no longer take arguments beyond `self`.
+* No more (public) `repeat_and_sum`, as this is redundant with `@` and `die.keep()`.
+* No more public `die.keep_lowest_single()`, `die.keep_highest_single()`.
+* `count_dice` arguments are now keyword-only.
+* `die.zero()` no longer reduces weights to 1.
 * Update PyPi classifiers.
 
 ## 0.11.0
