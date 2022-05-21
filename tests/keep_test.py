@@ -66,25 +66,6 @@ def test_keep_lowest_drop_highest(num_keep):
     expected = bf_keep_lowest(die, 4, num_keep, num_drop=1)
     assert result.equals(expected)
 
-@pytest.mark.parametrize('keep_index', range(0, 4))
-def test_keep_index(keep_index):
-    die = icepool.d12
-    result = die.keep(4, count_dice=keep_index)
-    expected = bf_keep(die, 4, keep_index)
-    assert result.equals(expected)
-
-def test_keep_all():
-    die = icepool.d12
-    result = die.keep(3)
-    expected = 3 @ icepool.d12
-    assert result.equals(expected)
-
-def test_truncate_max():
-    die = icepool.d12
-    result = die.keep(truncate_max=[8, 6])
-    expected = icepool.d8 + icepool.d6
-    assert result.equals(expected)
-
 def test_mixed_keep_highest():
     die = icepool.d12
     result = die.keep_highest(truncate_max=[8, 6, 4], num_keep=2)

@@ -892,47 +892,6 @@ class Die():
         """Creates a pool from this die, as `icepool.Pool()`. """
         return icepool.Pool(self, *args, **kwargs)
 
-    def keep(self,
-             num_dice=None,
-             *,
-             count_dice=None,
-             truncate_min=None,
-             truncate_max=None):
-        """Roll several of this die and sum some or all of the sorted results.
-
-        Args:
-            num_dice: The number of dice to roll. All dice will have the same
-                outcomes as `self`.
-            count_dice: Only dice selected by this will be counted.
-                See `Pool.count_dice()` for details.
-            truncate_min: A sequence of one outcome per die.
-                That die will be truncated to that minimum outcome, with all
-                lower outcomes being removed (i.e. rerolled).
-                This is not compatible with `truncate_max`.
-            truncate_max: A sequence of one outcome per die.
-                That die will be truncated to that maximum outcome, with all
-                higher outcomes being removed (i.e. rerolled).
-                This is not compatible with `truncate_min`.
-
-        Returns:
-            A Die representing the probability distribution of the sum.
-        """
-        if count_dice is None:
-            if truncate_min is None and truncate_max is None:
-                return self._sum_all(num_dice)
-            else:
-                return self._sum_truncate(truncate_min, truncate_max)
-
-        pool = icepool.Pool(self,
-                            num_dice,
-                            count_dice=count_dice,
-                            truncate_min=truncate_min,
-                            truncate_max=truncate_max)
-        if isinstance(count_dice, int):
-            return pool
-        else:
-            return pool.sum()
-
     def keep_highest(self,
                      num_dice=None,
                      num_keep=1,
@@ -966,10 +925,10 @@ class Die():
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
-        return self.keep(num_dice,
+        return self.pool(num_dice,
                          count_dice=count_dice,
                          truncate_min=truncate_min,
-                         truncate_max=truncate_max)
+                         truncate_max=truncate_max).sum()
 
     def _keep_highest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single highest die. """
@@ -1012,10 +971,10 @@ class Die():
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
-        return self.keep(num_dice,
+        return self.pool(num_dice,
                          count_dice=count_dice,
                          truncate_min=truncate_min,
-                         truncate_max=truncate_max)
+                         truncate_max=truncate_max).sum()
 
     def _keep_lowest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single lowest die. """
