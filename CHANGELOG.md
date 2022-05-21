@@ -1,3 +1,8 @@
+## 0.12.1
+
+* Removed `Die.keep()`. Use `Die.pool(...).sum()`.
+* `highest`/`lowest` returns empty die if any of the input dice are empty.
+
 ## 0.12.0
 
 * Free-function form of `lowest`, `highest` now selects between algorithms for better performance and generality.
