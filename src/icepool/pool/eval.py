@@ -181,7 +181,7 @@ class EvalPool(ABC):
         direction = self.direction(*pools)
 
         if not direction:
-            # TODO: implement negative direction
+            # TODO: implement direction selection
             direction = 1
 
         if direction < 0:

@@ -105,13 +105,16 @@ def iter_pop_max(die, num_dice, max_outcome):
         yield popped_die, left_count, rolled_count, weight
 
 
+_pool_instance_cache = {}
+
+
 class PoolInternal():
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `EvalPool` to generate a result.
     """
 
-    def __init__(self, dice_counts, count_dice):
+    def __new__(cls, dice_counts, count_dice):
         """This should not be called directly. Use `Pool() or Die.pool()` to construct a pool.
 
         Args:
@@ -120,9 +123,17 @@ class PoolInternal():
             count_dice: At this point, this is a tuple with length equal to the
                 number of dice.
         """
-        self._dice = Counts(
+        counts_arg = tuple(
             sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
+        cache_key = (counts_arg, count_dice)
+        if cache_key in _pool_instance_cache:
+            return _pool_instance_cache[cache_key]
+
+        self = super(PoolInternal, cls).__new__(cls)
+        self._dice = Counts(counts_arg)
         self._count_dice = count_dice
+        _pool_instance_cache[cache_key] = self
+        return self
 
     @cached_property
     def _num_dice(self):
@@ -261,7 +272,7 @@ class PoolInternal():
             net_weight: The weight of this incremental result.
         """
         generators = [
-            iter_pop_max(die, die_count, min_outcome)
+            iter_pop_min(die, die_count, min_outcome)
             for die, die_count in self._dice.items()
         ]
         for pop in itertools.product(*generators):
