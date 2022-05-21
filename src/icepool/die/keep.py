@@ -19,29 +19,9 @@ def lowest(*dice, num_keep=1, num_drop=0):
     if num_drop < 0:
         raise ValueError(f'num_drop={num_drop} cannot be negative.')
 
-    dice = [icepool.Die(die) for die in dice]
-    if len(dice) == 0 or any(die.is_empty() for die in dice):
-        return icepool.Die()
-    if num_keep == 0 or num_drop >= len(dice):
-        return sum(die.zero() for die in dice)
-
-    if num_keep == 1 and num_drop == 0:
-        return _lowest_single(*dice)
-    elif num_keep >= len(dice) and num_drop == 0:
-        return sum(dice)
-
-    # Try to forumulate as a pool problem.
-    base_die, pool_kwargs = _common_truncation(*dice)
-
-    start = num_drop
-    stop = num_keep + num_drop
-
-    if base_die is not None:
-        count_dice = slice(start, stop)
-        return base_die.pool(count_dice=count_dice, **pool_kwargs).sum()
-
-    # In the worst case, fall back to reduce().
-    return _lowest_reduce(*dice, start=start, stop=stop)
+    start = min(num_drop, len(dice))
+    stop = min(num_keep + num_drop, len(dice))
+    return _keep(*dice, start=start, stop=stop)
 
 
 def highest(*dice, num_keep=1, num_drop=0):
@@ -58,29 +38,43 @@ def highest(*dice, num_keep=1, num_drop=0):
     if num_drop < 0:
         raise ValueError(f'num_drop={num_drop} cannot be negative.')
 
+    start = len(dice) - min(num_keep + num_drop, len(dice))
+    stop = len(dice) - min(num_drop, len(dice))
+    return _keep(*dice, start=start, stop=stop)
+
+
+def _keep(*dice, start, stop):
+    """Common code for `lowest` and `highest`.
+
+    Args:
+        *dice: The dice (not converted to `Die` yet).
+        start, stop: The slice `start:stop` will be kept. These will be between
+            0 and len(dice) inclusive.
+    """
     dice = [icepool.Die(die) for die in dice]
+
     if len(dice) == 0 or any(die.is_empty() for die in dice):
         return icepool.Die()
-    if num_keep == 0 or num_drop >= len(dice):
+
+    if start == stop:
         return sum(die.zero() for die in dice)
 
-    if num_keep == 1 and num_drop == 0:
-        return _highest_single(*dice)
-    elif num_keep >= len(dice) and num_drop == 0:
+    if start == 0 and stop == len(dice):
         return sum(dice)
+
+    if stop == 1:
+        return _lowest_single(*dice)
+
+    if start == len(dice) - 1:
+        return _highest_single(*dice)
 
     # Try to forumulate as a pool problem.
     base_die, pool_kwargs = _common_truncation(*dice)
-
-    start = -(num_keep + (num_drop or 0))
-    stop = -num_drop if num_drop > 0 else None
-
     if base_die is not None:
-        count_dice = slice(start, stop)
-        return base_die.pool(count_dice=count_dice, **pool_kwargs).sum()
+        return base_die.pool(count_dice=slice(start, stop), **pool_kwargs).sum()
 
-    # In the worst case, fall back to reduce().
-    return _highest_reduce(*dice, start=start, stop=stop)
+    # In the worst case, fall back to reduce()-based algorithm.
+    return _keep_reduce(*dice, start=start, stop=stop)
 
 
 def _lowest_single(*dice):
@@ -113,7 +107,30 @@ def _highest_single(*dice):
     return icepool.from_cweights(dice[0].outcomes(), cweights)
 
 
+def _keep_reduce(*dice, start, stop):
+    """Fallback algorithm for keep.
+
+    Tracks the k lowest or highest dice, whichever is more efficient.
+
+    Args:
+        *dice
+        start, stop: The slice `start:stop` will be kept. These will be between
+            0 and len(dice) inclusive. At least one die will be kept at this
+            point.
+    """
+    if start <= len(dice) - stop:
+        return _lowest_reduce(*dice, start=start, stop=stop)
+    else:
+        return _highest_reduce(*dice, start=start, stop=stop)
+
+
 def _lowest_reduce(*dice, start, stop):
+
+    # Sort the dice by a heuristic to try to reduce the average state size.
+    def sort_key(die):
+        return die.num_outcomes()
+
+    dice = sorted(dice, key=sort_key)
 
     def inner_binary(so_far, x):
         return tuple(sorted(so_far + (x,))[:stop])
@@ -123,6 +140,17 @@ def _lowest_reduce(*dice, start, stop):
 
 
 def _highest_reduce(*dice, start, stop):
+
+    # Sort the dice by a heuristic to try to reduce the average state size.
+    def sort_key(die):
+        return die.num_outcomes()
+
+    dice = sorted(dice, key=sort_key)
+
+    # Make indexes negative.
+    start = start - len(dice)
+    # 0 must be replaced by None or else the slice will be empty.
+    stop = (stop - len(dice)) or None
 
     def inner_binary(so_far, x):
         return tuple(sorted(so_far + (x,))[start:])
