@@ -66,30 +66,13 @@ def test_keep_lowest_drop_highest(num_keep):
     expected = bf_keep_lowest(die, 4, num_keep, num_drop=1)
     assert result.equals(expected)
 
-def test_mixed_keep_highest():
-    die = icepool.d12
-    result = die.keep_highest(truncate_max=[8, 6, 4], num_keep=2)
-    def func(*outcomes):
-        return sum(sorted(outcomes)[-2:])
-    expected = icepool.apply(func, icepool.d8, icepool.d6, icepool.d4)
-    assert result.equals(expected)
-
-def test_mixed_keep_lowest():
-    die = -icepool.d12
-    result = -die.keep_lowest(truncate_min=[-8, -6, -4], num_keep=2)
-    def func(*outcomes):
-        return sum(sorted(outcomes)[-2:])
-    expected = icepool.apply(func, icepool.d8, icepool.d6, icepool.d4)
-    assert result.equals(expected)
-
 def test_pool_select():
-    pool = icepool.Pool(icepool.d6, 5)
+    pool = icepool.Pool(*[icepool.d6] * 5)
     assert pool[-2].equals(pool[-2:-1].sum())
     assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
-    assert pool[-2:] == icepool.Pool(icepool.d6, 5, count_dice=slice(-2, None))
 
 def test_sum_from_pool():
-    pool = icepool.Pool(icepool.d6, 5)
+    pool = icepool.Pool(*[icepool.d6] * 5)
     assert pool.sum().equals(5 @ icepool.d6)
 
 def test_pool_select_multi():
@@ -125,21 +108,3 @@ def test_lowest():
     result = icepool.lowest(icepool.d6, icepool.d6)
     expected = icepool.d6.keep_lowest(2, 1)
     assert result.equals(expected)
-
-def test_common_truncation_identical():
-    assert icepool.die.keep._common_truncation(d6, d6, d6) == (d6, {'num_dice' : 3})
-
-def test_common_truncation_max():
-    assert icepool.die.keep._common_truncation(d6, d8, d12) == (d12, {'truncate_max' : (6, 8, 12)})
-
-def test_common_truncation_min():
-    assert icepool.die.keep._common_truncation(-d6, -d8, -d12) == (-d12, {'truncate_min' : (-6, -8, -12)})
-
-def test_common_truncation_mixed():
-    assert icepool.die.keep._common_truncation(d6, d4 + 1) == (None, None)
-
-def test_common_truncation_mixed2():
-    assert icepool.die.keep._common_truncation(d6, d4, d4 + 2) == (None, None)
-
-def test_common_truncation_mixed3():
-    assert icepool.die.keep._common_truncation(-d6, d8, -d12) == (None, None)

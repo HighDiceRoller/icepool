@@ -25,10 +25,8 @@ from icepool.die.die import Die
 
 from icepool.die.keep import lowest, highest
 
-from icepool.pool.base import PoolBase
-from icepool.pool.pool import Pool, standard_pool
+from icepool.pool.pool import Pool, standard_pool, PoolInternal
 from icepool.pool.eval import EvalPool, WrapFuncEval, JointEval, SumPool, sum_pool, enumerate_pool, FindBestSet, FindBestRun
-from icepool.pool.roll import PoolRoll  # Not used externally.
 
 import enum
 

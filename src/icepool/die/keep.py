@@ -68,13 +68,8 @@ def _keep(*dice, start, stop):
     if start == len(dice) - 1:
         return _highest_single(*dice)
 
-    # Try to forumulate as a pool problem.
-    base_die, pool_kwargs = _common_truncation(*dice)
-    if base_die is not None:
-        return base_die.pool(count_dice=slice(start, stop), **pool_kwargs).sum()
-
-    # In the worst case, fall back to reduce()-based algorithm.
-    return _keep_reduce(*dice, start=start, stop=stop)
+    # Use pool.
+    return icepool.Pool(*dice)[start:stop].sum()
 
 
 def _lowest_single(*dice):
@@ -157,54 +152,3 @@ def _highest_reduce(*dice, start, stop):
 
     rolls = icepool.reduce(inner_binary, dice, initial=())
     return rolls.sub(lambda t: sum(t[:stop]))
-
-
-def _common_truncation(*dice):
-    """Determines if the dice can be expressed as a one-sided truncation of a single base die.
-
-    Args:
-        dice: A sequence of dice (already converted to dice).
-
-    Returns:
-        base_die, pool_kwargs
-    """
-    base_die = dice[0]
-    truncate_max = True
-    truncate_min = True
-    for die in dice[1:]:
-        if die.num_outcomes() == base_die.num_outcomes():
-            if die.equals(base_die):
-                continue
-            else:
-                return None, None
-
-        if die.num_outcomes() > base_die.num_outcomes():
-            base_die, die = die, base_die
-
-        if truncate_min:
-            for a, b in zip(reversed(die.items()), reversed(base_die.items())):
-                if a != b:
-                    truncate_min = False
-                    break
-
-        if truncate_max:
-            for a, b in zip(die.items(), base_die.items()):
-                if a != b:
-                    truncate_max = False
-                    break
-
-        if not (truncate_min or truncate_max):
-            return None, None
-
-    if truncate_min and truncate_max:
-        return base_die, {'num_dice': len(dice)}
-    elif truncate_min:
-        return base_die, {
-            'truncate_min': tuple(die.min_outcome() for die in dice)
-        }
-    elif truncate_max:
-        return base_die, {
-            'truncate_max': tuple(die.max_outcome() for die in dice)
-        }
-    else:
-        return None, None

@@ -3,7 +3,7 @@ import _context
 import icepool
 import pytest
 
-from icepool import d6
+from icepool import d4, d6, d8, d10, d12
 
 class SumRerollIfAnyOnes(icepool.EvalPool):
     def next_state(self, state, outcome, count):
@@ -32,7 +32,7 @@ def test_sum_descending():
     assert result.equals(expected)
 
 def test_sum_descending_limit_outcomes():
-    result = -SumPoolDescending().eval((-icepool.d12).pool(truncate_min=[-8, -6]))
+    result = -SumPoolDescending().eval((-icepool.d8, -icepool.d6))
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
@@ -45,19 +45,21 @@ def test_zero_weight_outcomes():
     result = icepool.Die(*range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
+"""
 # The auto direction should maximize skips.
 def test_auto_direction_uniform():
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool(count_dice=[0,1,1,1]))
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool()[0,1,1,1])
     assert direction > 0
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool(count_dice=[1,1,1,0]))
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool()[1,1,1,0])
     assert direction < 0
 
 # Above that, the auto direction should favor the wide-to-narrow ordering.
 def test_auto_direction_max_truncate_min():
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d12.pool(truncate_min=[8,6,6,6], count_dice=[0,1,1,1]))
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.Pool(d8, d6, d6, d6)[0,1,1,1])
     assert direction < 0
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool(truncate_max=[8,6,6,6], count_dice=[0,1,1,1]))
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.Pool(d8, d6, d6, d6)[0,1,1,1])
     assert direction > 0
+"""
 
 def sum_dice_func(state, outcome, count):
     return (state or 0) + outcome * count
@@ -65,16 +67,6 @@ def sum_dice_func(state, outcome, count):
 def test_wrap_func_eval():
     result = icepool.d6.pool()[0,0,1,1,1].eval(sum_dice_func)
     expected = icepool.d6.keep_highest(5, 3)
-    assert result.equals(expected)
-
-def test_max_outcome_rounding():
-    result = icepool.d12.pool(truncate_max=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
-    expected = icepool.d12.pool(truncate_max=[8, 8, 8, 6, 6]).sum()
-    assert result.equals(expected)
-
-def test_min_outcome_rounding():
-    result = icepool.d12.pool(truncate_min=[8.5, 8.4, 8.3, 6.1, 6.0]).sum()
-    expected = icepool.d12.pool(truncate_min=[9, 9, 9, 7, 6]).sum()
     assert result.equals(expected)
 
 def test_standard_pool():
@@ -125,9 +117,7 @@ test_pools = [
     icepool.standard_pool(6,6,6,6)[0,1,1,1],
     icepool.standard_pool(6,6,6,6)[-1,0,0,1],
     icepool.standard_pool(12,10,8,8,6,6,6,4),
-    icepool.d12.pool(truncate_min=[1,2,2,3]),
-    icepool.d12.pool(truncate_min=[1,2,2,3])[0,0,0,1],
-    icepool.d12.pool(truncate_min=[1,2,2,3])[1,0,0,0],
+    icepool.Pool(-d6, -d8, -d10),
     (3 @ icepool.d6).pool(12)[-6:],
 ]
 

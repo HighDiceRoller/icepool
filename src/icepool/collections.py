@@ -17,6 +17,7 @@ class Counts():
         Args:
             items: A sequence of key, value pairs.
         """
+        self._d = {}
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid outcome.')
@@ -25,8 +26,7 @@ class Counts():
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' +
                                  type(value).__name__)
-
-        self._d = {k: v for k, v in items}
+            self._d[key] = value
 
     @cached_property
     def _has_zero_weights(self):

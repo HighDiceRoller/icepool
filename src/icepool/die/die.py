@@ -675,7 +675,7 @@ class Die():
     @cached_property
     def _popped_min(self):
         die = icepool.Die(*self.outcomes()[1:], weights=self.weights()[1:])
-        return die, self.outcomes()[0], self.weights()[0]
+        return die, self.weights()[0]
 
     def _pop_min(self):
         """Removes the min outcome and return the result, along with the popped outcome, and the popped weight.
@@ -688,7 +688,7 @@ class Die():
     @cached_property
     def _popped_max(self):
         die = icepool.Die(*self.outcomes()[:-1], weights=self.weights()[:-1])
-        return die, self.outcomes()[-1], self.weights()[-1]
+        return die, self.weights()[-1]
 
     def _pop_max(self):
         """Removes the max outcome and return the result, along with the popped outcome, and the popped weight.
@@ -888,21 +888,12 @@ class Die():
 
         return icepool.Die(data)
 
-    def pool(self, *args, **kwargs):
-        """Creates a pool from this die, as `icepool.Pool()`. """
-        return icepool.Pool(self, *args, **kwargs)
+    def pool(self, num_dice=1):
+        """Creates a pool from this die. """
+        return icepool.Pool(*([self] * num_dice))
 
-    def keep_highest(self,
-                     num_dice=None,
-                     num_keep=1,
-                     num_drop=0,
-                     *,
-                     truncate_min=None,
-                     truncate_max=None):
+    def keep_highest(self, num_dice, num_keep=1, num_drop=0):
         """Roll several of this die and sum the sorted results from the highest.
-
-        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
-        be provided.
 
         Args:
             num_dice: The number of dice to roll. All dice will have the same
@@ -910,25 +901,16 @@ class Die():
             num_keep: The number of dice to keep.
             num_drop: If provided, this many highest dice will be dropped before
                 keeping.
-            truncate_min: A sequence of one outcome per die.
-                That die will be truncated to that minimum outcome, with all
-                lower outcomes being removed (i.e. rerolled).
-            truncate_max: A sequence of one outcome per die.
-                That die will be truncated to that maximum outcome, with all
-                higher outcomes being removed (i.e. rerolled).
 
         Returns:
             A die representing the probability distribution of the sum.
         """
-        if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
+        if num_keep == 1 and num_drop == 0:
             return self._keep_highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
         count_dice = slice(start, stop)
-        return self.pool(num_dice,
-                         count_dice=count_dice,
-                         truncate_min=truncate_min,
-                         truncate_max=truncate_max).sum()
+        return self.pool(num_dice)[count_dice].sum()
 
     def _keep_highest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single highest die. """
@@ -937,17 +919,8 @@ class Die():
         return icepool.from_cweights(self.outcomes(),
                                      (x**num_dice for x in self.cweights()))
 
-    def keep_lowest(self,
-                    num_dice=None,
-                    num_keep=1,
-                    num_drop=0,
-                    *,
-                    truncate_min=None,
-                    truncate_max=None):
+    def keep_lowest(self, num_dice, num_keep=1, num_drop=0):
         """Roll several of this die and sum the sorted results from the lowest.
-
-        Exactly one out of `num_dice`, `truncate_min`, and `truncate_max` should
-        be provided.
 
         Args:
             num_dice: The number of dice to roll. All dice will have the same
@@ -955,26 +928,17 @@ class Die():
             num_keep: The number of dice to keep.
             num_drop: If provided, this many lowest dice will be dropped before
                 keeping.
-            truncate_min: A sequence of one outcome per die.
-                That die will be truncated to that minimum outcome, with all
-                lower outcomes being removed (i.e. rerolled).
-            truncate_max: A sequence of one outcome per die.
-                That die will be truncated to that maximum outcome, with all
-                higher outcomes being removed (i.e. rerolled).
 
         Returns:
             A die representing the probability distribution of the sum.
         """
-        if num_keep == 1 and num_drop == 0 and truncate_min is None and truncate_max is None:
+        if num_keep == 1 and num_drop == 0:
             return self._keep_lowest_single(num_dice)
 
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
         count_dice = slice(start, stop)
-        return self.pool(num_dice,
-                         count_dice=count_dice,
-                         truncate_min=truncate_min,
-                         truncate_max=truncate_max).sum()
+        return self.pool(num_dice)[count_dice].sum()
 
     def _keep_lowest_single(self, num_dice=None):
         """Faster algorithm for keeping just the single lowest die. """

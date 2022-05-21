@@ -147,31 +147,25 @@ class EvalPool(ABC):
             If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
 
-        # Convert non-pool arguments to `PoolBase`.
+        # Convert non-pool arguments to `PoolInternal`.
         pools = [
-            pool
-            if isinstance(pool, icepool.PoolBase) else icepool.PoolRoll(pool)
-            for pool in pools
+            pool if isinstance(pool, icepool.PoolInternal) else icepool.Pool(
+                *pool) for pool in pools
         ]
 
         algorithm, direction = self._select_algorithm(*pools)
 
         dist = algorithm(direction, *pools)
 
-        if all(pool._is_single_roll() for pool in pools):
-            for state in dist.keys():
-                # Return a single outcome.
-                return state
-        else:
-            final_outcomes = []
-            final_weights = []
-            for state, weight in dist.items():
-                outcome = self.final_outcome(state, *pools)
-                if outcome is not icepool.Reroll:
-                    final_outcomes.append(outcome)
-                    final_weights.append(weight)
+        final_outcomes = []
+        final_weights = []
+        for state, weight in dist.items():
+            outcome = self.final_outcome(state, *pools)
+            if outcome is not icepool.Reroll:
+                final_outcomes.append(outcome)
+                final_weights.append(weight)
 
-            return icepool.Die(*final_outcomes, weights=final_weights)
+        return icepool.Die(*final_outcomes, weights=final_weights)
 
     __call__ = eval
 
@@ -184,32 +178,13 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
 
         """
-        has_truncate_min = any(pool._has_truncate_min() for pool in pools)
-        has_truncate_max = any(pool._has_truncate_max() for pool in pools)
-
-        if has_truncate_min and has_truncate_max:
-            raise ValueError(
-                'A set of pools cannot be evaluated if they have both truncate_min and truncate_max.'
-            )
-
         direction = self.direction(*pools)
 
         if not direction:
-            if has_truncate_max:
-                direction = 1
-            elif has_truncate_min:
-                direction = -1
-            else:
-                score_ascending = sum(
-                    pool._direction_score_ascending() for pool in pools)
-                score_descending = sum(
-                    pool._direction_score_descending() for pool in pools)
-                if score_ascending < score_descending:
-                    direction = -1
-                else:
-                    direction = 1
+            # TODO: implement negative direction
+            direction = 1
 
-        if direction > 0 and has_truncate_min or direction < 0 and has_truncate_max:
+        if direction < 0:
             # Forced onto the less-preferred algorithm.
             return self._eval_internal_iterative, direction
         else:
@@ -237,7 +212,7 @@ class EvalPool(ABC):
 
         result = defaultdict(int)
 
-        if all(len(pool.outcomes()) == 0 for pool in pools):
+        if all(pool.is_empty() for pool in pools):
             result = {None: 1}
         else:
             outcome, iterators = _pop_pools(direction, pools)
@@ -261,8 +236,7 @@ class EvalPool(ABC):
         """
         dist = defaultdict(int)
         dist[None, pools] = 1
-        # This is only safe because all pools are guaranteed to pop outcomes at the same rate.
-        while not all(len(pool.outcomes()) == 0 for pool in pools):
+        while not all(pool.is_empty() for pool in pools):
             next_dist = defaultdict(int)
             for (prev_state, prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
@@ -286,54 +260,14 @@ def _pop_pools(side, pools):
     """
     if side >= 0:
         outcome = max(
-            pool._max_outcome() for pool in pools if len(pool.outcomes()) > 0)
-        iterators = tuple(_pop_pool_max(outcome, pool) for pool in pools)
+            pool.max_outcome() for pool in pools if not pool.is_empty())
+        iterators = tuple(pool._pop_max(outcome) for pool in pools)
     else:
         outcome = min(
-            pool._min_outcome() for pool in pools if len(pool.outcomes()) > 0)
-        iterators = tuple(_pop_pool_min(outcome, pool) for pool in pools)
+            pool.min_outcome() for pool in pools if not pool.is_empty())
+        iterators = tuple(pool._pop_min(outcome) for pool in pools)
 
     return outcome, iterators
-
-
-def _pop_pool_max(outcome, pool):
-    """Iterates over possible numbers of dice that could roll an outcome.
-
-    Args:
-        outcome: The max outcome.
-        pool: The `Pool` under consideration.
-
-    Yields:
-        prev_pool: The remainder of the pool after taking out the dice that
-            rolled the current outcome.
-        count: How many dice rolled the current outcome, or 0 if the outcome is
-            not in this pool.
-        weight: The weight of that many dice rolling the current outcome.
-    """
-    if outcome not in pool.outcomes():
-        yield pool, 0, 1
-    else:
-        yield from pool._pop_max()
-
-
-def _pop_pool_min(outcome, pool):
-    """Iterates over possible numbers of dice that could roll an outcome.
-
-    Args:
-        outcome: The min outcome.
-        pool: The `Pool` under consideration.
-
-    Yields:
-        prev_pool: The remainder of the pool after taking out the dice that
-            rolled the current outcome.
-        count: How many dice rolled the current outcome, or 0 if the outcome is
-            not in this pool.
-        weight: The weight of that many dice rolling the current outcome.
-    """
-    if outcome not in pool.outcomes():
-        yield pool, 0, 1
-    else:
-        yield from pool._pop_min()
 
 
 class WrapFuncEval(EvalPool):
@@ -417,6 +351,12 @@ class SumPool(EvalPool):
             return outcome * count
         else:
             return state + outcome * count
+
+    def final_outcome(self, final_state, *pools):
+        if final_state is None:
+            return 0
+        else:
+            return final_state
 
     def direction(self, *pools):
         """This eval doesn't care about direction. """
