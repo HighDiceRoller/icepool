@@ -19,9 +19,9 @@ def lowest(*dice, num_keep=1, num_drop=0):
     if num_drop < 0:
         raise ValueError(f'num_drop={num_drop} cannot be negative.')
 
-    if len(dice) == 0:
-        return icepool.Die()
     dice = [icepool.Die(die) for die in dice]
+    if len(dice) == 0 or any(die.is_empty() for die in dice):
+        return icepool.Die()
     if num_keep == 0 or num_drop >= len(dice):
         return sum(die.zero() for die in dice)
 
@@ -58,9 +58,9 @@ def highest(*dice, num_keep=1, num_drop=0):
     if num_drop < 0:
         raise ValueError(f'num_drop={num_drop} cannot be negative.')
 
-    if len(dice) == 0:
-        return icepool.Die()
     dice = [icepool.Die(die) for die in dice]
+    if len(dice) == 0 or any(die.is_empty() for die in dice):
+        return icepool.Die()
     if num_keep == 0 or num_drop >= len(dice):
         return sum(die.zero() for die in dice)
 
@@ -133,6 +133,9 @@ def _highest_reduce(*dice, start, stop):
 
 def _common_truncation(*dice):
     """Determines if the dice can be expressed as a one-sided truncation of a single base die.
+
+    Args:
+        dice: A sequence of dice (already converted to dice).
 
     Returns:
         base_die, pool_kwargs
