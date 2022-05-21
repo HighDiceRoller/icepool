@@ -33,7 +33,7 @@ def standard_pool(*die_sizes):
     return Pool(*(icepool.d(x) for x in die_sizes))
 
 
-def iter_pop_min(die, num_dice, min_outcome):
+def iter_die_pop_min(die, num_dice, min_outcome):
     """
     Args:
         die: The die to pop.
@@ -69,7 +69,7 @@ def iter_pop_min(die, num_dice, min_outcome):
         yield popped_die, left_count, rolled_count, weight
 
 
-def iter_pop_max(die, num_dice, max_outcome):
+def iter_die_pop_max(die, num_dice, max_outcome):
     """
     Args:
         die: The die to pop.
@@ -256,6 +256,14 @@ class PoolInternal():
     __getitem__ = set_count_dice
 
     @cached_property
+    def _min_outcome(self):
+        return max(die.min_outcome() for die in self._dice.keys())
+
+    def min_outcome(self):
+        """Returns the max outcome among all dice in this pool."""
+        return self._min_outcome
+
+    @cached_property
     def _max_outcome(self):
         return max(die.max_outcome() for die in self._dice.keys())
 
@@ -272,7 +280,7 @@ class PoolInternal():
             net_weight: The weight of this incremental result.
         """
         generators = [
-            iter_pop_min(die, die_count, min_outcome)
+            iter_die_pop_min(die, die_count, min_outcome)
             for die, die_count in self._dice.items()
         ]
         for pop in itertools.product(*generators):
@@ -307,7 +315,7 @@ class PoolInternal():
             net_weight: The weight of this incremental result.
         """
         generators = [
-            iter_pop_max(die, die_count, max_outcome)
+            iter_die_pop_max(die, die_count, max_outcome)
             for die, die_count in self._dice.items()
         ]
         for pop in itertools.product(*generators):

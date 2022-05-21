@@ -852,19 +852,6 @@ class Die():
         self._sum_cache[num_dice] = result
         return result
 
-    def _sum_truncate(self, truncate_min, truncate_max):
-        """Sums truncated copies of this die.
-
-        At least one truncation should be provided.
-        """
-        if truncate_min is None:
-            truncate_min = ()
-        elif truncate_max is None:
-            truncate_max = ()
-        return sum(
-            self.truncate(a, b)
-            for a, b in itertools.zip_longest(truncate_min, truncate_max))
-
     def d(self, other):
         """Roll the left die, then roll the right die that many times and sum the outcomes.
 
