@@ -206,12 +206,12 @@ class PoolInternal():
                 In this case, the result will be a `Die`, not a pool.
             A `slice`. The selected dice are counted once each.
                 If provided, the third argument resizes the pool,
-                rather than being a step,
-                but only if the pool does not have `truncate_max` or `truncate_min`.
+                rather than being a step; however, this is only valid if the
+                pool consists of a single type of die.
             A sequence of one `int`s for each die.
                 Each die is counted that many times, which could be multiple or
-                negative times. This may resize the pool, but only if the pool
-                does not have `truncate_max` or `truncate_min`.
+                negative times. This may resize the pool, but only if the
+                pool consists of a single type of die.
 
                 Up to one `Ellipsis` (`...`) may be used.
                 If an `Ellipsis` is used, the size of the pool won't change. Instead:
@@ -233,7 +233,7 @@ class PoolInternal():
 
         Raises:
             ValueError:  If `count_dice` would change the size of a pool with
-                `truncate_max` or `truncate_min`, or if more than one `Ellipsis`
+                more than one type of die, or if more than one `Ellipsis`
                 is used.
         """
         convert_to_die = isinstance(count_dice, int)
