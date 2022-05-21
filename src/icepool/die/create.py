@@ -26,7 +26,7 @@ def expand_die_args(*args, weights, denominator_method):
     subdatas = [_expand(arg, denominator_method) for arg in args]
     data = _merge_subdatas(subdatas, weights, denominator_method)
 
-    return Counts(data)
+    return Counts(sorted(data.items()))
 
 
 def _expand(arg, denominator_method):

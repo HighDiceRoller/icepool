@@ -38,7 +38,7 @@ class PoolRoll(icepool.PoolBase):
             for outcome in arg:
                 data[outcome] += 1
 
-        self._data = Counts(data)
+        self._data = Counts(sorted(data.items()))
 
     def _is_single_roll(self):
         return True

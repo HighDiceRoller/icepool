@@ -7,17 +7,17 @@ import math
 
 
 class Counts():
-    """Immutable sorted dictionary whose values are integers.
+    """Immutable dictionary whose values are integers.
 
     keys(), values(), and items() return tuples, which are subscriptable.
     """
 
-    def __init__(self, d):
+    def __init__(self, items):
         """
         Args:
-            d: A dictionary of ints.
+            items: A sequence of key, value pairs.
         """
-        for key, value in d.items():
+        for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid outcome.')
             if isinstance(key, icepool.SpecialValue):
@@ -26,8 +26,11 @@ class Counts():
                 raise ValueError('Values must be ints, got ' +
                                  type(value).__name__)
 
-        self._d = {k: d[k] for k in sorted(d.keys())}
-        self._has_zero_weights = 0 in d.values()
+        self._d = {k: v for k, v in items}
+
+    @cached_property
+    def _has_zero_weights(self):
+        return 0 in self.values()
 
     def has_zero_weights(self):
         """Returns `True` iff `self` contains at least one zero weight. """
@@ -74,5 +77,5 @@ class Counts():
         gcd = math.gcd(*self.values())
         if gcd <= 1:
             return self
-        data = {outcome: weight // gcd for outcome, weight in self.items()}
+        data = [(outcome, weight // gcd) for outcome, weight in self.items()]
         return Counts(data)
