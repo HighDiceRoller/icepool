@@ -45,7 +45,6 @@ def test_zero_weight_outcomes():
     result = icepool.Die(*range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
-"""
 # The auto direction should maximize skips.
 def test_auto_direction_uniform():
     algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.d6.pool()[0,1,1,1])
@@ -55,11 +54,10 @@ def test_auto_direction_uniform():
 
 # Above that, the auto direction should favor the wide-to-narrow ordering.
 def test_auto_direction_max_truncate_min():
-    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.Pool(d8, d6, d6, d6)[0,1,1,1])
-    assert direction < 0
+    algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.Pool(d8, d6, d6, d6)[1,1,1,0])
+    assert direction > 0
     algorithm, direction = SumRerollIfAnyOnes()._select_algorithm(icepool.Pool(d8, d6, d6, d6)[0,1,1,1])
     assert direction > 0
-"""
 
 def sum_dice_func(state, outcome, count):
     return (state or 0) + outcome * count

@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.pool.cost import estimate_costs
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -174,18 +175,28 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
 
         """
-        direction = self.direction(*pools)
+        eval_direction = self.direction(*pools)
 
-        if not direction:
-            # TODO: implement direction selection
-            direction = 1
+        pop_min_costs, pop_max_costs = zip(
+            *(estimate_costs(pool) for pool in pools))
 
-        if direction < 0:
-            # Forced onto the less-preferred algorithm.
-            return self._eval_internal_iterative, direction
+        pop_min_cost = math.prod(pop_min_costs)
+        pop_max_cost = math.prod(pop_max_costs)
+
+        if pop_max_cost <= pop_min_cost:
+            cost_direction = 1
         else:
+            cost_direction = -1
+
+        if eval_direction == 0:
+            return self._eval_internal, cost_direction
+
+        if eval_direction == cost_direction:
             # Use the preferred algorithm.
-            return self._eval_internal, direction
+            return self._eval_internal, eval_direction
+        else:
+            # Forced onto the less-preferred algorithm.
+            return self._eval_internal_iterative, eval_direction
 
     def _eval_internal(self, direction, *pools):
         """Internal algorithm for iterating in the more-preferred direction,

@@ -226,7 +226,8 @@ class PoolInternal():
 
     @cached_property
     def _dice_tuple(self):
-        return sum((die,) * count for die, count in self._dice.items())
+        return sum(((die,) * count for die, count in self._dice.items()),
+                   start=())
 
     def count_dice(self):
         return self._count_dice
@@ -320,7 +321,7 @@ class PoolInternal():
 
     @cached_property
     def _min_outcome(self):
-        return max(die.min_outcome() for die in self._dice.keys())
+        return min(die.min_outcome() for die in self._dice.keys())
 
     def min_outcome(self):
         """Returns the max outcome among all dice in this pool."""
@@ -436,7 +437,8 @@ class PoolInternal():
         return icepool.sum_pool(self)
 
     def __str__(self):
-        return str(self._key_tuple)
+        return '\n'.join(repr(die) for die in self._dice_tuple) + '\n' + str(
+            self._count_dice)
 
     @cached_property
     def _key_tuple(self):
