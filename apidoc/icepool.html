@@ -5230,30 +5230,43 @@ with one argument per die.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Pool-14"><a href="#Pool-14"><span class="linenos">14</span></a><span class="k">def</span> <span class="nf">Pool</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">):</span>
 </span><span id="Pool-15"><a href="#Pool-15"><span class="linenos">15</span></a>    <span class="sd">&quot;&quot;&quot;Creates a pool from the given dice.</span>
 </span><span id="Pool-16"><a href="#Pool-16"><span class="linenos">16</span></a>
-</span><span id="Pool-17"><a href="#Pool-17"><span class="linenos">17</span></a><span class="sd">    Empty dice are dropped.</span>
-</span><span id="Pool-18"><a href="#Pool-18"><span class="linenos">18</span></a>
-</span><span id="Pool-19"><a href="#Pool-19"><span class="linenos">19</span></a><span class="sd">    Returns:</span>
-</span><span id="Pool-20"><a href="#Pool-20"><span class="linenos">20</span></a><span class="sd">        A `PoolInternal` object.</span>
-</span><span id="Pool-21"><a href="#Pool-21"><span class="linenos">21</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Pool-22"><a href="#Pool-22"><span class="linenos">22</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="Pool-23"><a href="#Pool-23"><span class="linenos">23</span></a>    <span class="n">num_dice</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="Pool-24"><a href="#Pool-24"><span class="linenos">24</span></a>    <span class="n">dice_counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span><span id="Pool-25"><a href="#Pool-25"><span class="linenos">25</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">:</span>
-</span><span id="Pool-26"><a href="#Pool-26"><span class="linenos">26</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">die</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-</span><span id="Pool-27"><a href="#Pool-27"><span class="linenos">27</span></a>            <span class="n">dice_counts</span><span class="p">[</span><span class="n">die</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="Pool-28"><a href="#Pool-28"><span class="linenos">28</span></a>    <span class="n">count_dice</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_dice</span>
-</span><span id="Pool-29"><a href="#Pool-29"><span class="linenos">29</span></a>    <span class="k">return</span> <span class="n">PoolInternal</span><span class="p">(</span><span class="n">dice_counts</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">)</span>
+</span><span id="Pool-17"><a href="#Pool-17"><span class="linenos">17</span></a><span class="sd">    Evaulation is most efficient when the dice are the same or same-side</span>
+</span><span id="Pool-18"><a href="#Pool-18"><span class="linenos">18</span></a><span class="sd">    truncations of each other. For example, d4, d6, d8, d10, d12 are all</span>
+</span><span id="Pool-19"><a href="#Pool-19"><span class="linenos">19</span></a><span class="sd">    same-side truncations of the d12.</span>
+</span><span id="Pool-20"><a href="#Pool-20"><span class="linenos">20</span></a>
+</span><span id="Pool-21"><a href="#Pool-21"><span class="linenos">21</span></a><span class="sd">    Args:</span>
+</span><span id="Pool-22"><a href="#Pool-22"><span class="linenos">22</span></a><span class="sd">        *dice: The dice to put in the pool. Empty dice are ignored.</span>
+</span><span id="Pool-23"><a href="#Pool-23"><span class="linenos">23</span></a>
+</span><span id="Pool-24"><a href="#Pool-24"><span class="linenos">24</span></a><span class="sd">    Returns:</span>
+</span><span id="Pool-25"><a href="#Pool-25"><span class="linenos">25</span></a><span class="sd">        A pool object.</span>
+</span><span id="Pool-26"><a href="#Pool-26"><span class="linenos">26</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Pool-27"><a href="#Pool-27"><span class="linenos">27</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="Pool-28"><a href="#Pool-28"><span class="linenos">28</span></a>    <span class="n">num_dice</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="Pool-29"><a href="#Pool-29"><span class="linenos">29</span></a>    <span class="n">dice_counts</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span id="Pool-30"><a href="#Pool-30"><span class="linenos">30</span></a>    <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">:</span>
+</span><span id="Pool-31"><a href="#Pool-31"><span class="linenos">31</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">die</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+</span><span id="Pool-32"><a href="#Pool-32"><span class="linenos">32</span></a>            <span class="n">dice_counts</span><span class="p">[</span><span class="n">die</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="Pool-33"><a href="#Pool-33"><span class="linenos">33</span></a>    <span class="n">count_dice</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_dice</span>
+</span><span id="Pool-34"><a href="#Pool-34"><span class="linenos">34</span></a>    <span class="k">return</span> <span class="n">PoolInternal</span><span class="p">(</span><span class="n">dice_counts</span><span class="p">,</span> <span class="n">count_dice</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Creates a pool from the given dice.</p>
 
-<p>Empty dice are dropped.</p>
+<p>Evaulation is most efficient when the dice are the same or same-side
+truncations of each other. For example, d4, d6, d8, d10, d12 are all
+same-side truncations of the d12.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>*dice:</strong>  The dice to put in the pool. Empty dice are ignored.</li>
+</ul>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A <code>PoolInternal</code> object.</p>
+  <p>A pool object.</p>
 </blockquote>
 </div>
 
@@ -5270,12 +5283,25 @@ with one argument per die.</li>
 
     </div>
     <a class="headerlink" href="#standard_pool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-105"><a href="#standard_pool-105"><span class="linenos">105</span></a><span class="k">def</span> <span class="nf">standard_pool</span><span class="p">(</span><span class="o">*</span><span class="n">die_sizes</span><span class="p">):</span>
-</span><span id="standard_pool-106"><a href="#standard_pool-106"><span class="linenos">106</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-110"><a href="#standard_pool-110"><span class="linenos">110</span></a><span class="k">def</span> <span class="nf">standard_pool</span><span class="p">(</span><span class="o">*</span><span class="n">die_sizes</span><span class="p">):</span>
+</span><span id="standard_pool-111"><a href="#standard_pool-111"><span class="linenos">111</span></a>    <span class="sd">&quot;&quot;&quot;Returns a pool of standard dice.</span>
+</span><span id="standard_pool-112"><a href="#standard_pool-112"><span class="linenos">112</span></a>
+</span><span id="standard_pool-113"><a href="#standard_pool-113"><span class="linenos">113</span></a><span class="sd">    Args:</span>
+</span><span id="standard_pool-114"><a href="#standard_pool-114"><span class="linenos">114</span></a><span class="sd">        *die_sizes: For each of these die_size X, the pool will contain one dX.</span>
+</span><span id="standard_pool-115"><a href="#standard_pool-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="standard_pool-116"><a href="#standard_pool-116"><span class="linenos">116</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Returns a pool of standard dice.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>*die_sizes:</strong>  For each of these die_size X, the pool will contain one dX.</li>
+</ul>
+</div>
+
 
                 </section>
                 <section id="EvalPool">
