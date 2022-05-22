@@ -369,7 +369,7 @@ class PoolInternal():
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 result_weight *= popped_pool.denominator()
-                popped_pool = PoolInternal({}, ())
+                popped_pool = empty_pool
 
             yield popped_pool, result_count, result_weight
 
@@ -407,7 +407,7 @@ class PoolInternal():
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 result_weight *= popped_pool.denominator()
-                popped_pool = PoolInternal({}, ())
+                popped_pool = empty_pool
 
             yield popped_pool, result_count, result_weight
 
@@ -456,3 +456,6 @@ class PoolInternal():
 
     def __hash__(self):
         return self._hash
+
+
+empty_pool = Pool()
