@@ -350,6 +350,7 @@ class PoolInternal():
             iter_die_pop_min(die, die_count, min_outcome)
             for die, die_count in self._dice.items()
         ]
+        skip_weight = None
         for pop in itertools.product(*generators):
             net_num_rolled = 0
             result_weight = 1
@@ -368,10 +369,14 @@ class PoolInternal():
             popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
-                result_weight *= popped_pool.denominator()
-                popped_pool = empty_pool
+                skip_weight = (skip_weight or
+                               0) + result_weight * popped_pool.denominator()
+                continue
 
             yield popped_pool, result_count, result_weight
+
+        if skip_weight is not None:
+            yield empty_pool, sum(self.count_dice()), skip_weight
 
     def _pop_max(self, max_outcome):
         """
@@ -388,6 +393,7 @@ class PoolInternal():
             iter_die_pop_max(die, die_count, max_outcome)
             for die, die_count in self._dice.items()
         ]
+        skip_weight = None
         for pop in itertools.product(*generators):
             net_num_rolled = 0
             result_weight = 1
@@ -406,10 +412,14 @@ class PoolInternal():
             popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
-                result_weight *= popped_pool.denominator()
-                popped_pool = empty_pool
+                skip_weight = (skip_weight or
+                               0) + result_weight * popped_pool.denominator()
+                continue
 
             yield popped_pool, result_count, result_weight
+
+        if skip_weight is not None:
+            yield empty_pool, sum(self.count_dice()), skip_weight
 
     def eval(self, eval_or_func, /):
         """Evaluates this pool using the given `EvalPool` or function.
