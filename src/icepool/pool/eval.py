@@ -54,10 +54,11 @@ class EvalPool(ABC):
                 current outcome. If there was no previous outcome, this will be
                 `None`.
             outcome: The current outcome.
-                `next_state` will see all outcomes in monotonic order,
+                `next_state` will see all outcomes in monotonic order
                 either ascending or descending depending on `direction()`.
                 If there are multiple pools, the set of outcomes is the union of
-                the outcomes of the invididual pools.
+                the outcomes of the invididual pools. The order is NOT
+                guaranteed to be consecutive.
             *counts: One `int` for each pool indicating how many dice in that
                 pool rolled the current outcome. If there are multiple pools,
                 it's possible that some outcomes will not appear in all pools.
@@ -229,9 +230,12 @@ class EvalPool(ABC):
 
         This algorithm does not perform persistent memoization.
         """
+        if all(pool.is_empty() for pool in pools):
+            return {None: 1}
         dist = defaultdict(int)
         dist[None, pools] = 1
-        while not all(pool.is_empty() for pool in pools):
+        final_dist = defaultdict(int)
+        while dist:
             next_dist = defaultdict(int)
             for (prev_state, prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
@@ -241,9 +245,12 @@ class EvalPool(ABC):
                     prod_weight = math.prod(weights)
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
-                        next_dist[state, pools] += weight * prod_weight
+                        if all(pool.is_empty() for pool in pools):
+                            final_dist[state] += weight * prod_weight
+                        else:
+                            next_dist[state, pools] += weight * prod_weight
             dist = next_dist
-        return {state: weight for (state, _), weight in dist.items()}
+        return final_dist
 
 
 def _pop_pools(side, pools):

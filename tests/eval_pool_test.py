@@ -27,8 +27,8 @@ class SumPoolDescending(icepool.SumPool):
         return -1
 
 def test_sum_descending():
-    result = SumPoolDescending().eval(icepool.d6.pool(5))
-    expected = 5 @ icepool.d6
+    result = SumPoolDescending().eval(icepool.d6.pool(3))
+    expected = 3 @ icepool.d6
     assert result.equals(expected)
 
 def test_sum_descending_limit_outcomes():

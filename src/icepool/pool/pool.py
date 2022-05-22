@@ -155,12 +155,6 @@ class PoolInternal():
     def denominator(self):
         return self._denominator
 
-    def make_empty_counts(self):
-        """Returns a version of this pool with all dice having 0 count."""
-        dice_counts = {die: 0 for die in self._dice.keys()}
-        count_dice = ()
-        return PoolInternal(dice_counts, count_dice)
-
     @cached_property
     def _dice_tuple(self):
         return sum((die,) * count for die, count in self._dice.items())
@@ -279,6 +273,9 @@ class PoolInternal():
                 accounting for count_dice.
             net_weight: The weight of this incremental result.
         """
+        if self.is_empty():
+            yield self, 0, 1
+            return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
             for die, die_count in self._dice.items()
@@ -302,7 +299,7 @@ class PoolInternal():
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 result_weight *= popped_pool.denominator()
-                popped_pool = popped_pool.make_empty_counts()
+                popped_pool = PoolInternal({}, ())
 
             yield popped_pool, result_count, result_weight
 
@@ -314,6 +311,9 @@ class PoolInternal():
                 accounting for count_dice.
             net_weight: The weight of this incremental result.
         """
+        if self.is_empty():
+            yield self, 0, 1
+            return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
             for die, die_count in self._dice.items()
@@ -337,7 +337,7 @@ class PoolInternal():
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 result_weight *= popped_pool.denominator()
-                popped_pool = popped_pool.make_empty_counts()
+                popped_pool = PoolInternal({}, ())
 
             yield popped_pool, result_count, result_weight
 
@@ -365,6 +365,9 @@ class PoolInternal():
             A die representing the sum.
         """
         return icepool.sum_pool(self)
+
+    def __str__(self):
+        return str(self._key_tuple)
 
     @cached_property
     def _key_tuple(self):
