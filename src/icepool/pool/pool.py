@@ -119,26 +119,26 @@ def iter_die_pop_min(die, num_dice, min_outcome):
         The weight of this number of dice rolling max_outcome.
     """
     if die.min_outcome() != min_outcome:
-        left_count = num_dice
-        rolled_count = 0
+        num_remain = num_dice
+        num_rolled = 0
         weight = 1
-        yield die, left_count, rolled_count, weight
+        yield die, num_remain, num_rolled, weight
         return
 
     popped_die, single_weight = die._pop_min()
 
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
-        left_count = 0
-        rolled_count = num_dice
+        num_remain = 0
+        num_rolled = num_dice
         weight = single_weight**num_dice
-        yield popped_die, left_count, rolled_count, weight
+        yield popped_die, num_remain, num_rolled, weight
         return
 
     comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for rolled_count, weight in enumerate(comb_row):
-        left_count = num_dice - rolled_count
-        yield popped_die, left_count, rolled_count, weight
+    for num_rolled, weight in enumerate(comb_row):
+        num_remain = num_dice - num_rolled
+        yield popped_die, num_remain, num_rolled, weight
 
 
 def iter_die_pop_max(die, num_dice, max_outcome):
@@ -155,26 +155,26 @@ def iter_die_pop_max(die, num_dice, max_outcome):
         The weight of this number of dice rolling max_outcome.
     """
     if die.max_outcome() != max_outcome:
-        left_count = num_dice
-        rolled_count = 0
+        num_remain = num_dice
+        num_rolled = 0
         weight = 1
-        yield die, left_count, rolled_count, weight
+        yield die, num_remain, num_rolled, weight
         return
 
     popped_die, single_weight = die._pop_max()
 
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
-        left_count = 0
-        rolled_count = num_dice
+        num_remain = 0
+        num_rolled = num_dice
         weight = single_weight**num_dice
-        yield popped_die, left_count, rolled_count, weight
+        yield popped_die, num_remain, num_rolled, weight
         return
 
     comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for rolled_count, weight in enumerate(comb_row):
-        left_count = num_dice - rolled_count
-        yield popped_die, left_count, rolled_count, weight
+    for num_rolled, weight in enumerate(comb_row):
+        num_remain = num_dice - num_rolled
+        yield popped_die, num_remain, num_rolled, weight
 
 
 @cache
@@ -350,20 +350,20 @@ class PoolInternal():
             for die, die_count in self._dice.items()
         ]
         for pop in itertools.product(*generators):
-            net_rolled_count = 0
+            net_num_rolled = 0
             result_weight = 1
             next_dice_counts = defaultdict(int)
-            for popped_die, left_count, rolled_count, weight in pop:
+            for popped_die, num_remain, num_rolled, weight in pop:
                 if not popped_die.is_empty():
-                    next_dice_counts[popped_die] += left_count
-                net_rolled_count += rolled_count
+                    next_dice_counts[popped_die] += num_remain
+                net_num_rolled += num_rolled
                 result_weight *= weight
-            if net_rolled_count == 0:
+            if net_num_rolled == 0:
                 result_count = 0
                 popped_count_dice = self.count_dice()
             else:
-                result_count = sum(self.count_dice()[:net_rolled_count])
-                popped_count_dice = self.count_dice()[net_rolled_count:]
+                result_count = sum(self.count_dice()[:net_num_rolled])
+                popped_count_dice = self.count_dice()[net_num_rolled:]
             popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
@@ -388,20 +388,20 @@ class PoolInternal():
             for die, die_count in self._dice.items()
         ]
         for pop in itertools.product(*generators):
-            net_rolled_count = 0
+            net_num_rolled = 0
             result_weight = 1
             next_dice_counts = defaultdict(int)
-            for popped_die, left_count, rolled_count, weight in pop:
+            for popped_die, num_remain, num_rolled, weight in pop:
                 if not popped_die.is_empty():
-                    next_dice_counts[popped_die] += left_count
-                net_rolled_count += rolled_count
+                    next_dice_counts[popped_die] += num_remain
+                net_num_rolled += num_rolled
                 result_weight *= weight
-            if net_rolled_count == 0:
+            if net_num_rolled == 0:
                 result_count = 0
                 popped_count_dice = self.count_dice()
             else:
-                result_count = sum(self.count_dice()[-net_rolled_count:])
-                popped_count_dice = self.count_dice()[:-net_rolled_count]
+                result_count = sum(self.count_dice()[-net_num_rolled:])
+                popped_count_dice = self.count_dice()[:-net_num_rolled]
             popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
