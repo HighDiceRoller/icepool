@@ -5,6 +5,7 @@ import math
 
 def can_truncate(dice):
     """Determines if the dice can be expressed as a one-sided truncation of a single base die.
+
     Args:
         dice: A sequence of dice (already converted to dice).
     Returns:
@@ -45,7 +46,8 @@ def can_truncate(dice):
 
 
 def lo_hi_skip(count_dice):
-    """
+    """Returns the number of dice that can be skipped from the ends of count_dice.
+
     Returns:
         lo_skip: The number of dice that can be skipped on the low side.
         hi_skip: The number of dice that can be skipped on the high side.
@@ -64,7 +66,8 @@ def lo_hi_skip(count_dice):
 
 
 def estimate_costs(pool):
-    """
+    """Estimates the cost of popping from the min and max sides.
+
     Returns:
         pop_min_cost
         pop_max_cost

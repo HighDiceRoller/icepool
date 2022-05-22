@@ -13,10 +13,15 @@ from functools import cache, cached_property
 def Pool(*dice):
     """Creates a pool from the given dice.
 
-    Empty dice are dropped.
+    Evaulation is most efficient when the dice are the same or same-side
+    truncations of each other. For example, d4, d6, d8, d10, d12 are all
+    same-side truncations of the d12.
+
+    Args:
+        *dice: The dice to put in the pool. Empty dice are ignored.
 
     Returns:
-        A `PoolInternal` object.
+        A pool object.
     """
     dice = [icepool.Die(die) for die in dice]
     num_dice = len(dice)
@@ -102,11 +107,17 @@ def count_dice_tuple(num_dice, count_dice):
 
 
 def standard_pool(*die_sizes):
+    """Returns a pool of standard dice.
+
+    Args:
+        *die_sizes: For each of these die_size X, the pool will contain one dX.
+    """
     return Pool(*(icepool.d(x) for x in die_sizes))
 
 
 def iter_die_pop_min(die, num_dice, min_outcome):
-    """
+    """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
+
     Args:
         die: The die to pop.
         die_count: The number of this kind of die.
@@ -142,7 +153,8 @@ def iter_die_pop_min(die, num_dice, min_outcome):
 
 
 def iter_die_pop_max(die, num_dice, max_outcome):
-    """
+    """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
+
     Args:
         die: The die to pop.
         die_count: The number of this kind of die.
@@ -179,6 +191,13 @@ def iter_die_pop_max(die, num_dice, max_outcome):
 
 @cache
 def new_pool(cls, counts_arg, count_dice):
+    """Creates a new pool. This function is cached.
+
+    Args:
+        cls: The pool class.
+        counts_arg: A sorted sequence of (die, count) pairs.
+        count_dice: A tuple of length equal to the number of dice.
+    """
     self = super(PoolInternal, cls).__new__(cls)
     self._dice = Counts(counts_arg)
     self._count_dice = count_dice
@@ -336,7 +355,8 @@ class PoolInternal():
         return self._max_outcome
 
     def _pop_min(self, min_outcome):
-        """
+        """Pops the given outcome from this pool, if it is the min outcome.
+
         Yields:
             popped_pool: The pool after the min outcome is popped.
             net_count: The number of dice that rolled the min outcome, after
@@ -379,7 +399,8 @@ class PoolInternal():
             yield empty_pool, sum(self.count_dice()), skip_weight
 
     def _pop_max(self, max_outcome):
-        """
+        """Pops the given outcome from this pool, if it is the max outcome.
+
         Yields:
             popped_pool: The pool after the max outcome is popped.
             net_count: The number of dice that rolled the max outcome, after
@@ -447,8 +468,9 @@ class PoolInternal():
         return icepool.sum_pool(self)
 
     def __str__(self):
-        return '\n'.join(repr(die) for die in self._dice_tuple) + '\n' + str(
-            self._count_dice)
+        return (
+            f'Pool of {self.num_dice()} dice with count_dice={self.count_dice()}\n'
+            + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
     def _key_tuple(self):
@@ -469,3 +491,4 @@ class PoolInternal():
 
 
 empty_pool = Pool()
+"""Shared empty pool instance."""
