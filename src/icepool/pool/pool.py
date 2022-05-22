@@ -3,12 +3,11 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 from icepool.collections import Counts
-from icepool.pool.create import count_dice_tuple
 
 import itertools
 import math
 from collections import defaultdict
-from functools import cached_property
+from functools import cache, cached_property
 
 
 def Pool(*dice):
@@ -27,6 +26,79 @@ def Pool(*dice):
             dice_counts[die] += 1
     count_dice = (1,) * num_dice
     return PoolInternal(dice_counts, count_dice)
+
+
+def count_dice_tuple(num_dice, count_dice):
+    """Expresses `count_dice` as a tuple.
+
+    See `Pool.set_count_dice()` for details.
+
+    Args:
+        `num_dice`: An `int` specifying the number of dice.
+        `count_dice`: Raw specification for how the dice are to be counted.
+    Raises:
+        `ValueError` if:
+            * More than one `Ellipsis` is used.
+            * An `Ellipsis` is used in the center with too few `num_dice`.
+    """
+    if count_dice is None:
+        return (1,) * num_dice
+    elif isinstance(count_dice, int):
+        result = [0] * num_dice
+        result[count_dice] = 1
+        return tuple(result)
+    elif isinstance(count_dice, slice):
+        if count_dice.step is not None:
+            # "Step" is not useful here, so we repurpose it to set the number
+            # of dice.
+            num_dice = count_dice.step
+            count_dice = slice(count_dice.start, count_dice.stop)
+        result = [0] * num_dice
+        result[count_dice] = [1] * len(result[count_dice])
+        return tuple(result)
+    else:
+        split = None
+        for i, x in enumerate(count_dice):
+            if x is Ellipsis:
+                if split is None:
+                    split = i
+                else:
+                    raise ValueError(
+                        'Cannot use more than one Ellipsis (...) for count_dice.'
+                    )
+
+        if split is None:
+            return tuple(count_dice)
+
+        extra_dice = num_dice - len(count_dice) + 1
+
+        if split == 0:
+            # Ellipsis on left.
+            count_dice = count_dice[1:]
+            if extra_dice < 0:
+                return tuple(count_dice[-extra_dice:])
+            else:
+                return (0,) * extra_dice + tuple(count_dice)
+        elif split == len(count_dice) - 1:
+            # Ellipsis on right.
+            count_dice = count_dice[:-1]
+            if extra_dice < 0:
+                return tuple(count_dice[:extra_dice])
+            else:
+                return tuple(count_dice) + (0,) * extra_dice
+        else:
+            # Ellipsis in center.
+            if extra_dice < 0:
+                result = [0] * num_dice
+                for i in range(min(split, num_dice)):
+                    result[i] += count_dice[i]
+                reverse_split = split - len(count_dice)
+                for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
+                    result[i] += count_dice[i]
+                return tuple(result)
+            else:
+                return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(
+                    count_dice[split + 1:])
 
 
 def standard_pool(*die_sizes):
@@ -105,7 +177,12 @@ def iter_die_pop_max(die, num_dice, max_outcome):
         yield popped_die, left_count, rolled_count, weight
 
 
-_pool_instance_cache = {}
+@cache
+def new_pool(cls, counts_arg, count_dice):
+    self = super(PoolInternal, cls).__new__(cls)
+    self._dice = Counts(counts_arg)
+    self._count_dice = count_dice
+    return self
 
 
 class PoolInternal():
@@ -125,15 +202,7 @@ class PoolInternal():
         """
         counts_arg = tuple(
             sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
-        cache_key = (counts_arg, count_dice)
-        if cache_key in _pool_instance_cache:
-            return _pool_instance_cache[cache_key]
-
-        self = super(PoolInternal, cls).__new__(cls)
-        self._dice = Counts(counts_arg)
-        self._count_dice = count_dice
-        _pool_instance_cache[cache_key] = self
-        return self
+        return new_pool(cls, counts_arg, count_dice)
 
     @cached_property
     def _num_dice(self):
