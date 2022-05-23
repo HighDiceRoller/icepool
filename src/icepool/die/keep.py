@@ -9,7 +9,7 @@ def lowest(*dice, num_keep=1, num_drop=0):
     """The lowest outcome or sum of the lowest outcomes among the dice.
 
     Args:
-        *dice: The dice to be considered.
+        *dice: The dice to be considered. At least one die must be provided.
         num_keep: The number of lowest dice will be summed.
         num_drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
@@ -28,7 +28,7 @@ def highest(*dice, num_keep=1, num_drop=0):
     """The highest outcome or sum of the highest outcomes among the dice.
 
     Args:
-        *dice: The dice to be considered.
+        *dice: The dice to be considered. At least one die must be provided.
         num_keep: The number of highest dice will be summed.
         num_drop: This number of highest dice will be dropped before keeping dice
             to be summed.
@@ -51,9 +51,13 @@ def _keep(*dice, start, stop):
         start, stop: The slice `start:stop` will be kept. These will be between
             0 and len(dice) inclusive.
     """
+
     dice = [icepool.Die(die) for die in dice]
 
-    if len(dice) == 0 or any(die.is_empty() for die in dice):
+    if len(dice) == 0:
+        raise ValueError('At least one die must be provided.')
+
+    if any(die.is_empty() for die in dice):
         return icepool.Die()
 
     if start == stop:

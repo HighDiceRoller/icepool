@@ -15,7 +15,7 @@ def test_apply_die():
 
 def test_apply_no_dice():
     result = icepool.apply(lambda: 1)
-    expected = icepool.Die({})
+    expected = icepool.Die({1:1})
     assert result.equals(expected)
 
 def test_reduce():

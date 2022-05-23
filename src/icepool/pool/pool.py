@@ -201,8 +201,7 @@ class Pool():
         num_dice = len(dice)
         num_dices = defaultdict(int)
         for die in dice:
-            if not die.is_empty():
-                num_dices[die] += 1
+            num_dices[die] += 1
         count_dice = (1,) * num_dice
         return cls._new_pool(num_dices, count_dice)
 
@@ -228,6 +227,10 @@ class Pool():
         """The number of dice in this pool."""
         return self._num_dice
 
+    def has_empty_dice(self):
+        """Whether this pool contains any empty dice."""
+        return any(die.is_empty() for die in self._dice.keys())
+
     def is_empty(self):
         return len(self._dice) == 0
 
@@ -246,6 +249,11 @@ class Pool():
                    start=())
 
     def count_dice(self):
+        """The tuple indicating which dice in the pool will be counted.
+
+        The tuple has one element per die in the pool, from lowest roll to
+        highest roll.
+        """
         return self._count_dice
 
     def set_count_dice(self, count_dice):
@@ -340,7 +348,7 @@ class Pool():
         return min(die.min_outcome() for die in self._dice.keys())
 
     def min_outcome(self):
-        """Returns the max outcome among all dice in this pool."""
+        """Returns the min outcome among all dice in this pool."""
         return self._min_outcome
 
     @cached_property
@@ -458,11 +466,51 @@ class Pool():
 
     def sum(self):
         """Convenience method to simply sum the dice in this pool.
+
         This uses `icepool.sum_pool`.
+
         Returns:
             A die representing the sum.
         """
         return icepool.sum_pool(self)
+
+    def lowest(self, num_keep=1, num_drop=0):
+        """The lowest outcome or sum of the lowest outcomes in the pool.
+
+        The args override any `count_dice` of this pool.
+
+        Args:
+            num_keep: The number of lowest dice will be summed.
+            num_drop: This number of lowest dice will be dropped before keeping
+                dice to be summed.
+        """
+        if num_keep < 0:
+            raise ValueError(f'num_drop={num_keep} cannot be negative.')
+        if num_drop < 0:
+            raise ValueError(f'num_drop={num_drop} cannot be negative.')
+
+        start = min(num_drop, self.num_dice())
+        stop = min(num_keep + num_drop, self.num_dice())
+        return self[start:stop].sum()
+
+    def highest(self, num_keep=1, num_drop=0):
+        """The highest outcome or sum of the highest outcomes in the pool.
+
+        The args override any `count_dice` of this pool.
+
+        Args:
+            num_keep: The number of highest dice will be summed.
+            num_drop: This number of highest dice will be dropped before keeping
+                dice to be summed.
+        """
+        if num_keep < 0:
+            raise ValueError(f'num_drop={num_keep} cannot be negative.')
+        if num_drop < 0:
+            raise ValueError(f'num_drop={num_drop} cannot be negative.')
+
+        start = self.num_dice() - min(num_keep + num_drop, self.num_dice())
+        stop = self.num_dice() - min(num_drop, self.num_dice())
+        return self[start:stop].sum()
 
     def __str__(self):
         return (

@@ -150,6 +150,9 @@ class EvalPool(ABC):
             for pool in pools
         ]
 
+        if any(pool.has_empty_dice() for pool in pools):
+            return icepool.Die()
+
         algorithm, direction = self._select_algorithm(*pools)
 
         dist = algorithm(direction, *pools)
