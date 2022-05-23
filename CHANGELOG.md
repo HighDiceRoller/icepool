@@ -1,3 +1,12 @@
+## 0.13.0
+
+Major reworking of pool construction.
+
+* Public constructor is now just `Pool(*dice)`.
+* In particular, no more `truncate_min` or `truncate_max` arguments.
+* Pools can be of arbitrary dice, though non-truncative sets of dice will have lower performance. There is some performance penalty overall.
+* `apply()` called with no arguments now calls `func` once with no arguments.
+
 ## 0.12.1
 
 * Removed `Die.keep()`. Use `Die.pool(...).sum()`.
