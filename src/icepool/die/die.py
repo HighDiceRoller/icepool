@@ -967,7 +967,12 @@ class Die():
         return self.unary_op(math.ceil)
 
     def marginal(self, index_or_slice, /):
-        """Marginal distribution; equivalently, indexes/slices outcomes."""
+        """Marginal distribution; equivalently, indexes/slices outcomes.
+
+        You can use the `[]` operator for the same effect.
+
+        Note that `[]` has a different, non-standard meaning for pools.
+        """
         return self.unary_op_non_elementwise(operator.getitem, index_or_slice)
 
     __getitem__ = marginal
