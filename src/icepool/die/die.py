@@ -876,7 +876,11 @@ class Die():
         return icepool.Die(data)
 
     def pool(self, num_dice=1):
-        """Creates a pool from this die. """
+        """Creates a pool from this die.
+
+        Args:
+            num_dice: The number of copies of this die to put in the pool.
+        """
         return icepool.Pool(*([self] * num_dice))
 
     def keep_highest(self, num_dice, num_keep=1, num_drop=0):
