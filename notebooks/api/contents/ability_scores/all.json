@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-05-23T23:42:51.260691Z",
+      "created": "2022-05-23T23:49:03.528038Z",
       "format": null,
-      "last_modified": "2022-05-23T23:42:30.320564Z",
+      "last_modified": "2022-05-23T23:48:44.507025Z",
       "mimetype": null,
       "name": "adnd.ipynb",
       "path": "ability_scores/adnd.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:42:51.260691Z",
+      "created": "2022-05-23T23:49:03.528038Z",
       "format": null,
-      "last_modified": "2022-05-23T23:42:30.320564Z",
+      "last_modified": "2022-05-23T23:48:44.507025Z",
       "mimetype": null,
       "name": "one_set_strictly_better.ipynb",
       "path": "ability_scores/one_set_strictly_better.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:42:51.264691Z",
+      "created": "2022-05-23T23:49:03.528038Z",
       "format": null,
-      "last_modified": "2022-05-23T23:42:30.320564Z",
+      "last_modified": "2022-05-23T23:48:44.511025Z",
       "mimetype": null,
       "name": "snake_draft.ipynb",
       "path": "ability_scores/snake_draft.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:42:51.260691Z",
+      "created": "2022-05-23T23:49:03.528038Z",
       "format": null,
-      "last_modified": "2022-05-23T23:42:30.320564Z",
+      "last_modified": "2022-05-23T23:48:44.507025Z",
       "mimetype": null,
       "name": "completely_unfair.ipynb",
       "path": "ability_scores/completely_unfair.ipynb",
@@ -49,9 +49,9 @@
       "writable": true
     }
   ],
-  "created": "2022-05-23T23:42:51.264691Z",
+  "created": "2022-05-23T23:49:03.528038Z",
   "format": "json",
-  "last_modified": "2022-05-23T23:42:51.264691Z",
+  "last_modified": "2022-05-23T23:49:03.528038Z",
   "mimetype": null,
   "name": "ability_scores",
   "path": "ability_scores",
