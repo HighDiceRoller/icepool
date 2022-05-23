@@ -235,7 +235,7 @@ def apply(func, *dice):
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
     `apply()` is flexible but not very efficient for more than two dice.
-    Instead of using a large number of arguments:
+    Instead of using more than two arguments:
     * If the problem is easy to solve by considering one additional die at a
         time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
@@ -254,7 +254,7 @@ def apply(func, *dice):
         weights of the dice.
     """
     if len(dice) == 0:
-        return icepool.Die()
+        return icepool.Die(func())
     dice = [icepool.Die(die) for die in dice]
     final_outcomes = []
     final_weights = []
