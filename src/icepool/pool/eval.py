@@ -55,11 +55,12 @@ class EvalPool(ABC):
                 current outcome. If there was no previous outcome, this will be
                 `None`.
             outcome: The current outcome.
-                `next_state` will see all outcomes in monotonic order
+                `next_state` will see all rolled outcomes in monotonic order;
                 either ascending or descending depending on `direction()`.
                 If there are multiple pools, the set of outcomes is the union of
-                the outcomes of the invididual pools. The order is NOT
-                guaranteed to be consecutive.
+                the outcomes of the invididual pools. Each outcome will be seen
+                at most once; however, outcomes may be skipped if no dice
+                actually rolled that outcome.
             *counts: One `int` for each pool indicating how many dice in that
                 pool rolled the current outcome. If there are multiple pools,
                 it's possible that some outcomes will not appear in all pools.
