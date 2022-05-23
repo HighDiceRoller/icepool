@@ -25,7 +25,7 @@ from icepool.die.die import Die
 
 from icepool.die.keep import lowest, highest
 
-from icepool.pool.pool import Pool, standard_pool, PoolInternal
+from icepool.pool.pool import Pool, standard_pool
 from icepool.pool.eval import EvalPool, WrapFuncEval, JointEval, SumPool, sum_pool, enumerate_pool, FindBestSet, FindBestRun
 
 import enum
@@ -43,6 +43,5 @@ __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
     'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
-    'PoolBase', 'Pool', 'standard_pool', 'EvalPool', 'WrapFuncEval',
-    'JointEval', 'SumPool', 'FindBestSet', 'FindBestRun'
+    'Pool', 'standard_pool', 'EvalPool', 'JointEval', 'SumPool'
 ]

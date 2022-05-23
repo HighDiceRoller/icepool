@@ -146,8 +146,8 @@ class EvalPool(ABC):
 
         # Convert non-pool arguments to `PoolInternal`.
         pools = [
-            pool if isinstance(pool, icepool.PoolInternal) else icepool.Pool(
-                *pool) for pool in pools
+            pool if isinstance(pool, icepool.Pool) else icepool.Pool(*pool)
+            for pool in pools
         ]
 
         algorithm, direction = self._select_algorithm(*pools)

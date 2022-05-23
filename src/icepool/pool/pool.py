@@ -10,29 +10,6 @@ from collections import defaultdict
 from functools import cache, cached_property
 
 
-def Pool(*dice):
-    """Creates a pool from the given dice.
-
-    Evaulation is most efficient when the dice are the same or same-side
-    truncations of each other. For example, d4, d6, d8, d10, d12 are all
-    same-side truncations of the d12.
-
-    Args:
-        *dice: The dice to put in the pool. Empty dice are ignored.
-
-    Returns:
-        A pool object.
-    """
-    dice = [icepool.Die(die) for die in dice]
-    num_dice = len(dice)
-    dice_counts = defaultdict(int)
-    for die in dice:
-        if not die.is_empty():
-            dice_counts[die] += 1
-    count_dice = (1,) * num_dice
-    return PoolInternal(dice_counts, count_dice)
-
-
 def count_dice_tuple(num_dice, count_dice):
     """Expresses `count_dice` as a tuple.
 
@@ -190,38 +167,58 @@ def iter_die_pop_max(die, num_dice, max_outcome):
 
 
 @cache
-def new_pool(cls, counts_arg, count_dice):
+def new_pool_cached(cls, sorted_num_dices, count_dice):
     """Creates a new pool. This function is cached.
 
     Args:
         cls: The pool class.
-        counts_arg: A sorted sequence of (die, count) pairs.
+        sorted_num_dices: A sorted sequence of (die, num_dice) pairs.
         count_dice: A tuple of length equal to the number of dice.
     """
-    self = super(PoolInternal, cls).__new__(cls)
-    self._dice = Counts(counts_arg)
+    self = super(Pool, cls).__new__(cls)
+    self._dice = Counts(sorted_num_dices)
     self._count_dice = count_dice
     return self
 
 
-class PoolInternal():
+class Pool():
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `EvalPool` to generate a result.
     """
 
-    def __new__(cls, dice_counts, count_dice):
-        """This should not be called directly. Use `Pool() or Die.pool()` to construct a pool.
+    def __new__(cls, *dice):
+        """Public constructor for a pool.
+
+        Evaulation is most efficient when the dice are the same or same-side
+        truncations of each other. For example, d4, d6, d8, d10, d12 are all
+        same-side truncations of d12.
 
         Args:
-            dice_counts: At this point, this is a map from dice to counts, with
+            *dice: The dice to put in the pool. Empty dice are ignored.
+        """
+        dice = [icepool.Die(die) for die in dice]
+        num_dice = len(dice)
+        num_dices = defaultdict(int)
+        for die in dice:
+            if not die.is_empty():
+                num_dices[die] += 1
+        count_dice = (1,) * num_dice
+        return cls._new_pool(num_dices, count_dice)
+
+    @classmethod
+    def _new_pool(cls, num_dices, count_dice):
+        """Creates a new pool.
+
+        Args:
+            num_dices: At this point, this is a map from dice to num_dice, with
                 no empty dice.
             count_dice: At this point, this is a tuple with length equal to the
                 number of dice.
         """
-        counts_arg = tuple(
-            sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
-        return new_pool(cls, counts_arg, count_dice)
+        sorted_num_dices = tuple(
+            sorted(num_dices.items(), key=lambda kv: kv[0].key_tuple()))
+        return new_pool_cached(cls, sorted_num_dices, count_dice)
 
     @cached_property
     def _num_dice(self):
@@ -327,9 +324,9 @@ class PoolInternal():
                     'Cannot change the size of a pool unless it has exactly one type of die.'
                 )
             dice = Counts([(self._dice.keys()[0], len(count_dice))])
-            result = PoolInternal(dice, count_dice)
+            result = Pool._new_pool(dice, count_dice)
         else:
-            result = PoolInternal(self._dice, count_dice)
+            result = Pool._new_pool(self._dice, count_dice)
         if convert_to_die:
             return result.eval(lambda state, outcome, count: outcome
                                if count else state)
@@ -386,7 +383,7 @@ class PoolInternal():
             else:
                 result_count = sum(self.count_dice()[:net_num_rolled])
                 popped_count_dice = self.count_dice()[net_num_rolled:]
-            popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
+            popped_pool = Pool._new_pool(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -430,7 +427,7 @@ class PoolInternal():
             else:
                 result_count = sum(self.count_dice()[-net_num_rolled:])
                 popped_count_dice = self.count_dice()[:-net_num_rolled]
-            popped_pool = PoolInternal(next_dice_counts, popped_count_dice)
+            popped_pool = Pool._new_pool(next_dice_counts, popped_count_dice)
             if not any(popped_count_dice):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -478,7 +475,7 @@ class PoolInternal():
                      for die, count in self._dice.items()), self._count_dice
 
     def __eq__(self, other):
-        if not isinstance(other, PoolInternal):
+        if not isinstance(other, Pool):
             return False
         return self._key_tuple == other._key_tuple
 
