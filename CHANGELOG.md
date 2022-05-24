@@ -1,3 +1,9 @@
+## 0.13.2
+
+The data of a die resulting from `==` or `!=` is lazily evaluated.
+
+This saves computation in case the caller is only interested in the truth value.
+
 ## 0.13.1
 
 `EvalPool` favors the cached direction more.
