@@ -1,3 +1,7 @@
+## 0.13.1
+
+`EvalPool` favors the cached direction more.
+
 ## 0.13.0
 
 Major reworking of pool construction.
