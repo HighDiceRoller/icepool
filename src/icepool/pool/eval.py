@@ -9,6 +9,9 @@ from functools import cached_property
 import itertools
 import math
 
+PREFERRED_DIRECTION_COST_FACTOR = 10
+"""The preferred direction will be weighted this times as much."""
+
 
 class EvalPool(ABC):
     """An abstract, immutable, callable class for evaulating one or more `Pool`s.
@@ -187,19 +190,29 @@ class EvalPool(ABC):
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)
 
-        if pop_max_cost <= pop_min_cost:
-            cost_direction = 1
-        else:
-            cost_direction = -1
-
+        # No preferred direction case: go directly with cost.
         if eval_direction == 0:
-            return self._eval_internal, cost_direction
+            if pop_max_cost <= pop_min_cost:
+                return self._eval_internal, 1
+            else:
+                return self._eval_internal, -1
 
-        if eval_direction == cost_direction:
+        # Preferred direction case.
+        # Go with the preferred direction unless there is a "significant"
+        # cost factor.
+
+        if PREFERRED_DIRECTION_COST_FACTOR * pop_max_cost < pop_min_cost:
+            cost_direction = 1
+        elif PREFERRED_DIRECTION_COST_FACTOR * pop_min_cost < pop_max_cost:
+            cost_direction = -1
+        else:
+            cost_direction = 0
+
+        if cost_direction == 0 or eval_direction == cost_direction:
             # Use the preferred algorithm.
             return self._eval_internal, eval_direction
         else:
-            # Forced onto the less-preferred algorithm.
+            # Use the less-preferred algorithm.
             return self._eval_internal_iterative, eval_direction
 
     def _eval_internal(self, direction, *pools):
