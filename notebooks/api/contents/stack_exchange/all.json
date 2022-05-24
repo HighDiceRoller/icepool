@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-05-23T23:49:03.536038Z",
+      "created": "2022-05-24T00:17:03.724862Z",
       "format": null,
-      "last_modified": "2022-05-23T23:48:44.515025Z",
+      "last_modified": "2022-05-24T00:16:42.689269Z",
       "mimetype": null,
       "name": "odds_of_rolling_high_all_the_time.ipynb",
       "path": "stack_exchange/odds_of_rolling_high_all_the_time.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:49:03.536038Z",
+      "created": "2022-05-24T00:17:03.720861Z",
       "format": null,
-      "last_modified": "2022-05-23T23:48:44.515025Z",
+      "last_modified": "2022-05-24T00:16:42.689269Z",
       "mimetype": null,
       "name": "contains_subset.ipynb",
       "path": "stack_exchange/contains_subset.ipynb",
@@ -26,9 +26,21 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:49:03.536038Z",
+      "created": "2022-05-24T00:17:03.720861Z",
       "format": null,
-      "last_modified": "2022-05-23T23:48:44.515025Z",
+      "last_modified": "2022-05-24T00:16:42.689269Z",
+      "mimetype": null,
+      "name": "green_red_elimination.ipynb",
+      "path": "stack_exchange/green_red_elimination.ipynb",
+      "size": 3921,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-05-24T00:17:03.720861Z",
+      "format": null,
+      "last_modified": "2022-05-24T00:16:42.689269Z",
       "mimetype": null,
       "name": "dependent_dice_rolls.ipynb",
       "path": "stack_exchange/dependent_dice_rolls.ipynb",
@@ -38,9 +50,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:49:03.536038Z",
+      "created": "2022-05-24T00:17:03.724862Z",
       "format": null,
-      "last_modified": "2022-05-23T23:48:44.515025Z",
+      "last_modified": "2022-05-24T00:16:42.689269Z",
       "mimetype": null,
       "name": "triangleish.ipynb",
       "path": "stack_exchange/triangleish.ipynb",
@@ -50,9 +62,9 @@
     },
     {
       "content": null,
-      "created": "2022-05-23T23:49:03.536038Z",
+      "created": "2022-05-24T00:17:03.724862Z",
       "format": null,
-      "last_modified": "2022-05-23T23:48:44.515025Z",
+      "last_modified": "2022-05-24T00:16:42.689269Z",
       "mimetype": null,
       "name": "risk_attrition.ipynb",
       "path": "stack_exchange/risk_attrition.ipynb",
@@ -61,9 +73,9 @@
       "writable": true
     }
   ],
-  "created": "2022-05-23T23:49:03.536038Z",
+  "created": "2022-05-24T00:17:03.724862Z",
   "format": "json",
-  "last_modified": "2022-05-23T23:49:03.536038Z",
+  "last_modified": "2022-05-24T00:17:03.724862Z",
   "mimetype": null,
   "name": "stack_exchange",
   "path": "stack_exchange",
