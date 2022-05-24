@@ -22,6 +22,7 @@ from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
                               reduce, accumulate, apply)
 
 from icepool.die.die import Die
+from icepool.die.die_with_truth import DieWithTruth
 
 from icepool.die.keep import lowest, highest
 

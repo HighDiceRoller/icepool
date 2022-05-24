@@ -107,12 +107,16 @@ class Die():
         Raises:
             `ValueError`: `None` is not a valid outcome for a die.
         """
-        if weights is None and len(args) == 1 and isinstance(args[0], Die):
-            return args[0]
-        self = super(Die, cls).__new__(cls)
-        self._data = expand_die_args(*args,
-                                     weights=weights,
-                                     denominator_method=denominator_method)
+        if cls == Die:
+            if weights is None and len(args) == 1 and isinstance(args[0], Die):
+                return args[0]
+            self = super(Die, cls).__new__(cls)
+            self._data = expand_die_args(*args,
+                                         weights=weights,
+                                         denominator_method=denominator_method)
+        else:
+            # Just forward.
+            self = super(Die, cls).__new__(cls)
         return self
 
     def unary_op(self, op, *args, **kwargs):
@@ -1127,19 +1131,29 @@ class Die():
         other = icepool.Die(other)
         return self.binary_op(other, operator.gt)
 
-    # Equality operators. These additionally set the truth value of the result.
+    # Equality operators. These produce a `DieWithTruth`.
 
     def __eq__(self, other):
         other = icepool.Die(other)
-        result = self.binary_op(other, operator.eq)
-        result._truth_value = self.equals(other)
-        return result
+
+        def data_callback():
+            data_die = self.binary_op(other, operator.eq)
+            return data_die._data
+
+        truth_value = self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value)
 
     def __ne__(self, other):
         other = icepool.Die(other)
-        result = self.binary_op(other, operator.ne)
-        result._truth_value = not self.equals(other)
-        return result
+
+        def data_callback():
+            data_die = self.binary_op(other, operator.ne)
+            return data_die._data
+
+        truth_value = not self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value)
 
     @staticmethod
     def _sign(x):
@@ -1231,13 +1245,10 @@ class Die():
     # Equality and hashing.
 
     def __bool__(self):
-        if hasattr(self, '_truth_value'):
-            return self._truth_value
-        else:
-            raise ValueError(
-                'A die only has a truth value if it is the result of == or !=. '
-                'If this is in the conditional of an if-statement, you probably '
-                'want to use die.if_else() instead.')
+        raise ValueError(
+            'A die only has a truth value if it is the result of == or !=. '
+            'If this is in the conditional of an if-statement, you probably '
+            'want to use die.if_else() instead.')
 
     @cached_property
     def _key_tuple(self):
@@ -1263,9 +1274,10 @@ class Die():
         that outcome, they are treated as unequal by this function.
 
         The `==` and `!=` operators have a dual purpose; they return a die
-        representing the result of the operator as normal,
-        but the die additionally has a truth value determined by this method.
-        Only dice returned by these methods have a truth value.
+        with a truth value determined by this method.
+        Only dice returned by these methods have a truth value. The data of
+        these dice is lazily evaluated since the caller may only be interested
+        in the truth value.
 
         Args:
             reduce: If `True`, the dice will be reduced before comparing.
