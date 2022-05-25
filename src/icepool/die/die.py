@@ -1255,7 +1255,11 @@ class Die():
         return tuple(self.items())
 
     def key_tuple(self):
-        """Returns a tuple that uniquely (as `equals()`) identifies this die. """
+        """Returns a tuple that uniquely (as `equals()`) identifies this die.
+
+        Apart from being hashable and totally orderable, this is not guaranteed
+        to be in any particular format or have any other properties.
+        """
         return self._key_tuple
 
     @cached_property
