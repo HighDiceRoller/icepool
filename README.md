@@ -34,20 +34,6 @@ Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discu
 
 See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples. These include mechanics from published games, StackExchange, Reddit, and academic papers.
 
-### Hosting the notebooks locally
-
-If you need to host the notebooks locally:
-
-
-```
-git clone -b gh-pages https://github.com/HighDiceRoller/icepool.git icepool-pages
-cd icepool-pages/notebooks
-
-pip install jupyterlab_server pkginfo
-pip install --pre jupyterlite
-jupyter lite serve
-```
-
 ## Web applications
 
 * [Ability score rolling method calculator](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
