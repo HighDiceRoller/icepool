@@ -171,7 +171,8 @@ class Die():
         `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`,
         as well as the additional method `cmp`.
         Note that `*` multiplies outcomes directly;
-        it is not the same as `@` or `d()`.
+        it is not the same as `@`, which rolls the right side multiple times,
+        or `d()`, which creates a standard die.
 
         `==` and `!=` additionally set the truth value of the die according to
         whether the dice themselves are the same or not.
@@ -179,8 +180,7 @@ class Die():
         The `@` operator does NOT use this method directly.
         It rolls the left die, which must have integer outcomes,
         then rolls the right die that many times and sums the outcomes.
-        Only the sum is performed  element-wise. Only the left side will be
-        converted to a die; the right side must already be a die.
+        Only the sum is performed element-wise.
 
         Returns:
             A die representing the result.
@@ -825,7 +825,7 @@ class Die():
                                if x else outcome_if_false,
                                denominator_method=denominator_method)
 
-    # Pools.
+    # Pools and sums.
 
     @cached_property
     def _sum_cache(self):
@@ -856,16 +856,9 @@ class Die():
         self._sum_cache[num_dice] = result
         return result
 
-    def d(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes.
-
-        If an `int` is provided for the right side, it becomes a standard die
-        with that many faces. Otherwise it is converted to a die.
-        """
-        if isinstance(other, int):
-            other = icepool.standard(other)
-        else:
-            other = icepool.Die(other)
+    def __matmul__(self, other):
+        """Roll the left die, then roll the right die that many times and sum the outcomes."""
+        other = icepool.Die(other)
 
         data = defaultdict(int)
 
@@ -878,6 +871,11 @@ class Die():
                 data[outcome] += subresult_weight * die_count_weight * factor
 
         return icepool.Die(data)
+
+    def __rmatmul__(self, other):
+        """Roll the left die, then roll the right die that many times and sum the outcomes."""
+        other = icepool.Die(other)
+        return other.__matmul__(self)
 
     def pool(self, num_dice=1):
         """Creates a pool from this die.
@@ -1183,39 +1181,6 @@ class Die():
         `self < other`, and the remainder respectively.
         """
         return self.binary_op(other, Die._cmp)
-
-    # Special operators.
-
-    def __matmul__(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes.
-
-        Unlike other operators, this does not work for built-in types on the right side.
-        For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
-
-        This is because all other operators convert their right side to a die
-        using die, so `6` would become a constant 6, while  `d()` converts
-        `int`s to a standard die with that many sides, so `6` would become a d6.
-        Thus the right-side conversion of `@` would be ambiguous.
-        """
-        if not isinstance(other, icepool.Die):
-            raise TypeError(
-                f'The @ operator will not automatically convert the right side of type {type(other).__qualname__} to a die.'
-            )
-        return self.d(other)
-
-    def __rmatmul__(self, other):
-        """Roll the left die, then roll the right die that many times and sum the outcomes.
-
-        Unlike other operators, this does not work for built-in types on the right side.
-        For example, `1 @ 6` does not work, nor does `d(6) @ 6`. But `1 @ d(6)` works.
-
-        This is because all other operators convert their right side to a die
-        using `Die()`, so `6` would become a constant 6, while  `d()` converts
-        `int`s to a standard die with that many sides, so `6` would become a d6.
-        Thus the right-side conversion of `@` would be ambiguous.
-        """
-        other = icepool.Die(other)
-        return other.d(self)
 
     # Rolling.
 

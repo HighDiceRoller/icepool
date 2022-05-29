@@ -129,10 +129,10 @@ def test_matmul_die_die():
     assert result.equals(expected)
 
 def test_d():
-    result = icepool.d3.d(3)
+    result = icepool.d3 @ icepool.d(3)
     expected = icepool.Die({1: 9, 2: 12, 3: 16, 4: 12, 5: 12, 6: 10, 7: 6, 8: 3, 9: 1})
     assert result.equals(expected)
 
 def test_d_negative():
-    result = (icepool.d7 - 4).d(3)
+    result = (icepool.d7 - 4) @ icepool.d(3)
     assert result.equals(-result)

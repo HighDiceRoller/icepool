@@ -27,38 +27,7 @@ def standard(num_sides):
     return icepool.Die(*range(1, num_sides + 1))
 
 
-def d(arg):
-    """Converts the argument to a standard die if it is not already a die.
-
-    You may also use e.g. `icepool.d6` without the parentheses. However, this
-    alternative behavior cannot be imported into the global scope:
-
-    ```
-    import icepool
-    from icepool import d
-    d(6)                    # ok
-    icepool.d6              # ok
-    d6                      # not ok
-    from icepool import d6  # ok
-    ```
-
-    Args:
-        arg: Either:
-            * An `int`, which produces a standard die.
-            * A die, which is returned itself.
-
-    Returns:
-        A die.
-
-    Raises:
-        `TypeError` if the argument is not an `int` or a die.
-    """
-    if isinstance(arg, int):
-        return standard(arg)
-    elif isinstance(arg, icepool.Die):
-        return arg
-    else:
-        raise TypeError('The argument to d() must be an int or a die.')
+d = standard
 
 
 def __getattr__(key):
