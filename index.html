@@ -15,6 +15,18 @@
         <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks including dice pool mechanics from published products and academic papers, as well as users across the Web.</li>
     </ul>
     
+    <p>
+        Note that the JupyterLite distribution must be served through <tt>https</tt> and not <tt>file</tt>.
+        If you are viewing this site from a copy on disk, you can host the JupyterLite distribution on <tt>localhost</tt> using the following:
+    </p>
+    
+    <p><pre><code>
+cd ./notebooks
+pip install jupyterlab_server pkginfo
+pip install --pre jupyterlite
+jupyter lite serve
+    </code></pre></p>
+    
     <h2>Applications</h2>
     
     <ul>
