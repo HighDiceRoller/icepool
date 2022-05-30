@@ -40,140 +40,105 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 * [*Cortex Prime* calculator](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
 
-## Inline example: *Vampire* 5th edition
+## Inline examples
 
-[Official site.](https://www.worldofdarkness.com/vampire-the-masquerade)
+### Summing ability scores
 
-This edition works as follows:
-
-1. Roll a pool of d10s. Some of these will be normal dice, and some will be Hunger dice.
-2. Count each 6+ as a success.
-3. For each pair of 10s, add two additional successes (for a total of four successes from those two dice).
-4. If the total number of successes meets or exceeds the difficulty, it's a win. Otherwise it's a loss.
-
-In addition to the binary win/loss aspect of the outcome, there are the following special rules:
-
-* A win with at least one pair of 10s is a **critical win**.
-* However, a critical win with at least one Hunger die showing a 10 becomes a **messy critical** instead.
-* A loss with at least one Hunger die showing a 1 is a **bestial failure**.
-
-### Method 1: One-hot representation
+What's the chance that the sum of player A's six ability scores is greater than or equal to the sum of player B's six ability scores?
+(Using 4d6 keep highest 3 for each ability score.)
 
 ```python
 import icepool
 
-# One method is to express the possible outcomes using a tuple 
-# that has exactly one element set according to the symbol rolled.
-# This is called a "one-hot" representation.
-# In this case we have four types of symbols.
+single_ability = icepool.d6.keep_highest(4, 3)
 
-normal_die = icepool.Die({(0, 0, 0, 0): 5, # failure
-                          (0, 1, 0, 0): 4, # success
-                          (0, 0, 1, 0): 1, # crit
-                         })
-hunger_die = icepool.Die({(1, 0, 0, 0): 1, # bestial failure
-                          (0, 0, 0, 0): 4, # failure
-                          (0, 1, 0, 0): 4, # success
-                          (0, 0, 0, 1): 1, # messy crit
-                         })
-
-# Summing the dice produces the total number of each symbol rolled.
-# The @ operator means roll the left die, then roll that many of the right die and sum.
-# For outcomes that are tuples, sums are performed element-wise.
-total = 3 @ normal_die + 2 @ hunger_die
-
-# Then we can use a function to compute the final result.
-def eval_one_hot(hunger_botch, success, crit, hunger_crit):
-    total_crit = crit + hunger_crit
-    success += total_crit + 2 * (total_crit // 2)
-    if total_crit >= 2:
-        if hunger_crit > 0:
-            win_type = 'messy'
-        else:
-            win_type = 'crit'
-    else:
-        win_type = ''
-    loss_type = 'bestial' if hunger_botch > 0 else ''
-    return success, win_type, loss_type
-
-# star=1 unpacks the tuples before giving them to eval_one_hot.
-result = total.sub(eval_one_hot, star=1)
-print(result)
+# The @ operator means: compute the left side, and then roll the right side that many times and sum.
+print(6 @ single_ability >= 6 @ single_ability)
 ```
 
-### Method 2: EvalPool
+Denominator: 22452257707354557240087211123792674816
+| Outcome |                                 Weight | Probability |
+|--------:|---------------------------------------:|------------:|
+|   False | 10773601417436608285167797336637018642 |  47.984490% |
+|    True | 11678656289917948954919413787155656174 |  52.015510% |
+
+### All matching sets
+
+[Blog post.](https://asteroid.divnull.com/2008/01/chance-of-reign/)
+
+[Question on Reddit.](https://www.reddit.com/r/askmath/comments/rqtqkq/probability_value_has_chance_in_a_way_i_dont/)
+
+[Another question on Reddit.](https://www.reddit.com/r/RPGdesign/comments/u8yuhg/odds_of_multiples_doubles_triples_quads_quints/)
+
+[Question on StackExchange.](https://math.stackexchange.com/questions/4436121/probability-of-rolling-repeated-numbers)
+
+Roll a bunch of dice, and find **all** matching sets (pairs, triples, etc.)
+
+We *could* manually enumerate every case as per the blog post. However, this is prone to error.
+Fortunately, Icepool can do this simply and reasonably efficiently with no explicit combinatorics on the user's part.
 
 ```python
-# Another method is to use `EvalPool` with a normal pool and a hunger pool.
-# This is a more complex solution, but may be a helpful example.
-# In many cases, `EvalPool` is more computationally efficient.
+import icepool
 
-# The die to use.
-v5_die = icepool.Die({'botch' : 1, 'failure' : 4, 'success' : 4, 'crit' : 1})
+class AllMatchingSets(icepool.EvalPool):
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = ()
+        # If at least a pair, append the size of the matching set.
+        if count >= 2:
+            state += (count,)
+        # Prioritize larger sets.
+        return tuple(sorted(state, reverse=True))
 
-# This evaluates the results of the two pools.
-class EvalVampire5(icepool.EvalPool):
-    # next_state() computes a "running total". In this case, this is:
-    # * The number of successes.
-    # * The type of win, if the result is a win.
-    # * The type of loss, if the result is a loss.
-    def next_state(self, state, outcome, normal, hunger):
-        success, win_type, loss_type = state or (0, '', '')
-        if outcome == 'crit':
-            total_crit = normal + hunger
-            # Crits count as successes, and every pair adds 2 more.
-            success += total_crit + 2 * (total_crit // 2)
-            if total_crit >= 2:
-                if hunger > 0:
-                    win_type = 'messy'
-                else:
-                    win_type = 'crit'
-        elif outcome == 'success':
-            success += normal + hunger
-        elif outcome == 'botch':
-            if hunger > 0:
-                loss_type = 'bestial'
-        else:  # normal loss
-            pass
+all_matching_sets = AllMatchingSets()
 
-        return success, win_type, loss_type
-
-v5_eval = EvalVampire5()
-
-# Now we can construct the normal and Hunger pools and evaluate:
-result = v5_eval(v5_die.pool(3), v5_die.pool(2))
-print(result)
+# Evaluate on 10d10.
+print(all_matching_sets.eval(icepool.d10.pool(10)))
 ```
 
-Denominator: 100000
+Denominator: 10000000000
 
-| Outcome[0] | Outcome[1] | Outcome[2] | Weight | Probability |
-|-----------:|-----------:|-----------:|-------:|------------:|
-|          0 |            |            |   2000 |   2.000000% |
-|          0 |            |    bestial |   1125 |   1.125000% |
-|          1 |            |            |  11000 |  11.000000% |
-|          1 |            |    bestial |   4625 |   4.625000% |
-|          2 |            |            |  23160 |  23.160000% |
-|          2 |            |    bestial |   6840 |   6.840000% |
-|          3 |            |            |  23632 |  23.632000% |
-|          3 |            |    bestial |   4368 |   4.368000% |
-|          4 |            |            |  11776 |  11.776000% |
-|          4 |            |    bestial |   1024 |   1.024000% |
-|          4 |       crit |            |    240 |   0.240000% |
-|          4 |       crit |    bestial |    135 |   0.135000% |
-|          4 |      messy |            |    725 |   0.725000% |
-|          4 |      messy |    bestial |    150 |   0.150000% |
-|          5 |            |            |   2304 |   2.304000% |
-|          5 |       crit |            |    688 |   0.688000% |
-|          5 |       crit |    bestial |    237 |   0.237000% |
-|          5 |      messy |            |   2055 |   2.055000% |
-|          5 |      messy |    bestial |    270 |   0.270000% |
-|          6 |       crit |            |    656 |   0.656000% |
-|          6 |       crit |    bestial |    104 |   0.104000% |
-|          6 |      messy |            |   1920 |   1.920000% |
-|          6 |      messy |    bestial |    120 |   0.120000% |
-|          7 |       crit |            |    208 |   0.208000% |
-|          7 |      messy |            |    592 |   0.592000% |
-|          8 |      messy |            |     23 |   0.023000% |
-|          8 |      messy |    bestial |      2 |   0.002000% |
-|          9 |      messy |            |     21 |   0.021000% |
+|         Outcome |     Weight | Probability |
+|----------------:|-----------:|------------:|
+|              () |    3628800 |   0.036288% |
+|            (2,) |  163296000 |   1.632960% |
+|          (2, 2) | 1143072000 |  11.430720% |
+|       (2, 2, 2) | 1905120000 |  19.051200% |
+|    (2, 2, 2, 2) |  714420000 |   7.144200% |
+| (2, 2, 2, 2, 2) |   28576800 |   0.285768% |
+|            (3,) |  217728000 |   2.177280% |
+|          (3, 2) | 1524096000 |  15.240960% |
+|       (3, 2, 2) | 1905120000 |  19.051200% |
+|    (3, 2, 2, 2) |  381024000 |   3.810240% |
+|          (3, 3) |  317520000 |   3.175200% |
+|       (3, 3, 2) |  381024000 |   3.810240% |
+|    (3, 3, 2, 2) |   31752000 |   0.317520% |
+|       (3, 3, 3) |   14112000 |   0.141120% |
+|            (4,) |  127008000 |   1.270080% |
+|          (4, 2) |  476280000 |   4.762800% |
+|       (4, 2, 2) |  285768000 |   2.857680% |
+|    (4, 2, 2, 2) |   15876000 |   0.158760% |
+|          (4, 3) |  127008000 |   1.270080% |
+|       (4, 3, 2) |   63504000 |   0.635040% |
+|       (4, 3, 3) |    1512000 |   0.015120% |
+|          (4, 4) |    7938000 |   0.079380% |
+|       (4, 4, 2) |    1134000 |   0.011340% |
+|            (5,) |   38102400 |   0.381024% |
+|          (5, 2) |   76204800 |   0.762048% |
+|       (5, 2, 2) |   19051200 |   0.190512% |
+|          (5, 3) |   12700800 |   0.127008% |
+|       (5, 3, 2) |    1814400 |   0.018144% |
+|          (5, 4) |     907200 |   0.009072% |
+|          (5, 5) |      11340 |   0.000113% |
+|            (6,) |    6350400 |   0.063504% |
+|          (6, 2) |    6350400 |   0.063504% |
+|       (6, 2, 2) |     453600 |   0.004536% |
+|          (6, 3) |     604800 |   0.006048% |
+|          (6, 4) |      18900 |   0.000189% |
+|            (7,) |     604800 |   0.006048% |
+|          (7, 2) |     259200 |   0.002592% |
+|          (7, 3) |      10800 |   0.000108% |
+|            (8,) |      32400 |   0.000324% |
+|          (8, 2) |       4050 |   0.000041% |
+|            (9,) |        900 |   0.000009% |
+|           (10,) |         10 |   0.000000% |
