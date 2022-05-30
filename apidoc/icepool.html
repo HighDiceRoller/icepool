@@ -6307,17 +6307,17 @@ dice to be summed.</li>
 </span><span id="EvalPool-123"><a href="#EvalPool-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="mi">1</span>
 </span><span id="EvalPool-124"><a href="#EvalPool-124"><span class="linenos">124</span></a>
 </span><span id="EvalPool-125"><a href="#EvalPool-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool-126"><a href="#EvalPool-126"><span class="linenos">126</span></a>        <span class="sd">&quot;&quot;&quot;Optional function to specify a set of outcomes that should always be given to `next_state()` even if they have zero count.</span>
+</span><span id="EvalPool-126"><a href="#EvalPool-126"><span class="linenos">126</span></a>        <span class="sd">&quot;&quot;&quot;Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.</span>
 </span><span id="EvalPool-127"><a href="#EvalPool-127"><span class="linenos">127</span></a>
 </span><span id="EvalPool-128"><a href="#EvalPool-128"><span class="linenos">128</span></a><span class="sd">        The default implementation returns `()`; this means outcomes with zero</span>
 </span><span id="EvalPool-129"><a href="#EvalPool-129"><span class="linenos">129</span></a><span class="sd">        count may or may not be seen by `next_state`.</span>
 </span><span id="EvalPool-130"><a href="#EvalPool-130"><span class="linenos">130</span></a>
-</span><span id="EvalPool-131"><a href="#EvalPool-131"><span class="linenos">131</span></a><span class="sd">        If you want the set of outcomes seen by `next_state` to be consecutive</span>
+</span><span id="EvalPool-131"><a href="#EvalPool-131"><span class="linenos">131</span></a><span class="sd">        If you want the outcomes seen by `next_state` to be consecutive</span>
 </span><span id="EvalPool-132"><a href="#EvalPool-132"><span class="linenos">132</span></a><span class="sd">        `int`s, you can set `alignment = icepool.EvalPool.range_alignment`.</span>
 </span><span id="EvalPool-133"><a href="#EvalPool-133"><span class="linenos">133</span></a><span class="sd">        See `range_alignment()` below.</span>
 </span><span id="EvalPool-134"><a href="#EvalPool-134"><span class="linenos">134</span></a>
 </span><span id="EvalPool-135"><a href="#EvalPool-135"><span class="linenos">135</span></a><span class="sd">        Returns:</span>
-</span><span id="EvalPool-136"><a href="#EvalPool-136"><span class="linenos">136</span></a><span class="sd">            A sequence of outcomes that should be given to `next_state()` even</span>
+</span><span id="EvalPool-136"><a href="#EvalPool-136"><span class="linenos">136</span></a><span class="sd">            An iterable of outcomes that should be given to `next_state()` even</span>
 </span><span id="EvalPool-137"><a href="#EvalPool-137"><span class="linenos">137</span></a><span class="sd">            if they have zero count.</span>
 </span><span id="EvalPool-138"><a href="#EvalPool-138"><span class="linenos">138</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="EvalPool-139"><a href="#EvalPool-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="p">()</span>
@@ -6735,36 +6735,36 @@ parameters.</li>
     </div>
     <a class="headerlink" href="#EvalPool.alignment"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="EvalPool.alignment-125"><a href="#EvalPool.alignment-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">pools</span><span class="p">):</span>
-</span><span id="EvalPool.alignment-126"><a href="#EvalPool.alignment-126"><span class="linenos">126</span></a>        <span class="sd">&quot;&quot;&quot;Optional function to specify a set of outcomes that should always be given to `next_state()` even if they have zero count.</span>
+</span><span id="EvalPool.alignment-126"><a href="#EvalPool.alignment-126"><span class="linenos">126</span></a>        <span class="sd">&quot;&quot;&quot;Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.</span>
 </span><span id="EvalPool.alignment-127"><a href="#EvalPool.alignment-127"><span class="linenos">127</span></a>
 </span><span id="EvalPool.alignment-128"><a href="#EvalPool.alignment-128"><span class="linenos">128</span></a><span class="sd">        The default implementation returns `()`; this means outcomes with zero</span>
 </span><span id="EvalPool.alignment-129"><a href="#EvalPool.alignment-129"><span class="linenos">129</span></a><span class="sd">        count may or may not be seen by `next_state`.</span>
 </span><span id="EvalPool.alignment-130"><a href="#EvalPool.alignment-130"><span class="linenos">130</span></a>
-</span><span id="EvalPool.alignment-131"><a href="#EvalPool.alignment-131"><span class="linenos">131</span></a><span class="sd">        If you want the set of outcomes seen by `next_state` to be consecutive</span>
+</span><span id="EvalPool.alignment-131"><a href="#EvalPool.alignment-131"><span class="linenos">131</span></a><span class="sd">        If you want the outcomes seen by `next_state` to be consecutive</span>
 </span><span id="EvalPool.alignment-132"><a href="#EvalPool.alignment-132"><span class="linenos">132</span></a><span class="sd">        `int`s, you can set `alignment = icepool.EvalPool.range_alignment`.</span>
 </span><span id="EvalPool.alignment-133"><a href="#EvalPool.alignment-133"><span class="linenos">133</span></a><span class="sd">        See `range_alignment()` below.</span>
 </span><span id="EvalPool.alignment-134"><a href="#EvalPool.alignment-134"><span class="linenos">134</span></a>
 </span><span id="EvalPool.alignment-135"><a href="#EvalPool.alignment-135"><span class="linenos">135</span></a><span class="sd">        Returns:</span>
-</span><span id="EvalPool.alignment-136"><a href="#EvalPool.alignment-136"><span class="linenos">136</span></a><span class="sd">            A sequence of outcomes that should be given to `next_state()` even</span>
+</span><span id="EvalPool.alignment-136"><a href="#EvalPool.alignment-136"><span class="linenos">136</span></a><span class="sd">            An iterable of outcomes that should be given to `next_state()` even</span>
 </span><span id="EvalPool.alignment-137"><a href="#EvalPool.alignment-137"><span class="linenos">137</span></a><span class="sd">            if they have zero count.</span>
 </span><span id="EvalPool.alignment-138"><a href="#EvalPool.alignment-138"><span class="linenos">138</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="EvalPool.alignment-139"><a href="#EvalPool.alignment-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional function to specify a set of outcomes that should always be given to <code><a href="#EvalPool.next_state">next_state()</a></code> even if they have zero count.</p>
+            <div class="docstring"><p>Optional function to specify an iterable of outcomes that should always be given to <code><a href="#EvalPool.next_state">next_state()</a></code> even if they have zero count.</p>
 
 <p>The default implementation returns <code>()</code>; this means outcomes with zero
 count may or may not be seen by <code><a href="#EvalPool.next_state">next_state</a></code>.</p>
 
-<p>If you want the set of outcomes seen by <code><a href="#EvalPool.next_state">next_state</a></code> to be consecutive
+<p>If you want the outcomes seen by <code><a href="#EvalPool.next_state">next_state</a></code> to be consecutive
 <code>int</code>s, you can set <code>alignment = <a href="#EvalPool.range_alignment">icepool.EvalPool.range_alignment</a></code>.
 See <code><a href="#EvalPool.range_alignment">range_alignment()</a></code> below.</p>
 
 <h6 id="returns">Returns</h6>
 
 <blockquote>
-  <p>A sequence of outcomes that should be given to <code><a href="#EvalPool.next_state">next_state()</a></code> even
+  <p>An iterable of outcomes that should be given to <code><a href="#EvalPool.next_state">next_state()</a></code> even
   if they have zero count.</p>
 </blockquote>
 </div>
