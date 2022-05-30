@@ -10,6 +10,9 @@ from functools import cached_property
 import itertools
 import math
 
+PREFERRED_DIRECTION_COST_FACTOR = 10
+"""The preferred direction will be weighted this times as much."""
+
 
 class EvalPool(ABC):
     """An abstract, immutable, callable class for evaulating one or more `Pool`s.
@@ -199,13 +202,13 @@ class EvalPool(ABC):
         if any(pool.has_empty_dice() for pool in pools):
             return icepool.Die()
 
-        direction = self._select_direction(*pools)
+        algorithm, direction = self._select_algorithm(*pools)
 
         # We can't reuse the Pool class for alignment because it is expected
         # to skip outcomes.
         alignment = EvalPoolAlignment(self.alignment(*pools))
 
-        dist = self._eval_internal(direction, alignment, tuple(pools))
+        dist = algorithm(direction, alignment, tuple(pools))
 
         final_outcomes = []
         final_weights = []
@@ -219,11 +222,12 @@ class EvalPool(ABC):
 
     __call__ = eval
 
-    def _select_direction(self, *pools):
-        """Selects an iteration direction.
+    def _select_algorithm(self, *pools):
+        """Selects an algorithm and iteration direction.
 
         Returns:
-            The direction in which `next_state()` sees outcomes.
+            * The algorithm to use (`_eval_internal*`).
+            * The direction in which `next_state()` sees outcomes.
                 1 for ascending and -1 for descending.
 
         """
@@ -238,11 +242,27 @@ class EvalPool(ABC):
         # No preferred direction case: go directly with cost.
         if eval_direction == 0:
             if pop_max_cost <= pop_min_cost:
-                return 1
+                return self._eval_internal, 1
             else:
-                return -1
+                return self._eval_internal, -1
 
-        return eval_direction
+        # Preferred direction case.
+        # Go with the preferred direction unless there is a "significant"
+        # cost factor.
+
+        if PREFERRED_DIRECTION_COST_FACTOR * pop_max_cost < pop_min_cost:
+            cost_direction = 1
+        elif PREFERRED_DIRECTION_COST_FACTOR * pop_min_cost < pop_max_cost:
+            cost_direction = -1
+        else:
+            cost_direction = 0
+
+        if cost_direction == 0 or eval_direction == cost_direction:
+            # Use the preferred algorithm.
+            return self._eval_internal, eval_direction
+        else:
+            # Use the less-preferred algorithm.
+            return self._eval_internal_iterative, eval_direction
 
     def _eval_internal(self, direction, alignment, pools):
         """Internal algorithm for iterating in the more-preferred direction,
@@ -284,6 +304,37 @@ class EvalPool(ABC):
 
         self._cache[cache_key] = result
         return result
+
+    def _eval_internal_iterative(self, direction, alignment, pools):
+        """Internal algorithm for iterating in the less-preferred direction,
+        i.e. giving outcomes to `next_state()` from narrow to wide.
+
+        This algorithm does not perform persistent memoization.
+        """
+        if all(pool.is_empty() for pool in pools) and alignment.is_empty():
+            return {None: 1}
+        dist = defaultdict(int)
+        dist[None, alignment, pools] = 1
+        final_dist = defaultdict(int)
+        while dist:
+            next_dist = defaultdict(int)
+            for (prev_state, prev_alignment,
+                 prev_pools), weight in dist.items():
+                # The direction flip here is the only purpose of this algorithm.
+                outcome, alignment, iterators = _pop_pools(
+                    -direction, prev_alignment, prev_pools)
+                for p in itertools.product(*iterators):
+                    pools, counts, weights = zip(*p)
+                    prod_weight = math.prod(weights)
+                    state = self.next_state(prev_state, outcome, *counts)
+                    if state is not icepool.Reroll:
+                        if all(pool.is_empty() for pool in pools):
+                            final_dist[state] += weight * prod_weight
+                        else:
+                            next_dist[state, alignment,
+                                      pools] += weight * prod_weight
+            dist = next_dist
+        return final_dist
 
 
 def _pop_pools(side, alignment, pools):
