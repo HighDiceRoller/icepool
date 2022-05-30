@@ -122,17 +122,17 @@ class EvalPool(ABC):
         return 1
 
     def alignment(self, *pools):
-        """Optional function to specify a set of outcomes that should always be given to `next_state()` even if they have zero count.
+        """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
 
-        If you want the set of outcomes seen by `next_state` to be consecutive
+        If you want the outcomes seen by `next_state` to be consecutive
         `int`s, you can set `alignment = icepool.EvalPool.range_alignment`.
         See `range_alignment()` below.
 
         Returns:
-            A sequence of outcomes that should be given to `next_state()` even
+            An iterable of outcomes that should be given to `next_state()` even
             if they have zero count.
         """
         return ()
