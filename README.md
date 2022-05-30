@@ -82,6 +82,9 @@ import icepool
 
 class AllMatchingSets(icepool.EvalPool):
     def next_state(self, state, outcome, count):
+        """next_state computes a "running total"
+        given one outcome at a time and how many dice rolled that outcome.
+        """
         if state is None:
             state = ()
         # If at least a pair, append the size of the matching set.
