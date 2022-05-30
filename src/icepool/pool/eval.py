@@ -127,28 +127,45 @@ class EvalPool(ABC):
     def alignment(self, *pools):
         """Optional function to specify the set of outcomes that should be given to `next_state()`.
 
-        The default implementation returns `range()` from the min outcome
-        among the `pools` to the max outcome among the pools (inclusive) if all
-        pool outcomes are `int`s. If there is any non-`int` outcome, the result
-        of the default implementation is `()`, i.e. outcomes with zero count
-        may or may not be skipped.
+        The default implementation returns `()`; this means outcomes with zero
+        count may or may not be seen by `next_state`.
+
+        If you want the set of outcomes seen by `next_state` to be consecutive
+        `int`s, you can set `alignment = icepool.EvalPool.range_alignment`.
+        See `range_alignment()` below.
 
         Returns:
             A sequence of outcomes that should be given to `next_state()` even
             if they have zero count.
         """
+        return ()
+
+    def range_alignment(self, *pools):
+        """Example implementation of `alignment()` that produces consecutive `int` outcomes.
+
+        Set `alignment = icepool.EvalPool.range_alignment` to use this.
+
+        Returns:
+            All `int`s from the min outcome to the max outcome among the pools,
+            inclusive.
+
+        Raises:
+            `TypeError` if any pool has any non-`int` outcome.
+        """
         if len(pools) == 0:
             return ()
 
-        if all(
-                all(isinstance(x, int)
+        if any(
+                any(not isinstance(x, int)
                     for x in pool.outcomes())
                 for pool in pools):
-            min_outcome = min(pool.min_outcome() for pool in pools)
-            max_outcome = max(pool.max_outcome() for pool in pools)
-            return range(min_outcome, max_outcome + 1)
+            raise TypeError(
+                "range_alignment cannot be used with outcomes of type other than 'int'."
+            )
 
-        return ()
+        min_outcome = min(pool.min_outcome() for pool in pools)
+        max_outcome = max(pool.max_outcome() for pool in pools)
+        return range(min_outcome, max_outcome + 1)
 
     @cached_property
     def _cache(self):
@@ -437,10 +454,6 @@ class SumPool(EvalPool):
         """This eval doesn't care about direction. """
         return 0
 
-    def alignment(self, *pools):
-        """This eval doesn't care about alignment. """
-        return ()
-
 
 sum_pool = SumPool()
 """A shared `SumPool` object for caching results. """
@@ -498,10 +511,6 @@ class FindBestSet(EvalPool):
         """This eval doesn't care about direction. """
         return 0
 
-    def alignment(self, *pools):
-        """This eval doesn't care about alignment. """
-        return ()
-
 
 class FindBestRun(EvalPool):
     """A `EvalPool` that takes the best run (aka "straight") in a pool.
@@ -531,3 +540,5 @@ class FindBestRun(EvalPool):
     def direction(self, *pools):
         """This only considers outcomes in ascending order. """
         return 1
+
+    alignment = EvalPool.range_alignment
