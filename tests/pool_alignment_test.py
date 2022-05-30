@@ -47,3 +47,8 @@ def test_mixed_pool_count_dice_low():
     pool = Pool(d4, d6, d6, d8)[:2]
     result = call_path_length.eval(pool)
     assert result.outcomes() == (8,)
+
+def test_range_alignment_non_int():
+    pool = Pool(0.5)
+    with pytest.raises(TypeError):
+        result = call_path_length.eval(pool)
