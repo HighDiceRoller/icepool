@@ -77,8 +77,6 @@ hunger_die = icepool.Die({(1, 0, 0, 0): 1, # bestial failure
                           (0, 0, 0, 1): 1, # messy crit
                          })
 
-
-
 # Summing the dice produces the total number of each symbol rolled.
 # The @ operator means roll the left die, then roll that many of the right die and sum.
 # For outcomes that are tuples, sums are performed element-wise.
