@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.pool.alignment import EvalPoolAlignment
 from icepool.pool.cost import estimate_costs
 
 from abc import ABC, abstractmethod
@@ -61,9 +62,10 @@ class EvalPool(ABC):
                 `next_state` will see all rolled outcomes in monotonic order;
                 either ascending or descending depending on `direction()`.
                 If there are multiple pools, the set of outcomes is the union of
-                the outcomes of the invididual pools. Each outcome will be seen
-                at most once; however, outcomes may be skipped if no dice
-                actually rolled that outcome.
+                the outcomes of the invididual pools. All outcomes with nonzero
+                count will be visited. Outcomes with zero count may or may not
+                be visited. If you need to enforce that certain outcomes are'
+                visited even if they have zero count, see `alignment()`.
             *counts: One `int` for each pool indicating how many dice in that
                 pool rolled the current outcome. If there are multiple pools,
                 it's possible that some outcomes will not appear in all pools.
@@ -122,6 +124,32 @@ class EvalPool(ABC):
         """
         return 1
 
+    def alignment(self, *pools):
+        """Optional function to specify the set of outcomes that should be given to `next_state()`.
+
+        The default implementation returns `range()` from the min outcome
+        among the `pools` to the max outcome among the pools (inclusive) if all
+        pool outcomes are `int`s. If there is any non-`int` outcome, the result
+        of the default implementation is `()`, i.e. outcomes with zero count
+        may or may not be skipped.
+
+        Returns:
+            A sequence of outcomes that should be given to `next_state()` even
+            if they have zero count.
+        """
+        if len(pools) == 0:
+            return ()
+
+        if all(
+                all(isinstance(x, int)
+                    for x in pool.outcomes())
+                for pool in pools):
+            min_outcome = min(pool.min_outcome() for pool in pools)
+            max_outcome = max(pool.max_outcome() for pool in pools)
+            return range(min_outcome, max_outcome + 1)
+
+        return ()
+
     @cached_property
     def _cache(self):
         """A cache of (direction, pools) -> weight distribution over states. """
@@ -159,7 +187,11 @@ class EvalPool(ABC):
 
         algorithm, direction = self._select_algorithm(*pools)
 
-        dist = algorithm(direction, *pools)
+        # We can't reuse the Pool class for alignment because it is expected
+        # to skip outcomes.
+        alignment = EvalPoolAlignment(self.alignment(*pools))
+
+        dist = algorithm(direction, alignment, *pools)
 
         final_outcomes = []
         final_weights = []
@@ -215,7 +247,7 @@ class EvalPool(ABC):
             # Use the less-preferred algorithm.
             return self._eval_internal_iterative, eval_direction
 
-    def _eval_internal(self, direction, *pools):
+    def _eval_internal(self, direction, alignment, *pools):
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -230,20 +262,22 @@ class EvalPool(ABC):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (direction, pools)
+        cache_key = (direction, alignment, pools)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
         result = defaultdict(int)
 
-        if all(pool.is_empty() for pool in pools):
+        if all(pool.is_empty() for pool in pools) and alignment.is_empty():
             result = {None: 1}
         else:
-            outcome, iterators = _pop_pools(direction, pools)
+            outcome, prev_alignment, iterators = _pop_pools(
+                direction, alignment, pools)
             for p in itertools.product(*iterators):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(direction, *prev_pools)
+                prev = self._eval_internal(direction, prev_alignment,
+                                           *prev_pools)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
@@ -252,22 +286,24 @@ class EvalPool(ABC):
         self._cache[cache_key] = result
         return result
 
-    def _eval_internal_iterative(self, direction, *pools):
+    def _eval_internal_iterative(self, direction, alignment, *pools):
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
         This algorithm does not perform persistent memoization.
         """
-        if all(pool.is_empty() for pool in pools):
+        if all(pool.is_empty() for pool in pools) and alignment.is_empty():
             return {None: 1}
         dist = defaultdict(int)
-        dist[None, pools] = 1
+        dist[None, alignment, pools] = 1
         final_dist = defaultdict(int)
         while dist:
             next_dist = defaultdict(int)
-            for (prev_state, prev_pools), weight in dist.items():
+            for (prev_state, prev_alignment,
+                 prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
-                outcome, iterators = _pop_pools(-direction, prev_pools)
+                outcome, alignment, iterators = _pop_pools(
+                    -direction, prev_alignment, prev_pools)
                 for p in itertools.product(*iterators):
                     pools, counts, weights = zip(*p)
                     prod_weight = math.prod(weights)
@@ -276,28 +312,37 @@ class EvalPool(ABC):
                         if all(pool.is_empty() for pool in pools):
                             final_dist[state] += weight * prod_weight
                         else:
-                            next_dist[state, pools] += weight * prod_weight
+                            next_dist[state, alignment,
+                                      pools] += weight * prod_weight
             dist = next_dist
         return final_dist
 
 
-def _pop_pools(side, pools):
+def _pop_pools(side, alignment, pools):
     """Pops a single outcome from the pools.
 
     Returns:
         * The popped outcome.
+        * The remaining alignment.
         * A tuple of iterators over the possible resulting pools, counts, and weights.
     """
+    alignment_and_pools = (alignment,) + pools
     if side >= 0:
-        outcome = max(
-            pool.max_outcome() for pool in pools if not pool.is_empty())
-        iterators = tuple(pool._pop_max(outcome) for pool in pools)
-    else:
-        outcome = min(
-            pool.min_outcome() for pool in pools if not pool.is_empty())
-        iterators = tuple(pool._pop_min(outcome) for pool in pools)
+        outcome = max(pool.max_outcome()
+                      for pool in alignment_and_pools
+                      if not pool.is_empty())
 
-    return outcome, iterators
+        return outcome, alignment._pop_max(outcome), tuple(
+            pool._pop_max(outcome) for pool in pools)
+    else:
+        outcome = min(pool.min_outcome()
+                      for pool in alignment_and_pools
+                      if not pool.is_empty())
+        if not alignment.is_empty():
+            outcome = min(outcome, alignment.min_outcome())
+
+        return outcome, alignment._pop_min(outcome), tuple(
+            pool._pop_min(outcome) for pool in pools)
 
 
 class WrapFuncEval(EvalPool):
@@ -392,6 +437,10 @@ class SumPool(EvalPool):
         """This eval doesn't care about direction. """
         return 0
 
+    def alignment(self, *pools):
+        """This eval doesn't care about alignment. """
+        return ()
+
 
 sum_pool = SumPool()
 """A shared `SumPool` object for caching results. """
@@ -449,6 +498,10 @@ class FindBestSet(EvalPool):
         """This eval doesn't care about direction. """
         return 0
 
+    def alignment(self, *pools):
+        """This eval doesn't care about alignment. """
+        return ()
+
 
 class FindBestRun(EvalPool):
     """A `EvalPool` that takes the best run (aka "straight") in a pool.
@@ -464,17 +517,12 @@ class FindBestRun(EvalPool):
         """Increments the current run if at least one die rolled this outcome,
         then saves the run to the state.
         """
-        best_run, best_run_outcome, run, prev_outcome = state or (0, outcome, 0,
-                                                                  outcome - 1)
+        best_run, best_run_outcome, run = state or (0, outcome, 0)
         if count >= 1:
-            if outcome == prev_outcome + 1:
-                run += 1
-            else:
-                run = 1
+            run += 1
         else:
             run = 0
-        return max((run, outcome),
-                   (best_run, best_run_outcome)) + (run, outcome)
+        return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
     def final_outcome(self, final_state, *pools):
         """Returns the best run. """
