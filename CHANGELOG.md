@@ -1,3 +1,7 @@
+## 0.14.1
+
+Reinstate alternate internal `EvalPool` algorithm, which provides better performance in some cases. 
+
 ## 0.14.0
 
 * Added a new `EvalPool.alignment()` method. This allows to specify an iterable of outcomes that should always be seen by `next_state` even if they have zero count.
