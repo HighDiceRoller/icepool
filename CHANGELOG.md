@@ -1,3 +1,11 @@
+## 0.14.0
+
+* Added a new `EvalPool.alignment()` method. This allows to specify an iterable of outcomes that should always be seen by `next_state` even if they have zero count.
+* The free function `d()` is now simply an alias for `standard()`.
+* Removed `Die.d()`.
+* The `@` operator now casts the right side to a `Die` like other operators.
+* Some internal changes to `EvalPool` algorithm.
+
 ## 0.13.2
 
 The data of a die resulting from `==` or `!=` is lazily evaluated.
