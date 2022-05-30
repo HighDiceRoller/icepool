@@ -205,7 +205,7 @@ class EvalPool(ABC):
         # to skip outcomes.
         alignment = EvalPoolAlignment(self.alignment(*pools))
 
-        dist = self._eval_internal(direction, alignment, *pools)
+        dist = self._eval_internal(direction, alignment, tuple(pools))
 
         final_outcomes = []
         final_weights = []
@@ -244,7 +244,7 @@ class EvalPool(ABC):
 
         return eval_direction
 
-    def _eval_internal(self, direction, alignment, *pools):
+    def _eval_internal(self, direction, alignment, pools):
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -252,8 +252,10 @@ class EvalPool(ABC):
 
         Arguments:
             direction: The direction in which to send outcomes to `next_state()`.
-            *pools: One or more `Pool`s to evaluate.
-                This *does* change recursively.
+            alignment: As `alignment()`. Elements will be popped off this
+                during recursion.
+            pools: One or more `Pool`s to evaluate. Elements will be popped off
+                this during recursion.
 
         Returns:
             A dict `{ state : weight }` describing the probability distribution
@@ -274,7 +276,7 @@ class EvalPool(ABC):
                 prev_pools, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, prev_alignment,
-                                           *prev_pools)
+                                           prev_pools)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
