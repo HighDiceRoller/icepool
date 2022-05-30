@@ -195,7 +195,8 @@ class Pool():
         same-side truncations of d12.
 
         Args:
-            *dice: The dice to put in the pool. Empty dice are ignored.
+            *dice: The dice to put in the pool. Empty dice are ignored. All
+                outcomes within a pool must be totally orderable.
         """
         dice = [icepool.Die(die) for die in dice]
         num_dice = len(dice)
@@ -248,6 +249,20 @@ class Pool():
         return sum(((die,) * count for die, count in self._dice.items()),
                    start=())
 
+    def unique_dice(self):
+        return self._dice.keys()
+
+    @cached_property
+    def _outcomes(self):
+        outcome_set = set(
+            itertools.chain.from_iterable(
+                die.outcomes() for die in self.unique_dice()))
+        return tuple(sorted(outcome_set))
+
+    def outcomes(self):
+        """The union of outcomes among all dice in this pool."""
+        return self._outcomes
+
     def count_dice(self):
         """The tuple indicating which dice in the pool will be counted.
 
@@ -296,13 +311,17 @@ class Pool():
                 If provided, the third argument resizes the pool,
                 rather than being a step; however, this is only valid if the
                 pool consists of a single type of die.
-            A sequence of one `int`s for each die.
+            A sequence of one `int` for each die.
                 Each die is counted that many times, which could be multiple or
                 negative times. This may resize the pool, but only if the
                 pool consists of a single type of die.
 
                 Up to one `Ellipsis` (`...`) may be used.
-                If an `Ellipsis` is used, the size of the pool won't change. Instead:
+                If an `Ellipsis` is used, the size of the pool won't change.
+                Instead, the `Ellipsis` will be replaced with a number of zero
+                counts, sufficient to maintain the current size of this pool.
+                This number may be "negative" if more `int`s are provided than
+                the size of the pool. Specifically:
 
                 * If `count_dice` is shorter than `num_dice`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
