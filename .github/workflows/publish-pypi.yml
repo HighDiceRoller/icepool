@@ -7,6 +7,8 @@ on:
       - '[0-9]+*'
 
 jobs:
+  run_tests:
+    uses: ./.github/workflows/run-tests.yml
   publish:
     runs-on: ubuntu-latest
     steps:

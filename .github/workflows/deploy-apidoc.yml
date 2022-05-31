@@ -10,6 +10,8 @@ on:
       - 'favicon*'
 
 jobs:
+  run_tests:
+    uses: ./.github/workflows/run-tests.yml
   deploy:
     runs-on: ubuntu-latest
     steps:
