@@ -19,7 +19,7 @@ __docformat__ = 'google'
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
                               from_cweights, from_sweights, from_rv,
                               min_outcome, max_outcome, align, align_range,
-                              reduce, accumulate, apply)
+                              reduce, accumulate, apply, apply_sorted)
 
 from icepool.die.die import Die
 from icepool.die.die_with_truth import DieWithTruth
@@ -43,6 +43,7 @@ Reroll = SpecialValue.Reroll
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
-    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply', 'Reroll',
-    'Pool', 'standard_pool', 'EvalPool', 'JointEval', 'SumPool'
+    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
+    'apply_sorted', 'Reroll', 'Pool', 'standard_pool', 'EvalPool', 'JointEval',
+    'SumPool'
 ]

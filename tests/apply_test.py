@@ -13,6 +13,11 @@ def test_apply_die():
     expected = 2 @ icepool.d6
     assert result.equals(expected)
 
+def test_apply_sorted_max():
+    result = icepool.apply_sorted(lambda x, y: y, icepool.d6, icepool.d6)
+    expected = icepool.d6.keep_highest(2)
+    assert result.equals(expected)
+
 def test_apply_no_dice():
     result = icepool.apply(lambda: 1)
     expected = icepool.Die({1:1})

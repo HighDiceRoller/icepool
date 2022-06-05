@@ -205,11 +205,15 @@ def apply(func, *dice):
 
     `apply()` is flexible but not very efficient for more than two dice.
     Instead of using more than two arguments:
+
     * If the problem is easy to solve by considering one additional die at a
         time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
         `icepool.Pool` and `icepool.EvalPool`.
+    * If the order in which the dice are rolled is not important, you can use
+        `apply_sorted()`. This is less efficient than either of the above two,
+        but is still more efficient than `apply()`.
 
     Args:
         func: A function that takes one argument per input die and returns an
@@ -236,3 +240,24 @@ def apply(func, *dice):
             final_weights.append(final_weight)
 
     return icepool.Die(*final_outcomes, weights=final_weights)
+
+
+def apply_sorted(func, *dice):
+    """Applies `func(lowest_outcome, next_lowest_outcome...)` for all possible sorted outcomes of the dice.
+
+    This is more efficient than `apply` but still not very efficient.
+    Use `EvalPool` instead if at all possible.
+
+    Args:
+        func: A function that takes one argument per input die and returns an
+            argument to `Die()`.
+        *dice: Any number of dice (or objects convertible to dice).
+            `func` will be called with all possible sorted outcomes of `dice`,
+            with one argument per die. All outcomes must be totally orderable.
+
+    Returns:
+        A die constructed from the outputs of `func` and the weight of rolling
+        the corresponding sorted outcomes.
+    """
+    pool = icepool.Pool(*dice)
+    return icepool.enumerate_pool(pool).sub(func, star=1)
