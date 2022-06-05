@@ -18,6 +18,6 @@ def test_trim():
     assert a.trim().equals(icepool.d4)
     assert b.trim().equals(icepool.d6 + 1)
 
-def test_die_align():
-    result = icepool.d4.align_range(0, 6)
+def test_die_set_range():
+    result = icepool.d4.set_range(0, 6)
     assert result.outcomes() == (0, 1, 2, 3, 4, 5, 6)

@@ -662,7 +662,7 @@ class Die():
                 data[outcome] += weight
         return icepool.Die(data)
 
-    def align_range(self, min_outcome=None, max_outcome=None):
+    def set_range(self, min_outcome=None, max_outcome=None):
         """Sets the outcomes of this die to the given `int` range (inclusive).
 
         Args:
