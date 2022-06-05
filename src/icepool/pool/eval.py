@@ -217,8 +217,8 @@ class EvalPool(ABC):
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
-                    "This may have resulted from an empty pool. "
-                    "If so, refrain from using empty pools, or override final_outcome() to handle this case."
+                    "This may have resulted from supplying an empty pool to EvalPool. "
+                    "If so, refrain from using empty pools, or override EvalPool.final_outcome() to handle this case."
                 )
             if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
