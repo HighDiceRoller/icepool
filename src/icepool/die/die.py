@@ -704,7 +704,13 @@ class Die():
 
     # Mixtures.
 
-    def sub(self, repl, /, *, max_depth=1, star=0, denominator_method='lcm'):
+    def sub(self,
+            repl,
+            /,
+            *extra_args,
+            max_depth=1,
+            star=0,
+            denominator_method='lcm'):
         """Changes outcomes of the die to other outcomes.
 
         You can think of this as `sub`stituting outcomes of this die for other
@@ -718,6 +724,9 @@ class Die():
                 * A callable mapping old outcomes to new outcomes.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
+            *extra_args: These will be supplied to `repl` as extra positional
+                arguments after the outcome argument(s). `extra_args` can only
+                be supplied if `repl` is callable.
             max_depth: `sub()` will be repeated with the same argument on the
                 result this many times. If set to `None`, this will repeat until
                 a fixed point is reached.
@@ -728,7 +737,15 @@ class Die():
 
         Returns:
             The relabeled die.
+
+        Raises:
+            `ValueError` if `extra_args` are supplied with a non-callable `repl`.
         """
+        if extra_args and not callable(repl):
+            raise ValueError(
+                'Extra positional arguments are only valid if repl is callable.'
+            )
+
         if max_depth == 0:
             return self
         elif max_depth == 1:
@@ -737,9 +754,15 @@ class Die():
                         for outcome in self.outcomes()]
             elif callable(repl):
                 if star:
-                    repl = [repl(*outcome) for outcome in self.outcomes()]
+                    repl = [
+                        repl(*outcome, *extra_args)
+                        for outcome in self.outcomes()
+                    ]
                 else:
-                    repl = [repl(outcome) for outcome in self.outcomes()]
+                    repl = [
+                        repl(outcome, *extra_args)
+                        for outcome in self.outcomes()
+                    ]
 
             return icepool.Die(*repl,
                                weights=self.weights(),
