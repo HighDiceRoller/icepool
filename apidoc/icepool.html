@@ -301,6 +301,9 @@
                     <a class="function" href="#apply">apply</a>
             </li>
             <li>
+                    <a class="function" href="#apply_sorted">apply_sorted</a>
+            </li>
+            <li>
                     <a class="variable" href="#Reroll">Reroll</a>
             </li>
             <li>
@@ -474,7 +477,7 @@ refer to dice in a pool.</li>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span> <span class="nn">icepool.die.func</span> <span class="kn">import</span> <span class="p">(</span><span class="n">standard</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">bernoulli</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>                              <span class="n">from_cweights</span><span class="p">,</span> <span class="n">from_sweights</span><span class="p">,</span> <span class="n">from_rv</span><span class="p">,</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                              <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span> <span class="n">align_range</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>                              <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="n">apply</span><span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>                              <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="n">apply</span><span class="p">,</span> <span class="n">apply_sorted</span><span class="p">)</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="kn">from</span> <span class="nn">icepool.die.die</span> <span class="kn">import</span> <span class="n">Die</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="kn">from</span> <span class="nn">icepool.die.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
@@ -498,9 +501,10 @@ refer to dice in a pool.</li>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cweights&#39;</span><span class="p">,</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="s1">&#39;from_sweights&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumPool&#39;</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="p">]</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;EvalPool&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;SumPool&#39;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -5067,37 +5071,41 @@ of dice.</li>
 </span><span id="apply-206"><a href="#apply-206"><span class="linenos">206</span></a>
 </span><span id="apply-207"><a href="#apply-207"><span class="linenos">207</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than two dice.</span>
 </span><span id="apply-208"><a href="#apply-208"><span class="linenos">208</span></a><span class="sd">    Instead of using more than two arguments:</span>
-</span><span id="apply-209"><a href="#apply-209"><span class="linenos">209</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
-</span><span id="apply-210"><a href="#apply-210"><span class="linenos">210</span></a><span class="sd">        time, try using `reduce()` instead.</span>
-</span><span id="apply-211"><a href="#apply-211"><span class="linenos">211</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
-</span><span id="apply-212"><a href="#apply-212"><span class="linenos">212</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
-</span><span id="apply-213"><a href="#apply-213"><span class="linenos">213</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
-</span><span id="apply-214"><a href="#apply-214"><span class="linenos">214</span></a>
-</span><span id="apply-215"><a href="#apply-215"><span class="linenos">215</span></a><span class="sd">    Args:</span>
-</span><span id="apply-216"><a href="#apply-216"><span class="linenos">216</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
-</span><span id="apply-217"><a href="#apply-217"><span class="linenos">217</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply-218"><a href="#apply-218"><span class="linenos">218</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
-</span><span id="apply-219"><a href="#apply-219"><span class="linenos">219</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
-</span><span id="apply-220"><a href="#apply-220"><span class="linenos">220</span></a><span class="sd">            with one argument per die.</span>
-</span><span id="apply-221"><a href="#apply-221"><span class="linenos">221</span></a>
-</span><span id="apply-222"><a href="#apply-222"><span class="linenos">222</span></a><span class="sd">    Returns:</span>
-</span><span id="apply-223"><a href="#apply-223"><span class="linenos">223</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
-</span><span id="apply-224"><a href="#apply-224"><span class="linenos">224</span></a><span class="sd">        weights of the dice.</span>
-</span><span id="apply-225"><a href="#apply-225"><span class="linenos">225</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply-226"><a href="#apply-226"><span class="linenos">226</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="apply-227"><a href="#apply-227"><span class="linenos">227</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">func</span><span class="p">())</span>
-</span><span id="apply-228"><a href="#apply-228"><span class="linenos">228</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="apply-229"><a href="#apply-229"><span class="linenos">229</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-230"><a href="#apply-230"><span class="linenos">230</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-231"><a href="#apply-231"><span class="linenos">231</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
-</span><span id="apply-232"><a href="#apply-232"><span class="linenos">232</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-</span><span id="apply-233"><a href="#apply-233"><span class="linenos">233</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="apply-234"><a href="#apply-234"><span class="linenos">234</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="apply-235"><a href="#apply-235"><span class="linenos">235</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="apply-236"><a href="#apply-236"><span class="linenos">236</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
-</span><span id="apply-237"><a href="#apply-237"><span class="linenos">237</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
-</span><span id="apply-238"><a href="#apply-238"><span class="linenos">238</span></a>
-</span><span id="apply-239"><a href="#apply-239"><span class="linenos">239</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
+</span><span id="apply-209"><a href="#apply-209"><span class="linenos">209</span></a>
+</span><span id="apply-210"><a href="#apply-210"><span class="linenos">210</span></a><span class="sd">    * If the problem is easy to solve by considering one additional die at a</span>
+</span><span id="apply-211"><a href="#apply-211"><span class="linenos">211</span></a><span class="sd">        time, try using `reduce()` instead.</span>
+</span><span id="apply-212"><a href="#apply-212"><span class="linenos">212</span></a><span class="sd">    * If the problem is easy to solve by considering how many dice rolled each</span>
+</span><span id="apply-213"><a href="#apply-213"><span class="linenos">213</span></a><span class="sd">        outcome, one outcome at a time, try using</span>
+</span><span id="apply-214"><a href="#apply-214"><span class="linenos">214</span></a><span class="sd">        `icepool.Pool` and `icepool.EvalPool`.</span>
+</span><span id="apply-215"><a href="#apply-215"><span class="linenos">215</span></a><span class="sd">    * If the order in which the dice are rolled is not important, you can use</span>
+</span><span id="apply-216"><a href="#apply-216"><span class="linenos">216</span></a><span class="sd">        `apply_sorted()`. This is less efficient than either of the above two,</span>
+</span><span id="apply-217"><a href="#apply-217"><span class="linenos">217</span></a><span class="sd">        but is still more efficient than `apply()`.</span>
+</span><span id="apply-218"><a href="#apply-218"><span class="linenos">218</span></a>
+</span><span id="apply-219"><a href="#apply-219"><span class="linenos">219</span></a><span class="sd">    Args:</span>
+</span><span id="apply-220"><a href="#apply-220"><span class="linenos">220</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
+</span><span id="apply-221"><a href="#apply-221"><span class="linenos">221</span></a><span class="sd">            argument to `Die()`.</span>
+</span><span id="apply-222"><a href="#apply-222"><span class="linenos">222</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
+</span><span id="apply-223"><a href="#apply-223"><span class="linenos">223</span></a><span class="sd">            `func` will be called with all possible joint outcomes of `dice`,</span>
+</span><span id="apply-224"><a href="#apply-224"><span class="linenos">224</span></a><span class="sd">            with one argument per die.</span>
+</span><span id="apply-225"><a href="#apply-225"><span class="linenos">225</span></a>
+</span><span id="apply-226"><a href="#apply-226"><span class="linenos">226</span></a><span class="sd">    Returns:</span>
+</span><span id="apply-227"><a href="#apply-227"><span class="linenos">227</span></a><span class="sd">        A die constructed from the outputs of `func` and the product of the</span>
+</span><span id="apply-228"><a href="#apply-228"><span class="linenos">228</span></a><span class="sd">        weights of the dice.</span>
+</span><span id="apply-229"><a href="#apply-229"><span class="linenos">229</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="apply-230"><a href="#apply-230"><span class="linenos">230</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="apply-231"><a href="#apply-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">func</span><span class="p">())</span>
+</span><span id="apply-232"><a href="#apply-232"><span class="linenos">232</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="apply-233"><a href="#apply-233"><span class="linenos">233</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-234"><a href="#apply-234"><span class="linenos">234</span></a>    <span class="n">final_weights</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-235"><a href="#apply-235"><span class="linenos">235</span></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)):</span>
+</span><span id="apply-236"><a href="#apply-236"><span class="linenos">236</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+</span><span id="apply-237"><a href="#apply-237"><span class="linenos">237</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="apply-238"><a href="#apply-238"><span class="linenos">238</span></a>        <span class="n">final_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="apply-239"><a href="#apply-239"><span class="linenos">239</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="apply-240"><a href="#apply-240"><span class="linenos">240</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
+</span><span id="apply-241"><a href="#apply-241"><span class="linenos">241</span></a>            <span class="n">final_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_weight</span><span class="p">)</span>
+</span><span id="apply-242"><a href="#apply-242"><span class="linenos">242</span></a>
+</span><span id="apply-243"><a href="#apply-243"><span class="linenos">243</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="o">*</span><span class="n">final_outcomes</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">final_weights</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -5114,6 +5122,9 @@ time, try using <code><a href="#reduce">reduce()</a></code> instead.</li>
 <li>If the problem is easy to solve by considering how many dice rolled each
 outcome, one outcome at a time, try using
 <code><a href="#Pool">icepool.Pool</a></code> and <code><a href="#EvalPool">icepool.EvalPool</a></code>.</li>
+<li>If the order in which the dice are rolled is not important, you can use
+<code><a href="#apply_sorted">apply_sorted()</a></code>. This is less efficient than either of the above two,
+but is still more efficient than <code><a href="#apply">apply()</a></code>.</li>
 </ul>
 
 <h6 id="args">Args</h6>
@@ -5131,6 +5142,64 @@ with one argument per die.</li>
 <blockquote>
   <p>A die constructed from the outputs of <code>func</code> and the product of the
   weights of the dice.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="apply_sorted">
+                            <input id="apply_sorted-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">apply_sorted</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">func</span>, </span><span class="param"><span class="o">*</span><span class="n">dice</span></span>)</span>
+
+                <label class="view-source-button" for="apply_sorted-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#apply_sorted"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="apply_sorted-246"><a href="#apply_sorted-246"><span class="linenos">246</span></a><span class="k">def</span> <span class="nf">apply_sorted</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">):</span>
+</span><span id="apply_sorted-247"><a href="#apply_sorted-247"><span class="linenos">247</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(lowest_outcome, next_lowest_outcome...)` for all possible sorted outcomes of the dice.</span>
+</span><span id="apply_sorted-248"><a href="#apply_sorted-248"><span class="linenos">248</span></a>
+</span><span id="apply_sorted-249"><a href="#apply_sorted-249"><span class="linenos">249</span></a><span class="sd">    This is more efficient than `apply` but still not very efficient.</span>
+</span><span id="apply_sorted-250"><a href="#apply_sorted-250"><span class="linenos">250</span></a><span class="sd">    Use `EvalPool` instead if at all possible.</span>
+</span><span id="apply_sorted-251"><a href="#apply_sorted-251"><span class="linenos">251</span></a>
+</span><span id="apply_sorted-252"><a href="#apply_sorted-252"><span class="linenos">252</span></a><span class="sd">    Args:</span>
+</span><span id="apply_sorted-253"><a href="#apply_sorted-253"><span class="linenos">253</span></a><span class="sd">        func: A function that takes one argument per input die and returns an</span>
+</span><span id="apply_sorted-254"><a href="#apply_sorted-254"><span class="linenos">254</span></a><span class="sd">            argument to `Die()`.</span>
+</span><span id="apply_sorted-255"><a href="#apply_sorted-255"><span class="linenos">255</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
+</span><span id="apply_sorted-256"><a href="#apply_sorted-256"><span class="linenos">256</span></a><span class="sd">            `func` will be called with all possible sorted outcomes of `dice`,</span>
+</span><span id="apply_sorted-257"><a href="#apply_sorted-257"><span class="linenos">257</span></a><span class="sd">            with one argument per die. All outcomes must be totally orderable.</span>
+</span><span id="apply_sorted-258"><a href="#apply_sorted-258"><span class="linenos">258</span></a>
+</span><span id="apply_sorted-259"><a href="#apply_sorted-259"><span class="linenos">259</span></a><span class="sd">    Returns:</span>
+</span><span id="apply_sorted-260"><a href="#apply_sorted-260"><span class="linenos">260</span></a><span class="sd">        A die constructed from the outputs of `func` and the weight of rolling</span>
+</span><span id="apply_sorted-261"><a href="#apply_sorted-261"><span class="linenos">261</span></a><span class="sd">        the corresponding sorted outcomes.</span>
+</span><span id="apply_sorted-262"><a href="#apply_sorted-262"><span class="linenos">262</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="apply_sorted-263"><a href="#apply_sorted-263"><span class="linenos">263</span></a>    <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="apply_sorted-264"><a href="#apply_sorted-264"><span class="linenos">264</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">enumerate_pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Applies <code>func(lowest_outcome, next_lowest_outcome...)</code> for all possible sorted outcomes of the dice.</p>
+
+<p>This is more efficient than <code><a href="#apply">apply</a></code> but still not very efficient.
+Use <code><a href="#EvalPool">EvalPool</a></code> instead if at all possible.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func:</strong>  A function that takes one argument per input die and returns an
+argument to <code><a href="#Die">Die()</a></code>.</li>
+<li><strong>*dice:</strong>  Any number of dice (or objects convertible to dice).
+<code>func</code> will be called with all possible sorted outcomes of <code>dice</code>,
+with one argument per die. All outcomes must be totally orderable.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A die constructed from the outputs of <code>func</code> and the weight of rolling
+  the corresponding sorted outcomes.</p>
 </blockquote>
 </div>
 
@@ -6399,8 +6468,8 @@ dice to be summed.</li>
 </span><span id="EvalPool-218"><a href="#EvalPool-218"><span class="linenos">218</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="EvalPool-219"><a href="#EvalPool-219"><span class="linenos">219</span></a>                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
 </span><span id="EvalPool-220"><a href="#EvalPool-220"><span class="linenos">220</span></a>                    <span class="s2">&quot;None is not a valid final outcome. &quot;</span>
-</span><span id="EvalPool-221"><a href="#EvalPool-221"><span class="linenos">221</span></a>                    <span class="s2">&quot;This may have resulted from an empty pool. &quot;</span>
-</span><span id="EvalPool-222"><a href="#EvalPool-222"><span class="linenos">222</span></a>                    <span class="s2">&quot;If so, refrain from using empty pools, or override final_outcome() to handle this case.&quot;</span>
+</span><span id="EvalPool-221"><a href="#EvalPool-221"><span class="linenos">221</span></a>                    <span class="s2">&quot;This may have resulted from supplying an empty pool to EvalPool. &quot;</span>
+</span><span id="EvalPool-222"><a href="#EvalPool-222"><span class="linenos">222</span></a>                    <span class="s2">&quot;If so, refrain from using empty pools, or override EvalPool.final_outcome() to handle this case.&quot;</span>
 </span><span id="EvalPool-223"><a href="#EvalPool-223"><span class="linenos">223</span></a>                <span class="p">)</span>
 </span><span id="EvalPool-224"><a href="#EvalPool-224"><span class="linenos">224</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
 </span><span id="EvalPool-225"><a href="#EvalPool-225"><span class="linenos">225</span></a>                <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
@@ -6941,8 +7010,8 @@ See <code><a href="#EvalPool.range_alignment">range_alignment()</a></code> below
 </span><span id="EvalPool.eval-218"><a href="#EvalPool.eval-218"><span class="linenos">218</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="EvalPool.eval-219"><a href="#EvalPool.eval-219"><span class="linenos">219</span></a>                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
 </span><span id="EvalPool.eval-220"><a href="#EvalPool.eval-220"><span class="linenos">220</span></a>                    <span class="s2">&quot;None is not a valid final outcome. &quot;</span>
-</span><span id="EvalPool.eval-221"><a href="#EvalPool.eval-221"><span class="linenos">221</span></a>                    <span class="s2">&quot;This may have resulted from an empty pool. &quot;</span>
-</span><span id="EvalPool.eval-222"><a href="#EvalPool.eval-222"><span class="linenos">222</span></a>                    <span class="s2">&quot;If so, refrain from using empty pools, or override final_outcome() to handle this case.&quot;</span>
+</span><span id="EvalPool.eval-221"><a href="#EvalPool.eval-221"><span class="linenos">221</span></a>                    <span class="s2">&quot;This may have resulted from supplying an empty pool to EvalPool. &quot;</span>
+</span><span id="EvalPool.eval-222"><a href="#EvalPool.eval-222"><span class="linenos">222</span></a>                    <span class="s2">&quot;If so, refrain from using empty pools, or override EvalPool.final_outcome() to handle this case.&quot;</span>
 </span><span id="EvalPool.eval-223"><a href="#EvalPool.eval-223"><span class="linenos">223</span></a>                <span class="p">)</span>
 </span><span id="EvalPool.eval-224"><a href="#EvalPool.eval-224"><span class="linenos">224</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
 </span><span id="EvalPool.eval-225"><a href="#EvalPool.eval-225"><span class="linenos">225</span></a>                <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
