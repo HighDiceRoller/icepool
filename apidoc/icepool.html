@@ -202,7 +202,7 @@
                                 <a class="function" href="#Die.clip">clip</a>
                         </li>
                         <li>
-                                <a class="function" href="#Die.align_range">align_range</a>
+                                <a class="function" href="#Die.set_range">set_range</a>
                         </li>
                         <li>
                                 <a class="function" href="#Die.set_outcomes">set_outcomes</a>
@@ -1309,7 +1309,7 @@ with weight 1 each.</p>
 </span><span id="Die-663"><a href="#Die-663"><span class="linenos"> 663</span></a>                <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weight</span>
 </span><span id="Die-664"><a href="#Die-664"><span class="linenos"> 664</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span id="Die-665"><a href="#Die-665"><span class="linenos"> 665</span></a>
-</span><span id="Die-666"><a href="#Die-666"><span class="linenos"> 666</span></a>    <span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="Die-666"><a href="#Die-666"><span class="linenos"> 666</span></a>    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="Die-667"><a href="#Die-667"><span class="linenos"> 667</span></a>        <span class="sd">&quot;&quot;&quot;Sets the outcomes of this die to the given `int` range (inclusive).</span>
 </span><span id="Die-668"><a href="#Die-668"><span class="linenos"> 668</span></a>
 </span><span id="Die-669"><a href="#Die-669"><span class="linenos"> 669</span></a><span class="sd">        Args:</span>
@@ -3800,32 +3800,32 @@ If you want to reroll outcomes beyond this range, use <code><a href="#Die.trunca
 
 
                             </div>
-                            <div id="Die.align_range" class="classattr">
-                                        <input id="Die.align_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Die.set_range" class="classattr">
+                                        <input id="Die.set_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">align_range</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span>, </span><span class="param"><span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span></span>)</span>
+        <span class="name">set_range</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span>, </span><span class="param"><span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span></span>)</span>
 
-                <label class="view-source-button" for="Die.align_range-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Die.set_range-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Die.align_range"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.align_range-666"><a href="#Die.align_range-666"><span class="linenos">666</span></a>    <span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="Die.align_range-667"><a href="#Die.align_range-667"><span class="linenos">667</span></a>        <span class="sd">&quot;&quot;&quot;Sets the outcomes of this die to the given `int` range (inclusive).</span>
-</span><span id="Die.align_range-668"><a href="#Die.align_range-668"><span class="linenos">668</span></a>
-</span><span id="Die.align_range-669"><a href="#Die.align_range-669"><span class="linenos">669</span></a><span class="sd">        Args:</span>
-</span><span id="Die.align_range-670"><a href="#Die.align_range-670"><span class="linenos">670</span></a><span class="sd">            min_outcome: The min outcome of the result.</span>
-</span><span id="Die.align_range-671"><a href="#Die.align_range-671"><span class="linenos">671</span></a><span class="sd">                If omitted, the min outcome of this die will be used.</span>
-</span><span id="Die.align_range-672"><a href="#Die.align_range-672"><span class="linenos">672</span></a><span class="sd">            max_outcome: The max outcome of the result.</span>
-</span><span id="Die.align_range-673"><a href="#Die.align_range-673"><span class="linenos">673</span></a><span class="sd">                If omitted, the max outcome of this die will be used.</span>
-</span><span id="Die.align_range-674"><a href="#Die.align_range-674"><span class="linenos">674</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.align_range-675"><a href="#Die.align_range-675"><span class="linenos">675</span></a>        <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.align_range-676"><a href="#Die.align_range-676"><span class="linenos">676</span></a>            <span class="n">min_outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
-</span><span id="Die.align_range-677"><a href="#Die.align_range-677"><span class="linenos">677</span></a>        <span class="k">if</span> <span class="n">max_outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Die.align_range-678"><a href="#Die.align_range-678"><span class="linenos">678</span></a>            <span class="n">max_outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
-</span><span id="Die.align_range-679"><a href="#Die.align_range-679"><span class="linenos">679</span></a>
-</span><span id="Die.align_range-680"><a href="#Die.align_range-680"><span class="linenos">680</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <a class="headerlink" href="#Die.set_range"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.set_range-666"><a href="#Die.set_range-666"><span class="linenos">666</span></a>    <span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="Die.set_range-667"><a href="#Die.set_range-667"><span class="linenos">667</span></a>        <span class="sd">&quot;&quot;&quot;Sets the outcomes of this die to the given `int` range (inclusive).</span>
+</span><span id="Die.set_range-668"><a href="#Die.set_range-668"><span class="linenos">668</span></a>
+</span><span id="Die.set_range-669"><a href="#Die.set_range-669"><span class="linenos">669</span></a><span class="sd">        Args:</span>
+</span><span id="Die.set_range-670"><a href="#Die.set_range-670"><span class="linenos">670</span></a><span class="sd">            min_outcome: The min outcome of the result.</span>
+</span><span id="Die.set_range-671"><a href="#Die.set_range-671"><span class="linenos">671</span></a><span class="sd">                If omitted, the min outcome of this die will be used.</span>
+</span><span id="Die.set_range-672"><a href="#Die.set_range-672"><span class="linenos">672</span></a><span class="sd">            max_outcome: The max outcome of the result.</span>
+</span><span id="Die.set_range-673"><a href="#Die.set_range-673"><span class="linenos">673</span></a><span class="sd">                If omitted, the max outcome of this die will be used.</span>
+</span><span id="Die.set_range-674"><a href="#Die.set_range-674"><span class="linenos">674</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.set_range-675"><a href="#Die.set_range-675"><span class="linenos">675</span></a>        <span class="k">if</span> <span class="n">min_outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die.set_range-676"><a href="#Die.set_range-676"><span class="linenos">676</span></a>            <span class="n">min_outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
+</span><span id="Die.set_range-677"><a href="#Die.set_range-677"><span class="linenos">677</span></a>        <span class="k">if</span> <span class="n">max_outcome</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die.set_range-678"><a href="#Die.set_range-678"><span class="linenos">678</span></a>            <span class="n">max_outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+</span><span id="Die.set_range-679"><a href="#Die.set_range-679"><span class="linenos">679</span></a>
+</span><span id="Die.set_range-680"><a href="#Die.set_range-680"><span class="linenos">680</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 </span></pre></div>
 
 
