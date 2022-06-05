@@ -46,11 +46,14 @@ class EvalPool(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, state, outcome, /, *counts):
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
         and the number of dice in each pool rolling that outcome.
+
+        Within `eval()`, this will be called using only positional arguments.
+        Thus, you may rename any of the arguments if you wish.
 
         Make sure to handle the base case where `state is None`.
 
@@ -83,8 +86,11 @@ class EvalPool(ABC):
             of the pool.
         """
 
-    def final_outcome(self, final_state, *pools):
+    def final_outcome(self, final_state, /, *pools):
         """Optional function to generate a final outcome from a final state.
+
+        Within `eval()`, this will be called using only positional arguments.
+        Thus, you may rename any of the arguments if you wish.
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a die,
