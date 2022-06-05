@@ -17,3 +17,7 @@ def test_trim():
     a, b = icepool.align_range(icepool.d4, icepool.d6 + 1)
     assert a.trim().equals(icepool.d4)
     assert b.trim().equals(icepool.d6 + 1)
+
+def test_die_align():
+    result = icepool.d4.align_range(0, 6)
+    assert result.outcomes() == (0, 1, 2, 3, 4, 5, 6)

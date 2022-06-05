@@ -662,6 +662,22 @@ class Die():
                 data[outcome] += weight
         return icepool.Die(data)
 
+    def align_range(self, min_outcome=None, max_outcome=None):
+        """Sets the outcomes of this die to the given `int` range (inclusive).
+
+        Args:
+            min_outcome: The min outcome of the result.
+                If omitted, the min outcome of this die will be used.
+            max_outcome: The max outcome of the result.
+                If omitted, the max outcome of this die will be used.
+        """
+        if min_outcome is None:
+            min_outcome = self.min_outcome()
+        if max_outcome is None:
+            max_outcome = self.max_outcome()
+
+        return self.set_outcomes(range(min_outcome, max_outcome + 1))
+
     def set_outcomes(self, outcomes):
         """Sets the set of outcomes to the argument.
 
