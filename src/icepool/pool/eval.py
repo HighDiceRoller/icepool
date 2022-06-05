@@ -214,6 +214,12 @@ class EvalPool(ABC):
         final_weights = []
         for state, weight in dist.items():
             outcome = self.final_outcome(state, *pools)
+            if outcome is None:
+                raise TypeError(
+                    "None is not a valid final outcome. "
+                    "This may have resulted from an empty pool. "
+                    "If so, refrain from using empty pools, or override final_outcome() to handle this case."
+                )
             if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
