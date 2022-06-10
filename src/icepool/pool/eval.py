@@ -10,7 +10,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable
+from typing import Any, Callable, Hashable
 from collections.abc import Collection, Mapping, MutableMapping
 
 PREFERRED_DIRECTION_COST_FACTOR = 10
@@ -49,7 +49,7 @@ class EvalPool(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome, /, *counts: int):
+    def next_state(self, state: Hashable, outcome, /, *counts: int) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -89,7 +89,8 @@ class EvalPool(ABC):
             of the pool.
         """
 
-    def final_outcome(self, final_state, /, *pools: icepool.Pool):
+    def final_outcome(self, final_state: Hashable, /,
+                      *pools: icepool.Pool) -> Any:
         """Optional function to generate a final outcome from a final state.
 
         Within `eval()`, this will be called using only positional arguments.
