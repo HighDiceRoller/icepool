@@ -111,7 +111,7 @@ def max_outcome(*dice):
     return max(die.outcomes()[-1] for die in dice)
 
 
-def align(*dice) -> Sequence['icepool.Die']:
+def align(*dice) -> tuple['icepool.Die', ...]:
     """Pads dice with zero weights so that all have the same set of outcomes.
 
     Args:
@@ -126,7 +126,7 @@ def align(*dice) -> Sequence['icepool.Die']:
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def align_range(*dice) -> Sequence['icepool.Die']:
+def align_range(*dice) -> tuple['icepool.Die', ...]:
     """Pads dice with zero weights so that all have the same set of consecutive `int` outcomes.
 
     Args:

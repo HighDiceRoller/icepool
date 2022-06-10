@@ -5,7 +5,7 @@ import icepool
 import math
 
 
-def lowest(*dice, num_keep=1, num_drop=0):
+def lowest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
     """The lowest outcome or sum of the lowest outcomes among the dice.
 
     Args:
@@ -24,7 +24,7 @@ def lowest(*dice, num_keep=1, num_drop=0):
     return _keep(*dice, start=start, stop=stop)
 
 
-def highest(*dice, num_keep=1, num_drop=0):
+def highest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
     """The highest outcome or sum of the highest outcomes among the dice.
 
     Args:
@@ -43,7 +43,7 @@ def highest(*dice, num_keep=1, num_drop=0):
     return _keep(*dice, start=start, stop=stop)
 
 
-def _keep(*dice, start, stop):
+def _keep(*dice, start: int, stop: int) -> 'icepool.Die':
     """Common code for `lowest` and `highest`.
 
     Args:
@@ -52,7 +52,7 @@ def _keep(*dice, start, stop):
             0 and len(dice) inclusive.
     """
 
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
 
     if len(dice) == 0:
         raise ValueError('At least one die must be provided.')
@@ -61,10 +61,10 @@ def _keep(*dice, start, stop):
         return icepool.Die()
 
     if start == stop:
-        return sum(die.zero() for die in dice)
+        return icepool.Die(sum(die.zero() for die in dice))
 
     if start == 0 and stop == len(dice):
-        return sum(dice)
+        return icepool.Die(sum(dice))
 
     if stop == 1:
         return _lowest_single(*dice)
@@ -76,30 +76,30 @@ def _keep(*dice, start, stop):
     return icepool.Pool(*dice)[start:stop].sum()
 
 
-def _lowest_single(*dice):
+def _lowest_single(*dice) -> 'icepool.Die':
     """Roll all the dice and take the lowest single.
 
     The maximum outcome is equal to the least maximum outcome among all
     input dice.
     """
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
     max_outcome = min(die.max_outcome() for die in dice)
-    dice = [die.clip(max_outcome=max_outcome) for die in dice]
+    dice = tuple(die.clip(max_outcome=max_outcome) for die in dice)
     dice = icepool.align(*dice)
     sweights = tuple(
         math.prod(t) for t in zip(*(die.sweights() for die in dice)))
     return icepool.from_sweights(dice[0].outcomes(), sweights)
 
 
-def _highest_single(*dice):
+def _highest_single(*dice) -> 'icepool.Die':
     """Roll all the dice and take the highest single.
 
     The minimum outcome is equal to the greatest minimum outcome among all
     input dice.
     """
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
     min_outcome = max(die.min_outcome() for die in dice)
-    dice = [die.clip(min_outcome=min_outcome) for die in dice]
+    dice = tuple(die.clip(min_outcome=min_outcome) for die in dice)
     dice = icepool.align(*dice)
     cweights = tuple(
         math.prod(t) for t in zip(*(die.cweights() for die in dice)))
