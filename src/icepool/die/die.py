@@ -156,7 +156,7 @@ class Die():
         return icepool.Die(data)
 
     def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
-        """As unary_op, but not elementwise.
+        """As `unary_op()`, but not elementwise.
 
         This is used for the `[]` operator.
         """
@@ -195,8 +195,8 @@ class Die():
             A die representing the result.
 
         Raises:
-            ValueError if tuples are of mismatched length within one of the dice
-            or between the dice.
+            `ValueError` if tuples are of mismatched length within one of the
+                dice or between the dice.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other,
