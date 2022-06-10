@@ -1928,10 +1928,10 @@ with weight 1 each.</p>
 </span><span id="Die-1286"><a href="#Die-1286"><span class="linenos">1286</span></a>            <span class="s1">&#39;want to use die.if_else() instead.&#39;</span><span class="p">)</span>
 </span><span id="Die-1287"><a href="#Die-1287"><span class="linenos">1287</span></a>
 </span><span id="Die-1288"><a href="#Die-1288"><span class="linenos">1288</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Die-1289"><a href="#Die-1289"><span class="linenos">1289</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="Die-1289"><a href="#Die-1289"><span class="linenos">1289</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 </span><span id="Die-1290"><a href="#Die-1290"><span class="linenos">1290</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 </span><span id="Die-1291"><a href="#Die-1291"><span class="linenos">1291</span></a>
-</span><span id="Die-1292"><a href="#Die-1292"><span class="linenos">1292</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="Die-1292"><a href="#Die-1292"><span class="linenos">1292</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 </span><span id="Die-1293"><a href="#Die-1293"><span class="linenos">1293</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
 </span><span id="Die-1294"><a href="#Die-1294"><span class="linenos">1294</span></a>
 </span><span id="Die-1295"><a href="#Die-1295"><span class="linenos">1295</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
@@ -4588,13 +4588,13 @@ arguments.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">key_tuple</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
+        <span class="name">key_tuple</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">tuple</span>:</span></span>
 
                 <label class="view-source-button" for="Die.key_tuple-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Die.key_tuple"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.key_tuple-1292"><a href="#Die.key_tuple-1292"><span class="linenos">1292</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.key_tuple-1292"><a href="#Die.key_tuple-1292"><span class="linenos">1292</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 </span><span id="Die.key_tuple-1293"><a href="#Die.key_tuple-1293"><span class="linenos">1293</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
 </span><span id="Die.key_tuple-1294"><a href="#Die.key_tuple-1294"><span class="linenos">1294</span></a>
 </span><span id="Die.key_tuple-1295"><a href="#Die.key_tuple-1295"><span class="linenos">1295</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
