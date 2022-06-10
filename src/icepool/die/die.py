@@ -1285,10 +1285,10 @@ class Die():
             'want to use die.if_else() instead.')
 
     @cached_property
-    def _key_tuple(self) -> tuple[tuple[Any, int], ...]:
+    def _key_tuple(self) -> tuple:
         return tuple(self.items())
 
-    def key_tuple(self) -> tuple[tuple[Any, int], ...]:
+    def key_tuple(self) -> tuple:
         """Returns a tuple that uniquely (as `equals()`) identifies this die.
 
         Apart from being hashable and totally orderable, this is not guaranteed
