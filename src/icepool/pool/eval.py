@@ -10,6 +10,9 @@ from functools import cached_property
 import itertools
 import math
 
+from typing import Any, Callable
+from collections.abc import Collection, Mapping, MutableMapping
+
 PREFERRED_DIRECTION_COST_FACTOR = 10
 """The preferred direction will be weighted this times as much."""
 
@@ -46,7 +49,7 @@ class EvalPool(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome, /, *counts):
+    def next_state(self, state, outcome, /, *counts: int):
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -86,7 +89,7 @@ class EvalPool(ABC):
             of the pool.
         """
 
-    def final_outcome(self, final_state, /, *pools):
+    def final_outcome(self, final_state, /, *pools: icepool.Pool):
         """Optional function to generate a final outcome from a final state.
 
         Within `eval()`, this will be called using only positional arguments.
@@ -111,7 +114,7 @@ class EvalPool(ABC):
         """
         return final_state
 
-    def direction(self, *pools):
+    def direction(self, *pools: icepool.Pool) -> int:
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
         The default is ascending order. This works well with mixed standard dice,
@@ -130,7 +133,7 @@ class EvalPool(ABC):
         """
         return 1
 
-    def alignment(self, *pools):
+    def alignment(self, *pools: icepool.Pool) -> Collection:
         """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
@@ -146,7 +149,7 @@ class EvalPool(ABC):
         """
         return ()
 
-    def range_alignment(self, *pools):
+    def range_alignment(self, *pools: icepool.Pool) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         Set `alignment = icepool.EvalPool.range_alignment` to use this.
@@ -174,11 +177,13 @@ class EvalPool(ABC):
         return range(min_outcome, max_outcome + 1)
 
     @cached_property
-    def _cache(self):
+    def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
         """A cache of (direction, pools) -> weight distribution over states. """
         return {}
 
-    def eval(self, *pools):
+    def eval(
+            self, *pools: icepool.Pool | Mapping[Any, int] | Collection
+    ) -> 'icepool.Die':
         """Evaluates pools.
 
         You can call the `EvalPool` object directly for the same effect,
@@ -189,7 +194,7 @@ class EvalPool(ABC):
                 * A `Pool` representing possible rolls of a pool.
                 * A dict-like representing a single roll of a pool.
                     The dict maps outcomes to counts.
-                * A sequence of outcomes representing a single roll of a pool.
+                * A collection of outcomes representing a single roll of a pool.
                     Outcomes are treated as having 1 count per appearance.
                 Most evaluators will expect a fixed number of pools.
                 The union of the outcomes of the pools must be totally orderable.
@@ -199,27 +204,26 @@ class EvalPool(ABC):
             If all pools are `PoolRoll`s, the result is a single outcome instead.
         """
 
-        # Convert non-pool arguments to `PoolInternal`.
-        pools = [
+        # Convert non-pool arguments to `Pool`.
+        converted_pools = tuple(
             pool if isinstance(pool, icepool.Pool) else icepool.Pool(*pool)
-            for pool in pools
-        ]
+            for pool in pools)
 
-        if any(pool.has_empty_dice() for pool in pools):
+        if any(pool.has_empty_dice() for pool in converted_pools):
             return icepool.Die()
 
-        algorithm, direction = self._select_algorithm(*pools)
+        algorithm, direction = self._select_algorithm(*converted_pools)
 
         # We can't reuse the Pool class for alignment because it is expected
         # to skip outcomes.
-        alignment = EvalPoolAlignment(self.alignment(*pools))
+        alignment = EvalPoolAlignment(self.alignment(*converted_pools))
 
-        dist = algorithm(direction, alignment, tuple(pools))
+        dist = algorithm(direction, alignment, tuple(converted_pools))
 
         final_outcomes = []
         final_weights = []
         for state, weight in dist.items():
-            outcome = self.final_outcome(state, *pools)
+            outcome = self.final_outcome(state, *converted_pools)
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
@@ -234,7 +238,7 @@ class EvalPool(ABC):
 
     __call__ = eval
 
-    def _select_algorithm(self, *pools):
+    def _select_algorithm(self, *pools: icepool.Pool) -> tuple[Callable, int]:
         """Selects an algorithm and iteration direction.
 
         Returns:
@@ -276,7 +280,8 @@ class EvalPool(ABC):
             # Use the less-preferred algorithm.
             return self._eval_internal_iterative, eval_direction
 
-    def _eval_internal(self, direction, alignment, pools):
+    def _eval_internal(self, direction: int, alignment: EvalPoolAlignment,
+                       pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -297,7 +302,7 @@ class EvalPool(ABC):
         if cache_key in self._cache:
             return self._cache[cache_key]
 
-        result = defaultdict(int)
+        result: MutableMapping[Any, int] = defaultdict(int)
 
         if all(pool.is_empty() for pool in pools) and alignment.is_empty():
             result = {None: 1}
@@ -317,7 +322,9 @@ class EvalPool(ABC):
         self._cache[cache_key] = result
         return result
 
-    def _eval_internal_iterative(self, direction, alignment, pools):
+    def _eval_internal_iterative(
+            self, direction: int, alignment: EvalPoolAlignment,
+            pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
@@ -325,11 +332,11 @@ class EvalPool(ABC):
         """
         if all(pool.is_empty() for pool in pools) and alignment.is_empty():
             return {None: 1}
-        dist = defaultdict(int)
+        dist: MutableMapping[Any, int] = defaultdict(int)
         dist[None, alignment, pools] = 1
-        final_dist = defaultdict(int)
+        final_dist: MutableMapping[Any, int] = defaultdict(int)
         while dist:
-            next_dist = defaultdict(int)
+            next_dist: MutableMapping[Any, int] = defaultdict(int)
             for (prev_state, prev_alignment,
                  prev_pools), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
@@ -349,7 +356,10 @@ class EvalPool(ABC):
         return final_dist
 
 
-def _pop_pools(side, alignment, pools):
+def _pop_pools(
+        side: int, alignment: EvalPoolAlignment,
+        pools: tuple[icepool.Pool,
+                     ...]) -> tuple[Any, EvalPoolAlignment, tuple]:
     """Pops a single outcome from the pools.
 
     Returns:
@@ -382,7 +392,7 @@ class WrapFuncEval(EvalPool):
     `next_state()` simply calls that function.
     """
 
-    def __init__(self, func, /):
+    def __init__(self, func: Callable, /):
         """Constructs a new instance given the function that should be called for `next_state()`.
         Args:
             func(state, outcome, *counts): This should take the same arguments
@@ -390,7 +400,7 @@ class WrapFuncEval(EvalPool):
         """
         self._func = func
 
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, state, outcome, *counts: int):
         return self._func(state, outcome, *counts)
 
 
@@ -401,10 +411,10 @@ class JointEval(EvalPool):
     provided as a convenience.
     """
 
-    def __init__(self, *subevals):
+    def __init__(self, *subevals: 'EvalPool'):
         self._subevals = subevals
 
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, state, outcome, *counts: int):
         """Runs `next_state` for all subevals.
 
         The state is a tuple of the substates.
@@ -418,7 +428,7 @@ class JointEval(EvalPool):
                 subeval.next_state(substate, outcome, *counts)
                 for subeval, substate in zip(self._subevals, state))
 
-    def final_outcome(self, final_state, *pools):
+    def final_outcome(self, final_state, *pools: icepool.Pool):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
@@ -427,7 +437,7 @@ class JointEval(EvalPool):
             subeval.final_outcome(final_substate, *pools)
             for subeval, final_substate in zip(self._subevals, final_state))
 
-    def direction(self, *pools):
+    def direction(self, *pools: icepool.Pool):
         """Determines the common direction of the subevals.
 
         Raises:
