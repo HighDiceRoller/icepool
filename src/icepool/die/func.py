@@ -12,7 +12,7 @@ from collections.abc import Sequence
 
 
 @cache
-def standard(num_sides: int) -> 'icepool.Die':
+def standard(num_sides: int, /) -> 'icepool.Die':
     """A standard die.
 
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,
