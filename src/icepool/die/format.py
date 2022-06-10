@@ -3,8 +3,11 @@ __docformat__ = 'google'
 import csv as csv_lib
 import io
 
+from collections.abc import Sequence
 
-def make_header(die, include_weights, unpack_outcomes):
+
+def make_header(die, include_weights: bool,
+                unpack_outcomes: bool) -> tuple[Sequence[str], Sequence[int]]:
     """Generates a list of strings for the header."""
     header = []
     if unpack_outcomes:
@@ -18,7 +21,8 @@ def make_header(die, include_weights, unpack_outcomes):
     return header, [len(s) for s in header]
 
 
-def make_row(outcome, weight, p, include_weights, unpack_outcomes):
+def make_row(outcome, weight: int, p, include_weights: bool,
+             unpack_outcomes: bool) -> Sequence[str]:
     row = []
     if unpack_outcomes:
         for x in outcome:
@@ -32,7 +36,9 @@ def make_row(outcome, weight, p, include_weights, unpack_outcomes):
     return row
 
 
-def make_rows(die, include_weights, unpack_outcomes):
+def make_rows(
+        die, include_weights: bool,
+        unpack_outcomes: bool) -> tuple[Sequence[Sequence[str]], Sequence[int]]:
     result = [
         make_row(outcome, weight, p, include_weights, unpack_outcomes)
         for outcome, weight, p in zip(die.outcomes(), die.weights(), die.pmf())
@@ -41,7 +47,10 @@ def make_rows(die, include_weights, unpack_outcomes):
     return result, col_widths
 
 
-def markdown(die, *, include_weights=True, unpack_outcomes=True):
+def markdown(die,
+             *,
+             include_weights: bool = True,
+             unpack_outcomes: bool = True) -> str:
     """Formats the die as a Markdown table.
 
     Args:
@@ -79,10 +88,10 @@ def markdown(die, *, include_weights=True, unpack_outcomes=True):
 
 def csv(die,
         *,
-        include_weights=True,
-        unpack_outcomes=True,
-        dialect='excel',
-        **fmtparams):
+        include_weights: bool = True,
+        unpack_outcomes: bool = True,
+        dialect: str = 'excel',
+        **fmtparams) -> str:
     """Formats the die as a comma-separated-values string.
 
     Args:
