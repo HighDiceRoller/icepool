@@ -7,8 +7,12 @@ from collections import defaultdict
 import itertools
 import math
 
+from typing import Any
+from collections.abc import Mapping, MutableMapping, Sequence
 
-def expand_die_args(*args, weights, denominator_method):
+
+def expand_die_args(*args, weights: Sequence[int],
+                    denominator_method: str) -> Counts:
     """Helper function to expand arguments to Die()."""
     if weights is not None:
         if len(weights) != len(args):
@@ -29,7 +33,7 @@ def expand_die_args(*args, weights, denominator_method):
     return Counts(sorted(data.items()))
 
 
-def _expand(arg, denominator_method):
+def _expand(arg, denominator_method: str) -> Mapping[Any, int]:
     """Expands the argument to a dict mapping outcomes to weights.
 
     The outcomes are valid outcomes for a die.
@@ -44,20 +48,20 @@ def _expand(arg, denominator_method):
         return _expand_scalar(arg)
 
 
-def _is_die(arg):
+def _is_die(arg) -> bool:
     return isinstance(arg, icepool.Die)
 
 
-def _expand_die(arg):
+def _expand_die(arg) -> Mapping[Any, int]:
     return arg._data
 
 
-def _is_dict(arg):
+def _is_dict(arg) -> bool:
     return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
         arg, 'items') and hasattr(arg, '__getitem__')
 
 
-def _expand_dict(arg, denominator_method):
+def _expand_dict(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {}
     subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
@@ -65,29 +69,31 @@ def _expand_dict(arg, denominator_method):
     return _merge_subdatas(subdatas, weights, denominator_method)
 
 
-def _is_tuple(arg):
+def _is_tuple(arg) -> bool:
     return type(arg) is tuple
 
 
-def _expand_tuple(arg, denominator_method):
+def _expand_tuple(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {(): 1}
     subdatas = [_expand(x, denominator_method) for x in arg]
-    data = defaultdict(int)
+    data: MutableMapping[Any, int] = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
         outcomes, weights = zip(*t)
         data[outcomes] += math.prod(weights)
     return data
 
 
-def _expand_scalar(arg):
+def _expand_scalar(arg) -> Mapping[Any, int]:
     if arg is icepool.Reroll:
         return {}
     else:
         return {arg: 1}
 
 
-def _merge_subdatas(subdatas, weights, denominator_method):
+def _merge_subdatas(subdatas: Sequence[Mapping[Any,
+                                               int]], weights: Sequence[int],
+                    denominator_method: str) -> Mapping[Any, int]:
     if any(x < 0 for x in weights):
         raise ValueError('Weights cannot be negative.')
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
@@ -104,7 +110,7 @@ def _merge_subdatas(subdatas, weights, denominator_method):
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')
 
-    data = defaultdict(int)
+    data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
                                                weights):
         factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
