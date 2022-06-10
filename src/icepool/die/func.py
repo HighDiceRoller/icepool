@@ -7,9 +7,12 @@ from functools import cache
 import itertools
 import math
 
+from typing import Any, Callable
+from collections.abc import Sequence
+
 
 @cache
-def standard(num_sides):
+def standard(num_sides: int) -> 'icepool.Die':
     """A standard die.
 
     Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,
@@ -30,7 +33,7 @@ def standard(num_sides):
 d = standard
 
 
-def __getattr__(key):
+def __getattr__(key: str):
     """Implements the `dX` syntax for standard die with no parentheses.
 
     For example, `icepool.d6`.
@@ -46,7 +49,7 @@ def __getattr__(key):
     raise AttributeError(key)
 
 
-def bernoulli(n, d):
+def bernoulli(n: int, d: int) -> 'icepool.Die':
     """A die that rolls `True` with chance `n / d`, and `False` otherwise. """
     return icepool.Die({False: d - n, True: n})
 
@@ -54,7 +57,7 @@ def bernoulli(n, d):
 coin = bernoulli
 
 
-def from_cweights(outcomes, cweights):
+def from_cweights(outcomes: Sequence, cweights: Sequence[int]) -> 'icepool.Die':
     """Constructs a die from cumulative weights. """
     prev = 0
     d = {}
@@ -64,7 +67,7 @@ def from_cweights(outcomes, cweights):
     return icepool.Die(d)
 
 
-def from_sweights(outcomes, sweights):
+def from_sweights(outcomes: Sequence, sweights: Sequence[int]) -> 'icepool.Die':
     """Constructs a die from survival weights. """
     prev = 0
     d = {}
@@ -74,7 +77,7 @@ def from_sweights(outcomes, sweights):
     return icepool.Die(d)
 
 
-def from_rv(rv, outcomes, denominator, **kwargs):
+def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
     """Constructs a die from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
@@ -98,15 +101,17 @@ def from_rv(rv, outcomes, denominator, **kwargs):
 
 def min_outcome(*dice):
     """Returns the minimum possible outcome among the dice. """
+    dice = [icepool.Die(die) for die in dice]
     return min(die.outcomes()[0] for die in dice)
 
 
 def max_outcome(*dice):
     """Returns the maximum possible outcome among the dice. """
+    dice = [icepool.Die(die) for die in dice]
     return max(die.outcomes()[-1] for die in dice)
 
 
-def align(*dice):
+def align(*dice) -> Sequence['icepool.Die']:
     """Pads dice with zero weights so that all have the same set of outcomes.
 
     Args:
@@ -115,13 +120,13 @@ def align(*dice):
     Returns:
         A tuple of aligned dice.
     """
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
     outcomes = set(itertools.chain.from_iterable(
         die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def align_range(*dice):
+def align_range(*dice) -> Sequence['icepool.Die']:
     """Pads dice with zero weights so that all have the same set of consecutive `int` outcomes.
 
     Args:
@@ -130,14 +135,14 @@ def align_range(*dice):
     Returns:
         A tuple of aligned dice.
     """
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
     outcomes = tuple(
         range(icepool.min_outcome(*dice),
               icepool.max_outcome(*dice) + 1))
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def reduce(func, dice, *, initial=None):
+def reduce(func: Callable[[Any, Any], Any], dice, *, initial=None):
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -163,7 +168,7 @@ def reduce(func, dice, *, initial=None):
     return result
 
 
-def accumulate(func, dice, *, initial=None):
+def accumulate(func: Callable[[Any, Any], Any], dice, *, initial=None):
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -198,7 +203,7 @@ def accumulate(func, dice, *, initial=None):
         yield result
 
 
-def apply(func, *dice):
+def apply(func: Callable, *dice) -> 'icepool.Die':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
@@ -228,7 +233,7 @@ def apply(func, *dice):
     """
     if len(dice) == 0:
         return icepool.Die(func())
-    dice = [icepool.Die(die) for die in dice]
+    dice = tuple(icepool.Die(die) for die in dice)
     final_outcomes = []
     final_weights = []
     for t in itertools.product(*(die.items() for die in dice)):
@@ -242,7 +247,7 @@ def apply(func, *dice):
     return icepool.Die(*final_outcomes, weights=final_weights)
 
 
-def apply_sorted(func, *dice):
+def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
     """Applies `func(lowest_outcome, next_lowest_outcome...)` for all possible sorted outcomes of the dice.
 
     This is more efficient than `apply` but still not very efficient.
