@@ -9,8 +9,13 @@ import math
 from collections import defaultdict
 from functools import cache, cached_property
 
+from typing import Any, Callable, Generator
+from collections.abc import Collection, MutableMapping, Sequence
 
-def count_dice_tuple(num_dice, count_dice):
+
+def count_dice_tuple(
+        num_dice: int,
+        count_dice: int | slice | tuple[int, ...] | None) -> tuple[int, ...]:
     """Expresses `count_dice` as a tuple.
 
     See `Pool.set_count_dice()` for details.
@@ -83,7 +88,7 @@ def count_dice_tuple(num_dice, count_dice):
                     count_dice[split + 1:])
 
 
-def standard_pool(*die_sizes):
+def standard_pool(*die_sizes: int) -> 'Pool':
     """Returns a pool of standard dice.
 
     Args:
@@ -92,7 +97,9 @@ def standard_pool(*die_sizes):
     return Pool(*(icepool.d(x) for x in die_sizes))
 
 
-def iter_die_pop_min(die, num_dice, min_outcome):
+def iter_die_pop_min(
+        die: 'icepool.Die', num_dice: int, min_outcome
+) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
@@ -129,7 +136,9 @@ def iter_die_pop_min(die, num_dice, min_outcome):
         yield popped_die, num_remain, num_rolled, weight
 
 
-def iter_die_pop_max(die, num_dice, max_outcome):
+def iter_die_pop_max(
+        die: 'icepool.Die', num_dice: int, max_outcome
+) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:
@@ -167,7 +176,8 @@ def iter_die_pop_max(die, num_dice, max_outcome):
 
 
 @cache
-def new_pool_cached(cls, sorted_num_dices, count_dice):
+def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
+                    count_dice: tuple[int, ...]) -> 'Pool':
     """Creates a new pool. This function is cached.
 
     Args:
@@ -187,7 +197,10 @@ class Pool():
     This should be used in conjunction with `EvalPool` to generate a result.
     """
 
-    def __new__(cls, *dice):
+    _count_dice: tuple[int, ...]
+    _dice: Counts
+
+    def __new__(cls, *dice) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
@@ -198,16 +211,16 @@ class Pool():
             *dice: The dice to put in the pool. Empty dice are ignored. All
                 outcomes within a pool must be totally orderable.
         """
-        dice = [icepool.Die(die) for die in dice]
+        dice = tuple(icepool.Die(die) for die in dice)
         num_dice = len(dice)
-        num_dices = defaultdict(int)
+        num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die in dice:
             num_dices[die] += 1
         count_dice = (1,) * num_dice
         return cls._new_pool(num_dices, count_dice)
 
     @classmethod
-    def _new_pool(cls, num_dices, count_dice):
+    def _new_pool(cls, num_dices, count_dice) -> 'Pool':
         """Creates a new pool.
 
         Args:
@@ -218,52 +231,55 @@ class Pool():
         """
         sorted_num_dices = tuple(
             sorted(num_dices.items(), key=lambda kv: kv[0].key_tuple()))
-        return new_pool_cached(cls, sorted_num_dices, count_dice)
+        return new_pool_cached(
+            cls,  # type: ignore
+            sorted_num_dices,
+            count_dice)
 
     @cached_property
-    def _num_dice(self):
+    def _num_dice(self) -> int:
         return sum(self._dice.values())
 
-    def num_dice(self):
+    def num_dice(self) -> int:
         """The number of dice in this pool."""
         return self._num_dice
 
-    def has_empty_dice(self):
+    def has_empty_dice(self) -> bool:
         """Whether this pool contains any empty dice."""
         return any(die.is_empty() for die in self._dice.keys())
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return len(self._dice) == 0
 
     @cached_property
-    def _denominator(self):
+    def _denominator(self) -> int:
         """The product of the total dice weights in this pool."""
         return math.prod(
             die.denominator()**count for die, count in self._dice.items())
 
-    def denominator(self):
+    def denominator(self) -> int:
         return self._denominator
 
     @cached_property
-    def _dice_tuple(self):
+    def _dice_tuple(self) -> tuple['icepool.Die', ...]:
         return sum(((die,) * count for die, count in self._dice.items()),
                    start=())
 
-    def unique_dice(self):
+    def unique_dice(self) -> Collection['icepool.Die']:
         return self._dice.keys()
 
     @cached_property
-    def _outcomes(self):
+    def _outcomes(self) -> Sequence:
         outcome_set = set(
             itertools.chain.from_iterable(
                 die.outcomes() for die in self.unique_dice()))
         return tuple(sorted(outcome_set))
 
-    def outcomes(self):
+    def outcomes(self) -> Sequence:
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
-    def count_dice(self):
+    def count_dice(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
 
         The tuple has one element per die in the pool, from lowest roll to
@@ -271,7 +287,7 @@ class Pool():
         """
         return self._count_dice
 
-    def set_count_dice(self, count_dice):
+    def set_count_dice(self, count_dice: int | slice | tuple[int, ...] | None):
         """Returns a pool with the selected dice counted.
 
         You can use `pool[count_dice]` for the same effect as this method.
@@ -378,7 +394,8 @@ class Pool():
         """Returns the max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _pop_min(self, min_outcome):
+    def _pop_min(self,
+                 min_outcome) -> Generator[tuple['Pool', int, int], None, None]:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -398,7 +415,7 @@ class Pool():
         for pop in itertools.product(*generators):
             net_num_rolled = 0
             result_weight = 1
-            next_dice_counts = defaultdict(int)
+            next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
             for popped_die, num_remain, num_rolled, weight in pop:
                 if not popped_die.is_empty():
                     next_dice_counts[popped_die] += num_remain
@@ -422,7 +439,8 @@ class Pool():
         if skip_weight is not None:
             yield empty_pool, sum(self.count_dice()), skip_weight
 
-    def _pop_max(self, max_outcome):
+    def _pop_max(self,
+                 max_outcome) -> Generator[tuple['Pool', int, int], None, None]:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
@@ -442,7 +460,7 @@ class Pool():
         for pop in itertools.product(*generators):
             net_num_rolled = 0
             result_weight = 1
-            next_dice_counts = defaultdict(int)
+            next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
             for popped_die, num_remain, num_rolled, weight in pop:
                 if not popped_die.is_empty():
                     next_dice_counts[popped_die] += num_remain
@@ -466,12 +484,15 @@ class Pool():
         if skip_weight is not None:
             yield empty_pool, sum(self.count_dice()), skip_weight
 
-    def eval(self, eval_or_func, /):
+    def eval(self, eval_or_func: 'icepool.EvalPool' | Callable,
+             /) -> 'icepool.Die':
         """Evaluates this pool using the given `EvalPool` or function.
+
         Note that each `EvalPool` instance carries its own cache;
         if you plan to use an evaluation multiple times,
         you may want to explicitly create an `EvalPool` instance
         rather than passing a function to this method directly.
+
         Args:
             func: This can be an `EvalPool`, in which case it evaluates the pool
                 directly. Or it can be a `EvalPool.next_state()`-like function,
@@ -483,7 +504,7 @@ class Pool():
             eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
 
-    def sum(self):
+    def sum(self) -> 'icepool.Die':
         """Convenience method to simply sum the dice in this pool.
 
         This uses `icepool.sum_pool`.
@@ -493,7 +514,7 @@ class Pool():
         """
         return icepool.sum_pool(self)
 
-    def lowest(self, num_keep=1, num_drop=0):
+    def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.
 
         The args override any `count_dice` of this pool.
@@ -510,9 +531,9 @@ class Pool():
 
         start = min(num_drop, self.num_dice())
         stop = min(num_keep + num_drop, self.num_dice())
-        return self[start:stop].sum()
+        return self[start:stop].sum()  # type: ignore
 
-    def highest(self, num_keep=1, num_drop=0):
+    def highest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The highest outcome or sum of the highest outcomes in the pool.
 
         The args override any `count_dice` of this pool.
@@ -529,28 +550,28 @@ class Pool():
 
         start = self.num_dice() - min(num_keep + num_drop, self.num_dice())
         stop = self.num_dice() - min(num_drop, self.num_dice())
-        return self[start:stop].sum()
+        return self[start:stop].sum()  # type: ignore
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f'Pool of {self.num_dice()} dice with count_dice={self.count_dice()}\n'
             + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
-    def _key_tuple(self):
+    def _key_tuple(self) -> tuple:
         return tuple((die.key_tuple(), count)
                      for die, count in self._dice.items()), self._count_dice
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, Pool):
             return False
         return self._key_tuple == other._key_tuple
 
     @cached_property
-    def _hash(self):
+    def _hash(self) -> int:
         return hash(self._key_tuple)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return self._hash
 
 

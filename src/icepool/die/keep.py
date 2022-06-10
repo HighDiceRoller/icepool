@@ -61,10 +61,10 @@ def _keep(*dice, start: int, stop: int) -> 'icepool.Die':
         return icepool.Die()
 
     if start == stop:
-        return icepool.Die(sum(die.zero() for die in dice))
+        return sum(die.zero() for die in dice)  # type: ignore
 
     if start == 0 and stop == len(dice):
-        return icepool.Die(sum(dice))
+        return sum(dice)  # type: ignore
 
     if stop == 1:
         return _lowest_single(*dice)
