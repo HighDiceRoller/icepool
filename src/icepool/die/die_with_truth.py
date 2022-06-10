@@ -1,9 +1,12 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.collections import Counts
 from icepool.die.die import Die
 
 from functools import cached_property
+
+from typing import Callable
 
 
 class DieWithTruth(Die):
@@ -12,8 +15,10 @@ class DieWithTruth(Die):
     Additionally, the data is evaluated lazily since the caller may only be
     interested in the truth value.
     """
+    _data_callback: Callable[[], Counts]
+    _truth_value: bool
 
-    def __new__(cls, data_callback, truth_value):
+    def __new__(cls, data_callback: Callable[[], Counts], truth_value: bool):
         """This class does not need to be constructed publically.
 
         Args:
@@ -22,8 +27,8 @@ class DieWithTruth(Die):
             truth_value: The truth value of this die.
         """
         self = super(DieWithTruth, cls).__new__(cls)
-        self._truth_value = truth_value
-        self._data_callback = data_callback
+        self._data_callback = data_callback  # type: ignore
+        self._truth_value = truth_value  # type: ignore
         return self
 
     @cached_property
