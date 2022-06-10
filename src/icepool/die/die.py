@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.die.format
+from icepool.collections import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.die.create import expand_die_args
 
@@ -12,6 +13,9 @@ import itertools
 import math
 import operator
 import random
+
+from typing import Any, Callable
+from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
 class Die():
@@ -40,7 +44,12 @@ class Die():
     though these have little use other than being sentinel values.
     """
 
-    def __new__(cls, *args, weights=None, denominator_method='lcm'):
+    _data: Counts
+
+    def __new__(cls,
+                *args,
+                weights: Sequence[int] | None = None,
+                denominator_method: str = 'lcm') -> 'Die':
         """Constructor for a die.
 
         Don't confuse this with `icepool.d()`:
@@ -119,7 +128,7 @@ class Die():
             self = super(Die, cls).__new__(cls)
         return self
 
-    def unary_op(self, op, *args, **kwargs):
+    def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
         """Performs the unary operation on the outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -140,24 +149,24 @@ class Die():
         Raises:
             ValueError if tuples are of mismatched length.
         """
-        data = defaultdict(int)
+        data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, weight in self.items():
             new_outcome = unary_elementwise(outcome, op, *args, **kwargs)
             data[new_outcome] += weight
         return icepool.Die(data)
 
-    def unary_op_non_elementwise(self, op, *args, **kwargs):
+    def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
         """As unary_op, but not elementwise.
 
         This is used for the `[]` operator.
         """
-        data = defaultdict(int)
+        data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, weight in self.items():
             new_outcome = op(outcome, *args, **kwargs)
             data[new_outcome] += weight
         return icepool.Die(data)
 
-    def binary_op(self, other, op, *args, **kwargs):
+    def binary_op(self, other: 'Die', op: Callable, *args, **kwargs) -> 'Die':
         """Performs the operation on pairs of outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -189,7 +198,7 @@ class Die():
             ValueError if tuples are of mismatched length within one of the dice
             or between the dice.
         """
-        data = defaultdict(int)
+        data: MutableMapping[Any, int] = defaultdict(int)
         for (outcome_self, weight_self), (outcome_other,
                                           weight_other) in itertools.product(
                                               self.items(), other.items()):
@@ -200,19 +209,19 @@ class Die():
 
     # Basic access.
 
-    def outcomes(self):
-        """Returns an iterable into the sorted outcomes of the die. """
+    def outcomes(self) -> Sequence:
+        """Returns the sequence of sorted outcomes of the die. """
         return self._data.keys()
 
-    def __contains__(self, outcome):
+    def __contains__(self, outcome) -> bool:
         return outcome in self._data
 
-    def num_outcomes(self):
+    def num_outcomes(self) -> int:
         """Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
 
     @cached_property
-    def _outcome_len(self):
+    def _outcome_len(self) -> int | None:
         result = None
         for outcome in self.outcomes():
             try:
@@ -224,7 +233,7 @@ class Die():
                 return None
         return result
 
-    def outcome_len(self):
+    def outcome_len(self) -> int | None:
         """Returns the common length of the outcomes.
 
         If any outcome has no length, the outcomes have mixed length, or the
@@ -232,29 +241,29 @@ class Die():
         """
         return self._outcome_len
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Returns `True` if this die has no outcomes. """
         return self.num_outcomes() == 0
 
-    def weights(self):
-        """Returns an iterable into the weights of the die in outcome order. """
+    def weights(self) -> Sequence[int]:
+        """Returns the sequence of the weights of the die in outcome order. """
         return self._data.values()
 
-    def has_zero_weights(self):
+    def has_zero_weights(self) -> bool:
         """Returns `True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_values()
 
-    def items(self):
-        """Returns all outcome, weight pairs. """
+    def items(self) -> Sequence[tuple[Any, int]]:
+        """Returns the sequence of sorted outcome, weight pairs. """
         return self._data.items()
 
     # Weights.
 
     @cached_property
-    def _denominator(self):
+    def _denominator(self) -> int:
         return sum(self._data.values())
 
-    def denominator(self):
+    def denominator(self) -> int:
         """The total weight of all outcomes. """
         return self._denominator
 
@@ -264,7 +273,7 @@ class Die():
     def _pmf(self):
         return tuple(weight / self.denominator() for weight in self.weights())
 
-    def pmf(self, percent=False):
+    def pmf(self, percent: bool = False):
         """Probability mass function. The probability of rolling each outcome in order.
 
         Args:
@@ -277,21 +286,21 @@ class Die():
             return self._pmf
 
     @cached_property
-    def _cweights(self):
+    def _cweights(self) -> Sequence[int]:
         return tuple(itertools.accumulate(self.weights()))
 
-    def cweights(self):
+    def cweights(self) -> Sequence[int]:
         """Cumulative weights. The weight <= each outcome in order. """
         return self._cweights
 
     @cached_property
-    def _sweights(self):
+    def _sweights(self) -> Sequence[int]:
         return tuple(
             itertools.accumulate(self.weights()[:-1],
                                  operator.sub,
                                  initial=self.denominator()))
 
-    def sweights(self):
+    def sweights(self) -> Sequence[int]:
         """Survival weights. The weight >= each outcome in order. """
         return self._sweights
 
@@ -299,7 +308,7 @@ class Die():
     def _cdf(self):
         return tuple(weight / self.denominator() for weight in self.cweights())
 
-    def cdf(self, percent=False):
+    def cdf(self, percent: bool = False):
         """Cumulative distribution function. The chance of rolling <= each outcome in order.
 
         Args:
@@ -315,7 +324,7 @@ class Die():
     def _sf(self):
         return tuple(weight / self.denominator() for weight in self.sweights())
 
-    def sf(self, percent=False):
+    def sf(self, percent: bool = False):
         """Survival function. The chance of rolling >= each outcome in order.
 
         Args:
@@ -327,36 +336,36 @@ class Die():
         else:
             return self._sf
 
-    def weight_eq(self, outcome):
+    def weight_eq(self, outcome) -> int:
         """Returns the weight of a single outcome, or 0 if not present. """
         return self._data[outcome]
 
-    def weight_ne(self, outcome):
+    def weight_ne(self, outcome) -> int:
         """Returns the weight != a single outcome. """
         return self.denominator() - self.weight_eq(outcome)
 
-    def weight_le(self, outcome):
+    def weight_le(self, outcome) -> int:
         """Returns the weight <= a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
         return self.cweights()[index]
 
-    def weight_lt(self, outcome):
+    def weight_lt(self, outcome) -> int:
         """Returns the weight < a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
         return self.cweights()[index]
 
-    def weight_ge(self, outcome):
+    def weight_ge(self, outcome) -> int:
         """Returns the weight >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= self.num_outcomes():
             return 0
         return self.sweights()[index]
 
-    def weight_gt(self, outcome):
+    def weight_gt(self, outcome) -> int:
         """Returns the weight > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= self.num_outcomes():
@@ -369,7 +378,7 @@ class Die():
 
     # Scalar statistics.
 
-    def mode(self):
+    def mode(self) -> tuple:
         """Returns a tuple containing the most common outcome(s) of the die.
 
         These are sorted from lowest to highest.
@@ -377,7 +386,7 @@ class Die():
         return tuple(outcome for outcome, weight in self.items()
                      if weight == self.modal_weight())
 
-    def modal_weight(self):
+    def modal_weight(self) -> int:
         """The highest weight of any single outcome. """
         return max(self.weights())
 
@@ -412,7 +421,7 @@ class Die():
         """
         return self.ppf(1, 2)
 
-    def ppf_left(self, n, d=100):
+    def ppf_left(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the lower of the two.
@@ -423,7 +432,7 @@ class Die():
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def ppf_right(self, n, d=100):
+    def ppf_right(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the higher of the two.
@@ -434,7 +443,7 @@ class Die():
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def ppf(self, n, d=100):
+    def ppf(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the mean of the two.
@@ -458,7 +467,7 @@ class Die():
 
     sd = standard_deviation
 
-    def standardized_moment(self, k):
+    def standardized_moment(self, k: int):
         sd = self.standard_deviation()
         mean = self.mean()
         ev = sum(p * (outcome - mean)**k
@@ -473,24 +482,24 @@ class Die():
 
     # Joint statistics.
 
-    def covariance(self, i, j):
+    def covariance(self, i: int, j: int):
         mean_i = self[i].mean()
         mean_j = self[j].mean()
         return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight
                    for outcome, weight in self.items()) / self.denominator()
 
-    def correlation(self, i, j):
+    def correlation(self, i: int, j: int):
         sd_i = self[i].standard_deviation()
         sd_j = self[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
 
     # Weight management.
 
-    def reduce_weights(self):
+    def reduce_weights(self) -> 'Die':
         """Divides all weights by their greatest common denominator. """
         return icepool.Die(self._data.reduce())
 
-    def scale_weights(self, scale):
+    def scale_weights(self, scale: int) -> 'Die':
         """Multiplies all weights by a constant. """
         if scale < 0:
             raise ValueError('Weights cannot be scaled by a negative number.')
@@ -527,14 +536,18 @@ class Die():
             return None
         return self.outcomes()[index]
 
-    def reroll(self, outcomes=None, *, max_depth=None, star=0):
+    def reroll(self,
+               outcomes: Callable[..., bool] | Container | None = None,
+               *,
+               max_depth: int | None = None,
+               star: int = 0) -> 'Die':
         """Rerolls the given outcomes.
 
         Args:
             outcomes: Selects which outcomes to reroll. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
-                * A set of outcomes to reroll.
+                * A container of outcomes to reroll.
                 * If not provided, the min outcome will be rerolled.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
@@ -579,7 +592,11 @@ class Die():
             }
         return icepool.Die(data)
 
-    def reroll_until(self, outcomes, *, max_depth=None, star=0):
+    def reroll_until(self,
+                     outcomes: Callable[..., bool] | Container,
+                     *,
+                     max_depth: int | None = None,
+                     star: int = 0) -> 'Die':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -588,7 +605,7 @@ class Die():
             outcomes: Selects which outcomes to reroll until. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
-                * A set of outcomes to reroll until.
+                * A container of outcomes to reroll until.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
@@ -617,7 +634,7 @@ class Die():
             }
         return self.reroll(not_outcomes, max_depth=max_depth)
 
-    def truncate(self, min_outcome=None, max_outcome=None):
+    def truncate(self, min_outcome=None, max_outcome=None) -> 'Die':
         """Truncates the outcomes of this die to the given range.
 
         The endpoints are included in the result if applicable.
@@ -641,7 +658,7 @@ class Die():
         data = {k: v for k, v in self.items()[start:stop]}
         return icepool.Die(data)
 
-    def clip(self, min_outcome=None, max_outcome=None):
+    def clip(self, min_outcome=None, max_outcome=None) -> 'Die':
         """Clips the outcomes of this die to the given values.
 
         The endpoints are included in the result if applicable.
@@ -652,7 +669,7 @@ class Die():
         This will typically cause some weight to bunch up at the endpoint.
         If you want to reroll outcomes beyond this range, use `truncate()`.
         """
-        data = defaultdict(int)
+        data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, weight in self.items():
             if min_outcome is not None and outcome <= min_outcome:
                 data[min_outcome] += weight
@@ -662,7 +679,9 @@ class Die():
                 data[outcome] += weight
         return icepool.Die(data)
 
-    def set_range(self, min_outcome=None, max_outcome=None):
+    def set_range(self,
+                  min_outcome: int | None = None,
+                  max_outcome: int | None = None) -> 'Die':
         """Sets the outcomes of this die to the given `int` range (inclusive).
 
         Args:
@@ -678,7 +697,7 @@ class Die():
 
         return self.set_outcomes(range(min_outcome, max_outcome + 1))
 
-    def set_outcomes(self, outcomes):
+    def set_outcomes(self, outcomes) -> 'Die':
         """Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
@@ -687,17 +706,17 @@ class Die():
         data = {x: self.weight_eq(x) for x in outcomes}
         return icepool.Die(data)
 
-    def trim(self):
+    def trim(self) -> 'Die':
         """Removes all zero-weight outcomes. """
         data = {k: v for k, v in self.items() if v > 0}
         return icepool.Die(data)
 
     @cached_property
-    def _popped_min(self):
+    def _popped_min(self) -> tuple['Die', int]:
         die = icepool.Die(*self.outcomes()[1:], weights=self.weights()[1:])
         return die, self.weights()[0]
 
-    def _pop_min(self):
+    def _pop_min(self) -> tuple['Die', int]:
         """Removes the min outcome and return the result, along with the popped outcome, and the popped weight.
 
         Raises:
@@ -706,11 +725,11 @@ class Die():
         return self._popped_min
 
     @cached_property
-    def _popped_max(self):
+    def _popped_max(self) -> tuple['Die', int]:
         die = icepool.Die(*self.outcomes()[:-1], weights=self.weights()[:-1])
         return die, self.weights()[-1]
 
-    def _pop_max(self):
+    def _pop_max(self) -> tuple['Die', int]:
         """Removes the max outcome and return the result, along with the popped outcome, and the popped weight.
 
         Raises:
@@ -721,12 +740,12 @@ class Die():
     # Mixtures.
 
     def sub(self,
-            repl,
+            repl: Mapping | Callable[[Any], Any] | Sequence,
             /,
             *extra_args,
-            max_depth=1,
-            star=0,
-            denominator_method='lcm'):
+            max_depth: int | None = 1,
+            star: int = 0,
+            denominator_method: str = 'lcm') -> 'Die':
         """Changes outcomes of the die to other outcomes.
 
         You can think of this as `sub`stituting outcomes of this die for other
@@ -738,6 +757,7 @@ class Die():
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A callable mapping old outcomes to new outcomes.
+                * A sequence specifying new outcomes in order.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
             *extra_args: These will be supplied to `repl` as extra positional
@@ -765,22 +785,24 @@ class Die():
         if max_depth == 0:
             return self
         elif max_depth == 1:
-            if hasattr(repl, 'items'):
-                repl = [(repl[outcome] if outcome in repl else outcome)
-                        for outcome in self.outcomes()]
+            if isinstance(repl, Mapping):
+                final_repl = [(repl[outcome] if outcome in repl else outcome)
+                              for outcome in self.outcomes()]
             elif callable(repl):
                 if star:
-                    repl = [
+                    final_repl = [
                         repl(*outcome, *extra_args)
                         for outcome in self.outcomes()
                     ]
                 else:
-                    repl = [
+                    final_repl = [
                         repl(outcome, *extra_args)
                         for outcome in self.outcomes()
                     ]
+            else:
+                final_repl = list(repl)
 
-            return icepool.Die(*repl,
+            return icepool.Die(*final_repl,
                                weights=self.weights(),
                                denominator_method=denominator_method)
         elif max_depth is not None:
@@ -802,12 +824,16 @@ class Die():
                                 max_depth=None,
                                 denominator_method=denominator_method)
 
-    def explode(self, outcomes=None, *, max_depth=None, star=0):
+    def explode(self,
+                outcomes: Container | Callable[..., bool] | None = None,
+                *,
+                max_depth: int = 9,
+                star: int = 0) -> 'Die':
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
             outcomes: Which outcomes to explode. Options:
-                * An iterable containing outcomes to explode.
+                * An container of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
@@ -828,13 +854,11 @@ class Die():
                 outcomes = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
+        else:
+            if not outcomes:
+                return self
 
-        if len(outcomes) == 0:
-            return self
-
-        if max_depth is None:
-            max_depth = 9
-        elif max_depth < 0:
+        if max_depth < 0:
             raise ValueError('max_depth cannot be negative.')
         elif max_depth == 0:
             return self
@@ -854,7 +878,7 @@ class Die():
                 outcome_if_false,
                 /,
                 *,
-                denominator_method='lcm'):
+                denominator_method: str = 'lcm') -> 'Die':
         """Ternary conditional operator.
 
         This replaces truthy outcomes with the first argument and falsy outcomes
@@ -867,10 +891,10 @@ class Die():
     # Pools and sums.
 
     @cached_property
-    def _sum_cache(self):
+    def _sum_cache(self) -> MutableMapping[int, 'Die']:
         return {}
 
-    def _sum_all(self, num_dice):
+    def _sum_all(self, num_dice: int) -> 'Die':
         """Roll this die `num_dice` times and sum the results.
 
         If `num_dice` is negative, roll the die `abs(num_dice)` times and negate
@@ -895,11 +919,11 @@ class Die():
         self._sum_cache[num_dice] = result
         return result
 
-    def __matmul__(self, other):
+    def __matmul__(self, other) -> 'Die':
         """Roll the left die, then roll the right die that many times and sum the outcomes."""
         other = icepool.Die(other)
 
-        data = defaultdict(int)
+        data: MutableMapping[int, Any] = defaultdict(int)
 
         max_abs_die_count = max(abs(self.min_outcome()),
                                 abs(self.max_outcome()))
@@ -911,12 +935,12 @@ class Die():
 
         return icepool.Die(data)
 
-    def __rmatmul__(self, other):
+    def __rmatmul__(self, other) -> 'Die':
         """Roll the left die, then roll the right die that many times and sum the outcomes."""
         other = icepool.Die(other)
         return other.__matmul__(self)
 
-    def pool(self, num_dice=1):
+    def pool(self, num_dice: int = 1) -> 'icepool.Pool':
         """Creates a pool from this die.
 
         Args:
@@ -924,7 +948,10 @@ class Die():
         """
         return icepool.Pool(*([self] * num_dice))
 
-    def keep_highest(self, num_dice, num_keep=1, num_drop=0):
+    def keep_highest(self,
+                     num_dice: int,
+                     num_keep: int = 1,
+                     num_drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the highest.
 
         Args:
@@ -944,14 +971,17 @@ class Die():
         count_dice = slice(start, stop)
         return self.pool(num_dice)[count_dice].sum()
 
-    def _keep_highest_single(self, num_dice=None):
+    def _keep_highest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single highest die. """
-        if num_dice is None:
+        if num_dice == 0:
             return self.zero()
         return icepool.from_cweights(self.outcomes(),
-                                     (x**num_dice for x in self.cweights()))
+                                     [x**num_dice for x in self.cweights()])
 
-    def keep_lowest(self, num_dice, num_keep=1, num_drop=0):
+    def keep_lowest(self,
+                    num_dice: int,
+                    num_keep: int = 1,
+                    num_drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the lowest.
 
         Args:
@@ -972,42 +1002,42 @@ class Die():
         count_dice = slice(start, stop)
         return self.pool(num_dice)[count_dice].sum()
 
-    def _keep_lowest_single(self, num_dice=None):
+    def _keep_lowest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single lowest die. """
-        if num_dice is None:
+        if num_dice == 0:
             return self.zero()
         return icepool.from_sweights(self.outcomes(),
-                                     (x**num_dice for x in self.sweights()))
+                                     [x**num_dice for x in self.sweights()])
 
     # Unary operators.
 
-    def __neg__(self):
+    def __neg__(self) -> 'Die':
         return self.unary_op(operator.neg)
 
-    def __pos__(self):
+    def __pos__(self) -> 'Die':
         return self.unary_op(operator.pos)
 
-    def __abs__(self):
+    def __abs__(self) -> 'Die':
         return self.unary_op(operator.abs)
 
     abs = __abs__
 
-    def __invert__(self):
+    def __invert__(self) -> 'Die':
         return self.unary_op(operator.invert)
 
-    def __round__(self, ndigits=None):
+    def __round__(self, ndigits: int = None) -> 'Die':
         return self.unary_op(round, ndigits)
 
-    def __trunc__(self):
+    def __trunc__(self) -> 'Die':
         return self.unary_op(math.trunc)
 
-    def __floor__(self):
+    def __floor__(self) -> 'Die':
         return self.unary_op(math.floor)
 
-    def __ceil__(self):
+    def __ceil__(self) -> 'Die':
         return self.unary_op(math.ceil)
 
-    def marginal(self, index_or_slice, /):
+    def marginal(self, index_or_slice, /) -> 'Die':
         """Marginal distribution; equivalently, indexes/slices outcomes.
 
         You can use the `[]` operator for the same effect.
@@ -1022,7 +1052,7 @@ class Die():
     def _zero(x):
         return type(x)()
 
-    def zero(self):
+    def zero(self) -> 'Die':
         """Zeros all outcomes of this die.
 
         This is done by calling the constructor for each outcome's type with no
@@ -1045,7 +1075,7 @@ class Die():
         """
         return self.zero().outcomes()[0]
 
-    def bool(self):
+    def bool(self) -> 'Die':
         """Takes `bool()` of all outcomes.
 
         Note the die as a whole is not considered to have a truth value.
@@ -1054,117 +1084,117 @@ class Die():
 
     # Binary operators.
 
-    def __add__(self, other):
+    def __add__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.add)
 
-    def __radd__(self, other):
+    def __radd__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.add)
 
-    def __sub__(self, other):
+    def __sub__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.sub)
 
-    def __rsub__(self, other):
+    def __rsub__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.sub)
 
-    def __mul__(self, other):
+    def __mul__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.mul)
 
-    def __rmul__(self, other):
+    def __rmul__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.mul)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.truediv)
 
-    def __rtruediv__(self, other):
+    def __rtruediv__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.truediv)
 
-    def __floordiv__(self, other):
+    def __floordiv__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.floordiv)
 
-    def __rfloordiv__(self, other):
+    def __rfloordiv__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.floordiv)
 
-    def __pow__(self, other):
+    def __pow__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.pow)
 
-    def __rpow__(self, other):
+    def __rpow__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.pow)
 
-    def __mod__(self, other):
+    def __mod__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.mod)
 
-    def __rmod__(self, other):
+    def __rmod__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.mod)
 
-    def __lshift__(self, other):
+    def __lshift__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.lshift)
 
-    def __rlshift__(self, other):
+    def __rlshift__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.lshift)
 
-    def __rshift__(self, other):
+    def __rshift__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.rshift)
 
-    def __rrshift__(self, other):
+    def __rrshift__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.rshift)
 
-    def __and__(self, other):
+    def __and__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.and_)
 
-    def __rand__(self, other):
+    def __rand__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.and_)
 
-    def __or__(self, other):
+    def __or__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.or_)
 
-    def __ror__(self, other):
+    def __ror__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.or_)
 
-    def __xor__(self, other):
+    def __xor__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.xor)
 
-    def __rxor__(self, other):
+    def __rxor__(self, other) -> 'Die':
         other = icepool.Die(other)
         return other.binary_op(self, operator.xor)
 
     # Comparators.
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.lt)
 
-    def __le__(self, other):
+    def __le__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.le)
 
-    def __ge__(self, other):
+    def __ge__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.ge)
 
-    def __gt__(self, other):
+    def __gt__(self, other) -> 'Die':
         other = icepool.Die(other)
         return self.binary_op(other, operator.gt)
 
@@ -1193,7 +1223,7 @@ class Die():
         return icepool.DieWithTruth(data_callback, truth_value)
 
     @staticmethod
-    def _sign(x):
+    def _sign(x) -> int:
         z = Die._zero(x)
         if x > z:
             return 1
@@ -1202,7 +1232,7 @@ class Die():
         else:
             return 0
 
-    def sign(self):
+    def sign(self) -> 'Die':
         """Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.
 
         Note that for `float`s, +0.0, -0.0, and nan all become 0.
@@ -1210,10 +1240,10 @@ class Die():
         return self.unary_op(Die._sign)
 
     @staticmethod
-    def _cmp(x, y):
+    def _cmp(x, y) -> int:
         return Die._sign(x - y)
 
-    def cmp(self, other):
+    def cmp(self, other) -> 'Die':
         """Returns a die with possible outcomes 1, -1, and 0.
 
         The weights are equal to the positive outcome of `self > other`,
@@ -1255,10 +1285,10 @@ class Die():
             'want to use die.if_else() instead.')
 
     @cached_property
-    def _key_tuple(self):
+    def _key_tuple(self) -> tuple[tuple[Any, int], ...]:
         return tuple(self.items())
 
-    def key_tuple(self):
+    def key_tuple(self) -> tuple[tuple[Any, int], ...]:
         """Returns a tuple that uniquely (as `equals()`) identifies this die.
 
         Apart from being hashable and totally orderable, this is not guaranteed
@@ -1267,10 +1297,10 @@ class Die():
         return self._key_tuple
 
     @cached_property
-    def _hash(self):
+    def _hash(self) -> int:
         return hash(self.key_tuple())
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return self._hash
 
     def equals(self, other, *, reduce=False):
@@ -1304,15 +1334,18 @@ class Die():
 
     # Strings.
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         inner = ', '.join(
             f'{outcome}: {weight}' for outcome, weight in self.items())
         return type(self).__qualname__ + '({' + inner + '})'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.format_markdown(include_weights=self.denominator() < 10**30)
 
-    def format_markdown(self, *, include_weights=True, unpack_outcomes=True):
+    def format_markdown(self,
+                        *,
+                        include_weights=True,
+                        unpack_outcomes=True) -> str:
         """Formats the die as a Markdown table.
 
         Args:
@@ -1329,7 +1362,7 @@ class Die():
                    *,
                    include_weights=True,
                    unpack_outcomes=True,
-                   dialect='excel',
+                   dialect: str = 'excel',
                    **fmtparams):
         """Formats the die as a comma-separated-values string.
 

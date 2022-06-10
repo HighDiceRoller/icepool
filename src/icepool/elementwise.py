@@ -1,7 +1,9 @@
 __docformat__ = 'google'
 
+from typing import Any, Callable
 
-def tuple_len(a):
+
+def tuple_len(a) -> int | None:
     """Returns the length of a tuple, or `None` if the argument is not a tuple."""
     if type(a) == tuple:
         return len(a)
@@ -9,7 +11,7 @@ def tuple_len(a):
         return None
 
 
-def unary_elementwise(a, op, *args, **kwargs):
+def unary_elementwise(a, op: Callable, *args, **kwargs):
     """Applies a unary operation recursively elementwise.
 
     Specifically, if the argument is a tuple, the operation is performed on
@@ -27,7 +29,7 @@ def unary_elementwise(a, op, *args, **kwargs):
         return op(a, *args, **kwargs)
 
 
-def binary_elementwise(a, b, op, *args, **kwargs):
+def binary_elementwise(a, b, op: Callable, *args, **kwargs):
     """Applies a binary operation recursively elementwise.
 
     Specifically, if the argument is a tuple, the operation is performed on
