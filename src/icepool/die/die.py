@@ -242,7 +242,7 @@ class Die():
 
     def has_zero_weights(self):
         """Returns `True` iff `self` contains at least one outcome with zero weight. """
-        return self._data.has_zero_weights()
+        return self._data.has_zero_values()
 
     def items(self):
         """Returns all outcome, weight pairs. """
