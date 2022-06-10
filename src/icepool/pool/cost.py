@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import math
 
 
-def can_truncate(dice):
+def can_truncate(dice) -> tuple[bool, bool]:
     """Determines if the dice can be expressed as a one-sided truncation of a single base die.
 
     Args:
@@ -45,7 +45,7 @@ def can_truncate(dice):
     return can_truncate_min, can_truncate_max
 
 
-def lo_hi_skip(count_dice):
+def lo_hi_skip(count_dice: tuple[int, ...]) -> tuple[int, int]:
     """Returns the number of dice that can be skipped from the ends of count_dice.
 
     Returns:
@@ -63,9 +63,10 @@ def lo_hi_skip(count_dice):
             return lo_skip, hi_skip
 
     # Should never reach here.
+    raise RuntimeError('Should not be reached.')
 
 
-def estimate_costs(pool):
+def estimate_costs(pool) -> tuple[int, int]:
     """Estimates the cost of popping from the min and max sides.
 
     Returns:
@@ -75,7 +76,7 @@ def estimate_costs(pool):
     can_truncate_min, can_truncate_max = can_truncate(pool._dice.keys())
     if can_truncate_min or can_truncate_max:
         lo_skip, hi_skip = lo_hi_skip(pool.count_dice())
-        die_sizes = sum(
+        die_sizes: list[int] = sum(
             ([die.num_outcomes()] * count for die, count in pool._dice.items()),
             start=[])
         die_sizes = sorted(die_sizes, reverse=True)
