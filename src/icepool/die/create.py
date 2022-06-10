@@ -11,7 +11,7 @@ from typing import Any
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-def expand_die_args(*args, weights: Sequence[int],
+def expand_die_args(*args, weights: Sequence[int] | None,
                     denominator_method: str) -> Counts:
     """Helper function to expand arguments to Die()."""
     if weights is not None:
