@@ -518,14 +518,14 @@ refer to dice in a pool.</li>
                     <div class="decorator">@cache</div>
 
         <span class="def">def</span>
-        <span class="name">standard</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">standard</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="standard-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#standard"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="standard-15"><a href="#standard-15"><span class="linenos">15</span></a><span class="nd">@cache</span>
-</span><span id="standard-16"><a href="#standard-16"><span class="linenos">16</span></a><span class="k">def</span> <span class="nf">standard</span><span class="p">(</span><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="standard-16"><a href="#standard-16"><span class="linenos">16</span></a><span class="k">def</span> <span class="nf">standard</span><span class="p">(</span><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
 </span><span id="standard-17"><a href="#standard-17"><span class="linenos">17</span></a>    <span class="sd">&quot;&quot;&quot;A standard die.</span>
 </span><span id="standard-18"><a href="#standard-18"><span class="linenos">18</span></a>
 </span><span id="standard-19"><a href="#standard-19"><span class="linenos">19</span></a><span class="sd">    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,</span>
@@ -565,14 +565,14 @@ with weight 1 each.</p>
                     <div class="decorator">@cache</div>
 
         <span class="def">def</span>
-        <span class="name">d</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">d</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="d-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#d"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="d-15"><a href="#d-15"><span class="linenos">15</span></a><span class="nd">@cache</span>
-</span><span id="d-16"><a href="#d-16"><span class="linenos">16</span></a><span class="k">def</span> <span class="nf">standard</span><span class="p">(</span><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="d-16"><a href="#d-16"><span class="linenos">16</span></a><span class="k">def</span> <span class="nf">standard</span><span class="p">(</span><span class="n">num_sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
 </span><span id="d-17"><a href="#d-17"><span class="linenos">17</span></a>    <span class="sd">&quot;&quot;&quot;A standard die.</span>
 </span><span id="d-18"><a href="#d-18"><span class="linenos">18</span></a>
 </span><span id="d-19"><a href="#d-19"><span class="linenos">19</span></a><span class="sd">    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,</span>
@@ -799,7 +799,7 @@ with weight 1 each.</p>
 </span><span id="Die-157"><a href="#Die-157"><span class="linenos"> 157</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span id="Die-158"><a href="#Die-158"><span class="linenos"> 158</span></a>
 </span><span id="Die-159"><a href="#Die-159"><span class="linenos"> 159</span></a>    <span class="k">def</span> <span class="nf">unary_op_non_elementwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die-160"><a href="#Die-160"><span class="linenos"> 160</span></a>        <span class="sd">&quot;&quot;&quot;As unary_op, but not elementwise.</span>
+</span><span id="Die-160"><a href="#Die-160"><span class="linenos"> 160</span></a>        <span class="sd">&quot;&quot;&quot;As `unary_op()`, but not elementwise.</span>
 </span><span id="Die-161"><a href="#Die-161"><span class="linenos"> 161</span></a>
 </span><span id="Die-162"><a href="#Die-162"><span class="linenos"> 162</span></a><span class="sd">        This is used for the `[]` operator.</span>
 </span><span id="Die-163"><a href="#Die-163"><span class="linenos"> 163</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -838,8 +838,8 @@ with weight 1 each.</p>
 </span><span id="Die-196"><a href="#Die-196"><span class="linenos"> 196</span></a><span class="sd">            A die representing the result.</span>
 </span><span id="Die-197"><a href="#Die-197"><span class="linenos"> 197</span></a>
 </span><span id="Die-198"><a href="#Die-198"><span class="linenos"> 198</span></a><span class="sd">        Raises:</span>
-</span><span id="Die-199"><a href="#Die-199"><span class="linenos"> 199</span></a><span class="sd">            ValueError if tuples are of mismatched length within one of the dice</span>
-</span><span id="Die-200"><a href="#Die-200"><span class="linenos"> 200</span></a><span class="sd">            or between the dice.</span>
+</span><span id="Die-199"><a href="#Die-199"><span class="linenos"> 199</span></a><span class="sd">            `ValueError` if tuples are of mismatched length within one of the</span>
+</span><span id="Die-200"><a href="#Die-200"><span class="linenos"> 200</span></a><span class="sd">                dice or between the dice.</span>
 </span><span id="Die-201"><a href="#Die-201"><span class="linenos"> 201</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-202"><a href="#Die-202"><span class="linenos"> 202</span></a>        <span class="n">data</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="Die-203"><a href="#Die-203"><span class="linenos"> 203</span></a>        <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span>
@@ -2312,7 +2312,7 @@ element-wise.</p>
     </div>
     <a class="headerlink" href="#Die.unary_op_non_elementwise"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.unary_op_non_elementwise-159"><a href="#Die.unary_op_non_elementwise-159"><span class="linenos">159</span></a>    <span class="k">def</span> <span class="nf">unary_op_non_elementwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die.unary_op_non_elementwise-160"><a href="#Die.unary_op_non_elementwise-160"><span class="linenos">160</span></a>        <span class="sd">&quot;&quot;&quot;As unary_op, but not elementwise.</span>
+</span><span id="Die.unary_op_non_elementwise-160"><a href="#Die.unary_op_non_elementwise-160"><span class="linenos">160</span></a>        <span class="sd">&quot;&quot;&quot;As `unary_op()`, but not elementwise.</span>
 </span><span id="Die.unary_op_non_elementwise-161"><a href="#Die.unary_op_non_elementwise-161"><span class="linenos">161</span></a>
 </span><span id="Die.unary_op_non_elementwise-162"><a href="#Die.unary_op_non_elementwise-162"><span class="linenos">162</span></a><span class="sd">        This is used for the `[]` operator.</span>
 </span><span id="Die.unary_op_non_elementwise-163"><a href="#Die.unary_op_non_elementwise-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -2324,7 +2324,7 @@ element-wise.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>As unary_op, but not elementwise.</p>
+            <div class="docstring"><p>As <code><a href="#Die.unary_op">unary_op()</a></code>, but not elementwise.</p>
 
 <p>This is used for the <code>[]</code> operator.</p>
 </div>
@@ -2371,8 +2371,8 @@ element-wise.</p>
 </span><span id="Die.binary_op-196"><a href="#Die.binary_op-196"><span class="linenos">196</span></a><span class="sd">            A die representing the result.</span>
 </span><span id="Die.binary_op-197"><a href="#Die.binary_op-197"><span class="linenos">197</span></a>
 </span><span id="Die.binary_op-198"><a href="#Die.binary_op-198"><span class="linenos">198</span></a><span class="sd">        Raises:</span>
-</span><span id="Die.binary_op-199"><a href="#Die.binary_op-199"><span class="linenos">199</span></a><span class="sd">            ValueError if tuples are of mismatched length within one of the dice</span>
-</span><span id="Die.binary_op-200"><a href="#Die.binary_op-200"><span class="linenos">200</span></a><span class="sd">            or between the dice.</span>
+</span><span id="Die.binary_op-199"><a href="#Die.binary_op-199"><span class="linenos">199</span></a><span class="sd">            `ValueError` if tuples are of mismatched length within one of the</span>
+</span><span id="Die.binary_op-200"><a href="#Die.binary_op-200"><span class="linenos">200</span></a><span class="sd">                dice or between the dice.</span>
 </span><span id="Die.binary_op-201"><a href="#Die.binary_op-201"><span class="linenos">201</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.binary_op-202"><a href="#Die.binary_op-202"><span class="linenos">202</span></a>        <span class="n">data</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="Die.binary_op-203"><a href="#Die.binary_op-203"><span class="linenos">203</span></a>        <span class="k">for</span> <span class="p">(</span><span class="n">outcome_self</span><span class="p">,</span> <span class="n">weight_self</span><span class="p">),</span> <span class="p">(</span><span class="n">outcome_other</span><span class="p">,</span>
@@ -2418,8 +2418,8 @@ Only the sum is performed element-wise.</p>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li>ValueError if tuples are of mismatched length within one of the dice</li>
-<li>or between the dice.</li>
+<li><code>ValueError</code> if tuples are of mismatched length within one of the
+dice or between the dice.</li>
 </ul>
 </div>
 
