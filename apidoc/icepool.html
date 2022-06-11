@@ -1986,35 +1986,39 @@ with weight 1 each.</p>
 </span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
 </span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>
 </span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a><span class="sd">        `format_spec` should start with the output format,</span>
-</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values).</span>
-</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>
-</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
-</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a>
-</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">        * `o`: Outcomes.</span>
-</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
-</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>
-</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
-</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
-</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
-</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
-</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
-</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>
-</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>
-</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
-</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
-</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
-</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>
-</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
+</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
+</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a>
+</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a>
+</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>
+</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>
+</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
+</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a><span class="sd">        if any weight exceeds 10**30.</span>
+</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a>
+</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a>
+</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>
+</span><span id="Die-1381"><a href="#Die-1381"><span class="linenos">1381</span></a>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1382"><a href="#Die-1382"><span class="linenos">1382</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4686,39 +4690,44 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 </span><span id="Die.format-1347"><a href="#Die.format-1347"><span class="linenos">1347</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
 </span><span id="Die.format-1348"><a href="#Die.format-1348"><span class="linenos">1348</span></a>
 </span><span id="Die.format-1349"><a href="#Die.format-1349"><span class="linenos">1349</span></a><span class="sd">        `format_spec` should start with the output format,</span>
-</span><span id="Die.format-1350"><a href="#Die.format-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values).</span>
-</span><span id="Die.format-1351"><a href="#Die.format-1351"><span class="linenos">1351</span></a>
-</span><span id="Die.format-1352"><a href="#Die.format-1352"><span class="linenos">1352</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
-</span><span id="Die.format-1353"><a href="#Die.format-1353"><span class="linenos">1353</span></a>
-</span><span id="Die.format-1354"><a href="#Die.format-1354"><span class="linenos">1354</span></a><span class="sd">        * `o`: Outcomes.</span>
-</span><span id="Die.format-1355"><a href="#Die.format-1355"><span class="linenos">1355</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
-</span><span id="Die.format-1356"><a href="#Die.format-1356"><span class="linenos">1356</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die.format-1357"><a href="#Die.format-1357"><span class="linenos">1357</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die.format-1358"><a href="#Die.format-1358"><span class="linenos">1358</span></a>
-</span><span id="Die.format-1359"><a href="#Die.format-1359"><span class="linenos">1359</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
-</span><span id="Die.format-1360"><a href="#Die.format-1360"><span class="linenos">1360</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.format-1361"><a href="#Die.format-1361"><span class="linenos">1361</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die.format-1362"><a href="#Die.format-1362"><span class="linenos">1362</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
-</span><span id="Die.format-1363"><a href="#Die.format-1363"><span class="linenos">1363</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
-</span><span id="Die.format-1364"><a href="#Die.format-1364"><span class="linenos">1364</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
-</span><span id="Die.format-1365"><a href="#Die.format-1365"><span class="linenos">1365</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
-</span><span id="Die.format-1366"><a href="#Die.format-1366"><span class="linenos">1366</span></a>
-</span><span id="Die.format-1367"><a href="#Die.format-1367"><span class="linenos">1367</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span id="Die.format-1368"><a href="#Die.format-1368"><span class="linenos">1368</span></a>
-</span><span id="Die.format-1369"><a href="#Die.format-1369"><span class="linenos">1369</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-</span><span id="Die.format-1370"><a href="#Die.format-1370"><span class="linenos">1370</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
-</span><span id="Die.format-1371"><a href="#Die.format-1371"><span class="linenos">1371</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
-</span><span id="Die.format-1372"><a href="#Die.format-1372"><span class="linenos">1372</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
-</span><span id="Die.format-1373"><a href="#Die.format-1373"><span class="linenos">1373</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Die.format-1374"><a href="#Die.format-1374"><span class="linenos">1374</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die.format-1375"><a href="#Die.format-1375"><span class="linenos">1375</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</span><span id="Die.format-1350"><a href="#Die.format-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
+</span><span id="Die.format-1351"><a href="#Die.format-1351"><span class="linenos">1351</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
+</span><span id="Die.format-1352"><a href="#Die.format-1352"><span class="linenos">1352</span></a>
+</span><span id="Die.format-1353"><a href="#Die.format-1353"><span class="linenos">1353</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die.format-1354"><a href="#Die.format-1354"><span class="linenos">1354</span></a>
+</span><span id="Die.format-1355"><a href="#Die.format-1355"><span class="linenos">1355</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die.format-1356"><a href="#Die.format-1356"><span class="linenos">1356</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die.format-1357"><a href="#Die.format-1357"><span class="linenos">1357</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1358"><a href="#Die.format-1358"><span class="linenos">1358</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1359"><a href="#Die.format-1359"><span class="linenos">1359</span></a>
+</span><span id="Die.format-1360"><a href="#Die.format-1360"><span class="linenos">1360</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die.format-1361"><a href="#Die.format-1361"><span class="linenos">1361</span></a>
+</span><span id="Die.format-1362"><a href="#Die.format-1362"><span class="linenos">1362</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
+</span><span id="Die.format-1363"><a href="#Die.format-1363"><span class="linenos">1363</span></a><span class="sd">        if any weight exceeds 10**30.</span>
+</span><span id="Die.format-1364"><a href="#Die.format-1364"><span class="linenos">1364</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.format-1365"><a href="#Die.format-1365"><span class="linenos">1365</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.format-1366"><a href="#Die.format-1366"><span class="linenos">1366</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die.format-1367"><a href="#Die.format-1367"><span class="linenos">1367</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die.format-1368"><a href="#Die.format-1368"><span class="linenos">1368</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die.format-1369"><a href="#Die.format-1369"><span class="linenos">1369</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die.format-1370"><a href="#Die.format-1370"><span class="linenos">1370</span></a>
+</span><span id="Die.format-1371"><a href="#Die.format-1371"><span class="linenos">1371</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1372"><a href="#Die.format-1372"><span class="linenos">1372</span></a>
+</span><span id="Die.format-1373"><a href="#Die.format-1373"><span class="linenos">1373</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1374"><a href="#Die.format-1374"><span class="linenos">1374</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1375"><a href="#Die.format-1375"><span class="linenos">1375</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die.format-1376"><a href="#Die.format-1376"><span class="linenos">1376</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1377"><a href="#Die.format-1377"><span class="linenos">1377</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die.format-1378"><a href="#Die.format-1378"><span class="linenos">1378</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die.format-1379"><a href="#Die.format-1379"><span class="linenos">1379</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Formats this die as a string.</p>
 
 <p><code>format_spec</code> should start with the output format,
-which is either <code>md</code> (Markdown) or <code>csv</code> (comma-separated values).</p>
+which is either <code>md</code> (Markdown) or <code>csv</code> (comma-separated values),
+followed by a ':' character.</p>
 
 <p>After this, zero or more columns should follow. Options are:</p>
 
@@ -4730,6 +4739,9 @@ which is either <code>md</code> (Markdown) or <code>csv</code> (comma-separated 
 </ul>
 
 <p>Columns may optionally be separated using <code></code> (space) or <code>|</code> characters.</p>
+
+<p>The default is <code>'md:*o|w==|%=='</code>, with the weight column being omitted
+if any weight exceeds 10**30.</p>
 </div>
 
 
