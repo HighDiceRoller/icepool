@@ -4,9 +4,9 @@ from functools import cached_property
 
 
 class EvalPoolAlignment():
-    """Internal class for managing EvalPool alignment.
+    """Internal class for managing `EvalPool` alignment.
 
-    The interface is similar but not identical to Pool.
+    The interface is similar but not identical to `Pool`.
 
     We can't use the actual `Pool` class since it is permitted to skip 0-count
     outcomes.
