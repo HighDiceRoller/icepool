@@ -259,10 +259,7 @@
                                 <a class="function" href="#Die.equals">equals</a>
                         </li>
                         <li>
-                                <a class="function" href="#Die.format_markdown">format_markdown</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Die.format_csv">format_csv</a>
+                                <a class="function" href="#Die.format">format</a>
                         </li>
                 </ul>
 
@@ -1983,44 +1980,41 @@ with weight 1 each.</p>
 </span><span id="Die-1341"><a href="#Die-1341"><span class="linenos">1341</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
 </span><span id="Die-1342"><a href="#Die-1342"><span class="linenos">1342</span></a>
 </span><span id="Die-1343"><a href="#Die-1343"><span class="linenos">1343</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_markdown</span><span class="p">(</span><span class="n">include_weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">)</span>
+</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span>
 </span><span id="Die-1345"><a href="#Die-1345"><span class="linenos">1345</span></a>
-</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>    <span class="k">def</span> <span class="nf">format_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>                        <span class="o">*</span><span class="p">,</span>
-</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>                        <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>                        <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
+</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
+</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>
+</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a><span class="sd">        `format_spec` should start with the output format,</span>
+</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values).</span>
 </span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>
-</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
-</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
-</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>
-</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">format_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>                   <span class="o">*</span><span class="p">,</span>
-</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>                   <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>                   <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>                   <span class="n">dialect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span>
-</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>                   <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
-</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
-</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>
-</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
-</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
-</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
-</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
-</span><span id="Die-1381"><a href="#Die-1381"><span class="linenos">1381</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
+</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a>
+</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>
+</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a>
+</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>
+</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>
+</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4677,94 +4671,65 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 
 
                             </div>
-                            <div id="Die.format_markdown" class="classattr">
-                                        <input id="Die.format_markdown-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Die.format" class="classattr">
+                                        <input id="Die.format-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">format_markdown</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span>, </span><span class="param"><span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+        <span class="name">format</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
 
-                <label class="view-source-button" for="Die.format_markdown-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Die.format-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Die.format_markdown"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.format_markdown-1346"><a href="#Die.format_markdown-1346"><span class="linenos">1346</span></a>    <span class="k">def</span> <span class="nf">format_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.format_markdown-1347"><a href="#Die.format_markdown-1347"><span class="linenos">1347</span></a>                        <span class="o">*</span><span class="p">,</span>
-</span><span id="Die.format_markdown-1348"><a href="#Die.format_markdown-1348"><span class="linenos">1348</span></a>                        <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die.format_markdown-1349"><a href="#Die.format_markdown-1349"><span class="linenos">1349</span></a>                        <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die.format_markdown-1350"><a href="#Die.format_markdown-1350"><span class="linenos">1350</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a Markdown table.</span>
-</span><span id="Die.format_markdown-1351"><a href="#Die.format_markdown-1351"><span class="linenos">1351</span></a>
-</span><span id="Die.format_markdown-1352"><a href="#Die.format_markdown-1352"><span class="linenos">1352</span></a><span class="sd">        Args:</span>
-</span><span id="Die.format_markdown-1353"><a href="#Die.format_markdown-1353"><span class="linenos">1353</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the weights.</span>
-</span><span id="Die.format_markdown-1354"><a href="#Die.format_markdown-1354"><span class="linenos">1354</span></a><span class="sd">                Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die.format_markdown-1355"><a href="#Die.format_markdown-1355"><span class="linenos">1355</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die.format_markdown-1356"><a href="#Die.format_markdown-1356"><span class="linenos">1356</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die.format_markdown-1357"><a href="#Die.format_markdown-1357"><span class="linenos">1357</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.format_markdown-1358"><a href="#Die.format_markdown-1358"><span class="linenos">1358</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.format_markdown-1359"><a href="#Die.format_markdown-1359"><span class="linenos">1359</span></a>                                           <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die.format_markdown-1360"><a href="#Die.format_markdown-1360"><span class="linenos">1360</span></a>                                           <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">)</span>
+    <a class="headerlink" href="#Die.format"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.format-1346"><a href="#Die.format-1346"><span class="linenos">1346</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die.format-1347"><a href="#Die.format-1347"><span class="linenos">1347</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
+</span><span id="Die.format-1348"><a href="#Die.format-1348"><span class="linenos">1348</span></a>
+</span><span id="Die.format-1349"><a href="#Die.format-1349"><span class="linenos">1349</span></a><span class="sd">        `format_spec` should start with the output format,</span>
+</span><span id="Die.format-1350"><a href="#Die.format-1350"><span class="linenos">1350</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values).</span>
+</span><span id="Die.format-1351"><a href="#Die.format-1351"><span class="linenos">1351</span></a>
+</span><span id="Die.format-1352"><a href="#Die.format-1352"><span class="linenos">1352</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die.format-1353"><a href="#Die.format-1353"><span class="linenos">1353</span></a>
+</span><span id="Die.format-1354"><a href="#Die.format-1354"><span class="linenos">1354</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die.format-1355"><a href="#Die.format-1355"><span class="linenos">1355</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die.format-1356"><a href="#Die.format-1356"><span class="linenos">1356</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1357"><a href="#Die.format-1357"><span class="linenos">1357</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1358"><a href="#Die.format-1358"><span class="linenos">1358</span></a>
+</span><span id="Die.format-1359"><a href="#Die.format-1359"><span class="linenos">1359</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die.format-1360"><a href="#Die.format-1360"><span class="linenos">1360</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.format-1361"><a href="#Die.format-1361"><span class="linenos">1361</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.format-1362"><a href="#Die.format-1362"><span class="linenos">1362</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die.format-1363"><a href="#Die.format-1363"><span class="linenos">1363</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die.format-1364"><a href="#Die.format-1364"><span class="linenos">1364</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die.format-1365"><a href="#Die.format-1365"><span class="linenos">1365</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die.format-1366"><a href="#Die.format-1366"><span class="linenos">1366</span></a>
+</span><span id="Die.format-1367"><a href="#Die.format-1367"><span class="linenos">1367</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1368"><a href="#Die.format-1368"><span class="linenos">1368</span></a>
+</span><span id="Die.format-1369"><a href="#Die.format-1369"><span class="linenos">1369</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1370"><a href="#Die.format-1370"><span class="linenos">1370</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1371"><a href="#Die.format-1371"><span class="linenos">1371</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die.format-1372"><a href="#Die.format-1372"><span class="linenos">1372</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1373"><a href="#Die.format-1373"><span class="linenos">1373</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die.format-1374"><a href="#Die.format-1374"><span class="linenos">1374</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die.format-1375"><a href="#Die.format-1375"><span class="linenos">1375</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Formats the die as a Markdown table.</p>
+            <div class="docstring"><p>Formats this die as a string.</p>
 
-<h6 id="args">Args</h6>
+<p><code>format_spec</code> should start with the output format,
+which is either <code>md</code> (Markdown) or <code>csv</code> (comma-separated values).</p>
 
-<ul>
-<li><strong>include_weights:</strong>  If <code>True</code>, a column will be emitted for the weights.
-Otherwise, only probabilities will be emitted.</li>
-<li><strong>unpack_outcomes:</strong>  If <code>True</code> and all outcomes have a common length,
-outcomes will be unpacked, producing one column per element.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Die.format_csv" class="classattr">
-                                        <input id="Die.format_csv-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">format_csv</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span>,</span><span class="param">	<span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span>,</span><span class="param">	<span class="n">dialect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span>,</span><span class="param">	<span class="o">**</span><span class="n">fmtparams</span></span>)</span>
-
-                <label class="view-source-button" for="Die.format_csv-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Die.format_csv"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.format_csv-1362"><a href="#Die.format_csv-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">format_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.format_csv-1363"><a href="#Die.format_csv-1363"><span class="linenos">1363</span></a>                   <span class="o">*</span><span class="p">,</span>
-</span><span id="Die.format_csv-1364"><a href="#Die.format_csv-1364"><span class="linenos">1364</span></a>                   <span class="n">include_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die.format_csv-1365"><a href="#Die.format_csv-1365"><span class="linenos">1365</span></a>                   <span class="n">unpack_outcomes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="Die.format_csv-1366"><a href="#Die.format_csv-1366"><span class="linenos">1366</span></a>                   <span class="n">dialect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span>
-</span><span id="Die.format_csv-1367"><a href="#Die.format_csv-1367"><span class="linenos">1367</span></a>                   <span class="o">**</span><span class="n">fmtparams</span><span class="p">):</span>
-</span><span id="Die.format_csv-1368"><a href="#Die.format_csv-1368"><span class="linenos">1368</span></a>        <span class="sd">&quot;&quot;&quot;Formats the die as a comma-separated-values string.</span>
-</span><span id="Die.format_csv-1369"><a href="#Die.format_csv-1369"><span class="linenos">1369</span></a>
-</span><span id="Die.format_csv-1370"><a href="#Die.format_csv-1370"><span class="linenos">1370</span></a><span class="sd">        Args:</span>
-</span><span id="Die.format_csv-1371"><a href="#Die.format_csv-1371"><span class="linenos">1371</span></a><span class="sd">            include_weights: If `True`, a column will be emitted for the</span>
-</span><span id="Die.format_csv-1372"><a href="#Die.format_csv-1372"><span class="linenos">1372</span></a><span class="sd">                weights. Otherwise, only probabilities will be emitted.</span>
-</span><span id="Die.format_csv-1373"><a href="#Die.format_csv-1373"><span class="linenos">1373</span></a><span class="sd">            unpack_outcomes: If `True` and all outcomes have a common length,</span>
-</span><span id="Die.format_csv-1374"><a href="#Die.format_csv-1374"><span class="linenos">1374</span></a><span class="sd">                outcomes will be unpacked, producing one column per element.</span>
-</span><span id="Die.format_csv-1375"><a href="#Die.format_csv-1375"><span class="linenos">1375</span></a><span class="sd">            dialect, **fmtparams: Will be sent to `csv.writer()`.</span>
-</span><span id="Die.format_csv-1376"><a href="#Die.format_csv-1376"><span class="linenos">1376</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.format_csv-1377"><a href="#Die.format_csv-1377"><span class="linenos">1377</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="Die.format_csv-1378"><a href="#Die.format_csv-1378"><span class="linenos">1378</span></a>                                      <span class="n">include_weights</span><span class="o">=</span><span class="n">include_weights</span><span class="p">,</span>
-</span><span id="Die.format_csv-1379"><a href="#Die.format_csv-1379"><span class="linenos">1379</span></a>                                      <span class="n">unpack_outcomes</span><span class="o">=</span><span class="n">unpack_outcomes</span><span class="p">,</span>
-</span><span id="Die.format_csv-1380"><a href="#Die.format_csv-1380"><span class="linenos">1380</span></a>                                      <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">,</span>
-</span><span id="Die.format_csv-1381"><a href="#Die.format_csv-1381"><span class="linenos">1381</span></a>                                      <span class="o">**</span><span class="n">fmtparams</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Formats the die as a comma-separated-values string.</p>
-
-<h6 id="args">Args</h6>
+<p>After this, zero or more columns should follow. Options are:</p>
 
 <ul>
-<li><strong>include_weights:</strong>  If <code>True</code>, a column will be emitted for the
-weights. Otherwise, only probabilities will be emitted.</li>
-<li><strong>unpack_outcomes:</strong>  If <code>True</code> and all outcomes have a common length,
-outcomes will be unpacked, producing one column per element.</li>
-<li><strong>dialect, **fmtparams:</strong>  Will be sent to <code>csv.writer()</code>.</li>
+<li><code>o</code>: Outcomes.</li>
+<li><code>*o</code>: Outcomes, unpacked if applicable.</li>
+<li><code>w==</code>, <code>w&lt;=</code>, <code>w&gt;=</code>: Weights ==, &lt;=, or &gt;= each outcome.</li>
+<li><code>%==</code>, <code>%&lt;=</code>, <code>%&gt;=</code>: Chance (%) ==, &lt;=, or &gt;= each outcome.</li>
 </ul>
+
+<p>Columns may optionally be separated using <code></code> (space) or <code>|</code> characters.</p>
 </div>
 
 
