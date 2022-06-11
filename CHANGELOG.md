@@ -1,3 +1,13 @@
+## 0.15.0
+
+Added type hints. Now requires Python 3.10 or later.
+
+Other changes:
+
+* Add `apply_sorted()` method.
+* Add `Die.set_range()`.
+* `standard()` / `d()` argument is now positional-only.
+
 ## 0.14.1
 
 Reinstate alternate internal `EvalPool` algorithm, which provides better performance in some cases. 
