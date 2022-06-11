@@ -210,7 +210,7 @@ class EvalPool(ABC):
             pool if isinstance(pool, icepool.Pool) else icepool.Pool(*pool)
             for pool in pools)
 
-        if any(pool.has_empty_dice() for pool in converted_pools):
+        if not all(pool.is_resolvable() for pool in converted_pools):
             return icepool.Die()
 
         algorithm, direction = self._select_algorithm(*converted_pools)
@@ -251,7 +251,7 @@ class EvalPool(ABC):
         eval_direction = self.direction(*pools)
 
         pop_min_costs, pop_max_costs = zip(
-            *(estimate_costs(pool) for pool in pools))
+            *(pool._estimate_costs() for pool in pools))
 
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)

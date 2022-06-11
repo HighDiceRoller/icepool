@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
+import icepool.pool.cost
 from icepool.collections import Counts
 
 import itertools
@@ -244,9 +245,9 @@ class Pool():
         """The number of dice in this pool."""
         return self._num_dice
 
-    def has_empty_dice(self) -> bool:
-        """Whether this pool contains any empty dice."""
-        return any(die.is_empty() for die in self._dice.keys())
+    def is_resolvable(self) -> bool:
+        """Whether this pool resolves to a non-empty set of joint outcomes."""
+        return all(not die.is_empty() for die in self._dice.keys())
 
     def is_empty(self) -> bool:
         return len(self._dice) == 0
@@ -278,6 +279,15 @@ class Pool():
     def outcomes(self) -> Sequence:
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
+
+    def _estimate_costs(self) -> tuple[int, int]:
+        """Estimates the cost of popping from the min and max sides.
+
+        Returns:
+            pop_min_cost
+            pop_max_cost
+        """
+        return icepool.pool.cost.estimate_costs(self)
 
     def count_dice(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
