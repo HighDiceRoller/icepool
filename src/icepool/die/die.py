@@ -1346,7 +1346,8 @@ class Die():
         """Formats this die as a string.
 
         `format_spec` should start with the output format,
-        which is either `md` (Markdown) or `csv` (comma-separated values).
+        which is either `md` (Markdown) or `csv` (comma-separated values),
+        followed by a ':' character.
 
         After this, zero or more columns should follow. Options are:
 
@@ -1356,6 +1357,9 @@ class Die():
         * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
 
         Columns may optionally be separated using ` ` (space) or `|` characters.
+
+        The default is `'md:*o|w==|%=='`, with the weight column being omitted
+        if any weight exceeds 10**30.
         """
         if len(format_spec) == 0:
             format_spec = 'md:*o'

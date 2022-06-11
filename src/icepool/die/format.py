@@ -107,9 +107,16 @@ def compute_col_widths(headers: Sequence[str],
 
 
 def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
-    """Returns a list of '<' or '>' for each column."""
-    row = rows[0]  # Due to the empty case there will be at least one column.
-    return ['>' if re.match(r'\d+(\.\d*)?', c) else '<' for c in row]
+    """Returns a list of '<' or '>' for each column specifying alignment.
+
+    Columns are aligned right iff all values are numeric.
+    """
+    result: list[str] = ['>'] * len(rows[0])
+    for row in rows:
+        for i, cell in enumerate(row):
+            if not re.match(r'\d+(\.\d*)?', cell):
+                result[i] = '<'
+    return result
 
 
 def markdown(die: 'icepool.Die', format_spec: str) -> str:
