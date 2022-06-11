@@ -14,15 +14,17 @@ def test_repr(die):
 @pytest.mark.parametrize('die', test_dice)
 def test_str(die):
     str(die)
+    
+format_specs = [
+    '',
+    'md:w==|w<=|w>=',
+    'md:%==|%>=|%>=',
+    'csv:w==|w<=|w>=',
+    'csv:%==|%>=|%>=',
+]
 
 @pytest.mark.parametrize('die', test_dice)
-@pytest.mark.parametrize('include_weights', [False, True])
-@pytest.mark.parametrize('unpack_outcomes', [False, True])
-def test_markdown(die, include_weights, unpack_outcomes):
-    die.format_markdown(include_weights=include_weights, unpack_outcomes=unpack_outcomes)
-    
-@pytest.mark.parametrize('die', test_dice)
-@pytest.mark.parametrize('include_weights', [False, True])
-@pytest.mark.parametrize('unpack_outcomes', [False, True])
-def test_csv(die, include_weights, unpack_outcomes):
-    die.format_csv(include_weights=include_weights, unpack_outcomes=unpack_outcomes)
+@pytest.mark.parametrize('format_spec', format_specs)
+def test_format_spec(die, format_spec):
+    f'{die:{format_spec}}'
+

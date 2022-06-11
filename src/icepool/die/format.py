@@ -1,115 +1,163 @@
 __docformat__ = 'google'
 
+import icepool
+
 import csv as csv_lib
 import io
+import re
 
 from collections.abc import Sequence
 
+OUTCOME_PATTERN = r'(?:\*o|o)'
 
-def make_header(die, include_weights: bool,
-                unpack_outcomes: bool) -> tuple[Sequence[str], Sequence[int]]:
+COMPARATOR_OPTIONS = '|'.join(['==', '<=', '>='])
+COMPARATOR_PATTERN = f'(?:[w%](?:{COMPARATOR_OPTIONS}))'
+"""A comparator followed by w for weight or % for probability percent."""
+
+TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
+
+DENOM_TYPE_HEADERS = {
+    'w': 'Weight',
+    '%': 'Chance (%)',
+}
+
+
+def split_format_spec(format_spec: str) -> Sequence[str]:
+    """Splits the format_spec into its components."""
+    result = re.findall(TOTAL_PATTERN, format_spec)
+    if sum(len(t) for t in result) != len(format_spec):
+        raise ValueError(f"Invalid format spec '{format_spec}")
+    return result
+
+
+def make_headers(die: 'icepool.Die',
+                 format_tokens: Sequence[str]) -> Sequence[str]:
     """Generates a list of strings for the header."""
-    header = []
-    if unpack_outcomes:
-        for i in range(die.outcome_len()):
-            header.append(f'Outcome[{i}]')
-    else:
-        header.append('Outcome')
-    if include_weights:
-        header.append('Weight')
-    header.append('Probability')
-    return header, [len(s) for s in header]
+    result: list[str] = []
+    for token in format_tokens:
+        if token == 'o':
+            result.append('Outcome')
+        elif token == '*o':
+            r = die.outcome_len()
+            if r is None:
+                result.append('Outcome')
+            else:
+                for i in range(r):
+                    result.append(f'Outcome[{i}]')
+        else:
+            comparator = token[1:]
+            denom_type = DENOM_TYPE_HEADERS[token[0]]
+            if comparator == '==':
+                result.append(denom_type)
+            else:
+                result.append(f'{denom_type} {comparator}')
+    return result
 
 
-def make_row(outcome, weight: int, p, include_weights: bool,
-             unpack_outcomes: bool) -> Sequence[str]:
-    row = []
-    if unpack_outcomes:
-        for x in outcome:
-            row.append(str(x))
-    else:
-        row.append(str(outcome))
-    if include_weights:
-        row.append(str(weight))
-    row.append(f'{p:.6%}')
+def gather_cols(die: 'icepool.Die',
+                format_tokens: Sequence[str]) -> Sequence[Sequence]:
+    result: list[list[str]] = []
+    for token in format_tokens:
+        if token == 'o':
+            result.append([str(x) for x in die.outcomes()])
+        elif token == '*o':
+            r = die.outcome_len()
+            if r is None:
+                result.append([str(x) for x in die.outcomes()])
+            else:
+                for i in range(r):
+                    result.append([str(x) for x in die[i].outcomes()])
+        else:
+            comparator = token[1:]
+            denom_type = token[0]
+            if denom_type == 'w':
+                if comparator == '==':
+                    col = die.weights()
+                elif comparator == '<=':
+                    col = die.cweights()
+                elif comparator == '>=':
+                    col = die.sweights()
+                result.append([str(x) for x in col])
+            elif denom_type == '%':
+                if die.denominator() == 0:
+                    result.append(['n/a' for x in die.outcomes()])
+                else:
+                    if comparator == '==':
+                        col = die.pmf(percent=True)
+                    elif comparator == '<=':
+                        col = die.cdf(percent=True)
+                    elif comparator == '>=':
+                        col = die.sf(percent=True)
+                    result.append([f'{x:0.6f}' for x in col])
+    return result
 
-    return row
+
+def make_rows(die: 'icepool.Die',
+              format_tokens: Sequence[str]) -> Sequence[Sequence[str]]:
+    cols = gather_cols(die, format_tokens)
+    return [[c for c in row_data] for row_data in zip(*cols)]
 
 
-def make_rows(
-        die, include_weights: bool,
-        unpack_outcomes: bool) -> tuple[Sequence[Sequence[str]], Sequence[int]]:
-    result = [
-        make_row(outcome, weight, p, include_weights, unpack_outcomes)
-        for outcome, weight, p in zip(die.outcomes(), die.weights(), die.pmf())
-    ]
-    col_widths = [max(len(s) for s in col) for col in zip(*result)]
-    return result, col_widths
+def compute_col_widths(headers: Sequence[str],
+                       rows: Sequence[Sequence[str]]) -> Sequence[int]:
+    result = [len(s) for s in headers]
+    for row in rows:
+        result = [max(x, len(s)) for x, s in zip(result, row)]
+    return result
 
 
-def markdown(die,
-             *,
-             include_weights: bool = True,
-             unpack_outcomes: bool = True) -> str:
-    """Formats the die as a Markdown table.
+def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
+    """Returns a list of '<' or '>' for each column."""
+    row = rows[0]  # Due to the empty case there will be at least one column.
+    return ['>' if re.match(r'\d+(\.\d*)?', c) else '<' for c in row]
 
-    Args:
-        include_weights: If `True`, a column will be emitted for the weights.
-            Otherwise, only probabilities will be emitted.
-        unpack_outcomes: If `True` and all outcomes have a common length,
-            outcomes will be unpacked, producing one column per element.
-    """
+
+def markdown(die: 'icepool.Die', format_spec: str) -> str:
+    """Formats the die as a Markdown table."""
     if die.is_empty():
         return 'Empty die\n'
 
-    unpack_outcomes = unpack_outcomes and die.outcome_len() is not None
-    header, header_widths = make_header(die, include_weights, unpack_outcomes)
-    rows, col_widths = make_rows(die, include_weights, unpack_outcomes)
-    col_widths = [max(h, c) for h, c in zip(header_widths, col_widths)]
+    format_tokens = split_format_spec(format_spec)
+
+    headers = make_headers(die, format_tokens)
+    rows = make_rows(die, format_tokens)
+    col_widths = compute_col_widths(headers, rows)
+    alignments = compute_alignments(rows)
 
     result = f'Denominator: {die.denominator()}\n\n'
-    result += '| '
-    result += ' | '.join(
-        f'{s:>{width}}' for s, width in zip(header, col_widths))
-    result += ' |\n'
+    result += '|'
+    for header, col_width in zip(headers, col_widths):
+        result += f' {header:<{col_width}} |'
+    result += '\n'
 
-    result += '|-'
-    result += ':|-'.join('-' * width for width in col_widths)
-    result += ':|\n'
+    result += '|'
+    for alignment, col_width in zip(alignments, col_widths):
+        if alignment == '<':
+            result += ':' + '-' * col_width + '-|'
+        else:
+            result += '-' + '-' * col_width + ':|'
+    result += '\n'
 
     for row in rows:
-        result += '| '
-        result += ' | '.join(
-            f'{s:>{width}}' for s, width in zip(row, col_widths))
-        result += ' |\n'
+        result += '|'
+        for s, alignment, col_width in zip(row, alignments, col_widths):
+            result += f' {s:{alignment}{col_width}} |'
+        result += '\n'
 
     return result
 
 
-def csv(die,
-        *,
-        include_weights: bool = True,
-        unpack_outcomes: bool = True,
-        dialect: str = 'excel',
-        **fmtparams) -> str:
-    """Formats the die as a comma-separated-values string.
+def csv(die, format_spec: str, *, dialect: str = 'excel', **fmtparams) -> str:
+    """Formats the die as a comma-separated-values string."""
 
-    Args:
-        include_weights: If `True`, a column will be emitted for the weights.
-            Otherwise, only probabilities will be emitted.
-        unpack_outcomes: If `True` and all outcomes have a common length,
-            outcomes will be unpacked, producing one column per element.
-        dialect, **fmtparams: Will be sent to `csv.writer()`.
-    """
+    format_tokens = split_format_spec(format_spec)
 
-    unpack_outcomes = unpack_outcomes and die.outcome_len() is not None
-    header, header_widths = make_header(die, include_weights, unpack_outcomes)
-    rows, col_widths = make_rows(die, include_weights, unpack_outcomes)
-    col_widths = [max(h, c) for h, c in zip(header_widths, col_widths)]
+    headers = make_headers(die, format_tokens)
+    rows = make_rows(die, format_tokens)
 
     with io.StringIO() as out:
         writer = csv_lib.writer(out, dialect=dialect, **fmtparams)
-        writer.writerow(header)
+        writer.writerow(headers)
         for row in rows:
             writer.writerow(row)
 

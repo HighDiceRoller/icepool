@@ -1340,41 +1340,38 @@ class Die():
         return type(self).__qualname__ + '({' + inner + '})'
 
     def __str__(self) -> str:
-        return self.format_markdown(include_weights=self.denominator() < 10**30)
+        return f'{self}'
 
-    def format_markdown(self,
-                        *,
-                        include_weights=True,
-                        unpack_outcomes=True) -> str:
-        """Formats the die as a Markdown table.
+    def format(self, format_spec: str, **kwargs) -> str:
+        """Formats this die as a string.
 
-        Args:
-            include_weights: If `True`, a column will be emitted for the weights.
-                Otherwise, only probabilities will be emitted.
-            unpack_outcomes: If `True` and all outcomes have a common length,
-                outcomes will be unpacked, producing one column per element.
+        `format_spec` should start with the output format,
+        which is either `md` (Markdown) or `csv` (comma-separated values).
+
+        After this, zero or more columns should follow. Options are:
+
+        * `o`: Outcomes.
+        * `*o`: Outcomes, unpacked if applicable.
+        * `w==`, `w<=`, `w>=`: Weights ==, <=, or >= each outcome.
+        * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
+
+        Columns may optionally be separated using ` ` (space) or `|` characters.
         """
-        return icepool.die.format.markdown(self,
-                                           include_weights=include_weights,
-                                           unpack_outcomes=unpack_outcomes)
+        if len(format_spec) == 0:
+            format_spec = 'md:*o'
+            if not self.is_empty() and self.modal_weight() < 10**30:
+                format_spec += 'w=='
+            format_spec += '%=='
 
-    def format_csv(self,
-                   *,
-                   include_weights=True,
-                   unpack_outcomes=True,
-                   dialect: str = 'excel',
-                   **fmtparams):
-        """Formats the die as a comma-separated-values string.
+        format_spec = format_spec.replace('|', '')
 
-        Args:
-            include_weights: If `True`, a column will be emitted for the
-                weights. Otherwise, only probabilities will be emitted.
-            unpack_outcomes: If `True` and all outcomes have a common length,
-                outcomes will be unpacked, producing one column per element.
-            dialect, **fmtparams: Will be sent to `csv.writer()`.
-        """
-        return icepool.die.format.csv(self,
-                                      include_weights=include_weights,
-                                      unpack_outcomes=unpack_outcomes,
-                                      dialect=dialect,
-                                      **fmtparams)
+        output_format, format_spec = format_spec.split(':')
+        if output_format == 'md':
+            return icepool.die.format.markdown(self, format_spec)
+        elif output_format == 'csv':
+            return icepool.die.format.csv(self, format_spec, **kwargs)
+        else:
+            raise ValueError(f"Unsupported output format '{output_format}'")
+
+    def __format__(self, format_spec: str) -> str:
+        return self.format(format_spec)
