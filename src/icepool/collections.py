@@ -90,58 +90,40 @@ class Counts(Mapping[Any, int]):
 class CountsKeysView(KeysView, Sequence):
 
     def __init__(self, counts: Counts):
-        self._counts = counts
+        self._mapping = counts
 
     def __getitem__(self, index):
-        return self._counts._keys[index]
+        return self._mapping._keys[index]
 
     def __len__(self):
-        return len(self._counts)
-
-    def __contains__(self, key) -> bool:
-        return key in self._counts
-
-    def __iter__(self) -> Iterator:
-        return iter(self._counts._keys)
+        return len(self._mapping)
 
     def __eq__(self, other):
-        return self._counts._keys == other
+        return self._mapping._keys == other
 
 
 class CountsValuesView(ValuesView[int], Sequence[int]):
 
     def __init__(self, counts: Counts):
-        self._counts = counts
+        self._mapping = counts
 
     def __getitem__(self, index):
-        return self._counts._values[index]
+        return self._mapping._values[index]
 
     def __len__(self) -> int:
-        return len(self._counts)
-
-    def __contains__(self, value) -> bool:
-        return value in self._counts._values
-
-    def __iter__(self) -> Iterator[int]:
-        return iter(self._counts._values)
+        return len(self._mapping)
 
     def __eq__(self, other):
-        return self._counts._values == other
+        return self._mapping._values == other
 
 
 class CountsItemsView(ItemsView[Any, int], Sequence[tuple[Any, int]]):
 
     def __init__(self, counts: Counts):
-        self._counts = counts
+        self._mapping = counts
 
     def __getitem__(self, index):
-        return self._counts._items[index]
-
-    def __len__(self) -> int:
-        return len(self._counts)
-
-    def __iter__(self) -> Iterator[tuple[Any, int]]:
-        return iter(self._counts._items)
+        return self._mapping._items[index]
 
     def __eq__(self, other):
-        return self._counts._items == other
+        return self._mapping._items == other
