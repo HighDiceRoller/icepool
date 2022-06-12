@@ -11,33 +11,30 @@ from typing import Any
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-def expand_die_args(*args, weights: Sequence[int] | None,
-                    denominator_method: str) -> Counts:
-    """Helper function to expand arguments to Die()."""
-    if weights is not None:
-        if len(weights) != len(args):
+def expand_outcome_args(*args, counts: Sequence[int] | None,
+                        denominator_method: str) -> Counts:
+    """Helper function to expand outcome arguments."""
+    if counts is not None:
+        if len(counts) != len(args):
             raise ValueError(
-                'If weights are provided, there must be exactly one weight per argument.'
+                'If counts are provided, there must be exactly one count per argument.'
             )
     else:
-        weights = (1,) * len(args)
+        counts = (1,) * len(args)
 
     # Special case: single die argument.
-    if len(args) == 1 and _is_die(args[0]) and weights[0] == 1:
+    if len(args) == 1 and _is_die(args[0]) and counts[0] == 1:
         return args[0]._data
 
     # Expand data.
     subdatas = [_expand(arg, denominator_method) for arg in args]
-    data = _merge_subdatas(subdatas, weights, denominator_method)
+    data = _merge_subdatas(subdatas, counts, denominator_method)
 
     return Counts(sorted(data.items()))
 
 
 def _expand(arg, denominator_method: str) -> Mapping[Any, int]:
-    """Expands the argument to a dict mapping outcomes to weights.
-
-    The outcomes are valid outcomes for a die.
-    """
+    """Expands the argument to a dict mapping outcomes to counts."""
     if _is_die(arg):
         return _expand_die(arg)
     elif _is_dict(arg):
@@ -65,8 +62,8 @@ def _expand_dict(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {}
     subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
-    weights = [x for x in arg.values()]
-    return _merge_subdatas(subdatas, weights, denominator_method)
+    counts = [x for x in arg.values()]
+    return _merge_subdatas(subdatas, counts, denominator_method)
 
 
 def _is_tuple(arg) -> bool:
@@ -79,8 +76,8 @@ def _expand_tuple(arg, denominator_method: str) -> Mapping[Any, int]:
     subdatas = [_expand(x, denominator_method) for x in arg]
     data: MutableMapping[Any, int] = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
-        outcomes, weights = zip(*t)
-        data[outcomes] += math.prod(weights)
+        outcomes, counts = zip(*t)
+        data[outcomes] += math.prod(counts)
     return data
 
 
@@ -92,10 +89,10 @@ def _expand_scalar(arg) -> Mapping[Any, int]:
 
 
 def _merge_subdatas(subdatas: Sequence[Mapping[Any,
-                                               int]], weights: Sequence[int],
+                                               int]], counts: Sequence[int],
                     denominator_method: str) -> Mapping[Any, int]:
-    if any(x < 0 for x in weights):
-        raise ValueError('Weights cannot be negative.')
+    if any(x < 0 for x in counts):
+        raise ValueError('counts cannot be negative.')
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
 
     if denominator_method == 'prod':
@@ -105,14 +102,14 @@ def _merge_subdatas(subdatas: Sequence[Mapping[Any,
     elif denominator_method in ['lcm_weighted', 'reduce']:
         denominator_prod = math.lcm(
             *(d // math.gcd(d, w)
-              for d, w in zip(subdata_denominators, weights)
+              for d, w in zip(subdata_denominators, counts)
               if d > 0))
     else:
         raise ValueError(f'Invalid denominator_method {denominator_method}.')
 
     data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
-                                               weights):
+                                               counts):
         factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
         for outcome, weight in subdata.items():
             data[outcome] += weight * factor
