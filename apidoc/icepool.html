@@ -429,6 +429,33 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#CardDraw">CardDraw</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#CardDraw.__init__">CardDraw</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.outcomes">outcomes</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.dups">dups</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.items">items</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.deck_size">deck_size</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.hand_size">hand_size</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CardDraw.denominator">denominator</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -497,24 +524,26 @@ refer to dice in a pool.</li>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="kn">from</span> <span class="nn">icepool.generator</span> <span class="kn">import</span> <span class="n">OutcomeCountGen</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="kn">from</span> <span class="nn">icepool.eval</span> <span class="kn">import</span> <span class="n">OutcomeCountEval</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">JointEval</span><span class="p">,</span> <span class="n">SumGen</span><span class="p">,</span> <span class="n">sum_gen</span><span class="p">,</span> <span class="n">enumerate_gen</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="kn">import</span> <span class="nn">enum</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="kn">from</span> <span class="nn">icepool.deck</span> <span class="kn">import</span> <span class="n">CardDraw</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="k">class</span> <span class="nc">SpecialValue</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="n">Reroll</span> <span class="o">=</span> <span class="n">SpecialValue</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cweights&#39;</span><span class="p">,</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;from_sweights&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;OutcomeCountEval&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumGen&#39;</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="p">]</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="kn">import</span> <span class="nn">enum</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="k">class</span> <span class="nc">SpecialValue</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="n">Reroll</span> <span class="o">=</span> <span class="n">SpecialValue</span><span class="o">.</span><span class="n">Reroll</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cweights&#39;</span><span class="p">,</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;from_sweights&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="s1">&#39;OutcomeCountEval&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEval&#39;</span><span class="p">,</span> <span class="s1">&#39;SumGen&#39;</span><span class="p">,</span> <span class="s1">&#39;CardDraw&#39;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -5915,20 +5944,21 @@ with one argument per die. All outcomes must be totally orderable.</li>
 </span><span id="Pool-567"><a href="#Pool-567"><span class="linenos">567</span></a>
 </span><span id="Pool-568"><a href="#Pool-568"><span class="linenos">568</span></a>    <span class="nd">@cached_property</span>
 </span><span id="Pool-569"><a href="#Pool-569"><span class="linenos">569</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Pool-570"><a href="#Pool-570"><span class="linenos">570</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">die</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="Pool-571"><a href="#Pool-571"><span class="linenos">571</span></a>                     <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_dice</span>
-</span><span id="Pool-572"><a href="#Pool-572"><span class="linenos">572</span></a>
-</span><span id="Pool-573"><a href="#Pool-573"><span class="linenos">573</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Pool-574"><a href="#Pool-574"><span class="linenos">574</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Pool</span><span class="p">):</span>
-</span><span id="Pool-575"><a href="#Pool-575"><span class="linenos">575</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Pool-576"><a href="#Pool-576"><span class="linenos">576</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
-</span><span id="Pool-577"><a href="#Pool-577"><span class="linenos">577</span></a>
-</span><span id="Pool-578"><a href="#Pool-578"><span class="linenos">578</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Pool-579"><a href="#Pool-579"><span class="linenos">579</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Pool-580"><a href="#Pool-580"><span class="linenos">580</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
-</span><span id="Pool-581"><a href="#Pool-581"><span class="linenos">581</span></a>
-</span><span id="Pool-582"><a href="#Pool-582"><span class="linenos">582</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Pool-583"><a href="#Pool-583"><span class="linenos">583</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span><span id="Pool-570"><a href="#Pool-570"><span class="linenos">570</span></a>        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;Pool&#39;</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="Pool-571"><a href="#Pool-571"><span class="linenos">571</span></a>            <span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Pool-572"><a href="#Pool-572"><span class="linenos">572</span></a>            <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_dice</span>
+</span><span id="Pool-573"><a href="#Pool-573"><span class="linenos">573</span></a>
+</span><span id="Pool-574"><a href="#Pool-574"><span class="linenos">574</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Pool-575"><a href="#Pool-575"><span class="linenos">575</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Pool</span><span class="p">):</span>
+</span><span id="Pool-576"><a href="#Pool-576"><span class="linenos">576</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Pool-577"><a href="#Pool-577"><span class="linenos">577</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
+</span><span id="Pool-578"><a href="#Pool-578"><span class="linenos">578</span></a>
+</span><span id="Pool-579"><a href="#Pool-579"><span class="linenos">579</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Pool-580"><a href="#Pool-580"><span class="linenos">580</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Pool-581"><a href="#Pool-581"><span class="linenos">581</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
+</span><span id="Pool-582"><a href="#Pool-582"><span class="linenos">582</span></a>
+</span><span id="Pool-583"><a href="#Pool-583"><span class="linenos">583</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Pool-584"><a href="#Pool-584"><span class="linenos">584</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 </span></pre></div>
 
 
@@ -7724,6 +7754,282 @@ parameters.</li>
                                 <dd id="SumGen.alignment" class="function"><a href="#OutcomeCountEval.alignment">alignment</a></dd>
                 <dd id="SumGen.range_alignment" class="function"><a href="#OutcomeCountEval.range_alignment">range_alignment</a></dd>
                 <dd id="SumGen.eval" class="function"><a href="#OutcomeCountEval.eval">eval</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="CardDraw">
+                            <input id="CardDraw-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">CardDraw</span><wbr>(<span class="base"><a href="#OutcomeCountGen">icepool.OutcomeCountGen</a></span>):
+
+                <label class="view-source-button" for="CardDraw-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw-15"><a href="#CardDraw-15"><span class="linenos"> 15</span></a><span class="k">class</span> <span class="nc">CardDraw</span><span class="p">(</span><span class="n">OutcomeCountGen</span><span class="p">):</span>
+</span><span id="CardDraw-16"><a href="#CardDraw-16"><span class="linenos"> 16</span></a>    <span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Represents drawing a hand from a deck.</span>
+</span><span id="CardDraw-17"><a href="#CardDraw-17"><span class="linenos"> 17</span></a>
+</span><span id="CardDraw-18"><a href="#CardDraw-18"><span class="linenos"> 18</span></a><span class="sd">    In other words, this is sampling without replacement.</span>
+</span><span id="CardDraw-19"><a href="#CardDraw-19"><span class="linenos"> 19</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="CardDraw-20"><a href="#CardDraw-20"><span class="linenos"> 20</span></a>
+</span><span id="CardDraw-21"><a href="#CardDraw-21"><span class="linenos"> 21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="CardDraw-22"><a href="#CardDraw-22"><span class="linenos"> 22</span></a>                 <span class="o">*</span><span class="n">deck</span><span class="p">,</span>
+</span><span id="CardDraw-23"><a href="#CardDraw-23"><span class="linenos"> 23</span></a>                 <span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="CardDraw-24"><a href="#CardDraw-24"><span class="linenos"> 24</span></a>                 <span class="n">dups</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="CardDraw-25"><a href="#CardDraw-25"><span class="linenos"> 25</span></a>                 <span class="n">denominator_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lcm&#39;</span><span class="p">):</span>
+</span><span id="CardDraw-26"><a href="#CardDraw-26"><span class="linenos"> 26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span> <span class="o">=</span> <span class="n">expand_outcome_args</span><span class="p">(</span><span class="o">*</span><span class="n">deck</span><span class="p">,</span>
+</span><span id="CardDraw-27"><a href="#CardDraw-27"><span class="linenos"> 27</span></a>                                         <span class="n">counts</span><span class="o">=</span><span class="n">dups</span><span class="p">,</span>
+</span><span id="CardDraw-28"><a href="#CardDraw-28"><span class="linenos"> 28</span></a>                                         <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
+</span><span id="CardDraw-29"><a href="#CardDraw-29"><span class="linenos"> 29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
+</span><span id="CardDraw-30"><a href="#CardDraw-30"><span class="linenos"> 30</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
+</span><span id="CardDraw-31"><a href="#CardDraw-31"><span class="linenos"> 31</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
+</span><span id="CardDraw-32"><a href="#CardDraw-32"><span class="linenos"> 32</span></a>
+</span><span id="CardDraw-33"><a href="#CardDraw-33"><span class="linenos"> 33</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+</span><span id="CardDraw-34"><a href="#CardDraw-34"><span class="linenos"> 34</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span><span id="CardDraw-35"><a href="#CardDraw-35"><span class="linenos"> 35</span></a>
+</span><span id="CardDraw-36"><a href="#CardDraw-36"><span class="linenos"> 36</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="CardDraw-37"><a href="#CardDraw-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</span><span id="CardDraw-38"><a href="#CardDraw-38"><span class="linenos"> 38</span></a>
+</span><span id="CardDraw-39"><a href="#CardDraw-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="CardDraw-40"><a href="#CardDraw-40"><span class="linenos"> 40</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span id="CardDraw-41"><a href="#CardDraw-41"><span class="linenos"> 41</span></a>
+</span><span id="CardDraw-42"><a href="#CardDraw-42"><span class="linenos"> 42</span></a>    <span class="nd">@cached_property</span>
+</span><span id="CardDraw-43"><a href="#CardDraw-43"><span class="linenos"> 43</span></a>    <span class="k">def</span> <span class="nf">_deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-44"><a href="#CardDraw-44"><span class="linenos"> 44</span></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</span><span id="CardDraw-45"><a href="#CardDraw-45"><span class="linenos"> 45</span></a>
+</span><span id="CardDraw-46"><a href="#CardDraw-46"><span class="linenos"> 46</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-47"><a href="#CardDraw-47"><span class="linenos"> 47</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
+</span><span id="CardDraw-48"><a href="#CardDraw-48"><span class="linenos"> 48</span></a>
+</span><span id="CardDraw-49"><a href="#CardDraw-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-50"><a href="#CardDraw-50"><span class="linenos"> 50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
+</span><span id="CardDraw-51"><a href="#CardDraw-51"><span class="linenos"> 51</span></a>
+</span><span id="CardDraw-52"><a href="#CardDraw-52"><span class="linenos"> 52</span></a>    <span class="nd">@cached_property</span>
+</span><span id="CardDraw-53"><a href="#CardDraw-53"><span class="linenos"> 53</span></a>    <span class="k">def</span> <span class="nf">_denomiator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-54"><a href="#CardDraw-54"><span class="linenos"> 54</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="CardDraw-55"><a href="#CardDraw-55"><span class="linenos"> 55</span></a>
+</span><span id="CardDraw-56"><a href="#CardDraw-56"><span class="linenos"> 56</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-57"><a href="#CardDraw-57"><span class="linenos"> 57</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
+</span><span id="CardDraw-58"><a href="#CardDraw-58"><span class="linenos"> 58</span></a>
+</span><span id="CardDraw-59"><a href="#CardDraw-59"><span class="linenos"> 59</span></a>    <span class="k">def</span> <span class="nf">_is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="CardDraw-60"><a href="#CardDraw-60"><span class="linenos"> 60</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span id="CardDraw-61"><a href="#CardDraw-61"><span class="linenos"> 61</span></a>
+</span><span id="CardDraw-62"><a href="#CardDraw-62"><span class="linenos"> 62</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span>
+</span><span id="CardDraw-63"><a href="#CardDraw-63"><span class="linenos"> 63</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span>
+</span><span id="CardDraw-64"><a href="#CardDraw-64"><span class="linenos"> 64</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="CardDraw-65"><a href="#CardDraw-65"><span class="linenos"> 65</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="ow">or</span> <span class="n">min_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
+</span><span id="CardDraw-66"><a href="#CardDraw-66"><span class="linenos"> 66</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span id="CardDraw-67"><a href="#CardDraw-67"><span class="linenos"> 67</span></a>            <span class="k">return</span>
+</span><span id="CardDraw-68"><a href="#CardDraw-68"><span class="linenos"> 68</span></a>
+</span><span id="CardDraw-69"><a href="#CardDraw-69"><span class="linenos"> 69</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="CardDraw-70"><a href="#CardDraw-70"><span class="linenos"> 70</span></a>
+</span><span id="CardDraw-71"><a href="#CardDraw-71"><span class="linenos"> 71</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
+</span><span id="CardDraw-72"><a href="#CardDraw-72"><span class="linenos"> 72</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="CardDraw-73"><a href="#CardDraw-73"><span class="linenos"> 73</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="CardDraw-74"><a href="#CardDraw-74"><span class="linenos"> 74</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">CardDraw</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span>
+</span><span id="CardDraw-75"><a href="#CardDraw-75"><span class="linenos"> 75</span></a>                                   <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">,</span>
+</span><span id="CardDraw-76"><a href="#CardDraw-76"><span class="linenos"> 76</span></a>                                   <span class="n">dups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
+</span><span id="CardDraw-77"><a href="#CardDraw-77"><span class="linenos"> 77</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="CardDraw-78"><a href="#CardDraw-78"><span class="linenos"> 78</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="CardDraw-79"><a href="#CardDraw-79"><span class="linenos"> 79</span></a>
+</span><span id="CardDraw-80"><a href="#CardDraw-80"><span class="linenos"> 80</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span>
+</span><span id="CardDraw-81"><a href="#CardDraw-81"><span class="linenos"> 81</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">max_outcome</span>
+</span><span id="CardDraw-82"><a href="#CardDraw-82"><span class="linenos"> 82</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="CardDraw-83"><a href="#CardDraw-83"><span class="linenos"> 83</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="ow">or</span> <span class="n">max_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
+</span><span id="CardDraw-84"><a href="#CardDraw-84"><span class="linenos"> 84</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span id="CardDraw-85"><a href="#CardDraw-85"><span class="linenos"> 85</span></a>            <span class="k">return</span>
+</span><span id="CardDraw-86"><a href="#CardDraw-86"><span class="linenos"> 86</span></a>
+</span><span id="CardDraw-87"><a href="#CardDraw-87"><span class="linenos"> 87</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="CardDraw-88"><a href="#CardDraw-88"><span class="linenos"> 88</span></a>
+</span><span id="CardDraw-89"><a href="#CardDraw-89"><span class="linenos"> 89</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
+</span><span id="CardDraw-90"><a href="#CardDraw-90"><span class="linenos"> 90</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="CardDraw-91"><a href="#CardDraw-91"><span class="linenos"> 91</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="CardDraw-92"><a href="#CardDraw-92"><span class="linenos"> 92</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">CardDraw</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="CardDraw-93"><a href="#CardDraw-93"><span class="linenos"> 93</span></a>                                   <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">,</span>
+</span><span id="CardDraw-94"><a href="#CardDraw-94"><span class="linenos"> 94</span></a>                                   <span class="n">dups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="CardDraw-95"><a href="#CardDraw-95"><span class="linenos"> 95</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="CardDraw-96"><a href="#CardDraw-96"><span class="linenos"> 96</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="CardDraw-97"><a href="#CardDraw-97"><span class="linenos"> 97</span></a>
+</span><span id="CardDraw-98"><a href="#CardDraw-98"><span class="linenos"> 98</span></a>    <span class="k">def</span> <span class="nf">_estimate_direction_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="CardDraw-99"><a href="#CardDraw-99"><span class="linenos"> 99</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span>
+</span><span id="CardDraw-100"><a href="#CardDraw-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result</span>
+</span><span id="CardDraw-101"><a href="#CardDraw-101"><span class="linenos">101</span></a>
+</span><span id="CardDraw-102"><a href="#CardDraw-102"><span class="linenos">102</span></a>    <span class="nd">@cached_property</span>
+</span><span id="CardDraw-103"><a href="#CardDraw-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="CardDraw-104"><a href="#CardDraw-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;CardDraw&#39;</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">(),)</span>
+</span><span id="CardDraw-105"><a href="#CardDraw-105"><span class="linenos">105</span></a>
+</span><span id="CardDraw-106"><a href="#CardDraw-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="CardDraw-107"><a href="#CardDraw-107"><span class="linenos">107</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">CardDraw</span><span class="p">):</span>
+</span><span id="CardDraw-108"><a href="#CardDraw-108"><span class="linenos">108</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="CardDraw-109"><a href="#CardDraw-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
+</span><span id="CardDraw-110"><a href="#CardDraw-110"><span class="linenos">110</span></a>
+</span><span id="CardDraw-111"><a href="#CardDraw-111"><span class="linenos">111</span></a>    <span class="nd">@cached_property</span>
+</span><span id="CardDraw-112"><a href="#CardDraw-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-113"><a href="#CardDraw-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
+</span><span id="CardDraw-114"><a href="#CardDraw-114"><span class="linenos">114</span></a>
+</span><span id="CardDraw-115"><a href="#CardDraw-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw-116"><a href="#CardDraw-116"><span class="linenos">116</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>EXPERIMENTAL: Represents drawing a hand from a deck.</p>
+
+<p>In other words, this is sampling without replacement.</p>
+</div>
+
+
+                            <div id="CardDraw.__init__" class="classattr">
+                                        <input id="CardDraw.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">CardDraw</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">deck</span>,</span><span class="param">	<span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">dups</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">denominator_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lcm&#39;</span></span>)</span>
+
+                <label class="view-source-button" for="CardDraw.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.__init__-21"><a href="#CardDraw.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-22"><a href="#CardDraw.__init__-22"><span class="linenos">22</span></a>                 <span class="o">*</span><span class="n">deck</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-23"><a href="#CardDraw.__init__-23"><span class="linenos">23</span></a>                 <span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-24"><a href="#CardDraw.__init__-24"><span class="linenos">24</span></a>                 <span class="n">dups</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-25"><a href="#CardDraw.__init__-25"><span class="linenos">25</span></a>                 <span class="n">denominator_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lcm&#39;</span><span class="p">):</span>
+</span><span id="CardDraw.__init__-26"><a href="#CardDraw.__init__-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span> <span class="o">=</span> <span class="n">expand_outcome_args</span><span class="p">(</span><span class="o">*</span><span class="n">deck</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-27"><a href="#CardDraw.__init__-27"><span class="linenos">27</span></a>                                         <span class="n">counts</span><span class="o">=</span><span class="n">dups</span><span class="p">,</span>
+</span><span id="CardDraw.__init__-28"><a href="#CardDraw.__init__-28"><span class="linenos">28</span></a>                                         <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
+</span><span id="CardDraw.__init__-29"><a href="#CardDraw.__init__-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
+</span><span id="CardDraw.__init__-30"><a href="#CardDraw.__init__-30"><span class="linenos">30</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
+</span><span id="CardDraw.__init__-31"><a href="#CardDraw.__init__-31"><span class="linenos">31</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="CardDraw.outcomes" class="classattr">
+                                        <input id="CardDraw.outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.outcomes-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.outcomes-33"><a href="#CardDraw.outcomes-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+</span><span id="CardDraw.outcomes-34"><a href="#CardDraw.outcomes-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The set of possible outcomes, in sorted order.</p>
+</div>
+
+
+                            </div>
+                            <div id="CardDraw.dups" class="classattr">
+                                        <input id="CardDraw.dups-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">dups</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.dups-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.dups"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.dups-36"><a href="#CardDraw.dups-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="CardDraw.dups-37"><a href="#CardDraw.dups-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="CardDraw.items" class="classattr">
+                                        <input id="CardDraw.items-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">items</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.items-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.items"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.items-39"><a href="#CardDraw.items-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="CardDraw.items-40"><a href="#CardDraw.items-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="CardDraw.deck_size" class="classattr">
+                                        <input id="CardDraw.deck_size-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">deck_size</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.deck_size-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.deck_size"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.deck_size-46"><a href="#CardDraw.deck_size-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw.deck_size-47"><a href="#CardDraw.deck_size-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="CardDraw.hand_size" class="classattr">
+                                        <input id="CardDraw.hand_size-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">hand_size</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.hand_size-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.hand_size"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.hand_size-49"><a href="#CardDraw.hand_size-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw.hand_size-50"><a href="#CardDraw.hand_size-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="CardDraw.denominator" class="classattr">
+                                        <input id="CardDraw.denominator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">denominator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">int</span>:</span></span>
+
+                <label class="view-source-button" for="CardDraw.denominator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CardDraw.denominator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CardDraw.denominator-56"><a href="#CardDraw.denominator-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CardDraw.denominator-57"><a href="#CardDraw.denominator-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#OutcomeCountGen">OutcomeCountGen</a></dt>
+                                <dd id="CardDraw.min_outcome" class="function"><a href="#OutcomeCountGen.min_outcome">min_outcome</a></dd>
+                <dd id="CardDraw.max_outcome" class="function"><a href="#OutcomeCountGen.max_outcome">max_outcome</a></dd>
 
             </div>
                                 </dl>
