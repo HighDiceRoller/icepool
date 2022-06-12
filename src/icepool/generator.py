@@ -6,7 +6,7 @@ from typing import Generator
 from collections.abc import Sequence
 
 
-class OutcomeCountGenerator(ABC):
+class OutcomeCountGen(ABC):
     """Abstract base class for incrementally generating (outcome, count, weight)s.
 
     The archetypical example is a dice pool (`Pool`).
@@ -33,7 +33,7 @@ class OutcomeCountGenerator(ABC):
     @abstractmethod
     def _pop_min(
         self, min_outcome
-    ) -> Generator[tuple['OutcomeCountGenerator', int, int], None, None]:
+    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -48,7 +48,7 @@ class OutcomeCountGenerator(ABC):
     @abstractmethod
     def _pop_max(
         self, max_outcome
-    ) -> Generator[tuple['OutcomeCountGenerator', int, int], None, None]:
+    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
@@ -71,8 +71,8 @@ class OutcomeCountGenerator(ABC):
 
     @abstractmethod
     def __eq__(self, other):
-        """All `OutcomeCountGenerator`s must implement equality."""
+        """All `OutcomeCountGen`s must implement equality."""
 
     @abstractmethod
     def __hash__(self):
-        """All `OutcomeCountGenerator`s must be hashable."""
+        """All `OutcomeCountGen`s must be hashable."""

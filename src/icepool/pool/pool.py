@@ -4,7 +4,7 @@ import icepool
 import icepool.math
 import icepool.pool.cost
 from icepool.collections import Counts
-from icepool.generator import OutcomeCountGenerator
+from icepool.generator import OutcomeCountGen
 
 import itertools
 import math
@@ -193,7 +193,7 @@ def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
     return self
 
 
-class Pool(OutcomeCountGenerator):
+class Pool(OutcomeCountGen):
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `EvalPool` to generate a result.

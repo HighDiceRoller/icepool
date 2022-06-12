@@ -90,7 +90,7 @@ class OutcomeCountEval(ABC):
         """
 
     def final_outcome(self, final_state: Hashable, /,
-                      *gens: icepool.OutcomeCountGenerator) -> Any:
+                      *gens: icepool.OutcomeCountGen) -> Any:
         """Optional function to generate a final outcome from a final state.
 
         Within `eval()`, this will be called using only positional arguments.
@@ -115,7 +115,7 @@ class OutcomeCountEval(ABC):
         """
         return final_state
 
-    def direction(self, *gens: icepool.OutcomeCountGenerator) -> int:
+    def direction(self, *gens: icepool.OutcomeCountGen) -> int:
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
         The default is ascending order. This works well with mixed standard dice,
@@ -134,7 +134,7 @@ class OutcomeCountEval(ABC):
         """
         return 1
 
-    def alignment(self, *gens: icepool.OutcomeCountGenerator) -> Collection:
+    def alignment(self, *gens: icepool.OutcomeCountGen) -> Collection:
         """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
@@ -150,8 +150,8 @@ class OutcomeCountEval(ABC):
         """
         return ()
 
-    def range_alignment(
-            self, *gens: icepool.OutcomeCountGenerator) -> Collection[int]:
+    def range_alignment(self,
+                        *gens: icepool.OutcomeCountGen) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         Set `alignment = icepool.OutcomeCountEval.range_alignment` to use this.
@@ -184,8 +184,7 @@ class OutcomeCountEval(ABC):
         return {}
 
     def eval(
-        self,
-        *gens: icepool.OutcomeCountGenerator | Mapping[Any, int] | Collection
+        self, *gens: icepool.OutcomeCountGen | Mapping[Any, int] | Collection
     ) -> 'icepool.Die':
         """Evaluates generators.
 
@@ -205,8 +204,8 @@ class OutcomeCountEval(ABC):
 
         # Convert non-pool arguments to `Pool`.
         converted_gens = tuple(
-            gen if isinstance(gen, icepool.OutcomeCountGenerator
-                             ) else icepool.Pool(*gen) for gen in gens)
+            gen if isinstance(gen, icepool.OutcomeCountGen) else icepool.Pool(
+                *gen) for gen in gens)
 
         if not all(gen._is_resolvable() for gen in converted_gens):
             return icepool.Die()
@@ -237,7 +236,7 @@ class OutcomeCountEval(ABC):
     __call__ = eval
 
     def _select_algorithm(
-            self, *gens: icepool.OutcomeCountGenerator) -> tuple[Callable, int]:
+            self, *gens: icepool.OutcomeCountGen) -> tuple[Callable, int]:
         """Selects an algorithm and iteration direction.
 
         Returns:
@@ -281,8 +280,7 @@ class OutcomeCountEval(ABC):
 
     def _eval_internal(
             self, direction: int, alignment: Alignment,
-            gens: tuple[icepool.OutcomeCountGenerator,
-                        ...]) -> Mapping[Any, int]:
+            gens: tuple[icepool.OutcomeCountGen, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -324,8 +322,7 @@ class OutcomeCountEval(ABC):
 
     def _eval_internal_iterative(
             self, direction: int, alignment: Alignment,
-            gens: tuple[icepool.OutcomeCountGenerator,
-                        ...]) -> Mapping[Any, int]:
+            gens: tuple[icepool.OutcomeCountGen, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
@@ -357,9 +354,9 @@ class OutcomeCountEval(ABC):
 
 
 def _pop_gens(
-    side: int, alignment: Alignment, gens: tuple[icepool.OutcomeCountGenerator,
-                                                 ...]
-) -> tuple[Any, Alignment, tuple]:
+        side: int, alignment: Alignment,
+        gens: tuple[icepool.OutcomeCountGen,
+                    ...]) -> tuple[Any, Alignment, tuple]:
     """Pops a single outcome from the gens.
 
     Returns:
@@ -428,7 +425,7 @@ class JointEval(OutcomeCountEval):
                 subeval.next_state(substate, outcome, *counts)
                 for subeval, substate in zip(self._subevals, state))
 
-    def final_outcome(self, final_state, *gens: icepool.OutcomeCountGenerator):
+    def final_outcome(self, final_state, *gens: icepool.OutcomeCountGen):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
@@ -437,7 +434,7 @@ class JointEval(OutcomeCountEval):
             subeval.final_outcome(final_substate, *gens)
             for subeval, final_substate in zip(self._subevals, final_state))
 
-    def direction(self, *gens: icepool.OutcomeCountGenerator):
+    def direction(self, *gens: icepool.OutcomeCountGen):
         """Determines the common direction of the subevals.
 
         Raises:

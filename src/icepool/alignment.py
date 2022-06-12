@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.generator import OutcomeCountGenerator
+from icepool.generator import OutcomeCountGen
 
 from functools import cached_property
 
@@ -8,7 +8,7 @@ from typing import Generator
 from collections.abc import Collection, Sequence
 
 
-class Alignment(OutcomeCountGenerator):
+class Alignment(OutcomeCountGen):
     """A generator that only outputs 0 counts with weight 1."""
 
     def __init__(self, outcomes: Collection):

@@ -27,7 +27,7 @@ from icepool.die.die_with_truth import DieWithTruth
 from icepool.die.keep import lowest, highest
 
 from icepool.pool.pool import Pool, standard_pool
-from icepool.generator import OutcomeCountGenerator
+from icepool.generator import OutcomeCountGen
 from icepool.eval import OutcomeCountEval, WrapFuncEval, JointEval, SumGen, sum_gen, enumerate_gen, FindBestSet, FindBestRun
 
 import enum
@@ -45,6 +45,6 @@ __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
     'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
     'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
+    'apply_sorted', 'Reroll', 'OutcomeCountGen', 'Pool', 'standard_pool',
     'OutcomeCountEval', 'JointEval', 'SumGen'
 ]
