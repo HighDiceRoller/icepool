@@ -17,7 +17,7 @@ PREFERRED_DIRECTION_COST_FACTOR = 10
 
 
 class OutcomeCountEval(ABC):
-    """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerators`s.
+    """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGens`s.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result given one outcome at a time
@@ -104,7 +104,7 @@ class OutcomeCountEval(ABC):
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *gens: One or more `OutcomeCountGenerator`s being evaluated.
+            *gens: One or more `OutcomeCountGen`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -122,7 +122,7 @@ class OutcomeCountEval(ABC):
         and other dice that differ only by right-truncation.
 
         Args:
-            *gens: One or more `OutcomeCountGenerator`s being evaluated.
+            *gens: One or more `OutcomeCountGen`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -193,7 +193,7 @@ class OutcomeCountEval(ABC):
 
         Args:
             *gens: Each element may be one of the following:
-                * A `OutcomeCountGenerator`.
+                * A `OutcomeCountGen`.
                 * A sequence of arguments to create a `Pool`.
                 Most evaluators will expect a fixed number of gens.
                 The union of the outcomes of the gens must be totally orderable.
@@ -290,7 +290,7 @@ class OutcomeCountEval(ABC):
             direction: The direction in which to send outcomes to `next_state()`.
             alignment: As `alignment()`. Elements will be popped off this
                 during recursion.
-            gens: One or more `OutcomeCountGenerators`s to evaluate. Elements
+            gens: One or more `OutcomeCountGens`s to evaluate. Elements
                 will be popped off this during recursion.
 
         Returns:
