@@ -66,7 +66,7 @@ def gather_cols(die: 'icepool.Die',
                 result.append([str(x) for x in die.outcomes()])
             else:
                 for i in range(r):
-                    result.append([str(x) for x in die[i].outcomes()])
+                    result.append([str(x[i]) for x in die.outcomes()])
         else:
             comparator = token[1:]
             denom_type = token[0]
