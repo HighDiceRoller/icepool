@@ -4,7 +4,7 @@ import icepool
 import icepool.die.format
 from icepool.collections import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
-from icepool.outcome_args import expand_outcome_args
+from icepool.die.args import expand_create_args
 
 import bisect
 from collections import defaultdict
@@ -120,8 +120,8 @@ class Die():
             if weights is None and len(args) == 1 and isinstance(args[0], Die):
                 return args[0]
             self = super(Die, cls).__new__(cls)
-            self._data = expand_outcome_args(
-                *args, counts=weights, denominator_method=denominator_method)
+            self._data = expand_create_args(
+                *args, weights=weights, denominator_method=denominator_method)
         else:
             # Just forward.
             self = super(Die, cls).__new__(cls)

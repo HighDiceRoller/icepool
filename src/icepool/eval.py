@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
-from icepool.outcome_args import is_dict
+from icepool.die.args import is_dict
 
 from abc import ABC, abstractmethod
 from collections import defaultdict

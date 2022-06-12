@@ -33,7 +33,7 @@ from icepool.pool.pool import Pool, standard_pool
 from icepool.generator import OutcomeCountGen
 from icepool.eval import OutcomeCountEval, WrapFuncEval, JointEval, SumGen, sum_gen, enumerate_gen, FindBestSet, FindBestRun
 
-from icepool.deck import CardDraw
+from icepool.deck.deck import CardDraw
 
 import enum
 

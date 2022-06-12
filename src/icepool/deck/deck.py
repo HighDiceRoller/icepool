@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 from icepool.generator import OutcomeCountGen
-from icepool.outcome_args import expand_outcome_args
+from icepool.deck.args import expand_create_args
 
 from functools import cached_property
 
@@ -20,11 +20,24 @@ class CardDraw(OutcomeCountGen):
     def __init__(self,
                  *deck,
                  hand_size: int,
-                 dups: Sequence[int] | None = None,
-                 denominator_method: str = 'lcm'):
-        self._deck = expand_outcome_args(*deck,
-                                         counts=dups,
-                                         denominator_method=denominator_method)
+                 dups: Sequence[int] | None = None):
+        """Constructor for a deck.
+
+        Args:
+            *deck: Each argument can be one of the following:
+                * A deck. The outcomes of the deck will be "flattened" into the
+                    result; a deck object will never contain a deck as an
+                    outcome.
+                * A dict mapping outcomes (cards) to dups.
+                * A tuple of outcomes.
+
+                    Any tuple elements that are decks or dicts will expand the
+                    tuple according to their independent joint distribution.
+                    Use this carefully since it may create a large number of
+                    outcomes.
+                * Anything else will be treated as a scalar.
+        """
+        self._deck = expand_create_args(*deck, dups=dups)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')
