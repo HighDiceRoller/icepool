@@ -7,7 +7,10 @@ from collections.abc import Sequence
 
 
 class OutcomeCountGenerator(ABC):
-    """Abstract base class for incrementally generating outcome, count, and weights."""
+    """Abstract base class for incrementally generating (outcome, count, weight)s.
+
+    The archetypical example is a dice pool (`Pool`).
+    """
 
     @abstractmethod
     def outcomes(self) -> Sequence:
@@ -18,6 +21,14 @@ class OutcomeCountGenerator(ABC):
 
     def max_outcome(self):
         return self.outcomes()[-1]
+
+    @abstractmethod
+    def _is_resolvable(self) -> bool:
+        """Returns `True` iff the generator is capable of producing an overall outcome.
+
+        For example, a dice pool will return `False` if it contains any dice
+        with no outcomes.
+        """
 
     @abstractmethod
     def _pop_min(

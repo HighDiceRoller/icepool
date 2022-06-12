@@ -246,8 +246,7 @@ class Pool(OutcomeCountGenerator):
         """The number of dice in this pool."""
         return self._num_dice
 
-    def is_resolvable(self) -> bool:
-        """Whether this pool resolves to a non-empty set of joint outcomes."""
+    def _is_resolvable(self) -> bool:
         return all(not die.is_empty() for die in self._dice.keys())
 
     @cached_property
@@ -492,23 +491,23 @@ class Pool(OutcomeCountGenerator):
         if skip_weight is not None:
             yield empty_pool, sum(self.count_dice()), skip_weight
 
-    def eval(self, eval_or_func: 'icepool.EvalPool' | Callable,
+    def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,
              /) -> 'icepool.Die':
-        """Evaluates this pool using the given `EvalPool` or function.
+        """Evaluates this pool using the given `OutcomeCountEval` or function.
 
-        Note that each `EvalPool` instance carries its own cache;
+        Note that each `OutcomeCountEval` instance carries its own cache;
         if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `EvalPool` instance
+        you may want to explicitly create an `OutcomeCountEval` instance
         rather than passing a function to this method directly.
 
         Args:
-            func: This can be an `EvalPool`, in which case it evaluates the pool
-                directly. Or it can be a `EvalPool.next_state()`-like function,
-                taking in `state, outcome, *counts` and returning the next state.
-                In this case a temporary `WrapFuncEval` is constructed and used
-                to evaluate this pool.
+            func: This can be an `OutcomeCountEval`, in which case it evaluates
+                the pool directly. Or it can be a `OutcomeCountEval.next_state()`
+                -like function, taking in `state, outcome, *counts` and
+                returning the next state. In this case a temporary `WrapFuncEval`
+                is constructed and used to evaluate this pool.
         """
-        if not isinstance(eval_or_func, icepool.EvalPool):
+        if not isinstance(eval_or_func, icepool.OutcomeCountEval):
             eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
 
@@ -520,7 +519,7 @@ class Pool(OutcomeCountGenerator):
         Returns:
             A die representing the sum.
         """
-        return icepool.sum_pool(self)
+        return icepool.sum_gen(self)
 
     def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.

@@ -5,7 +5,7 @@ import pytest
 
 from icepool import d4, d6, d8, d10, d12
 
-class SumRerollIfAnyOnes(icepool.EvalPool):
+class SumRerollIfAnyOnes(icepool.OutcomeCountEval):
     def next_state(self, state, outcome, count):
         if outcome == 1 and count > 0:
             return icepool.Reroll
@@ -22,7 +22,7 @@ def test_reroll():
     expected = 5 @ (icepool.d5+1)
     assert result.equals(expected)
 
-class SumPoolDescending(icepool.SumPool):
+class SumPoolDescending(icepool.SumGen):
     def direction(self, pool):
         return -1
 
@@ -85,7 +85,7 @@ def test_runs_skip():
     result = icepool.FindBestRun()(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
-class SumFixedDirection(icepool.EvalPool):
+class SumFixedDirection(icepool.OutcomeCountEval):
     def __init__(self, direction):
         self._direction = direction
 
@@ -115,13 +115,13 @@ def test_sum_direction(pool):
     assert eval_ascending.eval(pool).equals(eval_auto.eval(pool))
 
 def test_joint_eval():
-    test_eval = icepool.JointEval(icepool.sum_pool, icepool.sum_pool)
+    test_eval = icepool.JointEval(icepool.sum_gen, icepool.sum_gen)
     result = test_eval(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).sub(lambda x: (x, x))
     assert result.equals(expected)
 
 def test_enumerate_pool_vs_cartesian_product():
-    result = icepool.enumerate_pool(d6.pool(3))
+    result = icepool.enumerate_gen(d6.pool(3))
     expected = icepool.Die((d6, d6, d6)).sub(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
@@ -129,8 +129,8 @@ def test_enumerate_pool_vs_cartesian_product():
 def test_enumerate_pool_vs_sum(pool):
     if any(x < 0 for x in pool.count_dice()):
         with pytest.raises(ValueError):
-            icepool.enumerate_pool(pool)
+            icepool.enumerate_gen(pool)
     else:
-        result = icepool.enumerate_pool(pool).sub(sum)
+        result = icepool.enumerate_gen(pool).sub(sum)
         expected = pool.sum()
         assert result.equals(expected)

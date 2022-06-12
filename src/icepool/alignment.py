@@ -17,6 +17,9 @@ class Alignment(OutcomeCountGenerator):
     def outcomes(self) -> Sequence:
         return self._outcomes
 
+    def _is_resolvable(self) -> bool:
+        return True
+
     def _pop_min(
             self,
             min_outcome) -> Generator[tuple['Alignment', int, int], None, None]:

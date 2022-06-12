@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
-from icepool.pool.cost import estimate_costs
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -17,28 +16,28 @@ PREFERRED_DIRECTION_COST_FACTOR = 10
 """The preferred direction will be weighted this times as much."""
 
 
-class EvalPool(ABC):
-    """An abstract, immutable, callable class for evaulating one or more `Pool`s.
+class OutcomeCountEval(ABC):
+    """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerators`s.
 
     There is one abstract method to implement: `next_state()`.
-    This should incrementally calculate the result of the roll
-    given one outcome at a time along with how many dice rolled that outcome.
+    This should incrementally calculate the result given one outcome at a time
+    along with how many of that outcome were produced.
     An example sequence of calls, as far as `next_state()` is concerned, is:
 
-    1. `state = next_state(state=None, outcome=1, count=how_many_dice_rolled_1)`
-    2. `state = next_state(state, 2, how_many_dice_rolled_2)`
-    3. `state = next_state(state, 3, how_many_dice_rolled_3)`
-    4. `state = next_state(state, 4, how_many_dice_rolled_4)`
-    5. `state = next_state(state, 5, how_many_dice_rolled_5)`
-    6. `state = next_state(state, 6, how_many_dice_rolled_6)`
-    7. `outcome = final_outcome(state, *pools)`
+    1. `state = next_state(state=None, outcome=1, count=how_many_1s)`
+    2. `state = next_state(state, 2, how_many_2s)`
+    3. `state = next_state(state, 3, how_many_3s)`
+    4. `state = next_state(state, 4, how_many_4s)`
+    5. `state = next_state(state, 5, how_many_5s)`
+    6. `state = next_state(state, 6, how_many_6s)`
+    7. `outcome = final_outcome(state, *gens)`
 
     A few other methods can optionally be overridden to further customize behavior.
 
-    It is not expected that subclasses of `EvalPool`
-    be able to handle arbitrary types or numbers of pools.
-    Indeed, most are expected to handle only a fixed number of pools,
-    and often even only pools with a particular type of die.
+    It is not expected that subclasses of `OutcomeCountEval`
+    be able to handle arbitrary types or numbers of gens.
+    Indeed, most are expected to handle only a fixed number of gens,
+    and often even only gens with a particular type of die.
 
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
@@ -53,7 +52,7 @@ class EvalPool(ABC):
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
-        and the number of dice in each pool rolling that outcome.
+        and the number that outcome produced by each gen.
 
         Within `eval()`, this will be called using only positional arguments.
         Thus, you may rename any of the arguments if you wish.
@@ -67,30 +66,31 @@ class EvalPool(ABC):
             outcome: The current outcome.
                 `next_state` will see all rolled outcomes in monotonic order;
                 either ascending or descending depending on `direction()`.
-                If there are multiple pools, the set of outcomes is the union of
-                the outcomes of the invididual pools. All outcomes with nonzero
-                count will be visited. Outcomes with zero count may or may not
-                be visited. If you need to enforce that certain outcomes are'
-                visited even if they have zero count, see `alignment()`.
-            *counts: One `int` for each pool indicating how many dice in that
-                pool rolled the current outcome. If there are multiple pools,
-                it's possible that some outcomes will not appear in all pools.
-                In this case, the count for the pool(s) that do not have the
-                outcome will be 0. Zero-weight outcomes count as having that outcome.
+                If there are multiple gens, the set of outcomes is the
+                union of the outcomes of the invididual gens. All outcomes
+                with nonzero  count will be visited. Outcomes with zero count
+                may or may not be visited. If you need to enforce that certain
+                outcomes are visited even if they have zero count, see
+                `alignment()`.
+            *counts: One `int` for each gen indicating how many of the current
+                outcome were produced. If there are multiple
+                gens, it's possible that some outcomes will not appear in
+                all gens. In this case, the count for the gen(s)
+                that do not have the outcome will be 0. Zero-weight outcomes
+                count as having that outcome.
 
-                Most subclasses will expect a fixed number of pools and
+                Most subclasses will expect a fixed number of gens and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
 
         Returns:
             A hashable object indicating the next state.
             The special value `icepool.Reroll` can be used to immediately remove
-            the state from consideration, effectively performing a full reroll
-            of the pool.
+            the state from consideration, effectively performing a full reroll.
         """
 
     def final_outcome(self, final_state: Hashable, /,
-                      *pools: icepool.Pool) -> Any:
+                      *gens: icepool.OutcomeCountGenerator) -> Any:
         """Optional function to generate a final outcome from a final state.
 
         Within `eval()`, this will be called using only positional arguments.
@@ -98,14 +98,14 @@ class EvalPool(ABC):
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a die,
-        and if all pools consist of empty dice, the final state will be `None`.
+        and if there are no outcomes, the final state will be `None`.
         Subclasses that want to handle this case should explicitly define what
         happens.
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *pools: One or more `Pool`s being evaluated.
-                Most subclasses will expect a fixed number of pools and
+            *gens: One or more `OutcomeCountGenerator`s being evaluated.
+                Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
 
@@ -115,15 +115,15 @@ class EvalPool(ABC):
         """
         return final_state
 
-    def direction(self, *pools: icepool.Pool) -> int:
+    def direction(self, *gens: icepool.OutcomeCountGenerator) -> int:
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
         The default is ascending order. This works well with mixed standard dice,
         and other dice that differ only by right-truncation.
 
         Args:
-            *pools: One or more `Pool`s being evaluated.
-                Most subclasses will expect a fixed number of pools and
+            *gens: One or more `OutcomeCountGenerator`s being evaluated.
+                Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
 
@@ -134,14 +134,14 @@ class EvalPool(ABC):
         """
         return 1
 
-    def alignment(self, *pools: icepool.Pool) -> Collection:
+    def alignment(self, *gens: icepool.OutcomeCountGenerator) -> Collection:
         """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
 
         If you want the outcomes seen by `next_state` to be consecutive
-        `int`s, you can set `alignment = icepool.EvalPool.range_alignment`.
+        `int`s, you can set `alignment = icepool.OutcomeCountEval.range_alignment`.
         See `range_alignment()` below.
 
         Returns:
@@ -150,86 +150,83 @@ class EvalPool(ABC):
         """
         return ()
 
-    def range_alignment(self, *pools: icepool.Pool) -> Collection[int]:
+    def range_alignment(
+            self, *gens: icepool.OutcomeCountGenerator) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
-        Set `alignment = icepool.EvalPool.range_alignment` to use this.
+        Set `alignment = icepool.OutcomeCountEval.range_alignment` to use this.
 
         Returns:
-            All `int`s from the min outcome to the max outcome among the pools,
+            All `int`s from the min outcome to the max outcome among the generators,
             inclusive.
 
         Raises:
-            `TypeError` if any pool has any non-`int` outcome.
+            `TypeError` if any generator has any non-`int` outcome.
         """
-        if len(pools) == 0:
+        if len(gens) == 0:
             return ()
 
         if any(
                 any(not isinstance(x, int)
-                    for x in pool.outcomes())
-                for pool in pools):
+                    for x in gen.outcomes())
+                for gen in gens):
             raise TypeError(
                 "range_alignment cannot be used with outcomes of type other than 'int'."
             )
 
-        min_outcome = min(pool.min_outcome() for pool in pools)
-        max_outcome = max(pool.max_outcome() for pool in pools)
+        min_outcome = min(gen.min_outcome() for gen in gens)
+        max_outcome = max(gen.max_outcome() for gen in gens)
         return range(min_outcome, max_outcome + 1)
 
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
-        """A cache of (direction, pools) -> weight distribution over states. """
+        """A cache of (direction, gens) -> weight distribution over states. """
         return {}
 
     def eval(
-            self, *pools: icepool.Pool | Mapping[Any, int] | Collection
+        self,
+        *gens: icepool.OutcomeCountGenerator | Mapping[Any, int] | Collection
     ) -> 'icepool.Die':
-        """Evaluates pools.
+        """Evaluates generators.
 
-        You can call the `EvalPool` object directly for the same effect,
-        e.g. `sum_pool(pool)` is an alias for `sum_pool.eval(pool)`.
+        You can call the `OutcomeCountEval` object directly for the same effect,
+        e.g. `sum_gen(gen)` is an alias for `sum_gen.eval(gen)`.
 
         Args:
-            *pools: Each element may be one of the following:
-                * A `Pool` representing possible rolls of a pool.
-                * A dict-like representing a single roll of a pool.
-                    The dict maps outcomes to counts.
-                * A collection of outcomes representing a single roll of a pool.
-                    Outcomes are treated as having 1 count per appearance.
-                Most evaluators will expect a fixed number of pools.
-                The union of the outcomes of the pools must be totally orderable.
+            *gens: Each element may be one of the following:
+                * A `OutcomeCountGenerator`.
+                * A sequence of arguments to create a `Pool`.
+                Most evaluators will expect a fixed number of gens.
+                The union of the outcomes of the gens must be totally orderable.
 
         Returns:
-            A die representing the distribution of the final score.
-            If all pools are `PoolRoll`s, the result is a single outcome instead.
+            A `Die` representing the distribution of the final score.
         """
 
         # Convert non-pool arguments to `Pool`.
-        converted_pools = tuple(
-            pool if isinstance(pool, icepool.Pool) else icepool.Pool(*pool)
-            for pool in pools)
+        converted_gens = tuple(
+            gen if isinstance(gen, icepool.OutcomeCountGenerator
+                             ) else icepool.Pool(*gen) for gen in gens)
 
-        if not all(pool.is_resolvable() for pool in converted_pools):
+        if not all(gen._is_resolvable() for gen in converted_gens):
             return icepool.Die()
 
-        algorithm, direction = self._select_algorithm(*converted_pools)
+        algorithm, direction = self._select_algorithm(*converted_gens)
 
-        # We don't reuse the Pool class for alignment because it may skip
-        # outcomes.
-        alignment = Alignment(self.alignment(*converted_pools))
+        # We use a separate class to guarantee all outcomes are visited.
+        alignment = Alignment(self.alignment(*converted_gens))
 
-        dist = algorithm(direction, alignment, tuple(converted_pools))
+        dist = algorithm(direction, alignment, tuple(converted_gens))
 
         final_outcomes = []
         final_weights = []
         for state, weight in dist.items():
-            outcome = self.final_outcome(state, *converted_pools)
+            outcome = self.final_outcome(state, *converted_gens)
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
-                    "This may have resulted from supplying an empty pool to EvalPool. "
-                    "If so, refrain from using empty pools, or override EvalPool.final_outcome() to handle this case."
+                    "This may have resulted from supplying an empty gen to OutcomeCountEval. "
+                    "If so, refrain from using empty gens, or override OutcomeCountEval.final_outcome() to handle this case."
                 )
             if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
@@ -239,7 +236,8 @@ class EvalPool(ABC):
 
     __call__ = eval
 
-    def _select_algorithm(self, *pools: icepool.Pool) -> tuple[Callable, int]:
+    def _select_algorithm(
+            self, *gens: icepool.OutcomeCountGenerator) -> tuple[Callable, int]:
         """Selects an algorithm and iteration direction.
 
         Returns:
@@ -248,10 +246,10 @@ class EvalPool(ABC):
                 1 for ascending and -1 for descending.
 
         """
-        eval_direction = self.direction(*pools)
+        eval_direction = self.direction(*gens)
 
         pop_min_costs, pop_max_costs = zip(
-            *(pool._estimate_direction_costs() for pool in pools))
+            *(gen._estimate_direction_costs() for gen in gens))
 
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)
@@ -281,8 +279,10 @@ class EvalPool(ABC):
             # Use the less-preferred algorithm.
             return self._eval_internal_iterative, eval_direction
 
-    def _eval_internal(self, direction: int, alignment: Alignment,
-                       pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
+    def _eval_internal(
+            self, direction: int, alignment: Alignment,
+            gens: tuple[icepool.OutcomeCountGenerator,
+                        ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -292,30 +292,28 @@ class EvalPool(ABC):
             direction: The direction in which to send outcomes to `next_state()`.
             alignment: As `alignment()`. Elements will be popped off this
                 during recursion.
-            pools: One or more `Pool`s to evaluate. Elements will be popped off
-                this during recursion.
+            gens: One or more `OutcomeCountGenerators`s to evaluate. Elements
+                will be popped off this during recursion.
 
         Returns:
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (direction, alignment, pools)
+        cache_key = (direction, alignment, gens)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
-        if all(not pool.outcomes()
-               for pool in pools) and not alignment.outcomes():
+        if all(not gen.outcomes() for gen in gens) and not alignment.outcomes():
             result = {None: 1}
         else:
-            outcome, prev_alignment, iterators = _pop_pools(
-                direction, alignment, pools)
+            outcome, prev_alignment, iterators = _pop_gens(
+                direction, alignment, gens)
             for p in itertools.product(*iterators):
-                prev_pools, counts, weights = zip(*p)
+                prev_gens, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(direction, prev_alignment,
-                                           prev_pools)
+                prev = self._eval_internal(direction, prev_alignment, prev_gens)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
@@ -326,71 +324,70 @@ class EvalPool(ABC):
 
     def _eval_internal_iterative(
             self, direction: int, alignment: Alignment,
-            pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
+            gens: tuple[icepool.OutcomeCountGenerator,
+                        ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
         This algorithm does not perform persistent memoization.
         """
-        if all(not pool.outcomes()
-               for pool in pools) and not alignment.outcomes():
+        if all(not gen.outcomes() for gen in gens) and not alignment.outcomes():
             return {None: 1}
         dist: MutableMapping[Any, int] = defaultdict(int)
-        dist[None, alignment, pools] = 1
+        dist[None, alignment, gens] = 1
         final_dist: MutableMapping[Any, int] = defaultdict(int)
         while dist:
             next_dist: MutableMapping[Any, int] = defaultdict(int)
-            for (prev_state, prev_alignment,
-                 prev_pools), weight in dist.items():
+            for (prev_state, prev_alignment, prev_gens), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
-                outcome, alignment, iterators = _pop_pools(
-                    -direction, prev_alignment, prev_pools)
+                outcome, alignment, iterators = _pop_gens(
+                    -direction, prev_alignment, prev_gens)
                 for p in itertools.product(*iterators):
-                    pools, counts, weights = zip(*p)
+                    gens, counts, weights = zip(*p)
                     prod_weight = math.prod(weights)
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
-                        if all(not pool.outcomes() for pool in pools):
+                        if all(not gen.outcomes() for gen in gens):
                             final_dist[state] += weight * prod_weight
                         else:
                             next_dist[state, alignment,
-                                      pools] += weight * prod_weight
+                                      gens] += weight * prod_weight
             dist = next_dist
         return final_dist
 
 
-def _pop_pools(side: int, alignment: Alignment,
-               pools: tuple[icepool.Pool, ...]) -> tuple[Any, Alignment, tuple]:
-    """Pops a single outcome from the pools.
+def _pop_gens(
+    side: int, alignment: Alignment, gens: tuple[icepool.OutcomeCountGenerator,
+                                                 ...]
+) -> tuple[Any, Alignment, tuple]:
+    """Pops a single outcome from the gens.
 
     Returns:
         * The popped outcome.
         * The remaining alignment.
-        * A tuple of iterators over the possible resulting pools, counts, and weights.
+        * A tuple of iterators over the possible resulting gens, counts, and weights.
     """
-    alignment_and_pools = (alignment,) + pools
+    alignment_and_gens = (alignment,) + gens
     if side >= 0:
-        outcome = max(pool.max_outcome()
-                      for pool in alignment_and_pools
-                      if pool.outcomes())
+        outcome = max(
+            gen.max_outcome() for gen in alignment_and_gens if gen.outcomes())
 
         next_alignment, _, _ = next(alignment._pop_max(outcome))
 
         return outcome, next_alignment, tuple(
-            pool._pop_max(outcome) for pool in pools)
+            gen._pop_max(outcome) for gen in gens)
     else:
-        outcome = min(pool.min_outcome()
-                      for pool in alignment_and_pools
-                      if pool.outcomes())
+        outcome = min(
+            gen.min_outcome() for gen in alignment_and_gens if gen.outcomes())
 
         next_alignment, _, _ = next(alignment._pop_min(outcome))
 
         return outcome, next_alignment, tuple(
-            pool._pop_min(outcome) for pool in pools)
+            gen._pop_min(outcome) for gen in gens)
 
 
-class WrapFuncEval(EvalPool):
-    """An `EvalPool` created from a single provided function.
+class WrapFuncEval(OutcomeCountEval):
+    """An `OutcomeCountEval` created from a single provided function.
 
     `next_state()` simply calls that function.
     """
@@ -407,14 +404,14 @@ class WrapFuncEval(EvalPool):
         return self._func(state, outcome, *counts)
 
 
-class JointEval(EvalPool):
-    """EXPERIMENTAL: An `EvalPool` that jointly evaluates subevals on the same roll(s) of a pool.
+class JointEval(OutcomeCountEval):
+    """EXPERIMENTAL: An `OutcomeCountEval` that jointly evaluates subevals on the same roll(s) of a gen.
 
     It may be more efficient to write the joint evaluation directly; this is
     provided as a convenience.
     """
 
-    def __init__(self, *subevals: 'EvalPool'):
+    def __init__(self, *subevals: 'OutcomeCountEval'):
         self._subevals = subevals
 
     def next_state(self, state, outcome, *counts: int):
@@ -431,16 +428,16 @@ class JointEval(EvalPool):
                 subeval.next_state(substate, outcome, *counts)
                 for subeval, substate in zip(self._subevals, state))
 
-    def final_outcome(self, final_state, *pools: icepool.Pool):
+    def final_outcome(self, final_state, *gens: icepool.OutcomeCountGenerator):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
         """
         return tuple(
-            subeval.final_outcome(final_substate, *pools)
+            subeval.final_outcome(final_substate, *gens)
             for subeval, final_substate in zip(self._subevals, final_state))
 
-    def direction(self, *pools: icepool.Pool):
+    def direction(self, *gens: icepool.OutcomeCountGenerator):
         """Determines the common direction of the subevals.
 
         Raises:
@@ -448,7 +445,7 @@ class JointEval(EvalPool):
                 ascending and others are descending.
         """
         subdirections = tuple(
-            subeval.direction(*pools) for subeval in self._subevals)
+            subeval.direction(*gens) for subeval in self._subevals)
         ascending = any(x > 0 for x in subdirections)
         descending = any(x < 0 for x in subdirections)
         if ascending and descending:
@@ -461,35 +458,35 @@ class JointEval(EvalPool):
             return 0
 
 
-class SumPool(EvalPool):
-    """A simple `EvalPool` that just sums the dice in a pool. """
+class SumGen(OutcomeCountEval):
+    """A simple `OutcomeCountEval` that just sums the outcomes in a gen. """
 
     def next_state(self, state, outcome, count):
-        """Add the dice to the running total. """
+        """Add the outcomes to the running total. """
         if state is None:
             return outcome * count
         else:
             return state + outcome * count
 
-    def final_outcome(self, final_state, *pools):
+    def final_outcome(self, final_state, *gens):
         if final_state is None:
             return 0
         else:
             return final_state
 
-    def direction(self, *pools):
+    def direction(self, *gens):
         """This eval doesn't care about direction. """
         return 0
 
 
-sum_pool = SumPool()
-"""A shared `SumPool` object for caching results. """
+sum_gen = SumGen()
+"""A shared `SumGens` object for caching results. """
 
 
-class EnumeratePool(EvalPool):
-    """A `EvalPool` that enumerates all possible (sorted) rolls of a single pool.
+class EnumerateGen(OutcomeCountEval):
+    """A `OutcomeCountEval` that enumerates all possible (sorted) results.
 
-    This is expensive and not recommended unless few dice are being kept.
+    This is expensive and not recommended unless there are few elements being output.
     """
 
     def __init__(self, direction=1):
@@ -500,24 +497,24 @@ class EnumeratePool(EvalPool):
         self._direction = direction
 
     def next_state(self, state, outcome, count):
+        if count < 0:
+            raise ValueError(
+                'EnumerateGen is not compatible with negative counts.')
         if state is None:
             return (outcome,) * count
         else:
             return state + (outcome,) * count
 
-    def direction(self, pool):
-        if any(x < 0 for x in pool.count_dice()):
-            raise ValueError(
-                'EnumeratePool is not compatible with negative counts.')
+    def direction(self, *gens):
         return self._direction
 
 
-enumerate_pool = EnumeratePool()
-"""A shared `EnumeratePool` object for caching results. """
+enumerate_gen = EnumerateGen()
+"""A shared `EnumerateGens` object for caching results. """
 
 
-class FindBestSet(EvalPool):
-    """A `EvalPool` that takes the best matching set in a pool.
+class FindBestSet(OutcomeCountEval):
+    """A `OutcomeCountEval` that takes the best matching set in a gen.
 
     This prioritizes set size, then the outcome.
 
@@ -534,13 +531,13 @@ class FindBestSet(EvalPool):
         else:
             return max(state, (count, outcome))
 
-    def direction(self, *pools):
+    def direction(self, *gens):
         """This eval doesn't care about direction. """
         return 0
 
 
-class FindBestRun(EvalPool):
-    """A `EvalPool` that takes the best run (aka "straight") in a pool.
+class FindBestRun(OutcomeCountEval):
+    """A `OutcomeCountEval` that takes the best run (aka "straight") in a gen.
 
     Outcomes must be `int`s.
 
@@ -560,12 +557,12 @@ class FindBestRun(EvalPool):
             run = 0
         return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
-    def final_outcome(self, final_state, *pools):
+    def final_outcome(self, final_state, *gens):
         """Returns the best run. """
         return final_state[:2]
 
-    def direction(self, *pools):
+    def direction(self, *gens):
         """This only considers outcomes in ascending order. """
         return 1
 
-    alignment = EvalPool.range_alignment
+    alignment = OutcomeCountEval.range_alignment
