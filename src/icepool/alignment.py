@@ -39,7 +39,8 @@ class Alignment(OutcomeCountGen):
             yield Alignment(self.outcomes()[:-1]), 0, 1
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
-        return len(self.outcomes()), len(self.outcomes())
+        result = len(self.outcomes())
+        return result, result
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Alignment):

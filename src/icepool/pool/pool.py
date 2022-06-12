@@ -566,8 +566,9 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return tuple((die.key_tuple(), count)
-                     for die, count in self._dice.items()), self._count_dice
+        return ('Pool',) + tuple(
+            (die.key_tuple(), count)
+            for die, count in self._dice.items()), self._count_dice
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Pool):
