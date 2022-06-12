@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.pool.alignment import EvalPoolAlignment
+from icepool.alignment import Alignment
 from icepool.pool.cost import estimate_costs
 
 from abc import ABC, abstractmethod
@@ -215,9 +215,9 @@ class EvalPool(ABC):
 
         algorithm, direction = self._select_algorithm(*converted_pools)
 
-        # We can't reuse the Pool class for alignment because it is expected
-        # to skip outcomes.
-        alignment = EvalPoolAlignment(self.alignment(*converted_pools))
+        # We don't reuse the Pool class for alignment because it may skip
+        # outcomes.
+        alignment = Alignment(self.alignment(*converted_pools))
 
         dist = algorithm(direction, alignment, tuple(converted_pools))
 
@@ -251,7 +251,7 @@ class EvalPool(ABC):
         eval_direction = self.direction(*pools)
 
         pop_min_costs, pop_max_costs = zip(
-            *(pool._estimate_costs() for pool in pools))
+            *(pool._estimate_direction_costs() for pool in pools))
 
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)
@@ -281,7 +281,7 @@ class EvalPool(ABC):
             # Use the less-preferred algorithm.
             return self._eval_internal_iterative, eval_direction
 
-    def _eval_internal(self, direction: int, alignment: EvalPoolAlignment,
+    def _eval_internal(self, direction: int, alignment: Alignment,
                        pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
@@ -305,7 +305,8 @@ class EvalPool(ABC):
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
-        if all(pool.is_empty() for pool in pools) and alignment.is_empty():
+        if all(not pool.outcomes()
+               for pool in pools) and not alignment.outcomes():
             result = {None: 1}
         else:
             outcome, prev_alignment, iterators = _pop_pools(
@@ -324,14 +325,15 @@ class EvalPool(ABC):
         return result
 
     def _eval_internal_iterative(
-            self, direction: int, alignment: EvalPoolAlignment,
+            self, direction: int, alignment: Alignment,
             pools: tuple[icepool.Pool, ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
         This algorithm does not perform persistent memoization.
         """
-        if all(pool.is_empty() for pool in pools) and alignment.is_empty():
+        if all(not pool.outcomes()
+               for pool in pools) and not alignment.outcomes():
             return {None: 1}
         dist: MutableMapping[Any, int] = defaultdict(int)
         dist[None, alignment, pools] = 1
@@ -348,7 +350,7 @@ class EvalPool(ABC):
                     prod_weight = math.prod(weights)
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
-                        if all(pool.is_empty() for pool in pools):
+                        if all(not pool.outcomes() for pool in pools):
                             final_dist[state] += weight * prod_weight
                         else:
                             next_dist[state, alignment,
@@ -357,10 +359,8 @@ class EvalPool(ABC):
         return final_dist
 
 
-def _pop_pools(
-        side: int, alignment: EvalPoolAlignment,
-        pools: tuple[icepool.Pool,
-                     ...]) -> tuple[Any, EvalPoolAlignment, tuple]:
+def _pop_pools(side: int, alignment: Alignment,
+               pools: tuple[icepool.Pool, ...]) -> tuple[Any, Alignment, tuple]:
     """Pops a single outcome from the pools.
 
     Returns:
@@ -372,18 +372,20 @@ def _pop_pools(
     if side >= 0:
         outcome = max(pool.max_outcome()
                       for pool in alignment_and_pools
-                      if not pool.is_empty())
+                      if pool.outcomes())
 
-        return outcome, alignment._pop_max(outcome), tuple(
+        next_alignment, _, _ = next(alignment._pop_max(outcome))
+
+        return outcome, next_alignment, tuple(
             pool._pop_max(outcome) for pool in pools)
     else:
         outcome = min(pool.min_outcome()
                       for pool in alignment_and_pools
-                      if not pool.is_empty())
-        if not alignment.is_empty():
-            outcome = min(outcome, alignment.min_outcome())
+                      if pool.outcomes())
 
-        return outcome, alignment._pop_min(outcome), tuple(
+        next_alignment, _, _ = next(alignment._pop_min(outcome))
+
+        return outcome, next_alignment, tuple(
             pool._pop_min(outcome) for pool in pools)
 
 

@@ -4,6 +4,7 @@ import icepool
 import icepool.math
 import icepool.pool.cost
 from icepool.collections import Counts
+from icepool.generator import OutcomeCountGenerator
 
 import itertools
 import math
@@ -192,7 +193,7 @@ def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
     return self
 
 
-class Pool():
+class Pool(OutcomeCountGenerator):
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `EvalPool` to generate a result.
@@ -249,9 +250,6 @@ class Pool():
         """Whether this pool resolves to a non-empty set of joint outcomes."""
         return all(not die.is_empty() for die in self._dice.keys())
 
-    def is_empty(self) -> bool:
-        return len(self._dice) == 0
-
     @cached_property
     def _denominator(self) -> int:
         """The product of the total dice weights in this pool."""
@@ -280,7 +278,7 @@ class Pool():
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
-    def _estimate_costs(self) -> tuple[int, int]:
+    def _estimate_direction_costs(self) -> tuple[int, int]:
         """Estimates the cost of popping from the min and max sides.
 
         Returns:
@@ -414,7 +412,7 @@ class Pool():
                 accounting for count_dice.
             net_weight: The weight of this incremental result.
         """
-        if self.is_empty():
+        if not self.outcomes():
             yield self, 0, 1
             return
         generators = [
@@ -459,7 +457,7 @@ class Pool():
                 accounting for count_dice.
             net_weight: The weight of this incremental result.
         """
-        if self.is_empty():
+        if not self.outcomes():
             yield self, 0, 1
             return
         generators = [

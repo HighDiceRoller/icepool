@@ -70,8 +70,8 @@ def estimate_costs(pool) -> tuple[int, int]:
     """Estimates the cost of popping from the min and max sides.
 
     Returns:
-        pop_min_cost
-        pop_max_cost
+        pop_min_cost: A positive `int`.
+        pop_max_cost: A positive `int`.
     """
     can_truncate_min, can_truncate_max = can_truncate(pool._dice.keys())
     if can_truncate_min or can_truncate_max:
