@@ -52,10 +52,16 @@ class Die():
                 denominator_method: str = 'lcm') -> 'Die':
         """Constructor for a die.
 
-        Don't confuse this with `icepool.d()`:
+        Don't confuse this with `d()`:
 
-        * `icepool.Die(6)`: A die that always rolls the `int` 6.
-        * `icepool.d(6)`: A d6.
+        * `Die(6)`: A die that always rolls the `int` 6.
+        * `d(6)`: A d6.
+
+        Also, don't confuse this with `Pool()`:
+
+        * `Die(1, 2, 3, 4, 5, 6)`: A d6.
+        * `Pool(1, 2, 3, 4, 5, 6)`: A pool of six dice that always rolls one of
+            each number.
 
         Here are some different ways of constructing a d6:
 
