@@ -72,7 +72,7 @@ def expand_die(arg) -> Mapping[Any, int]:
 def expand_dict(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {}
-    subdatas = [expand(k, denominator_method) for k, v in arg.items()]
+    subdatas = [expand(k, denominator_method) for k in arg.keys()]
     weights = [x for x in arg.values()]
     return merge_subdatas(subdatas, weights, denominator_method)
 

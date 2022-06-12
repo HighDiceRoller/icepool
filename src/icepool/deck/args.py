@@ -21,7 +21,7 @@ def expand_create_args(*args, dups: Sequence[int] | None) -> Counts:
     else:
         dups = (1,) * len(args)
 
-    # Special case: single die argument.
+    # Special case: single deck argument.
     if len(dups) == 1 and is_deck(dups[0]) and dups[0] == 1:
         return args[0]._data
 
@@ -71,7 +71,7 @@ def expand_deck(arg) -> Mapping[Any, int]:
 def expand_dict(arg) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {}
-    subdatas = [expand(k) for k, v in arg.items()]
+    subdatas = [expand(k) for k in arg.keys()]
     weights = [x for x in arg.values()]
     return merge_subdatas(subdatas, weights)
 
