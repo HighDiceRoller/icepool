@@ -1,4 +1,4 @@
-""" Package for computing dice probabilities.
+"""Package for computing dice and card probabilities.
 
 See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html)
 for examples.
@@ -7,6 +7,9 @@ for examples.
 
 General conventions:
 
+* Instances are immutable (apart from internal caching). Anything that looks
+  like it mutates an instance actually returns a separate instance with the
+  change.
 * Unless explictly specified otherwise, all sorting is in ascending order.
 * The words "min" and "max" refer to outcomes, and the words "low" and "high"
 refer to dice in a pool.

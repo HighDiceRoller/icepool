@@ -225,7 +225,6 @@ class Pool(OutcomeCountGen):
                     'Length of dups must equal the number of die arguments.')
             if any(x < 0 for x in dups):
                 raise ValueError('dups cannot have negative values.')
-        num_dice = len(dice)
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die, dup in zip(dice, dups):
             num_dices[die] += dup

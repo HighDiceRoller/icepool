@@ -8,7 +8,7 @@ from icepool.outcome_args import expand_outcome_args
 from functools import cached_property
 
 from typing import Any, Generator
-from collections.abc import Container, Mapping, MutableMapping, Sequence
+from collections.abc import Sequence
 
 
 class CardDraw(OutcomeCountGen):

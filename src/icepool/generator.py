@@ -9,7 +9,7 @@ from collections.abc import Sequence
 class OutcomeCountGen(ABC):
     """Abstract base class for incrementally generating (outcome, count, weight)s.
 
-    The archetypical example is a dice pool (`Pool`).
+    These include dice pools (`Pool`) and card decks (`CardDraw`).
     """
 
     @abstractmethod
