@@ -53,7 +53,7 @@ def is_die(arg) -> bool:
 
 
 def is_deck(arg) -> bool:
-    return isinstance(arg, icepool.CardDraw)
+    return isinstance(arg, icepool.Deck)
 
 
 def is_dict(arg) -> bool:

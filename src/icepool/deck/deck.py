@@ -11,7 +11,7 @@ from typing import Any, Generator
 from collections.abc import Sequence
 
 
-class CardDraw(OutcomeCountGen):
+class Deck(OutcomeCountGen):
     """EXPERIMENTAL: Represents drawing a hand from a deck.
 
     In other words, this is sampling without replacement.
@@ -83,9 +83,9 @@ class CardDraw(OutcomeCountGen):
         min_count = max(0, deck_count + self.hand_size() - self.deck_size())
         max_count = min(deck_count, self.hand_size())
         for count in range(min_count, max_count + 1):
-            popped_draw = CardDraw(*self.outcomes()[1:],
-                                   hand_size=self.hand_size() - count,
-                                   dups=self.dups()[1:])
+            popped_draw = Deck(*self.outcomes()[1:],
+                               hand_size=self.hand_size() - count,
+                               dups=self.dups()[1:])
             weight = icepool.math.comb(deck_count, count)
             yield popped_draw, count, weight
 
@@ -101,9 +101,9 @@ class CardDraw(OutcomeCountGen):
         min_count = max(0, deck_count + self.hand_size() - self.deck_size())
         max_count = min(deck_count, self.hand_size())
         for count in range(min_count, max_count + 1):
-            popped_draw = CardDraw(*self.outcomes()[:-1],
-                                   hand_size=self.hand_size() - count,
-                                   dups=self.dups()[:-1])
+            popped_draw = Deck(*self.outcomes()[:-1],
+                               hand_size=self.hand_size() - count,
+                               dups=self.dups()[:-1])
             weight = icepool.math.comb(deck_count, count)
             yield popped_draw, count, weight
 
@@ -113,10 +113,10 @@ class CardDraw(OutcomeCountGen):
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return ('CardDraw',) + tuple(self.items()) + (self.hand_size(),)
+        return (Deck,) + tuple(self.items()) + (self.hand_size(),)
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, CardDraw):
+        if not isinstance(other, Deck):
             return False
         return self._key_tuple == other._key_tuple
 
@@ -128,4 +128,4 @@ class CardDraw(OutcomeCountGen):
         return self._hash
 
 
-empty_card_draw = CardDraw(hand_size=0)
+empty_card_draw = Deck(hand_size=0)

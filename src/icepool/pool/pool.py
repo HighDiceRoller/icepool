@@ -576,7 +576,7 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return ('Pool',) + tuple(
+        return (Pool,) + tuple(
             (die.key_tuple(), count)
             for die, count in self._dice.items()), self._count_dice
 
