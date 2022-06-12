@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
+from icepool.outcome_args import is_dict
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -194,6 +195,7 @@ class OutcomeCountEval(ABC):
         Args:
             *gens: Each element may be one of the following:
                 * A `OutcomeCountGen`.
+                * A mappable mapping dice to the number of those dice.
                 * A sequence of arguments to create a `Pool`.
                 Most evaluators will expect a fixed number of gens.
                 The union of the outcomes of the gens must be totally orderable.
@@ -203,9 +205,7 @@ class OutcomeCountEval(ABC):
         """
 
         # Convert non-pool arguments to `Pool`.
-        converted_gens = tuple(
-            gen if isinstance(gen, icepool.OutcomeCountGen) else icepool.Pool(
-                *gen) for gen in gens)
+        converted_gens = tuple(_convert_gen_arg(gen) for gen in gens)
 
         if not all(gen._is_resolvable() for gen in converted_gens):
             return icepool.Die()
@@ -351,6 +351,18 @@ class OutcomeCountEval(ABC):
                                       gens] += weight * prod_weight
             dist = next_dist
         return final_dist
+
+
+def _convert_gen_arg(
+    gen: icepool.OutcomeCountGen | Mapping[Any, int] | Collection
+) -> icepool.OutcomeCountGen:
+    """Converts a single gen argument for `eval()`."""
+    if isinstance(gen, icepool.OutcomeCountGen):
+        return gen
+    elif is_dict(gen):
+        return icepool.Pool(*gen.keys(), dups=gen.values())  # type: ignore
+    else:
+        return icepool.Pool(*gen)
 
 
 def _pop_gens(

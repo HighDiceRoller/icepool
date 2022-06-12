@@ -945,7 +945,7 @@ class Die():
         Args:
             num_dice: The number of copies of this die to put in the pool.
         """
-        return icepool.Pool(*([self] * num_dice))
+        return icepool.Pool(self, dups=[num_dice])
 
     def keep_highest(self,
                      num_dice: int,

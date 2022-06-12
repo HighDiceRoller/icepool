@@ -23,57 +23,57 @@ def expand_outcome_args(*args, counts: Sequence[int] | None,
         counts = (1,) * len(args)
 
     # Special case: single die argument.
-    if len(args) == 1 and _is_die(args[0]) and counts[0] == 1:
+    if len(args) == 1 and is_die(args[0]) and counts[0] == 1:
         return args[0]._data
 
     # Expand data.
-    subdatas = [_expand(arg, denominator_method) for arg in args]
-    data = _merge_subdatas(subdatas, counts, denominator_method)
+    subdatas = [expand(arg, denominator_method) for arg in args]
+    data = merge_subdatas(subdatas, counts, denominator_method)
 
     return Counts(sorted(data.items()))
 
 
-def _expand(arg, denominator_method: str) -> Mapping[Any, int]:
+def expand(arg, denominator_method: str) -> Mapping[Any, int]:
     """Expands the argument to a dict mapping outcomes to counts."""
-    if _is_die(arg):
-        return _expand_die(arg)
-    elif _is_dict(arg):
-        return _expand_dict(arg, denominator_method)
-    elif _is_tuple(arg):
-        return _expand_tuple(arg, denominator_method)
+    if is_die(arg):
+        return expand_die(arg)
+    elif is_dict(arg):
+        return expand_dict(arg, denominator_method)
+    elif is_tuple(arg):
+        return expand_tuple(arg, denominator_method)
     else:
-        return _expand_scalar(arg)
+        return expand_scalar(arg)
 
 
-def _is_die(arg) -> bool:
+def is_die(arg) -> bool:
     return isinstance(arg, icepool.Die)
 
 
-def _expand_die(arg) -> Mapping[Any, int]:
+def expand_die(arg) -> Mapping[Any, int]:
     return arg._data
 
 
-def _is_dict(arg) -> bool:
+def is_dict(arg) -> bool:
     return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
         arg, 'items') and hasattr(arg, '__getitem__')
 
 
-def _expand_dict(arg, denominator_method: str) -> Mapping[Any, int]:
+def expand_dict(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {}
-    subdatas = [_expand(k, denominator_method) for k, v in arg.items()]
+    subdatas = [expand(k, denominator_method) for k, v in arg.items()]
     counts = [x for x in arg.values()]
-    return _merge_subdatas(subdatas, counts, denominator_method)
+    return merge_subdatas(subdatas, counts, denominator_method)
 
 
-def _is_tuple(arg) -> bool:
+def is_tuple(arg) -> bool:
     return type(arg) is tuple
 
 
-def _expand_tuple(arg, denominator_method: str) -> Mapping[Any, int]:
+def expand_tuple(arg, denominator_method: str) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {(): 1}
-    subdatas = [_expand(x, denominator_method) for x in arg]
+    subdatas = [expand(x, denominator_method) for x in arg]
     data: MutableMapping[Any, int] = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
         outcomes, counts = zip(*t)
@@ -81,16 +81,15 @@ def _expand_tuple(arg, denominator_method: str) -> Mapping[Any, int]:
     return data
 
 
-def _expand_scalar(arg) -> Mapping[Any, int]:
+def expand_scalar(arg) -> Mapping[Any, int]:
     if arg is icepool.Reroll:
         return {}
     else:
         return {arg: 1}
 
 
-def _merge_subdatas(subdatas: Sequence[Mapping[Any,
-                                               int]], counts: Sequence[int],
-                    denominator_method: str) -> Mapping[Any, int]:
+def merge_subdatas(subdatas: Sequence[Mapping[Any, int]], counts: Sequence[int],
+                   denominator_method: str) -> Mapping[Any, int]:
     if any(x < 0 for x in counts):
         raise ValueError('counts cannot be negative.')
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]

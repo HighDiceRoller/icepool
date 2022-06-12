@@ -15,3 +15,7 @@ def test_pool_roll_sum():
 def test_pool_roll_sum_duplicates():
     roll = icepool.Pool(1, 1, 1, 1, 2, 3, 4)
     assert roll.sum() == 13
+
+def test_pool_roll_dups():
+    roll = icepool.Pool(1, 2, 3, dups=[3, 2, 1])
+    assert roll.sum() == 10

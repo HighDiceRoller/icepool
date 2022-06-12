@@ -202,7 +202,7 @@ class Pool(OutcomeCountGen):
     _count_dice: tuple[int, ...]
     _dice: Counts
 
-    def __new__(cls, *dice) -> 'Pool':
+    def __new__(cls, *dice, dups: Sequence[int] | None = None) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
@@ -212,13 +212,24 @@ class Pool(OutcomeCountGen):
         Args:
             *dice: The dice to put in the pool. Empty dice are ignored. All
                 outcomes within a pool must be totally orderable.
+            dups: An optional sequence specifying how many of each die will be
+                put in the pool. Naming still under consideration.
+
         """
         dice = tuple(icepool.Die(die) for die in dice)
+        if dups is None:
+            dups = (1,) * len(dice)
+        else:
+            if len(dups) != len(dice):
+                raise ValueError(
+                    'Length of dups must equal the number of die arguments.')
+            if any(x < 0 for x in dups):
+                raise ValueError('dups cannot have negative values.')
         num_dice = len(dice)
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
-        for die in dice:
-            num_dices[die] += 1
-        count_dice = (1,) * num_dice
+        for die, dup in zip(dice, dups):
+            num_dices[die] += dup
+        count_dice = (1,) * sum(dups)
         return cls._new_pool(num_dices, count_dice)
 
     @classmethod
