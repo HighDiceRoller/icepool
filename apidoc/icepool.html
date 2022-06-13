@@ -526,11 +526,11 @@ refer to dice in a pool.</li>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="kn">from</span> <span class="nn">icepool.die.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="kn">from</span> <span class="nn">icepool.pool.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="kn">from</span> <span class="nn">icepool.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="kn">from</span> <span class="nn">icepool.generator</span> <span class="kn">import</span> <span class="n">OutcomeCountGen</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="kn">from</span> <span class="nn">icepool.eval</span> <span class="kn">import</span> <span class="n">OutcomeCountEval</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">JointEval</span><span class="p">,</span> <span class="n">SumGen</span><span class="p">,</span> <span class="n">sum_gen</span><span class="p">,</span> <span class="n">enumerate_gen</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="kn">from</span> <span class="nn">icepool.deck.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="kn">from</span> <span class="nn">icepool.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="kn">import</span> <span class="nn">enum</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
@@ -5698,7 +5698,7 @@ with one argument per die. All outcomes must be totally orderable.</li>
 </span><span id="Pool-295"><a href="#Pool-295"><span class="linenos">295</span></a><span class="sd">            pop_min_cost</span>
 </span><span id="Pool-296"><a href="#Pool-296"><span class="linenos">296</span></a><span class="sd">            pop_max_cost</span>
 </span><span id="Pool-297"><a href="#Pool-297"><span class="linenos">297</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-298"><a href="#Pool-298"><span class="linenos">298</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">cost</span><span class="o">.</span><span class="n">estimate_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Pool-298"><a href="#Pool-298"><span class="linenos">298</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">pool_cost</span><span class="o">.</span><span class="n">estimate_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Pool-299"><a href="#Pool-299"><span class="linenos">299</span></a>
 </span><span id="Pool-300"><a href="#Pool-300"><span class="linenos">300</span></a>    <span class="k">def</span> <span class="nf">count_dice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="Pool-301"><a href="#Pool-301"><span class="linenos">301</span></a>        <span class="sd">&quot;&quot;&quot;The tuple indicating which dice in the pool will be counted.</span>
