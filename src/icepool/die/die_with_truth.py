@@ -26,7 +26,7 @@ class DieWithTruth(Die):
                 requested.
             truth_value: The truth value of this die.
         """
-        self = super(DieWithTruth, cls).__new__(cls)
+        self = super(DieWithTruth, cls).__new__(cls, [])
         self._data_callback = data_callback  # type: ignore
         self._truth_value = truth_value  # type: ignore
         return self

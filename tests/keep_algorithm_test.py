@@ -7,8 +7,8 @@ from icepool import d4, d6, d8, d10, d12, d20
 
 test_dice = [
     (d6,),
-    (icepool.Die(), d6, d6),
-    (d6, d6, icepool.Die()),
+    (icepool.Die([]), d6, d6),
+    (d6, d6, icepool.Die([])),
     (d20, 10),
     (d6, d6, d6),
     (d4, d6, d8, d10),
@@ -48,8 +48,8 @@ def test_highest(dice, num_keep, num_drop):
 test_dice = [
     (),
     (d6,),
-    (icepool.Die(), d6, d6),
-    (d6, d6, icepool.Die()),
+    (icepool.Die([]), d6, d6),
+    (d6, d6, icepool.Die([])),
     (d20, 10),
     (d6, d6, d6),
     (d4, d6, d8, d10),

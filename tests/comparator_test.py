@@ -35,12 +35,12 @@ def test_ne():
 
 def test_sign():
     result = (icepool.d6 - 3).sign()
-    expected = icepool.Die(-1, 0, 1, weights=[2, 1, 3])
+    expected = icepool.Die({-1:2, 0:1, 1:3})
     assert result.equals(expected)
 
 def test_cmp():
     result = icepool.d6.cmp(icepool.d6 - 1)
-    expected = icepool.Die(-1, 0, 1, weights=[10, 5, 21])
+    expected = icepool.Die({-1:10, 0:5, 1:21})
     assert result.equals(expected)
 
 def test_weight_le():
@@ -67,7 +67,7 @@ def test_weight_ge_max():
 def test_weight_gt_max():
     assert icepool.d6.weight_gt(6) == 0
 
-die_spaced = icepool.Die(*range(-3, 4), weights=[1, 0, 0, 1, 0, 0, 1])
+die_spaced = icepool.Die(range(-3, 4), weights=[1, 0, 0, 1, 0, 0, 1])
 
 def test_weight_le_zero_weight():
     assert die_spaced.weight_le(-1) == 1
@@ -96,7 +96,7 @@ def test_nearest_le():
     assert icepool.d6.nearest_le(7) == 6
 
 def test_nearest_le_gap():
-    die = icepool.Die(-3, 0, 3)
+    die = icepool.Die([-3, 0, 3])
     assert die.nearest_le(-4) == None
     assert die.nearest_le(-3) == -3
     assert die.nearest_le(-2) == -3
@@ -113,7 +113,7 @@ def test_nearest_ge():
     assert icepool.d6.nearest_ge(7) == None
 
 def test_nearest_ge_gap():
-    die = icepool.Die(-3, 0, 3)
+    die = icepool.Die([-3, 0, 3])
     assert die.nearest_ge(-4) == -3
     assert die.nearest_ge(-3) == -3
     assert die.nearest_ge(-2) == 0

@@ -21,33 +21,33 @@ def test_reroll_2():
 
 def test_reroll_limit():
     result = icepool.d4.reroll([1], max_depth=1)
-    expected = icepool.Die(*range(1, 5), weights=[1, 5, 5, 5])
+    expected = icepool.Die(range(1, 5), weights=[1, 5, 5, 5])
     assert result.equals(expected)
     
 def test_reroll_until_limit():
     result = icepool.d4.reroll_until([2, 3, 4], max_depth=1)
-    expected = icepool.Die(*range(1, 5), weights=[1, 5, 5, 5])
+    expected = icepool.Die(range(1, 5), weights=[1, 5, 5, 5])
     assert result.equals(expected)
 
 def test_reroll_func():
     result = icepool.d4.reroll(lambda x: x == 1, max_depth=1)
-    expected = icepool.Die(*range(1, 5), weights=[1, 5, 5, 5])
+    expected = icepool.Die(range(1, 5), weights=[1, 5, 5, 5])
     assert result.equals(expected)
 
 def test_reroll_until_func():
     result = icepool.d4.reroll_until(lambda x: x != 1, max_depth=1)
-    expected = icepool.Die(*range(1, 5), weights=[1, 5, 5, 5])
+    expected = icepool.Die(range(1, 5), weights=[1, 5, 5, 5])
     assert result.equals(expected)
 
 def test_infinite_reroll():
     assert icepool.d4.reroll([1, 2, 3, 4]).num_outcomes() == 0
 
 def test_reroll_multidim():
-    result = icepool.Die((1, 0), (0, 1)).reroll(lambda x: x[0] == 0)
-    expected = icepool.Die((1, 0))
+    result = icepool.Die([(1, 0), (0, 1)]).reroll(lambda x: x[0] == 0)
+    expected = icepool.Die([(1, 0)])
     assert result.equals(expected)
 
 def test_reroll_until_multidim():
-    result = icepool.Die((1, 0), (0, 1)).reroll_until(lambda x: x[0] == 0)
-    expected = icepool.Die((0, 1))
+    result = icepool.Die([(1, 0), (0, 1)]).reroll_until(lambda x: x[0] == 0)
+    expected = icepool.Die([(0, 1)])
     assert result.equals(expected)

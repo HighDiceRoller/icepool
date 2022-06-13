@@ -27,7 +27,7 @@ def standard(num_sides: int, /) -> 'icepool.Die':
         raise TypeError('Argument to standard() must be an int.')
     elif num_sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(*range(1, num_sides + 1))
+    return icepool.Die(range(1, num_sides + 1))
 
 
 d = standard
@@ -101,13 +101,13 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
 
 def min_outcome(*dice):
     """Returns the minimum possible outcome among the dice. """
-    dice = [icepool.Die(die) for die in dice]
+    dice = [icepool.Die([die]) for die in dice]
     return min(die.outcomes()[0] for die in dice)
 
 
 def max_outcome(*dice):
     """Returns the maximum possible outcome among the dice. """
-    dice = [icepool.Die(die) for die in dice]
+    dice = [icepool.Die([die]) for die in dice]
     return max(die.outcomes()[-1] for die in dice)
 
 
@@ -120,7 +120,7 @@ def align(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.Die(die) for die in dice)
+    dice = tuple(icepool.Die([die]) for die in dice)
     outcomes = set(itertools.chain.from_iterable(
         die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -135,7 +135,7 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.Die(die) for die in dice)
+    dice = tuple(icepool.Die([die]) for die in dice)
     outcomes = tuple(
         range(icepool.min_outcome(*dice),
               icepool.max_outcome(*dice) + 1))
@@ -232,8 +232,8 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         weights of the dice.
     """
     if len(dice) == 0:
-        return icepool.Die(func())
-    dice = tuple(icepool.Die(die) for die in dice)
+        return icepool.Die([func()])
+    dice = tuple(icepool.Die([die]) for die in dice)
     final_outcomes = []
     final_weights = []
     for t in itertools.product(*(die.items() for die in dice)):
@@ -244,7 +244,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
             final_outcomes.append(final_outcome)
             final_weights.append(final_weight)
 
-    return icepool.Die(*final_outcomes, weights=final_weights)
+    return icepool.Die(final_outcomes, weights=final_weights)
 
 
 def apply_sorted(func: Callable, *dice) -> 'icepool.Die':

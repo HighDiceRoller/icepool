@@ -3,7 +3,7 @@ import _context
 import icepool
 import pytest
 
-test_dice = [icepool.Die(), icepool.d6, icepool.d6.sub(lambda x: (x, x+1))]
+test_dice = [icepool.Die([]), icepool.d6, icepool.d6.sub(lambda x: (x, x+1))]
 
 # Test against errors only.
 

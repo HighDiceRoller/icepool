@@ -208,7 +208,7 @@ class OutcomeCountEval(ABC):
         converted_gens = tuple(_convert_gen_arg(gen) for gen in gens)
 
         if not all(gen._is_resolvable() for gen in converted_gens):
-            return icepool.Die()
+            return icepool.Die([])
 
         algorithm, direction = self._select_algorithm(*converted_gens)
 
@@ -231,7 +231,7 @@ class OutcomeCountEval(ABC):
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
 
-        return icepool.Die(*final_outcomes, weights=final_weights)
+        return icepool.Die(final_outcomes, weights=final_weights)
 
     __call__ = eval
 

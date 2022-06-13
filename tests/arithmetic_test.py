@@ -50,37 +50,37 @@ def test_die_die_sub(a, b):
 def test_clip():
     result = icepool.d6
     result = result.clip(2, 5)
-    expected = icepool.Die(2, 2, 3, 4, 5, 5)
+    expected = icepool.Die([2, 2, 3, 4, 5, 5])
     assert result.equals(expected)
 
 def test_clip_skip():
     result = icepool.d6 * 2
     result = result.clip(3, 9)
-    expected = icepool.Die(3, 4, 6, 8, 9, 9)
+    expected = icepool.Die([3, 4, 6, 8, 9, 9])
     assert result.equals(expected)
     
 def test_clip_outside():
     result = icepool.d6
     result = result.clip(0, 7)
-    expected = icepool.Die(1, 2, 3, 4, 5, 6)
+    expected = icepool.Die([1, 2, 3, 4, 5, 6])
     assert result.equals(expected)
 
 def test_truncate():
     result = icepool.d6
     result = result.truncate(2, 5)
-    expected = icepool.Die(2, 3, 4, 5)
+    expected = icepool.Die([2, 3, 4, 5])
     assert result.equals(expected)
 
 def test_truncate_outside():
     result = icepool.d6
     result = result.truncate(0, 7)
-    expected = icepool.Die(1, 2, 3, 4, 5, 6)
+    expected = icepool.Die([1, 2, 3, 4, 5, 6])
     assert result.equals(expected)
 
 def test_truncate_skip():
     result = icepool.d6 * 2
     result = result.truncate(3, 9)
-    expected = icepool.Die(4, 6, 8)
+    expected = icepool.Die([4, 6, 8])
     assert result.equals(expected)
 
 def test_abs_positive():
@@ -95,27 +95,27 @@ def test_abs_negative():
 
 def test_abs_cross_zero():
     result = (icepool.d6 - 3).abs()
-    expected = icepool.Die(*range(4), weights=[1, 2, 2, 1])
+    expected = icepool.Die(range(4), weights=[1, 2, 2, 1])
     assert result.equals(expected)
 
 def test_abs_cross_zero_nonuniform():
     result = (icepool.d6 + icepool.d6 - 7).abs()
-    expected = icepool.Die(*range(6), weights=[6, 10, 8, 6, 4, 2])
+    expected = icepool.Die(range(6), weights=[6, 10, 8, 6, 4, 2])
     assert result.equals(expected)
 
 def test_mod():
     result = icepool.d10 % 4
-    expected = icepool.Die(*range(4), weights=[2, 3, 3, 2])
+    expected = icepool.Die(range(4), weights=[2, 3, 3, 2])
     assert result.equals(expected)
     
 def test_div():
     result = icepool.d10 // 4
-    expected = icepool.Die(*range(3), weights=[3, 4, 3])
+    expected = icepool.Die(range(3), weights=[3, 4, 3])
     assert result.equals(expected)
 
 def test_reduce():
-    result = icepool.Die(*range(3), weights=[2, 4, 6]).reduce_weights()
-    expected = icepool.Die(*range(3), weights=[1, 2, 3])
+    result = icepool.Die(range(3), weights=[2, 4, 6]).reduce_weights()
+    expected = icepool.Die(range(3), weights=[1, 2, 3])
     assert result.equals(expected)
 
 def test_matmul_int_die():
@@ -124,7 +124,7 @@ def test_matmul_int_die():
     assert result.equals(expected)
 
 def test_matmul_die_die():
-    result = icepool.Die(2) @ icepool.d6
+    result = icepool.Die([2]) @ icepool.d6
     expected = icepool.d6 + icepool.d6
     assert result.equals(expected)
 

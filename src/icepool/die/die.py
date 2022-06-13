@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.die.format
+from icepool.common_args import is_dict
 from icepool.collections import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.die.args import expand_create_args
@@ -47,21 +48,21 @@ class Die():
     _data: Counts
 
     def __new__(cls,
-                *args,
+                outcomes,
                 weights: Sequence[int] | None = None,
                 denominator_method: str = 'lcm') -> 'Die':
         """Constructor for a die.
 
         Don't confuse this with `d()`:
 
-        * `Die(6)`: A die that always rolls the `int` 6.
+        * `Die([6])`: A die that always rolls the `int` 6.
         * `d(6)`: A d6.
 
         Also, don't confuse this with `Pool()`:
 
-        * `Die(1, 2, 3, 4, 5, 6)`: A d6.
-        * `Pool(1, 2, 3, 4, 5, 6)`: A pool of six dice that always rolls one of
-            each number.
+        * `Die([1, 2, 3, 4, 5, 6])`: A d6.
+        * `Pool([1, 2, 3, 4, 5, 6])`: A pool of six dice that always rolls one
+            of each number.
 
         Here are some different ways of constructing a d6:
 
@@ -75,7 +76,11 @@ class Die():
         All weights must be non-negative, though they can be zero.
 
         Args:
-            *args: Each of these arguments can be one of the following:
+            outcomes: The outcomes of the die. This can be one of the following:
+                * A dict mapping outcomes to dups.
+                * A sequence of outcomes.
+
+                Each outcome may be one of the following:
                 * A die. The outcomes of the die will be "flattened" into the
                     result; a die object will never contain a die as an outcome.
                 * A dict-like that maps outcomes to weights.
@@ -123,11 +128,36 @@ class Die():
             `ValueError`: `None` is not a valid outcome for a die.
         """
         if cls == Die:
-            if weights is None and len(args) == 1 and isinstance(args[0], Die):
-                return args[0]
+            if isinstance(outcomes, Die):
+                if weights is not None:
+                    raise ValueError(
+                        'weights cannot be used with a Die argument.')
+                return outcomes
+            if is_dict(outcomes):
+                if weights is not None:
+                    raise ValueError(
+                        'weights cannot be used with a dict argument.')
+                weights = tuple(outcomes.values())  # type: ignore
+                outcomes = tuple(outcomes.keys())  # type: ignore
+            else:
+                if weights is None:
+                    weights = (1,) * len(outcomes)
+                else:
+                    if len(weights) != len(outcomes):
+                        raise ValueError(
+                            'Length of weights must equal the number of outcomes.'
+                        )
+            if any(x < 0 for x in weights):
+                raise ValueError('weights cannot have negative values.')
+
+            if weights is None and len(outcomes) == 1 and isinstance(
+                    outcomes[0], Die):
+                return outcomes[0]
             self = super(Die, cls).__new__(cls)
             self._data = expand_create_args(
-                *args, weights=weights, denominator_method=denominator_method)
+                *outcomes,
+                weights=weights,
+                denominator_method=denominator_method)
         else:
             # Just forward.
             self = super(Die, cls).__new__(cls)
@@ -718,7 +748,7 @@ class Die():
 
     @cached_property
     def _popped_min(self) -> tuple['Die', int]:
-        die = icepool.Die(*self.outcomes()[1:], weights=self.weights()[1:])
+        die = icepool.Die(self.outcomes()[1:], weights=self.weights()[1:])
         return die, self.weights()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
@@ -731,7 +761,7 @@ class Die():
 
     @cached_property
     def _popped_max(self) -> tuple['Die', int]:
-        die = icepool.Die(*self.outcomes()[:-1], weights=self.weights()[:-1])
+        die = icepool.Die(self.outcomes()[:-1], weights=self.weights()[:-1])
         return die, self.weights()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
@@ -807,7 +837,7 @@ class Die():
             else:
                 final_repl = list(repl)
 
-            return icepool.Die(*final_repl,
+            return icepool.Die(final_repl,
                                weights=self.weights(),
                                denominator_method=denominator_method)
         elif max_depth is not None:
@@ -926,7 +956,7 @@ class Die():
 
     def __matmul__(self, other) -> 'Die':
         """Roll the left die, then roll the right die that many times and sum the outcomes."""
-        other = icepool.Die(other)
+        other = icepool.Die([other])
 
         data: MutableMapping[int, Any] = defaultdict(int)
 
@@ -942,7 +972,7 @@ class Die():
 
     def __rmatmul__(self, other) -> 'Die':
         """Roll the left die, then roll the right die that many times and sum the outcomes."""
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.__matmul__(self)
 
     def pool(self, num_dice: int = 1) -> 'icepool.Pool':
@@ -1090,123 +1120,123 @@ class Die():
     # Binary operators.
 
     def __add__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.add)
 
     def __radd__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.add)
 
     def __sub__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.sub)
 
     def __rsub__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.sub)
 
     def __mul__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.mul)
 
     def __rmul__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.mul)
 
     def __truediv__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.truediv)
 
     def __rtruediv__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.truediv)
 
     def __floordiv__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.floordiv)
 
     def __rfloordiv__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.floordiv)
 
     def __pow__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.pow)
 
     def __rpow__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.pow)
 
     def __mod__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.mod)
 
     def __rmod__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.mod)
 
     def __lshift__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.lshift)
 
     def __rlshift__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.lshift)
 
     def __rshift__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.rshift)
 
     def __rrshift__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.rshift)
 
     def __and__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.and_)
 
     def __rand__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.and_)
 
     def __or__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.or_)
 
     def __ror__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.or_)
 
     def __xor__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.xor)
 
     def __rxor__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return other.binary_op(self, operator.xor)
 
     # Comparators.
 
     def __lt__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.lt)
 
     def __le__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.le)
 
     def __ge__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.ge)
 
     def __gt__(self, other) -> 'Die':
-        other = icepool.Die(other)
+        other = icepool.Die([other])
         return self.binary_op(other, operator.gt)
 
     # Equality operators. These produce a `DieWithTruth`.
 
     def __eq__(self, other):
-        other = icepool.Die(other)
+        other = icepool.Die([other])
 
         def data_callback():
             data_die = self.binary_op(other, operator.eq)
@@ -1217,7 +1247,7 @@ class Die():
         return icepool.DieWithTruth(data_callback, truth_value)
 
     def __ne__(self, other):
-        other = icepool.Die(other)
+        other = icepool.Die([other])
 
         def data_callback():
             data_die = self.binary_op(other, operator.ne)
@@ -1327,7 +1357,7 @@ class Die():
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         try:
-            other = icepool.Die(other)
+            other = icepool.Die([other])
         except ValueError:
             return False
 

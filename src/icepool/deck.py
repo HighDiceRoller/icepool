@@ -2,13 +2,15 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
+from icepool.common_args import is_dict
+from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
 from icepool.deck_args import expand_create_args
 
 from functools import cached_property
 
 from typing import Any, Generator
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 
 class Deck(OutcomeCountGen):
@@ -17,11 +19,14 @@ class Deck(OutcomeCountGen):
     In other words, this is sampling without replacement.
     """
 
-    def __init__(self,
-                 outcomes,
-                 dups: Sequence[int] | None = None,
-                 *,
-                 hand_size: int):
+    _data: Counts
+    _hand_size: int
+
+    def __new__(cls,
+                outcomes,
+                dups: Sequence[int] | None = None,
+                *,
+                hand_size: int):
         """Constructor for a deck.
 
         Args:
@@ -45,10 +50,27 @@ class Deck(OutcomeCountGen):
                     outcomes.
                 * Anything else will be treated as a scalar.
         """
+        self = super(Deck, cls).__new__(cls)
+        if is_dict(outcomes):
+            if dups is not None:
+                raise ValueError('dups cannot be used with a dict argument.')
+            dups = tuple(outcomes.values())  # type: ignore
+            outcomes = tuple(
+                icepool.Die([die]) for die in outcomes.keys())  # type: ignore
+        else:
+            if dups is None:
+                dups = (1,) * len(outcomes)
+            else:
+                if len(dups) != len(outcomes):
+                    raise ValueError(
+                        'Length of dups must equal the number of outcomes.')
+        if any(x < 0 for x in dups):
+            raise ValueError('dups cannot have negative values.')
         self._data = expand_create_args(*outcomes, dups=dups)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')
+        return self
 
     def outcomes(self) -> Sequence:
         return self._data.keys()

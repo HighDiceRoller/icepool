@@ -3,7 +3,7 @@ import _context
 import icepool
 import pytest
 
-expected_d6x1 = icepool.Die(*range(1, 13), weights=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
+expected_d6x1 = icepool.Die(range(1, 13), weights=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
 
 def test_sub_array():
     die = icepool.d6.sub([5, 4, 1, 2, 3, icepool.d6 + 6])
@@ -38,7 +38,7 @@ def collatz(x):
 def test_sub_fixed_point():
     # Collatz conjecture.
     result = icepool.d100.sub(collatz, max_depth=None).reduce_weights()
-    expected = icepool.Die(1)
+    expected = icepool.Die([1])
     assert result.equals(expected)
     
 def test_sub_extra_args():

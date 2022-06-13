@@ -52,13 +52,13 @@ def _keep(*dice, start: int, stop: int) -> 'icepool.Die':
             0 and len(dice) inclusive.
     """
 
-    dice = tuple(icepool.Die(die) for die in dice)
+    dice = tuple(icepool.Die([die]) for die in dice)
 
     if len(dice) == 0:
         raise ValueError('At least one die must be provided.')
 
     if any(die.is_empty() for die in dice):
-        return icepool.Die()
+        return icepool.Die([])
 
     if start == stop:
         return sum(die.zero() for die in dice)  # type: ignore
@@ -82,7 +82,7 @@ def _lowest_single(*dice) -> 'icepool.Die':
     The maximum outcome is equal to the least maximum outcome among all
     input dice.
     """
-    dice = tuple(icepool.Die(die) for die in dice)
+    dice = tuple(icepool.Die([die]) for die in dice)
     max_outcome = min(die.max_outcome() for die in dice)
     dice = tuple(die.clip(max_outcome=max_outcome) for die in dice)
     dice = icepool.align(*dice)
@@ -97,7 +97,7 @@ def _highest_single(*dice) -> 'icepool.Die':
     The minimum outcome is equal to the greatest minimum outcome among all
     input dice.
     """
-    dice = tuple(icepool.Die(die) for die in dice)
+    dice = tuple(icepool.Die([die]) for die in dice)
     min_outcome = max(die.min_outcome() for die in dice)
     dice = tuple(die.clip(min_outcome=min_outcome) for die in dice)
     dice = icepool.align(*dice)

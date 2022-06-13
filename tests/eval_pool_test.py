@@ -42,7 +42,7 @@ def test_sum_descending_keep_highest():
     assert result.equals(expected)
 
 def test_zero_weight_outcomes():
-    result = icepool.Die(*range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
+    result = icepool.Die(range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
 def sum_dice_func(state, outcome, count):
@@ -60,7 +60,7 @@ def test_standard_pool():
 
 def test_standard_pool_zero_dice():
     result = icepool.standard_pool([]).sum()
-    expected = icepool.Die(0)
+    expected = icepool.Die([0])
     assert result.equals(expected)
 
 def test_runs():
@@ -81,7 +81,7 @@ def test_runs():
     assert result.equals(expected)
     
 def test_runs_skip():
-    die = icepool.Die(0, 10)
+    die = icepool.Die([0, 10])
     result = icepool.FindBestRun()(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
@@ -122,7 +122,7 @@ def test_joint_eval():
 
 def test_enumerate_pool_vs_cartesian_product():
     result = icepool.enumerate_gen(d6.pool(3))
-    expected = icepool.Die((d6, d6, d6)).sub(lambda x: tuple(sorted(x)))
+    expected = icepool.Die([(d6, d6, d6)]).sub(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
 @pytest.mark.parametrize('pool', test_pools)

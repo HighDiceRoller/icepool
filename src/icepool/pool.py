@@ -228,16 +228,15 @@ class Pool(OutcomeCountGen):
                 raise ValueError('qtys cannot be used with a dict argument.')
             qtys = tuple(dice.values())  # type: ignore
             dice = tuple(
-                icepool.Die(die) for die in dice.keys())  # type: ignore
+                icepool.Die([die]) for die in dice.keys())  # type: ignore
         else:
-            dice = tuple(icepool.Die(die) for die in dice)
+            dice = tuple(icepool.Die([die]) for die in dice)
             if qtys is None:
                 qtys = (1,) * len(dice)
             else:
                 if len(qtys) != len(dice):
                     raise ValueError(
-                        'Length of qtys must equal the number of die arguments.'
-                    )
+                        'Length of qtys must equal the number of dice.')
         if any(x < 0 for x in qtys):
             raise ValueError('qtys cannot have negative values.')
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)

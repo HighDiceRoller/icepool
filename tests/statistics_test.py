@@ -7,8 +7,8 @@ def test_ks_stat_standard_dice():
     assert icepool.d10.ks_stat(icepool.d20) == pytest.approx(0.5)
 
 def test_ks_stat_flat_number():
-    assert icepool.Die(10).ks_stat(icepool.Die(10)) == 0.0
-    assert icepool.Die(10).ks_stat(icepool.Die(9)) == 1.0
+    assert icepool.Die([10]).ks_stat(icepool.Die([10])) == 0.0
+    assert icepool.Die([10]).ks_stat(icepool.Die([9])) == 1.0
 
 def test_d6_median():
     assert icepool.d6.median_left() == 3
