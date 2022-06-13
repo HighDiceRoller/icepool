@@ -3,6 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 import icepool.pool_cost
+from icepool.common_args import is_dict
 from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
 
@@ -12,7 +13,7 @@ from collections import defaultdict
 from functools import cache, cached_property
 
 from typing import Any, Callable, Generator
-from collections.abc import Collection, MutableMapping, Sequence
+from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 
 def count_dice_tuple(
@@ -90,13 +91,13 @@ def count_dice_tuple(
                     count_dice[split + 1:])
 
 
-def standard_pool(*die_sizes: int) -> 'Pool':
+def standard_pool(die_sizes: Collection[int]) -> 'Pool':
     """Returns a pool of standard dice.
 
     Args:
-        *die_sizes: For each of these die_size X, the pool will contain one dX.
+        die_sizes: For each of these die_size X, the pool will contain one dX.
     """
-    return Pool(*(icepool.d(x) for x in die_sizes))
+    return Pool(list(icepool.d(x) for x in die_sizes))
 
 
 def iter_die_pop_min(
@@ -202,7 +203,9 @@ class Pool(OutcomeCountGen):
     _count_dice: tuple[int, ...]
     _dice: Counts
 
-    def __new__(cls, *dice, dups: Sequence[int] | None = None) -> 'Pool':
+    def __new__(cls,
+                dice: Sequence | Mapping[Any, int],
+                qtys: Sequence[int] | None = None) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
@@ -210,25 +213,37 @@ class Pool(OutcomeCountGen):
         same-side truncations of d12.
 
         Args:
-            *dice: The dice to put in the pool. Empty dice are ignored. All
-                outcomes within a pool must be totally orderable.
-            dups: An optional sequence specifying how many of each die will be
+            dice: The dice to put in the pool. This can be one of the following:
+
+                * A sequence of dice.
+                * A mapping of dice and how many of that die to put in the pool.
+
+                All outcomes within a pool must be totally orderable.
+            qtys: An optional sequence specifying how many of each die will be
                 put in the pool. Naming still under consideration.
 
         """
-        dice = tuple(icepool.Die(die) for die in dice)
-        if dups is None:
-            dups = (1,) * len(dice)
+        if is_dict(dice):
+            if qtys is not None:
+                raise ValueError('qtys cannot be used with a dict argument.')
+            qtys = tuple(dice.values())  # type: ignore
+            dice = tuple(
+                icepool.Die(die) for die in dice.keys())  # type: ignore
         else:
-            if len(dups) != len(dice):
-                raise ValueError(
-                    'Length of dups must equal the number of die arguments.')
-            if any(x < 0 for x in dups):
-                raise ValueError('dups cannot have negative values.')
+            dice = tuple(icepool.Die(die) for die in dice)
+            if qtys is None:
+                qtys = (1,) * len(dice)
+            else:
+                if len(qtys) != len(dice):
+                    raise ValueError(
+                        'Length of qtys must equal the number of die arguments.'
+                    )
+        if any(x < 0 for x in qtys):
+            raise ValueError('qtys cannot have negative values.')
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
-        for die, dup in zip(dice, dups):
-            num_dices[die] += dup
-        count_dice = (1,) * sum(dups)
+        for die, qty in zip(dice, qtys):
+            num_dices[die] += qty
+        count_dice = (1,) * sum(qtys)
         return cls._new_pool(num_dices, count_dice)
 
     @classmethod
@@ -593,5 +608,5 @@ class Pool(OutcomeCountGen):
         return self._hash
 
 
-empty_pool = Pool()
+empty_pool = Pool([])
 """Shared empty pool instance."""

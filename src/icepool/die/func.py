@@ -264,5 +264,5 @@ def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
         A die constructed from the outputs of `func` and the weight of rolling
         the corresponding sorted outcomes.
     """
-    pool = icepool.Pool(*dice)
+    pool = icepool.Pool(dice)
     return icepool.enumerate_gen(pool).sub(func, star=1)

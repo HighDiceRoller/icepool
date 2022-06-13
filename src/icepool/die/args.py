@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collections import Counts
+from icepool.common_args import *
 
 from collections import defaultdict
 import itertools
@@ -46,23 +47,6 @@ def expand(arg, denominator_method: str) -> Mapping[Any, int]:
         return expand_tuple(arg, denominator_method)
     else:
         return expand_scalar(arg)
-
-
-def is_die(arg) -> bool:
-    return isinstance(arg, icepool.Die)
-
-
-def is_deck(arg) -> bool:
-    return isinstance(arg, icepool.Deck)
-
-
-def is_dict(arg) -> bool:
-    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
-        arg, 'items') and hasattr(arg, '__getitem__')
-
-
-def is_tuple(arg) -> bool:
-    return type(arg) is tuple
 
 
 def expand_die(arg) -> Mapping[Any, int]:

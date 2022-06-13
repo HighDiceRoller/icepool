@@ -11,7 +11,7 @@ import itertools
 import math
 
 from typing import Any, Callable, Hashable
-from collections.abc import Collection, Mapping, MutableMapping
+from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 PREFERRED_DIRECTION_COST_FACTOR = 10
 """The preferred direction will be weighted this times as much."""
@@ -185,7 +185,7 @@ class OutcomeCountEval(ABC):
         return {}
 
     def eval(
-        self, *gens: icepool.OutcomeCountGen | Mapping[Any, int] | Collection
+        self, *gens: icepool.OutcomeCountGen | Mapping[Any, int] | Sequence
     ) -> 'icepool.Die':
         """Evaluates generators.
 
@@ -354,15 +354,13 @@ class OutcomeCountEval(ABC):
 
 
 def _convert_gen_arg(
-    gen: icepool.OutcomeCountGen | Mapping[Any, int] | Collection
+    gen: icepool.OutcomeCountGen | Mapping[Any, int] | Sequence
 ) -> icepool.OutcomeCountGen:
     """Converts a single gen argument for `eval()`."""
     if isinstance(gen, icepool.OutcomeCountGen):
         return gen
-    elif is_dict(gen):
-        return icepool.Pool(*gen.keys(), dups=gen.values())  # type: ignore
     else:
-        return icepool.Pool(*gen)
+        return icepool.Pool(gen)
 
 
 def _pop_gens(

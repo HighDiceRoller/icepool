@@ -14,8 +14,8 @@ def test_die():
 
 def test_pool():
     d = {}
-    d[icepool.Pool(icepool.d6, 5)] = 100
-    assert d[icepool.Pool(icepool.d6, 5)] == 100
+    d[icepool.Pool([icepool.d6, 5])] = 100
+    assert d[icepool.Pool([icepool.d6, 5])] == 100
 
 def test_die_construct():
     die = icepool.Die({icepool.d3 : 1, icepool.d3 + 3 : 1})

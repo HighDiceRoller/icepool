@@ -54,17 +54,17 @@ def test_wrap_func_eval():
     assert result.equals(expected)
 
 def test_standard_pool():
-    result = icepool.standard_pool(8, 8, 6, 6, 6).sum()
+    result = icepool.standard_pool([8, 8, 6, 6, 6]).sum()
     expected = 3 @ icepool.d6 + 2 @ icepool.d8
     assert result.equals(expected)
 
 def test_standard_pool_zero_dice():
-    result = icepool.standard_pool().sum()
+    result = icepool.standard_pool([]).sum()
     expected = icepool.Die(0)
     assert result.equals(expected)
 
 def test_runs():
-    result = icepool.FindBestRun()(icepool.standard_pool(12, 10, 8))
+    result = icepool.FindBestRun()(icepool.standard_pool([12, 10, 8]))
     def func(*outcomes):
         outcomes = sorted(outcomes)
         a = outcomes[1] == outcomes[0] + 1
@@ -96,12 +96,12 @@ class SumFixedDirection(icepool.OutcomeCountEval):
         return self._direction
 
 test_pools = [
-    icepool.standard_pool(6,6,6),
-    icepool.standard_pool(6,6,6,6)[0,0,0,1],
-    icepool.standard_pool(6,6,6,6)[0,1,1,1],
-    icepool.standard_pool(6,6,6,6)[-1,0,0,1],
-    icepool.standard_pool(12,10,8,8,6,6,6,4),
-    icepool.Pool(-d6, -d8, -d10),
+    icepool.standard_pool([6,6,6]),
+    icepool.standard_pool([6,6,6,6])[0,0,0,1],
+    icepool.standard_pool([6,6,6,6])[0,1,1,1],
+    icepool.standard_pool([6,6,6,6])[-1,0,0,1],
+    icepool.standard_pool([12,10,8,8,6,6,6,4]),
+    icepool.Pool([-d6, -d8, -d10]),
     (3 @ icepool.d6).pool(12)[-6:],
 ]
 

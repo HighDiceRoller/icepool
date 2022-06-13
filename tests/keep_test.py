@@ -67,34 +67,34 @@ def test_keep_lowest_drop_highest(num_keep):
     assert result.equals(expected)
 
 def test_pool_select():
-    pool = icepool.Pool(*[icepool.d6] * 5)
+    pool = icepool.Pool([icepool.d6] * 5)
     assert pool[-2].equals(pool[-2:-1].sum())
     assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
 
 def test_sum_from_pool():
-    pool = icepool.Pool(*[icepool.d6] * 5)
+    pool = icepool.Pool([icepool.d6] * 5)
     assert pool.sum().equals(5 @ icepool.d6)
 
 def test_pool_select_multi():
-    pool = icepool.Pool(icepool.d6)
+    pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[0,0,2,0,0])
     expected = 2 * icepool.d6.keep_highest(5, 1, num_drop=2)
     assert result.equals(expected)
 
 def test_pool_select_negative():
-    pool = icepool.Pool(icepool.d6)
+    pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[0,0,-2,0,0])
     expected = -2 * icepool.d6.keep_highest(5, 1, num_drop=2)
     assert result.equals(expected)
 
 def test_pool_select_mixed_sign():
-    pool = icepool.Pool(icepool.d6)
+    pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[-1,1])
     expected = abs(icepool.d6 - icepool.d6)
     assert result.equals(expected)
 
 def test_pool_select_mixed_sign_split():
-    pool = icepool.Pool(icepool.d6)
+    pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[-1,0,0,1])
     expected = bf_diff_highest_lowest(icepool.d6, 4)
     assert result.equals(expected)

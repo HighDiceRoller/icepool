@@ -62,7 +62,7 @@ test_dice = [
 @pytest.mark.parametrize('num_keep', [0, 1, 2])
 @pytest.mark.parametrize('num_drop', [0, 1, 2])
 def test_pool_lowest(dice, num_keep, num_drop):
-    result = icepool.Pool(*dice).lowest(num_keep=num_keep, num_drop=num_drop)
+    result = icepool.Pool(dice).lowest(num_keep=num_keep, num_drop=num_drop)
     def expected_lowest(*outcomes):
         if num_keep == 0: return 0
         s = sorted(outcomes)
@@ -76,7 +76,7 @@ def test_pool_lowest(dice, num_keep, num_drop):
 @pytest.mark.parametrize('num_keep', [0, 1, 2])
 @pytest.mark.parametrize('num_drop', [0, 1, 2])
 def test_pool_highest(dice, num_keep, num_drop):
-    result = icepool.Pool(*dice).highest(num_keep=num_keep, num_drop=num_drop)
+    result = icepool.Pool(dice).highest(num_keep=num_keep, num_drop=num_drop)
     def expected_highest(*outcomes):
         if num_keep == 0: return 0
         s = sorted(outcomes)

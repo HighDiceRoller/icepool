@@ -73,7 +73,7 @@ def _keep(*dice, start: int, stop: int) -> 'icepool.Die':
         return _highest_single(*dice)
 
     # Use pool.
-    return icepool.Pool(*dice)[start:stop].sum()
+    return icepool.Pool(dice)[start:stop].sum()
 
 
 def _lowest_single(*dice) -> 'icepool.Die':
