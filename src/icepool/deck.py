@@ -18,17 +18,25 @@ class Deck(OutcomeCountGen):
     """
 
     def __init__(self,
-                 *deck,
-                 hand_size: int,
-                 dups: Sequence[int] | None = None):
+                 outcomes,
+                 dups: Sequence[int] | None = None,
+                 *,
+                 hand_size: int):
         """Constructor for a deck.
 
         Args:
-            *deck: Each argument can be one of the following:
+            outcomes: The outcomes of the deck, i.e. the cards. This can be
+                one of the following:
+
+                * A dict mapping outcomes to dups.
+                * A sequence of outcomes.
+
+                Each outcome may be one of the following:
+
                 * A deck. The outcomes of the deck will be "flattened" into the
                     result; a deck object will never contain a deck as an
                     outcome.
-                * A dict mapping outcomes (cards) to dups.
+                * A dict mapping outcomes to dups.
                 * A tuple of outcomes.
 
                     Any tuple elements that are decks or dicts will expand the
@@ -37,23 +45,23 @@ class Deck(OutcomeCountGen):
                     outcomes.
                 * Anything else will be treated as a scalar.
         """
-        self._deck = expand_create_args(*deck, dups=dups)
+        self._data = expand_create_args(*outcomes, dups=dups)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')
 
     def outcomes(self) -> Sequence:
-        return self._deck.keys()
+        return self._data.keys()
 
     def dups(self) -> Sequence[int]:
-        return self._deck.values()
+        return self._data.values()
 
     def items(self) -> Sequence[tuple[Any, int]]:
-        return self._deck.items()
+        return self._data.items()
 
     @cached_property
     def _deck_size(self) -> int:
-        return sum(self._deck.values())
+        return sum(self._data.values())
 
     def deck_size(self) -> int:
         return self._deck_size
@@ -83,9 +91,11 @@ class Deck(OutcomeCountGen):
         min_count = max(0, deck_count + self.hand_size() - self.deck_size())
         max_count = min(deck_count, self.hand_size())
         for count in range(min_count, max_count + 1):
-            popped_draw = Deck(*self.outcomes()[1:],
-                               hand_size=self.hand_size() - count,
-                               dups=self.dups()[1:])
+            popped_draw = Deck(
+                self.outcomes()[1:],
+                dups=self.dups()[1:],
+                hand_size=self.hand_size() - count,
+            )
             weight = icepool.math.comb(deck_count, count)
             yield popped_draw, count, weight
 
@@ -101,9 +111,9 @@ class Deck(OutcomeCountGen):
         min_count = max(0, deck_count + self.hand_size() - self.deck_size())
         max_count = min(deck_count, self.hand_size())
         for count in range(min_count, max_count + 1):
-            popped_draw = Deck(*self.outcomes()[:-1],
-                               hand_size=self.hand_size() - count,
-                               dups=self.dups()[:-1])
+            popped_draw = Deck(self.outcomes()[:-1],
+                               dups=self.dups()[:-1],
+                               hand_size=self.hand_size() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_draw, count, weight
 
@@ -128,4 +138,4 @@ class Deck(OutcomeCountGen):
         return self._hash
 
 
-empty_card_draw = Deck(hand_size=0)
+empty_deck = Deck([], hand_size=0)
