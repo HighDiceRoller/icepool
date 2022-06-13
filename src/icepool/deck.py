@@ -55,8 +55,7 @@ class Deck(OutcomeCountGen):
             if dups is not None:
                 raise ValueError('dups cannot be used with a dict argument.')
             dups = tuple(outcomes.values())  # type: ignore
-            outcomes = tuple(
-                icepool.Die([die]) for die in outcomes.keys())  # type: ignore
+            outcomes = tuple(outcomes.keys())  # type: ignore
         else:
             if dups is None:
                 dups = (1,) * len(outcomes)
