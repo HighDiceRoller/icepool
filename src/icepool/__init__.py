@@ -29,11 +29,11 @@ from icepool.die.die_with_truth import DieWithTruth
 
 from icepool.die.keep import lowest, highest
 
-from icepool.pool.pool import Pool, standard_pool
+from icepool.pool import Pool, standard_pool
 from icepool.generator import OutcomeCountGen
 from icepool.eval import OutcomeCountEval, WrapFuncEval, JointEval, SumGen, sum_gen, enumerate_gen, FindBestSet, FindBestRun
 
-from icepool.deck.deck import Deck
+from icepool.deck import Deck
 
 import enum
 

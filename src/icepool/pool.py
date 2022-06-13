@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
-import icepool.pool.cost
+import icepool.pool_cost
 from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
 
@@ -294,7 +294,7 @@ class Pool(OutcomeCountGen):
             pop_min_cost
             pop_max_cost
         """
-        return icepool.pool.cost.estimate_costs(self)
+        return icepool.pool_cost.estimate_costs(self)
 
     def count_dice(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
