@@ -127,40 +127,36 @@ class Die():
         Raises:
             `ValueError`: `None` is not a valid outcome for a die.
         """
-        if cls == Die:
-            if isinstance(outcomes, Die):
-                if weights is not None:
-                    raise ValueError(
-                        'weights cannot be used with a Die argument.')
-                return outcomes
-            if is_dict(outcomes):
-                if weights is not None:
-                    raise ValueError(
-                        'weights cannot be used with a dict argument.')
-                weights = tuple(outcomes.values())  # type: ignore
-                outcomes = tuple(outcomes.keys())  # type: ignore
-            else:
-                if weights is None:
-                    weights = (1,) * len(outcomes)
-                else:
-                    if len(weights) != len(outcomes):
-                        raise ValueError(
-                            'Length of weights must equal the number of outcomes.'
-                        )
-            if any(x < 0 for x in weights):
-                raise ValueError('weights cannot have negative values.')
-
-            if weights is None and len(outcomes) == 1 and isinstance(
-                    outcomes[0], Die):
-                return outcomes[0]
-            self = super(Die, cls).__new__(cls)
-            self._data = expand_create_args(
-                *outcomes,
-                weights=weights,
-                denominator_method=denominator_method)
+        if isinstance(outcomes, Die):
+            if weights is not None:
+                raise ValueError(
+                    'weights cannot be used with a Die argument.')
+            return outcomes
+        if is_dict(outcomes):
+            if weights is not None:
+                raise ValueError(
+                    'weights cannot be used with a dict argument.')
+            weights = tuple(outcomes.values())  # type: ignore
+            outcomes = tuple(outcomes.keys())  # type: ignore
         else:
-            # Just forward.
-            self = super(Die, cls).__new__(cls)
+            if weights is None:
+                weights = (1,) * len(outcomes)
+            else:
+                if len(weights) != len(outcomes):
+                    raise ValueError(
+                        'Length of weights must equal the number of outcomes.'
+                    )
+        if any(x < 0 for x in weights):
+            raise ValueError('weights cannot have negative values.')
+
+        if weights is None and len(outcomes) == 1 and isinstance(
+                outcomes[0], Die):
+            return outcomes[0]
+        self = super(Die, cls).__new__(cls)
+        self._data = expand_create_args(
+            *outcomes,
+            weights=weights,
+            denominator_method=denominator_method)
         return self
 
     def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
