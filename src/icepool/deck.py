@@ -71,8 +71,12 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
     def outcomes(self) -> CountsKeysView:
         return self._data.keys()
 
+    keys = outcomes
+
     def dups(self) -> CountsValuesView:
         return self._data.values()
+
+    values = dups
 
     def items(self) -> CountsItemsView:
         return self._data.items()
