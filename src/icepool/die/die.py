@@ -1044,25 +1044,33 @@ class Die():
     def __pos__(self) -> 'Die':
         return self.unary_op(operator.pos)
 
-    def __abs__(self) -> 'Die':
-        return self.unary_op(operator.abs)
-
-    abs = __abs__
-
     def __invert__(self) -> 'Die':
         return self.unary_op(operator.invert)
 
-    def __round__(self, ndigits: int = None) -> 'Die':
+    def abs(self) -> 'Die':
+        return self.unary_op(operator.abs)
+
+    __abs__ = abs
+
+    def round(self, ndigits: int = None) -> 'Die':
         return self.unary_op(round, ndigits)
 
-    def __trunc__(self) -> 'Die':
+    __round__ = round
+
+    def trunc(self) -> 'Die':
         return self.unary_op(math.trunc)
 
-    def __floor__(self) -> 'Die':
+    __trunc__ = trunc
+
+    def floor(self) -> 'Die':
         return self.unary_op(math.floor)
 
-    def __ceil__(self) -> 'Die':
+    __floor__ = floor
+
+    def ceil(self) -> 'Die':
         return self.unary_op(math.ceil)
+
+    __ceil__ = ceil
 
     def marginal(self, index_or_slice, /) -> 'Die':
         """Marginal distribution; equivalently, indexes/slices outcomes.
