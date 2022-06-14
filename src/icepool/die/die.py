@@ -49,7 +49,7 @@ class Die():
 
     def __new__(cls,
                 outcomes,
-                weights: Sequence[int] | None = None,
+                weights: Sequence[int] | int | None = None,
                 denominator_method: str = 'lcm') -> 'Die':
         """Constructor for a die.
 

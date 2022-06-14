@@ -24,7 +24,7 @@ class Deck(OutcomeCountGen):
 
     def __new__(cls,
                 outcomes,
-                dups: Sequence[int] | None = None,
+                dups: Sequence[int] | int | None = None,
                 *,
                 hand_size: int):
         """Constructor for a deck.

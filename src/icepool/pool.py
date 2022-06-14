@@ -43,7 +43,7 @@ class Pool(OutcomeCountGen):
 
     def __new__(cls,
                 dice: Sequence | Mapping[Any, int],
-                qtys: Sequence[int] | None = None) -> 'Pool':
+                qtys: Sequence[int] | int | None = None) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
