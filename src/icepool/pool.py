@@ -4,7 +4,7 @@ import icepool
 import icepool.math
 import icepool.pool_cost
 import icepool.common_args
-from icepool.collections import Counts
+from icepool.counts import Counts
 from icepool.generator import OutcomeCountGen
 
 import itertools

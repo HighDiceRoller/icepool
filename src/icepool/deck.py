@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 import icepool.common_args
-from icepool.collections import Counts
+from icepool.counts import Counts
 from icepool.generator import OutcomeCountGen
 
 from functools import cached_property

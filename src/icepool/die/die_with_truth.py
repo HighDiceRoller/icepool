@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.collections import Counts
+from icepool.counts import Counts
 from icepool.die.die import Die
 
 from functools import cached_property

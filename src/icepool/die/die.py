@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.die.format
 import icepool.common_args
-from icepool.collections import Counts
+from icepool.counts import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
 
 import bisect
