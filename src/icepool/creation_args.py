@@ -62,7 +62,7 @@ def expand_args_for_deck(args, times):
 
 def expand(arg, merge_func: Callable):
 
-    if hasattr(arg, 'items'):
+    if is_dict(arg):
         return expand_dict(arg, merge_func)
     elif isinstance(arg, tuple):
         return expand_tuple(arg, merge_func)
@@ -76,8 +76,8 @@ def is_dict(arg) -> bool:
 
 
 def expand_dict(arg, merge_func: Callable) -> Mapping[Any, int]:
-    subdatas = [expand(k, merge_func) for k, _ in arg.items()]
-    weights = [v for _, v in arg.items()]
+    subdatas = [expand(k, merge_func) for k in arg.keys()]
+    weights = [v for v in arg.values()]
     return merge_func(subdatas, weights)
 
 
