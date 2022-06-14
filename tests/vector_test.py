@@ -28,12 +28,12 @@ def test_vector_matmul():
 def test_nested_unary_elementwise():
     result = icepool.Die([(((1,),),)])
     result = -result
-    assert result[0][0][0].equals(icepool.Die([-1]))
+    assert result.marginal(0).marginal(0).marginal(0).equals(icepool.Die([-1]))
     
 def test_nested_binary_elementwise():
     result = icepool.Die([(((icepool.d6,),),)])
     result = result + result
-    assert result[0][0][0].equals(2 @ icepool.d6)
+    assert result.marginal(0).marginal(0).marginal(0).equals(2 @ icepool.d6)
 
 def test_binary_op_mismatch_scalar_vector():
     with pytest.raises(ValueError):
