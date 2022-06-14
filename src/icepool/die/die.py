@@ -511,14 +511,14 @@ class Die(Mapping[Any, int]):
     # Joint statistics.
 
     def covariance(self, i: int, j: int):
-        mean_i = self.marginal(i).mean()
-        mean_j = self.marginal(j).mean()
+        mean_i = self.marginals[i].mean()
+        mean_j = self.marginals[j].mean()
         return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight
                    for outcome, weight in self.items()) / self.denominator()
 
     def correlation(self, i: int, j: int):
-        sd_i = self.marginal(i).standard_deviation()
-        sd_j = self.marginal(j).standard_deviation()
+        sd_i = self.marginals[i].standard_deviation()
+        sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
 
     # Weight management.
@@ -1075,26 +1075,36 @@ class Die(Mapping[Any, int]):
 
     __ceil__ = ceil
 
-    def marginal(self, dims: int | slice | Sequence[int | slice], /) -> 'Die':
-        """Marginal distribution; equivalently, indexes/slices outcomes.
+    class Marginals():
+        """Provides slicing syntax for marginals.
 
-        Args:
-            dim: This selects the dimension(s) to marginalize.
-                A sequence will run this for each element and produce a tuple
-                of the results.
+        E.g. `die.marginals[0]` marginalizes the first dimension.
+
+        Allowed arguments are:
+        * int, slice: Indexes directly into each outcome.
+        * Sequence: Indexes each element into each outcome and produces a tuple.
         """
-        if isinstance(dims, (int, slice)):
 
-            def repl(outcome):
-                return outcome[dims]
-        else:
+        def __init__(self, die: 'Die'):
+            self._die = die
 
-            def repl(outcome):
-                return (outcome[d] for d in dims)
+        def __getitem__(self, dims: int | slice | Sequence[int | slice],
+                        /) -> 'Die':
+            if isinstance(dims, (int, slice)):
 
-        return self.sub(repl)
+                def repl(outcome):
+                    return outcome[dims]
+            else:
 
-    # __getitem__ = marginal
+                def repl(outcome):
+                    return (outcome[d] for d in dims)
+
+            return self._die.sub(repl)
+
+    @property
+    def marginals(self):
+        """You can use `die.marginal(dims)` for the same effect as this."""
+        return Die.Marginals(self)
 
     @staticmethod
     def _zero(x):
