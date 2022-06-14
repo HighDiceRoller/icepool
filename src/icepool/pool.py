@@ -154,7 +154,7 @@ class Pool(OutcomeCountGen):
 
     def set_post_roll_counts(self,
                              post_roll_counts: int | slice | tuple[int, ...]):
-        """Returns a pool with the selected dice counted.
+        """Returns a pool with the selected dice counted after rolling and sorting.
 
         You can use `pool[post_roll_counts]` for the same effect as this method.
 

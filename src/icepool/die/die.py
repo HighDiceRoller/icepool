@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.die.format
 import icepool.creation_args
-from icepool.counts import Counts
+from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
 
 import bisect
@@ -14,12 +14,12 @@ import math
 import operator
 import random
 
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die():
-    """An immutable mapping of outcomes to nonnegative `int` weights.
+class Die(Mapping[Any, int]):
+    """An immutable Mapping of outcomes to nonnegative `int` weights.
 
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.
@@ -224,7 +224,7 @@ class Die():
 
     # Basic access.
 
-    def outcomes(self) -> Sequence:
+    def outcomes(self) -> CountsKeysView:
         """Returns the sequence of sorted outcomes of the die. """
         return self._data.keys()
 
@@ -260,7 +260,7 @@ class Die():
         """Returns `True` if this die has no outcomes. """
         return self.num_outcomes() == 0
 
-    def weights(self) -> Sequence[int]:
+    def weights(self) -> CountsValuesView:
         """Returns the sequence of the weights of the die in outcome order. """
         return self._data.values()
 
@@ -268,9 +268,22 @@ class Die():
         """Returns `True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_values()
 
-    def items(self) -> Sequence[tuple[Any, int]]:
+    keys = outcomes
+
+    values = weights
+
+    def items(self) -> CountsItemsView:
         """Returns the sequence of sorted outcome, weight pairs. """
         return self._data.items()
+
+    def __getitem__(self, outcome, /) -> int:
+        return self._data[outcome]
+
+    def __iter__(self) -> Iterator:
+        return iter(self.keys())
+
+    def __len__(self) -> int:
+        return len(self._data)
 
     # Weights.
 
@@ -1297,19 +1310,6 @@ class Die():
         r = random.randrange(self.denominator())
         index = bisect.bisect_right(self.cweights(), r)
         return self.outcomes()[index]
-
-    # Invalid operations.
-
-    def __iter__(self):
-        raise TypeError('A die is not iterable.')
-
-    def __len__(self):
-        raise TypeError(
-            'len() of a die is ambiguous. Use die.num_outcomes() or die.outcome_len() instead.'
-        )
-
-    def __reversed__(self):
-        raise TypeError('A die cannot be reversed.')
 
     # Equality and hashing.
 

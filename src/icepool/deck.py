@@ -3,16 +3,16 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 import icepool.creation_args
-from icepool.counts import Counts
+from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.generator import OutcomeCountGen
 
 from functools import cached_property
 
-from typing import Any, Generator
+from typing import Any, Generator, Iterator
 from collections.abc import Mapping, Sequence
 
 
-class Deck(OutcomeCountGen):
+class Deck(OutcomeCountGen, Mapping[Any, int]):
     """EXPERIMENTAL: Represents drawing a hand from a deck.
 
     In other words, this is sampling without replacement.
@@ -68,14 +68,23 @@ class Deck(OutcomeCountGen):
             raise ValueError('hand_size cannot exceed deck_size.')
         return self
 
-    def outcomes(self) -> Sequence:
+    def outcomes(self) -> CountsKeysView:
         return self._data.keys()
 
-    def dups(self) -> Sequence[int]:
+    def dups(self) -> CountsValuesView:
         return self._data.values()
 
-    def items(self) -> Sequence[tuple[Any, int]]:
+    def items(self) -> CountsItemsView:
         return self._data.items()
+
+    def __getitem__(self, outcome) -> int:
+        return self._data[outcome]
+
+    def __iter__(self) -> Iterator:
+        return iter(self.keys())
+
+    def __len__(self) -> int:
+        return len(self._data)
 
     @cached_property
     def _deck_size(self) -> int:
