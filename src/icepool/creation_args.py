@@ -46,7 +46,7 @@ def itemize(keys: Mapping[Any, int] | Sequence,
 
 def expand_args_for_die(args, times, denominator_method: str):
     merge_func = merge_weights_funcs[denominator_method]
-    subdatas = [expand(arg, merge_func, (icepool.Deck,)) for arg in args]
+    subdatas = [expand(arg, merge_func) for arg in args]
     data = merge_func(subdatas, times)
 
     return Counts(sorted(data.items()))
@@ -54,20 +54,18 @@ def expand_args_for_die(args, times, denominator_method: str):
 
 def expand_args_for_deck(args, times):
     merge_func = merge_dups
-    subdatas = [expand(arg, merge_func, (icepool.Die,)) for arg in args]
+    subdatas = [expand(arg, merge_func) for arg in args]
     data = merge_func(subdatas, times)
 
     return Counts(sorted(data.items()))
 
 
-def expand(arg, merge_func: Callable, disallowed_types: tuple[type]):
-    if isinstance(arg, disallowed_types):
-        raise TypeError(f"Arg of type '{type(arg).__name__}' is not allowed.")
+def expand(arg, merge_func: Callable):
 
     if hasattr(arg, 'items'):
-        return expand_dict(arg, merge_func, disallowed_types)
+        return expand_dict(arg, merge_func)
     elif isinstance(arg, tuple):
-        return expand_tuple(arg, merge_func, disallowed_types)
+        return expand_tuple(arg, merge_func)
     else:
         return expand_scalar(arg)
 
@@ -77,18 +75,16 @@ def is_dict(arg) -> bool:
         arg, 'items') and hasattr(arg, '__getitem__')
 
 
-def expand_dict(arg, merge_func: Callable,
-                disallowed_types: tuple[type]) -> Mapping[Any, int]:
-    subdatas = [expand(k, merge_func, disallowed_types) for k, _ in arg.items()]
+def expand_dict(arg, merge_func: Callable) -> Mapping[Any, int]:
+    subdatas = [expand(k, merge_func) for k, _ in arg.items()]
     weights = [v for _, v in arg.items()]
     return merge_func(subdatas, weights)
 
 
-def expand_tuple(arg, merge_func: Callable,
-                 disallowed_types: tuple[type]) -> Mapping[Any, int]:
+def expand_tuple(arg, merge_func: Callable) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {(): 1}
-    subdatas = [expand(x, merge_func, disallowed_types) for x in arg]
+    subdatas = [expand(x, merge_func) for x in arg]
     data: MutableMapping[Any, int] = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
         outcomes, dups = zip(*t)
