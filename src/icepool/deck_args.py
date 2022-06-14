@@ -12,21 +12,9 @@ from typing import Any
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-def expand_create_args(args, dups: Sequence[int] | None) -> Counts:
+def expand_create_args(args: Sequence, dups: Sequence[int]) -> Counts:
     """Helper function to expand outcome arguments."""
-    if dups is not None:
-        if len(dups) != len(args):
-            raise ValueError(
-                'If dups are provided, there must be exactly one dup per argument.'
-            )
-    else:
-        dups = (1,) * len(args)
 
-    # Special case: single deck argument.
-    if len(dups) == 1 and is_deck(dups[0]) and dups[0] == 1:
-        return args[0]._data
-
-    # Expand data.
     subdatas = [expand(arg) for arg in args]
     data = merge_subdatas(subdatas, dups)
 

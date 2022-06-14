@@ -12,22 +12,10 @@ from typing import Any
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-def expand_create_args(args, weights: Sequence[int] | None,
+def expand_create_args(args: Sequence, weights: Sequence[int],
                        denominator_method: str) -> Counts:
     """Helper function to expand outcome arguments."""
-    if weights is not None:
-        if len(weights) != len(args):
-            raise ValueError(
-                'If weights are provided, there must be exactly one weight per argument.'
-            )
-    else:
-        weights = (1,) * len(args)
 
-    # Special case: single die argument.
-    if len(args) == 1 and is_die(args[0]) and weights[0] == 1:
-        return args[0]._data
-
-    # Expand data.
     subdatas = [expand(arg, denominator_method) for arg in args]
     data = merge_subdatas(subdatas, weights, denominator_method)
 
