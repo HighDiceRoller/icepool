@@ -27,6 +27,8 @@ from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
 from icepool.die.die import Die
 from icepool.die.die_with_truth import DieWithTruth
 
+from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
+
 from icepool.die.keep import lowest, highest
 
 from icepool.pool import Pool, standard_pool
@@ -47,9 +49,10 @@ Reroll = SpecialValue.Reroll
 """Indicates an outcome should be rerolled (with no max depth)."""
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'Die', 'from_cweights',
-    'from_sweights', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
-    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'OutcomeCountGen', 'Pool', 'standard_pool',
-    'OutcomeCountEval', 'JointEval', 'SumGen', 'Deck'
+    'standard', 'd', 'bernoulli', 'coin', 'Die', 'CountsKeysView',
+    'CountsValuesView', 'CountsItemsView', 'from_cweights', 'from_sweights',
+    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
+    'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
+    'OutcomeCountGen', 'Pool', 'standard_pool', 'OutcomeCountEval', 'JointEval',
+    'SumGen', 'Deck'
 ]

@@ -92,6 +92,7 @@ class Counts(Mapping[Any, int]):
 
 
 class CountsKeysView(KeysView, Sequence):
+    """This functions as both a `KeysView` and a `Sequence`."""
 
     def __init__(self, counts: Counts):
         self._mapping = counts
@@ -107,6 +108,7 @@ class CountsKeysView(KeysView, Sequence):
 
 
 class CountsValuesView(ValuesView[int], Sequence[int]):
+    """This functions as both a `ValuesView` and a `Sequence`."""
 
     def __init__(self, counts: Counts):
         self._mapping = counts
@@ -122,6 +124,7 @@ class CountsValuesView(ValuesView[int], Sequence[int]):
 
 
 class CountsItemsView(ItemsView[Any, int], Sequence[tuple[Any, int]]):
+    """This functions as both an `ItemsView` and a `Sequence`."""
 
     def __init__(self, counts: Counts):
         self._mapping = counts
