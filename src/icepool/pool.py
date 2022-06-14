@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 import icepool.pool_cost
-import icepool.common_args
+import icepool.creation_args
 from icepool.counts import Counts
 from icepool.generator import OutcomeCountGen
 
@@ -70,7 +70,7 @@ class Pool(OutcomeCountGen):
             else:
                 dice = dice._dice
 
-        dice, times = icepool.common_args.itemize(dice, times)
+        dice, times = icepool.creation_args.itemize(dice, times)
         dice = tuple(icepool.Die([die]) for die in dice)
 
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)

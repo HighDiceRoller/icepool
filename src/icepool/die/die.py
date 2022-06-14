@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.die.format
-import icepool.common_args
+import icepool.creation_args
 from icepool.counts import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
 
@@ -132,14 +132,14 @@ class Die():
             else:
                 outcomes = outcomes._data
 
-        outcomes, times = icepool.common_args.itemize(outcomes, times)
+        outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
         if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Die):
             return outcomes[0]
 
         self = super(Die, cls).__new__(cls)
-        self._data = icepool.common_args.expand_args_for_die(
+        self._data = icepool.creation_args.expand_args_for_die(
             outcomes, times, denominator_method=denominator_method)
         return self
 

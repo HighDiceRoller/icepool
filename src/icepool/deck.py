@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
-import icepool.common_args
+import icepool.creation_args
 from icepool.counts import Counts
 from icepool.generator import OutcomeCountGen
 
@@ -59,10 +59,10 @@ class Deck(OutcomeCountGen):
             else:
                 outcomes = outcomes._data
 
-        outcomes, times = icepool.common_args.itemize(outcomes, times)
+        outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
         self = super(Deck, cls).__new__(cls)
-        self._data = icepool.common_args.expand_args_for_deck(outcomes, times)
+        self._data = icepool.creation_args.expand_args_for_deck(outcomes, times)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')
