@@ -9,3 +9,6 @@
 /notebooks/.ipynb_checkpoints
 /public/notebooks
 /scripts
+/tests/*.bat
+/misc/*.ico
+/misc/*.png
