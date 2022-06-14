@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
-from icepool.common_args import is_dict
+import icepool.common_args
 from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
 from icepool.deck_args import expand_create_args
@@ -55,20 +55,9 @@ class Deck(OutcomeCountGen):
                 raise ValueError('dups cannot be used with a Deck argument.')
             return outcomes
         self = super(Deck, cls).__new__(cls)
-        if is_dict(outcomes):
-            if dups is not None:
-                raise ValueError('dups cannot be used with a dict argument.')
-            dups = tuple(outcomes.values())  # type: ignore
-            outcomes = tuple(outcomes.keys())  # type: ignore
-        else:
-            if dups is None:
-                dups = (1,) * len(outcomes)
-            else:
-                if len(dups) != len(outcomes):
-                    raise ValueError(
-                        'Length of dups must equal the number of outcomes.')
-        if any(x < 0 for x in dups):
-            raise ValueError('dups cannot have negative values.')
+
+        outcomes, dups = icepool.common_args.itemize(outcomes, dups)
+
         self._data = expand_create_args(*outcomes, dups=dups)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():

@@ -16,166 +16,6 @@ from typing import Any, Callable, Generator
 from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 
-def count_sorted_tuple(
-        num_dice: int,
-        count_sorted: int | slice | tuple[int, ...]) -> tuple[int, ...]:
-    """Expresses `count_sorted` as a tuple.
-
-    See `Pool.set_count_sorted()` for details.
-
-    Args:
-        `num_dice`: An `int` specifying the number of dice.
-        `count_sorted`: Raw specification for how the dice are to be counted.
-    Raises:
-        `ValueError` if:
-            * More than one `Ellipsis` is used.
-            * An `Ellipsis` is used in the center with too few `num_dice`.
-    """
-    if isinstance(count_sorted, int):
-        result = [0] * num_dice
-        result[count_sorted] = 1
-        return tuple(result)
-    elif isinstance(count_sorted, slice):
-        if count_sorted.step is not None:
-            # "Step" is not useful here, so we repurpose it to set the number
-            # of dice.
-            num_dice = count_sorted.step
-            count_sorted = slice(count_sorted.start, count_sorted.stop)
-        result = [0] * num_dice
-        result[count_sorted] = [1] * len(result[count_sorted])
-        return tuple(result)
-    else:
-        split = None
-        for i, x in enumerate(count_sorted):
-            if x is Ellipsis:
-                if split is None:
-                    split = i
-                else:
-                    raise ValueError(
-                        'Cannot use more than one Ellipsis (...) for count_sorted.'
-                    )
-
-        if split is None:
-            return tuple(count_sorted)
-
-        extra_dice = num_dice - len(count_sorted) + 1
-
-        if split == 0:
-            # Ellipsis on left.
-            count_sorted = count_sorted[1:]
-            if extra_dice < 0:
-                return tuple(count_sorted[-extra_dice:])
-            else:
-                return (0,) * extra_dice + tuple(count_sorted)
-        elif split == len(count_sorted) - 1:
-            # Ellipsis on right.
-            count_sorted = count_sorted[:-1]
-            if extra_dice < 0:
-                return tuple(count_sorted[:extra_dice])
-            else:
-                return tuple(count_sorted) + (0,) * extra_dice
-        else:
-            # Ellipsis in center.
-            if extra_dice < 0:
-                result = [0] * num_dice
-                for i in range(min(split, num_dice)):
-                    result[i] += count_sorted[i]
-                reverse_split = split - len(count_sorted)
-                for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
-                    result[i] += count_sorted[i]
-                return tuple(result)
-            else:
-                return tuple(count_sorted[:split]) + (0,) * extra_dice + tuple(
-                    count_sorted[split + 1:])
-
-
-def standard_pool(die_sizes: Collection[int]) -> 'Pool':
-    """Returns a pool of standard dice.
-
-    Args:
-        die_sizes: For each of these die_size X, the pool will contain one dX.
-    """
-    return Pool(list(icepool.d(x) for x in die_sizes))
-
-
-def iter_die_pop_min(
-        die: 'icepool.Die', num_dice: int, min_outcome
-) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
-    """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
-
-    Args:
-        die: The die to pop.
-        die_count: The number of this kind of die.
-        min_outcome: The outcome to pop. This is <= the die's min outcome.
-
-    Yields:
-        The popped die.
-        The number of remaining dice of this kind.
-        The number of dice that rolled max_outcome.
-        The weight of this number of dice rolling max_outcome.
-    """
-    if die.min_outcome() != min_outcome:
-        num_remain = num_dice
-        num_rolled = 0
-        weight = 1
-        yield die, num_remain, num_rolled, weight
-        return
-
-    popped_die, single_weight = die._pop_min()
-
-    if popped_die.is_empty():
-        # This is the last outcome. All dice must roll this outcome.
-        num_remain = 0
-        num_rolled = num_dice
-        weight = single_weight**num_dice
-        yield popped_die, num_remain, num_rolled, weight
-        return
-
-    comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for num_rolled, weight in enumerate(comb_row):
-        num_remain = num_dice - num_rolled
-        yield popped_die, num_remain, num_rolled, weight
-
-
-def iter_die_pop_max(
-        die: 'icepool.Die', num_dice: int, max_outcome
-) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
-    """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
-
-    Args:
-        die: The die to pop.
-        die_count: The number of this kind of die.
-        max_outcome: The outcome to pop. This is >= the die's max outcome.
-
-    Yields:
-        The popped die.
-        The number of remaining dice of this kind.
-        The number of dice that rolled max_outcome.
-        The weight of this number of dice rolling max_outcome.
-    """
-    if die.max_outcome() != max_outcome:
-        num_remain = num_dice
-        num_rolled = 0
-        weight = 1
-        yield die, num_remain, num_rolled, weight
-        return
-
-    popped_die, single_weight = die._pop_max()
-
-    if popped_die.is_empty():
-        # This is the last outcome. All dice must roll this outcome.
-        num_remain = 0
-        num_rolled = num_dice
-        weight = single_weight**num_dice
-        yield popped_die, num_remain, num_rolled, weight
-        return
-
-    comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for num_rolled, weight in enumerate(comb_row):
-        num_remain = num_dice - num_rolled
-        yield popped_die, num_remain, num_rolled, weight
-
-
 @cache
 def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
                     count_sorted: tuple[int, ...]) -> 'Pool':
@@ -225,22 +65,10 @@ class Pool(OutcomeCountGen):
             if qtys is not None:
                 raise ValueError('qtys cannot be used with a Pool argument.')
             return dice
-        if is_dict(dice):
-            if qtys is not None:
-                raise ValueError('qtys cannot be used with a dict argument.')
-            qtys = tuple(dice.values())  # type: ignore
-            dice = tuple(
-                icepool.Die([die]) for die in dice.keys())  # type: ignore
-        else:
-            dice = tuple(icepool.Die([die]) for die in dice)
-            if qtys is None:
-                qtys = (1,) * len(dice)
-            else:
-                if len(qtys) != len(dice):
-                    raise ValueError(
-                        'Length of qtys must equal the number of dice.')
-        if any(x < 0 for x in qtys):
-            raise ValueError('qtys cannot have negative values.')
+
+        dice, qtys = icepool.common_args.itemize(dice, qtys)
+        dice = tuple(icepool.Die([die]) for die in dice)
+
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die, qty in zip(dice, qtys):
             num_dices[die] += qty
@@ -606,6 +434,166 @@ class Pool(OutcomeCountGen):
 
     def __hash__(self) -> int:
         return self._hash
+
+
+def count_sorted_tuple(
+        num_dice: int,
+        count_sorted: int | slice | tuple[int, ...]) -> tuple[int, ...]:
+    """Expresses `count_sorted` as a tuple.
+
+    See `Pool.set_count_sorted()` for details.
+
+    Args:
+        `num_dice`: An `int` specifying the number of dice.
+        `count_sorted`: Raw specification for how the dice are to be counted.
+    Raises:
+        `ValueError` if:
+            * More than one `Ellipsis` is used.
+            * An `Ellipsis` is used in the center with too few `num_dice`.
+    """
+    if isinstance(count_sorted, int):
+        result = [0] * num_dice
+        result[count_sorted] = 1
+        return tuple(result)
+    elif isinstance(count_sorted, slice):
+        if count_sorted.step is not None:
+            # "Step" is not useful here, so we repurpose it to set the number
+            # of dice.
+            num_dice = count_sorted.step
+            count_sorted = slice(count_sorted.start, count_sorted.stop)
+        result = [0] * num_dice
+        result[count_sorted] = [1] * len(result[count_sorted])
+        return tuple(result)
+    else:
+        split = None
+        for i, x in enumerate(count_sorted):
+            if x is Ellipsis:
+                if split is None:
+                    split = i
+                else:
+                    raise ValueError(
+                        'Cannot use more than one Ellipsis (...) for count_sorted.'
+                    )
+
+        if split is None:
+            return tuple(count_sorted)
+
+        extra_dice = num_dice - len(count_sorted) + 1
+
+        if split == 0:
+            # Ellipsis on left.
+            count_sorted = count_sorted[1:]
+            if extra_dice < 0:
+                return tuple(count_sorted[-extra_dice:])
+            else:
+                return (0,) * extra_dice + tuple(count_sorted)
+        elif split == len(count_sorted) - 1:
+            # Ellipsis on right.
+            count_sorted = count_sorted[:-1]
+            if extra_dice < 0:
+                return tuple(count_sorted[:extra_dice])
+            else:
+                return tuple(count_sorted) + (0,) * extra_dice
+        else:
+            # Ellipsis in center.
+            if extra_dice < 0:
+                result = [0] * num_dice
+                for i in range(min(split, num_dice)):
+                    result[i] += count_sorted[i]
+                reverse_split = split - len(count_sorted)
+                for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
+                    result[i] += count_sorted[i]
+                return tuple(result)
+            else:
+                return tuple(count_sorted[:split]) + (0,) * extra_dice + tuple(
+                    count_sorted[split + 1:])
+
+
+def standard_pool(die_sizes: Collection[int]) -> 'Pool':
+    """Returns a pool of standard dice.
+
+    Args:
+        die_sizes: For each of these die_size X, the pool will contain one dX.
+    """
+    return Pool(list(icepool.d(x) for x in die_sizes))
+
+
+def iter_die_pop_min(
+        die: 'icepool.Die', num_dice: int, min_outcome
+) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
+    """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
+
+    Args:
+        die: The die to pop.
+        die_count: The number of this kind of die.
+        min_outcome: The outcome to pop. This is <= the die's min outcome.
+
+    Yields:
+        The popped die.
+        The number of remaining dice of this kind.
+        The number of dice that rolled max_outcome.
+        The weight of this number of dice rolling max_outcome.
+    """
+    if die.min_outcome() != min_outcome:
+        num_remain = num_dice
+        num_rolled = 0
+        weight = 1
+        yield die, num_remain, num_rolled, weight
+        return
+
+    popped_die, single_weight = die._pop_min()
+
+    if popped_die.is_empty():
+        # This is the last outcome. All dice must roll this outcome.
+        num_remain = 0
+        num_rolled = num_dice
+        weight = single_weight**num_dice
+        yield popped_die, num_remain, num_rolled, weight
+        return
+
+    comb_row = icepool.math.comb_row(num_dice, single_weight)
+    for num_rolled, weight in enumerate(comb_row):
+        num_remain = num_dice - num_rolled
+        yield popped_die, num_remain, num_rolled, weight
+
+
+def iter_die_pop_max(
+        die: 'icepool.Die', num_dice: int, max_outcome
+) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
+    """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
+
+    Args:
+        die: The die to pop.
+        die_count: The number of this kind of die.
+        max_outcome: The outcome to pop. This is >= the die's max outcome.
+
+    Yields:
+        The popped die.
+        The number of remaining dice of this kind.
+        The number of dice that rolled max_outcome.
+        The weight of this number of dice rolling max_outcome.
+    """
+    if die.max_outcome() != max_outcome:
+        num_remain = num_dice
+        num_rolled = 0
+        weight = 1
+        yield die, num_remain, num_rolled, weight
+        return
+
+    popped_die, single_weight = die._pop_max()
+
+    if popped_die.is_empty():
+        # This is the last outcome. All dice must roll this outcome.
+        num_remain = 0
+        num_rolled = num_dice
+        weight = single_weight**num_dice
+        yield popped_die, num_remain, num_rolled, weight
+        return
+
+    comb_row = icepool.math.comb_row(num_dice, single_weight)
+    for num_rolled, weight in enumerate(comb_row):
+        num_remain = num_dice - num_rolled
+        yield popped_die, num_remain, num_rolled, weight
 
 
 empty_pool = Pool([])
