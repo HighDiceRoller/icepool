@@ -18,7 +18,7 @@ from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 def count_sorted_tuple(
         num_dice: int,
-        count_sorted: int | slice | tuple[int, ...] | None) -> tuple[int, ...]:
+        count_sorted: int | slice | tuple[int, ...]) -> tuple[int, ...]:
     """Expresses `count_sorted` as a tuple.
 
     See `Pool.set_count_sorted()` for details.
@@ -316,8 +316,7 @@ class Pool(OutcomeCountGen):
         """
         return self._count_sorted
 
-    def set_count_sorted(self,
-                         count_sorted: int | slice | tuple[int, ...] | None):
+    def set_count_sorted(self, count_sorted: int | slice | tuple[int, ...]):
         """Returns a pool with the selected dice counted.
 
         You can use `pool[count_sorted]` for the same effect as this method.
