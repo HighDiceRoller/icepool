@@ -31,9 +31,7 @@ def count_sorted_tuple(
             * More than one `Ellipsis` is used.
             * An `Ellipsis` is used in the center with too few `num_dice`.
     """
-    if count_sorted is None:
-        return (1,) * num_dice
-    elif isinstance(count_sorted, int):
+    if isinstance(count_sorted, int):
         result = [0] * num_dice
         result[count_sorted] = 1
         return tuple(result)
@@ -352,7 +350,6 @@ class Pool(OutcomeCountGen):
         * `pool[-1, ..., 1]`
 
         Args:
-            `None`: All dice will be counted once.
             An `int`. This will count only the die at the specified index (once).
                 In this case, the result will be a `Die`, not a pool.
             A `slice`. The selected dice are counted once each.
