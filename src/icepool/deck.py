@@ -50,6 +50,10 @@ class Deck(OutcomeCountGen):
                     outcomes.
                 * Anything else will be treated as a scalar.
         """
+        if isinstance(outcomes, Deck):
+            if dups is not None:
+                raise ValueError('dups cannot be used with a Deck argument.')
+            return outcomes
         self = super(Deck, cls).__new__(cls)
         if is_dict(outcomes):
             if dups is not None:

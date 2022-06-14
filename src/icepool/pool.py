@@ -221,6 +221,10 @@ class Pool(OutcomeCountGen):
                 put in the pool. Naming still under consideration.
 
         """
+        if isinstance(dice, Pool):
+            if qtys is not None:
+                raise ValueError('qtys cannot be used with a Pool argument.')
+            return dice
         if is_dict(dice):
             if qtys is not None:
                 raise ValueError('qtys cannot be used with a dict argument.')
