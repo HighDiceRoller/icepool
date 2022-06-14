@@ -129,13 +129,11 @@ class Die():
         """
         if isinstance(outcomes, Die):
             if weights is not None:
-                raise ValueError(
-                    'weights cannot be used with a Die argument.')
+                raise ValueError('weights cannot be used with a Die argument.')
             return outcomes
         if is_dict(outcomes):
             if weights is not None:
-                raise ValueError(
-                    'weights cannot be used with a dict argument.')
+                raise ValueError('weights cannot be used with a dict argument.')
             weights = tuple(outcomes.values())  # type: ignore
             outcomes = tuple(outcomes.keys())  # type: ignore
         else:
@@ -144,8 +142,7 @@ class Die():
             else:
                 if len(weights) != len(outcomes):
                     raise ValueError(
-                        'Length of weights must equal the number of outcomes.'
-                    )
+                        'Length of weights must equal the number of outcomes.')
         if any(x < 0 for x in weights):
             raise ValueError('weights cannot have negative values.')
 
@@ -153,10 +150,9 @@ class Die():
                 outcomes[0], Die):
             return outcomes[0]
         self = super(Die, cls).__new__(cls)
-        self._data = expand_create_args(
-            *outcomes,
-            weights=weights,
-            denominator_method=denominator_method)
+        self._data = expand_create_args(*outcomes,
+                                        weights=weights,
+                                        denominator_method=denominator_method)
         return self
 
     def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
@@ -999,8 +995,8 @@ class Die():
             return self._keep_highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
-        count_dice = slice(start, stop)
-        return self.pool(num_dice)[count_dice].sum()
+        count_sorted = slice(start, stop)
+        return self.pool(num_dice)[count_sorted].sum()
 
     def _keep_highest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single highest die. """
@@ -1030,8 +1026,8 @@ class Die():
 
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
-        count_dice = slice(start, stop)
-        return self.pool(num_dice)[count_dice].sum()
+        count_sorted = slice(start, stop)
+        return self.pool(num_dice)[count_sorted].sum()
 
     def _keep_lowest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single lowest die. """

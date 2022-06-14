@@ -16,79 +16,79 @@ from typing import Any, Callable, Generator
 from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 
-def count_dice_tuple(
+def count_sorted_tuple(
         num_dice: int,
-        count_dice: int | slice | tuple[int, ...] | None) -> tuple[int, ...]:
-    """Expresses `count_dice` as a tuple.
+        count_sorted: int | slice | tuple[int, ...] | None) -> tuple[int, ...]:
+    """Expresses `count_sorted` as a tuple.
 
-    See `Pool.set_count_dice()` for details.
+    See `Pool.set_count_sorted()` for details.
 
     Args:
         `num_dice`: An `int` specifying the number of dice.
-        `count_dice`: Raw specification for how the dice are to be counted.
+        `count_sorted`: Raw specification for how the dice are to be counted.
     Raises:
         `ValueError` if:
             * More than one `Ellipsis` is used.
             * An `Ellipsis` is used in the center with too few `num_dice`.
     """
-    if count_dice is None:
+    if count_sorted is None:
         return (1,) * num_dice
-    elif isinstance(count_dice, int):
+    elif isinstance(count_sorted, int):
         result = [0] * num_dice
-        result[count_dice] = 1
+        result[count_sorted] = 1
         return tuple(result)
-    elif isinstance(count_dice, slice):
-        if count_dice.step is not None:
+    elif isinstance(count_sorted, slice):
+        if count_sorted.step is not None:
             # "Step" is not useful here, so we repurpose it to set the number
             # of dice.
-            num_dice = count_dice.step
-            count_dice = slice(count_dice.start, count_dice.stop)
+            num_dice = count_sorted.step
+            count_sorted = slice(count_sorted.start, count_sorted.stop)
         result = [0] * num_dice
-        result[count_dice] = [1] * len(result[count_dice])
+        result[count_sorted] = [1] * len(result[count_sorted])
         return tuple(result)
     else:
         split = None
-        for i, x in enumerate(count_dice):
+        for i, x in enumerate(count_sorted):
             if x is Ellipsis:
                 if split is None:
                     split = i
                 else:
                     raise ValueError(
-                        'Cannot use more than one Ellipsis (...) for count_dice.'
+                        'Cannot use more than one Ellipsis (...) for count_sorted.'
                     )
 
         if split is None:
-            return tuple(count_dice)
+            return tuple(count_sorted)
 
-        extra_dice = num_dice - len(count_dice) + 1
+        extra_dice = num_dice - len(count_sorted) + 1
 
         if split == 0:
             # Ellipsis on left.
-            count_dice = count_dice[1:]
+            count_sorted = count_sorted[1:]
             if extra_dice < 0:
-                return tuple(count_dice[-extra_dice:])
+                return tuple(count_sorted[-extra_dice:])
             else:
-                return (0,) * extra_dice + tuple(count_dice)
-        elif split == len(count_dice) - 1:
+                return (0,) * extra_dice + tuple(count_sorted)
+        elif split == len(count_sorted) - 1:
             # Ellipsis on right.
-            count_dice = count_dice[:-1]
+            count_sorted = count_sorted[:-1]
             if extra_dice < 0:
-                return tuple(count_dice[:extra_dice])
+                return tuple(count_sorted[:extra_dice])
             else:
-                return tuple(count_dice) + (0,) * extra_dice
+                return tuple(count_sorted) + (0,) * extra_dice
         else:
             # Ellipsis in center.
             if extra_dice < 0:
                 result = [0] * num_dice
                 for i in range(min(split, num_dice)):
-                    result[i] += count_dice[i]
-                reverse_split = split - len(count_dice)
+                    result[i] += count_sorted[i]
+                reverse_split = split - len(count_sorted)
                 for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
-                    result[i] += count_dice[i]
+                    result[i] += count_sorted[i]
                 return tuple(result)
             else:
-                return tuple(count_dice[:split]) + (0,) * extra_dice + tuple(
-                    count_dice[split + 1:])
+                return tuple(count_sorted[:split]) + (0,) * extra_dice + tuple(
+                    count_sorted[split + 1:])
 
 
 def standard_pool(die_sizes: Collection[int]) -> 'Pool':
@@ -180,17 +180,17 @@ def iter_die_pop_max(
 
 @cache
 def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
-                    count_dice: tuple[int, ...]) -> 'Pool':
+                    count_sorted: tuple[int, ...]) -> 'Pool':
     """Creates a new pool. This function is cached.
 
     Args:
         cls: The pool class.
         sorted_num_dices: A sorted sequence of (die, num_dice) pairs.
-        count_dice: A tuple of length equal to the number of dice.
+        count_sorted: A tuple of length equal to the number of dice.
     """
     self = super(Pool, cls).__new__(cls)
     self._dice = Counts(sorted_num_dices)
-    self._count_dice = count_dice
+    self._count_sorted = count_sorted
     return self
 
 
@@ -200,7 +200,7 @@ class Pool(OutcomeCountGen):
     This should be used in conjunction with `EvalPool` to generate a result.
     """
 
-    _count_dice: tuple[int, ...]
+    _count_sorted: tuple[int, ...]
     _dice: Counts
 
     def __new__(cls,
@@ -242,17 +242,17 @@ class Pool(OutcomeCountGen):
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die, qty in zip(dice, qtys):
             num_dices[die] += qty
-        count_dice = (1,) * sum(qtys)
-        return cls._new_pool(num_dices, count_dice)
+        count_sorted = (1,) * sum(qtys)
+        return cls._new_pool(num_dices, count_sorted)
 
     @classmethod
-    def _new_pool(cls, num_dices, count_dice) -> 'Pool':
+    def _new_pool(cls, num_dices, count_sorted) -> 'Pool':
         """Creates a new pool.
 
         Args:
             num_dices: At this point, this is a map from dice to num_dice, with
                 no empty dice.
-            count_dice: At this point, this is a tuple with length equal to the
+            count_sorted: At this point, this is a tuple with length equal to the
                 number of dice.
         """
         sorted_num_dices = tuple(
@@ -260,7 +260,7 @@ class Pool(OutcomeCountGen):
         return new_pool_cached(
             cls,  # type: ignore
             sorted_num_dices,
-            count_dice)
+            count_sorted)
 
     @cached_property
     def _num_dice(self) -> int:
@@ -310,18 +310,19 @@ class Pool(OutcomeCountGen):
         """
         return icepool.pool_cost.estimate_costs(self)
 
-    def count_dice(self) -> tuple[int, ...]:
+    def count_sorted(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
 
         The tuple has one element per die in the pool, from lowest roll to
         highest roll.
         """
-        return self._count_dice
+        return self._count_sorted
 
-    def set_count_dice(self, count_dice: int | slice | tuple[int, ...] | None):
+    def set_count_sorted(self,
+                         count_sorted: int | slice | tuple[int, ...] | None):
         """Returns a pool with the selected dice counted.
 
-        You can use `pool[count_dice]` for the same effect as this method.
+        You can use `pool[count_sorted]` for the same effect as this method.
 
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
@@ -370,15 +371,15 @@ class Pool(OutcomeCountGen):
                 This number may be "negative" if more `int`s are provided than
                 the size of the pool. Specifically:
 
-                * If `count_dice` is shorter than `num_dice`, the `Ellipsis`
+                * If `count_sorted` is shorter than `num_dice`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
                     E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
-                * If `count_dice` has length equal to `num_dice`, the `Ellipsis` has no effect.
+                * If `count_sorted` has length equal to `num_dice`, the `Ellipsis` has no effect.
                     E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-                * If `count_dice` is longer than `num_dice` and the `Ellipsis` is on one side,
-                    elements will be dropped from `count_dice` on the side with the `Ellipsis`.
+                * If `count_sorted` is longer than `num_dice` and the `Ellipsis` is on one side,
+                    elements will be dropped from `count_sorted` on the side with the `Ellipsis`.
                     E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-                * If `count_dice` is longer than `num_dice` and the `Ellipsis`
+                * If `count_sorted` is longer than `num_dice` and the `Ellipsis`
                     is in the middle, the counts will be as the sum of two
                     one-sided `Ellipsis`.
                     E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
@@ -386,28 +387,28 @@ class Pool(OutcomeCountGen):
                     the -1 and 1 cancel each other out.
 
         Raises:
-            ValueError:  If `count_dice` would change the size of a pool with
+            ValueError:  If `count_sorted` would change the size of a pool with
                 more than one type of die, or if more than one `Ellipsis`
                 is used.
         """
-        convert_to_die = isinstance(count_dice, int)
-        count_dice = count_dice_tuple(self.num_dice(), count_dice)
-        if len(count_dice) != self.num_dice():
+        convert_to_die = isinstance(count_sorted, int)
+        count_sorted = count_sorted_tuple(self.num_dice(), count_sorted)
+        if len(count_sorted) != self.num_dice():
             if len(self._dice) != 1:
                 raise ValueError(
                     'Cannot change the size of a pool unless it has exactly one type of die.'
                 )
-            dice = Counts([(self._dice.keys()[0], len(count_dice))])
-            result = Pool._new_pool(dice, count_dice)
+            dice = Counts([(self._dice.keys()[0], len(count_sorted))])
+            result = Pool._new_pool(dice, count_sorted)
         else:
-            result = Pool._new_pool(self._dice, count_dice)
+            result = Pool._new_pool(self._dice, count_sorted)
         if convert_to_die:
             return result.eval(lambda state, outcome, count: outcome
                                if count else state)
         else:
             return result
 
-    __getitem__ = set_count_dice
+    __getitem__ = set_count_sorted
 
     @cached_property
     def _min_outcome(self):
@@ -432,7 +433,7 @@ class Pool(OutcomeCountGen):
         Yields:
             popped_pool: The pool after the min outcome is popped.
             net_count: The number of dice that rolled the min outcome, after
-                accounting for count_dice.
+                accounting for count_sorted.
             net_weight: The weight of this incremental result.
         """
         if not self.outcomes():
@@ -454,12 +455,12 @@ class Pool(OutcomeCountGen):
                 result_weight *= weight
             if net_num_rolled == 0:
                 result_count = 0
-                popped_count_dice = self.count_dice()
+                popped_count_sorted = self.count_sorted()
             else:
-                result_count = sum(self.count_dice()[:net_num_rolled])
-                popped_count_dice = self.count_dice()[net_num_rolled:]
-            popped_pool = Pool._new_pool(next_dice_counts, popped_count_dice)
-            if not any(popped_count_dice):
+                result_count = sum(self.count_sorted()[:net_num_rolled])
+                popped_count_sorted = self.count_sorted()[net_num_rolled:]
+            popped_pool = Pool._new_pool(next_dice_counts, popped_count_sorted)
+            if not any(popped_count_sorted):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
                                0) + result_weight * popped_pool.denominator()
@@ -468,7 +469,7 @@ class Pool(OutcomeCountGen):
             yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
-            yield empty_pool, sum(self.count_dice()), skip_weight
+            yield empty_pool, sum(self.count_sorted()), skip_weight
 
     def _pop_max(self,
                  max_outcome) -> Generator[tuple['Pool', int, int], None, None]:
@@ -477,7 +478,7 @@ class Pool(OutcomeCountGen):
         Yields:
             popped_pool: The pool after the max outcome is popped.
             net_count: The number of dice that rolled the max outcome, after
-                accounting for count_dice.
+                accounting for count_sorted.
             net_weight: The weight of this incremental result.
         """
         if not self.outcomes():
@@ -499,12 +500,12 @@ class Pool(OutcomeCountGen):
                 result_weight *= weight
             if net_num_rolled == 0:
                 result_count = 0
-                popped_count_dice = self.count_dice()
+                popped_count_sorted = self.count_sorted()
             else:
-                result_count = sum(self.count_dice()[-net_num_rolled:])
-                popped_count_dice = self.count_dice()[:-net_num_rolled]
-            popped_pool = Pool._new_pool(next_dice_counts, popped_count_dice)
-            if not any(popped_count_dice):
+                result_count = sum(self.count_sorted()[-net_num_rolled:])
+                popped_count_sorted = self.count_sorted()[:-net_num_rolled]
+            popped_pool = Pool._new_pool(next_dice_counts, popped_count_sorted)
+            if not any(popped_count_sorted):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
                                0) + result_weight * popped_pool.denominator()
@@ -513,7 +514,7 @@ class Pool(OutcomeCountGen):
             yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
-            yield empty_pool, sum(self.count_dice()), skip_weight
+            yield empty_pool, sum(self.count_sorted()), skip_weight
 
     def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,
              /) -> 'icepool.Die':
@@ -548,7 +549,7 @@ class Pool(OutcomeCountGen):
     def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.
 
-        The args override any `count_dice` of this pool.
+        The args override any `count_sorted` of this pool.
 
         Args:
             num_keep: The number of lowest dice will be summed.
@@ -567,7 +568,7 @@ class Pool(OutcomeCountGen):
     def highest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The highest outcome or sum of the highest outcomes in the pool.
 
-        The args override any `count_dice` of this pool.
+        The args override any `count_sorted` of this pool.
 
         Args:
             num_keep: The number of highest dice will be summed.
@@ -585,14 +586,14 @@ class Pool(OutcomeCountGen):
 
     def __str__(self) -> str:
         return (
-            f'Pool of {self.num_dice()} dice with count_dice={self.count_dice()}\n'
+            f'Pool of {self.num_dice()} dice with count_sorted={self.count_sorted()}\n'
             + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
     def _key_tuple(self) -> tuple:
         return (Pool,) + tuple(
             (die.key_tuple(), count)
-            for die, count in self._dice.items()), self._count_dice
+            for die, count in self._dice.items()), self._count_sorted
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Pool):

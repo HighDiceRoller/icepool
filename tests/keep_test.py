@@ -10,13 +10,13 @@ max_tuple_length = 5
 max_num_values = 5
 
 def bf_keep_highest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return icepool.Die(0)
+    if num_keep == 0: return icepool.Die([0])
     def func(*outcomes):
         return sum(sorted(outcomes)[-(num_keep+num_drop):len(outcomes)-num_drop])
     return icepool.apply(func, *([die] * num_dice))
     
 def bf_keep_lowest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return icepool.Die(0)
+    if num_keep == 0: return icepool.Die([0])
     def func(*outcomes):
         return sum(sorted(outcomes)[num_drop:num_keep+num_drop])
     return icepool.apply(func, *([die] * num_dice))
@@ -69,7 +69,7 @@ def test_keep_lowest_drop_highest(num_keep):
 def test_pool_select():
     pool = icepool.Pool([icepool.d6] * 5)
     assert pool[-2].equals(pool[-2:-1].sum())
-    assert pool[-2:].count_dice() == (0, 0, 0, 1, 1)
+    assert pool[-2:].count_sorted() == (0, 0, 0, 1, 1)
 
 def test_sum_from_pool():
     pool = icepool.Pool([icepool.d6] * 5)

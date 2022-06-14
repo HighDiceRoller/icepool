@@ -28,22 +28,22 @@ def test_mixed_pool():
     result = call_path_length.eval(pool)
     assert result.outcomes() == (8,)
 
-def test_simple_pool_count_dice():
+def test_simple_pool_count_sorted():
     pool = d6.pool(5)[-2:]
     result = call_path_length.eval(pool)
     assert result.outcomes() == (6,)
     
-def test_simple_pool_count_dice_low():
+def test_simple_pool_count_sorted_low():
     pool = d6.pool(5)[:2]
     result = call_path_length.eval(pool)
     assert result.outcomes() == (6,)
 
-def test_mixed_pool_count_dice():
+def test_mixed_pool_count_sorted():
     pool = Pool([d4, d6, d6, d8])[-2:]
     result = call_path_length.eval(pool)
     assert result.outcomes() == (8,)
 
-def test_mixed_pool_count_dice_low():
+def test_mixed_pool_count_sorted_low():
     pool = Pool([d4, d6, d6, d8])[:2]
     result = call_path_length.eval(pool)
     assert result.outcomes() == (8,)

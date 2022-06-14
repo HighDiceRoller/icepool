@@ -127,7 +127,7 @@ def test_enumerate_pool_vs_cartesian_product():
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_enumerate_pool_vs_sum(pool):
-    if any(x < 0 for x in pool.count_dice()):
+    if any(x < 0 for x in pool.count_sorted()):
         with pytest.raises(ValueError):
             icepool.enumerate_gen(pool)
     else:
