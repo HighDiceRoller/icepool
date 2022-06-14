@@ -12,3 +12,5 @@
 /tests/*.bat
 /misc/*.ico
 /misc/*.png
+/.vscode/launch.json
+/src/.vscode/settings.json
