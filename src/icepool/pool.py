@@ -42,8 +42,8 @@ class Pool(OutcomeCountGen):
     _dice: Counts
 
     def __new__(cls,
-                dice: Sequence | Mapping[Any, int],
-                qtys: Sequence[int] | int | None = None) -> 'Pool':
+                dice: Mapping[Any, int] | Sequence,
+                times: Sequence[int] | int = 1) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
@@ -57,22 +57,26 @@ class Pool(OutcomeCountGen):
                 * A mapping of dice and how many of that die to put in the pool.
 
                 All outcomes within a pool must be totally orderable.
-            qtys: An optional sequence specifying how many of each die will be
-                put in the pool. Naming still under consideration.
+            times: Multiplies the number of times each element of `dice` will
+                be put into the pool.
+                `times` can either be a sequence of the same length as
+                `outcomes` or a single `int` to apply to all elements of
+                `outcomes`.
 
         """
         if isinstance(dice, Pool):
-            if qtys is not None:
-                raise ValueError('qtys cannot be used with a Pool argument.')
-            return dice
+            if times == 1:
+                return dice
+            else:
+                dice = dice._dice
 
-        dice, qtys = icepool.common_args.itemize(dice, qtys)
+        dice, times = icepool.common_args.itemize(dice, times)
         dice = tuple(icepool.Die([die]) for die in dice)
 
         num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
-        for die, qty in zip(dice, qtys):
+        for die, qty in zip(dice, times):
             num_dices[die] += qty
-        count_sorted = (1,) * sum(qtys)
+        count_sorted = (1,) * sum(times)
         return cls._new_pool(num_dices, count_sorted)
 
     @classmethod

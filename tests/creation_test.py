@@ -23,7 +23,7 @@ def test_list_no_min_outcome():
     assert result.equals(expected)
 
 def test_zero_outcomes():
-    die = icepool.Die(range(7), weights=[0, 1, 1, 1, 1, 1, 1])
+    die = icepool.Die(range(7), times=[0, 1, 1, 1, 1, 1, 1])
     other = icepool.d6
     assert die.has_zero_weights()
     assert not die.equals(other)
@@ -62,7 +62,7 @@ def test_denominator_method(args):
     assert lcm_weighted.denominator() >= reduced.denominator()
 
 def test_denominator_lcm_weighted():
-    result = icepool.Die([icepool.d6, icepool.d8, icepool.d10, icepool.d12], weights=(3, 4, 5, 6), denominator_method='lcm_weighted')
+    result = icepool.Die([icepool.d6, icepool.d8, icepool.d10, icepool.d12], times=(3, 4, 5, 6), denominator_method='lcm_weighted')
     assert result.denominator() == 36
 
 def test_negative_weight_error():
@@ -70,7 +70,7 @@ def test_negative_weight_error():
         icepool.Die({1: -1})
     
     with pytest.raises(ValueError):
-        icepool.Die([1], weights=[-1])
+        icepool.Die([1], times=[-1])
 
 def test_empty_tuple():
     result = icepool.Die([()])

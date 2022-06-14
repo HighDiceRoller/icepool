@@ -231,7 +231,7 @@ class OutcomeCountEval(ABC):
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
 
-        return icepool.Die(final_outcomes, weights=final_weights)
+        return icepool.Die(final_outcomes, final_weights)
 
     __call__ = eval
 

@@ -17,7 +17,7 @@ def test_mix_identical():
     
 def test_mix_mixed():
     die = icepool.Die([icepool.d4, icepool.d6])
-    assert die.pmf() == icepool.Die(range(1, 7), weights=[5, 5, 5, 5, 2, 2]).pmf()
+    assert die.pmf() == icepool.Die(range(1, 7), times=[5, 5, 5, 5, 2, 2]).pmf()
 
 def test_mix_reroll():
     result = icepool.Die([1,2,3,4,icepool.Reroll,icepool.Reroll])

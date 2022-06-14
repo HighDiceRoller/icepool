@@ -42,7 +42,7 @@ def test_sum_descending_keep_highest():
     assert result.equals(expected)
 
 def test_zero_weight_outcomes():
-    result = icepool.Die(range(5), weights=[0, 1, 0, 1, 0]).keep_highest(3, 2)
+    result = icepool.Die(range(5), times=[0, 1, 0, 1, 0]).keep_highest(3, 2)
     assert result.num_outcomes() == 9
 
 def sum_dice_func(state, outcome, count):

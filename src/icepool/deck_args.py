@@ -12,7 +12,7 @@ from typing import Any
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-def expand_create_args(*args, dups: Sequence[int] | None) -> Counts:
+def expand_create_args(args, dups: Sequence[int] | None) -> Counts:
     """Helper function to expand outcome arguments."""
     if dups is not None:
         if len(dups) != len(args):

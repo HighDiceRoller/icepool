@@ -244,7 +244,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
             final_outcomes.append(final_outcome)
             final_weights.append(final_weight)
 
-    return icepool.Die(final_outcomes, weights=final_weights)
+    return icepool.Die(final_outcomes, final_weights)
 
 
 def apply_sorted(func: Callable, *dice) -> 'icepool.Die':

@@ -48,8 +48,8 @@ class Die():
     _data: Counts
 
     def __new__(cls,
-                outcomes,
-                weights: Sequence[int] | int | None = None,
+                outcomes: Mapping[Any, int] | Sequence,
+                times: Sequence[int] | int = 1,
                 denominator_method: str = 'lcm') -> 'Die':
         """Constructor for a die.
 
@@ -77,12 +77,13 @@ class Die():
 
         Args:
             outcomes: The outcomes of the die. This can be one of the following:
-                * A dict mapping outcomes to dups.
-                * A sequence of outcomes.
+                * A dict mapping outcomes to weights.
+                * A sequence of outcomes. Each element will have the same total
+                    weight.
 
                 Each outcome may be one of the following:
-                * A die. The outcomes of the die will be "flattened" into the
-                    result; a die object will never contain a die as an outcome.
+                * A `Die`. The outcomes of the die will be "flattened" into the
+                    result; a `Die` will never contain a `Die` as an outcome.
                 * A dict-like that maps outcomes to weights.
                     The outcomes of the dict-like will be "flattened" into the
                     result. This option will be taken in preference to treating
@@ -94,22 +95,21 @@ class Die():
 
                     Any tuple elements that are dice or dicts will expand the
                     tuple according to their independent joint distribution.
-                    For example, (d6, d6) will expand to 36 ordered tuples with
-                    weight 1 each. Use this carefully since it may create a
+                    For example, `(d6, d6)` will expand to 36 ordered tuples
+                    with weight 1 each. Use this carefully since it may create a
                     large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
-                    and the corresponding element of `weights` from consideration.
+                    and the corresponding element of `times` from consideration.
                     If inside a tuple, the tuple will be dropped.
                 * Anything else, including non-tuple sequences, will be treated
                     as a single outcome. Each outcome must be hashable, and the
                     set of outcomes must be totally orderable (after expansion).
                     The same outcome can appear multiple times, in which case
                     the corresponding weights will be accumulated.
-            weights: Controls the relative weight of the arguments.
-                If an argument expands into multiple outcomes, the weight is
-                shared among those outcomes. If not provided, each argument will
-                end up with the same total weight. For example, `Die(d6, 7)` is
-                the same as `Die(1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7)`.
+            times: Multiplies the weight of each element of `outcomes`.
+                `times` can either be a sequence of the same length as
+                `outcomes` or a single `int` to apply to all elements of
+                `outcomes`.
             denominator_method: How to determine the denominator of the result
                 if the arguments themselves contain weights. This is also used
                 for dict-like arguments. From greatest to least:
@@ -128,18 +128,20 @@ class Die():
             `ValueError`: `None` is not a valid outcome for a die.
         """
         if isinstance(outcomes, Die):
-            if weights is not None:
-                raise ValueError('weights cannot be used with a Die argument.')
-            return outcomes
+            if times == 1:
+                return outcomes
+            else:
+                outcomes = outcomes._data
 
-        outcomes, weights = icepool.common_args.itemize(outcomes, weights)
+        outcomes, times = icepool.common_args.itemize(outcomes, times)
 
-        if weights is None and len(outcomes) == 1 and isinstance(
+        if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Die):
             return outcomes[0]
+
         self = super(Die, cls).__new__(cls)
-        self._data = expand_create_args(*outcomes,
-                                        weights=weights,
+        self._data = expand_create_args(outcomes,
+                                        times,
                                         denominator_method=denominator_method)
         return self
 
@@ -518,6 +520,8 @@ class Die():
         """Multiplies all weights by a constant. """
         if scale < 0:
             raise ValueError('Weights cannot be scaled by a negative number.')
+        if scale == 1:
+            return self
         data = {outcome: scale * weight for outcome, weight in self.items()}
         return icepool.Die(data)
 
@@ -728,7 +732,7 @@ class Die():
 
     @cached_property
     def _popped_min(self) -> tuple['Die', int]:
-        die = icepool.Die(self.outcomes()[1:], weights=self.weights()[1:])
+        die = icepool.Die(self.outcomes()[1:], self.weights()[1:])
         return die, self.weights()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
@@ -741,7 +745,7 @@ class Die():
 
     @cached_property
     def _popped_max(self) -> tuple['Die', int]:
-        die = icepool.Die(self.outcomes()[:-1], weights=self.weights()[:-1])
+        die = icepool.Die(self.outcomes()[:-1], self.weights()[:-1])
         return die, self.weights()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
@@ -818,7 +822,7 @@ class Die():
                 final_repl = list(repl)
 
             return icepool.Die(final_repl,
-                               weights=self.weights(),
+                               self.weights(),
                                denominator_method=denominator_method)
         elif max_depth is not None:
             next = self.sub(repl,

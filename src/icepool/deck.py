@@ -23,8 +23,8 @@ class Deck(OutcomeCountGen):
     _hand_size: int
 
     def __new__(cls,
-                outcomes,
-                dups: Sequence[int] | int | None = None,
+                outcomes: Mapping[Any, int] | Sequence,
+                times: Sequence[int] | int = 1,
                 *,
                 hand_size: int):
         """Constructor for a deck.
@@ -43,22 +43,27 @@ class Deck(OutcomeCountGen):
                     outcome.
                 * A dict mapping outcomes to dups.
                 * A tuple of outcomes.
-
                     Any tuple elements that are decks or dicts will expand the
                     tuple according to their independent joint distribution.
                     Use this carefully since it may create a large number of
                     outcomes.
                 * Anything else will be treated as a scalar.
+            times: Multiplies the number of times each element of `outcomes`
+                will be put into the deck.
+                `times` can either be a sequence of the same length as
+                `outcomes` or a single `int` to apply to all elements of
+                `outcomes`.
         """
         if isinstance(outcomes, Deck):
-            if dups is not None:
-                raise ValueError('dups cannot be used with a Deck argument.')
-            return outcomes
+            if times == 1:
+                return outcomes
+            else:
+                outcomes = outcomes._data
+
+        outcomes, times = icepool.common_args.itemize(outcomes, times)
+
         self = super(Deck, cls).__new__(cls)
-
-        outcomes, dups = icepool.common_args.itemize(outcomes, dups)
-
-        self._data = expand_create_args(*outcomes, dups=dups)
+        self._data = expand_create_args(outcomes, times)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')
@@ -107,7 +112,7 @@ class Deck(OutcomeCountGen):
         for count in range(min_count, max_count + 1):
             popped_draw = Deck(
                 self.outcomes()[1:],
-                dups=self.dups()[1:],
+                self.dups()[1:],
                 hand_size=self.hand_size() - count,
             )
             weight = icepool.math.comb(deck_count, count)
@@ -126,7 +131,7 @@ class Deck(OutcomeCountGen):
         max_count = min(deck_count, self.hand_size())
         for count in range(min_count, max_count + 1):
             popped_draw = Deck(self.outcomes()[:-1],
-                               dups=self.dups()[:-1],
+                               self.dups()[:-1],
                                hand_size=self.hand_size() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_draw, count, weight

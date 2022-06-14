@@ -8,38 +8,38 @@ from collections.abc import Mapping, Sequence
 
 def itemize(
         keys: Mapping[Any, int] | Sequence,
-        counts: Sequence[int] | int | None) -> tuple[Sequence, Sequence[int]]:
+        times: Sequence[int] | int | None) -> tuple[Sequence, Sequence[int]]:
     """Converts the argument(s) into a sequence of keys and a sequence of counts.
 
     Args:
         keys: One of the following:
-            * A dict mapping keys to counts.
+            * A dict mapping keys to times.
             * A sequence of keys, with one count per occurence.
-        counts: One of the following:
+        times: One of the following:
             * A sequence of `int`s of the same length as keys.
                 Each count will be multiplied by the corresponding factor.
-            * An `int`. All counts will be multiplied by this factor.
+            * An `int`. All times will be multiplied by this factor.
     """
-    if counts is None:
-        counts = (1,) * len(keys)
-    elif isinstance(counts, int):
-        counts = (counts,) * len(keys)
+    if times is None:
+        times = (1,) * len(keys)
+    elif isinstance(times, int):
+        times = (times,) * len(keys)
     else:
-        if len(counts) != len(keys):
+        if len(times) != len(keys):
             raise ValueError(
-                'The number of counts must equal the number of keys.')
+                'The number of times must equal the number of keys.')
 
     if is_dict(keys):
-        counts = tuple(
-            v * x for v, x in zip(keys.values(), counts))  # type: ignore
+        times = tuple(
+            v * x for v, x in zip(keys.values(), times))  # type: ignore
         keys = tuple(keys.keys())  # type: ignore
     else:
         keys = tuple(keys)
 
-    if any(x < 0 for x in counts):
+    if any(x < 0 for x in times):
         raise ValueError('counts cannot have negative values.')
 
-    return keys, counts
+    return keys, times
 
 
 def is_die(arg) -> bool:

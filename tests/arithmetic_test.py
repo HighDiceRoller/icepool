@@ -95,27 +95,27 @@ def test_abs_negative():
 
 def test_abs_cross_zero():
     result = (icepool.d6 - 3).abs()
-    expected = icepool.Die(range(4), weights=[1, 2, 2, 1])
+    expected = icepool.Die(range(4), times=[1, 2, 2, 1])
     assert result.equals(expected)
 
 def test_abs_cross_zero_nonuniform():
     result = (icepool.d6 + icepool.d6 - 7).abs()
-    expected = icepool.Die(range(6), weights=[6, 10, 8, 6, 4, 2])
+    expected = icepool.Die(range(6), times=[6, 10, 8, 6, 4, 2])
     assert result.equals(expected)
 
 def test_mod():
     result = icepool.d10 % 4
-    expected = icepool.Die(range(4), weights=[2, 3, 3, 2])
+    expected = icepool.Die(range(4), times=[2, 3, 3, 2])
     assert result.equals(expected)
     
 def test_div():
     result = icepool.d10 // 4
-    expected = icepool.Die(range(3), weights=[3, 4, 3])
+    expected = icepool.Die(range(3), times=[3, 4, 3])
     assert result.equals(expected)
 
 def test_reduce():
-    result = icepool.Die(range(3), weights=[2, 4, 6]).reduce_weights()
-    expected = icepool.Die(range(3), weights=[1, 2, 3])
+    result = icepool.Die(range(3), times=[2, 4, 6]).reduce_weights()
+    expected = icepool.Die(range(3), times=[1, 2, 3])
     assert result.equals(expected)
 
 def test_matmul_int_die():
