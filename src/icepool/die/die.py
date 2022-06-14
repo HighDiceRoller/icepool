@@ -498,14 +498,14 @@ class Die():
     # Joint statistics.
 
     def covariance(self, i: int, j: int):
-        mean_i = self[i].mean()
-        mean_j = self[j].mean()
+        mean_i = self.marginal(i).mean()
+        mean_j = self.marginal(j).mean()
         return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight
                    for outcome, weight in self.items()) / self.denominator()
 
     def correlation(self, i: int, j: int):
-        sd_i = self[i].standard_deviation()
-        sd_j = self[j].standard_deviation()
+        sd_i = self.marginal(i).standard_deviation()
+        sd_j = self.marginal(j).standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
 
     # Weight management.
@@ -1081,7 +1081,7 @@ class Die():
 
         return self.sub(repl)
 
-    __getitem__ = marginal
+    # __getitem__ = marginal
 
     @staticmethod
     def _zero(x):
