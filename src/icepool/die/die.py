@@ -1062,14 +1062,24 @@ class Die():
 
     __ceil__ = ceil
 
-    def marginal(self, index_or_slice, /) -> 'Die':
+    def marginal(self, dims: int | slice | Sequence[int | slice], /) -> 'Die':
         """Marginal distribution; equivalently, indexes/slices outcomes.
 
-        You can use the `[]` operator for the same effect.
-
-        Note that `[]` has a different, non-standard meaning for pools.
+        Args:
+            dim: This selects the dimension(s) to marginalize.
+                A sequence will run this for each element and produce a tuple
+                of the results.
         """
-        return self.unary_op_non_elementwise(operator.getitem, index_or_slice)
+        if isinstance(dims, (int, slice)):
+
+            def repl(outcome):
+                return outcome[dims]
+        else:
+
+            def repl(outcome):
+                return (outcome[d] for d in dims)
+
+        return self.sub(repl)
 
     __getitem__ = marginal
 
