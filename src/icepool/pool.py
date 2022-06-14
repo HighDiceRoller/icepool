@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.math
 import icepool.pool_cost
-from icepool.common_args import is_dict
+import icepool.common_args
 from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
 

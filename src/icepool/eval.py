@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
-from icepool.die.args import is_dict
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -205,7 +204,9 @@ class OutcomeCountEval(ABC):
         """
 
         # Convert non-pool arguments to `Pool`.
-        converted_gens = tuple(_convert_gen_arg(gen) for gen in gens)
+        converted_gens = tuple(gen if isinstance(gen, icepool.OutcomeCountGen
+                                                ) else icepool.Pool(gen)
+                               for gen in gens)
 
         if not all(gen._is_resolvable() for gen in converted_gens):
             return icepool.Die([])
@@ -351,16 +352,6 @@ class OutcomeCountEval(ABC):
                                       gens] += weight * prod_weight
             dist = next_dist
         return final_dist
-
-
-def _convert_gen_arg(
-    gen: icepool.OutcomeCountGen | Mapping[Any, int] | Sequence
-) -> icepool.OutcomeCountGen:
-    """Converts a single gen argument for `eval()`."""
-    if isinstance(gen, icepool.OutcomeCountGen):
-        return gen
-    else:
-        return icepool.Pool(gen)
 
 
 def _pop_gens(

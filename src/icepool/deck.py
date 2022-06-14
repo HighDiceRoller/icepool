@@ -5,7 +5,6 @@ import icepool.math
 import icepool.common_args
 from icepool.collections import Counts
 from icepool.generator import OutcomeCountGen
-from icepool.deck_args import expand_create_args
 
 from functools import cached_property
 
@@ -63,7 +62,7 @@ class Deck(OutcomeCountGen):
         outcomes, times = icepool.common_args.itemize(outcomes, times)
 
         self = super(Deck, cls).__new__(cls)
-        self._data = expand_create_args(outcomes, times)
+        self._data = icepool.common_args.expand_args_for_deck(outcomes, times)
         self._hand_size = hand_size
         if self.hand_size() > self.deck_size():
             raise ValueError('hand_size cannot exceed deck_size.')

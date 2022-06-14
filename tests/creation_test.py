@@ -52,17 +52,17 @@ denominator_method_test_args = [
 def test_denominator_method(args):
     prod = icepool.Die(args, denominator_method='prod')
     lcm = icepool.Die(args, denominator_method='lcm')
-    lcm_weighted = icepool.Die(args, denominator_method='lcm_weighted')
+    lcm_joint = icepool.Die(args, denominator_method='lcm_joint')
     reduced = icepool.Die(args, denominator_method='reduce')
     assert prod.reduce_weights().equals(reduced)
     assert lcm.reduce_weights().equals(reduced)
-    assert lcm_weighted.reduce_weights().equals(reduced)
+    assert lcm_joint.reduce_weights().equals(reduced)
     assert prod.denominator() >= lcm.denominator()
-    assert lcm.denominator() >= lcm_weighted.denominator()
-    assert lcm_weighted.denominator() >= reduced.denominator()
+    assert lcm.denominator() >= lcm_joint.denominator()
+    assert lcm_joint.denominator() >= reduced.denominator()
 
-def test_denominator_lcm_weighted():
-    result = icepool.Die([icepool.d6, icepool.d8, icepool.d10, icepool.d12], times=(3, 4, 5, 6), denominator_method='lcm_weighted')
+def test_denominator_lcm_joint():
+    result = icepool.Die([icepool.d6, icepool.d8, icepool.d10, icepool.d12], times=(3, 4, 5, 6), denominator_method='lcm_joint')
     assert result.denominator() == 36
 
 def test_negative_weight_error():

@@ -5,7 +5,6 @@ import icepool.die.format
 import icepool.common_args
 from icepool.collections import Counts
 from icepool.elementwise import unary_elementwise, binary_elementwise
-from icepool.die.args import expand_create_args
 
 import bisect
 from collections import defaultdict
@@ -140,9 +139,8 @@ class Die():
             return outcomes[0]
 
         self = super(Die, cls).__new__(cls)
-        self._data = expand_create_args(outcomes,
-                                        times,
-                                        denominator_method=denominator_method)
+        self._data = icepool.common_args.expand_args_for_die(
+            outcomes, times, denominator_method=denominator_method)
         return self
 
     def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
