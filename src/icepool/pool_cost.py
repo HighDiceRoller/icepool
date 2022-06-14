@@ -45,20 +45,20 @@ def can_truncate(dice) -> tuple[bool, bool]:
     return can_truncate_min, can_truncate_max
 
 
-def lo_hi_skip(count_sorted: tuple[int, ...]) -> tuple[int, int]:
-    """Returns the number of dice that can be skipped from the ends of count_sorted.
+def lo_hi_skip(post_roll_counts: tuple[int, ...]) -> tuple[int, int]:
+    """Returns the number of dice that can be skipped from the ends of post_roll_counts.
 
     Returns:
         lo_skip: The number of dice that can be skipped on the low side.
         hi_skip: The number of dice that can be skipped on the high side.
     """
-    for lo_skip, count in enumerate(count_sorted):
+    for lo_skip, count in enumerate(post_roll_counts):
         if count:
             break
     else:
-        return len(count_sorted), len(count_sorted)
+        return len(post_roll_counts), len(post_roll_counts)
 
-    for hi_skip, count in enumerate(reversed(count_sorted)):
+    for hi_skip, count in enumerate(reversed(post_roll_counts)):
         if count:
             return lo_skip, hi_skip
 
@@ -75,7 +75,7 @@ def estimate_costs(pool) -> tuple[int, int]:
     """
     can_truncate_min, can_truncate_max = can_truncate(pool._dice.keys())
     if can_truncate_min or can_truncate_max:
-        lo_skip, hi_skip = lo_hi_skip(pool.count_sorted())
+        lo_skip, hi_skip = lo_hi_skip(pool.post_roll_counts())
         die_sizes: list[int] = sum(
             ([die.num_outcomes()] * count for die, count in pool._dice.items()),
             start=[])

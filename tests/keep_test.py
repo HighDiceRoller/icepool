@@ -69,7 +69,7 @@ def test_keep_lowest_drop_highest(num_keep):
 def test_pool_select():
     pool = icepool.Pool([icepool.d6] * 5)
     assert pool[-2].equals(pool[-2:-1].sum())
-    assert pool[-2:].count_sorted() == (0, 0, 0, 1, 1)
+    assert pool[-2:].post_roll_counts() == (0, 0, 0, 1, 1)
 
 def test_sum_from_pool():
     pool = icepool.Pool([icepool.d6] * 5)

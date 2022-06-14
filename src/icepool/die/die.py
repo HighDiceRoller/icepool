@@ -985,8 +985,8 @@ class Die():
             return self._keep_highest_single(num_dice)
         start = -(num_keep + (num_drop or 0))
         stop = -num_drop if num_drop > 0 else None
-        count_sorted = slice(start, stop)
-        return self.pool(num_dice)[count_sorted].sum()
+        post_roll_counts = slice(start, stop)
+        return self.pool(num_dice)[post_roll_counts].sum()
 
     def _keep_highest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single highest die. """
@@ -1016,8 +1016,8 @@ class Die():
 
         start = num_drop if num_drop > 0 else None
         stop = num_keep + (num_drop or 0)
-        count_sorted = slice(start, stop)
-        return self.pool(num_dice)[count_sorted].sum()
+        post_roll_counts = slice(start, stop)
+        return self.pool(num_dice)[post_roll_counts].sum()
 
     def _keep_lowest_single(self, num_dice: int) -> 'Die':
         """Faster algorithm for keeping just the single lowest die. """
