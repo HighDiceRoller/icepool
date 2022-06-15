@@ -1280,7 +1280,7 @@ class Die(Mapping[Any, int]):
     # Equality operators. These produce a `DieWithTruth`.
 
     @staticmethod
-    def _eq(invert: bool, a: 'Die', b: 'Die') -> 'Die':
+    def _eq(invert: bool, a: 'Die', b: 'Die') -> 'Counts':
         """Linear algorithm  for == and !=.
 
         Args:
@@ -1288,7 +1288,7 @@ class Die(Mapping[Any, int]):
             a, b: The dice.
         """
         if a.is_empty() or b.is_empty():
-            return icepool.Die([])
+            return Counts([])
 
         n = 0
         d = a.denominator() * b.denominator()
@@ -1311,30 +1311,31 @@ class Die(Mapping[Any, int]):
                     b_outcome, b_weight = next(b_iter)
             except StopIteration:
                 if invert:
-                    n = d - n
-                return icepool.bernoulli(n, d)
+                    return Counts([(False, n), (True, d - n)])
+                else:
+                    return Counts([(False, d - n), (True, n)])
 
     def __eq__(self, other):
         other = icepool.Die([other])
 
         def data_callback():
-            data_die = Die._eq(False, self, other)
-            return data_die._data
+            return Die._eq(False, self, other)
 
-        truth_value = self.equals(other)
+        def truth_value_callback():
+            return self.equals(other)
 
-        return icepool.DieWithTruth(data_callback, truth_value)
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def __ne__(self, other):
         other = icepool.Die([other])
 
         def data_callback():
-            data_die = Die._eq(True, self, other)
-            return data_die._data
+            return Die._eq(True, self, other)
 
-        truth_value = not self.equals(other)
+        def truth_value_callback():
+            return not self.equals(other)
 
-        return icepool.DieWithTruth(data_callback, truth_value)
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     @staticmethod
     def _sign(x) -> int:

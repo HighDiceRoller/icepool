@@ -16,9 +16,10 @@ class DieWithTruth(Die):
     interested in the truth value.
     """
     _data_callback: Callable[[], Counts]
-    _truth_value: bool
+    _truth_value_callback: Callable[[], bool]
 
-    def __new__(cls, data_callback: Callable[[], Counts], truth_value: bool):
+    def __new__(cls, data_callback: Callable[[], Counts],
+                truth_value_callback: Callable[[], bool]):
         """This class does not need to be constructed publically.
 
         Args:
@@ -29,12 +30,16 @@ class DieWithTruth(Die):
         # Skip Die.__new__.
         self = super(Die, cls).__new__(cls)
         self._data_callback = data_callback  # type: ignore
-        self._truth_value = truth_value  # type: ignore
+        self._truth_value_callback = truth_value_callback  # type: ignore
         return self
 
     @cached_property
     def _data(self):
         return self._data_callback()
+
+    @cached_property
+    def _truth_value(self):
+        return self._truth_value_callback()
 
     def __bool__(self):
         return self._truth_value
