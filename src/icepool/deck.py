@@ -25,7 +25,7 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 *,
-                draws: int):
+                draws: int) -> 'Deck':
         """Constructor for a deck.
 
         Args:
@@ -61,8 +61,19 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
                 outcomes[0], Deck):
             return outcomes[0]
 
+        data = icepool.creation_args.expand_args_for_deck(outcomes, times)
+        return Deck._new_deck(data, draws)
+
+    @classmethod
+    def _new_deck(cls, data: Counts, draws: int) -> 'Deck':
+        """Creates a new deck using already-processed arguments.
+
+        Args:
+            data: At this point, this is a Counts.
+            draws
+        """
         self = super(Deck, cls).__new__(cls)
-        self._data = icepool.creation_args.expand_args_for_deck(outcomes, times)
+        self._data = data
         self._draws = draws
         if self.draws() > self.deck_size():
             raise ValueError('draws cannot exceed deck_size.')
@@ -132,11 +143,8 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         min_count = max(0, deck_count + self.draws() - self.deck_size())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_deck = Deck(
-                self.outcomes()[1:],
-                self.dups()[1:],
-                draws=self.draws() - count,
-            )
+            popped_deck = Deck._new_deck(self._data.remove_min(),
+                                         draws=self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_deck, count, weight
 
@@ -152,9 +160,8 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         min_count = max(0, deck_count + self.draws() - self.deck_size())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_deck = Deck(self.outcomes()[:-1],
-                               self.dups()[:-1],
-                               draws=self.draws() - count)
+            popped_deck = Deck._new_deck(self._data.remove_max(),
+                                         draws=self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_deck, count, weight
 

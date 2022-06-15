@@ -80,7 +80,8 @@ class Pool(OutcomeCountGen):
         return cls._new_pool(num_dices, post_roll_counts)
 
     @classmethod
-    def _new_pool(cls, num_dices, post_roll_counts) -> 'Pool':
+    def _new_pool(cls, num_dices: Mapping['icepool.Die', int],
+                  post_roll_counts: Sequence[int]) -> 'Pool':
         """Creates a new pool.
 
         Args:
