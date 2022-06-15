@@ -827,17 +827,17 @@ with weight 1 each.</p>
 </span><span id="Die-77"><a href="#Die-77"><span class="linenos">  77</span></a>
 </span><span id="Die-78"><a href="#Die-78"><span class="linenos">  78</span></a><span class="sd">        Args:</span>
 </span><span id="Die-79"><a href="#Die-79"><span class="linenos">  79</span></a><span class="sd">            outcomes: The outcomes of the die. This can be one of the following:</span>
-</span><span id="Die-80"><a href="#Die-80"><span class="linenos">  80</span></a><span class="sd">                * A dict mapping outcomes to weights.</span>
+</span><span id="Die-80"><a href="#Die-80"><span class="linenos">  80</span></a><span class="sd">                * A Mapping from outcomes to weights.</span>
 </span><span id="Die-81"><a href="#Die-81"><span class="linenos">  81</span></a><span class="sd">                * A sequence of outcomes. Each element will have the same total</span>
 </span><span id="Die-82"><a href="#Die-82"><span class="linenos">  82</span></a><span class="sd">                    weight.</span>
 </span><span id="Die-83"><a href="#Die-83"><span class="linenos">  83</span></a>
-</span><span id="Die-84"><a href="#Die-84"><span class="linenos">  84</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Die-85"><a href="#Die-85"><span class="linenos">  85</span></a><span class="sd">                * A `Die`. The outcomes of the die will be &quot;flattened&quot; into the</span>
-</span><span id="Die-86"><a href="#Die-86"><span class="linenos">  86</span></a><span class="sd">                    result; a `Die` will never contain a `Die` as an outcome.</span>
-</span><span id="Die-87"><a href="#Die-87"><span class="linenos">  87</span></a><span class="sd">                * A dict-like that maps outcomes to weights.</span>
-</span><span id="Die-88"><a href="#Die-88"><span class="linenos">  88</span></a><span class="sd">                    The outcomes of the dict-like will be &quot;flattened&quot; into the</span>
+</span><span id="Die-84"><a href="#Die-84"><span class="linenos">  84</span></a><span class="sd">                Note that `Die` and `Deck` both count as Mappings.</span>
+</span><span id="Die-85"><a href="#Die-85"><span class="linenos">  85</span></a>
+</span><span id="Die-86"><a href="#Die-86"><span class="linenos">  86</span></a><span class="sd">                Each outcome may be one of the following:</span>
+</span><span id="Die-87"><a href="#Die-87"><span class="linenos">  87</span></a><span class="sd">                * A Mapping from outcomes to weights.</span>
+</span><span id="Die-88"><a href="#Die-88"><span class="linenos">  88</span></a><span class="sd">                    The outcomes of the Mapping will be &quot;flattened&quot; into the</span>
 </span><span id="Die-89"><a href="#Die-89"><span class="linenos">  89</span></a><span class="sd">                    result. This option will be taken in preference to treating</span>
-</span><span id="Die-90"><a href="#Die-90"><span class="linenos">  90</span></a><span class="sd">                    the dict-like itself as an outcome even if the dict-like</span>
+</span><span id="Die-90"><a href="#Die-90"><span class="linenos">  90</span></a><span class="sd">                    the Mapping itself as an outcome even if the Mapping</span>
 </span><span id="Die-91"><a href="#Die-91"><span class="linenos">  91</span></a><span class="sd">                    itself is hashable and totally orderable.</span>
 </span><span id="Die-92"><a href="#Die-92"><span class="linenos">  92</span></a><span class="sd">                * A tuple of outcomes. Operators on dice with tuple outcomes</span>
 </span><span id="Die-93"><a href="#Die-93"><span class="linenos">  93</span></a><span class="sd">                    are performed element-wise. See `Die.unary_op` and</span>
@@ -862,7 +862,7 @@ with weight 1 each.</p>
 </span><span id="Die-112"><a href="#Die-112"><span class="linenos"> 112</span></a><span class="sd">                `outcomes`.</span>
 </span><span id="Die-113"><a href="#Die-113"><span class="linenos"> 113</span></a><span class="sd">            denominator_method: How to determine the denominator of the result</span>
 </span><span id="Die-114"><a href="#Die-114"><span class="linenos"> 114</span></a><span class="sd">                if the arguments themselves contain weights. This is also used</span>
-</span><span id="Die-115"><a href="#Die-115"><span class="linenos"> 115</span></a><span class="sd">                for dict-like arguments. From greatest to least:</span>
+</span><span id="Die-115"><a href="#Die-115"><span class="linenos"> 115</span></a><span class="sd">                for Mapping arguments. From greatest to least:</span>
 </span><span id="Die-116"><a href="#Die-116"><span class="linenos"> 116</span></a><span class="sd">                * &#39;prod&#39;: Product of the individual argument denominators, times</span>
 </span><span id="Die-117"><a href="#Die-117"><span class="linenos"> 117</span></a><span class="sd">                    the total of `weights`. This is like rolling all of the</span>
 </span><span id="Die-118"><a href="#Die-118"><span class="linenos"> 118</span></a><span class="sd">                    possible dice, and then selecting a result.</span>
@@ -2239,17 +2239,17 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-77"><a href="#Die.__init__-77"><span class="linenos"> 77</span></a>
 </span><span id="Die.__init__-78"><a href="#Die.__init__-78"><span class="linenos"> 78</span></a><span class="sd">        Args:</span>
 </span><span id="Die.__init__-79"><a href="#Die.__init__-79"><span class="linenos"> 79</span></a><span class="sd">            outcomes: The outcomes of the die. This can be one of the following:</span>
-</span><span id="Die.__init__-80"><a href="#Die.__init__-80"><span class="linenos"> 80</span></a><span class="sd">                * A dict mapping outcomes to weights.</span>
+</span><span id="Die.__init__-80"><a href="#Die.__init__-80"><span class="linenos"> 80</span></a><span class="sd">                * A Mapping from outcomes to weights.</span>
 </span><span id="Die.__init__-81"><a href="#Die.__init__-81"><span class="linenos"> 81</span></a><span class="sd">                * A sequence of outcomes. Each element will have the same total</span>
 </span><span id="Die.__init__-82"><a href="#Die.__init__-82"><span class="linenos"> 82</span></a><span class="sd">                    weight.</span>
 </span><span id="Die.__init__-83"><a href="#Die.__init__-83"><span class="linenos"> 83</span></a>
-</span><span id="Die.__init__-84"><a href="#Die.__init__-84"><span class="linenos"> 84</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Die.__init__-85"><a href="#Die.__init__-85"><span class="linenos"> 85</span></a><span class="sd">                * A `Die`. The outcomes of the die will be &quot;flattened&quot; into the</span>
-</span><span id="Die.__init__-86"><a href="#Die.__init__-86"><span class="linenos"> 86</span></a><span class="sd">                    result; a `Die` will never contain a `Die` as an outcome.</span>
-</span><span id="Die.__init__-87"><a href="#Die.__init__-87"><span class="linenos"> 87</span></a><span class="sd">                * A dict-like that maps outcomes to weights.</span>
-</span><span id="Die.__init__-88"><a href="#Die.__init__-88"><span class="linenos"> 88</span></a><span class="sd">                    The outcomes of the dict-like will be &quot;flattened&quot; into the</span>
+</span><span id="Die.__init__-84"><a href="#Die.__init__-84"><span class="linenos"> 84</span></a><span class="sd">                Note that `Die` and `Deck` both count as Mappings.</span>
+</span><span id="Die.__init__-85"><a href="#Die.__init__-85"><span class="linenos"> 85</span></a>
+</span><span id="Die.__init__-86"><a href="#Die.__init__-86"><span class="linenos"> 86</span></a><span class="sd">                Each outcome may be one of the following:</span>
+</span><span id="Die.__init__-87"><a href="#Die.__init__-87"><span class="linenos"> 87</span></a><span class="sd">                * A Mapping from outcomes to weights.</span>
+</span><span id="Die.__init__-88"><a href="#Die.__init__-88"><span class="linenos"> 88</span></a><span class="sd">                    The outcomes of the Mapping will be &quot;flattened&quot; into the</span>
 </span><span id="Die.__init__-89"><a href="#Die.__init__-89"><span class="linenos"> 89</span></a><span class="sd">                    result. This option will be taken in preference to treating</span>
-</span><span id="Die.__init__-90"><a href="#Die.__init__-90"><span class="linenos"> 90</span></a><span class="sd">                    the dict-like itself as an outcome even if the dict-like</span>
+</span><span id="Die.__init__-90"><a href="#Die.__init__-90"><span class="linenos"> 90</span></a><span class="sd">                    the Mapping itself as an outcome even if the Mapping</span>
 </span><span id="Die.__init__-91"><a href="#Die.__init__-91"><span class="linenos"> 91</span></a><span class="sd">                    itself is hashable and totally orderable.</span>
 </span><span id="Die.__init__-92"><a href="#Die.__init__-92"><span class="linenos"> 92</span></a><span class="sd">                * A tuple of outcomes. Operators on dice with tuple outcomes</span>
 </span><span id="Die.__init__-93"><a href="#Die.__init__-93"><span class="linenos"> 93</span></a><span class="sd">                    are performed element-wise. See `Die.unary_op` and</span>
@@ -2274,7 +2274,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-112"><a href="#Die.__init__-112"><span class="linenos">112</span></a><span class="sd">                `outcomes`.</span>
 </span><span id="Die.__init__-113"><a href="#Die.__init__-113"><span class="linenos">113</span></a><span class="sd">            denominator_method: How to determine the denominator of the result</span>
 </span><span id="Die.__init__-114"><a href="#Die.__init__-114"><span class="linenos">114</span></a><span class="sd">                if the arguments themselves contain weights. This is also used</span>
-</span><span id="Die.__init__-115"><a href="#Die.__init__-115"><span class="linenos">115</span></a><span class="sd">                for dict-like arguments. From greatest to least:</span>
+</span><span id="Die.__init__-115"><a href="#Die.__init__-115"><span class="linenos">115</span></a><span class="sd">                for Mapping arguments. From greatest to least:</span>
 </span><span id="Die.__init__-116"><a href="#Die.__init__-116"><span class="linenos">116</span></a><span class="sd">                * &#39;prod&#39;: Product of the individual argument denominators, times</span>
 </span><span id="Die.__init__-117"><a href="#Die.__init__-117"><span class="linenos">117</span></a><span class="sd">                    the total of `weights`. This is like rolling all of the</span>
 </span><span id="Die.__init__-118"><a href="#Die.__init__-118"><span class="linenos">118</span></a><span class="sd">                    possible dice, and then selecting a result.</span>
@@ -2344,20 +2344,20 @@ of each number.</li>
 <li><p><strong>outcomes:</strong>  The outcomes of the die. This can be one of the following:</p>
 
 <ul>
-<li>A dict mapping outcomes to weights.</li>
+<li>A Mapping from outcomes to weights.</li>
 <li>A sequence of outcomes. Each element will have the same total
 weight.</li>
 </ul>
 
+<p>Note that <code><a href="#Die">Die</a></code> and <code><a href="#Deck">Deck</a></code> both count as Mappings.</p>
+
 <p>Each outcome may be one of the following:</p>
 
 <ul>
-<li>A <code><a href="#Die">Die</a></code>. The outcomes of the die will be "flattened" into the
-result; a <code><a href="#Die">Die</a></code> will never contain a <code><a href="#Die">Die</a></code> as an outcome.</li>
-<li>A dict-like that maps outcomes to weights.
-The outcomes of the dict-like will be "flattened" into the
+<li>A Mapping from outcomes to weights.
+The outcomes of the Mapping will be "flattened" into the
 result. This option will be taken in preference to treating
-the dict-like itself as an outcome even if the dict-like
+the Mapping itself as an outcome even if the Mapping
 itself is hashable and totally orderable.</li>
 <li><p>A tuple of outcomes. Operators on dice with tuple outcomes
 are performed element-wise. See <code><a href="#Die.unary_op">Die.unary_op</a></code> and
@@ -2383,7 +2383,7 @@ the corresponding weights will be accumulated.</li>
 <code><a href="#Die.outcomes">outcomes</a></code>.</li>
 <li><strong>denominator_method:</strong>  How to determine the denominator of the result
 if the arguments themselves contain weights. This is also used
-for dict-like arguments. From greatest to least:
+for Mapping arguments. From greatest to least:
 <ul>
 <li>'prod': Product of the individual argument denominators, times
 the total of <code><a href="#Die.weights">weights</a></code>. This is like rolling all of the
@@ -8344,144 +8344,141 @@ parameters.</li>
 </span><span id="Deck-31"><a href="#Deck-31"><span class="linenos"> 31</span></a>
 </span><span id="Deck-32"><a href="#Deck-32"><span class="linenos"> 32</span></a><span class="sd">        Args:</span>
 </span><span id="Deck-33"><a href="#Deck-33"><span class="linenos"> 33</span></a><span class="sd">            cards: The cards of the deck. This can be one of the following:</span>
-</span><span id="Deck-34"><a href="#Deck-34"><span class="linenos"> 34</span></a>
-</span><span id="Deck-35"><a href="#Deck-35"><span class="linenos"> 35</span></a><span class="sd">                * A dict mapping cards to dups.</span>
-</span><span id="Deck-36"><a href="#Deck-36"><span class="linenos"> 36</span></a><span class="sd">                * A sequence of cards.</span>
-</span><span id="Deck-37"><a href="#Deck-37"><span class="linenos"> 37</span></a>
-</span><span id="Deck-38"><a href="#Deck-38"><span class="linenos"> 38</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Deck-39"><a href="#Deck-39"><span class="linenos"> 39</span></a>
-</span><span id="Deck-40"><a href="#Deck-40"><span class="linenos"> 40</span></a><span class="sd">                * A deck. The cards of the deck will be &quot;flattened&quot; into the</span>
-</span><span id="Deck-41"><a href="#Deck-41"><span class="linenos"> 41</span></a><span class="sd">                    result; a deck object will never contain a deck as an</span>
-</span><span id="Deck-42"><a href="#Deck-42"><span class="linenos"> 42</span></a><span class="sd">                    outcome.</span>
-</span><span id="Deck-43"><a href="#Deck-43"><span class="linenos"> 43</span></a><span class="sd">                * A dict mapping cards to dups.</span>
-</span><span id="Deck-44"><a href="#Deck-44"><span class="linenos"> 44</span></a><span class="sd">                * A tuple of cards.</span>
-</span><span id="Deck-45"><a href="#Deck-45"><span class="linenos"> 45</span></a><span class="sd">                    Any tuple elements that are decks or dicts will expand the</span>
-</span><span id="Deck-46"><a href="#Deck-46"><span class="linenos"> 46</span></a><span class="sd">                    tuple according to their independent joint distribution.</span>
-</span><span id="Deck-47"><a href="#Deck-47"><span class="linenos"> 47</span></a><span class="sd">                    Use this carefully since it may create a large number of</span>
-</span><span id="Deck-48"><a href="#Deck-48"><span class="linenos"> 48</span></a><span class="sd">                    cards.</span>
-</span><span id="Deck-49"><a href="#Deck-49"><span class="linenos"> 49</span></a><span class="sd">                * Anything else will be treated as a scalar.</span>
-</span><span id="Deck-50"><a href="#Deck-50"><span class="linenos"> 50</span></a><span class="sd">            times: Multiplies the number of times each element of `cards`</span>
-</span><span id="Deck-51"><a href="#Deck-51"><span class="linenos"> 51</span></a><span class="sd">                will be put into the deck.</span>
-</span><span id="Deck-52"><a href="#Deck-52"><span class="linenos"> 52</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
-</span><span id="Deck-53"><a href="#Deck-53"><span class="linenos"> 53</span></a><span class="sd">                `cards` or a single `int` to apply to all elements of</span>
-</span><span id="Deck-54"><a href="#Deck-54"><span class="linenos"> 54</span></a><span class="sd">                `cards`.</span>
-</span><span id="Deck-55"><a href="#Deck-55"><span class="linenos"> 55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck-56"><a href="#Deck-56"><span class="linenos"> 56</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck-57"><a href="#Deck-57"><span class="linenos"> 57</span></a>            <span class="k">if</span> <span class="n">times</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="Deck-58"><a href="#Deck-58"><span class="linenos"> 58</span></a>                <span class="k">return</span> <span class="n">cards</span>
-</span><span id="Deck-59"><a href="#Deck-59"><span class="linenos"> 59</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck-60"><a href="#Deck-60"><span class="linenos"> 60</span></a>                <span class="n">cards</span> <span class="o">=</span> <span class="n">cards</span><span class="o">.</span><span class="n">_data</span>
-</span><span id="Deck-61"><a href="#Deck-61"><span class="linenos"> 61</span></a>
-</span><span id="Deck-62"><a href="#Deck-62"><span class="linenos"> 62</span></a>        <span class="n">cards</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck-63"><a href="#Deck-63"><span class="linenos"> 63</span></a>
-</span><span id="Deck-64"><a href="#Deck-64"><span class="linenos"> 64</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Deck</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-</span><span id="Deck-65"><a href="#Deck-65"><span class="linenos"> 65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck-66"><a href="#Deck-66"><span class="linenos"> 66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
-</span><span id="Deck-67"><a href="#Deck-67"><span class="linenos"> 67</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
-</span><span id="Deck-68"><a href="#Deck-68"><span class="linenos"> 68</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
-</span><span id="Deck-69"><a href="#Deck-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Deck-34"><a href="#Deck-34"><span class="linenos"> 34</span></a><span class="sd">                * A Mapping from cards to dups.</span>
+</span><span id="Deck-35"><a href="#Deck-35"><span class="linenos"> 35</span></a><span class="sd">                * A sequence of cards.</span>
+</span><span id="Deck-36"><a href="#Deck-36"><span class="linenos"> 36</span></a>
+</span><span id="Deck-37"><a href="#Deck-37"><span class="linenos"> 37</span></a><span class="sd">                Note that `Die` and `Deck` both count as Mappings.</span>
+</span><span id="Deck-38"><a href="#Deck-38"><span class="linenos"> 38</span></a>
+</span><span id="Deck-39"><a href="#Deck-39"><span class="linenos"> 39</span></a><span class="sd">                Each card may be one of the following:</span>
+</span><span id="Deck-40"><a href="#Deck-40"><span class="linenos"> 40</span></a><span class="sd">                * A Mapping from cards to dups.</span>
+</span><span id="Deck-41"><a href="#Deck-41"><span class="linenos"> 41</span></a><span class="sd">                * A tuple of cards.</span>
+</span><span id="Deck-42"><a href="#Deck-42"><span class="linenos"> 42</span></a><span class="sd">                    Any tuple elements that are Mappings will expand the</span>
+</span><span id="Deck-43"><a href="#Deck-43"><span class="linenos"> 43</span></a><span class="sd">                    tuple according to their Cartesian product.</span>
+</span><span id="Deck-44"><a href="#Deck-44"><span class="linenos"> 44</span></a><span class="sd">                    Use this carefully since it may create a large number of</span>
+</span><span id="Deck-45"><a href="#Deck-45"><span class="linenos"> 45</span></a><span class="sd">                    cards.</span>
+</span><span id="Deck-46"><a href="#Deck-46"><span class="linenos"> 46</span></a><span class="sd">                * Anything else will be treated as a scalar.</span>
+</span><span id="Deck-47"><a href="#Deck-47"><span class="linenos"> 47</span></a><span class="sd">            times: Multiplies the number of times each element of `cards`</span>
+</span><span id="Deck-48"><a href="#Deck-48"><span class="linenos"> 48</span></a><span class="sd">                will be put into the deck.</span>
+</span><span id="Deck-49"><a href="#Deck-49"><span class="linenos"> 49</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
+</span><span id="Deck-50"><a href="#Deck-50"><span class="linenos"> 50</span></a><span class="sd">                `cards` or a single `int` to apply to all elements of</span>
+</span><span id="Deck-51"><a href="#Deck-51"><span class="linenos"> 51</span></a><span class="sd">                `cards`.</span>
+</span><span id="Deck-52"><a href="#Deck-52"><span class="linenos"> 52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck-53"><a href="#Deck-53"><span class="linenos"> 53</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck-54"><a href="#Deck-54"><span class="linenos"> 54</span></a>            <span class="k">if</span> <span class="n">times</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="Deck-55"><a href="#Deck-55"><span class="linenos"> 55</span></a>                <span class="k">return</span> <span class="n">cards</span>
+</span><span id="Deck-56"><a href="#Deck-56"><span class="linenos"> 56</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck-57"><a href="#Deck-57"><span class="linenos"> 57</span></a>                <span class="n">cards</span> <span class="o">=</span> <span class="n">cards</span><span class="o">.</span><span class="n">_data</span>
+</span><span id="Deck-58"><a href="#Deck-58"><span class="linenos"> 58</span></a>
+</span><span id="Deck-59"><a href="#Deck-59"><span class="linenos"> 59</span></a>        <span class="n">cards</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck-60"><a href="#Deck-60"><span class="linenos"> 60</span></a>
+</span><span id="Deck-61"><a href="#Deck-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Deck</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+</span><span id="Deck-62"><a href="#Deck-62"><span class="linenos"> 62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck-63"><a href="#Deck-63"><span class="linenos"> 63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
+</span><span id="Deck-64"><a href="#Deck-64"><span class="linenos"> 64</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
+</span><span id="Deck-65"><a href="#Deck-65"><span class="linenos"> 65</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
+</span><span id="Deck-66"><a href="#Deck-66"><span class="linenos"> 66</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Deck-67"><a href="#Deck-67"><span class="linenos"> 67</span></a>
+</span><span id="Deck-68"><a href="#Deck-68"><span class="linenos"> 68</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
+</span><span id="Deck-69"><a href="#Deck-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span><span id="Deck-70"><a href="#Deck-70"><span class="linenos"> 70</span></a>
-</span><span id="Deck-71"><a href="#Deck-71"><span class="linenos"> 71</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
-</span><span id="Deck-72"><a href="#Deck-72"><span class="linenos"> 72</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-</span><span id="Deck-73"><a href="#Deck-73"><span class="linenos"> 73</span></a>
-</span><span id="Deck-74"><a href="#Deck-74"><span class="linenos"> 74</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">cards</span>
-</span><span id="Deck-75"><a href="#Deck-75"><span class="linenos"> 75</span></a>
-</span><span id="Deck-76"><a href="#Deck-76"><span class="linenos"> 76</span></a>    <span class="n">keys</span> <span class="o">=</span> <span class="n">cards</span>
+</span><span id="Deck-71"><a href="#Deck-71"><span class="linenos"> 71</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">cards</span>
+</span><span id="Deck-72"><a href="#Deck-72"><span class="linenos"> 72</span></a>
+</span><span id="Deck-73"><a href="#Deck-73"><span class="linenos"> 73</span></a>    <span class="n">keys</span> <span class="o">=</span> <span class="n">cards</span>
+</span><span id="Deck-74"><a href="#Deck-74"><span class="linenos"> 74</span></a>
+</span><span id="Deck-75"><a href="#Deck-75"><span class="linenos"> 75</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
+</span><span id="Deck-76"><a href="#Deck-76"><span class="linenos"> 76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </span><span id="Deck-77"><a href="#Deck-77"><span class="linenos"> 77</span></a>
-</span><span id="Deck-78"><a href="#Deck-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
-</span><span id="Deck-79"><a href="#Deck-79"><span class="linenos"> 79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-</span><span id="Deck-80"><a href="#Deck-80"><span class="linenos"> 80</span></a>
-</span><span id="Deck-81"><a href="#Deck-81"><span class="linenos"> 81</span></a>    <span class="n">values</span> <span class="o">=</span> <span class="n">dups</span>
+</span><span id="Deck-78"><a href="#Deck-78"><span class="linenos"> 78</span></a>    <span class="n">values</span> <span class="o">=</span> <span class="n">dups</span>
+</span><span id="Deck-79"><a href="#Deck-79"><span class="linenos"> 79</span></a>
+</span><span id="Deck-80"><a href="#Deck-80"><span class="linenos"> 80</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">:</span>
+</span><span id="Deck-81"><a href="#Deck-81"><span class="linenos"> 81</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span><span id="Deck-82"><a href="#Deck-82"><span class="linenos"> 82</span></a>
-</span><span id="Deck-83"><a href="#Deck-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">:</span>
-</span><span id="Deck-84"><a href="#Deck-84"><span class="linenos"> 84</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span id="Deck-83"><a href="#Deck-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-84"><a href="#Deck-84"><span class="linenos"> 84</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
 </span><span id="Deck-85"><a href="#Deck-85"><span class="linenos"> 85</span></a>
-</span><span id="Deck-86"><a href="#Deck-86"><span class="linenos"> 86</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-87"><a href="#Deck-87"><span class="linenos"> 87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="Deck-86"><a href="#Deck-86"><span class="linenos"> 86</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+</span><span id="Deck-87"><a href="#Deck-87"><span class="linenos"> 87</span></a>        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 </span><span id="Deck-88"><a href="#Deck-88"><span class="linenos"> 88</span></a>
-</span><span id="Deck-89"><a href="#Deck-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
-</span><span id="Deck-90"><a href="#Deck-90"><span class="linenos"> 90</span></a>        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="Deck-89"><a href="#Deck-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-90"><a href="#Deck-90"><span class="linenos"> 90</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 </span><span id="Deck-91"><a href="#Deck-91"><span class="linenos"> 91</span></a>
-</span><span id="Deck-92"><a href="#Deck-92"><span class="linenos"> 92</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-93"><a href="#Deck-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
-</span><span id="Deck-94"><a href="#Deck-94"><span class="linenos"> 94</span></a>
-</span><span id="Deck-95"><a href="#Deck-95"><span class="linenos"> 95</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-96"><a href="#Deck-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">_deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-97"><a href="#Deck-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</span><span id="Deck-92"><a href="#Deck-92"><span class="linenos"> 92</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-93"><a href="#Deck-93"><span class="linenos"> 93</span></a>    <span class="k">def</span> <span class="nf">_deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-94"><a href="#Deck-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</span><span id="Deck-95"><a href="#Deck-95"><span class="linenos"> 95</span></a>
+</span><span id="Deck-96"><a href="#Deck-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-97"><a href="#Deck-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
 </span><span id="Deck-98"><a href="#Deck-98"><span class="linenos"> 98</span></a>
-</span><span id="Deck-99"><a href="#Deck-99"><span class="linenos"> 99</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-100"><a href="#Deck-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
+</span><span id="Deck-99"><a href="#Deck-99"><span class="linenos"> 99</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-100"><a href="#Deck-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
 </span><span id="Deck-101"><a href="#Deck-101"><span class="linenos">101</span></a>
-</span><span id="Deck-102"><a href="#Deck-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-103"><a href="#Deck-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
-</span><span id="Deck-104"><a href="#Deck-104"><span class="linenos">104</span></a>
-</span><span id="Deck-105"><a href="#Deck-105"><span class="linenos">105</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-106"><a href="#Deck-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">_denomiator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-107"><a href="#Deck-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="Deck-102"><a href="#Deck-102"><span class="linenos">102</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-103"><a href="#Deck-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">_denomiator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-104"><a href="#Deck-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="Deck-105"><a href="#Deck-105"><span class="linenos">105</span></a>
+</span><span id="Deck-106"><a href="#Deck-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-107"><a href="#Deck-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
 </span><span id="Deck-108"><a href="#Deck-108"><span class="linenos">108</span></a>
-</span><span id="Deck-109"><a href="#Deck-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-110"><a href="#Deck-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
+</span><span id="Deck-109"><a href="#Deck-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">_is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Deck-110"><a href="#Deck-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </span><span id="Deck-111"><a href="#Deck-111"><span class="linenos">111</span></a>
-</span><span id="Deck-112"><a href="#Deck-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">_is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Deck-113"><a href="#Deck-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</span><span id="Deck-114"><a href="#Deck-114"><span class="linenos">114</span></a>
-</span><span id="Deck-115"><a href="#Deck-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span>
-</span><span id="Deck-116"><a href="#Deck-116"><span class="linenos">116</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span>
-</span><span id="Deck-117"><a href="#Deck-117"><span class="linenos">117</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="Deck-118"><a href="#Deck-118"><span class="linenos">118</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()</span> <span class="ow">or</span> <span class="n">min_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
-</span><span id="Deck-119"><a href="#Deck-119"><span class="linenos">119</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
-</span><span id="Deck-120"><a href="#Deck-120"><span class="linenos">120</span></a>            <span class="k">return</span>
-</span><span id="Deck-121"><a href="#Deck-121"><span class="linenos">121</span></a>
-</span><span id="Deck-122"><a href="#Deck-122"><span class="linenos">122</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="Deck-123"><a href="#Deck-123"><span class="linenos">123</span></a>
-</span><span id="Deck-124"><a href="#Deck-124"><span class="linenos">124</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
-</span><span id="Deck-125"><a href="#Deck-125"><span class="linenos">125</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
-</span><span id="Deck-126"><a href="#Deck-126"><span class="linenos">126</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-</span><span id="Deck-127"><a href="#Deck-127"><span class="linenos">127</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">(</span>
-</span><span id="Deck-128"><a href="#Deck-128"><span class="linenos">128</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span>
-</span><span id="Deck-129"><a href="#Deck-129"><span class="linenos">129</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span>
-</span><span id="Deck-130"><a href="#Deck-130"><span class="linenos">130</span></a>                <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">,</span>
-</span><span id="Deck-131"><a href="#Deck-131"><span class="linenos">131</span></a>            <span class="p">)</span>
-</span><span id="Deck-132"><a href="#Deck-132"><span class="linenos">132</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="Deck-133"><a href="#Deck-133"><span class="linenos">133</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
-</span><span id="Deck-134"><a href="#Deck-134"><span class="linenos">134</span></a>
-</span><span id="Deck-135"><a href="#Deck-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span>
-</span><span id="Deck-136"><a href="#Deck-136"><span class="linenos">136</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">max_outcome</span>
-</span><span id="Deck-137"><a href="#Deck-137"><span class="linenos">137</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="Deck-138"><a href="#Deck-138"><span class="linenos">138</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()</span> <span class="ow">or</span> <span class="n">max_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
-</span><span id="Deck-139"><a href="#Deck-139"><span class="linenos">139</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
-</span><span id="Deck-140"><a href="#Deck-140"><span class="linenos">140</span></a>            <span class="k">return</span>
-</span><span id="Deck-141"><a href="#Deck-141"><span class="linenos">141</span></a>
-</span><span id="Deck-142"><a href="#Deck-142"><span class="linenos">142</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="Deck-143"><a href="#Deck-143"><span class="linenos">143</span></a>
-</span><span id="Deck-144"><a href="#Deck-144"><span class="linenos">144</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
-</span><span id="Deck-145"><a href="#Deck-145"><span class="linenos">145</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
-</span><span id="Deck-146"><a href="#Deck-146"><span class="linenos">146</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-</span><span id="Deck-147"><a href="#Deck-147"><span class="linenos">147</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Deck-148"><a href="#Deck-148"><span class="linenos">148</span></a>                               <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-</span><span id="Deck-149"><a href="#Deck-149"><span class="linenos">149</span></a>                               <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="Deck-150"><a href="#Deck-150"><span class="linenos">150</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="Deck-151"><a href="#Deck-151"><span class="linenos">151</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
-</span><span id="Deck-152"><a href="#Deck-152"><span class="linenos">152</span></a>
-</span><span id="Deck-153"><a href="#Deck-153"><span class="linenos">153</span></a>    <span class="k">def</span> <span class="nf">_estimate_direction_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="Deck-154"><a href="#Deck-154"><span class="linenos">154</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">())</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span>
-</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result</span>
-</span><span id="Deck-156"><a href="#Deck-156"><span class="linenos">156</span></a>
-</span><span id="Deck-157"><a href="#Deck-157"><span class="linenos">157</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-158"><a href="#Deck-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Deck-159"><a href="#Deck-159"><span class="linenos">159</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">Deck</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">(),)</span>
-</span><span id="Deck-160"><a href="#Deck-160"><span class="linenos">160</span></a>
-</span><span id="Deck-161"><a href="#Deck-161"><span class="linenos">161</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Deck-162"><a href="#Deck-162"><span class="linenos">162</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck-163"><a href="#Deck-163"><span class="linenos">163</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Deck-164"><a href="#Deck-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
-</span><span id="Deck-165"><a href="#Deck-165"><span class="linenos">165</span></a>
-</span><span id="Deck-166"><a href="#Deck-166"><span class="linenos">166</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-167"><a href="#Deck-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-168"><a href="#Deck-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
-</span><span id="Deck-169"><a href="#Deck-169"><span class="linenos">169</span></a>
-</span><span id="Deck-170"><a href="#Deck-170"><span class="linenos">170</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-171"><a href="#Deck-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span><span id="Deck-112"><a href="#Deck-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span>
+</span><span id="Deck-113"><a href="#Deck-113"><span class="linenos">113</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span>
+</span><span id="Deck-114"><a href="#Deck-114"><span class="linenos">114</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="Deck-115"><a href="#Deck-115"><span class="linenos">115</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()</span> <span class="ow">or</span> <span class="n">min_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">():</span>
+</span><span id="Deck-116"><a href="#Deck-116"><span class="linenos">116</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span id="Deck-117"><a href="#Deck-117"><span class="linenos">117</span></a>            <span class="k">return</span>
+</span><span id="Deck-118"><a href="#Deck-118"><span class="linenos">118</span></a>
+</span><span id="Deck-119"><a href="#Deck-119"><span class="linenos">119</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="Deck-120"><a href="#Deck-120"><span class="linenos">120</span></a>
+</span><span id="Deck-121"><a href="#Deck-121"><span class="linenos">121</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
+</span><span id="Deck-122"><a href="#Deck-122"><span class="linenos">122</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="Deck-123"><a href="#Deck-123"><span class="linenos">123</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="Deck-124"><a href="#Deck-124"><span class="linenos">124</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">(</span>
+</span><span id="Deck-125"><a href="#Deck-125"><span class="linenos">125</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span>
+</span><span id="Deck-126"><a href="#Deck-126"><span class="linenos">126</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="mi">1</span><span class="p">:],</span>
+</span><span id="Deck-127"><a href="#Deck-127"><span class="linenos">127</span></a>                <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">,</span>
+</span><span id="Deck-128"><a href="#Deck-128"><span class="linenos">128</span></a>            <span class="p">)</span>
+</span><span id="Deck-129"><a href="#Deck-129"><span class="linenos">129</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-130"><a href="#Deck-130"><span class="linenos">130</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="Deck-131"><a href="#Deck-131"><span class="linenos">131</span></a>
+</span><span id="Deck-132"><a href="#Deck-132"><span class="linenos">132</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span>
+</span><span id="Deck-133"><a href="#Deck-133"><span class="linenos">133</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">max_outcome</span>
+</span><span id="Deck-134"><a href="#Deck-134"><span class="linenos">134</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="Deck-135"><a href="#Deck-135"><span class="linenos">135</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()</span> <span class="ow">or</span> <span class="n">max_outcome</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">():</span>
+</span><span id="Deck-136"><a href="#Deck-136"><span class="linenos">136</span></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+</span><span id="Deck-137"><a href="#Deck-137"><span class="linenos">137</span></a>            <span class="k">return</span>
+</span><span id="Deck-138"><a href="#Deck-138"><span class="linenos">138</span></a>
+</span><span id="Deck-139"><a href="#Deck-139"><span class="linenos">139</span></a>        <span class="n">deck_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="Deck-140"><a href="#Deck-140"><span class="linenos">140</span></a>
+</span><span id="Deck-141"><a href="#Deck-141"><span class="linenos">141</span></a>        <span class="n">min_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deck_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">())</span>
+</span><span id="Deck-142"><a href="#Deck-142"><span class="linenos">142</span></a>        <span class="n">max_count</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
+</span><span id="Deck-143"><a href="#Deck-143"><span class="linenos">143</span></a>        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_count</span><span class="p">,</span> <span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="Deck-144"><a href="#Deck-144"><span class="linenos">144</span></a>            <span class="n">popped_draw</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Deck-145"><a href="#Deck-145"><span class="linenos">145</span></a>                               <span class="bp">self</span><span class="o">.</span><span class="n">dups</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+</span><span id="Deck-146"><a href="#Deck-146"><span class="linenos">146</span></a>                               <span class="n">hand_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-147"><a href="#Deck-147"><span class="linenos">147</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">deck_count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-148"><a href="#Deck-148"><span class="linenos">148</span></a>            <span class="k">yield</span> <span class="n">popped_draw</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="Deck-149"><a href="#Deck-149"><span class="linenos">149</span></a>
+</span><span id="Deck-150"><a href="#Deck-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">_estimate_direction_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="Deck-151"><a href="#Deck-151"><span class="linenos">151</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cards</span><span class="p">())</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span>
+</span><span id="Deck-152"><a href="#Deck-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">result</span>
+</span><span id="Deck-153"><a href="#Deck-153"><span class="linenos">153</span></a>
+</span><span id="Deck-154"><a href="#Deck-154"><span class="linenos">154</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Deck-156"><a href="#Deck-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">Deck</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">(),)</span>
+</span><span id="Deck-157"><a href="#Deck-157"><span class="linenos">157</span></a>
+</span><span id="Deck-158"><a href="#Deck-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Deck-159"><a href="#Deck-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck-160"><a href="#Deck-160"><span class="linenos">160</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Deck-161"><a href="#Deck-161"><span class="linenos">161</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
+</span><span id="Deck-162"><a href="#Deck-162"><span class="linenos">162</span></a>
+</span><span id="Deck-163"><a href="#Deck-163"><span class="linenos">163</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-164"><a href="#Deck-164"><span class="linenos">164</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-165"><a href="#Deck-165"><span class="linenos">165</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
+</span><span id="Deck-166"><a href="#Deck-166"><span class="linenos">166</span></a>
+</span><span id="Deck-167"><a href="#Deck-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-168"><a href="#Deck-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 </span></pre></div>
 
 
@@ -8510,42 +8507,39 @@ parameters.</li>
 </span><span id="Deck.__init__-31"><a href="#Deck.__init__-31"><span class="linenos">31</span></a>
 </span><span id="Deck.__init__-32"><a href="#Deck.__init__-32"><span class="linenos">32</span></a><span class="sd">        Args:</span>
 </span><span id="Deck.__init__-33"><a href="#Deck.__init__-33"><span class="linenos">33</span></a><span class="sd">            cards: The cards of the deck. This can be one of the following:</span>
-</span><span id="Deck.__init__-34"><a href="#Deck.__init__-34"><span class="linenos">34</span></a>
-</span><span id="Deck.__init__-35"><a href="#Deck.__init__-35"><span class="linenos">35</span></a><span class="sd">                * A dict mapping cards to dups.</span>
-</span><span id="Deck.__init__-36"><a href="#Deck.__init__-36"><span class="linenos">36</span></a><span class="sd">                * A sequence of cards.</span>
-</span><span id="Deck.__init__-37"><a href="#Deck.__init__-37"><span class="linenos">37</span></a>
-</span><span id="Deck.__init__-38"><a href="#Deck.__init__-38"><span class="linenos">38</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Deck.__init__-39"><a href="#Deck.__init__-39"><span class="linenos">39</span></a>
-</span><span id="Deck.__init__-40"><a href="#Deck.__init__-40"><span class="linenos">40</span></a><span class="sd">                * A deck. The cards of the deck will be &quot;flattened&quot; into the</span>
-</span><span id="Deck.__init__-41"><a href="#Deck.__init__-41"><span class="linenos">41</span></a><span class="sd">                    result; a deck object will never contain a deck as an</span>
-</span><span id="Deck.__init__-42"><a href="#Deck.__init__-42"><span class="linenos">42</span></a><span class="sd">                    outcome.</span>
-</span><span id="Deck.__init__-43"><a href="#Deck.__init__-43"><span class="linenos">43</span></a><span class="sd">                * A dict mapping cards to dups.</span>
-</span><span id="Deck.__init__-44"><a href="#Deck.__init__-44"><span class="linenos">44</span></a><span class="sd">                * A tuple of cards.</span>
-</span><span id="Deck.__init__-45"><a href="#Deck.__init__-45"><span class="linenos">45</span></a><span class="sd">                    Any tuple elements that are decks or dicts will expand the</span>
-</span><span id="Deck.__init__-46"><a href="#Deck.__init__-46"><span class="linenos">46</span></a><span class="sd">                    tuple according to their independent joint distribution.</span>
-</span><span id="Deck.__init__-47"><a href="#Deck.__init__-47"><span class="linenos">47</span></a><span class="sd">                    Use this carefully since it may create a large number of</span>
-</span><span id="Deck.__init__-48"><a href="#Deck.__init__-48"><span class="linenos">48</span></a><span class="sd">                    cards.</span>
-</span><span id="Deck.__init__-49"><a href="#Deck.__init__-49"><span class="linenos">49</span></a><span class="sd">                * Anything else will be treated as a scalar.</span>
-</span><span id="Deck.__init__-50"><a href="#Deck.__init__-50"><span class="linenos">50</span></a><span class="sd">            times: Multiplies the number of times each element of `cards`</span>
-</span><span id="Deck.__init__-51"><a href="#Deck.__init__-51"><span class="linenos">51</span></a><span class="sd">                will be put into the deck.</span>
-</span><span id="Deck.__init__-52"><a href="#Deck.__init__-52"><span class="linenos">52</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
-</span><span id="Deck.__init__-53"><a href="#Deck.__init__-53"><span class="linenos">53</span></a><span class="sd">                `cards` or a single `int` to apply to all elements of</span>
-</span><span id="Deck.__init__-54"><a href="#Deck.__init__-54"><span class="linenos">54</span></a><span class="sd">                `cards`.</span>
-</span><span id="Deck.__init__-55"><a href="#Deck.__init__-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck.__init__-56"><a href="#Deck.__init__-56"><span class="linenos">56</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck.__init__-57"><a href="#Deck.__init__-57"><span class="linenos">57</span></a>            <span class="k">if</span> <span class="n">times</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="Deck.__init__-58"><a href="#Deck.__init__-58"><span class="linenos">58</span></a>                <span class="k">return</span> <span class="n">cards</span>
-</span><span id="Deck.__init__-59"><a href="#Deck.__init__-59"><span class="linenos">59</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck.__init__-60"><a href="#Deck.__init__-60"><span class="linenos">60</span></a>                <span class="n">cards</span> <span class="o">=</span> <span class="n">cards</span><span class="o">.</span><span class="n">_data</span>
-</span><span id="Deck.__init__-61"><a href="#Deck.__init__-61"><span class="linenos">61</span></a>
-</span><span id="Deck.__init__-62"><a href="#Deck.__init__-62"><span class="linenos">62</span></a>        <span class="n">cards</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck.__init__-63"><a href="#Deck.__init__-63"><span class="linenos">63</span></a>
-</span><span id="Deck.__init__-64"><a href="#Deck.__init__-64"><span class="linenos">64</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Deck</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-</span><span id="Deck.__init__-65"><a href="#Deck.__init__-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck.__init__-66"><a href="#Deck.__init__-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
-</span><span id="Deck.__init__-67"><a href="#Deck.__init__-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
-</span><span id="Deck.__init__-68"><a href="#Deck.__init__-68"><span class="linenos">68</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
-</span><span id="Deck.__init__-69"><a href="#Deck.__init__-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Deck.__init__-34"><a href="#Deck.__init__-34"><span class="linenos">34</span></a><span class="sd">                * A Mapping from cards to dups.</span>
+</span><span id="Deck.__init__-35"><a href="#Deck.__init__-35"><span class="linenos">35</span></a><span class="sd">                * A sequence of cards.</span>
+</span><span id="Deck.__init__-36"><a href="#Deck.__init__-36"><span class="linenos">36</span></a>
+</span><span id="Deck.__init__-37"><a href="#Deck.__init__-37"><span class="linenos">37</span></a><span class="sd">                Note that `Die` and `Deck` both count as Mappings.</span>
+</span><span id="Deck.__init__-38"><a href="#Deck.__init__-38"><span class="linenos">38</span></a>
+</span><span id="Deck.__init__-39"><a href="#Deck.__init__-39"><span class="linenos">39</span></a><span class="sd">                Each card may be one of the following:</span>
+</span><span id="Deck.__init__-40"><a href="#Deck.__init__-40"><span class="linenos">40</span></a><span class="sd">                * A Mapping from cards to dups.</span>
+</span><span id="Deck.__init__-41"><a href="#Deck.__init__-41"><span class="linenos">41</span></a><span class="sd">                * A tuple of cards.</span>
+</span><span id="Deck.__init__-42"><a href="#Deck.__init__-42"><span class="linenos">42</span></a><span class="sd">                    Any tuple elements that are Mappings will expand the</span>
+</span><span id="Deck.__init__-43"><a href="#Deck.__init__-43"><span class="linenos">43</span></a><span class="sd">                    tuple according to their Cartesian product.</span>
+</span><span id="Deck.__init__-44"><a href="#Deck.__init__-44"><span class="linenos">44</span></a><span class="sd">                    Use this carefully since it may create a large number of</span>
+</span><span id="Deck.__init__-45"><a href="#Deck.__init__-45"><span class="linenos">45</span></a><span class="sd">                    cards.</span>
+</span><span id="Deck.__init__-46"><a href="#Deck.__init__-46"><span class="linenos">46</span></a><span class="sd">                * Anything else will be treated as a scalar.</span>
+</span><span id="Deck.__init__-47"><a href="#Deck.__init__-47"><span class="linenos">47</span></a><span class="sd">            times: Multiplies the number of times each element of `cards`</span>
+</span><span id="Deck.__init__-48"><a href="#Deck.__init__-48"><span class="linenos">48</span></a><span class="sd">                will be put into the deck.</span>
+</span><span id="Deck.__init__-49"><a href="#Deck.__init__-49"><span class="linenos">49</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
+</span><span id="Deck.__init__-50"><a href="#Deck.__init__-50"><span class="linenos">50</span></a><span class="sd">                `cards` or a single `int` to apply to all elements of</span>
+</span><span id="Deck.__init__-51"><a href="#Deck.__init__-51"><span class="linenos">51</span></a><span class="sd">                `cards`.</span>
+</span><span id="Deck.__init__-52"><a href="#Deck.__init__-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck.__init__-53"><a href="#Deck.__init__-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck.__init__-54"><a href="#Deck.__init__-54"><span class="linenos">54</span></a>            <span class="k">if</span> <span class="n">times</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="Deck.__init__-55"><a href="#Deck.__init__-55"><span class="linenos">55</span></a>                <span class="k">return</span> <span class="n">cards</span>
+</span><span id="Deck.__init__-56"><a href="#Deck.__init__-56"><span class="linenos">56</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck.__init__-57"><a href="#Deck.__init__-57"><span class="linenos">57</span></a>                <span class="n">cards</span> <span class="o">=</span> <span class="n">cards</span><span class="o">.</span><span class="n">_data</span>
+</span><span id="Deck.__init__-58"><a href="#Deck.__init__-58"><span class="linenos">58</span></a>
+</span><span id="Deck.__init__-59"><a href="#Deck.__init__-59"><span class="linenos">59</span></a>        <span class="n">cards</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck.__init__-60"><a href="#Deck.__init__-60"><span class="linenos">60</span></a>
+</span><span id="Deck.__init__-61"><a href="#Deck.__init__-61"><span class="linenos">61</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Deck</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+</span><span id="Deck.__init__-62"><a href="#Deck.__init__-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span><span class="n">cards</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck.__init__-63"><a href="#Deck.__init__-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span> <span class="o">=</span> <span class="n">hand_size</span>
+</span><span id="Deck.__init__-64"><a href="#Deck.__init__-64"><span class="linenos">64</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">deck_size</span><span class="p">():</span>
+</span><span id="Deck.__init__-65"><a href="#Deck.__init__-65"><span class="linenos">65</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hand_size cannot exceed deck_size.&#39;</span><span class="p">)</span>
+</span><span id="Deck.__init__-66"><a href="#Deck.__init__-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span></pre></div>
 
 
@@ -8557,20 +8551,19 @@ parameters.</li>
 <li><p><strong>cards:</strong>  The cards of the deck. This can be one of the following:</p>
 
 <ul>
-<li>A dict mapping cards to dups.</li>
+<li>A Mapping from cards to dups.</li>
 <li>A sequence of cards.</li>
 </ul>
 
-<p>Each outcome may be one of the following:</p>
+<p>Note that <code><a href="#Die">Die</a></code> and <code><a href="#Deck">Deck</a></code> both count as Mappings.</p>
+
+<p>Each card may be one of the following:</p>
 
 <ul>
-<li>A deck. The cards of the deck will be "flattened" into the
-result; a deck object will never contain a deck as an
-outcome.</li>
-<li>A dict mapping cards to dups.</li>
+<li>A Mapping from cards to dups.</li>
 <li>A tuple of cards.
-Any tuple elements that are decks or dicts will expand the
-tuple according to their independent joint distribution.
+Any tuple elements that are Mappings will expand the
+tuple according to their Cartesian product.
 Use this carefully since it may create a large number of
 cards.</li>
 <li>Anything else will be treated as a scalar.</li>
@@ -8596,8 +8589,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.cards"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.cards-71"><a href="#Deck.cards-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
-</span><span id="Deck.cards-72"><a href="#Deck.cards-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.cards-68"><a href="#Deck.cards-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
+</span><span id="Deck.cards-69"><a href="#Deck.cards-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8615,8 +8608,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.outcomes-71"><a href="#Deck.outcomes-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
-</span><span id="Deck.outcomes-72"><a href="#Deck.outcomes-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.outcomes-68"><a href="#Deck.outcomes-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
+</span><span id="Deck.outcomes-69"><a href="#Deck.outcomes-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8634,8 +8627,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.keys"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.keys-71"><a href="#Deck.keys-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
-</span><span id="Deck.keys-72"><a href="#Deck.keys-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.keys-68"><a href="#Deck.keys-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">cards</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">:</span>
+</span><span id="Deck.keys-69"><a href="#Deck.keys-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8653,8 +8646,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.dups"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.dups-78"><a href="#Deck.dups-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
-</span><span id="Deck.dups-79"><a href="#Deck.dups-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.dups-75"><a href="#Deck.dups-75"><span class="linenos">75</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
+</span><span id="Deck.dups-76"><a href="#Deck.dups-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8672,8 +8665,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.values"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.values-78"><a href="#Deck.values-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
-</span><span id="Deck.values-79"><a href="#Deck.values-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.values-75"><a href="#Deck.values-75"><span class="linenos">75</span></a>    <span class="k">def</span> <span class="nf">dups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
+</span><span id="Deck.values-76"><a href="#Deck.values-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8691,8 +8684,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.items"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.items-83"><a href="#Deck.items-83"><span class="linenos">83</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">:</span>
-</span><span id="Deck.items-84"><a href="#Deck.items-84"><span class="linenos">84</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.items-80"><a href="#Deck.items-80"><span class="linenos">80</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">:</span>
+</span><span id="Deck.items-81"><a href="#Deck.items-81"><span class="linenos">81</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -8712,8 +8705,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.deck_size"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.deck_size-99"><a href="#Deck.deck_size-99"><span class="linenos"> 99</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck.deck_size-100"><a href="#Deck.deck_size-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.deck_size-96"><a href="#Deck.deck_size-96"><span class="linenos">96</span></a>    <span class="k">def</span> <span class="nf">deck_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck.deck_size-97"><a href="#Deck.deck_size-97"><span class="linenos">97</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck_size</span>
 </span></pre></div>
 
 
@@ -8731,8 +8724,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.hand_size"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.hand_size-102"><a href="#Deck.hand_size-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck.hand_size-103"><a href="#Deck.hand_size-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.hand_size-99"><a href="#Deck.hand_size-99"><span class="linenos"> 99</span></a>    <span class="k">def</span> <span class="nf">hand_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck.hand_size-100"><a href="#Deck.hand_size-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_size</span>
 </span></pre></div>
 
 
@@ -8750,8 +8743,8 @@ will be put into the deck.
 
     </div>
     <a class="headerlink" href="#Deck.denominator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.denominator-109"><a href="#Deck.denominator-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck.denominator-110"><a href="#Deck.denominator-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.denominator-106"><a href="#Deck.denominator-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck.denominator-107"><a href="#Deck.denominator-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_denomiator</span>
 </span></pre></div>
 
 
