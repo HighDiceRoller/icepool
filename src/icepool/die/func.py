@@ -20,7 +20,7 @@ def standard(num_sides: int, /) -> 'icepool.Die':
 
     Don't confuse this with `icepool.Die()`:
 
-    * `icepool.Die(6)`: A die that always rolls the integer 6.
+    * `icepool.Die([6])`: A die that always rolls the integer 6.
     * `icepool.d(6)`: A d6.
     """
     if not isinstance(num_sides, int):

@@ -67,10 +67,10 @@ class Die(Mapping[Any, int]):
 
         * Just import it: `from icepool import d6`
         * Use the `d()` function: `icepool.d(6)`
-        * Use a d6 that you already have: `Die(d6)`
-        * Mix a d3 and a d3+3: `Die(d3, d3+3)`
+        * Use a d6 that you already have: `Die(d6)` or `Die([d6])`
+        * Mix a d3 and a d3+3: `Die([d3, d3+3])`
         * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
-        * Give the faces as args: `Die(1, 2, 3, 4, 5, 6)`
+        * Give the faces as args: `Die([1, 2, 3, 4, 5, 6])`
 
         All weights must be non-negative, though they can be zero.
 
