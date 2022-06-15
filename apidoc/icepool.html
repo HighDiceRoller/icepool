@@ -372,6 +372,12 @@
                         <li>
                                 <a class="function" href="#OutcomeCountGen.max_outcome">max_outcome</a>
                         </li>
+                        <li>
+                                <a class="function" href="#OutcomeCountGen.eval">eval</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#OutcomeCountGen.sum">sum</a>
+                        </li>
                 </ul>
 
             </li>
@@ -404,12 +410,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#Pool.max_outcome">max_outcome</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Pool.eval">eval</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Pool.sum">sum</a>
                         </li>
                         <li>
                                 <a class="function" href="#Pool.lowest">lowest</a>
@@ -589,7 +589,7 @@ refer to dice in a pool.</li>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="kn">from</span> <span class="nn">icepool.die.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="kn">from</span> <span class="nn">icepool.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="kn">from</span> <span class="nn">icepool.generator</span> <span class="kn">import</span> <span class="n">OutcomeCountGen</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="kn">from</span> <span class="nn">icepool.gen</span> <span class="kn">import</span> <span class="n">OutcomeCountGen</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="kn">from</span> <span class="nn">icepool.eval</span> <span class="kn">import</span> <span class="n">OutcomeCountEval</span><span class="p">,</span> <span class="n">WrapFuncEval</span><span class="p">,</span> <span class="n">JointEval</span><span class="p">,</span> <span class="n">SumGen</span><span class="p">,</span> <span class="n">sum_gen</span><span class="p">,</span> <span class="n">enumerate_gen</span><span class="p">,</span> <span class="n">FindBestSet</span><span class="p">,</span> <span class="n">FindBestRun</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="kn">from</span> <span class="nn">icepool.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
@@ -5950,76 +5950,106 @@ with one argument per die. All outcomes must be totally orderable.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGen"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen-10"><a href="#OutcomeCountGen-10"><span class="linenos">10</span></a><span class="k">class</span> <span class="nc">OutcomeCountGen</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-</span><span id="OutcomeCountGen-11"><a href="#OutcomeCountGen-11"><span class="linenos">11</span></a>    <span class="sd">&quot;&quot;&quot;Abstract base class for incrementally generating (outcome, count, weight)s.</span>
-</span><span id="OutcomeCountGen-12"><a href="#OutcomeCountGen-12"><span class="linenos">12</span></a>
-</span><span id="OutcomeCountGen-13"><a href="#OutcomeCountGen-13"><span class="linenos">13</span></a><span class="sd">    These include dice pools (`Pool`) and card decks (`Deck`).</span>
-</span><span id="OutcomeCountGen-14"><a href="#OutcomeCountGen-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-15"><a href="#OutcomeCountGen-15"><span class="linenos">15</span></a>
-</span><span id="OutcomeCountGen-16"><a href="#OutcomeCountGen-16"><span class="linenos">16</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-17"><a href="#OutcomeCountGen-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
-</span><span id="OutcomeCountGen-18"><a href="#OutcomeCountGen-18"><span class="linenos">18</span></a>        <span class="sd">&quot;&quot;&quot;The set of possible outcomes, in sorted order.&quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-19"><a href="#OutcomeCountGen-19"><span class="linenos">19</span></a>
-</span><span id="OutcomeCountGen-20"><a href="#OutcomeCountGen-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="OutcomeCountGen-21"><a href="#OutcomeCountGen-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="OutcomeCountGen-22"><a href="#OutcomeCountGen-22"><span class="linenos">22</span></a>
-</span><span id="OutcomeCountGen-23"><a href="#OutcomeCountGen-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="OutcomeCountGen-24"><a href="#OutcomeCountGen-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="OutcomeCountGen-25"><a href="#OutcomeCountGen-25"><span class="linenos">25</span></a>
-</span><span id="OutcomeCountGen-26"><a href="#OutcomeCountGen-26"><span class="linenos">26</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-27"><a href="#OutcomeCountGen-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">_is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="OutcomeCountGen-28"><a href="#OutcomeCountGen-28"><span class="linenos">28</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff the generator is capable of producing an overall outcome.</span>
-</span><span id="OutcomeCountGen-29"><a href="#OutcomeCountGen-29"><span class="linenos">29</span></a>
-</span><span id="OutcomeCountGen-30"><a href="#OutcomeCountGen-30"><span class="linenos">30</span></a><span class="sd">        For example, a dice pool will return `False` if it contains any dice</span>
-</span><span id="OutcomeCountGen-31"><a href="#OutcomeCountGen-31"><span class="linenos">31</span></a><span class="sd">        with no outcomes.</span>
-</span><span id="OutcomeCountGen-32"><a href="#OutcomeCountGen-32"><span class="linenos">32</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-33"><a href="#OutcomeCountGen-33"><span class="linenos">33</span></a>
-</span><span id="OutcomeCountGen-34"><a href="#OutcomeCountGen-34"><span class="linenos">34</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-35"><a href="#OutcomeCountGen-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span>
-</span><span id="OutcomeCountGen-36"><a href="#OutcomeCountGen-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span>
-</span><span id="OutcomeCountGen-37"><a href="#OutcomeCountGen-37"><span class="linenos">37</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="OutcomeCountGen-38"><a href="#OutcomeCountGen-38"><span class="linenos">38</span></a>        <span class="sd">&quot;&quot;&quot;Pops the min outcome from this generator if it matches the argument.</span>
-</span><span id="OutcomeCountGen-39"><a href="#OutcomeCountGen-39"><span class="linenos">39</span></a>
-</span><span id="OutcomeCountGen-40"><a href="#OutcomeCountGen-40"><span class="linenos">40</span></a><span class="sd">        Yields:</span>
-</span><span id="OutcomeCountGen-41"><a href="#OutcomeCountGen-41"><span class="linenos">41</span></a><span class="sd">            A generator with the min outcome popped.</span>
-</span><span id="OutcomeCountGen-42"><a href="#OutcomeCountGen-42"><span class="linenos">42</span></a><span class="sd">            The count for the min outcome.</span>
-</span><span id="OutcomeCountGen-43"><a href="#OutcomeCountGen-43"><span class="linenos">43</span></a><span class="sd">            The weight for this many of the min outcome appearing.</span>
-</span><span id="OutcomeCountGen-44"><a href="#OutcomeCountGen-44"><span class="linenos">44</span></a>
-</span><span id="OutcomeCountGen-45"><a href="#OutcomeCountGen-45"><span class="linenos">45</span></a><span class="sd">            If the argument does not match the min outcome, or this generator</span>
-</span><span id="OutcomeCountGen-46"><a href="#OutcomeCountGen-46"><span class="linenos">46</span></a><span class="sd">            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.</span>
-</span><span id="OutcomeCountGen-47"><a href="#OutcomeCountGen-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-48"><a href="#OutcomeCountGen-48"><span class="linenos">48</span></a>
-</span><span id="OutcomeCountGen-49"><a href="#OutcomeCountGen-49"><span class="linenos">49</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-50"><a href="#OutcomeCountGen-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span>
-</span><span id="OutcomeCountGen-51"><a href="#OutcomeCountGen-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">max_outcome</span>
-</span><span id="OutcomeCountGen-52"><a href="#OutcomeCountGen-52"><span class="linenos">52</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="OutcomeCountGen-53"><a href="#OutcomeCountGen-53"><span class="linenos">53</span></a>        <span class="sd">&quot;&quot;&quot;Pops the max outcome from this generator if it matches the argument.</span>
-</span><span id="OutcomeCountGen-54"><a href="#OutcomeCountGen-54"><span class="linenos">54</span></a>
-</span><span id="OutcomeCountGen-55"><a href="#OutcomeCountGen-55"><span class="linenos">55</span></a><span class="sd">        Yields:</span>
-</span><span id="OutcomeCountGen-56"><a href="#OutcomeCountGen-56"><span class="linenos">56</span></a><span class="sd">            A generator with the max outcome popped.</span>
-</span><span id="OutcomeCountGen-57"><a href="#OutcomeCountGen-57"><span class="linenos">57</span></a><span class="sd">            The count for the max outcome.</span>
-</span><span id="OutcomeCountGen-58"><a href="#OutcomeCountGen-58"><span class="linenos">58</span></a><span class="sd">            The weight for this many of the max outcome appearing.</span>
-</span><span id="OutcomeCountGen-59"><a href="#OutcomeCountGen-59"><span class="linenos">59</span></a>
-</span><span id="OutcomeCountGen-60"><a href="#OutcomeCountGen-60"><span class="linenos">60</span></a><span class="sd">            If the argument does not match the max outcome, or this generator</span>
-</span><span id="OutcomeCountGen-61"><a href="#OutcomeCountGen-61"><span class="linenos">61</span></a><span class="sd">            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.</span>
-</span><span id="OutcomeCountGen-62"><a href="#OutcomeCountGen-62"><span class="linenos">62</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-63"><a href="#OutcomeCountGen-63"><span class="linenos">63</span></a>
-</span><span id="OutcomeCountGen-64"><a href="#OutcomeCountGen-64"><span class="linenos">64</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-65"><a href="#OutcomeCountGen-65"><span class="linenos">65</span></a>    <span class="k">def</span> <span class="nf">_estimate_direction_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="OutcomeCountGen-66"><a href="#OutcomeCountGen-66"><span class="linenos">66</span></a>        <span class="sd">&quot;&quot;&quot;Estimates the cost of popping from the min and max sides during an evaluation.</span>
-</span><span id="OutcomeCountGen-67"><a href="#OutcomeCountGen-67"><span class="linenos">67</span></a>
-</span><span id="OutcomeCountGen-68"><a href="#OutcomeCountGen-68"><span class="linenos">68</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGen-69"><a href="#OutcomeCountGen-69"><span class="linenos">69</span></a><span class="sd">            pop_min_cost: A positive `int`.</span>
-</span><span id="OutcomeCountGen-70"><a href="#OutcomeCountGen-70"><span class="linenos">70</span></a><span class="sd">            pop_max_cost: A positive `int`.</span>
-</span><span id="OutcomeCountGen-71"><a href="#OutcomeCountGen-71"><span class="linenos">71</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-72"><a href="#OutcomeCountGen-72"><span class="linenos">72</span></a>
-</span><span id="OutcomeCountGen-73"><a href="#OutcomeCountGen-73"><span class="linenos">73</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-74"><a href="#OutcomeCountGen-74"><span class="linenos">74</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="OutcomeCountGen-75"><a href="#OutcomeCountGen-75"><span class="linenos">75</span></a>        <span class="sd">&quot;&quot;&quot;All `OutcomeCountGen`s must implement equality.&quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGen-76"><a href="#OutcomeCountGen-76"><span class="linenos">76</span></a>
-</span><span id="OutcomeCountGen-77"><a href="#OutcomeCountGen-77"><span class="linenos">77</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen-78"><a href="#OutcomeCountGen-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="OutcomeCountGen-79"><a href="#OutcomeCountGen-79"><span class="linenos">79</span></a>        <span class="sd">&quot;&quot;&quot;All `OutcomeCountGen`s must be hashable.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen-12"><a href="#OutcomeCountGen-12"><span class="linenos"> 12</span></a><span class="k">class</span> <span class="nc">OutcomeCountGen</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-13"><a href="#OutcomeCountGen-13"><span class="linenos"> 13</span></a>    <span class="sd">&quot;&quot;&quot;Abstract base class for incrementally generating (outcome, count, weight)s.</span>
+</span><span id="OutcomeCountGen-14"><a href="#OutcomeCountGen-14"><span class="linenos"> 14</span></a>
+</span><span id="OutcomeCountGen-15"><a href="#OutcomeCountGen-15"><span class="linenos"> 15</span></a><span class="sd">    These include dice pools (`Pool`) and card decks (`Deck`).</span>
+</span><span id="OutcomeCountGen-16"><a href="#OutcomeCountGen-16"><span class="linenos"> 16</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-17"><a href="#OutcomeCountGen-17"><span class="linenos"> 17</span></a>
+</span><span id="OutcomeCountGen-18"><a href="#OutcomeCountGen-18"><span class="linenos"> 18</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-19"><a href="#OutcomeCountGen-19"><span class="linenos"> 19</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+</span><span id="OutcomeCountGen-20"><a href="#OutcomeCountGen-20"><span class="linenos"> 20</span></a>        <span class="sd">&quot;&quot;&quot;The set of possible outcomes, in sorted order.&quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-21"><a href="#OutcomeCountGen-21"><span class="linenos"> 21</span></a>
+</span><span id="OutcomeCountGen-22"><a href="#OutcomeCountGen-22"><span class="linenos"> 22</span></a>    <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-23"><a href="#OutcomeCountGen-23"><span class="linenos"> 23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="OutcomeCountGen-24"><a href="#OutcomeCountGen-24"><span class="linenos"> 24</span></a>
+</span><span id="OutcomeCountGen-25"><a href="#OutcomeCountGen-25"><span class="linenos"> 25</span></a>    <span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-26"><a href="#OutcomeCountGen-26"><span class="linenos"> 26</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="OutcomeCountGen-27"><a href="#OutcomeCountGen-27"><span class="linenos"> 27</span></a>
+</span><span id="OutcomeCountGen-28"><a href="#OutcomeCountGen-28"><span class="linenos"> 28</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-29"><a href="#OutcomeCountGen-29"><span class="linenos"> 29</span></a>    <span class="k">def</span> <span class="nf">_is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="OutcomeCountGen-30"><a href="#OutcomeCountGen-30"><span class="linenos"> 30</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff the generator is capable of producing an overall outcome.</span>
+</span><span id="OutcomeCountGen-31"><a href="#OutcomeCountGen-31"><span class="linenos"> 31</span></a>
+</span><span id="OutcomeCountGen-32"><a href="#OutcomeCountGen-32"><span class="linenos"> 32</span></a><span class="sd">        For example, a dice pool will return `False` if it contains any dice</span>
+</span><span id="OutcomeCountGen-33"><a href="#OutcomeCountGen-33"><span class="linenos"> 33</span></a><span class="sd">        with no outcomes.</span>
+</span><span id="OutcomeCountGen-34"><a href="#OutcomeCountGen-34"><span class="linenos"> 34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-35"><a href="#OutcomeCountGen-35"><span class="linenos"> 35</span></a>
+</span><span id="OutcomeCountGen-36"><a href="#OutcomeCountGen-36"><span class="linenos"> 36</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-37"><a href="#OutcomeCountGen-37"><span class="linenos"> 37</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span>
+</span><span id="OutcomeCountGen-38"><a href="#OutcomeCountGen-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span>
+</span><span id="OutcomeCountGen-39"><a href="#OutcomeCountGen-39"><span class="linenos"> 39</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="OutcomeCountGen-40"><a href="#OutcomeCountGen-40"><span class="linenos"> 40</span></a>        <span class="sd">&quot;&quot;&quot;Pops the min outcome from this generator if it matches the argument.</span>
+</span><span id="OutcomeCountGen-41"><a href="#OutcomeCountGen-41"><span class="linenos"> 41</span></a>
+</span><span id="OutcomeCountGen-42"><a href="#OutcomeCountGen-42"><span class="linenos"> 42</span></a><span class="sd">        Yields:</span>
+</span><span id="OutcomeCountGen-43"><a href="#OutcomeCountGen-43"><span class="linenos"> 43</span></a><span class="sd">            A generator with the min outcome popped.</span>
+</span><span id="OutcomeCountGen-44"><a href="#OutcomeCountGen-44"><span class="linenos"> 44</span></a><span class="sd">            The count for the min outcome.</span>
+</span><span id="OutcomeCountGen-45"><a href="#OutcomeCountGen-45"><span class="linenos"> 45</span></a><span class="sd">            The weight for this many of the min outcome appearing.</span>
+</span><span id="OutcomeCountGen-46"><a href="#OutcomeCountGen-46"><span class="linenos"> 46</span></a>
+</span><span id="OutcomeCountGen-47"><a href="#OutcomeCountGen-47"><span class="linenos"> 47</span></a><span class="sd">            If the argument does not match the min outcome, or this generator</span>
+</span><span id="OutcomeCountGen-48"><a href="#OutcomeCountGen-48"><span class="linenos"> 48</span></a><span class="sd">            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.</span>
+</span><span id="OutcomeCountGen-49"><a href="#OutcomeCountGen-49"><span class="linenos"> 49</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-50"><a href="#OutcomeCountGen-50"><span class="linenos"> 50</span></a>
+</span><span id="OutcomeCountGen-51"><a href="#OutcomeCountGen-51"><span class="linenos"> 51</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-52"><a href="#OutcomeCountGen-52"><span class="linenos"> 52</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span>
+</span><span id="OutcomeCountGen-53"><a href="#OutcomeCountGen-53"><span class="linenos"> 53</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">max_outcome</span>
+</span><span id="OutcomeCountGen-54"><a href="#OutcomeCountGen-54"><span class="linenos"> 54</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;OutcomeCountGen&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="OutcomeCountGen-55"><a href="#OutcomeCountGen-55"><span class="linenos"> 55</span></a>        <span class="sd">&quot;&quot;&quot;Pops the max outcome from this generator if it matches the argument.</span>
+</span><span id="OutcomeCountGen-56"><a href="#OutcomeCountGen-56"><span class="linenos"> 56</span></a>
+</span><span id="OutcomeCountGen-57"><a href="#OutcomeCountGen-57"><span class="linenos"> 57</span></a><span class="sd">        Yields:</span>
+</span><span id="OutcomeCountGen-58"><a href="#OutcomeCountGen-58"><span class="linenos"> 58</span></a><span class="sd">            A generator with the max outcome popped.</span>
+</span><span id="OutcomeCountGen-59"><a href="#OutcomeCountGen-59"><span class="linenos"> 59</span></a><span class="sd">            The count for the max outcome.</span>
+</span><span id="OutcomeCountGen-60"><a href="#OutcomeCountGen-60"><span class="linenos"> 60</span></a><span class="sd">            The weight for this many of the max outcome appearing.</span>
+</span><span id="OutcomeCountGen-61"><a href="#OutcomeCountGen-61"><span class="linenos"> 61</span></a>
+</span><span id="OutcomeCountGen-62"><a href="#OutcomeCountGen-62"><span class="linenos"> 62</span></a><span class="sd">            If the argument does not match the max outcome, or this generator</span>
+</span><span id="OutcomeCountGen-63"><a href="#OutcomeCountGen-63"><span class="linenos"> 63</span></a><span class="sd">            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.</span>
+</span><span id="OutcomeCountGen-64"><a href="#OutcomeCountGen-64"><span class="linenos"> 64</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-65"><a href="#OutcomeCountGen-65"><span class="linenos"> 65</span></a>
+</span><span id="OutcomeCountGen-66"><a href="#OutcomeCountGen-66"><span class="linenos"> 66</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-67"><a href="#OutcomeCountGen-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">_estimate_direction_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="OutcomeCountGen-68"><a href="#OutcomeCountGen-68"><span class="linenos"> 68</span></a>        <span class="sd">&quot;&quot;&quot;Estimates the cost of popping from the min and max sides during an evaluation.</span>
+</span><span id="OutcomeCountGen-69"><a href="#OutcomeCountGen-69"><span class="linenos"> 69</span></a>
+</span><span id="OutcomeCountGen-70"><a href="#OutcomeCountGen-70"><span class="linenos"> 70</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGen-71"><a href="#OutcomeCountGen-71"><span class="linenos"> 71</span></a><span class="sd">            pop_min_cost: A positive `int`.</span>
+</span><span id="OutcomeCountGen-72"><a href="#OutcomeCountGen-72"><span class="linenos"> 72</span></a><span class="sd">            pop_max_cost: A positive `int`.</span>
+</span><span id="OutcomeCountGen-73"><a href="#OutcomeCountGen-73"><span class="linenos"> 73</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-74"><a href="#OutcomeCountGen-74"><span class="linenos"> 74</span></a>
+</span><span id="OutcomeCountGen-75"><a href="#OutcomeCountGen-75"><span class="linenos"> 75</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-76"><a href="#OutcomeCountGen-76"><span class="linenos"> 76</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-77"><a href="#OutcomeCountGen-77"><span class="linenos"> 77</span></a>        <span class="sd">&quot;&quot;&quot;All `OutcomeCountGen`s must implement equality.&quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-78"><a href="#OutcomeCountGen-78"><span class="linenos"> 78</span></a>
+</span><span id="OutcomeCountGen-79"><a href="#OutcomeCountGen-79"><span class="linenos"> 79</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen-80"><a href="#OutcomeCountGen-80"><span class="linenos"> 80</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-81"><a href="#OutcomeCountGen-81"><span class="linenos"> 81</span></a>        <span class="sd">&quot;&quot;&quot;All `OutcomeCountGen`s must be hashable.&quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-82"><a href="#OutcomeCountGen-82"><span class="linenos"> 82</span></a>
+</span><span id="OutcomeCountGen-83"><a href="#OutcomeCountGen-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">:</span> <span class="s1">&#39;icepool.OutcomeCountEval&#39;</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span id="OutcomeCountGen-84"><a href="#OutcomeCountGen-84"><span class="linenos"> 84</span></a>             <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGen-85"><a href="#OutcomeCountGen-85"><span class="linenos"> 85</span></a>        <span class="sd">&quot;&quot;&quot;Evaluates this gen using the given `OutcomeCountEval` or function.</span>
+</span><span id="OutcomeCountGen-86"><a href="#OutcomeCountGen-86"><span class="linenos"> 86</span></a>
+</span><span id="OutcomeCountGen-87"><a href="#OutcomeCountGen-87"><span class="linenos"> 87</span></a><span class="sd">        Note that each `OutcomeCountEval` instance carries its own cache;</span>
+</span><span id="OutcomeCountGen-88"><a href="#OutcomeCountGen-88"><span class="linenos"> 88</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
+</span><span id="OutcomeCountGen-89"><a href="#OutcomeCountGen-89"><span class="linenos"> 89</span></a><span class="sd">        you may want to explicitly create an `OutcomeCountEval` instance</span>
+</span><span id="OutcomeCountGen-90"><a href="#OutcomeCountGen-90"><span class="linenos"> 90</span></a><span class="sd">        rather than passing a function to this method directly.</span>
+</span><span id="OutcomeCountGen-91"><a href="#OutcomeCountGen-91"><span class="linenos"> 91</span></a>
+</span><span id="OutcomeCountGen-92"><a href="#OutcomeCountGen-92"><span class="linenos"> 92</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGen-93"><a href="#OutcomeCountGen-93"><span class="linenos"> 93</span></a><span class="sd">            func: This can be an `OutcomeCountEval`, in which case it evaluates</span>
+</span><span id="OutcomeCountGen-94"><a href="#OutcomeCountGen-94"><span class="linenos"> 94</span></a><span class="sd">                the gen directly. Or it can be a `OutcomeCountEval.next_state()`</span>
+</span><span id="OutcomeCountGen-95"><a href="#OutcomeCountGen-95"><span class="linenos"> 95</span></a><span class="sd">                -like function, taking in `state, outcome, *counts` and</span>
+</span><span id="OutcomeCountGen-96"><a href="#OutcomeCountGen-96"><span class="linenos"> 96</span></a><span class="sd">                returning the next state. In this case a temporary `WrapFuncEval`</span>
+</span><span id="OutcomeCountGen-97"><a href="#OutcomeCountGen-97"><span class="linenos"> 97</span></a><span class="sd">                is constructed and used to evaluate this gen.</span>
+</span><span id="OutcomeCountGen-98"><a href="#OutcomeCountGen-98"><span class="linenos"> 98</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-99"><a href="#OutcomeCountGen-99"><span class="linenos"> 99</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountEval</span><span class="p">):</span>
+</span><span id="OutcomeCountGen-100"><a href="#OutcomeCountGen-100"><span class="linenos">100</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+</span><span id="OutcomeCountGen-101"><a href="#OutcomeCountGen-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGen-102"><a href="#OutcomeCountGen-102"><span class="linenos">102</span></a>
+</span><span id="OutcomeCountGen-103"><a href="#OutcomeCountGen-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGen-104"><a href="#OutcomeCountGen-104"><span class="linenos">104</span></a>        <span class="sd">&quot;&quot;&quot;Convenience method to simply sum the dice in this gen.</span>
+</span><span id="OutcomeCountGen-105"><a href="#OutcomeCountGen-105"><span class="linenos">105</span></a>
+</span><span id="OutcomeCountGen-106"><a href="#OutcomeCountGen-106"><span class="linenos">106</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
+</span><span id="OutcomeCountGen-107"><a href="#OutcomeCountGen-107"><span class="linenos">107</span></a>
+</span><span id="OutcomeCountGen-108"><a href="#OutcomeCountGen-108"><span class="linenos">108</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGen-109"><a href="#OutcomeCountGen-109"><span class="linenos">109</span></a><span class="sd">            A die representing the sum.</span>
+</span><span id="OutcomeCountGen-110"><a href="#OutcomeCountGen-110"><span class="linenos">110</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen-111"><a href="#OutcomeCountGen-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -6041,9 +6071,9 @@ with one argument per die. All outcomes must be totally orderable.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGen.outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.outcomes-16"><a href="#OutcomeCountGen.outcomes-16"><span class="linenos">16</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="OutcomeCountGen.outcomes-17"><a href="#OutcomeCountGen.outcomes-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
-</span><span id="OutcomeCountGen.outcomes-18"><a href="#OutcomeCountGen.outcomes-18"><span class="linenos">18</span></a>        <span class="sd">&quot;&quot;&quot;The set of possible outcomes, in sorted order.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.outcomes-18"><a href="#OutcomeCountGen.outcomes-18"><span class="linenos">18</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="OutcomeCountGen.outcomes-19"><a href="#OutcomeCountGen.outcomes-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+</span><span id="OutcomeCountGen.outcomes-20"><a href="#OutcomeCountGen.outcomes-20"><span class="linenos">20</span></a>        <span class="sd">&quot;&quot;&quot;The set of possible outcomes, in sorted order.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -6063,8 +6093,8 @@ with one argument per die. All outcomes must be totally orderable.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGen.min_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.min_outcome-20"><a href="#OutcomeCountGen.min_outcome-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="OutcomeCountGen.min_outcome-21"><a href="#OutcomeCountGen.min_outcome-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.min_outcome-22"><a href="#OutcomeCountGen.min_outcome-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="OutcomeCountGen.min_outcome-23"><a href="#OutcomeCountGen.min_outcome-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -6082,12 +6112,101 @@ with one argument per die. All outcomes must be totally orderable.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGen.max_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.max_outcome-23"><a href="#OutcomeCountGen.max_outcome-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="OutcomeCountGen.max_outcome-24"><a href="#OutcomeCountGen.max_outcome-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.max_outcome-25"><a href="#OutcomeCountGen.max_outcome-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="OutcomeCountGen.max_outcome-26"><a href="#OutcomeCountGen.max_outcome-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </span></pre></div>
 
 
     
+
+                            </div>
+                            <div id="OutcomeCountGen.eval" class="classattr">
+                                        <input id="OutcomeCountGen.eval-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">eval</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">eval_or_func</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#OutcomeCountEval">icepool.OutcomeCountEval</a></span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+
+                <label class="view-source-button" for="OutcomeCountGen.eval-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#OutcomeCountGen.eval"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.eval-83"><a href="#OutcomeCountGen.eval-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">:</span> <span class="s1">&#39;icepool.OutcomeCountEval&#39;</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">,</span>
+</span><span id="OutcomeCountGen.eval-84"><a href="#OutcomeCountGen.eval-84"><span class="linenos"> 84</span></a>             <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGen.eval-85"><a href="#OutcomeCountGen.eval-85"><span class="linenos"> 85</span></a>        <span class="sd">&quot;&quot;&quot;Evaluates this gen using the given `OutcomeCountEval` or function.</span>
+</span><span id="OutcomeCountGen.eval-86"><a href="#OutcomeCountGen.eval-86"><span class="linenos"> 86</span></a>
+</span><span id="OutcomeCountGen.eval-87"><a href="#OutcomeCountGen.eval-87"><span class="linenos"> 87</span></a><span class="sd">        Note that each `OutcomeCountEval` instance carries its own cache;</span>
+</span><span id="OutcomeCountGen.eval-88"><a href="#OutcomeCountGen.eval-88"><span class="linenos"> 88</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
+</span><span id="OutcomeCountGen.eval-89"><a href="#OutcomeCountGen.eval-89"><span class="linenos"> 89</span></a><span class="sd">        you may want to explicitly create an `OutcomeCountEval` instance</span>
+</span><span id="OutcomeCountGen.eval-90"><a href="#OutcomeCountGen.eval-90"><span class="linenos"> 90</span></a><span class="sd">        rather than passing a function to this method directly.</span>
+</span><span id="OutcomeCountGen.eval-91"><a href="#OutcomeCountGen.eval-91"><span class="linenos"> 91</span></a>
+</span><span id="OutcomeCountGen.eval-92"><a href="#OutcomeCountGen.eval-92"><span class="linenos"> 92</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGen.eval-93"><a href="#OutcomeCountGen.eval-93"><span class="linenos"> 93</span></a><span class="sd">            func: This can be an `OutcomeCountEval`, in which case it evaluates</span>
+</span><span id="OutcomeCountGen.eval-94"><a href="#OutcomeCountGen.eval-94"><span class="linenos"> 94</span></a><span class="sd">                the gen directly. Or it can be a `OutcomeCountEval.next_state()`</span>
+</span><span id="OutcomeCountGen.eval-95"><a href="#OutcomeCountGen.eval-95"><span class="linenos"> 95</span></a><span class="sd">                -like function, taking in `state, outcome, *counts` and</span>
+</span><span id="OutcomeCountGen.eval-96"><a href="#OutcomeCountGen.eval-96"><span class="linenos"> 96</span></a><span class="sd">                returning the next state. In this case a temporary `WrapFuncEval`</span>
+</span><span id="OutcomeCountGen.eval-97"><a href="#OutcomeCountGen.eval-97"><span class="linenos"> 97</span></a><span class="sd">                is constructed and used to evaluate this gen.</span>
+</span><span id="OutcomeCountGen.eval-98"><a href="#OutcomeCountGen.eval-98"><span class="linenos"> 98</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen.eval-99"><a href="#OutcomeCountGen.eval-99"><span class="linenos"> 99</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountEval</span><span class="p">):</span>
+</span><span id="OutcomeCountGen.eval-100"><a href="#OutcomeCountGen.eval-100"><span class="linenos">100</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
+</span><span id="OutcomeCountGen.eval-101"><a href="#OutcomeCountGen.eval-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Evaluates this gen using the given <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> or function.</p>
+
+<p>Note that each <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> instance carries its own cache;
+if you plan to use an evaluation multiple times,
+you may want to explicitly create an <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> instance
+rather than passing a function to this method directly.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>func:</strong>  This can be an <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code>, in which case it evaluates
+the gen directly. Or it can be a <code><a href="#OutcomeCountEval.next_state">OutcomeCountEval.next_state()</a></code>
+-like function, taking in <code>state, outcome, *counts</code> and
+returning the next state. In this case a temporary <code>WrapFuncEval</code>
+is constructed and used to evaluate this gen.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="OutcomeCountGen.sum" class="classattr">
+                                        <input id="OutcomeCountGen.sum-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">sum</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+
+                <label class="view-source-button" for="OutcomeCountGen.sum-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#OutcomeCountGen.sum"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGen.sum-103"><a href="#OutcomeCountGen.sum-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGen.sum-104"><a href="#OutcomeCountGen.sum-104"><span class="linenos">104</span></a>        <span class="sd">&quot;&quot;&quot;Convenience method to simply sum the dice in this gen.</span>
+</span><span id="OutcomeCountGen.sum-105"><a href="#OutcomeCountGen.sum-105"><span class="linenos">105</span></a>
+</span><span id="OutcomeCountGen.sum-106"><a href="#OutcomeCountGen.sum-106"><span class="linenos">106</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
+</span><span id="OutcomeCountGen.sum-107"><a href="#OutcomeCountGen.sum-107"><span class="linenos">107</span></a>
+</span><span id="OutcomeCountGen.sum-108"><a href="#OutcomeCountGen.sum-108"><span class="linenos">108</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGen.sum-109"><a href="#OutcomeCountGen.sum-109"><span class="linenos">109</span></a><span class="sd">            A die representing the sum.</span>
+</span><span id="OutcomeCountGen.sum-110"><a href="#OutcomeCountGen.sum-110"><span class="linenos">110</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGen.sum-111"><a href="#OutcomeCountGen.sum-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Convenience method to simply sum the dice in this gen.</p>
+
+<p>This uses <code>icepool.sum_pool</code>.</p>
+
+<h6 id="returns">Returns</h6>
+
+<blockquote>
+  <p>A die representing the sum.</p>
+</blockquote>
+</div>
+
 
                             </div>
                 </section>
@@ -6424,96 +6543,66 @@ with one argument per die. All outcomes must be totally orderable.</li>
 </span><span id="Pool-355"><a href="#Pool-355"><span class="linenos">355</span></a>        <span class="k">if</span> <span class="n">skip_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Pool-356"><a href="#Pool-356"><span class="linenos">356</span></a>            <span class="k">yield</span> <span class="n">empty_pool</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">post_roll_counts</span><span class="p">()),</span> <span class="n">skip_weight</span>
 </span><span id="Pool-357"><a href="#Pool-357"><span class="linenos">357</span></a>
-</span><span id="Pool-358"><a href="#Pool-358"><span class="linenos">358</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">:</span> <span class="s1">&#39;icepool.OutcomeCountEval&#39;</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">,</span>
-</span><span id="Pool-359"><a href="#Pool-359"><span class="linenos">359</span></a>             <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool-360"><a href="#Pool-360"><span class="linenos">360</span></a>        <span class="sd">&quot;&quot;&quot;Evaluates this pool using the given `OutcomeCountEval` or function.</span>
-</span><span id="Pool-361"><a href="#Pool-361"><span class="linenos">361</span></a>
-</span><span id="Pool-362"><a href="#Pool-362"><span class="linenos">362</span></a><span class="sd">        Note that each `OutcomeCountEval` instance carries its own cache;</span>
-</span><span id="Pool-363"><a href="#Pool-363"><span class="linenos">363</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
-</span><span id="Pool-364"><a href="#Pool-364"><span class="linenos">364</span></a><span class="sd">        you may want to explicitly create an `OutcomeCountEval` instance</span>
-</span><span id="Pool-365"><a href="#Pool-365"><span class="linenos">365</span></a><span class="sd">        rather than passing a function to this method directly.</span>
-</span><span id="Pool-366"><a href="#Pool-366"><span class="linenos">366</span></a>
-</span><span id="Pool-367"><a href="#Pool-367"><span class="linenos">367</span></a><span class="sd">        Args:</span>
-</span><span id="Pool-368"><a href="#Pool-368"><span class="linenos">368</span></a><span class="sd">            func: This can be an `OutcomeCountEval`, in which case it evaluates</span>
-</span><span id="Pool-369"><a href="#Pool-369"><span class="linenos">369</span></a><span class="sd">                the pool directly. Or it can be a `OutcomeCountEval.next_state()`</span>
-</span><span id="Pool-370"><a href="#Pool-370"><span class="linenos">370</span></a><span class="sd">                -like function, taking in `state, outcome, *counts` and</span>
-</span><span id="Pool-371"><a href="#Pool-371"><span class="linenos">371</span></a><span class="sd">                returning the next state. In this case a temporary `WrapFuncEval`</span>
-</span><span id="Pool-372"><a href="#Pool-372"><span class="linenos">372</span></a><span class="sd">                is constructed and used to evaluate this pool.</span>
-</span><span id="Pool-373"><a href="#Pool-373"><span class="linenos">373</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-374"><a href="#Pool-374"><span class="linenos">374</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountEval</span><span class="p">):</span>
-</span><span id="Pool-375"><a href="#Pool-375"><span class="linenos">375</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-</span><span id="Pool-376"><a href="#Pool-376"><span class="linenos">376</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Pool-377"><a href="#Pool-377"><span class="linenos">377</span></a>
-</span><span id="Pool-378"><a href="#Pool-378"><span class="linenos">378</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool-379"><a href="#Pool-379"><span class="linenos">379</span></a>        <span class="sd">&quot;&quot;&quot;Convenience method to simply sum the dice in this pool.</span>
-</span><span id="Pool-380"><a href="#Pool-380"><span class="linenos">380</span></a>
-</span><span id="Pool-381"><a href="#Pool-381"><span class="linenos">381</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
-</span><span id="Pool-382"><a href="#Pool-382"><span class="linenos">382</span></a>
-</span><span id="Pool-383"><a href="#Pool-383"><span class="linenos">383</span></a><span class="sd">        Returns:</span>
-</span><span id="Pool-384"><a href="#Pool-384"><span class="linenos">384</span></a><span class="sd">            A die representing the sum.</span>
-</span><span id="Pool-385"><a href="#Pool-385"><span class="linenos">385</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-386"><a href="#Pool-386"><span class="linenos">386</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Pool-387"><a href="#Pool-387"><span class="linenos">387</span></a>
-</span><span id="Pool-388"><a href="#Pool-388"><span class="linenos">388</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool-389"><a href="#Pool-389"><span class="linenos">389</span></a>        <span class="sd">&quot;&quot;&quot;The lowest outcome or sum of the lowest outcomes in the pool.</span>
-</span><span id="Pool-390"><a href="#Pool-390"><span class="linenos">390</span></a>
-</span><span id="Pool-391"><a href="#Pool-391"><span class="linenos">391</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
-</span><span id="Pool-392"><a href="#Pool-392"><span class="linenos">392</span></a>
-</span><span id="Pool-393"><a href="#Pool-393"><span class="linenos">393</span></a><span class="sd">        Args:</span>
-</span><span id="Pool-394"><a href="#Pool-394"><span class="linenos">394</span></a><span class="sd">            num_keep: The number of lowest dice will be summed.</span>
-</span><span id="Pool-395"><a href="#Pool-395"><span class="linenos">395</span></a><span class="sd">            num_drop: This number of lowest dice will be dropped before keeping</span>
-</span><span id="Pool-396"><a href="#Pool-396"><span class="linenos">396</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool-397"><a href="#Pool-397"><span class="linenos">397</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-398"><a href="#Pool-398"><span class="linenos">398</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool-399"><a href="#Pool-399"><span class="linenos">399</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool-400"><a href="#Pool-400"><span class="linenos">400</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool-401"><a href="#Pool-401"><span class="linenos">401</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool-402"><a href="#Pool-402"><span class="linenos">402</span></a>
-</span><span id="Pool-403"><a href="#Pool-403"><span class="linenos">403</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool-404"><a href="#Pool-404"><span class="linenos">404</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool-405"><a href="#Pool-405"><span class="linenos">405</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+</span><span id="Pool-358"><a href="#Pool-358"><span class="linenos">358</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool-359"><a href="#Pool-359"><span class="linenos">359</span></a>        <span class="sd">&quot;&quot;&quot;The lowest outcome or sum of the lowest outcomes in the pool.</span>
+</span><span id="Pool-360"><a href="#Pool-360"><span class="linenos">360</span></a>
+</span><span id="Pool-361"><a href="#Pool-361"><span class="linenos">361</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
+</span><span id="Pool-362"><a href="#Pool-362"><span class="linenos">362</span></a>
+</span><span id="Pool-363"><a href="#Pool-363"><span class="linenos">363</span></a><span class="sd">        Args:</span>
+</span><span id="Pool-364"><a href="#Pool-364"><span class="linenos">364</span></a><span class="sd">            num_keep: The number of lowest dice will be summed.</span>
+</span><span id="Pool-365"><a href="#Pool-365"><span class="linenos">365</span></a><span class="sd">            num_drop: This number of lowest dice will be dropped before keeping</span>
+</span><span id="Pool-366"><a href="#Pool-366"><span class="linenos">366</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool-367"><a href="#Pool-367"><span class="linenos">367</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool-368"><a href="#Pool-368"><span class="linenos">368</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool-369"><a href="#Pool-369"><span class="linenos">369</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool-370"><a href="#Pool-370"><span class="linenos">370</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool-371"><a href="#Pool-371"><span class="linenos">371</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool-372"><a href="#Pool-372"><span class="linenos">372</span></a>
+</span><span id="Pool-373"><a href="#Pool-373"><span class="linenos">373</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool-374"><a href="#Pool-374"><span class="linenos">374</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool-375"><a href="#Pool-375"><span class="linenos">375</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+</span><span id="Pool-376"><a href="#Pool-376"><span class="linenos">376</span></a>
+</span><span id="Pool-377"><a href="#Pool-377"><span class="linenos">377</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool-378"><a href="#Pool-378"><span class="linenos">378</span></a>        <span class="sd">&quot;&quot;&quot;The highest outcome or sum of the highest outcomes in the pool.</span>
+</span><span id="Pool-379"><a href="#Pool-379"><span class="linenos">379</span></a>
+</span><span id="Pool-380"><a href="#Pool-380"><span class="linenos">380</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
+</span><span id="Pool-381"><a href="#Pool-381"><span class="linenos">381</span></a>
+</span><span id="Pool-382"><a href="#Pool-382"><span class="linenos">382</span></a><span class="sd">        Args:</span>
+</span><span id="Pool-383"><a href="#Pool-383"><span class="linenos">383</span></a><span class="sd">            num_keep: The number of highest dice will be summed.</span>
+</span><span id="Pool-384"><a href="#Pool-384"><span class="linenos">384</span></a><span class="sd">            num_drop: This number of highest dice will be dropped before keeping</span>
+</span><span id="Pool-385"><a href="#Pool-385"><span class="linenos">385</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool-386"><a href="#Pool-386"><span class="linenos">386</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool-387"><a href="#Pool-387"><span class="linenos">387</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool-388"><a href="#Pool-388"><span class="linenos">388</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool-389"><a href="#Pool-389"><span class="linenos">389</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool-390"><a href="#Pool-390"><span class="linenos">390</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool-391"><a href="#Pool-391"><span class="linenos">391</span></a>
+</span><span id="Pool-392"><a href="#Pool-392"><span class="linenos">392</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool-393"><a href="#Pool-393"><span class="linenos">393</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool-394"><a href="#Pool-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+</span><span id="Pool-395"><a href="#Pool-395"><span class="linenos">395</span></a>
+</span><span id="Pool-396"><a href="#Pool-396"><span class="linenos">396</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Pool-397"><a href="#Pool-397"><span class="linenos">397</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Pool-398"><a href="#Pool-398"><span class="linenos">398</span></a>            <span class="sa">f</span><span class="s1">&#39;Pool of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span><span class="si">}</span><span class="s1"> dice with post_roll_counts=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">post_roll_counts</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="Pool-399"><a href="#Pool-399"><span class="linenos">399</span></a>            <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice_tuple</span><span class="p">))</span>
+</span><span id="Pool-400"><a href="#Pool-400"><span class="linenos">400</span></a>
+</span><span id="Pool-401"><a href="#Pool-401"><span class="linenos">401</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Pool-402"><a href="#Pool-402"><span class="linenos">402</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Pool-403"><a href="#Pool-403"><span class="linenos">403</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">Pool</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="Pool-404"><a href="#Pool-404"><span class="linenos">404</span></a>            <span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Pool-405"><a href="#Pool-405"><span class="linenos">405</span></a>            <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_roll_counts</span>
 </span><span id="Pool-406"><a href="#Pool-406"><span class="linenos">406</span></a>
-</span><span id="Pool-407"><a href="#Pool-407"><span class="linenos">407</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool-408"><a href="#Pool-408"><span class="linenos">408</span></a>        <span class="sd">&quot;&quot;&quot;The highest outcome or sum of the highest outcomes in the pool.</span>
-</span><span id="Pool-409"><a href="#Pool-409"><span class="linenos">409</span></a>
-</span><span id="Pool-410"><a href="#Pool-410"><span class="linenos">410</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
+</span><span id="Pool-407"><a href="#Pool-407"><span class="linenos">407</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Pool-408"><a href="#Pool-408"><span class="linenos">408</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Pool</span><span class="p">):</span>
+</span><span id="Pool-409"><a href="#Pool-409"><span class="linenos">409</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Pool-410"><a href="#Pool-410"><span class="linenos">410</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span><span id="Pool-411"><a href="#Pool-411"><span class="linenos">411</span></a>
-</span><span id="Pool-412"><a href="#Pool-412"><span class="linenos">412</span></a><span class="sd">        Args:</span>
-</span><span id="Pool-413"><a href="#Pool-413"><span class="linenos">413</span></a><span class="sd">            num_keep: The number of highest dice will be summed.</span>
-</span><span id="Pool-414"><a href="#Pool-414"><span class="linenos">414</span></a><span class="sd">            num_drop: This number of highest dice will be dropped before keeping</span>
-</span><span id="Pool-415"><a href="#Pool-415"><span class="linenos">415</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool-416"><a href="#Pool-416"><span class="linenos">416</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-417"><a href="#Pool-417"><span class="linenos">417</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool-418"><a href="#Pool-418"><span class="linenos">418</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool-419"><a href="#Pool-419"><span class="linenos">419</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool-420"><a href="#Pool-420"><span class="linenos">420</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool-421"><a href="#Pool-421"><span class="linenos">421</span></a>
-</span><span id="Pool-422"><a href="#Pool-422"><span class="linenos">422</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool-423"><a href="#Pool-423"><span class="linenos">423</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool-424"><a href="#Pool-424"><span class="linenos">424</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
-</span><span id="Pool-425"><a href="#Pool-425"><span class="linenos">425</span></a>
-</span><span id="Pool-426"><a href="#Pool-426"><span class="linenos">426</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Pool-427"><a href="#Pool-427"><span class="linenos">427</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Pool-428"><a href="#Pool-428"><span class="linenos">428</span></a>            <span class="sa">f</span><span class="s1">&#39;Pool of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span><span class="si">}</span><span class="s1"> dice with post_roll_counts=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">post_roll_counts</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="Pool-429"><a href="#Pool-429"><span class="linenos">429</span></a>            <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice_tuple</span><span class="p">))</span>
-</span><span id="Pool-430"><a href="#Pool-430"><span class="linenos">430</span></a>
-</span><span id="Pool-431"><a href="#Pool-431"><span class="linenos">431</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Pool-432"><a href="#Pool-432"><span class="linenos">432</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Pool-433"><a href="#Pool-433"><span class="linenos">433</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">Pool</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="Pool-434"><a href="#Pool-434"><span class="linenos">434</span></a>            <span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">(),</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="Pool-435"><a href="#Pool-435"><span class="linenos">435</span></a>            <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_roll_counts</span>
-</span><span id="Pool-436"><a href="#Pool-436"><span class="linenos">436</span></a>
-</span><span id="Pool-437"><a href="#Pool-437"><span class="linenos">437</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Pool-438"><a href="#Pool-438"><span class="linenos">438</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Pool</span><span class="p">):</span>
-</span><span id="Pool-439"><a href="#Pool-439"><span class="linenos">439</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Pool-440"><a href="#Pool-440"><span class="linenos">440</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
-</span><span id="Pool-441"><a href="#Pool-441"><span class="linenos">441</span></a>
-</span><span id="Pool-442"><a href="#Pool-442"><span class="linenos">442</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Pool-443"><a href="#Pool-443"><span class="linenos">443</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Pool-444"><a href="#Pool-444"><span class="linenos">444</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
-</span><span id="Pool-445"><a href="#Pool-445"><span class="linenos">445</span></a>
-</span><span id="Pool-446"><a href="#Pool-446"><span class="linenos">446</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Pool-447"><a href="#Pool-447"><span class="linenos">447</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span><span id="Pool-412"><a href="#Pool-412"><span class="linenos">412</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Pool-413"><a href="#Pool-413"><span class="linenos">413</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Pool-414"><a href="#Pool-414"><span class="linenos">414</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
+</span><span id="Pool-415"><a href="#Pool-415"><span class="linenos">415</span></a>
+</span><span id="Pool-416"><a href="#Pool-416"><span class="linenos">416</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Pool-417"><a href="#Pool-417"><span class="linenos">417</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 </span></pre></div>
 
 
@@ -6945,95 +7034,6 @@ is used.</li>
 
 
                             </div>
-                            <div id="Pool.eval" class="classattr">
-                                        <input id="Pool.eval-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">eval</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">eval_or_func</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#OutcomeCountEval">icepool.OutcomeCountEval</a></span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
-
-                <label class="view-source-button" for="Pool.eval-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Pool.eval"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.eval-358"><a href="#Pool.eval-358"><span class="linenos">358</span></a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_or_func</span><span class="p">:</span> <span class="s1">&#39;icepool.OutcomeCountEval&#39;</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">,</span>
-</span><span id="Pool.eval-359"><a href="#Pool.eval-359"><span class="linenos">359</span></a>             <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.eval-360"><a href="#Pool.eval-360"><span class="linenos">360</span></a>        <span class="sd">&quot;&quot;&quot;Evaluates this pool using the given `OutcomeCountEval` or function.</span>
-</span><span id="Pool.eval-361"><a href="#Pool.eval-361"><span class="linenos">361</span></a>
-</span><span id="Pool.eval-362"><a href="#Pool.eval-362"><span class="linenos">362</span></a><span class="sd">        Note that each `OutcomeCountEval` instance carries its own cache;</span>
-</span><span id="Pool.eval-363"><a href="#Pool.eval-363"><span class="linenos">363</span></a><span class="sd">        if you plan to use an evaluation multiple times,</span>
-</span><span id="Pool.eval-364"><a href="#Pool.eval-364"><span class="linenos">364</span></a><span class="sd">        you may want to explicitly create an `OutcomeCountEval` instance</span>
-</span><span id="Pool.eval-365"><a href="#Pool.eval-365"><span class="linenos">365</span></a><span class="sd">        rather than passing a function to this method directly.</span>
-</span><span id="Pool.eval-366"><a href="#Pool.eval-366"><span class="linenos">366</span></a>
-</span><span id="Pool.eval-367"><a href="#Pool.eval-367"><span class="linenos">367</span></a><span class="sd">        Args:</span>
-</span><span id="Pool.eval-368"><a href="#Pool.eval-368"><span class="linenos">368</span></a><span class="sd">            func: This can be an `OutcomeCountEval`, in which case it evaluates</span>
-</span><span id="Pool.eval-369"><a href="#Pool.eval-369"><span class="linenos">369</span></a><span class="sd">                the pool directly. Or it can be a `OutcomeCountEval.next_state()`</span>
-</span><span id="Pool.eval-370"><a href="#Pool.eval-370"><span class="linenos">370</span></a><span class="sd">                -like function, taking in `state, outcome, *counts` and</span>
-</span><span id="Pool.eval-371"><a href="#Pool.eval-371"><span class="linenos">371</span></a><span class="sd">                returning the next state. In this case a temporary `WrapFuncEval`</span>
-</span><span id="Pool.eval-372"><a href="#Pool.eval-372"><span class="linenos">372</span></a><span class="sd">                is constructed and used to evaluate this pool.</span>
-</span><span id="Pool.eval-373"><a href="#Pool.eval-373"><span class="linenos">373</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.eval-374"><a href="#Pool.eval-374"><span class="linenos">374</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountEval</span><span class="p">):</span>
-</span><span id="Pool.eval-375"><a href="#Pool.eval-375"><span class="linenos">375</span></a>            <span class="n">eval_or_func</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WrapFuncEval</span><span class="p">(</span><span class="n">eval_or_func</span><span class="p">)</span>
-</span><span id="Pool.eval-376"><a href="#Pool.eval-376"><span class="linenos">376</span></a>        <span class="k">return</span> <span class="n">eval_or_func</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Evaluates this pool using the given <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> or function.</p>
-
-<p>Note that each <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> instance carries its own cache;
-if you plan to use an evaluation multiple times,
-you may want to explicitly create an <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code> instance
-rather than passing a function to this method directly.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>func:</strong>  This can be an <code><a href="#OutcomeCountEval">OutcomeCountEval</a></code>, in which case it evaluates
-the pool directly. Or it can be a <code><a href="#OutcomeCountEval.next_state">OutcomeCountEval.next_state()</a></code>
--like function, taking in <code>state, outcome, *counts</code> and
-returning the next state. In this case a temporary <code>WrapFuncEval</code>
-is constructed and used to evaluate this pool.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Pool.sum" class="classattr">
-                                        <input id="Pool.sum-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">sum</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
-
-                <label class="view-source-button" for="Pool.sum-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Pool.sum"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.sum-378"><a href="#Pool.sum-378"><span class="linenos">378</span></a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.sum-379"><a href="#Pool.sum-379"><span class="linenos">379</span></a>        <span class="sd">&quot;&quot;&quot;Convenience method to simply sum the dice in this pool.</span>
-</span><span id="Pool.sum-380"><a href="#Pool.sum-380"><span class="linenos">380</span></a>
-</span><span id="Pool.sum-381"><a href="#Pool.sum-381"><span class="linenos">381</span></a><span class="sd">        This uses `icepool.sum_pool`.</span>
-</span><span id="Pool.sum-382"><a href="#Pool.sum-382"><span class="linenos">382</span></a>
-</span><span id="Pool.sum-383"><a href="#Pool.sum-383"><span class="linenos">383</span></a><span class="sd">        Returns:</span>
-</span><span id="Pool.sum-384"><a href="#Pool.sum-384"><span class="linenos">384</span></a><span class="sd">            A die representing the sum.</span>
-</span><span id="Pool.sum-385"><a href="#Pool.sum-385"><span class="linenos">385</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.sum-386"><a href="#Pool.sum-386"><span class="linenos">386</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sum_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Convenience method to simply sum the dice in this pool.</p>
-
-<p>This uses <code>icepool.sum_pool</code>.</p>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>A die representing the sum.</p>
-</blockquote>
-</div>
-
-
-                            </div>
                             <div id="Pool.lowest" class="classattr">
                                         <input id="Pool.lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -7045,24 +7045,24 @@ is constructed and used to evaluate this pool.</li>
 
     </div>
     <a class="headerlink" href="#Pool.lowest"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.lowest-388"><a href="#Pool.lowest-388"><span class="linenos">388</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.lowest-389"><a href="#Pool.lowest-389"><span class="linenos">389</span></a>        <span class="sd">&quot;&quot;&quot;The lowest outcome or sum of the lowest outcomes in the pool.</span>
-</span><span id="Pool.lowest-390"><a href="#Pool.lowest-390"><span class="linenos">390</span></a>
-</span><span id="Pool.lowest-391"><a href="#Pool.lowest-391"><span class="linenos">391</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
-</span><span id="Pool.lowest-392"><a href="#Pool.lowest-392"><span class="linenos">392</span></a>
-</span><span id="Pool.lowest-393"><a href="#Pool.lowest-393"><span class="linenos">393</span></a><span class="sd">        Args:</span>
-</span><span id="Pool.lowest-394"><a href="#Pool.lowest-394"><span class="linenos">394</span></a><span class="sd">            num_keep: The number of lowest dice will be summed.</span>
-</span><span id="Pool.lowest-395"><a href="#Pool.lowest-395"><span class="linenos">395</span></a><span class="sd">            num_drop: This number of lowest dice will be dropped before keeping</span>
-</span><span id="Pool.lowest-396"><a href="#Pool.lowest-396"><span class="linenos">396</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool.lowest-397"><a href="#Pool.lowest-397"><span class="linenos">397</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.lowest-398"><a href="#Pool.lowest-398"><span class="linenos">398</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.lowest-399"><a href="#Pool.lowest-399"><span class="linenos">399</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.lowest-400"><a href="#Pool.lowest-400"><span class="linenos">400</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.lowest-401"><a href="#Pool.lowest-401"><span class="linenos">401</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.lowest-402"><a href="#Pool.lowest-402"><span class="linenos">402</span></a>
-</span><span id="Pool.lowest-403"><a href="#Pool.lowest-403"><span class="linenos">403</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool.lowest-404"><a href="#Pool.lowest-404"><span class="linenos">404</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool.lowest-405"><a href="#Pool.lowest-405"><span class="linenos">405</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.lowest-358"><a href="#Pool.lowest-358"><span class="linenos">358</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool.lowest-359"><a href="#Pool.lowest-359"><span class="linenos">359</span></a>        <span class="sd">&quot;&quot;&quot;The lowest outcome or sum of the lowest outcomes in the pool.</span>
+</span><span id="Pool.lowest-360"><a href="#Pool.lowest-360"><span class="linenos">360</span></a>
+</span><span id="Pool.lowest-361"><a href="#Pool.lowest-361"><span class="linenos">361</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
+</span><span id="Pool.lowest-362"><a href="#Pool.lowest-362"><span class="linenos">362</span></a>
+</span><span id="Pool.lowest-363"><a href="#Pool.lowest-363"><span class="linenos">363</span></a><span class="sd">        Args:</span>
+</span><span id="Pool.lowest-364"><a href="#Pool.lowest-364"><span class="linenos">364</span></a><span class="sd">            num_keep: The number of lowest dice will be summed.</span>
+</span><span id="Pool.lowest-365"><a href="#Pool.lowest-365"><span class="linenos">365</span></a><span class="sd">            num_drop: This number of lowest dice will be dropped before keeping</span>
+</span><span id="Pool.lowest-366"><a href="#Pool.lowest-366"><span class="linenos">366</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool.lowest-367"><a href="#Pool.lowest-367"><span class="linenos">367</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool.lowest-368"><a href="#Pool.lowest-368"><span class="linenos">368</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.lowest-369"><a href="#Pool.lowest-369"><span class="linenos">369</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.lowest-370"><a href="#Pool.lowest-370"><span class="linenos">370</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.lowest-371"><a href="#Pool.lowest-371"><span class="linenos">371</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.lowest-372"><a href="#Pool.lowest-372"><span class="linenos">372</span></a>
+</span><span id="Pool.lowest-373"><a href="#Pool.lowest-373"><span class="linenos">373</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool.lowest-374"><a href="#Pool.lowest-374"><span class="linenos">374</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool.lowest-375"><a href="#Pool.lowest-375"><span class="linenos">375</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
@@ -7092,24 +7092,24 @@ dice to be summed.</li>
 
     </div>
     <a class="headerlink" href="#Pool.highest"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.highest-407"><a href="#Pool.highest-407"><span class="linenos">407</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.highest-408"><a href="#Pool.highest-408"><span class="linenos">408</span></a>        <span class="sd">&quot;&quot;&quot;The highest outcome or sum of the highest outcomes in the pool.</span>
-</span><span id="Pool.highest-409"><a href="#Pool.highest-409"><span class="linenos">409</span></a>
-</span><span id="Pool.highest-410"><a href="#Pool.highest-410"><span class="linenos">410</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
-</span><span id="Pool.highest-411"><a href="#Pool.highest-411"><span class="linenos">411</span></a>
-</span><span id="Pool.highest-412"><a href="#Pool.highest-412"><span class="linenos">412</span></a><span class="sd">        Args:</span>
-</span><span id="Pool.highest-413"><a href="#Pool.highest-413"><span class="linenos">413</span></a><span class="sd">            num_keep: The number of highest dice will be summed.</span>
-</span><span id="Pool.highest-414"><a href="#Pool.highest-414"><span class="linenos">414</span></a><span class="sd">            num_drop: This number of highest dice will be dropped before keeping</span>
-</span><span id="Pool.highest-415"><a href="#Pool.highest-415"><span class="linenos">415</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool.highest-416"><a href="#Pool.highest-416"><span class="linenos">416</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.highest-417"><a href="#Pool.highest-417"><span class="linenos">417</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.highest-418"><a href="#Pool.highest-418"><span class="linenos">418</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.highest-419"><a href="#Pool.highest-419"><span class="linenos">419</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.highest-420"><a href="#Pool.highest-420"><span class="linenos">420</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.highest-421"><a href="#Pool.highest-421"><span class="linenos">421</span></a>
-</span><span id="Pool.highest-422"><a href="#Pool.highest-422"><span class="linenos">422</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool.highest-423"><a href="#Pool.highest-423"><span class="linenos">423</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
-</span><span id="Pool.highest-424"><a href="#Pool.highest-424"><span class="linenos">424</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.highest-377"><a href="#Pool.highest-377"><span class="linenos">377</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool.highest-378"><a href="#Pool.highest-378"><span class="linenos">378</span></a>        <span class="sd">&quot;&quot;&quot;The highest outcome or sum of the highest outcomes in the pool.</span>
+</span><span id="Pool.highest-379"><a href="#Pool.highest-379"><span class="linenos">379</span></a>
+</span><span id="Pool.highest-380"><a href="#Pool.highest-380"><span class="linenos">380</span></a><span class="sd">        The args override any `post_roll_counts` of this pool.</span>
+</span><span id="Pool.highest-381"><a href="#Pool.highest-381"><span class="linenos">381</span></a>
+</span><span id="Pool.highest-382"><a href="#Pool.highest-382"><span class="linenos">382</span></a><span class="sd">        Args:</span>
+</span><span id="Pool.highest-383"><a href="#Pool.highest-383"><span class="linenos">383</span></a><span class="sd">            num_keep: The number of highest dice will be summed.</span>
+</span><span id="Pool.highest-384"><a href="#Pool.highest-384"><span class="linenos">384</span></a><span class="sd">            num_drop: This number of highest dice will be dropped before keeping</span>
+</span><span id="Pool.highest-385"><a href="#Pool.highest-385"><span class="linenos">385</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool.highest-386"><a href="#Pool.highest-386"><span class="linenos">386</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool.highest-387"><a href="#Pool.highest-387"><span class="linenos">387</span></a>        <span class="k">if</span> <span class="n">num_keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.highest-388"><a href="#Pool.highest-388"><span class="linenos">388</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.highest-389"><a href="#Pool.highest-389"><span class="linenos">389</span></a>        <span class="k">if</span> <span class="n">num_drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.highest-390"><a href="#Pool.highest-390"><span class="linenos">390</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;num_drop=</span><span class="si">{</span><span class="n">num_drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.highest-391"><a href="#Pool.highest-391"><span class="linenos">391</span></a>
+</span><span id="Pool.highest-392"><a href="#Pool.highest-392"><span class="linenos">392</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_keep</span> <span class="o">+</span> <span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool.highest-393"><a href="#Pool.highest-393"><span class="linenos">393</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dice</span><span class="p">())</span>
+</span><span id="Pool.highest-394"><a href="#Pool.highest-394"><span class="linenos">394</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
@@ -7128,6 +7128,16 @@ dice to be summed.</li>
 
 
                             </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#OutcomeCountGen">OutcomeCountGen</a></dt>
+                                <dd id="Pool.eval" class="function"><a href="#OutcomeCountGen.eval">eval</a></dd>
+                <dd id="Pool.sum" class="function"><a href="#OutcomeCountGen.sum">sum</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
                 <section id="standard_pool">
                             <input id="standard_pool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -7140,13 +7150,13 @@ dice to be summed.</li>
 
     </div>
     <a class="headerlink" href="#standard_pool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-525"><a href="#standard_pool-525"><span class="linenos">525</span></a><span class="k">def</span> <span class="nf">standard_pool</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pool&#39;</span><span class="p">:</span>
-</span><span id="standard_pool-526"><a href="#standard_pool-526"><span class="linenos">526</span></a>    <span class="sd">&quot;&quot;&quot;Returns a pool of standard dice.</span>
-</span><span id="standard_pool-527"><a href="#standard_pool-527"><span class="linenos">527</span></a>
-</span><span id="standard_pool-528"><a href="#standard_pool-528"><span class="linenos">528</span></a><span class="sd">    Args:</span>
-</span><span id="standard_pool-529"><a href="#standard_pool-529"><span class="linenos">529</span></a><span class="sd">        die_sizes: For each of these die_size X, the pool will contain one dX.</span>
-</span><span id="standard_pool-530"><a href="#standard_pool-530"><span class="linenos">530</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="standard_pool-531"><a href="#standard_pool-531"><span class="linenos">531</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-495"><a href="#standard_pool-495"><span class="linenos">495</span></a><span class="k">def</span> <span class="nf">standard_pool</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pool&#39;</span><span class="p">:</span>
+</span><span id="standard_pool-496"><a href="#standard_pool-496"><span class="linenos">496</span></a>    <span class="sd">&quot;&quot;&quot;Returns a pool of standard dice.</span>
+</span><span id="standard_pool-497"><a href="#standard_pool-497"><span class="linenos">497</span></a>
+</span><span id="standard_pool-498"><a href="#standard_pool-498"><span class="linenos">498</span></a><span class="sd">    Args:</span>
+</span><span id="standard_pool-499"><a href="#standard_pool-499"><span class="linenos">499</span></a><span class="sd">        die_sizes: For each of these die_size X, the pool will contain one dX.</span>
+</span><span id="standard_pool-500"><a href="#standard_pool-500"><span class="linenos">500</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="standard_pool-501"><a href="#standard_pool-501"><span class="linenos">501</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -7782,7 +7792,7 @@ parameters.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">gens</span><span class="p">:</span> <span class="n"><a href="#OutcomeCountGen">icepool.OutcomeCountGen</a></span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Collection</span>:</span></span>
+        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">gens</span><span class="p">:</span> <span class="n"><a href="#OutcomeCountGen">icepool.OutcomeCountGen</a></span></span><span class="return-annotation">) -> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Collection</span>:</span></span>
 
                 <label class="view-source-button" for="OutcomeCountEval.alignment-view-source"><span>View Source</span></label>
 
@@ -8826,6 +8836,8 @@ Prefer to use the name <code><a href="#Deck.dups">dups</a></code>.</p>
                                     <div><dt><a href="#OutcomeCountGen">OutcomeCountGen</a></dt>
                                 <dd id="Deck.min_outcome" class="function"><a href="#OutcomeCountGen.min_outcome">min_outcome</a></dd>
                 <dd id="Deck.max_outcome" class="function"><a href="#OutcomeCountGen.max_outcome">max_outcome</a></dd>
+                <dd id="Deck.eval" class="function"><a href="#OutcomeCountGen.eval">eval</a></dd>
+                <dd id="Deck.sum" class="function"><a href="#OutcomeCountGen.sum">sum</a></dd>
 
             </div>
             <div><dt>collections.abc.Mapping</dt>
