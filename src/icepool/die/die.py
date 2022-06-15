@@ -1133,13 +1133,6 @@ class Die(Mapping[Any, int]):
         """
         return self.zero().outcomes()[0]
 
-    def bool(self) -> 'Die':
-        """Takes `bool()` of all outcomes.
-
-        Note the die as a whole is not considered to have a truth value.
-        """
-        return self.unary_op(bool)
-
     # Binary operators.
 
     def __add__(self, other) -> 'Die':
@@ -1240,29 +1233,92 @@ class Die(Mapping[Any, int]):
 
     # Comparators.
 
+    @staticmethod
+    def _lt_le(op: Callable, lo: 'Die', hi: 'Die') -> 'Die':
+        """Linear algorithm  for < and <=.
+
+        Args:
+            op: Either `operator.lt` or `operator.le`.
+            lo: The die on the left of `op`.
+            hi: The die on the right of `op`.
+        """
+        if lo.is_empty() or hi.is_empty():
+            return icepool.Die([])
+
+        n = 0
+        d = lo.denominator() * hi.denominator()
+
+        lo_cweight = 0
+        lo_iter = iter(zip(lo.outcomes(), lo.cweights()))
+        lo_outcome, next_lo_cweight = next(lo_iter)
+        for hi_outcome, hi_weight in hi.items():
+            while op(lo_outcome, hi_outcome):
+                try:
+                    lo_cweight = next_lo_cweight
+                    lo_outcome, next_lo_cweight = next(lo_iter)
+                except StopIteration:
+                    break
+            n += lo_cweight * hi_weight
+        return icepool.bernoulli(n, d)
+
     def __lt__(self, other) -> 'Die':
         other = icepool.Die([other])
-        return self.binary_op(other, operator.lt)
+        return Die._lt_le(operator.lt, self, other)
 
     def __le__(self, other) -> 'Die':
         other = icepool.Die([other])
-        return self.binary_op(other, operator.le)
+        return Die._lt_le(operator.le, self, other)
 
     def __ge__(self, other) -> 'Die':
         other = icepool.Die([other])
-        return self.binary_op(other, operator.ge)
+        return Die._lt_le(operator.le, other, self)
 
     def __gt__(self, other) -> 'Die':
         other = icepool.Die([other])
-        return self.binary_op(other, operator.gt)
+        return Die._lt_le(operator.lt, other, self)
 
     # Equality operators. These produce a `DieWithTruth`.
+
+    @staticmethod
+    def _eq(invert: bool, a: 'Die', b: 'Die') -> 'Die':
+        """Linear algorithm  for == and !=.
+
+        Args:
+            invert: If `False`, this computes ==; if `True` this computes !=.
+            a, b: The dice.
+        """
+        if a.is_empty() or b.is_empty():
+            return icepool.Die([])
+
+        n = 0
+        d = a.denominator() * b.denominator()
+
+        a_iter = iter(a.items())
+        b_iter = iter(b.items())
+
+        a_outcome, a_weight = next(a_iter)
+        b_outcome, b_weight = next(b_iter)
+
+        while True:
+            try:
+                if a_outcome == b_outcome:
+                    n += a_weight * b_weight
+                    a_outcome, a_weight = next(a_iter)
+                    b_outcome, b_weight = next(b_iter)
+                elif a_outcome < b_outcome:
+                    a_outcome, a_weight = next(a_iter)
+                else:
+                    b_outcome, b_weight = next(b_iter)
+            except StopIteration:
+                if invert:
+                    n = d - n
+                return icepool.bernoulli(n, d)
 
     def __eq__(self, other):
         other = icepool.Die([other])
 
         def data_callback():
-            data_die = self.binary_op(other, operator.eq)
+            data_die = Die._eq(False, self, other)
             return data_die._data
 
         truth_value = self.equals(other)
@@ -1273,7 +1329,7 @@ class Die(Mapping[Any, int]):
         other = icepool.Die([other])
 
         def data_callback():
-            data_die = self.binary_op(other, operator.ne)
+            data_die = Die._eq(True, self, other)
             return data_die._data
 
         truth_value = not self.equals(other)
@@ -1309,17 +1365,12 @@ class Die(Mapping[Any, int]):
         """
         return self.binary_op(other, Die._cmp)
 
-    # Rolling.
+    def bool(self) -> 'Die':
+        """Takes `bool()` of all outcomes.
 
-    def sample(self):
-        """Returns a random roll of this die.
-
-        Do not use for security purposes.
+        Note the die as a whole is not considered to have a truth value.
         """
-        # We don't use random.choices since that is based on floats rather than ints.
-        r = random.randrange(self.denominator())
-        index = bisect.bisect_right(self.cweights(), r)
-        return self.outcomes()[index]
+        return self.unary_op(bool)
 
     # Equality and hashing.
 
@@ -1376,6 +1427,18 @@ class Die(Mapping[Any, int]):
             ).key_tuple()
         else:
             return self.key_tuple() == other.key_tuple()
+
+    # Rolling.
+
+    def sample(self):
+        """Returns a random roll of this die.
+
+        Do not use for security purposes.
+        """
+        # We don't use random.choices since that is based on floats rather than ints.
+        r = random.randrange(self.denominator())
+        index = bisect.bisect_right(self.cweights(), r)
+        return self.outcomes()[index]
 
     # Strings.
 

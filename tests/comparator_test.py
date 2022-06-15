@@ -8,30 +8,54 @@ def test_lt():
     expected = icepool.bernoulli(15, 36)
     assert result.equals(expected)
 
+def test_lt_fixed():
+    assert (icepool.d6 < 1).mean() == 0.0
+    assert (icepool.d6 < 7).mean() == 1.0
+
 def test_gt():
     result = icepool.d6 > icepool.d6
     expected = icepool.bernoulli(15, 36)
     assert result.equals(expected)
+    
+def test_gt_fixed():
+    assert (icepool.d6 > 0).mean() == 1.0
+    assert (icepool.d6 > 6).mean() == 0.0
 
 def test_leq():
     result = icepool.d6 <= icepool.d6
     expected = icepool.bernoulli(21, 36)
     assert result.equals(expected)
+    
+def test_leq_fixed():
+    assert (icepool.d6 <= 0).mean() == 0.0
+    assert (icepool.d6 <= 6).mean() == 1.0
 
 def test_geq():
     result = icepool.d6 >= icepool.d6
     expected = icepool.bernoulli(21, 36)
     assert result.equals(expected)
+    
+def test_geq_fixed():
+    assert (icepool.d6 >= 1).mean() == 1.0
+    assert (icepool.d6 >= 7).mean() == 0.0
 
 def test_eq():
     result = icepool.d6 == icepool.d6
     expected = icepool.bernoulli(6, 36)
     assert result.equals(expected)
 
+def test_eq_fixed():
+    assert (icepool.d6 == 1).equals(icepool.coin(1, 6))
+    assert (icepool.d6 == 6).equals(icepool.coin(1, 6))
+
 def test_ne():
     result = icepool.d6 != icepool.d6
     expected = icepool.bernoulli(30, 36)
     assert result.equals(expected)
+
+def test_ne_fixed():
+    assert (icepool.d6 != 1).equals(icepool.coin(5, 6))
+    assert (icepool.d6 != 6).equals(icepool.coin(5, 6))
 
 def test_sign():
     result = (icepool.d6 - 3).sign()

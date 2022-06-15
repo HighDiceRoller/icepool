@@ -49,7 +49,7 @@ def __getattr__(key: str):
     raise AttributeError(key)
 
 
-def bernoulli(n: int, d: int) -> 'icepool.Die':
+def bernoulli(n: int, d: int, /) -> 'icepool.Die':
     """A die that rolls `True` with chance `n / d`, and `False` otherwise. """
     return icepool.Die({False: d - n, True: n})
 
