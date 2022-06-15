@@ -2028,7 +2028,7 @@ with weight 1 each.</p>
 </span><span id="Die-1281"><a href="#Die-1281"><span class="linenos">1281</span></a>    <span class="c1"># Equality operators. These produce a `DieWithTruth`.</span>
 </span><span id="Die-1282"><a href="#Die-1282"><span class="linenos">1282</span></a>
 </span><span id="Die-1283"><a href="#Die-1283"><span class="linenos">1283</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Die-1284"><a href="#Die-1284"><span class="linenos">1284</span></a>    <span class="k">def</span> <span class="nf">_eq</span><span class="p">(</span><span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s1">&#39;Die&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die-1284"><a href="#Die-1284"><span class="linenos">1284</span></a>    <span class="k">def</span> <span class="nf">_eq</span><span class="p">(</span><span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s1">&#39;Die&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Counts&#39;</span><span class="p">:</span>
 </span><span id="Die-1285"><a href="#Die-1285"><span class="linenos">1285</span></a>        <span class="sd">&quot;&quot;&quot;Linear algorithm  for == and !=.</span>
 </span><span id="Die-1286"><a href="#Die-1286"><span class="linenos">1286</span></a>
 </span><span id="Die-1287"><a href="#Die-1287"><span class="linenos">1287</span></a><span class="sd">        Args:</span>
@@ -2036,7 +2036,7 @@ with weight 1 each.</p>
 </span><span id="Die-1289"><a href="#Die-1289"><span class="linenos">1289</span></a><span class="sd">            a, b: The dice.</span>
 </span><span id="Die-1290"><a href="#Die-1290"><span class="linenos">1290</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-1291"><a href="#Die-1291"><span class="linenos">1291</span></a>        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">or</span> <span class="n">b</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-</span><span id="Die-1292"><a href="#Die-1292"><span class="linenos">1292</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([])</span>
+</span><span id="Die-1292"><a href="#Die-1292"><span class="linenos">1292</span></a>            <span class="k">return</span> <span class="n">Counts</span><span class="p">([])</span>
 </span><span id="Die-1293"><a href="#Die-1293"><span class="linenos">1293</span></a>
 </span><span id="Die-1294"><a href="#Die-1294"><span class="linenos">1294</span></a>        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Die-1295"><a href="#Die-1295"><span class="linenos">1295</span></a>        <span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">*</span> <span class="n">b</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
@@ -2059,182 +2059,183 @@ with weight 1 each.</p>
 </span><span id="Die-1312"><a href="#Die-1312"><span class="linenos">1312</span></a>                    <span class="n">b_outcome</span><span class="p">,</span> <span class="n">b_weight</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">b_iter</span><span class="p">)</span>
 </span><span id="Die-1313"><a href="#Die-1313"><span class="linenos">1313</span></a>            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
 </span><span id="Die-1314"><a href="#Die-1314"><span class="linenos">1314</span></a>                <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
-</span><span id="Die-1315"><a href="#Die-1315"><span class="linenos">1315</span></a>                    <span class="n">n</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">n</span>
-</span><span id="Die-1316"><a href="#Die-1316"><span class="linenos">1316</span></a>                <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-</span><span id="Die-1317"><a href="#Die-1317"><span class="linenos">1317</span></a>
-</span><span id="Die-1318"><a href="#Die-1318"><span class="linenos">1318</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="Die-1319"><a href="#Die-1319"><span class="linenos">1319</span></a>        <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
-</span><span id="Die-1320"><a href="#Die-1320"><span class="linenos">1320</span></a>
-</span><span id="Die-1321"><a href="#Die-1321"><span class="linenos">1321</span></a>        <span class="k">def</span> <span class="nf">data_callback</span><span class="p">():</span>
-</span><span id="Die-1322"><a href="#Die-1322"><span class="linenos">1322</span></a>            <span class="n">data_die</span> <span class="o">=</span> <span class="n">Die</span><span class="o">.</span><span class="n">_eq</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-</span><span id="Die-1323"><a href="#Die-1323"><span class="linenos">1323</span></a>            <span class="k">return</span> <span class="n">data_die</span><span class="o">.</span><span class="n">_data</span>
+</span><span id="Die-1315"><a href="#Die-1315"><span class="linenos">1315</span></a>                    <span class="k">return</span> <span class="n">Counts</span><span class="p">([(</span><span class="kc">False</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="n">n</span><span class="p">)])</span>
+</span><span id="Die-1316"><a href="#Die-1316"><span class="linenos">1316</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1317"><a href="#Die-1317"><span class="linenos">1317</span></a>                    <span class="k">return</span> <span class="n">Counts</span><span class="p">([(</span><span class="kc">False</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="n">n</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">n</span><span class="p">)])</span>
+</span><span id="Die-1318"><a href="#Die-1318"><span class="linenos">1318</span></a>
+</span><span id="Die-1319"><a href="#Die-1319"><span class="linenos">1319</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Die-1320"><a href="#Die-1320"><span class="linenos">1320</span></a>        <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
+</span><span id="Die-1321"><a href="#Die-1321"><span class="linenos">1321</span></a>
+</span><span id="Die-1322"><a href="#Die-1322"><span class="linenos">1322</span></a>        <span class="k">def</span> <span class="nf">data_callback</span><span class="p">():</span>
+</span><span id="Die-1323"><a href="#Die-1323"><span class="linenos">1323</span></a>            <span class="k">return</span> <span class="n">Die</span><span class="o">.</span><span class="n">_eq</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 </span><span id="Die-1324"><a href="#Die-1324"><span class="linenos">1324</span></a>
-</span><span id="Die-1325"><a href="#Die-1325"><span class="linenos">1325</span></a>        <span class="n">truth_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="Die-1326"><a href="#Die-1326"><span class="linenos">1326</span></a>
-</span><span id="Die-1327"><a href="#Die-1327"><span class="linenos">1327</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">DieWithTruth</span><span class="p">(</span><span class="n">data_callback</span><span class="p">,</span> <span class="n">truth_value</span><span class="p">)</span>
-</span><span id="Die-1328"><a href="#Die-1328"><span class="linenos">1328</span></a>
-</span><span id="Die-1329"><a href="#Die-1329"><span class="linenos">1329</span></a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="Die-1330"><a href="#Die-1330"><span class="linenos">1330</span></a>        <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
-</span><span id="Die-1331"><a href="#Die-1331"><span class="linenos">1331</span></a>
-</span><span id="Die-1332"><a href="#Die-1332"><span class="linenos">1332</span></a>        <span class="k">def</span> <span class="nf">data_callback</span><span class="p">():</span>
-</span><span id="Die-1333"><a href="#Die-1333"><span class="linenos">1333</span></a>            <span class="n">data_die</span> <span class="o">=</span> <span class="n">Die</span><span class="o">.</span><span class="n">_eq</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-</span><span id="Die-1334"><a href="#Die-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="n">data_die</span><span class="o">.</span><span class="n">_data</span>
+</span><span id="Die-1325"><a href="#Die-1325"><span class="linenos">1325</span></a>        <span class="k">def</span> <span class="nf">truth_value_callback</span><span class="p">():</span>
+</span><span id="Die-1326"><a href="#Die-1326"><span class="linenos">1326</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="Die-1327"><a href="#Die-1327"><span class="linenos">1327</span></a>
+</span><span id="Die-1328"><a href="#Die-1328"><span class="linenos">1328</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">DieWithTruth</span><span class="p">(</span><span class="n">data_callback</span><span class="p">,</span> <span class="n">truth_value_callback</span><span class="p">)</span>
+</span><span id="Die-1329"><a href="#Die-1329"><span class="linenos">1329</span></a>
+</span><span id="Die-1330"><a href="#Die-1330"><span class="linenos">1330</span></a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="Die-1331"><a href="#Die-1331"><span class="linenos">1331</span></a>        <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
+</span><span id="Die-1332"><a href="#Die-1332"><span class="linenos">1332</span></a>
+</span><span id="Die-1333"><a href="#Die-1333"><span class="linenos">1333</span></a>        <span class="k">def</span> <span class="nf">data_callback</span><span class="p">():</span>
+</span><span id="Die-1334"><a href="#Die-1334"><span class="linenos">1334</span></a>            <span class="k">return</span> <span class="n">Die</span><span class="o">.</span><span class="n">_eq</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 </span><span id="Die-1335"><a href="#Die-1335"><span class="linenos">1335</span></a>
-</span><span id="Die-1336"><a href="#Die-1336"><span class="linenos">1336</span></a>        <span class="n">truth_value</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="Die-1337"><a href="#Die-1337"><span class="linenos">1337</span></a>
-</span><span id="Die-1338"><a href="#Die-1338"><span class="linenos">1338</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">DieWithTruth</span><span class="p">(</span><span class="n">data_callback</span><span class="p">,</span> <span class="n">truth_value</span><span class="p">)</span>
-</span><span id="Die-1339"><a href="#Die-1339"><span class="linenos">1339</span></a>
-</span><span id="Die-1340"><a href="#Die-1340"><span class="linenos">1340</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Die-1341"><a href="#Die-1341"><span class="linenos">1341</span></a>    <span class="k">def</span> <span class="nf">_sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Die-1342"><a href="#Die-1342"><span class="linenos">1342</span></a>        <span class="n">z</span> <span class="o">=</span> <span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</span><span id="Die-1343"><a href="#Die-1343"><span class="linenos">1343</span></a>        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">:</span>
-</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>            <span class="k">return</span> <span class="mi">1</span>
-</span><span id="Die-1345"><a href="#Die-1345"><span class="linenos">1345</span></a>        <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">z</span><span class="p">:</span>
-</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>            <span class="k">return</span> <span class="mi">0</span>
-</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>
-</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>        <span class="sd">&quot;&quot;&quot;Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.</span>
-</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a>
-</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a><span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
-</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
-</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a>
-</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>    <span class="k">def</span> <span class="nf">_cmp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>        <span class="k">return</span> <span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
-</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>
-</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>    <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>        <span class="sd">&quot;&quot;&quot;Returns a die with possible outcomes 1, -1, and 0.</span>
-</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>
-</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a><span class="sd">        The weights are equal to the positive outcome of `self &gt; other`,</span>
-</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a><span class="sd">        `self &lt; other`, and the remainder respectively.</span>
-</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
-</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>
-</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a>        <span class="sd">&quot;&quot;&quot;Takes `bool()` of all outcomes.</span>
-</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a>
-</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a><span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
-</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
-</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a>
-</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>    <span class="c1"># Equality and hashing.</span>
-</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>
-</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>            <span class="s1">&#39;A die only has a truth value if it is the result of == or !=. &#39;</span>
-</span><span id="Die-1381"><a href="#Die-1381"><span class="linenos">1381</span></a>            <span class="s1">&#39;If this is in the conditional of an if-statement, you probably &#39;</span>
-</span><span id="Die-1382"><a href="#Die-1382"><span class="linenos">1382</span></a>            <span class="s1">&#39;want to use die.if_else() instead.&#39;</span><span class="p">)</span>
-</span><span id="Die-1383"><a href="#Die-1383"><span class="linenos">1383</span></a>
-</span><span id="Die-1384"><a href="#Die-1384"><span class="linenos">1384</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Die-1385"><a href="#Die-1385"><span class="linenos">1385</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Die-1386"><a href="#Die-1386"><span class="linenos">1386</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="Die-1387"><a href="#Die-1387"><span class="linenos">1387</span></a>
-</span><span id="Die-1388"><a href="#Die-1388"><span class="linenos">1388</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Die-1389"><a href="#Die-1389"><span class="linenos">1389</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
-</span><span id="Die-1390"><a href="#Die-1390"><span class="linenos">1390</span></a>
-</span><span id="Die-1391"><a href="#Die-1391"><span class="linenos">1391</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
-</span><span id="Die-1392"><a href="#Die-1392"><span class="linenos">1392</span></a><span class="sd">        to be in any particular format or have any other properties.</span>
-</span><span id="Die-1393"><a href="#Die-1393"><span class="linenos">1393</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1394"><a href="#Die-1394"><span class="linenos">1394</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span>
-</span><span id="Die-1395"><a href="#Die-1395"><span class="linenos">1395</span></a>
-</span><span id="Die-1396"><a href="#Die-1396"><span class="linenos">1396</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Die-1397"><a href="#Die-1397"><span class="linenos">1397</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Die-1398"><a href="#Die-1398"><span class="linenos">1398</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">())</span>
-</span><span id="Die-1399"><a href="#Die-1399"><span class="linenos">1399</span></a>
-</span><span id="Die-1400"><a href="#Die-1400"><span class="linenos">1400</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Die-1401"><a href="#Die-1401"><span class="linenos">1401</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
-</span><span id="Die-1402"><a href="#Die-1402"><span class="linenos">1402</span></a>
-</span><span id="Die-1403"><a href="#Die-1403"><span class="linenos">1403</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span id="Die-1404"><a href="#Die-1404"><span class="linenos">1404</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff both dice have the same outcomes and weights.</span>
-</span><span id="Die-1405"><a href="#Die-1405"><span class="linenos">1405</span></a>
-</span><span id="Die-1406"><a href="#Die-1406"><span class="linenos">1406</span></a><span class="sd">        Truth value does NOT matter.</span>
-</span><span id="Die-1407"><a href="#Die-1407"><span class="linenos">1407</span></a>
-</span><span id="Die-1408"><a href="#Die-1408"><span class="linenos">1408</span></a><span class="sd">        If one die has a zero-weight outcome and the other die does not contain</span>
-</span><span id="Die-1409"><a href="#Die-1409"><span class="linenos">1409</span></a><span class="sd">        that outcome, they are treated as unequal by this function.</span>
-</span><span id="Die-1410"><a href="#Die-1410"><span class="linenos">1410</span></a>
-</span><span id="Die-1411"><a href="#Die-1411"><span class="linenos">1411</span></a><span class="sd">        The `==` and `!=` operators have a dual purpose; they return a die</span>
-</span><span id="Die-1412"><a href="#Die-1412"><span class="linenos">1412</span></a><span class="sd">        with a truth value determined by this method.</span>
-</span><span id="Die-1413"><a href="#Die-1413"><span class="linenos">1413</span></a><span class="sd">        Only dice returned by these methods have a truth value. The data of</span>
-</span><span id="Die-1414"><a href="#Die-1414"><span class="linenos">1414</span></a><span class="sd">        these dice is lazily evaluated since the caller may only be interested</span>
-</span><span id="Die-1415"><a href="#Die-1415"><span class="linenos">1415</span></a><span class="sd">        in the truth value.</span>
-</span><span id="Die-1416"><a href="#Die-1416"><span class="linenos">1416</span></a>
-</span><span id="Die-1417"><a href="#Die-1417"><span class="linenos">1417</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1418"><a href="#Die-1418"><span class="linenos">1418</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
-</span><span id="Die-1419"><a href="#Die-1419"><span class="linenos">1419</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
-</span><span id="Die-1420"><a href="#Die-1420"><span class="linenos">1420</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1421"><a href="#Die-1421"><span class="linenos">1421</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="Die-1422"><a href="#Die-1422"><span class="linenos">1422</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
-</span><span id="Die-1423"><a href="#Die-1423"><span class="linenos">1423</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="Die-1424"><a href="#Die-1424"><span class="linenos">1424</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Die-1425"><a href="#Die-1425"><span class="linenos">1425</span></a>
-</span><span id="Die-1426"><a href="#Die-1426"><span class="linenos">1426</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die-1427"><a href="#Die-1427"><span class="linenos">1427</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
-</span><span id="Die-1428"><a href="#Die-1428"><span class="linenos">1428</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die-1429"><a href="#Die-1429"><span class="linenos">1429</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1430"><a href="#Die-1430"><span class="linenos">1430</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die-1431"><a href="#Die-1431"><span class="linenos">1431</span></a>
-</span><span id="Die-1432"><a href="#Die-1432"><span class="linenos">1432</span></a>    <span class="c1"># Rolling.</span>
-</span><span id="Die-1433"><a href="#Die-1433"><span class="linenos">1433</span></a>
-</span><span id="Die-1434"><a href="#Die-1434"><span class="linenos">1434</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die-1435"><a href="#Die-1435"><span class="linenos">1435</span></a>        <span class="sd">&quot;&quot;&quot;Returns a random roll of this die.</span>
-</span><span id="Die-1436"><a href="#Die-1436"><span class="linenos">1436</span></a>
-</span><span id="Die-1437"><a href="#Die-1437"><span class="linenos">1437</span></a><span class="sd">        Do not use for security purposes.</span>
-</span><span id="Die-1438"><a href="#Die-1438"><span class="linenos">1438</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1439"><a href="#Die-1439"><span class="linenos">1439</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
-</span><span id="Die-1440"><a href="#Die-1440"><span class="linenos">1440</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">())</span>
-</span><span id="Die-1441"><a href="#Die-1441"><span class="linenos">1441</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">(),</span> <span class="n">r</span><span class="p">)</span>
-</span><span id="Die-1442"><a href="#Die-1442"><span class="linenos">1442</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
-</span><span id="Die-1443"><a href="#Die-1443"><span class="linenos">1443</span></a>
-</span><span id="Die-1444"><a href="#Die-1444"><span class="linenos">1444</span></a>    <span class="c1"># Strings.</span>
-</span><span id="Die-1445"><a href="#Die-1445"><span class="linenos">1445</span></a>
-</span><span id="Die-1446"><a href="#Die-1446"><span class="linenos">1446</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1447"><a href="#Die-1447"><span class="linenos">1447</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="Die-1448"><a href="#Die-1448"><span class="linenos">1448</span></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="Die-1449"><a href="#Die-1449"><span class="linenos">1449</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
-</span><span id="Die-1450"><a href="#Die-1450"><span class="linenos">1450</span></a>
-</span><span id="Die-1451"><a href="#Die-1451"><span class="linenos">1451</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1452"><a href="#Die-1452"><span class="linenos">1452</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span id="Die-1453"><a href="#Die-1453"><span class="linenos">1453</span></a>
-</span><span id="Die-1454"><a href="#Die-1454"><span class="linenos">1454</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1455"><a href="#Die-1455"><span class="linenos">1455</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
-</span><span id="Die-1456"><a href="#Die-1456"><span class="linenos">1456</span></a>
-</span><span id="Die-1457"><a href="#Die-1457"><span class="linenos">1457</span></a><span class="sd">        `format_spec` should start with the output format,</span>
-</span><span id="Die-1458"><a href="#Die-1458"><span class="linenos">1458</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
-</span><span id="Die-1459"><a href="#Die-1459"><span class="linenos">1459</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
-</span><span id="Die-1460"><a href="#Die-1460"><span class="linenos">1460</span></a>
-</span><span id="Die-1461"><a href="#Die-1461"><span class="linenos">1461</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
-</span><span id="Die-1462"><a href="#Die-1462"><span class="linenos">1462</span></a>
-</span><span id="Die-1463"><a href="#Die-1463"><span class="linenos">1463</span></a><span class="sd">        * `o`: Outcomes.</span>
-</span><span id="Die-1464"><a href="#Die-1464"><span class="linenos">1464</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
-</span><span id="Die-1465"><a href="#Die-1465"><span class="linenos">1465</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die-1466"><a href="#Die-1466"><span class="linenos">1466</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die-1467"><a href="#Die-1467"><span class="linenos">1467</span></a>
-</span><span id="Die-1468"><a href="#Die-1468"><span class="linenos">1468</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
-</span><span id="Die-1469"><a href="#Die-1469"><span class="linenos">1469</span></a>
-</span><span id="Die-1470"><a href="#Die-1470"><span class="linenos">1470</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
-</span><span id="Die-1471"><a href="#Die-1471"><span class="linenos">1471</span></a><span class="sd">        if any weight exceeds 10**30.</span>
-</span><span id="Die-1472"><a href="#Die-1472"><span class="linenos">1472</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die-1473"><a href="#Die-1473"><span class="linenos">1473</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-1474"><a href="#Die-1474"><span class="linenos">1474</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
-</span><span id="Die-1475"><a href="#Die-1475"><span class="linenos">1475</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
-</span><span id="Die-1476"><a href="#Die-1476"><span class="linenos">1476</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
-</span><span id="Die-1477"><a href="#Die-1477"><span class="linenos">1477</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
-</span><span id="Die-1478"><a href="#Die-1478"><span class="linenos">1478</span></a>
-</span><span id="Die-1479"><a href="#Die-1479"><span class="linenos">1479</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span id="Die-1480"><a href="#Die-1480"><span class="linenos">1480</span></a>
-</span><span id="Die-1481"><a href="#Die-1481"><span class="linenos">1481</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-</span><span id="Die-1482"><a href="#Die-1482"><span class="linenos">1482</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
-</span><span id="Die-1483"><a href="#Die-1483"><span class="linenos">1483</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
-</span><span id="Die-1484"><a href="#Die-1484"><span class="linenos">1484</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
-</span><span id="Die-1485"><a href="#Die-1485"><span class="linenos">1485</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Die-1486"><a href="#Die-1486"><span class="linenos">1486</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1487"><a href="#Die-1487"><span class="linenos">1487</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-</span><span id="Die-1488"><a href="#Die-1488"><span class="linenos">1488</span></a>
-</span><span id="Die-1489"><a href="#Die-1489"><span class="linenos">1489</span></a>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die-1490"><a href="#Die-1490"><span class="linenos">1490</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die-1336"><a href="#Die-1336"><span class="linenos">1336</span></a>        <span class="k">def</span> <span class="nf">truth_value_callback</span><span class="p">():</span>
+</span><span id="Die-1337"><a href="#Die-1337"><span class="linenos">1337</span></a>            <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="Die-1338"><a href="#Die-1338"><span class="linenos">1338</span></a>
+</span><span id="Die-1339"><a href="#Die-1339"><span class="linenos">1339</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">DieWithTruth</span><span class="p">(</span><span class="n">data_callback</span><span class="p">,</span> <span class="n">truth_value_callback</span><span class="p">)</span>
+</span><span id="Die-1340"><a href="#Die-1340"><span class="linenos">1340</span></a>
+</span><span id="Die-1341"><a href="#Die-1341"><span class="linenos">1341</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Die-1342"><a href="#Die-1342"><span class="linenos">1342</span></a>    <span class="k">def</span> <span class="nf">_sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Die-1343"><a href="#Die-1343"><span class="linenos">1343</span></a>        <span class="n">z</span> <span class="o">=</span> <span class="n">Die</span><span class="o">.</span><span class="n">_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="Die-1344"><a href="#Die-1344"><span class="linenos">1344</span></a>        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">z</span><span class="p">:</span>
+</span><span id="Die-1345"><a href="#Die-1345"><span class="linenos">1345</span></a>            <span class="k">return</span> <span class="mi">1</span>
+</span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>        <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">z</span><span class="p">:</span>
+</span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>            <span class="k">return</span> <span class="mi">0</span>
+</span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a>
+</span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a>        <span class="sd">&quot;&quot;&quot;Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.</span>
+</span><span id="Die-1353"><a href="#Die-1353"><span class="linenos">1353</span></a>
+</span><span id="Die-1354"><a href="#Die-1354"><span class="linenos">1354</span></a><span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
+</span><span id="Die-1355"><a href="#Die-1355"><span class="linenos">1355</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
+</span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a>
+</span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>    <span class="k">def</span> <span class="nf">_cmp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>        <span class="k">return</span> <span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>
+</span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die-1363"><a href="#Die-1363"><span class="linenos">1363</span></a>        <span class="sd">&quot;&quot;&quot;Returns a die with possible outcomes 1, -1, and 0.</span>
+</span><span id="Die-1364"><a href="#Die-1364"><span class="linenos">1364</span></a>
+</span><span id="Die-1365"><a href="#Die-1365"><span class="linenos">1365</span></a><span class="sd">        The weights are equal to the positive outcome of `self &gt; other`,</span>
+</span><span id="Die-1366"><a href="#Die-1366"><span class="linenos">1366</span></a><span class="sd">        `self &lt; other`, and the remainder respectively.</span>
+</span><span id="Die-1367"><a href="#Die-1367"><span class="linenos">1367</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1368"><a href="#Die-1368"><span class="linenos">1368</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
+</span><span id="Die-1369"><a href="#Die-1369"><span class="linenos">1369</span></a>
+</span><span id="Die-1370"><a href="#Die-1370"><span class="linenos">1370</span></a>    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die-1371"><a href="#Die-1371"><span class="linenos">1371</span></a>        <span class="sd">&quot;&quot;&quot;Takes `bool()` of all outcomes.</span>
+</span><span id="Die-1372"><a href="#Die-1372"><span class="linenos">1372</span></a>
+</span><span id="Die-1373"><a href="#Die-1373"><span class="linenos">1373</span></a><span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
+</span><span id="Die-1374"><a href="#Die-1374"><span class="linenos">1374</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1375"><a href="#Die-1375"><span class="linenos">1375</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+</span><span id="Die-1376"><a href="#Die-1376"><span class="linenos">1376</span></a>
+</span><span id="Die-1377"><a href="#Die-1377"><span class="linenos">1377</span></a>    <span class="c1"># Equality and hashing.</span>
+</span><span id="Die-1378"><a href="#Die-1378"><span class="linenos">1378</span></a>
+</span><span id="Die-1379"><a href="#Die-1379"><span class="linenos">1379</span></a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die-1380"><a href="#Die-1380"><span class="linenos">1380</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Die-1381"><a href="#Die-1381"><span class="linenos">1381</span></a>            <span class="s1">&#39;A die only has a truth value if it is the result of == or !=. &#39;</span>
+</span><span id="Die-1382"><a href="#Die-1382"><span class="linenos">1382</span></a>            <span class="s1">&#39;If this is in the conditional of an if-statement, you probably &#39;</span>
+</span><span id="Die-1383"><a href="#Die-1383"><span class="linenos">1383</span></a>            <span class="s1">&#39;want to use die.if_else() instead.&#39;</span><span class="p">)</span>
+</span><span id="Die-1384"><a href="#Die-1384"><span class="linenos">1384</span></a>
+</span><span id="Die-1385"><a href="#Die-1385"><span class="linenos">1385</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Die-1386"><a href="#Die-1386"><span class="linenos">1386</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Die-1387"><a href="#Die-1387"><span class="linenos">1387</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="Die-1388"><a href="#Die-1388"><span class="linenos">1388</span></a>
+</span><span id="Die-1389"><a href="#Die-1389"><span class="linenos">1389</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Die-1390"><a href="#Die-1390"><span class="linenos">1390</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
+</span><span id="Die-1391"><a href="#Die-1391"><span class="linenos">1391</span></a>
+</span><span id="Die-1392"><a href="#Die-1392"><span class="linenos">1392</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
+</span><span id="Die-1393"><a href="#Die-1393"><span class="linenos">1393</span></a><span class="sd">        to be in any particular format or have any other properties.</span>
+</span><span id="Die-1394"><a href="#Die-1394"><span class="linenos">1394</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1395"><a href="#Die-1395"><span class="linenos">1395</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span>
+</span><span id="Die-1396"><a href="#Die-1396"><span class="linenos">1396</span></a>
+</span><span id="Die-1397"><a href="#Die-1397"><span class="linenos">1397</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Die-1398"><a href="#Die-1398"><span class="linenos">1398</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Die-1399"><a href="#Die-1399"><span class="linenos">1399</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">())</span>
+</span><span id="Die-1400"><a href="#Die-1400"><span class="linenos">1400</span></a>
+</span><span id="Die-1401"><a href="#Die-1401"><span class="linenos">1401</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Die-1402"><a href="#Die-1402"><span class="linenos">1402</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span><span id="Die-1403"><a href="#Die-1403"><span class="linenos">1403</span></a>
+</span><span id="Die-1404"><a href="#Die-1404"><span class="linenos">1404</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="Die-1405"><a href="#Die-1405"><span class="linenos">1405</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff both dice have the same outcomes and weights.</span>
+</span><span id="Die-1406"><a href="#Die-1406"><span class="linenos">1406</span></a>
+</span><span id="Die-1407"><a href="#Die-1407"><span class="linenos">1407</span></a><span class="sd">        Truth value does NOT matter.</span>
+</span><span id="Die-1408"><a href="#Die-1408"><span class="linenos">1408</span></a>
+</span><span id="Die-1409"><a href="#Die-1409"><span class="linenos">1409</span></a><span class="sd">        If one die has a zero-weight outcome and the other die does not contain</span>
+</span><span id="Die-1410"><a href="#Die-1410"><span class="linenos">1410</span></a><span class="sd">        that outcome, they are treated as unequal by this function.</span>
+</span><span id="Die-1411"><a href="#Die-1411"><span class="linenos">1411</span></a>
+</span><span id="Die-1412"><a href="#Die-1412"><span class="linenos">1412</span></a><span class="sd">        The `==` and `!=` operators have a dual purpose; they return a die</span>
+</span><span id="Die-1413"><a href="#Die-1413"><span class="linenos">1413</span></a><span class="sd">        with a truth value determined by this method.</span>
+</span><span id="Die-1414"><a href="#Die-1414"><span class="linenos">1414</span></a><span class="sd">        Only dice returned by these methods have a truth value. The data of</span>
+</span><span id="Die-1415"><a href="#Die-1415"><span class="linenos">1415</span></a><span class="sd">        these dice is lazily evaluated since the caller may only be interested</span>
+</span><span id="Die-1416"><a href="#Die-1416"><span class="linenos">1416</span></a><span class="sd">        in the truth value.</span>
+</span><span id="Die-1417"><a href="#Die-1417"><span class="linenos">1417</span></a>
+</span><span id="Die-1418"><a href="#Die-1418"><span class="linenos">1418</span></a><span class="sd">        Args:</span>
+</span><span id="Die-1419"><a href="#Die-1419"><span class="linenos">1419</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
+</span><span id="Die-1420"><a href="#Die-1420"><span class="linenos">1420</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
+</span><span id="Die-1421"><a href="#Die-1421"><span class="linenos">1421</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1422"><a href="#Die-1422"><span class="linenos">1422</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="Die-1423"><a href="#Die-1423"><span class="linenos">1423</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
+</span><span id="Die-1424"><a href="#Die-1424"><span class="linenos">1424</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="Die-1425"><a href="#Die-1425"><span class="linenos">1425</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Die-1426"><a href="#Die-1426"><span class="linenos">1426</span></a>
+</span><span id="Die-1427"><a href="#Die-1427"><span class="linenos">1427</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
+</span><span id="Die-1428"><a href="#Die-1428"><span class="linenos">1428</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
+</span><span id="Die-1429"><a href="#Die-1429"><span class="linenos">1429</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die-1430"><a href="#Die-1430"><span class="linenos">1430</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1431"><a href="#Die-1431"><span class="linenos">1431</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die-1432"><a href="#Die-1432"><span class="linenos">1432</span></a>
+</span><span id="Die-1433"><a href="#Die-1433"><span class="linenos">1433</span></a>    <span class="c1"># Rolling.</span>
+</span><span id="Die-1434"><a href="#Die-1434"><span class="linenos">1434</span></a>
+</span><span id="Die-1435"><a href="#Die-1435"><span class="linenos">1435</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die-1436"><a href="#Die-1436"><span class="linenos">1436</span></a>        <span class="sd">&quot;&quot;&quot;Returns a random roll of this die.</span>
+</span><span id="Die-1437"><a href="#Die-1437"><span class="linenos">1437</span></a>
+</span><span id="Die-1438"><a href="#Die-1438"><span class="linenos">1438</span></a><span class="sd">        Do not use for security purposes.</span>
+</span><span id="Die-1439"><a href="#Die-1439"><span class="linenos">1439</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1440"><a href="#Die-1440"><span class="linenos">1440</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
+</span><span id="Die-1441"><a href="#Die-1441"><span class="linenos">1441</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">())</span>
+</span><span id="Die-1442"><a href="#Die-1442"><span class="linenos">1442</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">(),</span> <span class="n">r</span><span class="p">)</span>
+</span><span id="Die-1443"><a href="#Die-1443"><span class="linenos">1443</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="Die-1444"><a href="#Die-1444"><span class="linenos">1444</span></a>
+</span><span id="Die-1445"><a href="#Die-1445"><span class="linenos">1445</span></a>    <span class="c1"># Strings.</span>
+</span><span id="Die-1446"><a href="#Die-1446"><span class="linenos">1446</span></a>
+</span><span id="Die-1447"><a href="#Die-1447"><span class="linenos">1447</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1448"><a href="#Die-1448"><span class="linenos">1448</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="Die-1449"><a href="#Die-1449"><span class="linenos">1449</span></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">outcome</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">weight</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="Die-1450"><a href="#Die-1450"><span class="linenos">1450</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
+</span><span id="Die-1451"><a href="#Die-1451"><span class="linenos">1451</span></a>
+</span><span id="Die-1452"><a href="#Die-1452"><span class="linenos">1452</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1453"><a href="#Die-1453"><span class="linenos">1453</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="Die-1454"><a href="#Die-1454"><span class="linenos">1454</span></a>
+</span><span id="Die-1455"><a href="#Die-1455"><span class="linenos">1455</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1456"><a href="#Die-1456"><span class="linenos">1456</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
+</span><span id="Die-1457"><a href="#Die-1457"><span class="linenos">1457</span></a>
+</span><span id="Die-1458"><a href="#Die-1458"><span class="linenos">1458</span></a><span class="sd">        `format_spec` should start with the output format,</span>
+</span><span id="Die-1459"><a href="#Die-1459"><span class="linenos">1459</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
+</span><span id="Die-1460"><a href="#Die-1460"><span class="linenos">1460</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
+</span><span id="Die-1461"><a href="#Die-1461"><span class="linenos">1461</span></a>
+</span><span id="Die-1462"><a href="#Die-1462"><span class="linenos">1462</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die-1463"><a href="#Die-1463"><span class="linenos">1463</span></a>
+</span><span id="Die-1464"><a href="#Die-1464"><span class="linenos">1464</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die-1465"><a href="#Die-1465"><span class="linenos">1465</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die-1466"><a href="#Die-1466"><span class="linenos">1466</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1467"><a href="#Die-1467"><span class="linenos">1467</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die-1468"><a href="#Die-1468"><span class="linenos">1468</span></a>
+</span><span id="Die-1469"><a href="#Die-1469"><span class="linenos">1469</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die-1470"><a href="#Die-1470"><span class="linenos">1470</span></a>
+</span><span id="Die-1471"><a href="#Die-1471"><span class="linenos">1471</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
+</span><span id="Die-1472"><a href="#Die-1472"><span class="linenos">1472</span></a><span class="sd">        if any weight exceeds 10**30.</span>
+</span><span id="Die-1473"><a href="#Die-1473"><span class="linenos">1473</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die-1474"><a href="#Die-1474"><span class="linenos">1474</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-1475"><a href="#Die-1475"><span class="linenos">1475</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die-1476"><a href="#Die-1476"><span class="linenos">1476</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die-1477"><a href="#Die-1477"><span class="linenos">1477</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die-1478"><a href="#Die-1478"><span class="linenos">1478</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die-1479"><a href="#Die-1479"><span class="linenos">1479</span></a>
+</span><span id="Die-1480"><a href="#Die-1480"><span class="linenos">1480</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die-1481"><a href="#Die-1481"><span class="linenos">1481</span></a>
+</span><span id="Die-1482"><a href="#Die-1482"><span class="linenos">1482</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die-1483"><a href="#Die-1483"><span class="linenos">1483</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die-1484"><a href="#Die-1484"><span class="linenos">1484</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die-1485"><a href="#Die-1485"><span class="linenos">1485</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die-1486"><a href="#Die-1486"><span class="linenos">1486</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die-1487"><a href="#Die-1487"><span class="linenos">1487</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die-1488"><a href="#Die-1488"><span class="linenos">1488</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+</span><span id="Die-1489"><a href="#Die-1489"><span class="linenos">1489</span></a>
+</span><span id="Die-1490"><a href="#Die-1490"><span class="linenos">1490</span></a>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die-1491"><a href="#Die-1491"><span class="linenos">1491</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4865,12 +4866,12 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#Die.sign"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.sign-1350"><a href="#Die.sign-1350"><span class="linenos">1350</span></a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die.sign-1351"><a href="#Die.sign-1351"><span class="linenos">1351</span></a>        <span class="sd">&quot;&quot;&quot;Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.</span>
-</span><span id="Die.sign-1352"><a href="#Die.sign-1352"><span class="linenos">1352</span></a>
-</span><span id="Die.sign-1353"><a href="#Die.sign-1353"><span class="linenos">1353</span></a><span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
-</span><span id="Die.sign-1354"><a href="#Die.sign-1354"><span class="linenos">1354</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.sign-1355"><a href="#Die.sign-1355"><span class="linenos">1355</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.sign-1351"><a href="#Die.sign-1351"><span class="linenos">1351</span></a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die.sign-1352"><a href="#Die.sign-1352"><span class="linenos">1352</span></a>        <span class="sd">&quot;&quot;&quot;Outcomes become 1 if greater than `zero()`, -1 if less than `zero()`, and 0 otherwise.</span>
+</span><span id="Die.sign-1353"><a href="#Die.sign-1353"><span class="linenos">1353</span></a>
+</span><span id="Die.sign-1354"><a href="#Die.sign-1354"><span class="linenos">1354</span></a><span class="sd">        Note that for `float`s, +0.0, -0.0, and nan all become 0.</span>
+</span><span id="Die.sign-1355"><a href="#Die.sign-1355"><span class="linenos">1355</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.sign-1356"><a href="#Die.sign-1356"><span class="linenos">1356</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="n">Die</span><span class="o">.</span><span class="n">_sign</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4892,13 +4893,13 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#Die.cmp"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.cmp-1361"><a href="#Die.cmp-1361"><span class="linenos">1361</span></a>    <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die.cmp-1362"><a href="#Die.cmp-1362"><span class="linenos">1362</span></a>        <span class="sd">&quot;&quot;&quot;Returns a die with possible outcomes 1, -1, and 0.</span>
-</span><span id="Die.cmp-1363"><a href="#Die.cmp-1363"><span class="linenos">1363</span></a>
-</span><span id="Die.cmp-1364"><a href="#Die.cmp-1364"><span class="linenos">1364</span></a><span class="sd">        The weights are equal to the positive outcome of `self &gt; other`,</span>
-</span><span id="Die.cmp-1365"><a href="#Die.cmp-1365"><span class="linenos">1365</span></a><span class="sd">        `self &lt; other`, and the remainder respectively.</span>
-</span><span id="Die.cmp-1366"><a href="#Die.cmp-1366"><span class="linenos">1366</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.cmp-1367"><a href="#Die.cmp-1367"><span class="linenos">1367</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.cmp-1362"><a href="#Die.cmp-1362"><span class="linenos">1362</span></a>    <span class="k">def</span> <span class="nf">cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die.cmp-1363"><a href="#Die.cmp-1363"><span class="linenos">1363</span></a>        <span class="sd">&quot;&quot;&quot;Returns a die with possible outcomes 1, -1, and 0.</span>
+</span><span id="Die.cmp-1364"><a href="#Die.cmp-1364"><span class="linenos">1364</span></a>
+</span><span id="Die.cmp-1365"><a href="#Die.cmp-1365"><span class="linenos">1365</span></a><span class="sd">        The weights are equal to the positive outcome of `self &gt; other`,</span>
+</span><span id="Die.cmp-1366"><a href="#Die.cmp-1366"><span class="linenos">1366</span></a><span class="sd">        `self &lt; other`, and the remainder respectively.</span>
+</span><span id="Die.cmp-1367"><a href="#Die.cmp-1367"><span class="linenos">1367</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.cmp-1368"><a href="#Die.cmp-1368"><span class="linenos">1368</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="o">.</span><span class="n">_cmp</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4921,12 +4922,12 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#Die.bool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.bool-1369"><a href="#Die.bool-1369"><span class="linenos">1369</span></a>    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die.bool-1370"><a href="#Die.bool-1370"><span class="linenos">1370</span></a>        <span class="sd">&quot;&quot;&quot;Takes `bool()` of all outcomes.</span>
-</span><span id="Die.bool-1371"><a href="#Die.bool-1371"><span class="linenos">1371</span></a>
-</span><span id="Die.bool-1372"><a href="#Die.bool-1372"><span class="linenos">1372</span></a><span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
-</span><span id="Die.bool-1373"><a href="#Die.bool-1373"><span class="linenos">1373</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.bool-1374"><a href="#Die.bool-1374"><span class="linenos">1374</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.bool-1370"><a href="#Die.bool-1370"><span class="linenos">1370</span></a>    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die.bool-1371"><a href="#Die.bool-1371"><span class="linenos">1371</span></a>        <span class="sd">&quot;&quot;&quot;Takes `bool()` of all outcomes.</span>
+</span><span id="Die.bool-1372"><a href="#Die.bool-1372"><span class="linenos">1372</span></a>
+</span><span id="Die.bool-1373"><a href="#Die.bool-1373"><span class="linenos">1373</span></a><span class="sd">        Note the die as a whole is not considered to have a truth value.</span>
+</span><span id="Die.bool-1374"><a href="#Die.bool-1374"><span class="linenos">1374</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.bool-1375"><a href="#Die.bool-1375"><span class="linenos">1375</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unary_op</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4948,13 +4949,13 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#Die.key_tuple"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.key_tuple-1388"><a href="#Die.key_tuple-1388"><span class="linenos">1388</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Die.key_tuple-1389"><a href="#Die.key_tuple-1389"><span class="linenos">1389</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
-</span><span id="Die.key_tuple-1390"><a href="#Die.key_tuple-1390"><span class="linenos">1390</span></a>
-</span><span id="Die.key_tuple-1391"><a href="#Die.key_tuple-1391"><span class="linenos">1391</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
-</span><span id="Die.key_tuple-1392"><a href="#Die.key_tuple-1392"><span class="linenos">1392</span></a><span class="sd">        to be in any particular format or have any other properties.</span>
-</span><span id="Die.key_tuple-1393"><a href="#Die.key_tuple-1393"><span class="linenos">1393</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.key_tuple-1394"><a href="#Die.key_tuple-1394"><span class="linenos">1394</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.key_tuple-1389"><a href="#Die.key_tuple-1389"><span class="linenos">1389</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Die.key_tuple-1390"><a href="#Die.key_tuple-1390"><span class="linenos">1390</span></a>        <span class="sd">&quot;&quot;&quot;Returns a tuple that uniquely (as `equals()`) identifies this die.</span>
+</span><span id="Die.key_tuple-1391"><a href="#Die.key_tuple-1391"><span class="linenos">1391</span></a>
+</span><span id="Die.key_tuple-1392"><a href="#Die.key_tuple-1392"><span class="linenos">1392</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
+</span><span id="Die.key_tuple-1393"><a href="#Die.key_tuple-1393"><span class="linenos">1393</span></a><span class="sd">        to be in any particular format or have any other properties.</span>
+</span><span id="Die.key_tuple-1394"><a href="#Die.key_tuple-1394"><span class="linenos">1394</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.key_tuple-1395"><a href="#Die.key_tuple-1395"><span class="linenos">1395</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span></pre></div>
 
 
@@ -4977,34 +4978,34 @@ to be in any particular format or have any other properties.</p>
 
     </div>
     <a class="headerlink" href="#Die.equals"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.equals-1403"><a href="#Die.equals-1403"><span class="linenos">1403</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span id="Die.equals-1404"><a href="#Die.equals-1404"><span class="linenos">1404</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff both dice have the same outcomes and weights.</span>
-</span><span id="Die.equals-1405"><a href="#Die.equals-1405"><span class="linenos">1405</span></a>
-</span><span id="Die.equals-1406"><a href="#Die.equals-1406"><span class="linenos">1406</span></a><span class="sd">        Truth value does NOT matter.</span>
-</span><span id="Die.equals-1407"><a href="#Die.equals-1407"><span class="linenos">1407</span></a>
-</span><span id="Die.equals-1408"><a href="#Die.equals-1408"><span class="linenos">1408</span></a><span class="sd">        If one die has a zero-weight outcome and the other die does not contain</span>
-</span><span id="Die.equals-1409"><a href="#Die.equals-1409"><span class="linenos">1409</span></a><span class="sd">        that outcome, they are treated as unequal by this function.</span>
-</span><span id="Die.equals-1410"><a href="#Die.equals-1410"><span class="linenos">1410</span></a>
-</span><span id="Die.equals-1411"><a href="#Die.equals-1411"><span class="linenos">1411</span></a><span class="sd">        The `==` and `!=` operators have a dual purpose; they return a die</span>
-</span><span id="Die.equals-1412"><a href="#Die.equals-1412"><span class="linenos">1412</span></a><span class="sd">        with a truth value determined by this method.</span>
-</span><span id="Die.equals-1413"><a href="#Die.equals-1413"><span class="linenos">1413</span></a><span class="sd">        Only dice returned by these methods have a truth value. The data of</span>
-</span><span id="Die.equals-1414"><a href="#Die.equals-1414"><span class="linenos">1414</span></a><span class="sd">        these dice is lazily evaluated since the caller may only be interested</span>
-</span><span id="Die.equals-1415"><a href="#Die.equals-1415"><span class="linenos">1415</span></a><span class="sd">        in the truth value.</span>
-</span><span id="Die.equals-1416"><a href="#Die.equals-1416"><span class="linenos">1416</span></a>
-</span><span id="Die.equals-1417"><a href="#Die.equals-1417"><span class="linenos">1417</span></a><span class="sd">        Args:</span>
-</span><span id="Die.equals-1418"><a href="#Die.equals-1418"><span class="linenos">1418</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
-</span><span id="Die.equals-1419"><a href="#Die.equals-1419"><span class="linenos">1419</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
-</span><span id="Die.equals-1420"><a href="#Die.equals-1420"><span class="linenos">1420</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.equals-1421"><a href="#Die.equals-1421"><span class="linenos">1421</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="Die.equals-1422"><a href="#Die.equals-1422"><span class="linenos">1422</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
-</span><span id="Die.equals-1423"><a href="#Die.equals-1423"><span class="linenos">1423</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="Die.equals-1424"><a href="#Die.equals-1424"><span class="linenos">1424</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Die.equals-1425"><a href="#Die.equals-1425"><span class="linenos">1425</span></a>
-</span><span id="Die.equals-1426"><a href="#Die.equals-1426"><span class="linenos">1426</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die.equals-1427"><a href="#Die.equals-1427"><span class="linenos">1427</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
-</span><span id="Die.equals-1428"><a href="#Die.equals-1428"><span class="linenos">1428</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
-</span><span id="Die.equals-1429"><a href="#Die.equals-1429"><span class="linenos">1429</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die.equals-1430"><a href="#Die.equals-1430"><span class="linenos">1430</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.equals-1404"><a href="#Die.equals-1404"><span class="linenos">1404</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="Die.equals-1405"><a href="#Die.equals-1405"><span class="linenos">1405</span></a>        <span class="sd">&quot;&quot;&quot;Returns `True` iff both dice have the same outcomes and weights.</span>
+</span><span id="Die.equals-1406"><a href="#Die.equals-1406"><span class="linenos">1406</span></a>
+</span><span id="Die.equals-1407"><a href="#Die.equals-1407"><span class="linenos">1407</span></a><span class="sd">        Truth value does NOT matter.</span>
+</span><span id="Die.equals-1408"><a href="#Die.equals-1408"><span class="linenos">1408</span></a>
+</span><span id="Die.equals-1409"><a href="#Die.equals-1409"><span class="linenos">1409</span></a><span class="sd">        If one die has a zero-weight outcome and the other die does not contain</span>
+</span><span id="Die.equals-1410"><a href="#Die.equals-1410"><span class="linenos">1410</span></a><span class="sd">        that outcome, they are treated as unequal by this function.</span>
+</span><span id="Die.equals-1411"><a href="#Die.equals-1411"><span class="linenos">1411</span></a>
+</span><span id="Die.equals-1412"><a href="#Die.equals-1412"><span class="linenos">1412</span></a><span class="sd">        The `==` and `!=` operators have a dual purpose; they return a die</span>
+</span><span id="Die.equals-1413"><a href="#Die.equals-1413"><span class="linenos">1413</span></a><span class="sd">        with a truth value determined by this method.</span>
+</span><span id="Die.equals-1414"><a href="#Die.equals-1414"><span class="linenos">1414</span></a><span class="sd">        Only dice returned by these methods have a truth value. The data of</span>
+</span><span id="Die.equals-1415"><a href="#Die.equals-1415"><span class="linenos">1415</span></a><span class="sd">        these dice is lazily evaluated since the caller may only be interested</span>
+</span><span id="Die.equals-1416"><a href="#Die.equals-1416"><span class="linenos">1416</span></a><span class="sd">        in the truth value.</span>
+</span><span id="Die.equals-1417"><a href="#Die.equals-1417"><span class="linenos">1417</span></a>
+</span><span id="Die.equals-1418"><a href="#Die.equals-1418"><span class="linenos">1418</span></a><span class="sd">        Args:</span>
+</span><span id="Die.equals-1419"><a href="#Die.equals-1419"><span class="linenos">1419</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
+</span><span id="Die.equals-1420"><a href="#Die.equals-1420"><span class="linenos">1420</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
+</span><span id="Die.equals-1421"><a href="#Die.equals-1421"><span class="linenos">1421</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.equals-1422"><a href="#Die.equals-1422"><span class="linenos">1422</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="Die.equals-1423"><a href="#Die.equals-1423"><span class="linenos">1423</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">other</span><span class="p">])</span>
+</span><span id="Die.equals-1424"><a href="#Die.equals-1424"><span class="linenos">1424</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="Die.equals-1425"><a href="#Die.equals-1425"><span class="linenos">1425</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Die.equals-1426"><a href="#Die.equals-1426"><span class="linenos">1426</span></a>
+</span><span id="Die.equals-1427"><a href="#Die.equals-1427"><span class="linenos">1427</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
+</span><span id="Die.equals-1428"><a href="#Die.equals-1428"><span class="linenos">1428</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce_weights</span><span class="p">(</span>
+</span><span id="Die.equals-1429"><a href="#Die.equals-1429"><span class="linenos">1429</span></a>            <span class="p">)</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die.equals-1430"><a href="#Die.equals-1430"><span class="linenos">1430</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die.equals-1431"><a href="#Die.equals-1431"><span class="linenos">1431</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -5042,15 +5043,15 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 
     </div>
     <a class="headerlink" href="#Die.sample"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.sample-1434"><a href="#Die.sample-1434"><span class="linenos">1434</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Die.sample-1435"><a href="#Die.sample-1435"><span class="linenos">1435</span></a>        <span class="sd">&quot;&quot;&quot;Returns a random roll of this die.</span>
-</span><span id="Die.sample-1436"><a href="#Die.sample-1436"><span class="linenos">1436</span></a>
-</span><span id="Die.sample-1437"><a href="#Die.sample-1437"><span class="linenos">1437</span></a><span class="sd">        Do not use for security purposes.</span>
-</span><span id="Die.sample-1438"><a href="#Die.sample-1438"><span class="linenos">1438</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.sample-1439"><a href="#Die.sample-1439"><span class="linenos">1439</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
-</span><span id="Die.sample-1440"><a href="#Die.sample-1440"><span class="linenos">1440</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">())</span>
-</span><span id="Die.sample-1441"><a href="#Die.sample-1441"><span class="linenos">1441</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">(),</span> <span class="n">r</span><span class="p">)</span>
-</span><span id="Die.sample-1442"><a href="#Die.sample-1442"><span class="linenos">1442</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.sample-1435"><a href="#Die.sample-1435"><span class="linenos">1435</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Die.sample-1436"><a href="#Die.sample-1436"><span class="linenos">1436</span></a>        <span class="sd">&quot;&quot;&quot;Returns a random roll of this die.</span>
+</span><span id="Die.sample-1437"><a href="#Die.sample-1437"><span class="linenos">1437</span></a>
+</span><span id="Die.sample-1438"><a href="#Die.sample-1438"><span class="linenos">1438</span></a><span class="sd">        Do not use for security purposes.</span>
+</span><span id="Die.sample-1439"><a href="#Die.sample-1439"><span class="linenos">1439</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.sample-1440"><a href="#Die.sample-1440"><span class="linenos">1440</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
+</span><span id="Die.sample-1441"><a href="#Die.sample-1441"><span class="linenos">1441</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">())</span>
+</span><span id="Die.sample-1442"><a href="#Die.sample-1442"><span class="linenos">1442</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cweights</span><span class="p">(),</span> <span class="n">r</span><span class="p">)</span>
+</span><span id="Die.sample-1443"><a href="#Die.sample-1443"><span class="linenos">1443</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -5072,40 +5073,40 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 
     </div>
     <a class="headerlink" href="#Die.format"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.format-1454"><a href="#Die.format-1454"><span class="linenos">1454</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Die.format-1455"><a href="#Die.format-1455"><span class="linenos">1455</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
-</span><span id="Die.format-1456"><a href="#Die.format-1456"><span class="linenos">1456</span></a>
-</span><span id="Die.format-1457"><a href="#Die.format-1457"><span class="linenos">1457</span></a><span class="sd">        `format_spec` should start with the output format,</span>
-</span><span id="Die.format-1458"><a href="#Die.format-1458"><span class="linenos">1458</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
-</span><span id="Die.format-1459"><a href="#Die.format-1459"><span class="linenos">1459</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
-</span><span id="Die.format-1460"><a href="#Die.format-1460"><span class="linenos">1460</span></a>
-</span><span id="Die.format-1461"><a href="#Die.format-1461"><span class="linenos">1461</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
-</span><span id="Die.format-1462"><a href="#Die.format-1462"><span class="linenos">1462</span></a>
-</span><span id="Die.format-1463"><a href="#Die.format-1463"><span class="linenos">1463</span></a><span class="sd">        * `o`: Outcomes.</span>
-</span><span id="Die.format-1464"><a href="#Die.format-1464"><span class="linenos">1464</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
-</span><span id="Die.format-1465"><a href="#Die.format-1465"><span class="linenos">1465</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die.format-1466"><a href="#Die.format-1466"><span class="linenos">1466</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
-</span><span id="Die.format-1467"><a href="#Die.format-1467"><span class="linenos">1467</span></a>
-</span><span id="Die.format-1468"><a href="#Die.format-1468"><span class="linenos">1468</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
-</span><span id="Die.format-1469"><a href="#Die.format-1469"><span class="linenos">1469</span></a>
-</span><span id="Die.format-1470"><a href="#Die.format-1470"><span class="linenos">1470</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
-</span><span id="Die.format-1471"><a href="#Die.format-1471"><span class="linenos">1471</span></a><span class="sd">        if any weight exceeds 10**30.</span>
-</span><span id="Die.format-1472"><a href="#Die.format-1472"><span class="linenos">1472</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Die.format-1473"><a href="#Die.format-1473"><span class="linenos">1473</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die.format-1474"><a href="#Die.format-1474"><span class="linenos">1474</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
-</span><span id="Die.format-1475"><a href="#Die.format-1475"><span class="linenos">1475</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
-</span><span id="Die.format-1476"><a href="#Die.format-1476"><span class="linenos">1476</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
-</span><span id="Die.format-1477"><a href="#Die.format-1477"><span class="linenos">1477</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
-</span><span id="Die.format-1478"><a href="#Die.format-1478"><span class="linenos">1478</span></a>
-</span><span id="Die.format-1479"><a href="#Die.format-1479"><span class="linenos">1479</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-</span><span id="Die.format-1480"><a href="#Die.format-1480"><span class="linenos">1480</span></a>
-</span><span id="Die.format-1481"><a href="#Die.format-1481"><span class="linenos">1481</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-</span><span id="Die.format-1482"><a href="#Die.format-1482"><span class="linenos">1482</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
-</span><span id="Die.format-1483"><a href="#Die.format-1483"><span class="linenos">1483</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
-</span><span id="Die.format-1484"><a href="#Die.format-1484"><span class="linenos">1484</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
-</span><span id="Die.format-1485"><a href="#Die.format-1485"><span class="linenos">1485</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="Die.format-1486"><a href="#Die.format-1486"><span class="linenos">1486</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die.format-1487"><a href="#Die.format-1487"><span class="linenos">1487</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.format-1455"><a href="#Die.format-1455"><span class="linenos">1455</span></a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Die.format-1456"><a href="#Die.format-1456"><span class="linenos">1456</span></a>        <span class="sd">&quot;&quot;&quot;Formats this die as a string.</span>
+</span><span id="Die.format-1457"><a href="#Die.format-1457"><span class="linenos">1457</span></a>
+</span><span id="Die.format-1458"><a href="#Die.format-1458"><span class="linenos">1458</span></a><span class="sd">        `format_spec` should start with the output format,</span>
+</span><span id="Die.format-1459"><a href="#Die.format-1459"><span class="linenos">1459</span></a><span class="sd">        which is either `md` (Markdown) or `csv` (comma-separated values),</span>
+</span><span id="Die.format-1460"><a href="#Die.format-1460"><span class="linenos">1460</span></a><span class="sd">        followed by a &#39;:&#39; character.</span>
+</span><span id="Die.format-1461"><a href="#Die.format-1461"><span class="linenos">1461</span></a>
+</span><span id="Die.format-1462"><a href="#Die.format-1462"><span class="linenos">1462</span></a><span class="sd">        After this, zero or more columns should follow. Options are:</span>
+</span><span id="Die.format-1463"><a href="#Die.format-1463"><span class="linenos">1463</span></a>
+</span><span id="Die.format-1464"><a href="#Die.format-1464"><span class="linenos">1464</span></a><span class="sd">        * `o`: Outcomes.</span>
+</span><span id="Die.format-1465"><a href="#Die.format-1465"><span class="linenos">1465</span></a><span class="sd">        * `*o`: Outcomes, unpacked if applicable.</span>
+</span><span id="Die.format-1466"><a href="#Die.format-1466"><span class="linenos">1466</span></a><span class="sd">        * `w==`, `w&lt;=`, `w&gt;=`: Weights ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1467"><a href="#Die.format-1467"><span class="linenos">1467</span></a><span class="sd">        * `%==`, `%&lt;=`, `%&gt;=`: Chance (%) ==, &lt;=, or &gt;= each outcome.</span>
+</span><span id="Die.format-1468"><a href="#Die.format-1468"><span class="linenos">1468</span></a>
+</span><span id="Die.format-1469"><a href="#Die.format-1469"><span class="linenos">1469</span></a><span class="sd">        Columns may optionally be separated using ` ` (space) or `|` characters.</span>
+</span><span id="Die.format-1470"><a href="#Die.format-1470"><span class="linenos">1470</span></a>
+</span><span id="Die.format-1471"><a href="#Die.format-1471"><span class="linenos">1471</span></a><span class="sd">        The default is `&#39;md:*o|w==|%==&#39;`, with the weight column being omitted</span>
+</span><span id="Die.format-1472"><a href="#Die.format-1472"><span class="linenos">1472</span></a><span class="sd">        if any weight exceeds 10**30.</span>
+</span><span id="Die.format-1473"><a href="#Die.format-1473"><span class="linenos">1473</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Die.format-1474"><a href="#Die.format-1474"><span class="linenos">1474</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_spec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.format-1475"><a href="#Die.format-1475"><span class="linenos">1475</span></a>            <span class="n">format_spec</span> <span class="o">=</span> <span class="s1">&#39;md:*o&#39;</span>
+</span><span id="Die.format-1476"><a href="#Die.format-1476"><span class="linenos">1476</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modal_weight</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span><span class="p">:</span>
+</span><span id="Die.format-1477"><a href="#Die.format-1477"><span class="linenos">1477</span></a>                <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;w==&#39;</span>
+</span><span id="Die.format-1478"><a href="#Die.format-1478"><span class="linenos">1478</span></a>            <span class="n">format_spec</span> <span class="o">+=</span> <span class="s1">&#39;%==&#39;</span>
+</span><span id="Die.format-1479"><a href="#Die.format-1479"><span class="linenos">1479</span></a>
+</span><span id="Die.format-1480"><a href="#Die.format-1480"><span class="linenos">1480</span></a>        <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1481"><a href="#Die.format-1481"><span class="linenos">1481</span></a>
+</span><span id="Die.format-1482"><a href="#Die.format-1482"><span class="linenos">1482</span></a>        <span class="n">output_format</span><span class="p">,</span> <span class="n">format_spec</span> <span class="o">=</span> <span class="n">format_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+</span><span id="Die.format-1483"><a href="#Die.format-1483"><span class="linenos">1483</span></a>        <span class="k">if</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;md&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1484"><a href="#Die.format-1484"><span class="linenos">1484</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">)</span>
+</span><span id="Die.format-1485"><a href="#Die.format-1485"><span class="linenos">1485</span></a>        <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+</span><span id="Die.format-1486"><a href="#Die.format-1486"><span class="linenos">1486</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">die</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="Die.format-1487"><a href="#Die.format-1487"><span class="linenos">1487</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Die.format-1488"><a href="#Die.format-1488"><span class="linenos">1488</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported output format &#39;</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
