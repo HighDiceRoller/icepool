@@ -85,6 +85,14 @@ class Counts(Mapping[Any, int]):
     def __repr__(self) -> str:
         return type(self).__qualname__ + f'({repr(self._mapping)})'
 
+    def remove_min(self) -> 'Counts':
+        """Returns a `Counts` with the min element removed."""
+        return Counts(self.items()[1:])
+
+    def remove_max(self) -> 'Counts':
+        """Returns a `Counts` with the max element removed."""
+        return Counts(self.items()[:-1])
+
     def reduce(self) -> 'Counts':
         """Divides all counts by their greatest common denominator."""
         gcd = math.gcd(*self.values())
