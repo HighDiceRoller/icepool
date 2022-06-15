@@ -5106,20 +5106,20 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsKeysView"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsKeysView-95"><a href="#CountsKeysView-95"><span class="linenos"> 95</span></a><span class="k">class</span> <span class="nc">CountsKeysView</span><span class="p">(</span><span class="n">KeysView</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-</span><span id="CountsKeysView-96"><a href="#CountsKeysView-96"><span class="linenos"> 96</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both a `KeysView` and a `Sequence`.&quot;&quot;&quot;</span>
-</span><span id="CountsKeysView-97"><a href="#CountsKeysView-97"><span class="linenos"> 97</span></a>
-</span><span id="CountsKeysView-98"><a href="#CountsKeysView-98"><span class="linenos"> 98</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsKeysView-99"><a href="#CountsKeysView-99"><span class="linenos"> 99</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsKeysView-98"><a href="#CountsKeysView-98"><span class="linenos"> 98</span></a><span class="k">class</span> <span class="nc">CountsKeysView</span><span class="p">(</span><span class="n">KeysView</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+</span><span id="CountsKeysView-99"><a href="#CountsKeysView-99"><span class="linenos"> 99</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both a `KeysView` and a `Sequence`.&quot;&quot;&quot;</span>
 </span><span id="CountsKeysView-100"><a href="#CountsKeysView-100"><span class="linenos">100</span></a>
-</span><span id="CountsKeysView-101"><a href="#CountsKeysView-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-</span><span id="CountsKeysView-102"><a href="#CountsKeysView-102"><span class="linenos">102</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="CountsKeysView-101"><a href="#CountsKeysView-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsKeysView-102"><a href="#CountsKeysView-102"><span class="linenos">102</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span><span id="CountsKeysView-103"><a href="#CountsKeysView-103"><span class="linenos">103</span></a>
-</span><span id="CountsKeysView-104"><a href="#CountsKeysView-104"><span class="linenos">104</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="CountsKeysView-105"><a href="#CountsKeysView-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">)</span>
+</span><span id="CountsKeysView-104"><a href="#CountsKeysView-104"><span class="linenos">104</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="CountsKeysView-105"><a href="#CountsKeysView-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="CountsKeysView-106"><a href="#CountsKeysView-106"><span class="linenos">106</span></a>
-</span><span id="CountsKeysView-107"><a href="#CountsKeysView-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="CountsKeysView-108"><a href="#CountsKeysView-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_keys</span> <span class="o">==</span> <span class="n">other</span>
+</span><span id="CountsKeysView-107"><a href="#CountsKeysView-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CountsKeysView-108"><a href="#CountsKeysView-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">)</span>
+</span><span id="CountsKeysView-109"><a href="#CountsKeysView-109"><span class="linenos">109</span></a>
+</span><span id="CountsKeysView-110"><a href="#CountsKeysView-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="CountsKeysView-111"><a href="#CountsKeysView-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_keys</span> <span class="o">==</span> <span class="n">other</span>
 </span></pre></div>
 
 
@@ -5137,8 +5137,8 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsKeysView.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsKeysView.__init__-98"><a href="#CountsKeysView.__init__-98"><span class="linenos">98</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsKeysView.__init__-99"><a href="#CountsKeysView.__init__-99"><span class="linenos">99</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsKeysView.__init__-101"><a href="#CountsKeysView.__init__-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsKeysView.__init__-102"><a href="#CountsKeysView.__init__-102"><span class="linenos">102</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span></pre></div>
 
 
@@ -5171,20 +5171,20 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsValuesView"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsValuesView-111"><a href="#CountsValuesView-111"><span class="linenos">111</span></a><span class="k">class</span> <span class="nc">CountsValuesView</span><span class="p">(</span><span class="n">ValuesView</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
-</span><span id="CountsValuesView-112"><a href="#CountsValuesView-112"><span class="linenos">112</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both a `ValuesView` and a `Sequence`.&quot;&quot;&quot;</span>
-</span><span id="CountsValuesView-113"><a href="#CountsValuesView-113"><span class="linenos">113</span></a>
-</span><span id="CountsValuesView-114"><a href="#CountsValuesView-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsValuesView-115"><a href="#CountsValuesView-115"><span class="linenos">115</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsValuesView-114"><a href="#CountsValuesView-114"><span class="linenos">114</span></a><span class="k">class</span> <span class="nc">CountsValuesView</span><span class="p">(</span><span class="n">ValuesView</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+</span><span id="CountsValuesView-115"><a href="#CountsValuesView-115"><span class="linenos">115</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both a `ValuesView` and a `Sequence`.&quot;&quot;&quot;</span>
 </span><span id="CountsValuesView-116"><a href="#CountsValuesView-116"><span class="linenos">116</span></a>
-</span><span id="CountsValuesView-117"><a href="#CountsValuesView-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-</span><span id="CountsValuesView-118"><a href="#CountsValuesView-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="CountsValuesView-117"><a href="#CountsValuesView-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsValuesView-118"><a href="#CountsValuesView-118"><span class="linenos">118</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span><span id="CountsValuesView-119"><a href="#CountsValuesView-119"><span class="linenos">119</span></a>
-</span><span id="CountsValuesView-120"><a href="#CountsValuesView-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="CountsValuesView-121"><a href="#CountsValuesView-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">)</span>
+</span><span id="CountsValuesView-120"><a href="#CountsValuesView-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="CountsValuesView-121"><a href="#CountsValuesView-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="CountsValuesView-122"><a href="#CountsValuesView-122"><span class="linenos">122</span></a>
-</span><span id="CountsValuesView-123"><a href="#CountsValuesView-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="CountsValuesView-124"><a href="#CountsValuesView-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_values</span> <span class="o">==</span> <span class="n">other</span>
+</span><span id="CountsValuesView-123"><a href="#CountsValuesView-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CountsValuesView-124"><a href="#CountsValuesView-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">)</span>
+</span><span id="CountsValuesView-125"><a href="#CountsValuesView-125"><span class="linenos">125</span></a>
+</span><span id="CountsValuesView-126"><a href="#CountsValuesView-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="CountsValuesView-127"><a href="#CountsValuesView-127"><span class="linenos">127</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_values</span> <span class="o">==</span> <span class="n">other</span>
 </span></pre></div>
 
 
@@ -5202,8 +5202,8 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsValuesView.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsValuesView.__init__-114"><a href="#CountsValuesView.__init__-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsValuesView.__init__-115"><a href="#CountsValuesView.__init__-115"><span class="linenos">115</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsValuesView.__init__-117"><a href="#CountsValuesView.__init__-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsValuesView.__init__-118"><a href="#CountsValuesView.__init__-118"><span class="linenos">118</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span></pre></div>
 
 
@@ -5232,17 +5232,17 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsItemsView"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsItemsView-127"><a href="#CountsItemsView-127"><span class="linenos">127</span></a><span class="k">class</span> <span class="nc">CountsItemsView</span><span class="p">(</span><span class="n">ItemsView</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
-</span><span id="CountsItemsView-128"><a href="#CountsItemsView-128"><span class="linenos">128</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both an `ItemsView` and a `Sequence`.&quot;&quot;&quot;</span>
-</span><span id="CountsItemsView-129"><a href="#CountsItemsView-129"><span class="linenos">129</span></a>
-</span><span id="CountsItemsView-130"><a href="#CountsItemsView-130"><span class="linenos">130</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsItemsView-131"><a href="#CountsItemsView-131"><span class="linenos">131</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsItemsView-130"><a href="#CountsItemsView-130"><span class="linenos">130</span></a><span class="k">class</span> <span class="nc">CountsItemsView</span><span class="p">(</span><span class="n">ItemsView</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+</span><span id="CountsItemsView-131"><a href="#CountsItemsView-131"><span class="linenos">131</span></a>    <span class="sd">&quot;&quot;&quot;This functions as both an `ItemsView` and a `Sequence`.&quot;&quot;&quot;</span>
 </span><span id="CountsItemsView-132"><a href="#CountsItemsView-132"><span class="linenos">132</span></a>
-</span><span id="CountsItemsView-133"><a href="#CountsItemsView-133"><span class="linenos">133</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-</span><span id="CountsItemsView-134"><a href="#CountsItemsView-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="CountsItemsView-133"><a href="#CountsItemsView-133"><span class="linenos">133</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsItemsView-134"><a href="#CountsItemsView-134"><span class="linenos">134</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span><span id="CountsItemsView-135"><a href="#CountsItemsView-135"><span class="linenos">135</span></a>
-</span><span id="CountsItemsView-136"><a href="#CountsItemsView-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-</span><span id="CountsItemsView-137"><a href="#CountsItemsView-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_items</span> <span class="o">==</span> <span class="n">other</span>
+</span><span id="CountsItemsView-136"><a href="#CountsItemsView-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+</span><span id="CountsItemsView-137"><a href="#CountsItemsView-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="CountsItemsView-138"><a href="#CountsItemsView-138"><span class="linenos">138</span></a>
+</span><span id="CountsItemsView-139"><a href="#CountsItemsView-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+</span><span id="CountsItemsView-140"><a href="#CountsItemsView-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="o">.</span><span class="n">_items</span> <span class="o">==</span> <span class="n">other</span>
 </span></pre></div>
 
 
@@ -5260,8 +5260,8 @@ if any weight exceeds 10**30.</p>
 
     </div>
     <a class="headerlink" href="#CountsItemsView.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsItemsView.__init__-130"><a href="#CountsItemsView.__init__-130"><span class="linenos">130</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
-</span><span id="CountsItemsView.__init__-131"><a href="#CountsItemsView.__init__-131"><span class="linenos">131</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountsItemsView.__init__-133"><a href="#CountsItemsView.__init__-133"><span class="linenos">133</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">):</span>
+</span><span id="CountsItemsView.__init__-134"><a href="#CountsItemsView.__init__-134"><span class="linenos">134</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">counts</span>
 </span></pre></div>
 
 
