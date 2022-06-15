@@ -57,6 +57,9 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
         cards, times = icepool.creation_args.itemize(cards, times)
 
+        if len(cards) == 1 and times[0] == 1 and isinstance(cards[0], Deck):
+            return cards[0]
+
         self = super(Deck, cls).__new__(cls)
         self._data = icepool.creation_args.expand_args_for_deck(cards, times)
         self._hand_size = hand_size

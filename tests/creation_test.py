@@ -39,6 +39,7 @@ def test_d6s():
 def test_return_self():
     die = icepool.d6
     assert icepool.Die(die) is die
+    assert icepool.Die([die]) is die
 
 denominator_method_test_args = [
     (),
