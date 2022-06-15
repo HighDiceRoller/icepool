@@ -19,13 +19,13 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
     """
 
     _data: Counts
-    _hand_size: int
+    _draws: int
 
     def __new__(cls,
                 cards: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 *,
-                hand_size: int):
+                draws: int):
         """Constructor for a deck.
 
         Args:
@@ -62,9 +62,9 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
         self = super(Deck, cls).__new__(cls)
         self._data = icepool.creation_args.expand_args_for_deck(cards, times)
-        self._hand_size = hand_size
-        if self.hand_size() > self.deck_size():
-            raise ValueError('hand_size cannot exceed deck_size.')
+        self._draws = draws
+        if self.draws() > self.deck_size():
+            raise ValueError('draws cannot exceed deck_size.')
         return self
 
     def cards(self) -> CountsKeysView:
@@ -98,12 +98,12 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
     def deck_size(self) -> int:
         return self._deck_size
 
-    def hand_size(self) -> int:
-        return self._hand_size
+    def draws(self) -> int:
+        return self._draws
 
     @cached_property
     def _denomiator(self) -> int:
-        return icepool.math.comb(self.deck_size(), self.hand_size())
+        return icepool.math.comb(self.deck_size(), self.draws())
 
     def denominator(self) -> int:
         return self._denomiator
@@ -120,16 +120,16 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
         deck_count = self.dups()[0]
 
-        min_count = max(0, deck_count + self.hand_size() - self.deck_size())
-        max_count = min(deck_count, self.hand_size())
+        min_count = max(0, deck_count + self.draws() - self.deck_size())
+        max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_draw = Deck(
+            popped_deck = Deck(
                 self.cards()[1:],
                 self.dups()[1:],
-                hand_size=self.hand_size() - count,
+                draws=self.draws() - count,
             )
             weight = icepool.math.comb(deck_count, count)
-            yield popped_draw, count, weight
+            yield popped_deck, count, weight
 
     def _pop_max(
         self, max_outcome
@@ -140,22 +140,22 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
         deck_count = self.dups()[-1]
 
-        min_count = max(0, deck_count + self.hand_size() - self.deck_size())
-        max_count = min(deck_count, self.hand_size())
+        min_count = max(0, deck_count + self.draws() - self.deck_size())
+        max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_draw = Deck(self.cards()[:-1],
+            popped_deck = Deck(self.cards()[:-1],
                                self.dups()[:-1],
-                               hand_size=self.hand_size() - count)
+                               draws=self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
-            yield popped_draw, count, weight
+            yield popped_deck, count, weight
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
-        result = len(self.cards()) * self.hand_size()
+        result = len(self.cards()) * self.draws()
         return result, result
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return (Deck,) + tuple(self.items()) + (self.hand_size(),)
+        return (Deck,) + tuple(self.items()) + (self.draws(),)
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Deck):
@@ -170,4 +170,4 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         return self._hash
 
 
-empty_deck = Deck([], hand_size=0)
+empty_deck = Deck([], draws=0)
