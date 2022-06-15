@@ -8,7 +8,7 @@ import math
 from collections import defaultdict
 
 from typing import Any, Callable
-from collections.abc import Container, Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, MutableMapping, Sequence
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,

@@ -30,19 +30,16 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
         Args:
             cards: The cards of the deck. This can be one of the following:
-
-                * A dict mapping cards to dups.
+                * A Mapping from cards to dups.
                 * A sequence of cards.
 
-                Each outcome may be one of the following:
+                Note that `Die` and `Deck` both count as Mappings.
 
-                * A deck. The cards of the deck will be "flattened" into the
-                    result; a deck object will never contain a deck as an
-                    outcome.
-                * A dict mapping cards to dups.
+                Each card may be one of the following:
+                * A Mapping from cards to dups.
                 * A tuple of cards.
-                    Any tuple elements that are decks or dicts will expand the
-                    tuple according to their independent joint distribution.
+                    Any tuple elements that are Mappings will expand the
+                    tuple according to their Cartesian product.
                     Use this carefully since it may create a large number of
                     cards.
                 * Anything else will be treated as a scalar.

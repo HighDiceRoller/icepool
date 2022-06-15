@@ -76,17 +76,17 @@ class Die(Mapping[Any, int]):
 
         Args:
             outcomes: The outcomes of the die. This can be one of the following:
-                * A dict mapping outcomes to weights.
+                * A Mapping from outcomes to weights.
                 * A sequence of outcomes. Each element will have the same total
                     weight.
 
+                Note that `Die` and `Deck` both count as Mappings.
+
                 Each outcome may be one of the following:
-                * A `Die`. The outcomes of the die will be "flattened" into the
-                    result; a `Die` will never contain a `Die` as an outcome.
-                * A dict-like that maps outcomes to weights.
-                    The outcomes of the dict-like will be "flattened" into the
+                * A Mapping from outcomes to weights.
+                    The outcomes of the Mapping will be "flattened" into the
                     result. This option will be taken in preference to treating
-                    the dict-like itself as an outcome even if the dict-like
+                    the Mapping itself as an outcome even if the Mapping
                     itself is hashable and totally orderable.
                 * A tuple of outcomes. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
@@ -111,7 +111,7 @@ class Die(Mapping[Any, int]):
                 `outcomes`.
             denominator_method: How to determine the denominator of the result
                 if the arguments themselves contain weights. This is also used
-                for dict-like arguments. From greatest to least:
+                for Mapping arguments. From greatest to least:
                 * 'prod': Product of the individual argument denominators, times
                     the total of `weights`. This is like rolling all of the
                     possible dice, and then selecting a result.
