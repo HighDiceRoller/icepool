@@ -4,7 +4,7 @@ import icepool
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.generator import OutcomeCountGen
+from icepool.gen import OutcomeCountGen
 
 from functools import cached_property
 

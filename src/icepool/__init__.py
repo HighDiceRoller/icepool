@@ -32,7 +32,7 @@ from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.die.keep import lowest, highest
 
 from icepool.pool import Pool, standard_pool
-from icepool.generator import OutcomeCountGen
+from icepool.gen import OutcomeCountGen
 from icepool.eval import OutcomeCountEval, WrapFuncEval, JointEval, SumGen, sum_gen, enumerate_gen, FindBestSet, FindBestRun
 
 from icepool.deck import Deck

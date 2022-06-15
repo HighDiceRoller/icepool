@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.generator import OutcomeCountGen
+from icepool.gen import OutcomeCountGen
 
 from functools import cached_property
 

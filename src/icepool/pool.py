@@ -5,14 +5,14 @@ import icepool.math
 import icepool.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.generator import OutcomeCountGen
+from icepool.gen import OutcomeCountGen
 
 import itertools
 import math
 from collections import defaultdict
 from functools import cache, cached_property
 
-from typing import Any, Callable, Generator
+from typing import Any, Generator
 from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 
@@ -353,36 +353,6 @@ class Pool(OutcomeCountGen):
 
         if skip_weight is not None:
             yield empty_pool, sum(self.post_roll_counts()), skip_weight
-
-    def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,
-             /) -> 'icepool.Die':
-        """Evaluates this pool using the given `OutcomeCountEval` or function.
-
-        Note that each `OutcomeCountEval` instance carries its own cache;
-        if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `OutcomeCountEval` instance
-        rather than passing a function to this method directly.
-
-        Args:
-            func: This can be an `OutcomeCountEval`, in which case it evaluates
-                the pool directly. Or it can be a `OutcomeCountEval.next_state()`
-                -like function, taking in `state, outcome, *counts` and
-                returning the next state. In this case a temporary `WrapFuncEval`
-                is constructed and used to evaluate this pool.
-        """
-        if not isinstance(eval_or_func, icepool.OutcomeCountEval):
-            eval_or_func = icepool.WrapFuncEval(eval_or_func)
-        return eval_or_func.eval(self)
-
-    def sum(self) -> 'icepool.Die':
-        """Convenience method to simply sum the dice in this pool.
-
-        This uses `icepool.sum_pool`.
-
-        Returns:
-            A die representing the sum.
-        """
-        return icepool.sum_gen(self)
 
     def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.
