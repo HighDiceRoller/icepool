@@ -67,17 +67,17 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
             raise ValueError('draws cannot exceed deck_size.')
         return self
 
-    def cards(self) -> CountsKeysView:
+    def keys(self) -> CountsKeysView:
         return self._data.keys()
 
-    outcomes = cards
+    outcomes = keys
 
-    keys = cards
+    cards = keys
 
-    def dups(self) -> CountsValuesView:
+    def values(self) -> CountsValuesView:
         return self._data.values()
 
-    values = dups
+    dups = values
 
     def items(self) -> CountsItemsView:
         return self._data.items()

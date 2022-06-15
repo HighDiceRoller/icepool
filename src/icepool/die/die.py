@@ -226,16 +226,40 @@ class Die(Mapping[Any, int]):
 
     # Basic access.
 
-    def outcomes(self) -> CountsKeysView:
+    def keys(self) -> CountsKeysView:
         """Returns the sequence of sorted outcomes of the die. """
         return self._data.keys()
 
-    def __contains__(self, outcome) -> bool:
-        return outcome in self._data
+    outcomes = keys
+
+    def values(self) -> CountsValuesView:
+        """Returns the sequence of the weights of the die in outcome order. """
+        return self._data.values()
+
+    weights = values
+
+    def items(self) -> CountsItemsView:
+        """Returns the sequence of sorted outcome, weight pairs. """
+        return self._data.items()
+
+    def __getitem__(self, outcome, /) -> int:
+        return self._data[outcome]
+
+    def __iter__(self) -> Iterator:
+        return iter(self.keys())
 
     def num_outcomes(self) -> int:
         """Returns the number of outcomes (including those with zero weight). """
         return len(self._data)
+
+    __len__ = num_outcomes
+
+    def is_empty(self) -> bool:
+        """Returns `True` if this die has no outcomes. """
+        return self.num_outcomes() == 0
+
+    def __contains__(self, outcome) -> bool:
+        return outcome in self._data
 
     @cached_property
     def _outcome_len(self) -> int | None:
@@ -258,34 +282,9 @@ class Die(Mapping[Any, int]):
         """
         return self._outcome_len
 
-    def is_empty(self) -> bool:
-        """Returns `True` if this die has no outcomes. """
-        return self.num_outcomes() == 0
-
-    def weights(self) -> CountsValuesView:
-        """Returns the sequence of the weights of the die in outcome order. """
-        return self._data.values()
-
     def has_zero_weights(self) -> bool:
         """Returns `True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_values()
-
-    keys = outcomes
-
-    values = weights
-
-    def items(self) -> CountsItemsView:
-        """Returns the sequence of sorted outcome, weight pairs. """
-        return self._data.items()
-
-    def __getitem__(self, outcome, /) -> int:
-        return self._data[outcome]
-
-    def __iter__(self) -> Iterator:
-        return iter(self.keys())
-
-    def __len__(self) -> int:
-        return len(self._data)
 
     # Weights.
 
