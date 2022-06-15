@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 
-from collections import defaultdict
 from functools import cached_property
 import math
 
@@ -13,7 +12,8 @@ from typing import Any
 class Counts(Mapping[Any, int]):
     """Immutable dictionary whose values are integers.
 
-    keys(), values(), and items() return tuples, which are subscriptable.
+    The values of keys(), values(), and items() are also Sequences, which means
+    they can be indexed.
     """
 
     _mapping: Mapping[Any, int]
@@ -23,7 +23,7 @@ class Counts(Mapping[Any, int]):
         Args:
             items: A sequence of key, value pairs.
         """
-        mapping: MutableMapping[Any, int] = defaultdict(int)
+        mapping: MutableMapping[Any, int] = {}
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid key.')
@@ -32,7 +32,10 @@ class Counts(Mapping[Any, int]):
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' +
                                  type(value).__name__)
-            mapping[key] += value
+            if key not in mapping:
+                mapping[key] = value
+            else:
+                mapping[key] += value
         self._mapping = mapping
 
     @cached_property
@@ -50,7 +53,7 @@ class Counts(Mapping[Any, int]):
         return key in self._mapping
 
     def __getitem__(self, key) -> int:
-        return self._mapping.get(key, 0)
+        return self._mapping[key]
 
     def __iter__(self) -> Iterator:
         return iter(self._mapping)
