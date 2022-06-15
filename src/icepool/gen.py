@@ -1,8 +1,10 @@
 __docformat__ = 'google'
 
+import icepool
+
 from abc import ABC, abstractmethod
 
-from typing import Generator
+from typing import Callable, Generator
 from collections.abc import Sequence
 
 
@@ -76,3 +78,33 @@ class OutcomeCountGen(ABC):
     @abstractmethod
     def __hash__(self):
         """All `OutcomeCountGen`s must be hashable."""
+
+    def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,
+             /) -> 'icepool.Die':
+        """Evaluates this gen using the given `OutcomeCountEval` or function.
+
+        Note that each `OutcomeCountEval` instance carries its own cache;
+        if you plan to use an evaluation multiple times,
+        you may want to explicitly create an `OutcomeCountEval` instance
+        rather than passing a function to this method directly.
+
+        Args:
+            func: This can be an `OutcomeCountEval`, in which case it evaluates
+                the gen directly. Or it can be a `OutcomeCountEval.next_state()`
+                -like function, taking in `state, outcome, *counts` and
+                returning the next state. In this case a temporary `WrapFuncEval`
+                is constructed and used to evaluate this gen.
+        """
+        if not isinstance(eval_or_func, icepool.OutcomeCountEval):
+            eval_or_func = icepool.WrapFuncEval(eval_or_func)
+        return eval_or_func.eval(self)
+
+    def sum(self) -> 'icepool.Die':
+        """Convenience method to simply sum the dice in this gen.
+
+        This uses `icepool.sum_pool`.
+
+        Returns:
+            A die representing the sum.
+        """
+        return icepool.sum_gen(self)
