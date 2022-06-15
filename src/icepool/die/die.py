@@ -19,7 +19,7 @@ from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
 class Die(Mapping[Any, int]):
-    """An immutable Mapping of outcomes to nonnegative `int` weights.
+    """An immutable `Mapping` of outcomes to nonnegative `int` weights.
 
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.
@@ -75,18 +75,18 @@ class Die(Mapping[Any, int]):
         All weights must be non-negative, though they can be zero.
 
         Args:
-            outcomes: The outcomes of the die. This can be one of the following:
-                * A Mapping from outcomes to weights.
+            outcomes: The faces of the die. This can be one of the following:
+                * A `Mapping` from outcomes to weights.
                 * A sequence of outcomes. Each element will have the same total
                     weight.
 
-                Note that `Die` and `Deck` both count as Mappings.
+                Note that `Die` and `Deck` both count as `Mapping`s.
 
                 Each outcome may be one of the following:
-                * A Mapping from outcomes to weights.
-                    The outcomes of the Mapping will be "flattened" into the
+                * A `Mapping` from outcomes to weights.
+                    The outcomes of the `Mapping` will be "flattened" into the
                     result. This option will be taken in preference to treating
-                    the Mapping itself as an outcome even if the Mapping
+                    the `Mapping` itself as an outcome even if the `Mapping`
                     itself is hashable and totally orderable.
                 * A tuple of outcomes. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
@@ -111,7 +111,7 @@ class Die(Mapping[Any, int]):
                 `outcomes`.
             denominator_method: How to determine the denominator of the result
                 if the arguments themselves contain weights. This is also used
-                for Mapping arguments. From greatest to least:
+                for `Mapping` arguments. From greatest to least:
                 * 'prod': Product of the individual argument denominators, times
                     the total of `weights`. This is like rolling all of the
                     possible dice, and then selecting a result.
@@ -156,7 +156,7 @@ class Die(Mapping[Any, int]):
         `zero, bool`.
 
         This is NOT used for the `[]` operator; when used directly, this is
-        interpreted as a Mapping operation and returns the count corresponding
+        interpreted as a `Mapping` operation and returns the count corresponding
         to a given outcome. See `marginal()` for applying the `[]` operator to
         outcomes.
 
@@ -226,17 +226,25 @@ class Die(Mapping[Any, int]):
 
     # Basic access.
 
-    def keys(self) -> CountsKeysView:
-        """Returns the sequence of sorted outcomes of the die. """
+    def outcomes(self) -> CountsKeysView:
+        """The sorted outcomes of the die.
+
+        These are also the `keys` of the die as a `Mapping`.
+        Prefer to use the name `outcomes`.
+        """
         return self._data.keys()
 
-    outcomes = keys
+    keys = outcomes
 
-    def values(self) -> CountsValuesView:
-        """Returns the sequence of the weights of the die in outcome order. """
+    def weights(self) -> CountsValuesView:
+        """The weights of the die in outcome order.
+
+        These are also the `values` of the die as a `Mapping`.
+        Prefer to use the name `weights`.
+        """
         return self._data.values()
 
-    weights = values
+    values = weights
 
     def items(self) -> CountsItemsView:
         """Returns the sequence of sorted outcome, weight pairs. """
@@ -787,7 +795,7 @@ class Die(Mapping[Any, int]):
             repl: One of the following:
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
-                * A callable mapping old outcomes to new outcomes.
+                * A callable returning a new outcome for each old outcome.
                 * A sequence specifying new outcomes in order.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.

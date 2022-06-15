@@ -22,62 +22,71 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
     _draws: int
 
     def __new__(cls,
-                cards: Mapping[Any, int] | Sequence,
+                outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 *,
                 draws: int):
         """Constructor for a deck.
 
         Args:
-            cards: The cards of the deck. This can be one of the following:
-                * A Mapping from cards to dups.
-                * A sequence of cards.
+            outcomes: The cards of the deck. This can be one of the following:
+                * A `Mapping` from outcomes to dups.
+                * A sequence of outcomes.
 
-                Note that `Die` and `Deck` both count as Mappings.
+                Note that `Die` and `Deck` both count as `Mapping`s.
 
                 Each card may be one of the following:
-                * A Mapping from cards to dups.
-                * A tuple of cards.
-                    Any tuple elements that are Mappings will expand the
+                * A `Mapping` from outcomes to dups.
+                * A tuple of outcomes.
+                    Any tuple elements that are `Mapping`s will expand the
                     tuple according to their Cartesian product.
                     Use this carefully since it may create a large number of
-                    cards.
+                    outcomes.
                 * Anything else will be treated as a scalar.
-            times: Multiplies the number of times each element of `cards`
+            times: Multiplies the number of times each element of `outcomes`
                 will be put into the deck.
                 `times` can either be a sequence of the same length as
-                `cards` or a single `int` to apply to all elements of
-                `cards`.
+                `outcomes` or a single `int` to apply to all elements of
+                `outcomes`.
         """
-        if isinstance(cards, Deck):
+        if isinstance(outcomes, Deck):
             if times == 1:
-                return cards
+                return outcomes
             else:
-                cards = cards._data
+                outcomes = outcomes._data
 
-        cards, times = icepool.creation_args.itemize(cards, times)
+        outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
-        if len(cards) == 1 and times[0] == 1 and isinstance(cards[0], Deck):
-            return cards[0]
+        if len(outcomes) == 1 and times[0] == 1 and isinstance(
+                outcomes[0], Deck):
+            return outcomes[0]
 
         self = super(Deck, cls).__new__(cls)
-        self._data = icepool.creation_args.expand_args_for_deck(cards, times)
+        self._data = icepool.creation_args.expand_args_for_deck(outcomes, times)
         self._draws = draws
         if self.draws() > self.deck_size():
             raise ValueError('draws cannot exceed deck_size.')
         return self
 
-    def keys(self) -> CountsKeysView:
+    def outcomes(self) -> CountsKeysView:
+        """The outcomes of the deck in sorted order.
+
+        These are also the `keys` of the deck as a `Mapping`.
+        Prefer to use the name `outcomes`.
+        """
         return self._data.keys()
 
-    outcomes = keys
+    keys = outcomes
 
-    cards = keys
+    def dups(self) -> CountsValuesView:
+        """The dups of the deck in outcome order.
 
-    def values(self) -> CountsValuesView:
+        These are also the `values` of the deck as a `Mapping`.
+        Prefer to use the name `dups`.
+        """
         return self._data.values()
 
-    dups = values
+    values = dups
 
     def items(self) -> CountsItemsView:
         return self._data.items()
@@ -109,12 +118,12 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         return self._denomiator
 
     def _is_resolvable(self) -> bool:
-        return len(self.cards()) > 0
+        return len(self.outcomes()) > 0
 
     def _pop_min(
         self, min_outcome
     ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
-        if not self.cards() or min_outcome != self.min_outcome():
+        if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, 0, 1
             return
 
@@ -124,7 +133,7 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
             popped_deck = Deck(
-                self.cards()[1:],
+                self.outcomes()[1:],
                 self.dups()[1:],
                 draws=self.draws() - count,
             )
@@ -134,7 +143,7 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
     def _pop_max(
         self, max_outcome
     ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
-        if not self.cards() or max_outcome != self.max_outcome():
+        if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, 0, 1
             return
 
@@ -143,14 +152,14 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         min_count = max(0, deck_count + self.draws() - self.deck_size())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_deck = Deck(self.cards()[:-1],
+            popped_deck = Deck(self.outcomes()[:-1],
                                self.dups()[:-1],
                                draws=self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_deck, count, weight
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
-        result = len(self.cards()) * self.draws()
+        result = len(self.outcomes()) * self.draws()
         return result, result
 
     @cached_property
