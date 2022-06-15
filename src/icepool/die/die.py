@@ -1098,7 +1098,7 @@ class Die(Mapping[Any, int]):
 
     @property
     def marginals(self):
-        """Returns an object that applies the `[]` operator to outcomes.
+        """A property that applies the `[]` operator to outcomes.
 
         This is not performed elementwise on tuples, so that this can be used
         to slice tuples. For example, `die.marginals[:2]` will marginalize the
