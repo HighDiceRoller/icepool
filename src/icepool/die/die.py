@@ -155,8 +155,10 @@ class Die(Mapping[Any, int]):
         as well as the additional methods
         `zero, bool`.
 
-        This is NOT used for the `[]` operator, which is NOT performed
-        element-wise.
+        This is NOT used for the `[]` operator; when used directly, this is
+        interpreted as a Mapping operation and returns the count corresponding
+        to a given outcome. See `marginal()` for applying the `[]` operator to
+        outcomes.
 
         Returns:
             A die representing the result.
@@ -173,7 +175,7 @@ class Die(Mapping[Any, int]):
     def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
         """As `unary_op()`, but not elementwise.
 
-        This is used for the `[]` operator.
+        This is used for the `marginals()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, weight in self.items():
@@ -366,7 +368,7 @@ class Die(Mapping[Any, int]):
 
     def weight_eq(self, outcome) -> int:
         """Returns the weight of a single outcome, or 0 if not present. """
-        return self._data[outcome]
+        return self._data.get(outcome, 0)
 
     def weight_ne(self, outcome) -> int:
         """Returns the weight != a single outcome. """
@@ -1076,34 +1078,25 @@ class Die(Mapping[Any, int]):
     __ceil__ = ceil
 
     class Marginals():
-        """Provides slicing syntax for marginals.
+        """Helper class for implementing marginals()."""
 
-        E.g. `die.marginals[0]` marginalizes the first dimension.
-
-        Allowed arguments are:
-        * int, slice: Indexes directly into each outcome.
-        * Sequence: Indexes each element into each outcome and produces a tuple.
-        """
+        _die: 'Die'
 
         def __init__(self, die: 'Die'):
             self._die = die
 
-        def __getitem__(self, dims: int | slice | Sequence[int | slice],
-                        /) -> 'Die':
-            if isinstance(dims, (int, slice)):
+        def __getitem__(self, dims, /) -> 'Die':
 
-                def repl(outcome):
-                    return outcome[dims]
-            else:
-
-                def repl(outcome):
-                    return (outcome[d] for d in dims)
-
-            return self._die.sub(repl)
+            return self._die.unary_op_non_elementwise(operator.getitem, dims)
 
     @property
     def marginals(self):
-        """You can use `die.marginal(dims)` for the same effect as this."""
+        """Returns an object that applies the `[]` operator to outcomes.
+
+        This is not performed elementwise on tuples, so that this can be used
+        to slice tuples. For example, `die.marginals[:2]` will marginalize the
+        first two elements of tuples.
+        """
         return Die.Marginals(self)
 
     @staticmethod
