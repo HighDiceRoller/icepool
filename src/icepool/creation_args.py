@@ -29,7 +29,8 @@ def itemize(keys: Mapping[Any, int] | Sequence,
     else:
         if len(times) != len(keys):
             raise ValueError(
-                'The number of times must equal the number of keys.')
+                f'The number of times ({len(times)}) must equal the number of keys ({len(keys)}).'
+            )
 
     if is_dict(keys):
         times = tuple(
