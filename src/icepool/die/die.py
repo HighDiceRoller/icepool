@@ -753,7 +753,7 @@ class Die(Mapping[Any, int]):
 
     @cached_property
     def _popped_min(self) -> tuple['Die', int]:
-        die = icepool.Die(self.outcomes()[1:], self.weights()[1:])
+        die = icepool.Die(self._data.remove_min())
         return die, self.weights()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
@@ -766,7 +766,7 @@ class Die(Mapping[Any, int]):
 
     @cached_property
     def _popped_max(self) -> tuple['Die', int]:
-        die = icepool.Die(self.outcomes()[:-1], self.weights()[:-1])
+        die = icepool.Die(self._data.remove_max())
         return die, self.weights()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:

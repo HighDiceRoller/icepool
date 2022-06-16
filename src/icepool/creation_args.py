@@ -54,16 +54,14 @@ def expand_args_for_die(args, times, denominator_method: str):
     merge_func = merge_weights_funcs[denominator_method]
     subdatas = [expand(arg, merge_func) for arg in args]
     data = merge_func(subdatas, times)
-
-    return Counts(sorted(data.items()))
+    return Counts(data.items())
 
 
 def expand_args_for_deck(args, times):
     merge_func = merge_dups
     subdatas = [expand(arg, merge_func) for arg in args]
     data = merge_func(subdatas, times)
-
-    return Counts(sorted(data.items()))
+    return Counts(data.items())
 
 
 def expand(arg, merge_func: Callable):

@@ -5,12 +5,12 @@ import icepool
 from functools import cached_property
 import math
 
-from collections.abc import ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
-from typing import Any
+from collections.abc import Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
+from typing import Any, Callable
 
 
 class Counts(Mapping[Any, int]):
-    """Immutable dictionary whose values are integers.
+    """Immutable dictionary with sorted keys and `int` values.
 
     The values of keys(), values(), and items() are also Sequences, which means
     they can be indexed.
@@ -18,11 +18,27 @@ class Counts(Mapping[Any, int]):
 
     _mapping: Mapping[Any, int]
 
-    def __init__(self, items: Sequence[tuple[Any, int]]):
+    def __init__(self,
+                 items: Collection[tuple[Any, int]],
+                 sort_key: Callable[[Any], Any] | None = None):
         """
         Args:
-            items: A sequence of key, value pairs.
+            items: A Collection of key, value pairs.
+                These will be sorted by key.
+            sort_key: If provided, keys will be sorted using the result of this
+                function.
         """
+        sort_item: Callable | None
+
+        if sort_key is not None:
+
+            def sort_item(item):
+                return sort_key(item[0])
+        else:
+            sort_item = None
+
+        items = sorted(items, key=sort_item)
+
         mapping: MutableMapping[Any, int] = {}
         for key, value in items:
             if key is None:
@@ -85,13 +101,34 @@ class Counts(Mapping[Any, int]):
     def __repr__(self) -> str:
         return type(self).__qualname__ + f'({repr(self._mapping)})'
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Counts):
+            return self._items == other._items
+        else:
+            return super().__eq__(other)
+
+    @cached_property
+    def _hash(self) -> int:
+        return hash(self._items)
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    @cached_property
+    def _remove_min(self) -> 'Counts':
+        return Counts(self.items()[1:])
+
     def remove_min(self) -> 'Counts':
         """Returns a `Counts` with the min element removed."""
-        return Counts(self.items()[1:])
+        return self._remove_min
+
+    @cached_property
+    def _remove_max(self) -> 'Counts':
+        return Counts(self.items()[:-1])
 
     def remove_max(self) -> 'Counts':
         """Returns a `Counts` with the max element removed."""
-        return Counts(self.items()[:-1])
+        return self._remove_max
 
     def reduce(self) -> 'Counts':
         """Divides all counts by their greatest common denominator."""

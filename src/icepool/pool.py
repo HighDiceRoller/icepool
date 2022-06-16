@@ -27,7 +27,7 @@ def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
         post_roll_counts: A tuple of length equal to the number of dice.
     """
     self = super(Pool, cls).__new__(cls)
-    self._dice = Counts(sorted_num_dices)
+    self._dice = Counts(sorted_num_dices, sort_key=lambda k: k.key_tuple())
     self._post_roll_counts = post_roll_counts
     return self
 
