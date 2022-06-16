@@ -18,9 +18,7 @@ class Counts(Mapping[Any, int]):
 
     _mapping: Mapping[Any, int]
 
-    def __init__(self,
-                 items: Collection[tuple[Any, int]],
-                 sort_key: Callable[[Any], Any] | None = None):
+    def __init__(self, items: Collection[tuple[Any, int]]):
         """
         Args:
             items: A Collection of key, value pairs.
@@ -28,16 +26,7 @@ class Counts(Mapping[Any, int]):
             sort_key: If provided, keys will be sorted using the result of this
                 function.
         """
-        sort_item: Callable | None
-
-        if sort_key is not None:
-
-            def sort_item(item):
-                return sort_key(item[0])
-        else:
-            sort_item = None
-
-        items = sorted(items, key=sort_item)
+        items = sorted(items)
 
         mapping: MutableMapping[Any, int] = {}
         for key, value in items:
