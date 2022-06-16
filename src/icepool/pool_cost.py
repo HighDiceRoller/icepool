@@ -1,23 +1,28 @@
 __docformat__ = 'google'
 
+import icepool
+
 import math
 
+from collections.abc import Collection
 
-def can_truncate(dice) -> tuple[bool, bool]:
+
+def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:
     """Determines if the dice can be expressed as a one-sided truncation of a single base die.
 
     Args:
-        dice: A sequence of dice (already converted to dice).
+        dice: A sequence of dice.
     Returns:
         can_truncate_min, can_truncate_max: If both are true, all dice are
             identical.
     """
     if len(dice) == 0:
         return True, True
-    base_die = dice[0]
+    dice_iter = iter(dice)
+    base_die = next(dice_iter)
     can_truncate_min = True
     can_truncate_max = True
-    for die in dice[1:]:
+    for die in dice_iter:
         if die.num_outcomes() == base_die.num_outcomes():
             if die.equals(base_die):
                 continue
@@ -66,23 +71,23 @@ def lo_hi_skip(post_roll_counts: tuple[int, ...]) -> tuple[int, int]:
     raise RuntimeError('Should not be reached.')
 
 
-def estimate_costs(pool) -> tuple[int, int]:
+def estimate_costs(pool: 'icepool.Pool') -> tuple[int, int]:
     """Estimates the cost of popping from the min and max sides.
 
     Returns:
         pop_min_cost: A positive `int`.
         pop_max_cost: A positive `int`.
     """
-    can_truncate_min, can_truncate_max = can_truncate(pool._dice.keys())
+    can_truncate_min, can_truncate_max = can_truncate(pool.unique_dice())
     if can_truncate_min or can_truncate_max:
         lo_skip, hi_skip = lo_hi_skip(pool.post_roll_counts())
         die_sizes: list[int] = sum(
-            ([die.num_outcomes()] * count for die, count in pool._dice.items()),
+            ([die.num_outcomes()] * count for die, count in pool._dice),
             start=[])
         die_sizes = sorted(die_sizes, reverse=True)
     if not can_truncate_min or not can_truncate_max:
         prod_cost = math.prod(
-            die.num_outcomes()**count for die, count in pool._dice.items())
+            die.num_outcomes()**count for die, count in pool._dice)
 
     if can_truncate_min:
         pop_min_cost = sum(die_sizes[hi_skip:])

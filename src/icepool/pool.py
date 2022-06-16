@@ -17,7 +17,7 @@ from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 
 @cache
-def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
+def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
                     post_roll_counts: tuple[int, ...]) -> 'Pool':
     """Creates a new pool. This function is cached.
 
@@ -27,7 +27,7 @@ def new_pool_cached(cls, sorted_num_dices: Sequence[tuple['icepool.Die', int]],
         post_roll_counts: A tuple of length equal to the number of dice.
     """
     self = super(Pool, cls).__new__(cls)
-    self._dice = Counts(sorted_num_dices, sort_key=lambda k: k.key_tuple())
+    self._dice = dice
     self._post_roll_counts = post_roll_counts
     return self
 
@@ -39,7 +39,7 @@ class Pool(OutcomeCountGen):
     """
 
     _post_roll_counts: tuple[int, ...]
-    _dice: Counts
+    _dice: tuple[tuple['icepool.Die', int]]
 
     def __new__(cls,
                 dice: Mapping[Any, int] | Sequence,
@@ -73,57 +73,71 @@ class Pool(OutcomeCountGen):
         dice, times = icepool.creation_args.itemize(dice, times)
         dice = tuple(icepool.Die([die]) for die in dice)
 
-        num_dices: MutableMapping['icepool.Die', int] = defaultdict(int)
+        dice_counts: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die, qty in zip(dice, times):
-            num_dices[die] += qty
+            dice_counts[die] += qty
         post_roll_counts = (1,) * sum(times)
-        return cls._new_pool(num_dices, post_roll_counts)
+        return cls._new_pool_from_mapping(dice_counts, post_roll_counts)
 
     @classmethod
-    def _new_pool(cls, num_dices: Mapping['icepool.Die', int],
-                  post_roll_counts: Sequence[int]) -> 'Pool':
+    def _new_pool_from_mapping(cls, dice_counts: Mapping['icepool.Die', int],
+                               post_roll_counts: Sequence[int]) -> 'Pool':
         """Creates a new pool.
 
         Args:
-            num_dices: At this point, this is a map from dice to num_dice, with
-                no empty dice.
-            post_roll_counts: At this point, this is a tuple with length equal to the
-                number of dice.
+            dice_counts: A map from dice to num_dice.
+            post_roll_counts: A tuple with length equal to the number of dice.
         """
-        sorted_num_dices = tuple(
-            sorted(num_dices.items(), key=lambda kv: kv[0].key_tuple()))
+        dice = tuple(
+            sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
         return new_pool_cached(
             cls,  # type: ignore
-            sorted_num_dices,
+            dice,
+            post_roll_counts)
+
+    @classmethod
+    def _new_pool_from_tuple(cls, dice: tuple[tuple['icepool.Die', int]],
+                             post_roll_counts: tuple[int, ...]) -> 'Pool':
+        """Creates a new pool.
+
+        Args:
+            dice: A sorted tuple of (dice, count).
+            post_roll_counts: A tuple with length equal to the number of dice.
+        """
+        return new_pool_cached(
+            cls,  # type: ignore
+            dice,
             post_roll_counts)
 
     @cached_property
     def _num_dice(self) -> int:
-        return sum(self._dice.values())
+        return sum(count for _, count in self._dice)
 
     def num_dice(self) -> int:
         """The number of dice in this pool."""
         return self._num_dice
 
     def _is_resolvable(self) -> bool:
-        return all(not die.is_empty() for die in self._dice.keys())
+        return all(not die.is_empty() for die, _ in self._dice)
 
     @cached_property
     def _denominator(self) -> int:
         """The product of the total dice weights in this pool."""
-        return math.prod(
-            die.denominator()**count for die, count in self._dice.items())
+        return math.prod(die.denominator()**count for die, count in self._dice)
 
     def denominator(self) -> int:
         return self._denominator
 
     @cached_property
     def _dice_tuple(self) -> tuple['icepool.Die', ...]:
-        return sum(((die,) * count for die, count in self._dice.items()),
-                   start=())
+        return sum(((die,) * count for die, count in self._dice), start=())
+
+    @cached_property
+    def _unique_dice(self) -> Collection['icepool.Die']:
+        return tuple(die for die, _ in self._dice)
 
     def unique_dice(self) -> Collection['icepool.Die']:
-        return self._dice.keys()
+        return self._unique_dice
 
     @cached_property
     def _outcomes(self) -> Sequence:
@@ -233,10 +247,10 @@ class Pool(OutcomeCountGen):
                 raise ValueError(
                     'Cannot change the size of a pool unless it has exactly one type of die.'
                 )
-            dice = Counts([(self._dice.keys()[0], len(post_roll_counts))])
-            result = Pool._new_pool(dice, post_roll_counts)
+            dice = Counts([(self._dice[0][0], len(post_roll_counts))])
+            result = Pool._new_pool_from_mapping(dice, post_roll_counts)
         else:
-            result = Pool._new_pool(self._dice, post_roll_counts)
+            result = Pool._new_pool_from_tuple(self._dice, post_roll_counts)
         if convert_to_die:
             return result.eval(lambda state, outcome, count: outcome
                                if count else state)
@@ -247,7 +261,7 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _min_outcome(self):
-        return min(die.min_outcome() for die in self._dice.keys())
+        return min(die.min_outcome() for die in self.unique_dice())
 
     def min_outcome(self):
         """Returns the min outcome among all dice in this pool."""
@@ -255,7 +269,7 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _max_outcome(self):
-        return max(die.max_outcome() for die in self._dice.keys())
+        return max(die.max_outcome() for die in self.unique_dice())
 
     def max_outcome(self):
         """Returns the max outcome among all dice in this pool."""
@@ -276,7 +290,7 @@ class Pool(OutcomeCountGen):
             return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
-            for die, die_count in self._dice.items()
+            for die, die_count in self._dice
         ]
         skip_weight = None
         for pop in itertools.product(*generators):
@@ -295,8 +309,8 @@ class Pool(OutcomeCountGen):
                 result_count = sum(self.post_roll_counts()[:net_num_rolled])
                 popped_post_roll_counts = self.post_roll_counts(
                 )[net_num_rolled:]
-            popped_pool = Pool._new_pool(next_dice_counts,
-                                         popped_post_roll_counts)
+            popped_pool = Pool._new_pool_from_mapping(next_dice_counts,
+                                                      popped_post_roll_counts)
             if not any(popped_post_roll_counts):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -323,7 +337,7 @@ class Pool(OutcomeCountGen):
             return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
-            for die, die_count in self._dice.items()
+            for die, die_count in self._dice
         ]
         skip_weight = None
         for pop in itertools.product(*generators):
@@ -342,8 +356,8 @@ class Pool(OutcomeCountGen):
                 result_count = sum(self.post_roll_counts()[-net_num_rolled:])
                 popped_post_roll_counts = self.post_roll_counts(
                 )[:-net_num_rolled]
-            popped_pool = Pool._new_pool(next_dice_counts,
-                                         popped_post_roll_counts)
+            popped_pool = Pool._new_pool_from_mapping(next_dice_counts,
+                                                      popped_post_roll_counts)
             if not any(popped_post_roll_counts):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -400,9 +414,7 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return (Pool,) + tuple(
-            (die.key_tuple(), count)
-            for die, count in self._dice.items()), self._post_roll_counts
+        return Pool, self._dice, self._post_roll_counts
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Pool):

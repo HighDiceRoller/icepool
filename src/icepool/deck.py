@@ -181,7 +181,7 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return (Deck,) + tuple(self.items()) + (self.draws(),)
+        return Deck, tuple(self.items()), self.draws()
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Deck):
