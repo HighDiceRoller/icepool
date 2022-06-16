@@ -32,6 +32,11 @@ def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
     return self
 
 
+def clear_pool_cache():
+    """Clears the global pool cache."""
+    new_pool_cached.cache_clear()
+
+
 class Pool(OutcomeCountGen):
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
