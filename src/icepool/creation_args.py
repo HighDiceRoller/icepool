@@ -24,15 +24,20 @@ def itemize(keys: Mapping[Any, int] | Sequence,
                 Each count will be multiplied by the corresponding factor.
             * An `int`. All times will be multiplied by this factor.
     """
+    try:
+        num_keys = len(keys)
+    except TypeError:
+        raise TypeError('Argument appears not to be a mapping or sequence.')
+
     if isinstance(times, int):
-        times = (times,) * len(keys)
+        times = (times,) * num_keys
     else:
-        if len(times) != len(keys):
+        if len(times) != num_keys:
             raise ValueError(
-                f'The number of times ({len(times)}) must equal the number of keys ({len(keys)}).'
+                f'The number of times ({len(times)}) must equal the number of keys ({num_keys}).'
             )
 
-    if is_dict(keys):
+    if is_mapping(keys):
         times = tuple(
             v * x for v, x in zip(keys.values(), times))  # type: ignore
         keys = tuple(keys.keys())  # type: ignore
@@ -63,7 +68,7 @@ def expand_args_for_deck(args, times):
 
 def expand(arg, merge_func: Callable):
 
-    if is_dict(arg):
+    if is_mapping(arg):
         return expand_dict(arg, merge_func)
     elif isinstance(arg, tuple):
         return expand_tuple(arg, merge_func)
@@ -71,7 +76,7 @@ def expand(arg, merge_func: Callable):
         return expand_scalar(arg)
 
 
-def is_dict(arg) -> bool:
+def is_mapping(arg) -> bool:
     return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
         arg, 'items') and hasattr(arg, '__getitem__')
 
