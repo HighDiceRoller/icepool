@@ -87,12 +87,13 @@ class Die(Mapping[Any, int]):
                     The outcomes of the `Mapping` will be "flattened" into the
                     result. This option will be taken in preference to treating
                     the `Mapping` itself as an outcome even if the `Mapping`
-                    itself is hashable and totally orderable.
+                    itself is hashable and totally orderable. This means that
+                    `Die` and `Deck` will never be outcomes.
                 * A tuple of outcomes. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
 
-                    Any tuple elements that are dice or dicts will expand the
+                    Any tuple elements that are `Mapping`s will expand the
                     tuple according to their independent joint distribution.
                     For example, `(d6, d6)` will expand to 36 ordered tuples
                     with weight 1 each. Use this carefully since it may create a
@@ -100,8 +101,8 @@ class Die(Mapping[Any, int]):
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `times` from consideration.
                     If inside a tuple, the tuple will be dropped.
-                * Anything else, including non-tuple sequences, will be treated
-                    as a single outcome. Each outcome must be hashable, and the
+                * Anything else will be treated as a single outcome.
+                    Each outcome must be hashable, and the
                     set of outcomes must be totally orderable (after expansion).
                     The same outcome can appear multiple times, in which case
                     the corresponding weights will be accumulated.
@@ -118,7 +119,7 @@ class Die(Mapping[Any, int]):
                 * 'lcm' (default): LCM of the individual argument denominators,
                     times the total of `weights`. This is like rolling `weights`
                     first, then selecting an argument to roll.
-                * 'lcm_weighted': LCM of the individual (argument denominators
+                * 'lcm_joint': LCM of the individual (argument denominators
                     times corresponding element of `weights`). This is like
                     rolling the above, but the specific weight rolled is used
                     to help determine the result of the selected argument.
@@ -1316,10 +1317,10 @@ class Die(Mapping[Any, int]):
                     return Counts([(False, d - n), (True, n)])
 
     def __eq__(self, other):
-        other = icepool.Die([other])
+        other_die = icepool.Die([other])
 
         def data_callback():
-            return Die._eq(False, self, other)
+            return Die._eq(False, self, other_die)
 
         def truth_value_callback():
             return self.equals(other)
@@ -1327,10 +1328,10 @@ class Die(Mapping[Any, int]):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def __ne__(self, other):
-        other = icepool.Die([other])
+        other_die = icepool.Die([other])
 
         def data_callback():
-            return Die._eq(True, self, other)
+            return Die._eq(True, self, other_die)
 
         def truth_value_callback():
             return not self.equals(other)
@@ -1403,6 +1404,9 @@ class Die(Mapping[Any, int]):
     def equals(self, other, *, reduce=False):
         """Returns `True` iff both dice have the same outcomes and weights.
 
+        This is `False` if `other` is not a `Die`, even if it would convert
+        to an equal `Die`.
+
         Truth value does NOT matter.
 
         If one die has a zero-weight outcome and the other die does not contain
@@ -1412,15 +1416,13 @@ class Die(Mapping[Any, int]):
         with a truth value determined by this method.
         Only dice returned by these methods have a truth value. The data of
         these dice is lazily evaluated since the caller may only be interested
-        in the truth value.
+        in the `Die` value or the truth value.
 
         Args:
             reduce: If `True`, the dice will be reduced before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
-        try:
-            other = icepool.Die([other])
-        except ValueError:
+        if not isinstance(other, Die):
             return False
 
         if reduce:

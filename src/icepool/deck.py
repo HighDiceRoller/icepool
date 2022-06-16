@@ -37,12 +37,22 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
                 Each card may be one of the following:
                 * A `Mapping` from outcomes to dups.
+                    The outcomes of the `Mapping` will be "flattened" into the
+                    result. This option will be taken in preference to treating
+                    the `Mapping` itself as an outcome even if the `Mapping`
+                    itself is hashable and totally orderable. This means that
+                    `Die` and `Deck` will never be outcomes.
                 * A tuple of outcomes.
                     Any tuple elements that are `Mapping`s will expand the
-                    tuple according to their Cartesian product.
-                    Use this carefully since it may create a large number of
-                    outcomes.
-                * Anything else will be treated as a scalar.
+                    tuple according to their independent joint distribution.
+                    For example, `(d6, d6)` will expand to 36 ordered tuples
+                    with dup 1 each. Use this carefully since it may create a
+                    large number of outcomes.
+                * Anything else will be treated as a single outcome.
+                    Each outcome must be hashable, and the
+                    set of outcomes must be totally orderable (after expansion).
+                    The same outcome can appear multiple times, in which case
+                    the corresponding dups will be accumulated.
             times: Multiplies the number of times each element of `outcomes`
                 will be put into the deck.
                 `times` can either be a sequence of the same length as
