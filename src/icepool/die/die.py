@@ -578,7 +578,7 @@ class Die(Mapping[Any, int]):
 
     def reroll(self,
                outcomes: Callable[..., bool] | Container | None = None,
-               *,
+               *extra_args,
                max_depth: int | None = None,
                star: int = 0) -> 'Die':
         """Rerolls the given outcomes.
@@ -589,6 +589,9 @@ class Die(Mapping[Any, int]):
                     should be rerolled.
                 * A container of outcomes to reroll.
                 * If not provided, the min outcome will be rerolled.
+            *extra_args: These will be supplied to `outcomes` as extra
+                positional arguments after the outcome argument(s).
+                `extra_args` can only be supplied if `outcomes` is callable.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
@@ -598,17 +601,27 @@ class Die(Mapping[Any, int]):
         Returns:
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
+
+        Raises:
+            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
         """
+        if extra_args and not callable(outcomes):
+            raise ValueError(
+                'Extra positional arguments are only valid if outcomes is callable.'
+            )
+
         if outcomes is None:
             outcomes = {self.min_outcome()}
         elif callable(outcomes):
             if star:
                 outcomes = {
-                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(*outcome, *extra_args)
                 }
             else:
                 outcomes = {
-                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(outcome, *extra_args)
                 }
 
         if max_depth is None:
@@ -634,7 +647,7 @@ class Die(Mapping[Any, int]):
 
     def reroll_until(self,
                      outcomes: Callable[..., bool] | Container,
-                     *,
+                     *extra_args,
                      max_depth: int | None = None,
                      star: int = 0) -> 'Die':
         """Rerolls until getting one of the given outcomes.
@@ -646,6 +659,9 @@ class Die(Mapping[Any, int]):
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A container of outcomes to reroll until.
+            *extra_args: These will be supplied to `outcomes` as extra
+                positional arguments after the outcome argument(s).
+                `extra_args` can only be supplied if `outcomes` is callable.
             max_depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
@@ -655,17 +671,25 @@ class Die(Mapping[Any, int]):
         Returns:
             A die representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
+
+        Raises:
+            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
         """
+        if extra_args and not callable(outcomes):
+            raise ValueError(
+                'Extra positional arguments are only valid if outcomes is callable.'
+            )
+
         if callable(outcomes):
             if star:
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(*outcome)
+                    if not outcomes(*outcome, *extra_args)
                 }
             else:
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(outcome)
+                    if not outcomes(outcome, *extra_args)
                 }
         else:
             not_outcomes = {
@@ -866,7 +890,7 @@ class Die(Mapping[Any, int]):
 
     def explode(self,
                 outcomes: Container | Callable[..., bool] | None = None,
-                *,
+                *extra_args,
                 max_depth: int = 9,
                 star: int = 0) -> 'Die':
         """Causes outcomes to be rolled again and added to the total.
@@ -877,22 +901,35 @@ class Die(Mapping[Any, int]):
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
+            *extra_args: These will be supplied to `outcomes` as extra
+                positional arguments after the outcome argument(s).
+                `extra_args` can only be supplied if `outcomes` is callable.
             max_depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
+
+        Raises:
+            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
         """
+        if extra_args and not callable(outcomes):
+            raise ValueError(
+                'Extra positional arguments are only valid if outcomes is callable.'
+            )
+
         if outcomes is None:
             outcomes = {self.max_outcome()}
         elif callable(outcomes):
             if star:
                 outcomes = {
-                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(*outcome, *extra_args)
                 }
             else:
                 outcomes = {
-                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(outcome, *extra_args)
                 }
         else:
             if not outcomes:
@@ -1370,7 +1407,8 @@ class Die(Mapping[Any, int]):
     def bool(self) -> 'Die':
         """Takes `bool()` of all outcomes.
 
-        Note the die as a whole is not considered to have a truth value.
+        Note a die as a whole is not considered to have a truth value
+        unless it is the result of the `==` or `!=` operators.
         """
         return self.unary_op(bool)
 
