@@ -195,11 +195,13 @@ class Die(Mapping[Any, int]):
         converted to a die.
 
         This is used for the standard binary operators
-        `+, -, *, /, //, %, **, <<, >>, &, |, ^, <, <=, >=, >, ==, !=`,
-        as well as the additional method `cmp`.
+        `+, -, *, /, //, %, **, <<, >>, &, |, ^`.
         Note that `*` multiplies outcomes directly;
         it is not the same as `@`, which rolls the right side multiple times,
         or `d()`, which creates a standard die.
+
+        The comparators (`<, <=, >=, >, ==, !=, cmp`) use a linear algorithm
+        using the fact that outcomes are totally ordered.
 
         `==` and `!=` additionally set the truth value of the die according to
         whether the dice themselves are the same or not.
@@ -1375,6 +1377,19 @@ class Die(Mapping[Any, int]):
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
+    def cmp(self, other) -> 'Die':
+        """Returns a die with possible outcomes 1, -1, and 0.
+
+        The weights are equal to the positive outcome of `self > other`,
+        `self < other`, and the remainder respectively.
+        """
+        other = icepool.Die([other])
+
+        d = self.denominator() * other.denominator()
+        lt = (self < other)[True]
+        eq = (self == other)[True]
+        return Die({-1: lt, 0: eq, 1: d - lt - eq})
+
     @staticmethod
     def _sign(x) -> int:
         z = Die._zero(x)
@@ -1392,22 +1407,10 @@ class Die(Mapping[Any, int]):
         """
         return self.unary_op(Die._sign)
 
-    @staticmethod
-    def _cmp(x, y) -> int:
-        return Die._sign(x - y)
-
-    def cmp(self, other) -> 'Die':
-        """Returns a die with possible outcomes 1, -1, and 0.
-
-        The weights are equal to the positive outcome of `self > other`,
-        `self < other`, and the remainder respectively.
-        """
-        return self.binary_op(other, Die._cmp)
-
     def bool(self) -> 'Die':
         """Takes `bool()` of all outcomes.
 
-        Note a die as a whole is not considered to have a truth value
+        Note that a die as a whole is not considered to have a truth value
         unless it is the result of the `==` or `!=` operators.
         """
         return self.unary_op(bool)
