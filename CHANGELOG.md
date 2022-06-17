@@ -1,3 +1,22 @@
+## 0.16.0
+
+Significant API changes, experimental deck support.
+
+* Experimental `Deck` class. API still very unstable.
+* `Pool`s, `Deck`s, and internal Alignment now have a common base class `OutcomeCountGen`.
+* `EvalPool` renamed to `OutcomeCountEval`.
+* `Die` and `Deck` are now proper `Mapping`s with `keys`, `values`, and `items`.
+* The above view types can also be accessed like sequences.
+* A `Die` is now always considered not `equal()` to non-`Die`.
+* `die[]` now works like a dict. Use `marginals[]` to marginalize dimensions.
+* `Die`, `Pool`, and `Deck` now take a single sequence or mapping argument rather than a variable number of arguments.
+* `Die`, `Pool`, and `Deck` now all have the same name for the second argument: `times`.
+* `count_dice` renamed to `post_roll_counts`. No longer accepts `None`, use `[:]` instead.
+* Linear algorithm for comparators on `Die`.
+* Improvements to internal `Count` class.
+* Add `clear_pool_cache` function.
+* Forward `*extra_args` for `reroll, reroll_until, explode`.
+
 ## 0.15.0
 
 Added type hints. Now requires Python 3.10 or later.
