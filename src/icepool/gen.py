@@ -72,11 +72,11 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """All `OutcomeCountGen`s must implement equality."""
 
     @abstractmethod
-    def __hash__(self):
+    def __hash__(self) -> int:
         """All `OutcomeCountGen`s must be hashable."""
 
     def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,

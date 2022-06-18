@@ -7,7 +7,7 @@ from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItems
 
 from functools import cached_property
 
-from typing import Any, Generator, Iterator
+from typing import Any, Iterator
 from collections.abc import Mapping, Sequence
 
 
@@ -126,12 +126,12 @@ class Deck(Mapping[Any, int]):
         return len(self._data)
 
     @cached_property
-    def _size(self) -> int:
+    def _num_cards(self) -> int:
         return sum(self._data.values())
 
-    def size(self) -> int:
+    def num_cards(self) -> int:
         """The total number of cards in this deck (including dups)."""
-        return self._size
+        return self._num_cards
 
     @cached_property
     def _popped_min(self) -> tuple['Deck', int]:

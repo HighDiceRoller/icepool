@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.counts import Counts, CountsKeysView
+from icepool.counts import CountsKeysView
 from icepool.gen import OutcomeCountGen
 
 from functools import cached_property
@@ -10,7 +10,7 @@ from typing import Generator
 
 
 class Draws(OutcomeCountGen):
-    """EXPERIMENTAL: Represents a draw of cards from a deck.
+    """EXPERIMENTAL: Represents an unordered draw of cards from a deck.
 
     API and naming WIP.
     """
@@ -21,13 +21,15 @@ class Draws(OutcomeCountGen):
     def __init__(self, deck, draws):
         self._deck = deck
         self._draws = draws
-        if self.draws() > self.deck().size():
+        if self.draws() > self.deck().num_cards():
             raise ValueError('draws cannot exceed deck_size.')
 
     def deck(self) -> 'icepool.Deck':
+        """The deck the cards are drawn from."""
         return self._deck
 
     def draws(self) -> int:
+        """The number of cards drawn."""
         return self._draws
 
     def outcomes(self) -> CountsKeysView:
@@ -43,9 +45,10 @@ class Draws(OutcomeCountGen):
 
     @cached_property
     def _denomiator(self) -> int:
-        return icepool.math.comb(self.deck().size(), self.draws())
+        return icepool.math.comb(self.deck().num_cards(), self.draws())
 
     def denominator(self) -> int:
+        """The total number of possible draws."""
         return self._denomiator
 
     def _gen_min(
@@ -57,7 +60,7 @@ class Draws(OutcomeCountGen):
 
         popped_deck, deck_count = self.deck()._pop_min()
 
-        min_count = max(0, deck_count + self.draws() - self.deck().size())
+        min_count = max(0, deck_count + self.draws() - self.deck().num_cards())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
             popped_draws = Draws(popped_deck, self.draws() - count)
@@ -73,7 +76,7 @@ class Draws(OutcomeCountGen):
 
         popped_deck, deck_count = self.deck()._pop_max()
 
-        min_count = max(0, deck_count + self.draws() - self.deck().size())
+        min_count = max(0, deck_count + self.draws() - self.deck().num_cards())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
             popped_draws = Draws(popped_deck, self.draws() - count)
