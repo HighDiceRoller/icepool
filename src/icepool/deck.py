@@ -146,8 +146,12 @@ class Deck(Mapping[Any, int]):
         """Returns a deck with the max outcome removed."""
         return self._popped_max
 
-    def deal(self, hand: int) -> 'icepool.Deal':
-        return icepool.Deal(self, hand)
+    def deal(self, *hand_sizes: int) -> 'icepool.Deal':
+        """Creates a `Deal` object from this deck.
+
+        See `Deal()` for details.
+        """
+        return icepool.Deal(self, *hand_sizes)
 
     @cached_property
     def _key_tuple(self) -> tuple:

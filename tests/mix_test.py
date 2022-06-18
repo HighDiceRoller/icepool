@@ -31,5 +31,5 @@ def test_mix_dict_reroll():
     assert result.equals(expected)
 
 def test_if_else():
-    assert (icepool.d6 >= 4).if_else(icepool.d6, icepool.d6+6).equals(icepool.d12, reduce=True)
-    assert (icepool.d6 - 3).if_else(True, False).equals(icepool.d6 != 6, reduce=True)
+    assert (icepool.d6 >= 4).if_else(icepool.d6, icepool.d6+6).equals(icepool.d12, reduce_weights=True)
+    assert (icepool.d6 - 3).if_else(True, False).equals(icepool.d6 != 6, reduce_weights=True)

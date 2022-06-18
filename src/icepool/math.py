@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
-from collections.abc import MutableMapping
+from typing import Generator
+from collections.abc import MutableMapping, Sequence
 
 # b -> list of rows
 comb_row_cache: MutableMapping[int, list[tuple[int, ...]]] = {}
@@ -25,3 +26,32 @@ def comb_row(n: int, b: int) -> tuple[int, ...]:
 def comb(n: int, k: int, b: int = 1) -> int:
     """As `math.comb()`, but using the cached `comb_row()`."""
     return comb_row(n, b)[k]
+
+
+def iter_hypergeom(
+        deck: tuple[int, ...],
+        draws: int) -> Generator[tuple[tuple[int, ...], int], None, None]:
+    """Iterates over the possible (hand, weight)s in the given deck.
+
+    Args:
+        deck: The number of dups of each card in the deck.
+        draws: The total number of cards to draw.
+
+    Yields:
+        hand: A tuple of how many of each card were drawn.
+        weight: The weight of drawing that hand.
+    """
+    if len(deck) == 0:
+        yield (), 1
+        return
+
+    deck_count = deck[0]
+    deck_size = sum(deck)  # assume deck is small?
+
+    min_count = max(0, deck_count + draws - deck_size)
+    max_count = min(deck_count, draws)
+
+    for count in range(min_count, max_count + 1):
+        weight = comb(draws, count)
+        for tail_count, tail_weight in iter_hypergeom(deck[1:], draws - count):
+            yield (count,) + tail_count, weight * tail_weight
