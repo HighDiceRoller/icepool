@@ -133,13 +133,21 @@ class Deck(Mapping[Any, int]):
         """The total number of cards in this deck (including dups)."""
         return self._size
 
+    @cached_property
+    def _remove_min(self) -> 'Deck':
+        return self._new_deck(self._data.remove_min())
+
     def remove_min(self) -> 'Deck':
         """Returns a deck with the min outcome removed."""
-        return self._new_deck(self._data.remove_min())
+        return self._remove_min
+
+    @cached_property
+    def _remove_max(self) -> 'Deck':
+        return self._new_deck(self._data.remove_max())
 
     def remove_max(self) -> 'Deck':
         """Returns a deck with the max outcome removed."""
-        return self._new_deck(self._data.remove_max())
+        return self._remove_max
 
     def draws(self, draws: int) -> 'icepool.Draws':
         return icepool.Draws(self, draws)
