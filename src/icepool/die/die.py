@@ -493,13 +493,14 @@ class Die(Mapping[Any, int]):
         return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
 
     def mean(self):
-        return sum(
-            outcome * p for outcome, p in zip(self.outcomes(), self.pmf()))
+        return sum(outcome * weight
+                   for outcome, weight in self.items()) / self.denominator()
 
     def variance(self):
         mean = self.mean()
         mean_of_squares = sum(
-            p * outcome**2 for outcome, p in zip(self.outcomes(), self.pmf()))
+            weight * outcome**2
+            for outcome, weight in self.items()) / self.denominator()
         return mean_of_squares - mean * mean
 
     def standard_deviation(self):
@@ -883,7 +884,7 @@ class Die(Mapping[Any, int]):
             next = self.sub(repl,
                             max_depth=1,
                             denominator_method=denominator_method)
-            if self.reduce_weights().equals(next.reduce_weights()):
+            if self.equals(next, reduce_weights=True):
                 return self
             else:
                 return next.sub(repl,
@@ -1442,7 +1443,7 @@ class Die(Mapping[Any, int]):
     def __hash__(self) -> int:
         return self._hash
 
-    def equals(self, other, *, reduce=False):
+    def equals(self, other, *, reduce_weights=False):
         """Returns `True` iff both dice have the same outcomes and weights.
 
         This is `False` if `other` is not a `Die`, even if it would convert
@@ -1460,13 +1461,13 @@ class Die(Mapping[Any, int]):
         in the `Die` value or the truth value.
 
         Args:
-            reduce: If `True`, the dice will be reduced before comparing.
+            reduce_weights: If `True`, the dice will be reduced before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         if not isinstance(other, Die):
             return False
 
-        if reduce:
+        if reduce_weights:
             return self.reduce_weights().key_tuple() == other.reduce_weights(
             ).key_tuple()
         else:

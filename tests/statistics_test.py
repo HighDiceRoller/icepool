@@ -3,6 +3,12 @@ import _context
 import icepool
 import pytest
 
+def test_d6_mean():
+    assert icepool.d6.mean() == 3.5
+    
+def test_d8_variance():
+    assert icepool.d8.variance() == 63 / 12
+
 def test_ks_stat_standard_dice():
     assert icepool.d10.ks_stat(icepool.d20) == pytest.approx(0.5)
 
