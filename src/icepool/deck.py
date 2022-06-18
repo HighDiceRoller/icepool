@@ -13,7 +13,7 @@ from collections.abc import Mapping, Sequence
 
 
 class Deck(OutcomeCountGen, Mapping[Any, int]):
-    """EXPERIMENTAL: Represents drawing a hand from a deck.
+    """EXPERIMENTAL: Represents drawing cards from a deck.
 
     In other words, this is sampling without replacement.
     """

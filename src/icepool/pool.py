@@ -68,12 +68,25 @@ class Pool(OutcomeCountGen):
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
 
+        Raises:
+            ValueError for a `Deck` or `Die` argument. A pool of a single `Die`
+                should constructed as `Pool([die])`.
         """
         if isinstance(dice, Pool):
             if times == 1:
                 return dice
             else:
                 dice = dice._dice
+
+        if isinstance(dice, icepool.Deck):
+            raise ValueError(
+                'A Pool cannot be constructed with a Deck argument.')
+
+        if isinstance(dice, icepool.Die):
+            raise ValueError(
+                'A Pool cannot be constructed with a Die argument. '
+                'Use Pool([die]) or die.pool() to construct a pool of a single die.'
+            )
 
         dice, times = icepool.creation_args.itemize(dice, times)
         dice = tuple(icepool.Die([die]) for die in dice)
