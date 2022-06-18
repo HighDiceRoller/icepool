@@ -78,9 +78,10 @@ class Pool(OutcomeCountGen):
             else:
                 dice = dice._dice
 
-        if isinstance(dice, icepool.Deck):
+        if isinstance(dice, (icepool.Deck, icepool.Draws)):
             raise ValueError(
-                'A Pool cannot be constructed with a Deck argument.')
+                f'A Pool cannot be constructed with a {type(dice).__name__} argument.'
+            )
 
         if isinstance(dice, icepool.Die):
             raise ValueError(
@@ -338,7 +339,7 @@ class Pool(OutcomeCountGen):
             yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
-            yield empty_pool, sum(self.post_roll_counts()), skip_weight
+            yield Pool([]), sum(self.post_roll_counts()), skip_weight
 
     def _pop_max(self,
                  max_outcome) -> Generator[tuple['Pool', int, int], None, None]:
@@ -385,7 +386,7 @@ class Pool(OutcomeCountGen):
             yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
-            yield empty_pool, sum(self.post_roll_counts()), skip_weight
+            yield Pool([]), sum(self.post_roll_counts()), skip_weight
 
     def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.
@@ -607,7 +608,3 @@ def iter_die_pop_max(
     for num_rolled, weight in enumerate(comb_row):
         num_remain = num_dice - num_rolled
         yield popped_die, num_remain, num_rolled, weight
-
-
-empty_pool = Pool([])
-"""Shared empty pool instance."""

@@ -9,6 +9,6 @@ from icepool import FindBestRun
 find_best_run = FindBestRun()
 
 def test_poker_straight():
-    deck = icepool.Deck(range(13), times=4, draws=5)
-    result = find_best_run.eval(deck).marginals[0] == 5
+    draws = icepool.Deck(range(13), times=4).draws(5)
+    result = find_best_run.eval(draws).marginals[0] == 5
     assert result.equals(icepool.coin(9216, 2598960))

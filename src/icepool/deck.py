@@ -4,7 +4,6 @@ import icepool
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.gen import OutcomeCountGen
 
 from functools import cached_property
 
@@ -12,10 +11,12 @@ from typing import Any, Generator, Iterator
 from collections.abc import Mapping, Sequence
 
 
-class Deck(OutcomeCountGen, Mapping[Any, int]):
+class Deck(Mapping[Any, int]):
     """EXPERIMENTAL: Represents drawing cards from a deck.
 
     In other words, this is sampling without replacement.
+
+    API and naming WIP.
     """
 
     _data: Counts
@@ -23,9 +24,7 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
-                times: Sequence[int] | int = 1,
-                *,
-                draws: int) -> 'Deck':
+                times: Sequence[int] | int = 1) -> 'Deck':
         """Constructor for a deck.
 
         Args:
@@ -72,10 +71,10 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
             return outcomes[0]
 
         data = icepool.creation_args.expand_args_for_deck(outcomes, times)
-        return Deck._new_deck(data, draws)
+        return Deck._new_deck(data)
 
     @classmethod
-    def _new_deck(cls, data: Counts, draws: int) -> 'Deck':
+    def _new_deck(cls, data: Counts) -> 'Deck':
         """Creates a new deck using already-processed arguments.
 
         Args:
@@ -84,9 +83,6 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         """
         self = super(Deck, cls).__new__(cls)
         self._data = data
-        self._draws = draws
-        if self.draws() > self.deck_size():
-            raise ValueError('draws cannot exceed deck_size.')
         return self
 
     def outcomes(self) -> CountsKeysView:
@@ -98,6 +94,14 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         return self._data.keys()
 
     keys = outcomes
+
+    def min_outcome(self):
+        """Returns the minimum possible outcome of this deck."""
+        return self.outcomes()[0]
+
+    def max_outcome(self):
+        """Returns the maximum possible outcome of this deck."""
+        return self.outcomes()[-1]
 
     def dups(self) -> CountsValuesView:
         """The dups of the deck in outcome order.
@@ -122,66 +126,27 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
         return len(self._data)
 
     @cached_property
-    def _deck_size(self) -> int:
+    def _size(self) -> int:
         return sum(self._data.values())
 
-    def deck_size(self) -> int:
-        return self._deck_size
+    def size(self) -> int:
+        """The total number of cards in this deck (including dups)."""
+        return self._size
 
-    def draws(self) -> int:
-        return self._draws
+    def remove_min(self) -> 'Deck':
+        """Returns a deck with the min outcome removed."""
+        return self._new_deck(self._data.remove_min())
 
-    @cached_property
-    def _denomiator(self) -> int:
-        return icepool.math.comb(self.deck_size(), self.draws())
+    def remove_max(self) -> 'Deck':
+        """Returns a deck with the max outcome removed."""
+        return self._new_deck(self._data.remove_max())
 
-    def denominator(self) -> int:
-        return self._denomiator
-
-    def _is_resolvable(self) -> bool:
-        return len(self.outcomes()) > 0
-
-    def _pop_min(
-        self, min_outcome
-    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
-        if not self.outcomes() or min_outcome != self.min_outcome():
-            yield self, 0, 1
-            return
-
-        deck_count = self.dups()[0]
-
-        min_count = max(0, deck_count + self.draws() - self.deck_size())
-        max_count = min(deck_count, self.draws())
-        for count in range(min_count, max_count + 1):
-            popped_deck = Deck._new_deck(self._data.remove_min(),
-                                         draws=self.draws() - count)
-            weight = icepool.math.comb(deck_count, count)
-            yield popped_deck, count, weight
-
-    def _pop_max(
-        self, max_outcome
-    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
-        if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, 0, 1
-            return
-
-        deck_count = self.dups()[-1]
-
-        min_count = max(0, deck_count + self.draws() - self.deck_size())
-        max_count = min(deck_count, self.draws())
-        for count in range(min_count, max_count + 1):
-            popped_deck = Deck._new_deck(self._data.remove_max(),
-                                         draws=self.draws() - count)
-            weight = icepool.math.comb(deck_count, count)
-            yield popped_deck, count, weight
-
-    def _estimate_direction_costs(self) -> tuple[int, int]:
-        result = len(self.outcomes()) * self.draws()
-        return result, result
+    def draws(self, draws: int) -> 'icepool.Draws':
+        return icepool.Draws(self, draws)
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return Deck, tuple(self.items()), self.draws()
+        return Deck, tuple(self.items())
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Deck):
@@ -194,6 +159,3 @@ class Deck(OutcomeCountGen, Mapping[Any, int]):
 
     def __hash__(self) -> int:
         return self._hash
-
-
-empty_deck = Deck([], draws=0)
