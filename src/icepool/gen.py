@@ -4,12 +4,16 @@ import icepool
 
 from abc import ABC, abstractmethod
 
-from typing import Callable, Generator
+from typing import Callable, Generator, TypeAlias, TypeVar
 from collections.abc import Sequence
+
+GenGenerator: TypeAlias = Generator[tuple['OutcomeCountGen', Sequence[int],
+                                          int], None, None]
+"""The generator type returned by `_gen_min` and `_gen_max`."""
 
 
 class OutcomeCountGen(ABC):
-    """Abstract base class for incrementally generating (outcome, count, weight)s.
+    """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card decks (`Deck`).
     """
@@ -33,14 +37,12 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
-    def _gen_min(
-        self, min_outcome
-    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
+    def _gen_min(self, min_outcome) -> GenGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
             A generator with the min outcome popped.
-            The count for the min outcome.
+            A tuple of counts for the min outcome.
             The weight for this many of the min outcome appearing.
 
             If the argument does not match the min outcome, or this generator
@@ -48,14 +50,12 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
-    def _gen_max(
-        self, max_outcome
-    ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
+    def _gen_max(self, max_outcome) -> GenGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
             A generator with the max outcome popped.
-            The count for the max outcome.
+            A tuple of counts for the max outcome.
             The weight for this many of the max outcome appearing.
 
             If the argument does not match the max outcome, or this generator

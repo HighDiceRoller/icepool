@@ -311,6 +311,7 @@ class OutcomeCountEval(ABC):
                 direction, alignment, gens)
             for p in itertools.product(*iterators):
                 prev_gens, counts, weights = zip(*p)
+                counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(direction, prev_alignment, prev_gens)
                 for prev_state, prev_weight in prev.items():
@@ -342,6 +343,7 @@ class OutcomeCountEval(ABC):
                     -direction, prev_alignment, prev_gens)
                 for p in itertools.product(*iterators):
                     gens, counts, weights = zip(*p)
+                    counts = tuple(itertools.chain.from_iterable(counts))
                     prod_weight = math.prod(weights)
                     state = self.next_state(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
@@ -355,9 +357,8 @@ class OutcomeCountEval(ABC):
 
 
 def _pop_gens(
-        side: int, alignment: Alignment,
-        gens: tuple[icepool.OutcomeCountGen,
-                    ...]) -> tuple[Any, Alignment, tuple]:
+    side: int, alignment: Alignment, gens: tuple[icepool.OutcomeCountGen, ...]
+) -> tuple[Any, Alignment, tuple['icepool.GenGenerator', ...]]:
     """Pops a single outcome from the gens.
 
     Returns:

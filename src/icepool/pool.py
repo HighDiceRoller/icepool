@@ -5,7 +5,7 @@ import icepool.math
 import icepool.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.gen import OutcomeCountGen
+from icepool.gen import GenGenerator, OutcomeCountGen
 
 import itertools
 import math
@@ -294,8 +294,7 @@ class Pool(OutcomeCountGen):
         """Returns the max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _gen_min(self,
-                 min_outcome) -> Generator[tuple['Pool', int, int], None, None]:
+    def _gen_min(self, min_outcome) -> GenGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -305,7 +304,7 @@ class Pool(OutcomeCountGen):
             net_weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, 0, 1
+            yield self, (0,), 1
             return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
@@ -336,13 +335,12 @@ class Pool(OutcomeCountGen):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, result_count, result_weight
+            yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
-            yield Pool([]), sum(self.post_roll_counts()), skip_weight
+            yield Pool([]), (sum(self.post_roll_counts()),), skip_weight
 
-    def _gen_max(self,
-                 max_outcome) -> Generator[tuple['Pool', int, int], None, None]:
+    def _gen_max(self, max_outcome) -> GenGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
@@ -352,7 +350,7 @@ class Pool(OutcomeCountGen):
             net_weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, 0, 1
+            yield self, (0,), 1
             return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
@@ -383,10 +381,10 @@ class Pool(OutcomeCountGen):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, result_count, result_weight
+            yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
-            yield Pool([]), sum(self.post_roll_counts()), skip_weight
+            yield Pool([]), (sum(self.post_roll_counts()),), skip_weight
 
     def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.

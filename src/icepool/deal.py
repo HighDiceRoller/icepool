@@ -2,11 +2,12 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.gen import OutcomeCountGen
+from icepool.gen import GenGenerator, OutcomeCountGen
 
 from functools import cached_property
 
 from typing import Generator
+from collections.abc import Sequence
 
 
 class Deal(OutcomeCountGen):
@@ -53,11 +54,9 @@ class Deal(OutcomeCountGen):
         """The total number of possible deals."""
         return self._denomiator
 
-    def _gen_min(
-            self, min_outcome
-    ) -> Generator[tuple[OutcomeCountGen, int, int], None, None]:
+    def _gen_min(self, min_outcome) -> GenGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
-            yield self, 0, 1
+            yield self, (0,), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_min()
@@ -67,13 +66,11 @@ class Deal(OutcomeCountGen):
         for count in range(min_count, max_count + 1):
             popped_deal = Deal(popped_deck, self.hand() - count)
             weight = icepool.math.comb(deck_count, count)
-            yield popped_deal, count, weight
+            yield popped_deal, (count,), weight
 
-    def _gen_max(
-            self, max_outcome
-    ) -> Generator[tuple[OutcomeCountGen, int, int], None, None]:
+    def _gen_max(self, max_outcome) -> GenGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, 0, 1
+            yield self, (0,), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_max()
@@ -83,7 +80,7 @@ class Deal(OutcomeCountGen):
         for count in range(min_count, max_count + 1):
             popped_deal = Deal(popped_deck, self.hand() - count)
             weight = icepool.math.comb(deck_count, count)
-            yield popped_deal, count, weight
+            yield popped_deal, (count,), weight
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
         result = len(self.outcomes()) * self.hand()
