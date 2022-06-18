@@ -45,7 +45,7 @@ def itemize(keys: Mapping[Any, int] | Sequence,
         keys = tuple(keys)
 
     if any(x < 0 for x in times):
-        raise ValueError('counts cannot have negative values.')
+        raise ValueError('times cannot have negative values.')
 
     return keys, times
 
