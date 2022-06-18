@@ -78,7 +78,7 @@ class Pool(OutcomeCountGen):
             else:
                 dice = dice._dice
 
-        if isinstance(dice, (icepool.Deck, icepool.Draws)):
+        if isinstance(dice, (icepool.Deck, icepool.Deal)):
             raise ValueError(
                 f'A Pool cannot be constructed with a {type(dice).__name__} argument.'
             )

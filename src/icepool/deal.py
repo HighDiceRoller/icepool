@@ -9,28 +9,30 @@ from functools import cached_property
 from typing import Generator
 
 
-class Draws(OutcomeCountGen):
-    """EXPERIMENTAL: Represents an unordered draw of cards from a deck.
+class Deal(OutcomeCountGen):
+    """EXPERIMENTAL: Represents an unordered deal of cards from a deck.
 
     API and naming WIP.
     """
 
     _deck: 'icepool.Deck'
-    _draws: int
+    _hand: int
 
-    def __init__(self, deck, draws):
+    def __init__(self, deck, hand):
         self._deck = deck
-        self._draws = draws
-        if self.draws() > self.deck().num_cards():
-            raise ValueError('draws cannot exceed deck_size.')
+        self._hand = hand
+        if self.hand() > self.deck().num_cards():
+            raise ValueError(
+                'The total number of cards dealt cannot exceed the number of cards in the deck.'
+            )
 
     def deck(self) -> 'icepool.Deck':
-        """The deck the cards are drawn from."""
+        """The deck the cards are dealt from."""
         return self._deck
 
-    def draws(self) -> int:
-        """The number of cards drawn."""
-        return self._draws
+    def hand(self) -> int:
+        """The number of cards dealt."""
+        return self._hand
 
     def outcomes(self) -> CountsKeysView:
         """The outcomes of the deck in sorted order.
@@ -45,10 +47,10 @@ class Draws(OutcomeCountGen):
 
     @cached_property
     def _denomiator(self) -> int:
-        return icepool.math.comb(self.deck().num_cards(), self.draws())
+        return icepool.math.comb(self.deck().num_cards(), self.hand())
 
     def denominator(self) -> int:
-        """The total number of possible draws."""
+        """The total number of possible deals."""
         return self._denomiator
 
     def _gen_min(
@@ -60,12 +62,12 @@ class Draws(OutcomeCountGen):
 
         popped_deck, deck_count = self.deck()._pop_min()
 
-        min_count = max(0, deck_count + self.draws() - self.deck().num_cards())
-        max_count = min(deck_count, self.draws())
+        min_count = max(0, deck_count + self.hand() - self.deck().num_cards())
+        max_count = min(deck_count, self.hand())
         for count in range(min_count, max_count + 1):
-            popped_draws = Draws(popped_deck, self.draws() - count)
+            popped_deal = Deal(popped_deck, self.hand() - count)
             weight = icepool.math.comb(deck_count, count)
-            yield popped_draws, count, weight
+            yield popped_deal, count, weight
 
     def _gen_max(
             self, max_outcome
@@ -76,23 +78,23 @@ class Draws(OutcomeCountGen):
 
         popped_deck, deck_count = self.deck()._pop_max()
 
-        min_count = max(0, deck_count + self.draws() - self.deck().num_cards())
-        max_count = min(deck_count, self.draws())
+        min_count = max(0, deck_count + self.hand() - self.deck().num_cards())
+        max_count = min(deck_count, self.hand())
         for count in range(min_count, max_count + 1):
-            popped_draws = Draws(popped_deck, self.draws() - count)
+            popped_deal = Deal(popped_deck, self.hand() - count)
             weight = icepool.math.comb(deck_count, count)
-            yield popped_draws, count, weight
+            yield popped_deal, count, weight
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
-        result = len(self.outcomes()) * self.draws()
+        result = len(self.outcomes()) * self.hand()
         return result, result
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return Draws, self.deck(), self.draws()
+        return Deal, self.deck(), self.hand()
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, Draws):
+        if not isinstance(other, Deal):
             return False
         return self._key_tuple == other._key_tuple
 

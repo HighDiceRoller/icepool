@@ -12,15 +12,13 @@ from collections.abc import Mapping, Sequence
 
 
 class Deck(Mapping[Any, int]):
-    """EXPERIMENTAL: Represents drawing cards from a deck.
-
-    In other words, this is sampling without replacement.
+    """EXPERIMENTAL: Represents a deck to be sampled without replacement.
 
     API and naming WIP.
     """
 
     _data: Counts
-    _draws: int
+    _deal: int
 
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
@@ -79,7 +77,6 @@ class Deck(Mapping[Any, int]):
 
         Args:
             data: At this point, this is a Counts.
-            draws
         """
         self = super(Deck, cls).__new__(cls)
         self._data = data
@@ -149,8 +146,8 @@ class Deck(Mapping[Any, int]):
         """Returns a deck with the max outcome removed."""
         return self._popped_max
 
-    def draws(self, draws: int) -> 'icepool.Draws':
-        return icepool.Draws(self, draws)
+    def deal(self, hand: int) -> 'icepool.Deal':
+        return icepool.Deal(self, hand)
 
     @cached_property
     def _key_tuple(self) -> tuple:

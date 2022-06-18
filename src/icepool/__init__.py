@@ -36,7 +36,7 @@ from icepool.gen import OutcomeCountGen
 from icepool.eval import OutcomeCountEval, WrapFuncEval, JointEval, SumGen, sum_gen, enumerate_gen, FindBestSet, FindBestRun
 
 from icepool.deck import Deck
-from icepool.draws import Draws
+from icepool.deal import Deal
 
 import enum
 
@@ -55,5 +55,5 @@ __all__ = [
     'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
     'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
     'OutcomeCountGen', 'Pool', 'standard_pool', 'OutcomeCountEval', 'JointEval',
-    'SumGen', 'Deck', 'Draws', 'clear_pool_cache'
+    'SumGen', 'Deck', 'Deal', 'clear_pool_cache'
 ]
