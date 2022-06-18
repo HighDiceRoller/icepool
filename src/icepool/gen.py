@@ -33,7 +33,7 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
-    def _pop_min(
+    def _gen_min(
         self, min_outcome
     ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
         """Pops the min outcome from this generator if it matches the argument.
@@ -48,7 +48,7 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
-    def _pop_max(
+    def _gen_max(
         self, max_outcome
     ) -> Generator[tuple['OutcomeCountGen', int, int], None, None]:
         """Pops the max outcome from this generator if it matches the argument.

@@ -294,7 +294,7 @@ class Pool(OutcomeCountGen):
         """Returns the max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _pop_min(self,
+    def _gen_min(self,
                  min_outcome) -> Generator[tuple['Pool', int, int], None, None]:
         """Pops the given outcome from this pool, if it is the min outcome.
 
@@ -341,7 +341,7 @@ class Pool(OutcomeCountGen):
         if skip_weight is not None:
             yield Pool([]), sum(self.post_roll_counts()), skip_weight
 
-    def _pop_max(self,
+    def _gen_max(self,
                  max_outcome) -> Generator[tuple['Pool', int, int], None, None]:
         """Pops the given outcome from this pool, if it is the max outcome.
 

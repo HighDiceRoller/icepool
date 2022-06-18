@@ -134,20 +134,20 @@ class Deck(Mapping[Any, int]):
         return self._size
 
     @cached_property
-    def _remove_min(self) -> 'Deck':
-        return self._new_deck(self._data.remove_min())
+    def _popped_min(self) -> tuple['Deck', int]:
+        return self._new_deck(self._data.remove_min()), self.dups()[0]
 
-    def remove_min(self) -> 'Deck':
+    def _pop_min(self) -> tuple['Deck', int]:
         """Returns a deck with the min outcome removed."""
-        return self._remove_min
+        return self._popped_min
 
     @cached_property
-    def _remove_max(self) -> 'Deck':
-        return self._new_deck(self._data.remove_max())
+    def _popped_max(self) -> tuple['Deck', int]:
+        return self._new_deck(self._data.remove_max()), self.dups()[-1]
 
-    def remove_max(self) -> 'Deck':
+    def _pop_max(self) -> tuple['Deck', int]:
         """Returns a deck with the max outcome removed."""
-        return self._remove_max
+        return self._popped_max
 
     def draws(self, draws: int) -> 'icepool.Draws':
         return icepool.Draws(self, draws)

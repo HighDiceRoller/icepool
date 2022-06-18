@@ -20,7 +20,7 @@ class Alignment(OutcomeCountGen):
     def _is_resolvable(self) -> bool:
         return True
 
-    def _pop_min(
+    def _gen_min(
             self,
             min_outcome) -> Generator[tuple['Alignment', int, int], None, None]:
         """`Alignment` only outputs 0 counts with weight 1."""
@@ -29,7 +29,7 @@ class Alignment(OutcomeCountGen):
         else:
             yield Alignment(self.outcomes()[1:]), 0, 1
 
-    def _pop_max(
+    def _gen_max(
             self,
             max_outcome) -> Generator[tuple['Alignment', int, int], None, None]:
         """`Alignment` only outputs 0 counts with weight 1."""

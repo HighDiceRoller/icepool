@@ -370,18 +370,18 @@ def _pop_gens(
         outcome = max(
             gen.max_outcome() for gen in alignment_and_gens if gen.outcomes())
 
-        next_alignment, _, _ = next(alignment._pop_max(outcome))
+        next_alignment, _, _ = next(alignment._gen_max(outcome))
 
         return outcome, next_alignment, tuple(
-            gen._pop_max(outcome) for gen in gens)
+            gen._gen_max(outcome) for gen in gens)
     else:
         outcome = min(
             gen.min_outcome() for gen in alignment_and_gens if gen.outcomes())
 
-        next_alignment, _, _ = next(alignment._pop_min(outcome))
+        next_alignment, _, _ = next(alignment._gen_min(outcome))
 
         return outcome, next_alignment, tuple(
-            gen._pop_min(outcome) for gen in gens)
+            gen._gen_min(outcome) for gen in gens)
 
 
 class WrapFuncEval(OutcomeCountEval):

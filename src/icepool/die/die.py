@@ -783,7 +783,7 @@ class Die(Mapping[Any, int]):
         return die, self.weights()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
-        """Removes the min outcome and return the result, along with the popped outcome, and the popped weight.
+        """Returns a die with the min outcome removed, and the weight of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.
@@ -796,7 +796,7 @@ class Die(Mapping[Any, int]):
         return die, self.weights()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
-        """Removes the max outcome and return the result, along with the popped outcome, and the popped weight.
+        """Returns a die with the max outcome removed, and the weight of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.

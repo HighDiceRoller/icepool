@@ -48,35 +48,35 @@ class Draws(OutcomeCountGen):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _pop_min(
+    def _gen_min(
             self, min_outcome
     ) -> Generator[tuple[OutcomeCountGen, int, int], None, None]:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, 0, 1
             return
 
-        deck_count = self.deck().dups()[0]
+        popped_deck, deck_count = self.deck()._pop_min()
 
         min_count = max(0, deck_count + self.draws() - self.deck().size())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_draws = Draws(self.deck().remove_min(), self.draws() - count)
+            popped_draws = Draws(popped_deck, self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_draws, count, weight
 
-    def _pop_max(
+    def _gen_max(
             self, max_outcome
     ) -> Generator[tuple[OutcomeCountGen, int, int], None, None]:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, 0, 1
             return
 
-        deck_count = self.deck().dups()[-1]
+        popped_deck, deck_count = self.deck()._pop_max()
 
         min_count = max(0, deck_count + self.draws() - self.deck().size())
         max_count = min(deck_count, self.draws())
         for count in range(min_count, max_count + 1):
-            popped_draws = Draws(self.deck().remove_max(), self.draws() - count)
+            popped_draws = Draws(popped_deck, self.draws() - count)
             weight = icepool.math.comb(deck_count, count)
             yield popped_draws, count, weight
 
