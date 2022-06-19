@@ -129,12 +129,12 @@ class Pool(OutcomeCountGen):
             post_roll_counts)
 
     @cached_property
-    def _num_dice(self) -> int:
+    def _size(self) -> int:
         return sum(count for _, count in self._dice)
 
-    def num_dice(self) -> int:
+    def size(self) -> int:
         """The number of dice in this pool."""
-        return self._num_dice
+        return self._size
 
     def _is_resolvable(self) -> bool:
         return all(not die.is_empty() for die, _ in self._dice)
@@ -238,15 +238,15 @@ class Pool(OutcomeCountGen):
                 This number may be "negative" if more `int`s are provided than
                 the size of the pool. Specifically:
 
-                * If `post_roll_counts` is shorter than `num_dice`, the `Ellipsis`
+                * If `post_roll_counts` is shorter than `size`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
                     E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
-                * If `post_roll_counts` has length equal to `num_dice`, the `Ellipsis` has no effect.
+                * If `post_roll_counts` has length equal to `size`, the `Ellipsis` has no effect.
                     E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-                * If `post_roll_counts` is longer than `num_dice` and the `Ellipsis` is on one side,
+                * If `post_roll_counts` is longer than `size` and the `Ellipsis` is on one side,
                     elements will be dropped from `post_roll_counts` on the side with the `Ellipsis`.
                     E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-                * If `post_roll_counts` is longer than `num_dice` and the `Ellipsis`
+                * If `post_roll_counts` is longer than `size` and the `Ellipsis`
                     is in the middle, the counts will be as the sum of two
                     one-sided `Ellipsis`.
                     E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
@@ -259,9 +259,8 @@ class Pool(OutcomeCountGen):
                 is used.
         """
         convert_to_die = isinstance(post_roll_counts, int)
-        post_roll_counts = post_roll_counts_tuple(self.num_dice(),
-                                                  post_roll_counts)
-        if len(post_roll_counts) != self.num_dice():
+        post_roll_counts = post_roll_counts_tuple(self.size(), post_roll_counts)
+        if len(post_roll_counts) != self.size():
             if len(self._dice) != 1:
                 raise ValueError(
                     'Cannot change the size of a pool unless it has exactly one type of die.'
@@ -401,8 +400,8 @@ class Pool(OutcomeCountGen):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = min(drop, self.num_dice())
-        stop = min(keep + drop, self.num_dice())
+        start = min(drop, self.size())
+        stop = min(keep + drop, self.size())
         return self[start:stop].sum()  # type: ignore
 
     def highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
@@ -420,13 +419,13 @@ class Pool(OutcomeCountGen):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = self.num_dice() - min(keep + drop, self.num_dice())
-        stop = self.num_dice() - min(drop, self.num_dice())
+        start = self.size() - min(keep + drop, self.size())
+        stop = self.size() - min(drop, self.size())
         return self[start:stop].sum()  # type: ignore
 
     def __str__(self) -> str:
         return (
-            f'Pool of {self.num_dice()} dice with post_roll_counts={self.post_roll_counts()}\n'
+            f'Pool of {self.size()} dice with post_roll_counts={self.post_roll_counts()}\n'
             + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
