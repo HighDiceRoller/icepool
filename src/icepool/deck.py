@@ -168,3 +168,8 @@ class Deck(Mapping[Any, int]):
 
     def __hash__(self) -> int:
         return self._hash
+
+    def __repr__(self) -> str:
+        inner = ', '.join(
+            f'{outcome}: {weight}' for outcome, weight in self.items())
+        return type(self).__qualname__ + '({' + inner + '})'

@@ -130,3 +130,8 @@ class Deal(OutcomeCountGen):
 
     def __hash__(self) -> int:
         return self._hash
+
+    def __repr__(self) -> str:
+        return type(
+            self
+        ).__qualname__ + f'({repr(self.deck())}, hand_sizes={self.hand_sizes()})'
