@@ -29,13 +29,13 @@ class Deck(Population):
 
         Args:
             outcomes: The cards of the deck. This can be one of the following:
-                * A `Mapping` from outcomes to dups.
+                * A `Mapping` from outcomes to quantities.
                 * A sequence of outcomes.
 
                 Note that `Die` and `Deck` both count as `Mapping`s.
 
                 Each card may be one of the following:
-                * A `Mapping` from outcomes to dups.
+                * A `Mapping` from outcomes to quantities.
                     The outcomes of the `Mapping` will be "flattened" into the
                     result. This option will be taken in preference to treating
                     the `Mapping` itself as an outcome even if the `Mapping`
@@ -51,7 +51,7 @@ class Deck(Population):
                     Each outcome must be hashable, and the
                     set of outcomes must be totally orderable (after expansion).
                     The same outcome can appear multiple times, in which case
-                    the corresponding dups will be accumulated.
+                    the corresponding quantities will be accumulated.
             times: Multiplies the number of times each element of `outcomes`
                 will be put into the deck.
                 `times` can either be a sequence of the same length as
@@ -96,19 +96,9 @@ class Deck(Population):
         return self
 
     def keys(self) -> CountsKeysView:
-        """The outcomes of the deck in sorted order.
-
-        These are also the `keys` of the deck as a `Mapping`.
-        Prefer to use the name `outcomes`.
-        """
         return self._data.keys()
 
     def values(self) -> CountsValuesView:
-        """The dups of the deck in outcome order.
-
-        These are also the `values` of the deck as a `Mapping`.
-        Prefer to use the name `dups`.
-        """
         return self._data.values()
 
     def items(self) -> CountsItemsView:
