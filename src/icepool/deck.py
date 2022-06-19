@@ -4,15 +4,16 @@ import icepool
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.mapping import OutcomeQuantityMapping
 
+from collections import defaultdict
 from functools import cached_property
+import operator
 
-from typing import Any, Iterator
-from collections.abc import Mapping, Sequence
+from typing import Any, Callable, Iterator
+from collections.abc import Mapping, MutableMapping, Sequence
 
 
-class Deck(OutcomeQuantityMapping):
+class Deck(icepool.OutcomeQuantityMapping):
     """EXPERIMENTAL: Represents a deck to be sampled without replacement.
 
     API and naming WIP.
@@ -72,6 +73,17 @@ class Deck(OutcomeQuantityMapping):
         data = icepool.creation_args.expand_args_for_deck(outcomes, times)
         return Deck._new_deck(data)
 
+    def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Deck':
+        """As `unary_op()`, but not elementwise.
+
+        This is used for `marginals()`.
+        """
+        data: MutableMapping[Any, int] = defaultdict(int)
+        for outcome, weight in self.items():
+            new_outcome = op(outcome, *args, **kwargs)
+            data[new_outcome] += weight
+        return Deck(data)
+
     @classmethod
     def _new_deck(cls, data: Counts) -> 'Deck':
         """Creates a new deck using already-processed arguments.
@@ -83,7 +95,7 @@ class Deck(OutcomeQuantityMapping):
         self._data = data
         return self
 
-    def outcomes(self) -> CountsKeysView:
+    def keys(self) -> CountsKeysView:
         """The outcomes of the deck in sorted order.
 
         These are also the `keys` of the deck as a `Mapping`.
@@ -91,17 +103,7 @@ class Deck(OutcomeQuantityMapping):
         """
         return self._data.keys()
 
-    keys = outcomes
-
-    def min_outcome(self):
-        """Returns the minimum possible outcome of this deck."""
-        return self.outcomes()[0]
-
-    def max_outcome(self):
-        """Returns the maximum possible outcome of this deck."""
-        return self.outcomes()[-1]
-
-    def dups(self) -> CountsValuesView:
+    def values(self) -> CountsValuesView:
         """The dups of the deck in outcome order.
 
         These are also the `values` of the deck as a `Mapping`.
@@ -109,7 +111,7 @@ class Deck(OutcomeQuantityMapping):
         """
         return self._data.values()
 
-    values = dups
+    dups = values
 
     def value_name(self) -> str:
         return 'dups'
@@ -126,7 +128,7 @@ class Deck(OutcomeQuantityMapping):
     def __len__(self) -> int:
         return len(self._data)
 
-    size = OutcomeQuantityMapping.denominator
+    size = icepool.OutcomeQuantityMapping.denominator
 
     @cached_property
     def _popped_min(self) -> tuple['Deck', int]:
@@ -150,6 +152,28 @@ class Deck(OutcomeQuantityMapping):
         See `Deal()` for details.
         """
         return icepool.Deal(self, *hand_sizes)
+
+    class Marginals():
+        """Helper class for implementing marginals()."""
+
+        _deck: 'Deck'
+
+        def __init__(self, deck: 'Deck', /):
+            self._deck = deck
+
+        def __getitem__(self, dims, /) -> 'Deck':
+
+            return self._deck.unary_op_non_elementwise(operator.getitem, dims)
+
+    @property
+    def marginals(self):
+        """A property that applies the `[]` operator to outcomes.
+
+        This is not performed elementwise on tuples, so that this can be used
+        to slice tuples. For example, `deck.marginals[:2]` will marginalize the
+        first two elements of tuples.
+        """
+        return Deck.Marginals(self)
 
     @cached_property
     def _key_tuple(self) -> tuple:

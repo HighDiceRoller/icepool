@@ -5,7 +5,6 @@ import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
-from icepool.mapping import OutcomeQuantityMapping
 
 import bisect
 from collections import defaultdict
@@ -19,7 +18,7 @@ from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die(OutcomeQuantityMapping):
+class Die(icepool.OutcomeQuantityMapping):
     """An immutable `Mapping` of outcomes to nonnegative `int` weights.
 
     Dice are immutable. Methods do not modify the die in-place;
@@ -177,7 +176,7 @@ class Die(OutcomeQuantityMapping):
     def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
         """As `unary_op()`, but not elementwise.
 
-        This is used for the `marginals()`.
+        This is used for `marginals()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, weight in self.items():
@@ -230,25 +229,11 @@ class Die(OutcomeQuantityMapping):
 
     # Basic access.
 
-    def outcomes(self) -> CountsKeysView:
-        """The sorted outcomes of the die.
-
-        These are also the `keys` of the die as a `Mapping`.
-        Prefer to use the name `outcomes`.
-        """
+    def keys(self) -> CountsKeysView:
         return self._data.keys()
 
-    keys = outcomes
-
-    def weights(self) -> CountsValuesView:
-        """The weights of the die in outcome order.
-
-        These are also the `values` of the die as a `Mapping`.
-        Prefer to use the name `weights`.
-        """
+    def values(self) -> CountsValuesView:
         return self._data.values()
-
-    values = weights
 
     def value_name(self) -> str:
         return 'weight'
@@ -270,221 +255,6 @@ class Die(OutcomeQuantityMapping):
     def __contains__(self, outcome) -> bool:
         return outcome in self._data
 
-    def has_zero_weights(self) -> bool:
-        """`True` iff `self` contains at least one outcome with zero weight. """
-        return self._data.has_zero_values()
-
-    # Weights.
-
-    @cached_property
-    def _cweights(self) -> Sequence[int]:
-        return tuple(itertools.accumulate(self.weights()))
-
-    def cweights(self) -> Sequence[int]:
-        """Cumulative weights. The weight <= each outcome in order. """
-        return self._cweights
-
-    @cached_property
-    def _sweights(self) -> Sequence[int]:
-        return tuple(
-            itertools.accumulate(self.weights()[:-1],
-                                 operator.sub,
-                                 initial=self.denominator()))
-
-    def sweights(self) -> Sequence[int]:
-        """Survival weights. The weight >= each outcome in order. """
-        return self._sweights
-
-    @cached_property
-    def _cdf(self):
-        return tuple(weight / self.denominator() for weight in self.cweights())
-
-    def cdf(self, percent: bool = False):
-        """Cumulative distribution function. The chance of rolling <= each outcome in order.
-
-        Args:
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
-        """
-        if percent:
-            return tuple(100.0 * x for x in self._cdf)
-        else:
-            return self._cdf
-
-    @cached_property
-    def _sf(self):
-        return tuple(weight / self.denominator() for weight in self.sweights())
-
-    def sf(self, percent: bool = False):
-        """Survival function. The chance of rolling >= each outcome in order.
-
-        Args:
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
-        """
-        if percent:
-            return tuple(100.0 * x for x in self._sf)
-        else:
-            return self._sf
-
-    def weight_eq(self, outcome) -> int:
-        """Returns the weight of a single outcome, or 0 if not present. """
-        return self._data.get(outcome, 0)
-
-    def weight_ne(self, outcome) -> int:
-        """Returns the weight != a single outcome. """
-        return self.denominator() - self.weight_eq(outcome)
-
-    def weight_le(self, outcome) -> int:
-        """Returns the weight <= a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome) - 1
-        if index < 0:
-            return 0
-        return self.cweights()[index]
-
-    def weight_lt(self, outcome) -> int:
-        """Returns the weight < a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome) - 1
-        if index < 0:
-            return 0
-        return self.cweights()[index]
-
-    def weight_ge(self, outcome) -> int:
-        """Returns the weight >= a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.sweights()[index]
-
-    def weight_gt(self, outcome) -> int:
-        """Returns the weight > a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.sweights()[index]
-
-    def probability(self, outcome):
-        """Returns the probability of a single outcome. """
-        return self.weight_eq(outcome) / self.denominator()
-
-    # Scalar statistics.
-
-    def mode(self) -> tuple:
-        """Returns a tuple containing the most common outcome(s) of the die.
-
-        These are sorted from lowest to highest.
-        """
-        return tuple(outcome for outcome, weight in self.items()
-                     if weight == self.modal_weight())
-
-    def modal_weight(self) -> int:
-        """The highest weight of any single outcome. """
-        return max(self.weights())
-
-    def ks_stat(self, other):
-        """Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
-        a, b = icepool.align(self, other)
-        return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
-
-    def cvm_stat(self, other):
-        """Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
-        a, b = icepool.align(self, other)
-        return sum((a - b)**2 for a, b in zip(a.cdf(), b.cdf()))
-
-    def median_left(self):
-        """Returns the median.
-
-        If the median lies between two outcomes, returns the lower of the two. """
-        return self.ppf_left(1, 2)
-
-    def median_right(self):
-        """Returns the median.
-
-        If the median lies between two outcomes, returns the higher of the two. """
-        return self.ppf_right(1, 2)
-
-    def median(self):
-        """Returns the median.
-
-        If the median lies between two outcomes, returns the mean of the two.
-        This will fail if the outcomes do not support division;
-        in this case, use `median_left` or `median_right` instead.
-        """
-        return self.ppf(1, 2)
-
-    def ppf_left(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
-
-        If the result lies between two outcomes, returns the lower of the two.
-        """
-        index = bisect.bisect_left(self.cweights(),
-                                   (n * self.denominator() + d - 1) // d)
-        if index >= len(self):
-            return self.max_outcome()
-        return self.outcomes()[index]
-
-    def ppf_right(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
-
-        If the result lies between two outcomes, returns the higher of the two.
-        """
-        index = bisect.bisect_right(self.cweights(),
-                                    n * self.denominator() // d)
-        if index >= len(self):
-            return self.max_outcome()
-        return self.outcomes()[index]
-
-    def ppf(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
-
-        If the result lies between two outcomes, returns the mean of the two.
-        This will fail if the outcomes do not support division;
-        in this case, use `ppf_left` or `ppf_right` instead.
-        """
-        return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
-
-    def mean(self):
-        return sum(outcome * weight
-                   for outcome, weight in self.items()) / self.denominator()
-
-    def variance(self):
-        mean = self.mean()
-        mean_of_squares = sum(
-            weight * outcome**2
-            for outcome, weight in self.items()) / self.denominator()
-        return mean_of_squares - mean * mean
-
-    def standard_deviation(self):
-        return math.sqrt(self.variance())
-
-    sd = standard_deviation
-
-    def standardized_moment(self, k: int):
-        sd = self.standard_deviation()
-        mean = self.mean()
-        ev = sum(p * (outcome - mean)**k
-                 for outcome, p in zip(self.outcomes(), self.pmf()))
-        return ev / (sd**k)
-
-    def skewness(self):
-        return self.standardized_moment(3.0)
-
-    def excess_kurtosis(self):
-        return self.standardized_moment(4.0) - 3.0
-
-    # Joint statistics.
-
-    def covariance(self, i: int, j: int):
-        mean_i = self.marginals[i].mean()
-        mean_j = self.marginals[j].mean()
-        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight
-                   for outcome, weight in self.items()) / self.denominator()
-
-    def correlation(self, i: int, j: int):
-        sd_i = self.marginals[i].standard_deviation()
-        sd_j = self.marginals[j].standard_deviation()
-        return self.covariance(i, j) / (sd_i * sd_j)
-
     # Weight management.
 
     def reduce_weights(self) -> 'Die':
@@ -501,34 +271,6 @@ class Die(OutcomeQuantityMapping):
         return icepool.Die(data)
 
     # Rerolls and other outcome management.
-
-    def min_outcome(self):
-        """Returns the minimum possible outcome of this die."""
-        return self.outcomes()[0]
-
-    def max_outcome(self):
-        """Returns the maximum possible outcome of this die."""
-        return self.outcomes()[-1]
-
-    def nearest_le(self, outcome):
-        """Returns the nearest outcome that is <= the argument.
-
-        Returns `None` if there is no such outcome.
-        """
-        index = bisect.bisect_right(self.outcomes(), outcome) - 1
-        if index < 0:
-            return None
-        return self.outcomes()[index]
-
-    def nearest_ge(self, outcome):
-        """Returns the nearest outcome that is >= the argument.
-
-        Returns `None` if there is no such outcome.
-        """
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self):
-            return None
-        return self.outcomes()[index]
 
     def reroll(self,
                outcomes: Callable[..., bool] | Container | None = None,
@@ -1078,7 +820,7 @@ class Die(OutcomeQuantityMapping):
 
         _die: 'Die'
 
-        def __init__(self, die: 'Die'):
+        def __init__(self, die: 'Die', /):
             self._die = die
 
         def __getitem__(self, dims, /) -> 'Die':
