@@ -29,7 +29,11 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
     @abstractmethod
     def values(self) -> CountsValuesView:
-        """The keys can be used as both a ValuesView and as a Sequence."""
+        """The values can be used as both a ValuesView and as a Sequence."""
+
+    @abstractmethod
+    def items(self) -> CountsItemsView:
+        """The items can be used as both a ItemsView and as a Sequence."""
 
     @abstractmethod
     def value_name(self) -> str:

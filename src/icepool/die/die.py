@@ -239,7 +239,6 @@ class Die(icepool.OutcomeQuantityMapping):
         return 'weight'
 
     def items(self) -> CountsItemsView:
-        """The sequence of sorted outcome, weight pairs. """
         return self._data.items()
 
     def __getitem__(self, outcome, /) -> int:
