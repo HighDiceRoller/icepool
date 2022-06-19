@@ -311,21 +311,20 @@ class Pool(OutcomeCountGen):
         ]
         skip_weight = None
         for pop in itertools.product(*generators):
-            net_num_rolled = 0
+            total_hits = 0
             result_weight = 1
             next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
-            for popped_die, num_remain, num_rolled, weight in pop:
+            for popped_die, misses, hits, weight in pop:
                 if not popped_die.is_empty():
-                    next_dice_counts[popped_die] += num_remain
-                net_num_rolled += num_rolled
+                    next_dice_counts[popped_die] += misses
+                total_hits += hits
                 result_weight *= weight
-            if net_num_rolled == 0:
+            if total_hits == 0:
                 result_count = 0
                 popped_post_roll_counts = self.post_roll_counts()
             else:
-                result_count = sum(self.post_roll_counts()[:net_num_rolled])
-                popped_post_roll_counts = self.post_roll_counts(
-                )[net_num_rolled:]
+                result_count = sum(self.post_roll_counts()[:total_hits])
+                popped_post_roll_counts = self.post_roll_counts()[total_hits:]
             popped_pool = Pool._new_pool_from_mapping(next_dice_counts,
                                                       popped_post_roll_counts)
             if not any(popped_post_roll_counts):
@@ -357,21 +356,20 @@ class Pool(OutcomeCountGen):
         ]
         skip_weight = None
         for pop in itertools.product(*generators):
-            net_num_rolled = 0
+            total_hits = 0
             result_weight = 1
             next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
-            for popped_die, num_remain, num_rolled, weight in pop:
+            for popped_die, misses, hits, weight in pop:
                 if not popped_die.is_empty():
-                    next_dice_counts[popped_die] += num_remain
-                net_num_rolled += num_rolled
+                    next_dice_counts[popped_die] += misses
+                total_hits += hits
                 result_weight *= weight
-            if net_num_rolled == 0:
+            if total_hits == 0:
                 result_count = 0
                 popped_post_roll_counts = self.post_roll_counts()
             else:
-                result_count = sum(self.post_roll_counts()[-net_num_rolled:])
-                popped_post_roll_counts = self.post_roll_counts(
-                )[:-net_num_rolled]
+                result_count = sum(self.post_roll_counts()[-total_hits:])
+                popped_post_roll_counts = self.post_roll_counts()[:-total_hits]
             popped_pool = Pool._new_pool_from_mapping(next_dice_counts,
                                                       popped_post_roll_counts)
             if not any(popped_post_roll_counts):
@@ -536,36 +534,36 @@ def iter_die_pop_min(
 
     Args:
         die: The die to pop.
-        die_count: The number of this kind of die.
+        num_dice: The number of this kind of die.
         min_outcome: The outcome to pop. This is <= the die's min outcome.
 
     Yields:
-        The popped die.
-        The number of remaining dice of this kind.
-        The number of dice that rolled max_outcome.
-        The weight of this number of dice rolling max_outcome.
+        popped_die
+        misses: The number of dice that didn't roll this outcome.
+        hits: The number of dice that rolled this outcome.
+        weight: The weight of this number of dice rolling max_outcome.
     """
     if die.min_outcome() != min_outcome:
-        num_remain = num_dice
-        num_rolled = 0
+        misses = num_dice
+        hits = 0
         weight = 1
-        yield die, num_remain, num_rolled, weight
+        yield die, misses, hits, weight
         return
 
     popped_die, single_weight = die._pop_min()
 
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
-        num_remain = 0
-        num_rolled = num_dice
+        misses = 0
+        hits = num_dice
         weight = single_weight**num_dice
-        yield popped_die, num_remain, num_rolled, weight
+        yield popped_die, misses, hits, weight
         return
 
     comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for num_rolled, weight in enumerate(comb_row):
-        num_remain = num_dice - num_rolled
-        yield popped_die, num_remain, num_rolled, weight
+    for hits, weight in enumerate(comb_row):
+        misses = num_dice - hits
+        yield popped_die, misses, hits, weight
 
 
 def iter_die_pop_max(
@@ -575,33 +573,33 @@ def iter_die_pop_max(
 
     Args:
         die: The die to pop.
-        die_count: The number of this kind of die.
+        num_dice: The number of this kind of die.
         max_outcome: The outcome to pop. This is >= the die's max outcome.
 
     Yields:
-        The popped die.
-        The number of remaining dice of this kind.
-        The number of dice that rolled max_outcome.
-        The weight of this number of dice rolling max_outcome.
+        popped_die
+        misses: The number of dice that didn't roll this outcome.
+        hits: The number of dice that rolled this outcome.
+        weight: The weight of this number of dice rolling max_outcome.
     """
     if die.max_outcome() != max_outcome:
-        num_remain = num_dice
-        num_rolled = 0
+        misses = num_dice
+        hits = 0
         weight = 1
-        yield die, num_remain, num_rolled, weight
+        yield die, misses, hits, weight
         return
 
     popped_die, single_weight = die._pop_max()
 
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
-        num_remain = 0
-        num_rolled = num_dice
+        misses = 0
+        hits = num_dice
         weight = single_weight**num_dice
-        yield popped_die, num_remain, num_rolled, weight
+        yield popped_die, misses, hits, weight
         return
 
     comb_row = icepool.math.comb_row(num_dice, single_weight)
-    for num_rolled, weight in enumerate(comb_row):
-        num_remain = num_dice - num_rolled
-        yield popped_die, num_remain, num_rolled, weight
+    for hits, weight in enumerate(comb_row):
+        misses = num_dice - hits
+        yield popped_die, misses, hits, weight
