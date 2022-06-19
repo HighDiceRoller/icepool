@@ -10,14 +10,14 @@ def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
 
     Args:
         *dice: The dice to be considered. At least one die must be provided.
-        num_keep: The number of lowest dice will be summed.
-        num_drop: This number of lowest dice will be dropped before keeping dice
+        keep: The number of lowest dice will be summed.
+        drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
     """
     if keep < 0:
-        raise ValueError(f'num_keep={keep} cannot be negative.')
+        raise ValueError(f'keep={keep} cannot be negative.')
     if drop < 0:
-        raise ValueError(f'num_drop={drop} cannot be negative.')
+        raise ValueError(f'drop={drop} cannot be negative.')
 
     start = min(drop, len(dice))
     stop = min(keep + drop, len(dice))
@@ -29,14 +29,14 @@ def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
 
     Args:
         *dice: The dice to be considered. At least one die must be provided.
-        num_keep: The number of highest dice will be summed.
-        num_drop: This number of highest dice will be dropped before keeping dice
+        keep: The number of highest dice will be summed.
+        drop: This number of highest dice will be dropped before keeping dice
             to be summed.
     """
     if keep < 0:
-        raise ValueError(f'num_keep={keep} cannot be negative.')
+        raise ValueError(f'keep={keep} cannot be negative.')
     if drop < 0:
-        raise ValueError(f'num_drop={drop} cannot be negative.')
+        raise ValueError(f'drop={drop} cannot be negative.')
 
     start = len(dice) - min(keep + drop, len(dice))
     stop = len(dice) - min(drop, len(dice))
