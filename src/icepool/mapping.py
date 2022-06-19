@@ -122,7 +122,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         return sum(self.values())
 
     def denominator(self) -> int:
-        """The sum of all quantities (e.g weights or dups).
+        """The sum of all quantities (e.g. weights or dups).
 
         For the number of unique outcomes, including those with zero numerator,
         use `len()`.
@@ -363,3 +363,44 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         sd_i = self.marginals[i].standard_deviation()
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
+
+    def format(self, format_spec: str, **kwargs) -> str:
+        """Formats this mapping as a string.
+
+        `format_spec` should start with the output format,
+        which is either `md` (Markdown) or `csv` (comma-separated values),
+        followed by a ':' character.
+
+        After this, zero or more columns should follow. Options are:
+
+        * `o`: Outcomes.
+        * `*o`: Outcomes, unpacked if applicable.
+        * `q==`, `q<=`, `q>=`: Quantities ==, <=, or >= each outcome.
+        * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
+
+        Columns may optionally be separated using ` ` (space) or `|` characters.
+
+        The default is `'md:*o|q==|%=='`, with the quantity column being omitted
+        if any quantity exceeds 10**30.
+        """
+        if len(format_spec) == 0:
+            format_spec = 'md:*o'
+            if not self.is_empty() and self.modal_quantity() < 10**30:
+                format_spec += 'q=='
+            format_spec += '%=='
+
+        format_spec = format_spec.replace('|', '')
+
+        output_format, format_spec = format_spec.split(':')
+        if output_format == 'md':
+            return icepool.format.markdown(self, format_spec)
+        elif output_format == 'csv':
+            return icepool.format.csv(self, format_spec, **kwargs)
+        else:
+            raise ValueError(f"Unsupported output format '{output_format}'")
+
+    def __format__(self, format_spec: str) -> str:
+        return self.format(format_spec)
+
+    def __str__(self) -> str:
+        return f'{self}'

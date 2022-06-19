@@ -22,12 +22,6 @@ class OutcomeCountGen(ABC):
     def outcomes(self) -> Sequence:
         """The set of possible outcomes, in sorted order."""
 
-    def min_outcome(self):
-        return self.outcomes()[0]
-
-    def max_outcome(self):
-        return self.outcomes()[-1]
-
     @abstractmethod
     def _is_resolvable(self) -> bool:
         """Returns `True` iff the generator is capable of producing an overall outcome.
@@ -72,6 +66,10 @@ class OutcomeCountGen(ABC):
         """
 
     @abstractmethod
+    def denominator(self) -> int:
+        """The total weight of all paths through this gen."""
+
+    @abstractmethod
     def __eq__(self, other) -> bool:
         """All `OutcomeCountGen`s must implement equality."""
 
@@ -98,6 +96,12 @@ class OutcomeCountGen(ABC):
         if not isinstance(eval_or_func, icepool.OutcomeCountEval):
             eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
+
+    def min_outcome(self):
+        return self.outcomes()[0]
+
+    def max_outcome(self):
+        return self.outcomes()[-1]
 
     def sum(self) -> 'icepool.Die':
         """Convenience method to simply sum the dice in this gen.

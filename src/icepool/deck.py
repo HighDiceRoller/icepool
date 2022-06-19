@@ -4,6 +4,7 @@ import icepool
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.mapping import OutcomeQuantityMapping
 
 from collections import defaultdict
 from functools import cached_property
@@ -13,8 +14,8 @@ from typing import Any, Callable, Iterator
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-class Deck(icepool.OutcomeQuantityMapping):
-    """EXPERIMENTAL: Represents a deck to be sampled without replacement.
+class Deck(OutcomeQuantityMapping):
+    """EXPERIMENTAL: Sampling without replacement.
 
     API and naming WIP.
     """
@@ -79,9 +80,9 @@ class Deck(icepool.OutcomeQuantityMapping):
         This is used for `marginals()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, weight in self.items():
+        for outcome, quantity in self.items():
             new_outcome = op(outcome, *args, **kwargs)
-            data[new_outcome] += weight
+            data[new_outcome] += quantity
         return Deck(data)
 
     @classmethod
@@ -193,42 +194,5 @@ class Deck(icepool.OutcomeQuantityMapping):
 
     def __repr__(self) -> str:
         inner = ', '.join(
-            f'{outcome}: {weight}' for outcome, weight in self.items())
+            f'{outcome}: {quantity}' for outcome, quantity in self.items())
         return type(self).__qualname__ + '({' + inner + '})'
-
-    def __str__(self) -> str:
-        return f'{self}'
-
-    def format(self, format_spec: str, **kwargs) -> str:
-        """Formats this deck as a string.
-
-        `format_spec` should start with the output format,
-        which is either `md` (Markdown) or `csv` (comma-separated values),
-        followed by a ':' character.
-
-        After this, zero or more columns should follow. Options are:
-
-        * `o`: Outcomes.
-        * `*o`: Outcomes, unpacked if applicable.
-        * `w==`, `w<=`, `w>=`: Dups ==, <=, or >= each outcome.
-        * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
-
-        Columns may optionally be separated using ` ` (space) or `|` characters.
-
-        The default is `'md:*o|w==|%=='`.
-        """
-        if len(format_spec) == 0:
-            format_spec = 'md:*o|w==|%=='
-
-        format_spec = format_spec.replace('|', '')
-
-        output_format, format_spec = format_spec.split(':')
-        if output_format == 'md':
-            return icepool.format.markdown(self, format_spec)
-        elif output_format == 'csv':
-            return icepool.format.csv(self, format_spec, **kwargs)
-        else:
-            raise ValueError(f"Unsupported output format '{output_format}'")
-
-    def __format__(self, format_spec: str) -> str:
-        return self.format(format_spec)

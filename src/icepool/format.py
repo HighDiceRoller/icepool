@@ -12,8 +12,8 @@ from collections.abc import Sequence
 OUTCOME_PATTERN = r'(?:\*o|o)'
 
 COMPARATOR_OPTIONS = '|'.join(['==', '<=', '>='])
-COMPARATOR_PATTERN = f'(?:[w%](?:{COMPARATOR_OPTIONS}))'
-"""A comparator followed by w for weight or % for probability percent."""
+COMPARATOR_PATTERN = f'(?:[q%](?:{COMPARATOR_OPTIONS}))'
+"""A comparator followed by q for quantity or % for probability percent."""
 
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
@@ -43,8 +43,8 @@ def make_headers(mapping: OutcomeQuantityMapping,
         else:
             heading = ''
 
-            if token[0] == 'w':
-                heading += mapping.value_name().title()
+            if token[0] == 'q':
+                heading += 'Quantity'
             elif token[0] == '%':
                 heading += 'Chance'
 
@@ -72,7 +72,7 @@ def gather_cols(mapping: OutcomeQuantityMapping,
         else:
             comparator = token[1:]
             denom_type = token[0]
-            if denom_type == 'w':
+            if denom_type == 'q':
                 col: Sequence[int]
                 if comparator == '==':
                     col = list(mapping.values())

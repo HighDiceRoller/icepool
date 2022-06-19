@@ -16,7 +16,7 @@ def standard(sides: int, /) -> 'icepool.Die':
     """A standard die.
 
     Specifically, the outcomes are `int`s from `1` to `sides` inclusive,
-    with weight 1 each.
+    with quantity 1 each.
 
     Don't confuse this with `icepool.Die()`:
 
@@ -112,7 +112,7 @@ def max_outcome(*dice):
 
 
 def align(*dice) -> tuple['icepool.Die', ...]:
-    """Pads dice with zero weights so that all have the same set of outcomes.
+    """Pads dice with zero quantities so that all have the same set of outcomes.
 
     Args:
         *dice: One die per argument.
@@ -127,7 +127,7 @@ def align(*dice) -> tuple['icepool.Die', ...]:
 
 
 def align_range(*dice) -> tuple['icepool.Die', ...]:
-    """Pads dice with zero weights so that all have the same set of consecutive `int` outcomes.
+    """Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
 
     Args:
         *dice: One die per argument.
@@ -229,22 +229,22 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
 
     Returns:
         A die constructed from the outputs of `func` and the product of the
-        weights of the dice.
+        quantities of the dice.
     """
     if len(dice) == 0:
         return icepool.Die([func()])
     dice = tuple(icepool.Die([die]) for die in dice)
     final_outcomes = []
-    final_weights = []
+    final_quantities = []
     for t in itertools.product(*(die.items() for die in dice)):
-        outcomes, weights = zip(*t)
+        outcomes, quantities = zip(*t)
         final_outcome = func(*outcomes)
-        final_weight = math.prod(weights)
+        final_quantity = math.prod(quantities)
         if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)
-            final_weights.append(final_weight)
+            final_quantities.append(final_quantity)
 
-    return icepool.Die(final_outcomes, final_weights)
+    return icepool.Die(final_outcomes, final_quantities)
 
 
 def apply_sorted(func: Callable, *dice) -> 'icepool.Die':

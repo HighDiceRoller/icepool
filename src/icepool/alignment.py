@@ -41,6 +41,9 @@ class Alignment(OutcomeCountGen):
         result = len(self.outcomes())
         return result, result
 
+    def denominator(self) -> int:
+        return 0
+
     def __eq__(self, other) -> bool:
         if not isinstance(other, Alignment):
             return False

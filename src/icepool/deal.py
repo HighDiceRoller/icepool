@@ -73,7 +73,6 @@ class Deal(OutcomeCountGen):
         return d_total * d_split
 
     def denominator(self) -> int:
-        """The total number of possible deals."""
         return self._denomiator
 
     def _gen_common(self, popped_deck: 'icepool.Deck',

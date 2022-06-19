@@ -5,6 +5,7 @@ import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
+from icepool.mapping import OutcomeQuantityMapping
 
 import bisect
 from collections import defaultdict
@@ -18,26 +19,26 @@ from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die(icepool.OutcomeQuantityMapping):
-    """An immutable `Mapping` of outcomes to nonnegative `int` weights.
+class Die(OutcomeQuantityMapping):
+    """Sampling with replacement.
 
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.
 
-    It *is* (mostly) well-defined to have a die with zero-weight outcomes,
+    It *is* (mostly) well-defined to have a die with zero-quantity outcomes,
     even though this is not a proper probability distribution.
     These can be useful in a few cases, such as:
 
-    * `Pool` and `EvalPool` will iterate through zero-weight outcomes
+    * `Pool` and `EvalPool` will iterate through zero-quantity outcomes
         with 0 `count`, rather than `None` or skipping that outcome.
     * `icepool.align()` and the like are convenient for making dice share the
         same set of outcomes.
 
-    However, zero-weight outcomes have a computational cost like any other
+    However, zero-quantity outcomes have a computational cost like any other
     outcome. Unless you have a specific use case in mind, it's best to leave
     them out.
 
-    Most operators and methods will not introduce zero-weight outcomes if their
+    Most operators and methods will not introduce zero-quantity outcomes if their
     arguments do not have any.
 
     It's also possible to have "empty" dice with no outcomes at all,
@@ -72,18 +73,18 @@ class Die(icepool.OutcomeQuantityMapping):
         * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
         * Give the faces as args: `Die([1, 2, 3, 4, 5, 6])`
 
-        All weights must be non-negative, though they can be zero.
+        All quantities must be non-negative, though they can be zero.
 
         Args:
             outcomes: The faces of the die. This can be one of the following:
-                * A `Mapping` from outcomes to weights.
+                * A `Mapping` from outcomes to quantities.
                 * A sequence of outcomes. Each element will have the same total
-                    weight.
+                    quantity.
 
                 Note that `Die` and `Deck` both count as `Mapping`s.
 
                 Each outcome may be one of the following:
-                * A `Mapping` from outcomes to weights.
+                * A `Mapping` from outcomes to quantities.
                     The outcomes of the `Mapping` will be "flattened" into the
                     result. This option will be taken in preference to treating
                     the `Mapping` itself as an outcome even if the `Mapping`
@@ -96,7 +97,7 @@ class Die(icepool.OutcomeQuantityMapping):
                     Any tuple elements that are `Mapping`s will expand the
                     tuple according to their independent joint distribution.
                     For example, `(d6, d6)` will expand to 36 ordered tuples
-                    with weight 1 each. Use this carefully since it may create a
+                    with quantity 1 each. Use this carefully since it may create a
                     large number of outcomes.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `times` from consideration.
@@ -105,25 +106,25 @@ class Die(icepool.OutcomeQuantityMapping):
                     Each outcome must be hashable, and the
                     set of outcomes must be totally orderable (after expansion).
                     The same outcome can appear multiple times, in which case
-                    the corresponding weights will be accumulated.
-            times: Multiplies the weight of each element of `outcomes`.
+                    the corresponding quantities will be accumulated.
+            times: Multiplies the quantity of each element of `outcomes`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
             denominator_method: How to determine the denominator of the result
-                if the arguments themselves contain weights. This is also used
+                if the arguments themselves contain quantities. This is also used
                 for `Mapping` arguments. From greatest to least:
                 * 'prod': Product of the individual argument denominators, times
-                    the total of `weights`. This is like rolling all of the
+                    the total of `quantities`. This is like rolling all of the
                     possible dice, and then selecting a result.
                 * 'lcm' (default): LCM of the individual argument denominators,
-                    times the total of `weights`. This is like rolling `weights`
+                    times the total of `quantities`. This is like rolling `quantities`
                     first, then selecting an argument to roll.
                 * 'lcm_joint': LCM of the individual (argument denominators
-                    times corresponding element of `weights`). This is like
-                    rolling the above, but the specific weight rolled is used
+                    times corresponding element of `quantities`). This is like
+                    rolling the above, but the specific quantity rolled is used
                     to help determine the result of the selected argument.
-                * 'reduce': The final weights are divided by their GCD.
+                * 'reduce': The final quantities are divided by their GCD.
         Raises:
             `ValueError`: `None` is not a valid outcome for a die.
         """
@@ -168,9 +169,9 @@ class Die(icepool.OutcomeQuantityMapping):
             ValueError if tuples are of mismatched length.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, weight in self.items():
+        for outcome, quantity in self.items():
             new_outcome = unary_elementwise(outcome, op, *args, **kwargs)
-            data[new_outcome] += weight
+            data[new_outcome] += quantity
         return icepool.Die(data)
 
     def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
@@ -179,9 +180,9 @@ class Die(icepool.OutcomeQuantityMapping):
         This is used for `marginals()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, weight in self.items():
+        for outcome, quantity in self.items():
             new_outcome = op(outcome, *args, **kwargs)
-            data[new_outcome] += weight
+            data[new_outcome] += quantity
         return icepool.Die(data)
 
     def binary_op(self, other: 'Die', op: Callable, *args, **kwargs) -> 'Die':
@@ -248,13 +249,13 @@ class Die(icepool.OutcomeQuantityMapping):
         return iter(self.keys())
 
     def __len__(self) -> int:
-        """The number of outcomes (including those with zero weight). """
+        """The number of outcomes (including those with zero quantity). """
         return len(self._data)
 
     def __contains__(self, outcome) -> bool:
         return outcome in self._data
 
-    # Weight management.
+    # Quantity management.
 
     def reduce_weights(self) -> 'Die':
         """Divides all weights by their greatest common denominator. """
@@ -321,22 +322,22 @@ class Die(icepool.OutcomeQuantityMapping):
 
         if max_depth is None:
             data = {
-                outcome: weight
-                for outcome, weight in self.items()
+                outcome: quantity
+                for outcome, quantity in self.items()
                 if outcome not in outcomes
             }
         else:
-            total_reroll_weight = sum(
-                weight for outcome, weight in self.items()
+            total_reroll_quantity = sum(
+                quantity for outcome, quantity in self.items()
                 if outcome in outcomes)
-            rerollable_factor = total_reroll_weight**max_depth
+            rerollable_factor = total_reroll_quantity**max_depth
             stop_factor = (self.denominator()**max_depth +
-                           total_reroll_weight**max_depth)
+                           total_reroll_quantity**max_depth)
             data = {
                 outcome:
                 (rerollable_factor *
-                 weight if outcome in outcomes else stop_factor * weight)
-                for outcome, weight in self.items()
+                 quantity if outcome in outcomes else stop_factor * quantity)
+                for outcome, quantity in self.items()
             }
         return icepool.Die(data)
 
@@ -425,17 +426,17 @@ class Die(icepool.OutcomeQuantityMapping):
 
         This is not the same as rerolling outcomes beyond this range;
         the outcome is simply adjusted to fit within the range.
-        This will typically cause some weight to bunch up at the endpoint.
+        This will typically cause some quantity to bunch up at the endpoint.
         If you want to reroll outcomes beyond this range, use `truncate()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, weight in self.items():
+        for outcome, quantity in self.items():
             if min_outcome is not None and outcome <= min_outcome:
-                data[min_outcome] += weight
+                data[min_outcome] += quantity
             elif max_outcome is not None and outcome >= max_outcome:
-                data[max_outcome] += weight
+                data[max_outcome] += quantity
             else:
-                data[outcome] += weight
+                data[outcome] += quantity
         return icepool.Die(data)
 
     def set_range(self,
@@ -460,13 +461,13 @@ class Die(icepool.OutcomeQuantityMapping):
         """Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
-        and/or add zero-weight outcomes (if they are not present in this die).
+        and/or add zero-quantity outcomes (if they are not present in this die).
         """
         data = {x: self.quantity(x) for x in outcomes}
         return icepool.Die(data)
 
     def trim(self) -> 'Die':
-        """Removes all zero-weight outcomes. """
+        """Removes all zero-quantity outcomes. """
         data = {k: v for k, v in self.items() if v > 0}
         return icepool.Die(data)
 
@@ -476,7 +477,7 @@ class Die(icepool.OutcomeQuantityMapping):
         return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
-        """Returns a die with the min outcome removed, and the weight of the removed outcome.
+        """Returns a die with the min outcome removed, and the quantity of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.
@@ -489,7 +490,7 @@ class Die(icepool.OutcomeQuantityMapping):
         return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
-        """Returns a die with the max outcome removed, and the weight of the removed outcome.
+        """Returns a die with the max outcome removed, and the quantity of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.
@@ -699,11 +700,12 @@ class Die(icepool.OutcomeQuantityMapping):
 
         max_abs_die_count = max(abs(self.min_outcome()),
                                 abs(self.max_outcome()))
-        for die_count, die_count_weight in self.items():
+        for die_count, die_count_quantity in self.items():
             factor = other.denominator()**(max_abs_die_count - abs(die_count))
             subresult = other._sum_all(die_count)
-            for outcome, subresult_weight in subresult.items():
-                data[outcome] += subresult_weight * die_count_weight * factor
+            for outcome, subresult_quantity in subresult.items():
+                data[
+                    outcome] += subresult_quantity * die_count_quantity * factor
 
         return icepool.Die(data)
 
@@ -1026,19 +1028,19 @@ class Die(icepool.OutcomeQuantityMapping):
         a_iter = iter(a.items())
         b_iter = iter(b.items())
 
-        a_outcome, a_weight = next(a_iter)
-        b_outcome, b_weight = next(b_iter)
+        a_outcome, a_quantity = next(a_iter)
+        b_outcome, b_quantity = next(b_iter)
 
         while True:
             try:
                 if a_outcome == b_outcome:
-                    n += a_weight * b_weight
-                    a_outcome, a_weight = next(a_iter)
-                    b_outcome, b_weight = next(b_iter)
+                    n += a_quantity * b_quantity
+                    a_outcome, a_quantity = next(a_iter)
+                    b_outcome, b_quantity = next(b_iter)
                 elif a_outcome < b_outcome:
-                    a_outcome, a_weight = next(a_iter)
+                    a_outcome, a_quantity = next(a_iter)
                 else:
-                    b_outcome, b_weight = next(b_iter)
+                    b_outcome, b_quantity = next(b_iter)
             except StopIteration:
                 if invert:
                     return Counts([(False, n), (True, d - n)])
@@ -1070,7 +1072,7 @@ class Die(icepool.OutcomeQuantityMapping):
     def cmp(self, other) -> 'Die':
         """Returns a die with possible outcomes 1, -1, and 0.
 
-        The weights are equal to the positive outcome of `self > other`,
+        The quantities are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
         """
         other = icepool.Die([other])
@@ -1133,7 +1135,7 @@ class Die(icepool.OutcomeQuantityMapping):
         return self._hash
 
     def equals(self, other, *, reduce_weights=False):
-        """Returns `True` iff both dice have the same outcomes and weights.
+        """Returns `True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
         to an equal `Die`.
@@ -1150,7 +1152,7 @@ class Die(icepool.OutcomeQuantityMapping):
         in the `Die` value or the truth value.
 
         Args:
-            reduce_weights: If `True`, the dice will be reduced before comparing.
+            reduce_quantities: If `True`, the dice will be reduced before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         if not isinstance(other, Die):
@@ -1180,44 +1182,3 @@ class Die(icepool.OutcomeQuantityMapping):
         inner = ', '.join(
             f'{outcome}: {weight}' for outcome, weight in self.items())
         return type(self).__qualname__ + '({' + inner + '})'
-
-    def __str__(self) -> str:
-        return f'{self}'
-
-    def format(self, format_spec: str, **kwargs) -> str:
-        """Formats this die as a string.
-
-        `format_spec` should start with the output format,
-        which is either `md` (Markdown) or `csv` (comma-separated values),
-        followed by a ':' character.
-
-        After this, zero or more columns should follow. Options are:
-
-        * `o`: Outcomes.
-        * `*o`: Outcomes, unpacked if applicable.
-        * `w==`, `w<=`, `w>=`: Weights ==, <=, or >= each outcome.
-        * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
-
-        Columns may optionally be separated using ` ` (space) or `|` characters.
-
-        The default is `'md:*o|w==|%=='`, with the weight column being omitted
-        if any weight exceeds 10**30.
-        """
-        if len(format_spec) == 0:
-            format_spec = 'md:*o'
-            if not self.is_empty() and self.modal_quantity() < 10**30:
-                format_spec += 'w=='
-            format_spec += '%=='
-
-        format_spec = format_spec.replace('|', '')
-
-        output_format, format_spec = format_spec.split(':')
-        if output_format == 'md':
-            return icepool.format.markdown(self, format_spec)
-        elif output_format == 'csv':
-            return icepool.format.csv(self, format_spec, **kwargs)
-        else:
-            raise ValueError(f"Unsupported output format '{output_format}'")
-
-    def __format__(self, format_spec: str) -> str:
-        return self.format(format_spec)

@@ -13,7 +13,7 @@ from typing import Any, Callable, Hashable
 from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 PREFERRED_DIRECTION_COST_FACTOR = 10
-"""The preferred direction will be weighted this times as much."""
+"""The preferred direction will be favored this times as much."""
 
 
 class OutcomeCountEval(ABC):
@@ -76,7 +76,7 @@ class OutcomeCountEval(ABC):
                 outcome were produced. If there are multiple
                 gens, it's possible that some outcomes will not appear in
                 all gens. In this case, the count for the gen(s)
-                that do not have the outcome will be 0. Zero-weight outcomes
+                that do not have the outcome will be 0. Zero-quantity outcomes
                 count as having that outcome.
 
                 Most subclasses will expect a fixed number of gens and

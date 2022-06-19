@@ -141,7 +141,6 @@ class Pool(OutcomeCountGen):
 
     @cached_property
     def _denominator(self) -> int:
-        """The product of the total dice weights in this pool."""
         return math.prod(die.denominator()**count for die, count in self._dice)
 
     def denominator(self) -> int:

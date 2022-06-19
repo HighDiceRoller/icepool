@@ -17,9 +17,9 @@ def test_str(die):
     
 format_specs = [
     '',
-    'md:w==|w<=|w>=',
+    'md:q==|q<=|q>=',
     'md:%==|%>=|%>=',
-    'csv:w==|w<=|w>=',
+    'csv:q==|q<=|q>=',
     'csv:%==|%>=|%>=',
 ]
 
