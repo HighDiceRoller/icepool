@@ -5,11 +5,11 @@ from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
 from abc import ABC, abstractmethod
 import bisect
-from collections import defaultdict
 from functools import cached_property
 import itertools
 import math
 import operator
+import random
 
 from typing import Any, Mapping, Sequence
 
@@ -26,15 +26,15 @@ class Population(ABC, Mapping[Any, int]):
 
     @abstractmethod
     def keys(self) -> CountsKeysView:
-        """The keys can be used as both a KeysView and as a Sequence."""
+        """The outcomes within the population in sorted order."""
 
     @abstractmethod
     def values(self) -> CountsValuesView:
-        """The values can be used as both a ValuesView and as a Sequence."""
+        """The quantities within the population in outcome order."""
 
     @abstractmethod
     def items(self) -> CountsItemsView:
-        """The items can be used as both a ItemsView and as a Sequence."""
+        """The (outcome, quantity)s of the population in sorted order."""
 
     @property
     @abstractmethod
@@ -77,11 +77,11 @@ class Population(ABC, Mapping[Any, int]):
         return len(self) == 0
 
     def min_outcome(self):
-        """Returns the minimum possible outcome of this die."""
+        """Returns the minimum outcome."""
         return self.outcomes()[0]
 
     def max_outcome(self):
-        """Returns the maximum possible outcome of this die."""
+        """Returns the maximum outcome."""
         return self.outcomes()[-1]
 
     def nearest_le(self, outcome):
@@ -246,7 +246,7 @@ class Population(ABC, Mapping[Any, int]):
     # Scalar statistics.
 
     def mode(self) -> tuple:
-        """Returns a tuple containing the most common outcome(s) of the die.
+        """Returns a tuple containing the most common outcome(s) of the population.
 
         These are sorted from lowest to highest.
         """
@@ -292,7 +292,7 @@ class Population(ABC, Mapping[Any, int]):
         return self.quantile(1, 2)
 
     def quantile_left(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the CDF.
 
         If the result lies between two outcomes, returns the lower of the two.
         """
@@ -303,7 +303,7 @@ class Population(ABC, Mapping[Any, int]):
         return self.outcomes()[index]
 
     def quantile_right(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the CDF.
 
         If the result lies between two outcomes, returns the higher of the two.
         """
@@ -314,7 +314,7 @@ class Population(ABC, Mapping[Any, int]):
         return self.outcomes()[index]
 
     def quantile(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the cdf.
+        """Returns a quantile, `n / d` of the way through the CDF.
 
         If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
@@ -363,6 +363,17 @@ class Population(ABC, Mapping[Any, int]):
         sd_i = self.marginals[i].standard_deviation()
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
+
+    def sample(self):
+        """A single random sample from this population.
+
+        This uses the standard `random` package and is not cryptographically
+        secure.
+        """
+        # We don't use random.choices since that is based on floats rather than ints.
+        r = random.randrange(self.denominator())
+        index = bisect.bisect_right(self.quantities_le(), r)
+        return self.outcomes()[index]
 
     def format(self, format_spec: str, **kwargs) -> str:
         """Formats this mapping as a string.

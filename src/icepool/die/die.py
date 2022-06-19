@@ -13,7 +13,6 @@ from functools import cached_property
 import itertools
 import math
 import operator
-import random
 
 from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
 
@@ -1130,8 +1129,8 @@ class Die(Population):
 
         Truth value does NOT matter.
 
-        If one die has a zero-weight outcome and the other die does not contain
-        that outcome, they are treated as unequal by this function.
+        If one die has a zero-quantity outcome and the other die does not
+        contain that outcome, they are treated as unequal by this function.
 
         The `==` and `!=` operators have a dual purpose; they return a die
         with a truth value determined by this method.
@@ -1150,18 +1149,6 @@ class Die(Population):
             return self.reduce().key_tuple() == other.reduce().key_tuple()
         else:
             return self.key_tuple() == other.key_tuple()
-
-    # Rolling.
-
-    def sample(self):
-        """Returns a random roll of this die.
-
-        Do not use for security purposes.
-        """
-        # We don't use random.choices since that is based on floats rather than ints.
-        r = random.randrange(self.denominator())
-        index = bisect.bisect_right(self.quantities_le(), r)
-        return self.outcomes()[index]
 
     # Strings.
 
