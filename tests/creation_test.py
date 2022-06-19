@@ -4,7 +4,7 @@ import icepool
 import pytest
 
 def test_d_syntax():
-    assert icepool.d6.weights() == (1,) * 6
+    assert icepool.d6.quantities() == (1,) * 6
     assert icepool.d6.probability(0) == 0.0
     assert icepool.d6.probability(1) == pytest.approx(1.0 / 6.0)
     assert icepool.d6.probability(6) == pytest.approx(1.0 / 6.0)
@@ -25,7 +25,7 @@ def test_list_no_min_outcome():
 def test_zero_outcomes():
     die = icepool.Die(range(7), times=[0, 1, 1, 1, 1, 1, 1])
     other = icepool.d6
-    assert die.has_zero_weights()
+    assert die.has_zero_quantities()
     assert not die.equals(other)
 
 def test_d6s():

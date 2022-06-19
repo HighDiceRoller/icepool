@@ -67,51 +67,51 @@ def test_cmp():
     expected = icepool.Die({-1:10, 0:5, 1:21})
     assert result.equals(expected)
 
-def test_weight_le():
-    assert icepool.d6.weight_le(3) == 3
+def test_quantity_le():
+    assert icepool.d6.quantity_le(3) == 3
 
-def test_weight_lt():
-    assert icepool.d6.weight_lt(3) == 2
+def test_quantity_lt():
+    assert icepool.d6.quantity_lt(3) == 2
     
-def test_weight_le_min():
-    assert icepool.d6.weight_le(1) == 1
+def test_quantity_le_min():
+    assert icepool.d6.quantity_le(1) == 1
 
-def test_weight_lt_min():
-    assert icepool.d6.weight_lt(1) == 0
+def test_quantity_lt_min():
+    assert icepool.d6.quantity_lt(1) == 0
 
-def test_weight_ge():
-    assert icepool.d6.weight_ge(3) == 4
+def test_quantity_ge():
+    assert icepool.d6.quantity_ge(3) == 4
 
-def test_weight_gt():
-    assert icepool.d6.weight_gt(3) == 3
+def test_quantity_gt():
+    assert icepool.d6.quantity_gt(3) == 3
 
-def test_weight_ge_max():
-    assert icepool.d6.weight_ge(6) == 1
+def test_quantity_ge_max():
+    assert icepool.d6.quantity_ge(6) == 1
 
-def test_weight_gt_max():
-    assert icepool.d6.weight_gt(6) == 0
+def test_quantity_gt_max():
+    assert icepool.d6.quantity_gt(6) == 0
 
 die_spaced = icepool.Die(range(-3, 4), times=[1, 0, 0, 1, 0, 0, 1])
 
-def test_weight_le_zero_weight():
-    assert die_spaced.weight_le(-1) == 1
-    assert die_spaced.weight_le(0) == 2
-    assert die_spaced.weight_le(1) == 2
+def test_quantity_le_zero_weight():
+    assert die_spaced.quantity_le(-1) == 1
+    assert die_spaced.quantity_le(0) == 2
+    assert die_spaced.quantity_le(1) == 2
 
-def test_weight_lt_zero_weight():
-    assert die_spaced.weight_lt(-1) == 1
-    assert die_spaced.weight_lt(0) == 1
-    assert die_spaced.weight_lt(1) == 2
+def test_quantity_lt_zero_weight():
+    assert die_spaced.quantity_lt(-1) == 1
+    assert die_spaced.quantity_lt(0) == 1
+    assert die_spaced.quantity_lt(1) == 2
     
-def test_weight_ge_zero_weight():
-    assert die_spaced.weight_ge(-1) == 2
-    assert die_spaced.weight_ge(0) == 2
-    assert die_spaced.weight_ge(1) == 1
+def test_quantity_ge_zero_weight():
+    assert die_spaced.quantity_ge(-1) == 2
+    assert die_spaced.quantity_ge(0) == 2
+    assert die_spaced.quantity_ge(1) == 1
 
-def test_weight_gt_zero_weight():
-    assert die_spaced.weight_gt(-1) == 2
-    assert die_spaced.weight_gt(0) == 1
-    assert die_spaced.weight_gt(1) == 1
+def test_quantity_gt_zero_weight():
+    assert die_spaced.quantity_gt(-1) == 2
+    assert die_spaced.quantity_gt(0) == 1
+    assert die_spaced.quantity_gt(1) == 1
 
 def test_nearest_le():
     assert icepool.d6.nearest_le(0) == None

@@ -109,11 +109,11 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
     # Quantities.
 
-    def weights(self) -> CountsValuesView:
-        """The weights of the mapping in sorted order.
+    def quantities(self) -> CountsValuesView:
+        """The quantities of the mapping in sorted order.
 
         These are also the `values` of the mapping.
-        Prefer to use the name `weights`.
+        Prefer to use the name `quantities`.
         """
         return self.values()
 
@@ -122,7 +122,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         return sum(self.values())
 
     def denominator(self) -> int:
-        """The sum of all values (e.g weights or dups).
+        """The sum of all quantities (e.g weights or dups).
 
         For the number of unique outcomes, including those with zero numerator,
         use `len()`.
@@ -147,34 +147,35 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         else:
             return self._pmf
 
-    # Weights.
+    # Quantities.
 
-    def has_zero_weights(self) -> bool:
-        """`True` iff `self` contains at least one outcome with zero weight. """
+    def has_zero_quantities(self) -> bool:
+        """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
 
     @cached_property
-    def _cweights(self) -> Sequence[int]:
+    def _cquantities(self) -> Sequence[int]:
         return tuple(itertools.accumulate(self.values()))
 
-    def cweights(self) -> Sequence[int]:
-        """Cumulative weights. The weight <= each outcome in order. """
-        return self._cweights
+    def cquantities(self) -> Sequence[int]:
+        """Cumulative quantities. The quantity <= each outcome in order. """
+        return self._cquantities
 
     @cached_property
-    def _sweights(self) -> Sequence[int]:
+    def _squantities(self) -> Sequence[int]:
         return tuple(
             itertools.accumulate(self.values()[:-1],
                                  operator.sub,
                                  initial=self.denominator()))
 
-    def sweights(self) -> Sequence[int]:
-        """Survival weights. The weight >= each outcome in order. """
-        return self._sweights
+    def squantities(self) -> Sequence[int]:
+        """Survival quantities. The quantity >= each outcome in order. """
+        return self._squantities
 
     @cached_property
     def _cdf(self):
-        return tuple(weight / self.denominator() for weight in self.cweights())
+        return tuple(
+            quantity / self.denominator() for quantity in self.cquantities())
 
     def cdf(self, percent: bool = False):
         """Cumulative distribution function. The chance of rolling <= each outcome in order.
@@ -190,7 +191,8 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
     @cached_property
     def _sf(self):
-        return tuple(weight / self.denominator() for weight in self.sweights())
+        return tuple(
+            quantity / self.denominator() for quantity in self.squantities())
 
     def sf(self, percent: bool = False):
         """Survival function. The chance of rolling >= each outcome in order.
@@ -204,45 +206,45 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         else:
             return self._sf
 
-    def weight_eq(self, outcome) -> int:
-        """Returns the weight of a single outcome, or 0 if not present. """
+    def quantity(self, outcome) -> int:
+        """Returns the quantity of a single outcome, or 0 if not present. """
         return self.get(outcome, 0)
 
-    def weight_ne(self, outcome) -> int:
-        """Returns the weight != a single outcome. """
-        return self.denominator() - self.weight_eq(outcome)
+    def quantity_ne(self, outcome) -> int:
+        """Returns the quantity != a single outcome. """
+        return self.denominator() - self.quantity(outcome)
 
-    def weight_le(self, outcome) -> int:
-        """Returns the weight <= a single outcome. """
+    def quantity_le(self, outcome) -> int:
+        """Returns the quantity <= a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
-        return self.cweights()[index]
+        return self.cquantities()[index]
 
-    def weight_lt(self, outcome) -> int:
-        """Returns the weight < a single outcome. """
+    def quantity_lt(self, outcome) -> int:
+        """Returns the quantity < a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
-        return self.cweights()[index]
+        return self.cquantities()[index]
 
-    def weight_ge(self, outcome) -> int:
-        """Returns the weight >= a single outcome. """
+    def quantity_ge(self, outcome) -> int:
+        """Returns the quantity >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= len(self):
             return 0
-        return self.sweights()[index]
+        return self.squantities()[index]
 
-    def weight_gt(self, outcome) -> int:
-        """Returns the weight > a single outcome. """
+    def quantity_gt(self, outcome) -> int:
+        """Returns the quantity > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self):
             return 0
-        return self.sweights()[index]
+        return self.squantities()[index]
 
     def probability(self, outcome):
         """Returns the probability of a single outcome. """
-        return self.weight_eq(outcome) / self.denominator()
+        return self.quantity(outcome) / self.denominator()
 
     # Scalar statistics.
 
@@ -251,12 +253,12 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
         These are sorted from lowest to highest.
         """
-        return tuple(outcome for outcome, weight in self.items()
-                     if weight == self.modal_weight())
+        return tuple(outcome for outcome, quantity in self.items()
+                     if quantity == self.modal_quantity())
 
-    def modal_weight(self) -> int:
-        """The highest weight of any single outcome. """
-        return max(self.weights())
+    def modal_quantity(self) -> int:
+        """The highest quantity of any single outcome. """
+        return max(self.quantities())
 
     def ks_stat(self, other):
         """Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
@@ -294,7 +296,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
         If the result lies between two outcomes, returns the lower of the two.
         """
-        index = bisect.bisect_left(self.cweights(),
+        index = bisect.bisect_left(self.cquantities(),
                                    (n * self.denominator() + d - 1) // d)
         if index >= len(self):
             return self.max_outcome()
@@ -305,7 +307,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
         If the result lies between two outcomes, returns the higher of the two.
         """
-        index = bisect.bisect_right(self.cweights(),
+        index = bisect.bisect_right(self.cquantities(),
                                     n * self.denominator() // d)
         if index >= len(self):
             return self.max_outcome()
@@ -321,14 +323,14 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
 
     def mean(self):
-        return sum(outcome * weight
-                   for outcome, weight in self.items()) / self.denominator()
+        return sum(outcome * quantity
+                   for outcome, quantity in self.items()) / self.denominator()
 
     def variance(self):
         mean = self.mean()
         mean_of_squares = sum(
-            weight * outcome**2
-            for outcome, weight in self.items()) / self.denominator()
+            quantity * outcome**2
+            for outcome, quantity in self.items()) / self.denominator()
         return mean_of_squares - mean * mean
 
     def standard_deviation(self):
@@ -354,8 +356,8 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
     def covariance(self, i: int, j: int):
         mean_i = self.marginals[i].mean()
         mean_j = self.marginals[j].mean()
-        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * weight
-                   for outcome, weight in self.items()) / self.denominator()
+        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * quantity
+                   for outcome, quantity in self.items()) / self.denominator()
 
     def correlation(self, i: int, j: int):
         sd_i = self.marginals[i].standard_deviation()

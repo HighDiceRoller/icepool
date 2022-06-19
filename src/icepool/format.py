@@ -77,9 +77,9 @@ def gather_cols(mapping: OutcomeQuantityMapping,
                 if comparator == '==':
                     col = list(mapping.values())
                 elif comparator == '<=':
-                    col = mapping.cweights()  # type: ignore
+                    col = mapping.cquantities()  # type: ignore
                 elif comparator == '>=':
-                    col = mapping.sweights()  # type: ignore
+                    col = mapping.squantities()  # type: ignore
                 result.append([str(x) for x in col])
             elif denom_type == '%':
                 if mapping.denominator() == 0:

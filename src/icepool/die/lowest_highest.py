@@ -87,7 +87,7 @@ def _lowest_single(*dice) -> 'icepool.Die':
     dice = tuple(die.clip(max_outcome=max_outcome) for die in dice)
     dice = icepool.align(*dice)
     sweights = tuple(
-        math.prod(t) for t in zip(*(die.sweights() for die in dice)))
+        math.prod(t) for t in zip(*(die.squantities() for die in dice)))
     return icepool.from_sweights(dice[0].outcomes(), sweights)
 
 
@@ -102,5 +102,5 @@ def _highest_single(*dice) -> 'icepool.Die':
     dice = tuple(die.clip(min_outcome=min_outcome) for die in dice)
     dice = icepool.align(*dice)
     cweights = tuple(
-        math.prod(t) for t in zip(*(die.cweights() for die in dice)))
+        math.prod(t) for t in zip(*(die.cquantities() for die in dice)))
     return icepool.from_cweights(dice[0].outcomes(), cweights)

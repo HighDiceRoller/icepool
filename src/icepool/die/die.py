@@ -462,7 +462,7 @@ class Die(icepool.OutcomeQuantityMapping):
         This may remove outcomes (if they are not present in the argument)
         and/or add zero-weight outcomes (if they are not present in this die).
         """
-        data = {x: self.weight_eq(x) for x in outcomes}
+        data = {x: self.quantity(x) for x in outcomes}
         return icepool.Die(data)
 
     def trim(self) -> 'Die':
@@ -473,7 +473,7 @@ class Die(icepool.OutcomeQuantityMapping):
     @cached_property
     def _popped_min(self) -> tuple['Die', int]:
         die = icepool.Die(self._data.remove_min())
-        return die, self.weights()[0]
+        return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
         """Returns a die with the min outcome removed, and the weight of the removed outcome.
@@ -486,7 +486,7 @@ class Die(icepool.OutcomeQuantityMapping):
     @cached_property
     def _popped_max(self) -> tuple['Die', int]:
         die = icepool.Die(self._data.remove_max())
-        return die, self.weights()[-1]
+        return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
         """Returns a die with the max outcome removed, and the weight of the removed outcome.
@@ -562,7 +562,7 @@ class Die(icepool.OutcomeQuantityMapping):
                 final_repl = list(repl)
 
             return icepool.Die(final_repl,
-                               self.weights(),
+                               self.quantities(),
                                denominator_method=denominator_method)
         elif max_depth is not None:
             next = self.sub(repl,
@@ -748,7 +748,7 @@ class Die(icepool.OutcomeQuantityMapping):
         if rolls == 0:
             return self.zero()
         return icepool.from_cweights(self.outcomes(),
-                                     [x**rolls for x in self.cweights()])
+                                     [x**rolls for x in self.cquantities()])
 
     def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the lowest.
@@ -776,7 +776,7 @@ class Die(icepool.OutcomeQuantityMapping):
         if rolls == 0:
             return self.zero()
         return icepool.from_sweights(self.outcomes(),
-                                     [x**rolls for x in self.sweights()])
+                                     [x**rolls for x in self.squantities()])
 
     # Unary operators.
 
@@ -979,7 +979,7 @@ class Die(icepool.OutcomeQuantityMapping):
         d = lo.denominator() * hi.denominator()
 
         lo_cweight = 0
-        lo_iter = iter(zip(lo.outcomes(), lo.cweights()))
+        lo_iter = iter(zip(lo.outcomes(), lo.cquantities()))
         lo_outcome, next_lo_cweight = next(lo_iter)
         for hi_outcome, hi_weight in hi.items():
             while op(lo_outcome, hi_outcome):
@@ -1171,7 +1171,7 @@ class Die(icepool.OutcomeQuantityMapping):
         """
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(self.denominator())
-        index = bisect.bisect_right(self.cweights(), r)
+        index = bisect.bisect_right(self.cquantities(), r)
         return self.outcomes()[index]
 
     # Strings.
@@ -1205,7 +1205,7 @@ class Die(icepool.OutcomeQuantityMapping):
         """
         if len(format_spec) == 0:
             format_spec = 'md:*o'
-            if not self.is_empty() and self.modal_weight() < 10**30:
+            if not self.is_empty() and self.modal_quantity() < 10**30:
                 format_spec += 'w=='
             format_spec += '%=='
 

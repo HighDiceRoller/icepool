@@ -48,7 +48,7 @@ class Counts(Mapping[Any, int]):
         return 0 in self.values()
 
     def has_zero_values(self) -> bool:
-        """Returns `True` iff `self` contains at least one zero weight. """
+        """Returns `True` iff `self` contains at least one zero value. """
         return self._has_zero_values
 
     def __len__(self) -> int:
@@ -124,7 +124,7 @@ class Counts(Mapping[Any, int]):
         gcd = math.gcd(*self.values())
         if gcd <= 1:
             return self
-        data = [(outcome, weight // gcd) for outcome, weight in self.items()]
+        data = [(outcome, value // gcd) for outcome, value in self.items()]
         return Counts(data)
 
 
