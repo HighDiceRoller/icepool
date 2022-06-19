@@ -71,6 +71,7 @@ def gather_cols(die: 'icepool.Die',
             comparator = token[1:]
             denom_type = token[0]
             if denom_type == 'w':
+                col: Sequence[int]
                 if comparator == '==':
                     col = die.weights()
                 elif comparator == '<=':
