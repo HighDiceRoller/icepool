@@ -77,9 +77,9 @@ def gather_cols(mapping: Population,
                 if comparator == '==':
                     col = list(mapping.values())
                 elif comparator == '<=':
-                    col = mapping.quantities_le()  # type: ignore
+                    col = mapping.quantities_le()
                 elif comparator == '>=':
-                    col = mapping.quantities_ge()  # type: ignore
+                    col = mapping.quantities_ge()
                 result.append([str(x) for x in col])
             elif denom_type == '%':
                 if mapping.denominator() == 0:
@@ -88,9 +88,9 @@ def gather_cols(mapping: Population,
                     if comparator == '==':
                         col = mapping.probabilities()
                     elif comparator == '<=':
-                        col = mapping.probabilities_le()  # type: ignore
+                        col = mapping.probabilities_le()
                     elif comparator == '>=':
-                        col = mapping.probabilities_ge()  # type: ignore
+                        col = mapping.probabilities_ge()
                     result.append([f'{x:0.6%}' for x in col])
     return result
 
