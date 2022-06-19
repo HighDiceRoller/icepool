@@ -25,4 +25,4 @@ def test_explode_d6(max_depth):
 @pytest.mark.parametrize('max_depth', range(6))
 def test_explode_multiple_weight(max_depth):
     result = icepool.d6.explode(outcomes=[5, 6], max_depth=max_depth)
-    assert result.total_weight() == 6 ** (max_depth + 1)
+    assert result.denominator() == 6 ** (max_depth + 1)

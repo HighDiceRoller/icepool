@@ -1,10 +1,11 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.die.format
+import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
+from icepool.mapping import OutcomeCountMapping
 
 import bisect
 from collections import defaultdict
@@ -18,7 +19,7 @@ from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die(Mapping[Any, int]):
+class Die(OutcomeCountMapping):
     """An immutable `Mapping` of outcomes to nonnegative `int` weights.
 
     Dice are immutable. Methods do not modify the die in-place;
@@ -249,6 +250,9 @@ class Die(Mapping[Any, int]):
 
     values = weights
 
+    def value_name(self) -> str:
+        return 'weight'
+
     def items(self) -> CountsItemsView:
         """Returns the sequence of sorted outcome, weight pairs. """
         return self._data.items()
@@ -265,65 +269,14 @@ class Die(Mapping[Any, int]):
 
     __len__ = num_outcomes
 
-    def is_empty(self) -> bool:
-        """Returns `True` if this die has no outcomes. """
-        return self.num_outcomes() == 0
-
     def __contains__(self, outcome) -> bool:
         return outcome in self._data
-
-    @cached_property
-    def _outcome_len(self) -> int | None:
-        result = None
-        for outcome in self.outcomes():
-            try:
-                if result is None:
-                    result = len(outcome)
-                elif len(outcome) != result:
-                    return None
-            except TypeError:
-                return None
-        return result
-
-    def outcome_len(self) -> int | None:
-        """Returns the common length of the outcomes.
-
-        If any outcome has no length, the outcomes have mixed length, or the
-        die is empty, the result is `None`.
-        """
-        return self._outcome_len
 
     def has_zero_weights(self) -> bool:
         """Returns `True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_values()
 
     # Weights.
-
-    @cached_property
-    def _denominator(self) -> int:
-        return sum(self._data.values())
-
-    def denominator(self) -> int:
-        """The total weight of all outcomes. """
-        return self._denominator
-
-    total_weight = denominator
-
-    @cached_property
-    def _pmf(self):
-        return tuple(weight / self.denominator() for weight in self.weights())
-
-    def pmf(self, percent: bool = False):
-        """Probability mass function. The probability of rolling each outcome in order.
-
-        Args:
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
-        """
-        if percent:
-            return tuple(100.0 * x for x in self._pmf)
-        else:
-            return self._pmf
 
     @cached_property
     def _cweights(self) -> Sequence[int]:
@@ -1524,9 +1477,9 @@ class Die(Mapping[Any, int]):
 
         output_format, format_spec = format_spec.split(':')
         if output_format == 'md':
-            return icepool.die.format.markdown(self, format_spec)
+            return icepool.format.markdown(self, format_spec)
         elif output_format == 'csv':
-            return icepool.die.format.csv(self, format_spec, **kwargs)
+            return icepool.format.csv(self, format_spec, **kwargs)
         else:
             raise ValueError(f"Unsupported output format '{output_format}'")
 

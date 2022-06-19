@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.mapping import OutcomeCountMapping
 
 import csv as csv_lib
 import io
@@ -16,11 +17,6 @@ COMPARATOR_PATTERN = f'(?:[w%](?:{COMPARATOR_OPTIONS}))'
 
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
-DENOM_TYPE_HEADERS = {
-    'w': 'Weight',
-    '%': 'Chance (%)',
-}
-
 
 def split_format_spec(format_spec: str) -> Sequence[str]:
     """Splits the format_spec into its components."""
@@ -30,7 +26,7 @@ def split_format_spec(format_spec: str) -> Sequence[str]:
     return result
 
 
-def make_headers(die: 'icepool.Die',
+def make_headers(mapping: OutcomeCountMapping,
                  format_tokens: Sequence[str]) -> Sequence[str]:
     """Generates a list of strings for the header."""
     result: list[str] = []
@@ -38,64 +34,70 @@ def make_headers(die: 'icepool.Die',
         if token == 'o':
             result.append('Outcome')
         elif token == '*o':
-            r = die.outcome_len()
+            r = mapping.outcome_len()
             if r is None:
                 result.append('Outcome')
             else:
                 for i in range(r):
                     result.append(f'Outcome[{i}]')
         else:
+            heading = ''
+
+            if token[0] == 'w':
+                heading += mapping.value_name().title()
+            elif token[0] == '%':
+                heading += 'Chance'
+
             comparator = token[1:]
-            denom_type = DENOM_TYPE_HEADERS[token[0]]
-            if comparator == '==':
-                result.append(denom_type)
-            else:
-                result.append(f'{denom_type} {comparator}')
+            if comparator != '==':
+                heading += ' ' + comparator
+
+            result.append(heading)
     return result
 
 
-def gather_cols(die: 'icepool.Die',
+def gather_cols(mapping: OutcomeCountMapping,
                 format_tokens: Sequence[str]) -> Sequence[Sequence]:
     result: list[list[str]] = []
     for token in format_tokens:
         if token == 'o':
-            result.append([str(x) for x in die.outcomes()])
+            result.append([str(x) for x in mapping.outcomes()])
         elif token == '*o':
-            r = die.outcome_len()
+            r = mapping.outcome_len()
             if r is None:
-                result.append([str(x) for x in die.outcomes()])
+                result.append([str(x) for x in mapping.outcomes()])
             else:
                 for i in range(r):
-                    result.append([str(x[i]) for x in die.outcomes()])
+                    result.append([str(x[i]) for x in mapping.outcomes()])
         else:
             comparator = token[1:]
             denom_type = token[0]
             if denom_type == 'w':
                 col: Sequence[int]
                 if comparator == '==':
-                    col = die.weights()
+                    col = list(mapping.values())
                 elif comparator == '<=':
-                    col = die.cweights()
+                    col = mapping.cweights()  # type: ignore
                 elif comparator == '>=':
-                    col = die.sweights()
+                    col = mapping.sweights()  # type: ignore
                 result.append([str(x) for x in col])
             elif denom_type == '%':
-                if die.denominator() == 0:
-                    result.append(['n/a' for x in die.outcomes()])
+                if mapping.denominator() == 0:
+                    result.append(['n/a' for x in mapping.outcomes()])
                 else:
                     if comparator == '==':
-                        col = die.pmf(percent=True)
+                        col = mapping.pmf()
                     elif comparator == '<=':
-                        col = die.cdf(percent=True)
+                        col = mapping.cdf()  # type: ignore
                     elif comparator == '>=':
-                        col = die.sf(percent=True)
-                    result.append([f'{x:0.6f}' for x in col])
+                        col = mapping.sf()  # type: ignore
+                    result.append([f'{x:0.6%}' for x in col])
     return result
 
 
-def make_rows(die: 'icepool.Die',
+def make_rows(mapping: OutcomeCountMapping,
               format_tokens: Sequence[str]) -> Sequence[Sequence[str]]:
-    cols = gather_cols(die, format_tokens)
+    cols = gather_cols(mapping, format_tokens)
     return [[c for c in row_data] for row_data in zip(*cols)]
 
 
@@ -120,22 +122,22 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     return result
 
 
-def markdown(die: 'icepool.Die', format_spec: str) -> str:
-    """Formats the die as a Markdown table."""
-    if die.is_empty():
-        return 'Empty die\n'
+def markdown(mapping: OutcomeCountMapping, format_spec: str) -> str:
+    """Formats the mapping as a Markdown table."""
+    if mapping.is_empty():
+        return f'Empty {type(mapping).__name__}\n'
 
     format_tokens = split_format_spec(format_spec)
 
-    headers = make_headers(die, format_tokens)
-    rows = make_rows(die, format_tokens)
+    headers = make_headers(mapping, format_tokens)
+    rows = make_rows(mapping, format_tokens)
     col_widths = compute_col_widths(headers, rows)
     alignments = compute_alignments(rows)
 
-    result = f'Denominator: {die.denominator()}\n\n'
+    result = f'Denominator: {mapping.denominator()}\n\n'
     result += '|'
-    for header, col_width in zip(headers, col_widths):
-        result += f' {header:<{col_width}} |'
+    for header, alignment, col_width in zip(headers, alignments, col_widths):
+        result += f' {header:{alignment}{col_width}} |'
     result += '\n'
 
     result += '|'
@@ -155,13 +157,17 @@ def markdown(die: 'icepool.Die', format_spec: str) -> str:
     return result
 
 
-def csv(die, format_spec: str, *, dialect: str = 'excel', **fmtparams) -> str:
-    """Formats the die as a comma-separated-values string."""
+def csv(mapping,
+        format_spec: str,
+        *,
+        dialect: str = 'excel',
+        **fmtparams) -> str:
+    """Formats the mapping as a comma-separated-values string."""
 
     format_tokens = split_format_spec(format_spec)
 
-    headers = make_headers(die, format_tokens)
-    rows = make_rows(die, format_tokens)
+    headers = make_headers(mapping, format_tokens)
+    rows = make_rows(mapping, format_tokens)
 
     with io.StringIO() as out:
         writer = csv_lib.writer(out, dialect=dialect, **fmtparams)
