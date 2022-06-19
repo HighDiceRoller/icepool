@@ -135,3 +135,7 @@ class Deal(OutcomeCountGen):
         return type(
             self
         ).__qualname__ + f'({repr(self.deck())}, hand_sizes={self.hand_sizes()})'
+
+    def __str__(self) -> str:
+        return f'Deal of hand_sizes={self.hand_sizes()} from deck:\n' + str(
+            self.deck())
