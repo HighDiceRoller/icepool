@@ -186,13 +186,12 @@ class Deck(OutcomeCountMapping):
 
         * `o`: Outcomes.
         * `*o`: Outcomes, unpacked if applicable.
-        * `w==`, `w<=`, `w>=`: Weights ==, <=, or >= each outcome.
+        * `w==`, `w<=`, `w>=`: Dups ==, <=, or >= each outcome.
         * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
 
         Columns may optionally be separated using ` ` (space) or `|` characters.
 
-        The default is `'md:*o|w==|%=='`, with the weight column being omitted
-        if any weight exceeds 10**30.
+        The default is `'md:*o|w==|%=='`.
         """
         if len(format_spec) == 0:
             format_spec = 'md:*o|w==|%=='

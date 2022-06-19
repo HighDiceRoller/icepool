@@ -12,10 +12,10 @@ from collections.abc import Sequence
 
 
 @cache
-def standard(num_sides: int, /) -> 'icepool.Die':
+def standard(sides: int, /) -> 'icepool.Die':
     """A standard die.
 
-    Specifically, the outcomes are `int`s from `1` to `num_sides` inclusive,
+    Specifically, the outcomes are `int`s from `1` to `sides` inclusive,
     with weight 1 each.
 
     Don't confuse this with `icepool.Die()`:
@@ -23,11 +23,11 @@ def standard(num_sides: int, /) -> 'icepool.Die':
     * `icepool.Die([6])`: A die that always rolls the integer 6.
     * `icepool.d(6)`: A d6.
     """
-    if not isinstance(num_sides, int):
+    if not isinstance(sides, int):
         raise TypeError('Argument to standard() must be an int.')
-    elif num_sides < 1:
+    elif sides < 1:
         raise ValueError('Standard die must have at least one side.')
-    return icepool.Die(range(1, num_sides + 1))
+    return icepool.Die(range(1, sides + 1))
 
 
 d = standard

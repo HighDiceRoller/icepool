@@ -5,7 +5,7 @@ import icepool
 import math
 
 
-def lowest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
+def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The lowest outcome or sum of the lowest outcomes among the dice.
 
     Args:
@@ -14,17 +14,17 @@ def lowest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         num_drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
     """
-    if num_keep < 0:
-        raise ValueError(f'num_drop={num_keep} cannot be negative.')
-    if num_drop < 0:
-        raise ValueError(f'num_drop={num_drop} cannot be negative.')
+    if keep < 0:
+        raise ValueError(f'num_keep={keep} cannot be negative.')
+    if drop < 0:
+        raise ValueError(f'num_drop={drop} cannot be negative.')
 
-    start = min(num_drop, len(dice))
-    stop = min(num_keep + num_drop, len(dice))
-    return _keep(*dice, start=start, stop=stop)
+    start = min(drop, len(dice))
+    stop = min(keep + drop, len(dice))
+    return _lowest_highest(*dice, start=start, stop=stop)
 
 
-def highest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
+def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The highest outcome or sum of the highest outcomes among the dice.
 
     Args:
@@ -33,17 +33,17 @@ def highest(*dice, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
         num_drop: This number of highest dice will be dropped before keeping dice
             to be summed.
     """
-    if num_keep < 0:
-        raise ValueError(f'num_drop={num_keep} cannot be negative.')
-    if num_drop < 0:
-        raise ValueError(f'num_drop={num_drop} cannot be negative.')
+    if keep < 0:
+        raise ValueError(f'num_keep={keep} cannot be negative.')
+    if drop < 0:
+        raise ValueError(f'num_drop={drop} cannot be negative.')
 
-    start = len(dice) - min(num_keep + num_drop, len(dice))
-    stop = len(dice) - min(num_drop, len(dice))
-    return _keep(*dice, start=start, stop=stop)
+    start = len(dice) - min(keep + drop, len(dice))
+    stop = len(dice) - min(drop, len(dice))
+    return _lowest_highest(*dice, start=start, stop=stop)
 
 
-def _keep(*dice, start: int, stop: int) -> 'icepool.Die':
+def _lowest_highest(*dice, start: int, stop: int) -> 'icepool.Die':
     """Common code for `lowest` and `highest`.
 
     Args:

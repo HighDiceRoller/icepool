@@ -1,7 +1,6 @@
 import _context
 
 import icepool
-import icepool.die.keep
 import pytest
 
 from icepool import d4, d6, d8, d10, d12
@@ -9,16 +8,16 @@ from icepool import d4, d6, d8, d10, d12
 max_tuple_length = 5
 max_num_values = 5
 
-def bf_keep_highest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return icepool.Die([0])
+def bf_keep_highest(die, num_dice, keep, drop=0):
+    if keep == 0: return icepool.Die([0])
     def func(*outcomes):
-        return sum(sorted(outcomes)[-(num_keep+num_drop):len(outcomes)-num_drop])
+        return sum(sorted(outcomes)[-(keep+drop):len(outcomes)-drop])
     return icepool.apply(func, *([die] * num_dice))
     
-def bf_keep_lowest(die, num_dice, num_keep, num_drop=0):
-    if num_keep == 0: return icepool.Die([0])
+def bf_keep_lowest(die, num_dice, keep, drop=0):
+    if keep == 0: return icepool.Die([0])
     def func(*outcomes):
-        return sum(sorted(outcomes)[num_drop:num_keep+num_drop])
+        return sum(sorted(outcomes)[drop:keep+drop])
     return icepool.apply(func, *([die] * num_dice))
 
 def bf_keep(die, num_dice, keep_indexes):
@@ -31,39 +30,39 @@ def bf_diff_highest_lowest(die, num_dice):
         return max(outcomes) - min(outcomes)
     return icepool.apply(func, *([die] * num_dice))
 
-@pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_highest(num_keep):
+@pytest.mark.parametrize('keep', range(1, 6))
+def test_keep_highest(keep):
     die = icepool.d12
-    result = die.keep_highest(4, num_keep)
-    expected = bf_keep_highest(die, 4, num_keep)
+    result = die.keep_highest(4, keep)
+    expected = bf_keep_highest(die, 4, keep)
     assert result.equals(expected)
 
-@pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_highest_zero_weights(num_keep):
+@pytest.mark.parametrize('keep', range(1, 6))
+def test_keep_highest_zero_weights(keep):
     die = icepool.Die(range(6), times=[0, 0, 1, 1, 1, 1])
-    result = die.keep_highest(4, num_keep).trim()
-    expected = bf_keep_highest(icepool.d4 + 1, 4, num_keep)
+    result = die.keep_highest(4, keep).trim()
+    expected = bf_keep_highest(icepool.d4 + 1, 4, keep)
     assert result.equals(expected)
 
-@pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_highest_drop_highest(num_keep):
+@pytest.mark.parametrize('keep', range(1, 6))
+def test_keep_highest_drop_highest(keep):
     die = icepool.d12
-    result = die.keep_highest(4, num_keep, num_drop=1)
-    expected = bf_keep_highest(die, 4, num_keep, num_drop=1)
+    result = die.keep_highest(4, keep, drop=1)
+    expected = bf_keep_highest(die, 4, keep, drop=1)
     assert result.equals(expected)
 
-@pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_lowest(num_keep):
+@pytest.mark.parametrize('keep', range(1, 6))
+def test_keep_lowest(keep):
     die = icepool.d12
-    result = die.keep_lowest(4, num_keep)
-    expected = bf_keep_lowest(die, 4, num_keep)
+    result = die.keep_lowest(4, keep)
+    expected = bf_keep_lowest(die, 4, keep)
     assert result.equals(expected)
 
-@pytest.mark.parametrize('num_keep', range(1, 6))
-def test_keep_lowest_drop_highest(num_keep):
+@pytest.mark.parametrize('keep', range(1, 6))
+def test_keep_lowest_drop_highest(keep):
     die = icepool.d12
-    result = die.keep_lowest(4, num_keep, num_drop=1)
-    expected = bf_keep_lowest(die, 4, num_keep, num_drop=1)
+    result = die.keep_lowest(4, keep, drop=1)
+    expected = bf_keep_lowest(die, 4, keep, drop=1)
     assert result.equals(expected)
 
 def test_pool_select():
@@ -78,13 +77,13 @@ def test_sum_from_pool():
 def test_pool_select_multi():
     pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[0,0,2,0,0])
-    expected = 2 * icepool.d6.keep_highest(5, 1, num_drop=2)
+    expected = 2 * icepool.d6.keep_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 def test_pool_select_negative():
     pool = icepool.d6.pool()
     result = icepool.sum_gen.eval(pool[0,0,-2,0,0])
-    expected = -2 * icepool.d6.keep_highest(5, 1, num_drop=2)
+    expected = -2 * icepool.d6.keep_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 def test_pool_select_mixed_sign():

@@ -23,7 +23,7 @@ def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
 
     Args:
         cls: The pool class.
-        sorted_num_dices: A sorted sequence of (die, num_dice) pairs.
+        dice: A sorted sequence of (die, num_dice) pairs.
         post_roll_counts: A tuple of length equal to the number of dice.
     """
     self = super(Pool, cls).__new__(cls)
@@ -386,42 +386,42 @@ class Pool(OutcomeCountGen):
         if skip_weight is not None:
             yield Pool([]), (sum(self.post_roll_counts()),), skip_weight
 
-    def lowest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
+    def lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The lowest outcome or sum of the lowest outcomes in the pool.
 
         The args override any `post_roll_counts` of this pool.
 
         Args:
-            num_keep: The number of lowest dice will be summed.
-            num_drop: This number of lowest dice will be dropped before keeping
+            keep: The number of lowest dice will be summed.
+            drop: This number of lowest dice will be dropped before keeping
                 dice to be summed.
         """
-        if num_keep < 0:
-            raise ValueError(f'num_drop={num_keep} cannot be negative.')
-        if num_drop < 0:
-            raise ValueError(f'num_drop={num_drop} cannot be negative.')
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+        if drop < 0:
+            raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = min(num_drop, self.num_dice())
-        stop = min(num_keep + num_drop, self.num_dice())
+        start = min(drop, self.num_dice())
+        stop = min(keep + drop, self.num_dice())
         return self[start:stop].sum()  # type: ignore
 
-    def highest(self, num_keep: int = 1, num_drop: int = 0) -> 'icepool.Die':
+    def highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The highest outcome or sum of the highest outcomes in the pool.
 
         The args override any `post_roll_counts` of this pool.
 
         Args:
-            num_keep: The number of highest dice will be summed.
-            num_drop: This number of highest dice will be dropped before keeping
+            keep: The number of highest dice will be summed.
+            drop: This number of highest dice will be dropped before keeping
                 dice to be summed.
         """
-        if num_keep < 0:
-            raise ValueError(f'num_drop={num_keep} cannot be negative.')
-        if num_drop < 0:
-            raise ValueError(f'num_drop={num_drop} cannot be negative.')
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+        if drop < 0:
+            raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = self.num_dice() - min(num_keep + num_drop, self.num_dice())
-        stop = self.num_dice() - min(num_drop, self.num_dice())
+        start = self.num_dice() - min(keep + drop, self.num_dice())
+        stop = self.num_dice() - min(drop, self.num_dice())
         return self[start:stop].sum()  # type: ignore
 
     def __str__(self) -> str:

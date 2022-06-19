@@ -29,7 +29,7 @@ from icepool.die.die_with_truth import DieWithTruth
 
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
-from icepool.die.keep import lowest, highest
+from icepool.die.lowest_highest import lowest, highest
 
 from icepool.pool import Pool, standard_pool, clear_pool_cache
 from icepool.gen import OutcomeCountGen, GenGenerator

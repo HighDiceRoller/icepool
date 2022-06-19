@@ -983,24 +983,24 @@ class Die(OutcomeCountMapping):
 
     def keep_highest(self,
                      num_dice: int,
-                     num_keep: int = 1,
-                     num_drop: int = 0) -> 'Die':
+                     keep: int = 1,
+                     drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the highest.
 
         Args:
             num_dice: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
-            num_keep: The number of dice to keep.
-            num_drop: If provided, this many highest dice will be dropped before
+            keep: The number of dice to keep.
+            drop: If provided, this many highest dice will be dropped before
                 keeping.
 
         Returns:
             A die representing the probability distribution of the sum.
         """
-        if num_keep == 1 and num_drop == 0:
+        if keep == 1 and drop == 0:
             return self._keep_highest_single(num_dice)
-        start = -(num_keep + (num_drop or 0))
-        stop = -num_drop if num_drop > 0 else None
+        start = -(keep + (drop or 0))
+        stop = -drop if drop > 0 else None
         post_roll_counts = slice(start, stop)
         return self.pool(num_dice)[post_roll_counts].sum()
 
@@ -1011,27 +1011,24 @@ class Die(OutcomeCountMapping):
         return icepool.from_cweights(self.outcomes(),
                                      [x**num_dice for x in self.cweights()])
 
-    def keep_lowest(self,
-                    num_dice: int,
-                    num_keep: int = 1,
-                    num_drop: int = 0) -> 'Die':
+    def keep_lowest(self, num_dice: int, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the lowest.
 
         Args:
             num_dice: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
-            num_keep: The number of dice to keep.
-            num_drop: If provided, this many lowest dice will be dropped before
+            keep: The number of dice to keep.
+            drop: If provided, this many lowest dice will be dropped before
                 keeping.
 
         Returns:
             A die representing the probability distribution of the sum.
         """
-        if num_keep == 1 and num_drop == 0:
+        if keep == 1 and drop == 0:
             return self._keep_lowest_single(num_dice)
 
-        start = num_drop if num_drop > 0 else None
-        stop = num_keep + (num_drop or 0)
+        start = drop if drop > 0 else None
+        stop = keep + (drop or 0)
         post_roll_counts = slice(start, stop)
         return self.pool(num_dice)[post_roll_counts].sum()
 
