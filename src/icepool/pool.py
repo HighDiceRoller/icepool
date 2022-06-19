@@ -195,7 +195,7 @@ class Pool(OutcomeCountGen):
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
 
-        This is always an absolute selection on all `num_dice`,
+        This is always an absolute selection on all `size` dice,
         not a relative selection on already-selected dice,
         which would be ambiguous in the presence of multiple or negative counts.
 
@@ -446,32 +446,32 @@ class Pool(OutcomeCountGen):
 
 
 def post_roll_counts_tuple(
-        num_dice: int,
+        pool_size: int,
         post_roll_counts: int | slice | tuple[int, ...]) -> tuple[int, ...]:
     """Expresses `post_roll_counts` as a tuple.
 
     See `Pool.set_post_roll_counts()` for details.
 
     Args:
-        `num_dice`: An `int` specifying the number of dice.
+        `pool_size`: An `int` specifying the size of the pool.
         `post_roll_counts`: Raw specification for how the dice are to be counted.
     Raises:
         `ValueError` if:
             * More than one `Ellipsis` is used.
-            * An `Ellipsis` is used in the center with too few `num_dice`.
+            * An `Ellipsis` is used in the center with too few `pool_size`.
     """
     if isinstance(post_roll_counts, int):
-        result = [0] * num_dice
+        result = [0] * pool_size
         result[post_roll_counts] = 1
         return tuple(result)
     elif isinstance(post_roll_counts, slice):
         if post_roll_counts.step is not None:
             # "Step" is not useful here, so we repurpose it to set the number
             # of dice.
-            num_dice = post_roll_counts.step
+            pool_size = post_roll_counts.step
             post_roll_counts = slice(post_roll_counts.start,
                                      post_roll_counts.stop)
-        result = [0] * num_dice
+        result = [0] * pool_size
         result[post_roll_counts] = [1] * len(result[post_roll_counts])
         return tuple(result)
     else:
@@ -488,7 +488,7 @@ def post_roll_counts_tuple(
         if split is None:
             return tuple(post_roll_counts)
 
-        extra_dice = num_dice - len(post_roll_counts) + 1
+        extra_dice = pool_size - len(post_roll_counts) + 1
 
         if split == 0:
             # Ellipsis on left.
@@ -507,11 +507,11 @@ def post_roll_counts_tuple(
         else:
             # Ellipsis in center.
             if extra_dice < 0:
-                result = [0] * num_dice
-                for i in range(min(split, num_dice)):
+                result = [0] * pool_size
+                for i in range(min(split, pool_size)):
                     result[i] += post_roll_counts[i]
                 reverse_split = split - len(post_roll_counts)
-                for i in range(-1, max(reverse_split - 1, -num_dice - 1), -1):
+                for i in range(-1, max(reverse_split - 1, -pool_size - 1), -1):
                     result[i] += post_roll_counts[i]
                 return tuple(result)
             else:
