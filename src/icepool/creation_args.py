@@ -7,8 +7,7 @@ import itertools
 import math
 from collections import defaultdict
 
-from typing import Any, Callable
-from collections.abc import Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,

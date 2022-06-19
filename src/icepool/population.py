@@ -11,8 +11,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable
-from collections.abc import Mapping, MutableMapping, Sequence
+from typing import Any, Mapping, Sequence
 
 
 class Population(ABC, Mapping[Any, int]):

@@ -10,8 +10,7 @@ from collections import defaultdict
 from functools import cached_property
 import operator
 
-from typing import Any, Callable, Iterator
-from collections.abc import Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence
 
 
 class Deck(Population):

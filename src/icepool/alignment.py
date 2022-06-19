@@ -4,8 +4,7 @@ from icepool.gen import OutcomeCountGen
 
 from functools import cached_property
 
-from typing import Generator, TypeAlias
-from collections.abc import Collection, Sequence
+from typing import Collection, Generator, Sequence, TypeAlias
 
 AlignmentGenerator: TypeAlias = Generator[tuple['Alignment', Sequence[int],
                                                 int], None, None]

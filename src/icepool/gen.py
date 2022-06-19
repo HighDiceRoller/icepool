@@ -4,8 +4,7 @@ import icepool
 
 from abc import ABC, abstractmethod
 
-from typing import Callable, Generator, TypeAlias, TypeVar
-from collections.abc import Sequence
+from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
 
 GenGenerator: TypeAlias = Generator[tuple['OutcomeCountGen', Sequence[int],
                                           int], None, None]

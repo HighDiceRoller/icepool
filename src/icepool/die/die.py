@@ -15,8 +15,7 @@ import math
 import operator
 import random
 
-from typing import Any, Callable, Iterator
-from collections.abc import Container, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
 
 
 class Die(Population):

@@ -4,7 +4,7 @@ import icepool
 
 import math
 
-from collections.abc import Collection
+from typing import Collection
 
 
 def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:

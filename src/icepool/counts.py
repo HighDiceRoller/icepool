@@ -5,8 +5,7 @@ import icepool
 from functools import cached_property
 import math
 
-from collections.abc import Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
-from typing import Any, Callable
+from typing import Any, Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
 
 
 class Counts(Mapping[Any, int]):

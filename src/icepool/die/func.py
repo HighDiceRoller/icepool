@@ -7,8 +7,7 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable
-from collections.abc import Sequence
+from typing import Any, Callable, Sequence
 
 
 @cache

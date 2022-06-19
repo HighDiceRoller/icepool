@@ -12,8 +12,7 @@ import math
 from collections import defaultdict
 from functools import cache, cached_property
 
-from typing import Any, Generator
-from collections.abc import Collection, Mapping, MutableMapping, Sequence
+from typing import Any, Collection, Generator, Mapping, MutableMapping, Sequence
 
 
 @cache

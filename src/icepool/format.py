@@ -7,7 +7,7 @@ import csv as csv_lib
 import io
 import re
 
-from collections.abc import Sequence
+from typing import Sequence
 
 OUTCOME_PATTERN = r'(?:\*o|o)'
 

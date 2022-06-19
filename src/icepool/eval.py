@@ -9,8 +9,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Hashable
-from collections.abc import Collection, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Collection, Hashable, Mapping, MutableMapping, Sequence
 
 PREFERRED_DIRECTION_COST_FACTOR = 10
 """The preferred direction will be favored this times as much."""
