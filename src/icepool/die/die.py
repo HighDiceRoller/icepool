@@ -5,7 +5,7 @@ import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
-from icepool.mapping import OutcomeCountMapping
+from icepool.mapping import OutcomeNumMapping
 
 import bisect
 from collections import defaultdict
@@ -19,7 +19,7 @@ from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die(OutcomeCountMapping):
+class Die(OutcomeNumMapping):
     """An immutable `Mapping` of outcomes to nonnegative `int` weights.
 
     Dice are immutable. Methods do not modify the die in-place;

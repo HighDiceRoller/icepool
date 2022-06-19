@@ -9,7 +9,11 @@ from typing import Any
 from collections.abc import Mapping
 
 
-class OutcomeCountMapping(ABC, Mapping[Any, int]):
+class OutcomeNumMapping(ABC, Mapping[Any, int]):
+    """Abstract base class for a mapping from outcomes to `int`s.
+
+    The `int`s represent numerators; or weights or dups.
+    """
 
     @abstractmethod
     def outcomes(self) -> CountsKeysView:

@@ -4,7 +4,7 @@ import icepool
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.mapping import OutcomeCountMapping
+from icepool.mapping import OutcomeNumMapping
 
 from functools import cached_property
 
@@ -12,7 +12,7 @@ from typing import Any, Iterator
 from collections.abc import Mapping, Sequence
 
 
-class Deck(OutcomeCountMapping):
+class Deck(OutcomeNumMapping):
     """EXPERIMENTAL: Represents a deck to be sampled without replacement.
 
     API and naming WIP.
@@ -126,7 +126,7 @@ class Deck(OutcomeCountMapping):
     def __len__(self) -> int:
         return len(self._data)
 
-    size = OutcomeCountMapping.denominator
+    size = OutcomeNumMapping.denominator
 
     @cached_property
     def _popped_min(self) -> tuple['Deck', int]:
