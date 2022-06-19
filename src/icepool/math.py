@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from typing import Generator
-from collections.abc import MutableMapping, Sequence
+from collections.abc import MutableMapping
 
 # b -> list of rows
 comb_row_cache: MutableMapping[int, list[tuple[int, ...]]] = {}

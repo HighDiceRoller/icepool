@@ -36,8 +36,10 @@ def test_two_hand_sum_same_size():
     deal2 = deck.deal(5, 5)
     result2 = deal2.eval(sum_each)
     
+    assert deal2.denominator() == result2.denominator()
     assert result1.equals(result2.marginals[0], reduce_weights=True)
     assert result2.marginals[0].equals(result2.marginals[1])
+    
 
 def test_two_hand_sum_diff_size():
     deck = icepool.Deck(range(4), times=4)
@@ -45,4 +47,5 @@ def test_two_hand_sum_diff_size():
     deal = deck.deal(2, 4)
     result = deal.eval(sum_each)
     
+    assert deal.denominator() == result.denominator()
     assert (result.marginals[0] * 2).mean() == result.marginals[1].mean()

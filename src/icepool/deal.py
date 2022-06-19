@@ -8,9 +8,6 @@ from icepool.math import iter_hypergeom
 from functools import cached_property
 import math
 
-from typing import Generator
-from collections.abc import Sequence
-
 
 class Deal(OutcomeCountGen):
     """EXPERIMENTAL: Represents an unordered deal of cards from a deck.
@@ -21,16 +18,21 @@ class Deal(OutcomeCountGen):
     _deck: 'icepool.Deck'
     _hand_sizes: tuple[int, ...]
 
-    def __init__(self, deck, *hand_sizes: int):
-        """
+    def __init__(self, deck: 'icepool.Deck', *hand_sizes: int):
+        """Constructor.
+
+        For algorithmic reasons, you must pre-commit to the number of cards to
+        deal for each hand.
 
         Args:
-            hand_sizes: How many cards to draw. If multiple `hand_sizes` are
+            deck: The `Deck` to deal from.
+            *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
                 provided, `OutcomeCountEval.next_state` will recieve one count
-                per hand in order.
+                per hand in order. Try to keep the number of hands to a minimum
+                as this can be computationally intensive.
         """
         if any(hand < 0 for hand in hand_sizes):
-            raise ValueError('hand_sizes cannot be of negative size.')
+            raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
         self._hand_sizes = hand_sizes
         if self.total_cards_dealt() > self.deck().num_cards():
@@ -74,7 +76,8 @@ class Deal(OutcomeCountGen):
         """The total number of possible deals."""
         return self._denomiator
 
-    def _gen_common(self, popped_deck, deck_count) -> GenGenerator:
+    def _gen_common(self, popped_deck: 'icepool.Deck',
+                    deck_count: int) -> GenGenerator:
         """Common implementation for _gen_min and _gen_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().num_cards())
