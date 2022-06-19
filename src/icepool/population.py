@@ -15,7 +15,7 @@ from typing import Any, Callable
 from collections.abc import Mapping, MutableMapping, Sequence
 
 
-class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
+class Population(ABC, Mapping[Any, int]):
     """Abstract base class for a mapping from outcomes to `int`s.
 
     Subclasses include `Die` and `Deck`.
@@ -128,10 +128,10 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
     # Probabilities.
 
     @cached_property
-    def _pmf(self):
+    def _probabilities(self):
         return tuple(v / self.denominator() for v in self.values())
 
-    def pmf(self, percent: bool = False):
+    def probabilities(self, percent: bool = False):
         """Probability mass function. The probability of each outcome in order.
 
         Args:
@@ -139,9 +139,9 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
                 Otherwise, the total will be 1.0.
         """
         if percent:
-            return tuple(100.0 * x for x in self._pmf)
+            return tuple(100.0 * x for x in self._probabilities)
         else:
-            return self._pmf
+            return self._probabilities
 
     # Quantities.
 
@@ -341,7 +341,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         sd = self.standard_deviation()
         mean = self.mean()
         ev = sum(p * (outcome - mean)**k
-                 for outcome, p in zip(self.outcomes(), self.pmf()))
+                 for outcome, p in zip(self.outcomes(), self.probabilities()))
         return ev / (sd**k)
 
     def skewness(self):

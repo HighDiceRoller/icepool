@@ -7,15 +7,15 @@ expected_d6x1 = icepool.Die(range(1, 13), times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1
 
 def test_sub_array():
     die = icepool.d6.sub([5, 4, 1, 2, 3, icepool.d6 + 6])
-    assert die.pmf() == pytest.approx(expected_d6x1.pmf())
+    assert die.probabilities() == pytest.approx(expected_d6x1.probabilities())
 
 def test_sub_dict():
     die = icepool.d6.sub({6 : icepool.d6+6})
-    assert die.pmf() == pytest.approx(expected_d6x1.pmf())
+    assert die.probabilities() == pytest.approx(expected_d6x1.probabilities())
 
 def test_sub_func():
     die = icepool.d6.sub(lambda x: icepool.d6 + 6 if x == 6 else 6 - x)
-    assert die.pmf() == pytest.approx(expected_d6x1.pmf())
+    assert die.probabilities() == pytest.approx(expected_d6x1.probabilities())
 
 def test_sub_mix():
     result = icepool.d6.sub(lambda x: x if x >= 3 else icepool.Reroll)

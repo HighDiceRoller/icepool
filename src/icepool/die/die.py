@@ -5,7 +5,7 @@ import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
-from icepool.mapping import OutcomeQuantityMapping
+from icepool.population import Population
 
 import bisect
 from collections import defaultdict
@@ -19,7 +19,7 @@ from typing import Any, Callable, Iterator
 from collections.abc import Container, Mapping, MutableMapping, Sequence
 
 
-class Die(OutcomeQuantityMapping):
+class Die(Population):
     """Sampling with replacement.
 
     Dice are immutable. Methods do not modify the die in-place;

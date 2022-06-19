@@ -14,8 +14,8 @@ def test_coin():
     b = icepool.bernoulli(1, 2)
     c = icepool.coin(1, 2)
 
-    assert b.pmf() == pytest.approx([0.5, 0.5])
-    assert c.pmf() == pytest.approx([0.5, 0.5])
+    assert b.probabilities() == pytest.approx([0.5, 0.5])
+    assert c.probabilities() == pytest.approx([0.5, 0.5])
 
 def test_list_no_min_outcome():
     result = icepool.Die([2, 3, 3, 4, 4, 4, 5, 5, 6])

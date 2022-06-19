@@ -13,11 +13,11 @@ def test_mix_d6_faces():
     assert result.equals(expected)
 
 def test_mix_identical():
-    assert icepool.Die([icepool.d6, icepool.d6, icepool.d6, icepool.d6]).pmf() == pytest.approx(icepool.d6.pmf())
+    assert icepool.Die([icepool.d6, icepool.d6, icepool.d6, icepool.d6]).probabilities() == pytest.approx(icepool.d6.probabilities())
     
 def test_mix_mixed():
     die = icepool.Die([icepool.d4, icepool.d6])
-    assert die.pmf() == icepool.Die(range(1, 7), times=[5, 5, 5, 5, 2, 2]).pmf()
+    assert die.probabilities() == icepool.Die(range(1, 7), times=[5, 5, 5, 5, 2, 2]).probabilities()
 
 def test_mix_reroll():
     result = icepool.Die([1,2,3,4,icepool.Reroll,icepool.Reroll])

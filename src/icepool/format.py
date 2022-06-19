@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.mapping import OutcomeQuantityMapping
+from icepool.population import Population
 
 import csv as csv_lib
 import io
@@ -26,7 +26,7 @@ def split_format_spec(format_spec: str) -> Sequence[str]:
     return result
 
 
-def make_headers(mapping: OutcomeQuantityMapping,
+def make_headers(mapping: Population,
                  format_tokens: Sequence[str]) -> Sequence[str]:
     """Generates a list of strings for the header."""
     result: list[str] = []
@@ -56,7 +56,7 @@ def make_headers(mapping: OutcomeQuantityMapping,
     return result
 
 
-def gather_cols(mapping: OutcomeQuantityMapping,
+def gather_cols(mapping: Population,
                 format_tokens: Sequence[str]) -> Sequence[Sequence]:
     result: list[list[str]] = []
     for token in format_tokens:
@@ -86,7 +86,7 @@ def gather_cols(mapping: OutcomeQuantityMapping,
                     result.append(['n/a' for x in mapping.outcomes()])
                 else:
                     if comparator == '==':
-                        col = mapping.pmf()
+                        col = mapping.probabilities()
                     elif comparator == '<=':
                         col = mapping.probabilities_le()  # type: ignore
                     elif comparator == '>=':
@@ -95,7 +95,7 @@ def gather_cols(mapping: OutcomeQuantityMapping,
     return result
 
 
-def make_rows(mapping: OutcomeQuantityMapping,
+def make_rows(mapping: Population,
               format_tokens: Sequence[str]) -> Sequence[Sequence[str]]:
     cols = gather_cols(mapping, format_tokens)
     return [[c for c in row_data] for row_data in zip(*cols)]
@@ -122,7 +122,7 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     return result
 
 
-def markdown(mapping: OutcomeQuantityMapping, format_spec: str) -> str:
+def markdown(mapping: Population, format_spec: str) -> str:
     """Formats the mapping as a Markdown table."""
     if mapping.is_empty():
         return f'Empty {type(mapping).__name__}\n'
