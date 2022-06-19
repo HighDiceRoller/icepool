@@ -258,15 +258,6 @@ class Die(Population):
         """Divides all quantities by their greatest common denominator. """
         return icepool.Die(self._data.reduce())
 
-    def scale_weights(self, scale: int) -> 'Die':
-        """Multiplies all weights by a constant. """
-        if scale < 0:
-            raise ValueError('Weights cannot be scaled by a negative number.')
-        if scale == 1:
-            return self
-        data = {outcome: scale * weight for outcome, weight in self.items()}
-        return icepool.Die(data)
-
     # Rerolls and other outcome management.
 
     def reroll(self,
