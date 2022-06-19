@@ -220,12 +220,13 @@ class Die(OutcomeQuantityMapping):
                 dice or between the dice.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
-        for (outcome_self, weight_self), (outcome_other,
-                                          weight_other) in itertools.product(
-                                              self.items(), other.items()):
+        for (outcome_self,
+             quantity_self), (outcome_other,
+                              quantity_other) in itertools.product(
+                                  self.items(), other.items()):
             new_outcome = binary_elementwise(outcome_self, outcome_other, op,
                                              *args, **kwargs)
-            data[new_outcome] += weight_self * weight_other
+            data[new_outcome] += quantity_self * quantity_other
         return icepool.Die(data)
 
     # Basic access.
@@ -235,9 +236,6 @@ class Die(OutcomeQuantityMapping):
 
     def values(self) -> CountsValuesView:
         return self._data.values()
-
-    def value_name(self) -> str:
-        return 'weight'
 
     def items(self) -> CountsItemsView:
         return self._data.items()
@@ -749,8 +747,8 @@ class Die(OutcomeQuantityMapping):
         """Faster algorithm for keeping just the single highest die. """
         if rolls == 0:
             return self.zero()
-        return icepool.from_cweights(self.outcomes(),
-                                     [x**rolls for x in self.cquantities()])
+        return icepool.from_quantities_le(
+            self.outcomes(), [x**rolls for x in self.quantities_le()])
 
     def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the lowest.
@@ -777,8 +775,8 @@ class Die(OutcomeQuantityMapping):
         """Faster algorithm for keeping just the single lowest die. """
         if rolls == 0:
             return self.zero()
-        return icepool.from_sweights(self.outcomes(),
-                                     [x**rolls for x in self.squantities()])
+        return icepool.from_quantities_ge(
+            self.outcomes(), [x**rolls for x in self.quantities_ge()])
 
     # Unary operators.
 
@@ -981,7 +979,7 @@ class Die(OutcomeQuantityMapping):
         d = lo.denominator() * hi.denominator()
 
         lo_cweight = 0
-        lo_iter = iter(zip(lo.outcomes(), lo.cquantities()))
+        lo_iter = iter(zip(lo.outcomes(), lo.quantities_le()))
         lo_outcome, next_lo_cweight = next(lo_iter)
         for hi_outcome, hi_weight in hi.items():
             while op(lo_outcome, hi_outcome):
@@ -1173,7 +1171,7 @@ class Die(OutcomeQuantityMapping):
         """
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(self.denominator())
-        index = bisect.bisect_right(self.cquantities(), r)
+        index = bisect.bisect_right(self.quantities_le(), r)
         return self.outcomes()[index]
 
     # Strings.

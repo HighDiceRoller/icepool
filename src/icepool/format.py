@@ -77,9 +77,9 @@ def gather_cols(mapping: OutcomeQuantityMapping,
                 if comparator == '==':
                     col = list(mapping.values())
                 elif comparator == '<=':
-                    col = mapping.cquantities()  # type: ignore
+                    col = mapping.quantities_le()  # type: ignore
                 elif comparator == '>=':
-                    col = mapping.squantities()  # type: ignore
+                    col = mapping.quantities_ge()  # type: ignore
                 result.append([str(x) for x in col])
             elif denom_type == '%':
                 if mapping.denominator() == 0:
@@ -88,9 +88,9 @@ def gather_cols(mapping: OutcomeQuantityMapping,
                     if comparator == '==':
                         col = mapping.pmf()
                     elif comparator == '<=':
-                        col = mapping.cdf()  # type: ignore
+                        col = mapping.probabilities_le()  # type: ignore
                     elif comparator == '>=':
-                        col = mapping.sf()  # type: ignore
+                        col = mapping.probabilities_ge()  # type: ignore
                     result.append([f'{x:0.6%}' for x in col])
     return result
 
@@ -134,7 +134,7 @@ def markdown(mapping: OutcomeQuantityMapping, format_spec: str) -> str:
     col_widths = compute_col_widths(headers, rows)
     alignments = compute_alignments(rows)
 
-    result = f'Denominator: {mapping.denominator()}\n\n'
+    result = f'{type(mapping).__name__} with denominator {mapping.denominator()}\n\n'
     result += '|'
     for header, alignment, col_width in zip(headers, alignments, col_widths):
         result += f' {header:{alignment}{col_width}} |'
@@ -153,6 +153,8 @@ def markdown(mapping: OutcomeQuantityMapping, format_spec: str) -> str:
         for s, alignment, col_width in zip(row, alignments, col_widths):
             result += f' {s:{alignment}{col_width}} |'
         result += '\n'
+
+    result += '\n'
 
     return result
 

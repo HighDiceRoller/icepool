@@ -35,10 +35,6 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
     def items(self) -> CountsItemsView:
         """The items can be used as both a ItemsView and as a Sequence."""
 
-    @abstractmethod
-    def value_name(self) -> str:
-        """Returns the name for a value, e.g. "weight" or "dups"."""
-
     @property
     @abstractmethod
     def marginals(self):
@@ -154,30 +150,30 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         return 0 in self.values()
 
     @cached_property
-    def _cquantities(self) -> Sequence[int]:
+    def _quantities_le(self) -> Sequence[int]:
         return tuple(itertools.accumulate(self.values()))
 
-    def cquantities(self) -> Sequence[int]:
+    def quantities_le(self) -> Sequence[int]:
         """Cumulative quantities. The quantity <= each outcome in order. """
-        return self._cquantities
+        return self._quantities_le
 
     @cached_property
-    def _squantities(self) -> Sequence[int]:
+    def _quantities_ge(self) -> Sequence[int]:
         return tuple(
             itertools.accumulate(self.values()[:-1],
                                  operator.sub,
                                  initial=self.denominator()))
 
-    def squantities(self) -> Sequence[int]:
+    def quantities_ge(self) -> Sequence[int]:
         """Survival quantities. The quantity >= each outcome in order. """
-        return self._squantities
+        return self._quantities_ge
 
     @cached_property
-    def _cdf(self):
+    def _probabilities_le(self):
         return tuple(
-            quantity / self.denominator() for quantity in self.cquantities())
+            quantity / self.denominator() for quantity in self.quantities_le())
 
-    def cdf(self, percent: bool = False):
+    def probabilities_le(self, percent: bool = False):
         """Cumulative distribution function. The chance of rolling <= each outcome in order.
 
         Args:
@@ -185,16 +181,16 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
                 Otherwise, the total will be 1.0.
         """
         if percent:
-            return tuple(100.0 * x for x in self._cdf)
+            return tuple(100.0 * x for x in self._probabilities_le)
         else:
-            return self._cdf
+            return self._probabilities_le
 
     @cached_property
-    def _sf(self):
+    def _probabilities_ge(self):
         return tuple(
-            quantity / self.denominator() for quantity in self.squantities())
+            quantity / self.denominator() for quantity in self.quantities_ge())
 
-    def sf(self, percent: bool = False):
+    def probabilities_ge(self, percent: bool = False):
         """Survival function. The chance of rolling >= each outcome in order.
 
         Args:
@@ -202,9 +198,9 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
                 Otherwise, the total will be 1.0.
         """
         if percent:
-            return tuple(100.0 * x for x in self._sf)
+            return tuple(100.0 * x for x in self._probabilities_ge)
         else:
-            return self._sf
+            return self._probabilities_ge
 
     def quantity(self, outcome) -> int:
         """Returns the quantity of a single outcome, or 0 if not present. """
@@ -219,28 +215,28 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
-        return self.cquantities()[index]
+        return self.quantities_le()[index]
 
     def quantity_lt(self, outcome) -> int:
         """Returns the quantity < a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
-        return self.cquantities()[index]
+        return self.quantities_le()[index]
 
     def quantity_ge(self, outcome) -> int:
         """Returns the quantity >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= len(self):
             return 0
-        return self.squantities()[index]
+        return self.quantities_ge()[index]
 
     def quantity_gt(self, outcome) -> int:
         """Returns the quantity > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self):
             return 0
-        return self.squantities()[index]
+        return self.quantities_ge()[index]
 
     def probability(self, outcome):
         """Returns the probability of a single outcome. """
@@ -263,12 +259,15 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
     def ks_stat(self, other):
         """Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
         a, b = icepool.align(self, other)
-        return max(abs(a - b) for a, b in zip(a.cdf(), b.cdf()))
+        return max(
+            abs(a - b)
+            for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
     def cvm_stat(self, other):
         """Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
         a, b = icepool.align(self, other)
-        return sum((a - b)**2 for a, b in zip(a.cdf(), b.cdf()))
+        return sum((a - b)**2
+                   for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
     def median_left(self):
         """Returns the median.
@@ -296,7 +295,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
         If the result lies between two outcomes, returns the lower of the two.
         """
-        index = bisect.bisect_left(self.cquantities(),
+        index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
         if index >= len(self):
             return self.max_outcome()
@@ -307,7 +306,7 @@ class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
 
         If the result lies between two outcomes, returns the higher of the two.
         """
-        index = bisect.bisect_right(self.cquantities(),
+        index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)
         if index >= len(self):
             return self.max_outcome()

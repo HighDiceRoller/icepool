@@ -112,11 +112,6 @@ class Deck(OutcomeQuantityMapping):
         """
         return self._data.values()
 
-    dups = values
-
-    def value_name(self) -> str:
-        return 'dups'
-
     def items(self) -> CountsItemsView:
         return self._data.items()
 
@@ -133,7 +128,7 @@ class Deck(OutcomeQuantityMapping):
 
     @cached_property
     def _popped_min(self) -> tuple['Deck', int]:
-        return self._new_deck(self._data.remove_min()), self.dups()[0]
+        return self._new_deck(self._data.remove_min()), self.quantities()[0]
 
     def _pop_min(self) -> tuple['Deck', int]:
         """Returns a deck with the min outcome removed."""
@@ -141,7 +136,7 @@ class Deck(OutcomeQuantityMapping):
 
     @cached_property
     def _popped_max(self) -> tuple['Deck', int]:
-        return self._new_deck(self._data.remove_max()), self.dups()[-1]
+        return self._new_deck(self._data.remove_max()), self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Deck', int]:
         """Returns a deck with the max outcome removed."""

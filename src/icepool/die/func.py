@@ -57,23 +57,26 @@ def bernoulli(n: int, d: int, /) -> 'icepool.Die':
 coin = bernoulli
 
 
-def from_cweights(outcomes: Sequence, cweights: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from cumulative weights. """
+def from_quantities_le(outcomes: Sequence,
+                       quantities_le: Sequence[int]) -> 'icepool.Die':
+    """Constructs a die from cumulative quantities. """
     prev = 0
     d = {}
-    for outcome, weight in zip(outcomes, cweights):
-        d[outcome] = weight - prev
-        prev = weight
+    for outcome, quantity in zip(outcomes, quantities_le):
+        d[outcome] = quantity - prev
+        prev = quantity
     return icepool.Die(d)
 
 
-def from_sweights(outcomes: Sequence, sweights: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from survival weights. """
+def from_quantities_ge(outcomes: Sequence,
+                       quantities_ge: Sequence[int]) -> 'icepool.Die':
+    """Constructs a die from survival quantities. """
     prev = 0
     d = {}
-    for outcome, weight in zip(reversed(outcomes), reversed(tuple(sweights))):
-        d[outcome] = weight - prev
-        prev = weight
+    for outcome, quantity in zip(reversed(outcomes),
+                                 reversed(tuple(quantities_ge))):
+        d[outcome] = quantity - prev
+        prev = quantity
     return icepool.Die(d)
 
 
@@ -91,12 +94,12 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
         # Continuous distributions use midpoints.
         midpoints = [(a + b) / 2 for a, b in zip(outcomes[:-1], outcomes[1:])]
         cdf = rv.cdf(midpoints, **kwargs)
-        cweights = tuple(
+        quantities_le = tuple(
             int(round(x * denominator)) for x in cdf) + (denominator,)
     else:
         cdf = rv.cdf(outcomes, **kwargs)
-        cweights = tuple(int(round(x * denominator)) for x in cdf)
-    return from_cweights(outcomes, cweights)
+        quantities_le = tuple(int(round(x * denominator)) for x in cdf)
+    return from_quantities_le(outcomes, quantities_le)
 
 
 def min_outcome(*dice):

@@ -20,7 +20,7 @@ __docformat__ = 'google'
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              from_cweights, from_sweights, from_rv,
+                              from_quantities_le, from_quantities_ge, from_rv,
                               min_outcome, max_outcome, align, align_range,
                               reduce, accumulate, apply, apply_sorted)
 
@@ -52,9 +52,10 @@ Reroll = SpecialValue.Reroll
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'CountsKeysView',
-    'CountsValuesView', 'CountsItemsView', 'from_cweights', 'from_sweights',
-    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
-    'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
-    'OutcomeCountGen', 'Pool', 'standard_pool', 'OutcomeCountEval', 'JointEval',
-    'SumGen', 'Deck', 'Deal', 'clear_pool_cache'
+    'CountsValuesView', 'CountsItemsView', 'from_quantities_le',
+    'from_quantities_ge', 'from_rv', 'align', 'align_range', 'lowest',
+    'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
+    'apply_sorted', 'Reroll', 'OutcomeCountGen', 'Pool', 'standard_pool',
+    'OutcomeCountEval', 'JointEval', 'SumGen', 'Deck', 'Deal',
+    'clear_pool_cache'
 ]
