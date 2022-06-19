@@ -18,12 +18,12 @@ from collections.abc import Collection, Mapping, MutableMapping, Sequence
 
 @cache
 def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
-                    post_roll_counts: tuple[int, ...]) -> 'Pool':
+                    post_roll_counts: tuple[int, ...], /) -> 'Pool':
     """Creates a new pool. This function is cached.
 
     Args:
         cls: The pool class.
-        dice: A sorted sequence of (die, num_dice) pairs.
+        dice: A sorted sequence of (die, rolls) pairs.
         post_roll_counts: A tuple of length equal to the number of dice.
     """
     self = super(Pool, cls).__new__(cls)
@@ -104,7 +104,7 @@ class Pool(OutcomeCountGen):
         """Creates a new pool.
 
         Args:
-            dice_counts: A map from dice to num_dice.
+            dice_counts: A map from dice to rolls.
             post_roll_counts: A tuple with length equal to the number of dice.
         """
         dice = tuple(
@@ -190,7 +190,7 @@ class Pool(OutcomeCountGen):
                              post_roll_counts: int | slice | tuple[int, ...]):
         """Returns a pool with the selected dice counted after rolling and sorting.
 
-        You can use `pool[post_roll_counts]` for the same effect as this method.
+        Use `pool[post_roll_counts]` for the same effect as this method.
 
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
@@ -528,13 +528,13 @@ def standard_pool(die_sizes: Collection[int]) -> 'Pool':
 
 
 def iter_die_pop_min(
-        die: 'icepool.Die', num_dice: int, min_outcome
+        die: 'icepool.Die', rolls: int, min_outcome
 ) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
         die: The die to pop.
-        num_dice: The number of this kind of die.
+        rolls: The number of this kind of die.
         min_outcome: The outcome to pop. This is <= the die's min outcome.
 
     Yields:
@@ -544,7 +544,7 @@ def iter_die_pop_min(
         weight: The weight of this number of dice rolling max_outcome.
     """
     if die.min_outcome() != min_outcome:
-        misses = num_dice
+        misses = rolls
         hits = 0
         weight = 1
         yield die, misses, hits, weight
@@ -555,25 +555,25 @@ def iter_die_pop_min(
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
         misses = 0
-        hits = num_dice
-        weight = single_weight**num_dice
+        hits = rolls
+        weight = single_weight**rolls
         yield popped_die, misses, hits, weight
         return
 
-    comb_row = icepool.math.comb_row(num_dice, single_weight)
+    comb_row = icepool.math.comb_row(rolls, single_weight)
     for hits, weight in enumerate(comb_row):
-        misses = num_dice - hits
+        misses = rolls - hits
         yield popped_die, misses, hits, weight
 
 
 def iter_die_pop_max(
-        die: 'icepool.Die', num_dice: int, max_outcome
+        die: 'icepool.Die', rolls: int, max_outcome
 ) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:
         die: The die to pop.
-        num_dice: The number of this kind of die.
+        rolls: The number of this kind of die.
         max_outcome: The outcome to pop. This is >= the die's max outcome.
 
     Yields:
@@ -583,7 +583,7 @@ def iter_die_pop_max(
         weight: The weight of this number of dice rolling max_outcome.
     """
     if die.max_outcome() != max_outcome:
-        misses = num_dice
+        misses = rolls
         hits = 0
         weight = 1
         yield die, misses, hits, weight
@@ -594,12 +594,12 @@ def iter_die_pop_max(
     if popped_die.is_empty():
         # This is the last outcome. All dice must roll this outcome.
         misses = 0
-        hits = num_dice
-        weight = single_weight**num_dice
+        hits = rolls
+        weight = single_weight**rolls
         yield popped_die, misses, hits, weight
         return
 
-    comb_row = icepool.math.comb_row(num_dice, single_weight)
+    comb_row = icepool.math.comb_row(rolls, single_weight)
     for hits, weight in enumerate(comb_row):
-        misses = num_dice - hits
+        misses = rolls - hits
         yield popped_die, misses, hits, weight

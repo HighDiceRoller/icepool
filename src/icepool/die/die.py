@@ -927,29 +927,29 @@ class Die(OutcomeCountMapping):
     def _sum_cache(self) -> MutableMapping[int, 'Die']:
         return {}
 
-    def _sum_all(self, n: int, /) -> 'Die':
-        """Roll this die `n` times and sum the results.
+    def _sum_all(self, rolls: int, /) -> 'Die':
+        """Roll this die `rolls` times and sum the results.
 
-        If `n` is negative, roll the die `abs(n)` times and negate
+        If `rolls` is negative, roll the die `abs(rolls)` times and negate
         the result.
 
         If you instead want to replace tuple (or other sequence) outcomes with
         their sum, use `die.sub(sum)`.
         """
-        if n in self._sum_cache:
-            return self._sum_cache[n]
+        if rolls in self._sum_cache:
+            return self._sum_cache[rolls]
 
-        if n < 0:
-            result = -self._sum_all(-n)
-        elif n == 0:
+        if rolls < 0:
+            result = -self._sum_all(-rolls)
+        elif rolls == 0:
             result = self.zero()
-        elif n == 1:
+        elif rolls == 1:
             result = self
         else:
             # Binary split seems to perform much worse.
-            result = self + self._sum_all(n - 1)
+            result = self + self._sum_all(rolls - 1)
 
-        self._sum_cache[n] = result
+        self._sum_cache[rolls] = result
         return result
 
     def __matmul__(self, other) -> 'Die':
@@ -973,20 +973,23 @@ class Die(OutcomeCountMapping):
         other = icepool.Die([other])
         return other.__matmul__(self)
 
-    def pool(self, n: int = 1, /) -> 'icepool.Pool':
+    def pool(self, rolls: int = 1, /) -> 'icepool.Pool':
         """Creates a pool from this die.
 
         Args:
-            n: The number of copies of this die to put in the pool.
+            rolls: The number of copies of this die to put in the pool.
         """
-        return icepool.Pool({self: n})
+        return icepool.Pool({self: rolls})
 
-    def keep_highest(self, n: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+    def keep_highest(self,
+                     rolls: int,
+                     /,
+                     keep: int = 1,
+                     drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the highest.
 
         Args:
-            n: The number of dice to roll. All dice will have the same
-                outcomes as `self`.
+            rolls: The number of dice to roll.
             keep: The number of dice to keep.
             drop: If provided, this many highest dice will be dropped before
                 keeping.
@@ -995,24 +998,24 @@ class Die(OutcomeCountMapping):
             A die representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._keep_highest_single(n)
+            return self._keep_highest_single(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
         post_roll_counts = slice(start, stop)
-        return self.pool(n)[post_roll_counts].sum()
+        return self.pool(rolls)[post_roll_counts].sum()
 
-    def _keep_highest_single(self, n: int, /) -> 'Die':
+    def _keep_highest_single(self, rolls: int, /) -> 'Die':
         """Faster algorithm for keeping just the single highest die. """
-        if n == 0:
+        if rolls == 0:
             return self.zero()
         return icepool.from_cweights(self.outcomes(),
-                                     [x**n for x in self.cweights()])
+                                     [x**rolls for x in self.cweights()])
 
-    def keep_lowest(self, n: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+    def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this die and sum the sorted results from the lowest.
 
         Args:
-            n: The number of dice to roll. All dice will have the same
+            rolls: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
             keep: The number of dice to keep.
             drop: If provided, this many lowest dice will be dropped before
@@ -1022,19 +1025,19 @@ class Die(OutcomeCountMapping):
             A die representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._keep_lowest_single(n)
+            return self._keep_lowest_single(rolls)
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
         post_roll_counts = slice(start, stop)
-        return self.pool(n)[post_roll_counts].sum()
+        return self.pool(rolls)[post_roll_counts].sum()
 
-    def _keep_lowest_single(self, n: int, /) -> 'Die':
+    def _keep_lowest_single(self, rolls: int, /) -> 'Die':
         """Faster algorithm for keeping just the single lowest die. """
-        if n == 0:
+        if rolls == 0:
             return self.zero()
         return icepool.from_sweights(self.outcomes(),
-                                     [x**n for x in self.sweights()])
+                                     [x**rolls for x in self.sweights()])
 
     # Unary operators.
 
