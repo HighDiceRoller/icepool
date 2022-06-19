@@ -19,7 +19,7 @@ from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, 
 
 
 class Die(Population):
-    """Sampling with replacement.
+    """Sampling with replacement. Quantities represent weights.
 
     Dice are immutable. Methods do not modify the die in-place;
     rather they return a die representing the result.

@@ -15,7 +15,9 @@ from typing import Any, Mapping, Sequence
 
 
 class Population(ABC, Mapping[Any, int]):
-    """Abstract base class for a mapping from outcomes to `int`s.
+    """A mapping from outcomes to `int` quantities.
+
+    Outcomes with each instance must be hashable and totally orderable.
 
     Subclasses include `Die` and `Deck`.
     """
