@@ -9262,6 +9262,10 @@ if any weight exceeds 10**30.</p>
 </span><span id="Deal-136"><a href="#Deal-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
 </span><span id="Deal-137"><a href="#Deal-137"><span class="linenos">137</span></a>            <span class="bp">self</span>
 </span><span id="Deal-138"><a href="#Deal-138"><span class="linenos">138</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span id="Deal-139"><a href="#Deal-139"><span class="linenos">139</span></a>
+</span><span id="Deal-140"><a href="#Deal-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deal-141"><a href="#Deal-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Deal of hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+</span><span id="Deal-142"><a href="#Deal-142"><span class="linenos">142</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
 </span></pre></div>
 
 
