@@ -50,7 +50,11 @@ class OutcomeCountMapping(ABC, Mapping[Any, int]):
         return sum(self.values())
 
     def denominator(self) -> int:
-        """The sum of all values (e.g weights or dups)."""
+        """The sum of all values (e.g weights or dups).
+
+        For the number of unique outcomes, including those with zero numerator,
+        use `len()`.
+        """
         return self._denominator
 
     @cached_property

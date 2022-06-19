@@ -25,16 +25,16 @@ def itemize(keys: Mapping[Any, int] | Sequence,
             * An `int`. All times will be multiplied by this factor.
     """
     try:
-        num_keys = len(keys)
+        len(keys)
     except TypeError:
         raise TypeError('Argument appears not to be a mapping or sequence.')
 
     if isinstance(times, int):
-        times = (times,) * num_keys
+        times = (times,) * len(keys)
     else:
-        if len(times) != num_keys:
+        if len(times) != len(keys):
             raise ValueError(
-                f'The number of times ({len(times)}) must equal the number of keys ({num_keys}).'
+                f'The number of times ({len(times)}) must equal the number of keys ({len(keys)}).'
             )
 
     if is_mapping(keys):

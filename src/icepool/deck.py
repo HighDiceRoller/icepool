@@ -126,7 +126,7 @@ class Deck(OutcomeCountMapping):
     def __len__(self) -> int:
         return len(self._data)
 
-    num_cards = OutcomeCountMapping.denominator
+    size = OutcomeCountMapping.denominator
 
     @cached_property
     def _popped_min(self) -> tuple['Deck', int]:

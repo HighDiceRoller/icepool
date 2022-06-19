@@ -35,9 +35,9 @@ class Deal(OutcomeCountGen):
             raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
         self._hand_sizes = hand_sizes
-        if self.total_cards_dealt() > self.deck().num_cards():
+        if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
-                'The total number of cards dealt cannot exceed the number of cards in the deck.'
+                'The total number of cards dealt cannot exceed the size of the deck.'
             )
 
     def deck(self) -> 'icepool.Deck':
@@ -65,7 +65,7 @@ class Deal(OutcomeCountGen):
 
     @cached_property
     def _denomiator(self) -> int:
-        d_total = icepool.math.comb(self.deck().num_cards(),
+        d_total = icepool.math.comb(self.deck().size(),
                                     self.total_cards_dealt())
         d_split = math.prod(
             icepool.math.comb(self.total_cards_dealt(), h)
@@ -80,7 +80,7 @@ class Deal(OutcomeCountGen):
                     deck_count: int) -> GenGenerator:
         """Common implementation for _gen_min and _gen_max."""
         min_count = max(
-            0, deck_count + self.total_cards_dealt() - self.deck().num_cards())
+            0, deck_count + self.total_cards_dealt() - self.deck().size())
         max_count = min(deck_count, self.total_cards_dealt())
         for count_total in range(min_count, max_count + 1):
             weight_total = icepool.math.comb(deck_count, count_total)
