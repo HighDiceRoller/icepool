@@ -9,7 +9,7 @@ from typing import Any
 from collections.abc import Mapping
 
 
-class OutcomeNumMapping(ABC, Mapping[Any, int]):
+class OutcomeQuantityMapping(ABC, Mapping[Any, int]):
     """Abstract base class for a mapping from outcomes to `int`s.
 
     The `int`s represent numerators; or weights or dups.

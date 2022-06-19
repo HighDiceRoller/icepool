@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.mapping import OutcomeNumMapping
+from icepool.mapping import OutcomeQuantityMapping
 
 import csv as csv_lib
 import io
@@ -26,7 +26,7 @@ def split_format_spec(format_spec: str) -> Sequence[str]:
     return result
 
 
-def make_headers(mapping: OutcomeNumMapping,
+def make_headers(mapping: OutcomeQuantityMapping,
                  format_tokens: Sequence[str]) -> Sequence[str]:
     """Generates a list of strings for the header."""
     result: list[str] = []
@@ -56,7 +56,7 @@ def make_headers(mapping: OutcomeNumMapping,
     return result
 
 
-def gather_cols(mapping: OutcomeNumMapping,
+def gather_cols(mapping: OutcomeQuantityMapping,
                 format_tokens: Sequence[str]) -> Sequence[Sequence]:
     result: list[list[str]] = []
     for token in format_tokens:
@@ -95,7 +95,7 @@ def gather_cols(mapping: OutcomeNumMapping,
     return result
 
 
-def make_rows(mapping: OutcomeNumMapping,
+def make_rows(mapping: OutcomeQuantityMapping,
               format_tokens: Sequence[str]) -> Sequence[Sequence[str]]:
     cols = gather_cols(mapping, format_tokens)
     return [[c for c in row_data] for row_data in zip(*cols)]
@@ -122,7 +122,7 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     return result
 
 
-def markdown(mapping: OutcomeNumMapping, format_spec: str) -> str:
+def markdown(mapping: OutcomeQuantityMapping, format_spec: str) -> str:
     """Formats the mapping as a Markdown table."""
     if mapping.is_empty():
         return f'Empty {type(mapping).__name__}\n'
