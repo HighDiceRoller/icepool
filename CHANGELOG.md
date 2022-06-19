@@ -1,3 +1,13 @@
+## 0.16.1
+
+Development of deck API.
+
+* Separate `Deal` class from `Deck`, roughly analogous to `Pool` vs. `Die`.
+* `Deal` can now output multiple hands. The counts for each hand are provided in order to `eval.next_state`.
+* `comb_row` now uses iterative rather than recursive memoization. This will prevent some stack overflows.
+* `Pool`s are not permitted to be constructed using a raw `Die` or `Deck` argument.
+* `reduce` argument of `Die.equals()` renamed to `reduce_weights`.
+
 ## 0.16.0
 
 Significant API changes, experimental deck support.
