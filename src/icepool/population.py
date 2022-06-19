@@ -121,7 +121,7 @@ class Population(ABC, Mapping[Any, int]):
     def denominator(self) -> int:
         """The sum of all quantities (e.g. weights or dups).
 
-        For the number of unique outcomes, including those with zero numerator,
+        For the number of unique outcomes, including those with zero quantity,
         use `len()`.
         """
         return self._denominator
@@ -274,13 +274,13 @@ class Population(ABC, Mapping[Any, int]):
         """Returns the median.
 
         If the median lies between two outcomes, returns the lower of the two. """
-        return self.ppf_left(1, 2)
+        return self.quantile_left(1, 2)
 
     def median_right(self):
         """Returns the median.
 
         If the median lies between two outcomes, returns the higher of the two. """
-        return self.ppf_right(1, 2)
+        return self.quantile_right(1, 2)
 
     def median(self):
         """Returns the median.
@@ -289,9 +289,9 @@ class Population(ABC, Mapping[Any, int]):
         This will fail if the outcomes do not support division;
         in this case, use `median_left` or `median_right` instead.
         """
-        return self.ppf(1, 2)
+        return self.quantile(1, 2)
 
-    def ppf_left(self, n: int, d: int = 100):
+    def quantile_left(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the lower of the two.
@@ -302,7 +302,7 @@ class Population(ABC, Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def ppf_right(self, n: int, d: int = 100):
+    def quantile_right(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the higher of the two.
@@ -313,14 +313,14 @@ class Population(ABC, Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def ppf(self, n: int, d: int = 100):
+    def quantile(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the cdf.
 
         If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
-        in this case, use `ppf_left` or `ppf_right` instead.
+        in this case, use `quantile_left` or `quantile_right` instead.
         """
-        return (self.ppf_left(n, d) + self.ppf_right(n, d)) / 2
+        return (self.quantile_left(n, d) + self.quantile_right(n, d)) / 2
 
     def mean(self):
         return sum(outcome * quantity

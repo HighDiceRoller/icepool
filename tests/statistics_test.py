@@ -26,10 +26,10 @@ def test_d7_median():
     assert icepool.d7.median_right() == 4
     assert icepool.d7.median() == 4
 
-def test_min_ppf():
-    assert icepool.d6.ppf_left(0) == 1
-    assert icepool.d6.ppf_right(0) == 1
+def test_min_quantile():
+    assert icepool.d6.quantile_left(0) == 1
+    assert icepool.d6.quantile_right(0) == 1
 
-def test_max_ppf():
-    assert icepool.d6.ppf_left(100) == 6
-    assert icepool.d6.ppf_right(100) == 6
+def test_max_quantile():
+    assert icepool.d6.quantile_left(100) == 6
+    assert icepool.d6.quantile_right(100) == 6
