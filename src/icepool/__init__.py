@@ -51,7 +51,7 @@ Reroll = SpecialValue.Reroll
 """Indicates an outcome should be rerolled (with no max depth)."""
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'Die', 'CountsKeysView',
+    'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'CountsKeysView',
     'CountsValuesView', 'CountsItemsView', 'from_quantities_le',
     'from_quantities_ge', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
