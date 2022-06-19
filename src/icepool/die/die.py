@@ -254,8 +254,8 @@ class Die(Population):
 
     # Quantity management.
 
-    def reduce_weights(self) -> 'Die':
-        """Divides all weights by their greatest common denominator. """
+    def reduce(self) -> 'Die':
+        """Divides all quantities by their greatest common denominator. """
         return icepool.Die(self._data.reduce())
 
     def scale_weights(self, scale: int) -> 'Die':
@@ -574,7 +574,7 @@ class Die(Population):
             next = self.sub(repl,
                             max_depth=1,
                             denominator_method=denominator_method)
-            if self.equals(next, reduce_weights=True):
+            if self.equals(next, reduce=True):
                 return self
             else:
                 return next.sub(repl,
@@ -1131,7 +1131,7 @@ class Die(Population):
     def __hash__(self) -> int:
         return self._hash
 
-    def equals(self, other, *, reduce_weights=False):
+    def equals(self, other, *, reduce=False):
         """Returns `True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
@@ -1149,15 +1149,14 @@ class Die(Population):
         in the `Die` value or the truth value.
 
         Args:
-            reduce_quantities: If `True`, the dice will be reduced before comparing.
+            reduce: If `True`, the dice will be reduced before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         if not isinstance(other, Die):
             return False
 
-        if reduce_weights:
-            return self.reduce_weights().key_tuple() == other.reduce_weights(
-            ).key_tuple()
+        if reduce:
+            return self.reduce().key_tuple() == other.reduce().key_tuple()
         else:
             return self.key_tuple() == other.key_tuple()
 
