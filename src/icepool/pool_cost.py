@@ -23,13 +23,13 @@ def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:
     can_truncate_min = True
     can_truncate_max = True
     for die in dice_iter:
-        if die.num_outcomes() == base_die.num_outcomes():
+        if len(die) == len(base_die):
             if die.equals(base_die):
                 continue
             else:
                 return False, False
 
-        if die.num_outcomes() > base_die.num_outcomes():
+        if len(die) > len(base_die):
             base_die, die = die, base_die
 
         if can_truncate_min:
@@ -82,12 +82,10 @@ def estimate_costs(pool: 'icepool.Pool') -> tuple[int, int]:
     if can_truncate_min or can_truncate_max:
         lo_skip, hi_skip = lo_hi_skip(pool.post_roll_counts())
         die_sizes: list[int] = sum(
-            ([die.num_outcomes()] * count for die, count in pool._dice),
-            start=[])
+            ([len(die)] * count for die, count in pool._dice), start=[])
         die_sizes = sorted(die_sizes, reverse=True)
     if not can_truncate_min or not can_truncate_max:
-        prod_cost = math.prod(
-            die.num_outcomes()**count for die, count in pool._dice)
+        prod_cost = math.prod(len(die)**count for die, count in pool._dice)
 
     if can_truncate_min:
         pop_min_cost = sum(die_sizes[hi_skip:])

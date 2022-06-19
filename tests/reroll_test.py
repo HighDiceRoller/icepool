@@ -40,7 +40,7 @@ def test_reroll_until_func():
     assert result.equals(expected)
 
 def test_infinite_reroll():
-    assert icepool.d4.reroll([1, 2, 3, 4]).num_outcomes() == 0
+    assert icepool.d4.reroll([1, 2, 3, 4]).is_empty()
 
 def test_reroll_multidim():
     result = icepool.Die([(1, 0), (0, 1)]).reroll(lambda x: x[0] == 0)

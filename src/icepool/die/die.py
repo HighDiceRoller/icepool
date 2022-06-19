@@ -254,7 +254,7 @@ class Die(OutcomeCountMapping):
         return 'weight'
 
     def items(self) -> CountsItemsView:
-        """Returns the sequence of sorted outcome, weight pairs. """
+        """The sequence of sorted outcome, weight pairs. """
         return self._data.items()
 
     def __getitem__(self, outcome, /) -> int:
@@ -263,17 +263,15 @@ class Die(OutcomeCountMapping):
     def __iter__(self) -> Iterator:
         return iter(self.keys())
 
-    def num_outcomes(self) -> int:
-        """Returns the number of outcomes (including those with zero weight). """
+    def __len__(self) -> int:
+        """The number of outcomes (including those with zero weight). """
         return len(self._data)
-
-    __len__ = num_outcomes
 
     def __contains__(self, outcome) -> bool:
         return outcome in self._data
 
     def has_zero_weights(self) -> bool:
-        """Returns `True` iff `self` contains at least one outcome with zero weight. """
+        """`True` iff `self` contains at least one outcome with zero weight. """
         return self._data.has_zero_values()
 
     # Weights.
@@ -354,14 +352,14 @@ class Die(OutcomeCountMapping):
     def weight_ge(self, outcome) -> int:
         """Returns the weight >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= self.num_outcomes():
+        if index >= len(self):
             return 0
         return self.sweights()[index]
 
     def weight_gt(self, outcome) -> int:
         """Returns the weight > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= self.num_outcomes():
+        if index >= len(self):
             return 0
         return self.sweights()[index]
 
@@ -421,7 +419,7 @@ class Die(OutcomeCountMapping):
         """
         index = bisect.bisect_left(self.cweights(),
                                    (n * self.denominator() + d - 1) // d)
-        if index >= self.num_outcomes():
+        if index >= len(self):
             return self.max_outcome()
         return self.outcomes()[index]
 
@@ -432,7 +430,7 @@ class Die(OutcomeCountMapping):
         """
         index = bisect.bisect_right(self.cweights(),
                                     n * self.denominator() // d)
-        if index >= self.num_outcomes():
+        if index >= len(self):
             return self.max_outcome()
         return self.outcomes()[index]
 
@@ -528,7 +526,7 @@ class Die(OutcomeCountMapping):
         Returns `None` if there is no such outcome.
         """
         index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= self.num_outcomes():
+        if index >= len(self):
             return None
         return self.outcomes()[index]
 
@@ -1113,7 +1111,7 @@ class Die(OutcomeCountMapping):
             `ValueError` if the zeros did not resolve to a single outcome.
         """
         result = self.unary_op(Die._zero)
-        if result.num_outcomes() != 1:
+        if len(result) != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
         return result
 
