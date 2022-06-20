@@ -1,5 +1,3 @@
-import _context
-
 import icepool
 import pytest
 
