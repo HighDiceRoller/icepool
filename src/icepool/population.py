@@ -366,6 +366,9 @@ class Population(ABC, Mapping[Any, int]):
     def sample(self):
         """A single random sample from this population.
 
+        Note that this is always "with replacement" even for `Deck` since
+        instances are immutable.
+
         This uses the standard `random` package and is not cryptographically
         secure.
         """

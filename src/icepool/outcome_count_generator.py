@@ -2,6 +2,10 @@ __docformat__ = 'google'
 
 import icepool
 
+import bisect
+import itertools
+import random
+
 from abc import ABC, abstractmethod
 
 from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
@@ -116,3 +120,32 @@ class OutcomeCountGenerator(ABC):
             A die representing the sum.
         """
         return icepool.evaluate_sum(self)
+
+    def sample(self) -> tuple[tuple, ...]:
+        """EXPERIMENTAL: A single random sample from this generator.
+
+        This uses the standard `random` package and is not cryptographically
+        secure.
+
+        Returns:
+            A tuple of counts for each output of this generator.
+        """
+        if not self.outcomes():
+            raise ValueError('Cannot sample from an empty set of outcomes.')
+
+        outcome = self.min_outcome()
+
+        popped_generators, counts_s, weights = zip(*self._generate_min(outcome))
+        cumulative_weights = tuple(itertools.accumulate(weights))
+        denominator = cumulative_weights[-1]
+        # We don't use random.choices since that is based on floats rather than ints.
+        r = random.randrange(denominator)
+        index = bisect.bisect_right(cumulative_weights, r)
+        popped_generator = popped_generators[index]
+        counts = counts_s[index]
+        head = tuple((outcome,) * count for count in counts)
+        if popped_generator.outcomes():
+            tail = popped_generator.sample()
+            return tuple(h + t for h, t, in zip(head, tail))
+        else:
+            return head
