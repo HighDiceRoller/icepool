@@ -267,4 +267,4 @@ def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
         the corresponding sorted outcomes.
     """
     pool = icepool.Pool(dice)
-    return icepool.enumerate_gen(pool).sub(func, star=1)
+    return icepool.enumerate_generator(pool).sub(func, star=1)

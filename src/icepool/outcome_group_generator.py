@@ -68,7 +68,7 @@ class OutcomeGroupGenerator(ABC):
 
     @abstractmethod
     def denominator(self) -> int:
-        """The total weight of all paths through this gen."""
+        """The total weight of all paths through this generator."""
 
     @abstractmethod
     def __eq__(self, other) -> bool:
@@ -78,25 +78,27 @@ class OutcomeGroupGenerator(ABC):
     def __hash__(self) -> int:
         """All `OutcomeGroupGenerator`s must be hashable."""
 
-    def eval(self, eval_or_func: 'icepool.OutcomeGroupEvaluator' | Callable,
-             /) -> 'icepool.Die':
-        """Evaluates this gen using the given `OutcomeGroupEval` or function.
+    def evaluate(self,
+                 evaluator_or_func: 'icepool.OutcomeGroupEvaluator' | Callable,
+                 /) -> 'icepool.Die':
+        """Evaluates this generator using the given `OutcomeGroupEvaluator` or function.
 
-        Note that each `OutcomeGroupEval` instance carries its own cache;
+        Note that each `OutcomeGroupEvaluator` instance carries its own cache;
         if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `OutcomeGroupEval` instance
+        you may want to explicitly create an `OutcomeGroupEvaluator` instance
         rather than passing a function to this method directly.
 
         Args:
-            func: This can be an `OutcomeGroupEval`, in which case it evaluates
-                the gen directly. Or it can be a `OutcomeGroupEval.next_state()`
-                -like function, taking in `state, outcome, *counts` and
-                returning the next state. In this case a temporary `WrapFuncEval`
-                is constructed and used to evaluate this gen.
+            func: This can be an `OutcomeGroupEvaluator`, in which case it evaluates
+                the generator directly.
+                Or it can be a `OutcomeGroupEvaluator.next_state()`-like
+                function, taking in `state, outcome, *counts` and returning the
+                next state. In this case a temporary `WrapFuncEvaluator`
+                is constructed and used to evaluate this generator.
         """
-        if not isinstance(eval_or_func, icepool.OutcomeGroupEvaluator):
-            eval_or_func = icepool.WrapFuncEval(eval_or_func)
-        return eval_or_func.eval(self)
+        if not isinstance(evaluator_or_func, icepool.OutcomeGroupEvaluator):
+            evaluator_or_func = icepool.WrapFuncEvaluator(evaluator_or_func)
+        return evaluator_or_func.evaluate(self)
 
     def min_outcome(self):
         return self.outcomes()[0]
@@ -105,11 +107,11 @@ class OutcomeGroupGenerator(ABC):
         return self.outcomes()[-1]
 
     def sum(self) -> 'icepool.Die':
-        """Convenience method to simply sum the dice in this gen.
+        """Convenience method to simply sum the dice in this generator.
 
         This uses `icepool.sum_pool`.
 
         Returns:
             A die representing the sum.
         """
-        return icepool.sum_gen(self)
+        return icepool.sum_generator(self)

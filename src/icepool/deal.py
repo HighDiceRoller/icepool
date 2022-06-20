@@ -27,7 +27,7 @@ class Deal(OutcomeGroupGenerator):
         Args:
             deck: The `Deck` to deal from.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
-                provided, `OutcomeGroupEval.next_state` will recieve one count
+                provided, `OutcomeGroupEvaluator.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
                 as this can be computationally intensive.
         """

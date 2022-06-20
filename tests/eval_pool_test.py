@@ -18,26 +18,26 @@ class SumRerollIfAnyOnes(icepool.OutcomeGroupEvaluator):
         return 0
 
 def test_reroll():
-    result = SumRerollIfAnyOnes().eval(icepool.d6.pool(5))
+    result = SumRerollIfAnyOnes().evaluate(icepool.d6.pool(5))
     expected = 5 @ (icepool.d5+1)
     assert result.equals(expected)
 
-class SumPoolDescending(icepool.SumGen):
+class SumPoolDescending(icepool.SumGenerator):
     def direction(self, pool):
         return -1
 
 def test_sum_descending():
-    result = SumPoolDescending().eval(icepool.d6.pool(3))
+    result = SumPoolDescending().evaluate(icepool.d6.pool(3))
     expected = 3 @ icepool.d6
     assert result.equals(expected)
 
 def test_sum_descending_limit_outcomes():
-    result = -SumPoolDescending().eval((-icepool.d8, -icepool.d6))
+    result = -SumPoolDescending().evaluate((-icepool.d8, -icepool.d6))
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
 def test_sum_descending_keep_highest():
-    result = SumPoolDescending().eval(icepool.d6.pool()[0, 1, 1, 1])
+    result = SumPoolDescending().evaluate(icepool.d6.pool()[0, 1, 1, 1])
     expected = icepool.d6.keep_highest(4, 3)
     assert result.equals(expected)
 
@@ -48,8 +48,8 @@ def test_zero_weight_outcomes():
 def sum_dice_func(state, outcome, count):
     return (state or 0) + outcome * count
 
-def test_wrap_func_eval():
-    result = icepool.d6.pool()[0,0,1,1,1].eval(sum_dice_func)
+def test_wrap_func_evaluate():
+    result = icepool.d6.pool()[0,0,1,1,1].evaluate(sum_dice_func)
     expected = icepool.d6.keep_highest(5, 3)
     assert result.equals(expected)
 
@@ -111,17 +111,17 @@ eval_auto = SumFixedDirection(0)
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_sum_direction(pool):
-    assert eval_ascending.eval(pool).equals(eval_descending.eval(pool))
-    assert eval_ascending.eval(pool).equals(eval_auto.eval(pool))
+    assert eval_ascending.evaluate(pool).equals(eval_descending.evaluate(pool))
+    assert eval_ascending.evaluate(pool).equals(eval_auto.evaluate(pool))
 
-def test_joint_eval():
-    test_eval = icepool.JointEval(icepool.sum_gen, icepool.sum_gen)
-    result = test_eval(icepool.d6.pool(3))
+def test_joint_evaluate():
+    test_evaluator = icepool.JointEvaluator(icepool.sum_generator, icepool.sum_generator)
+    result = test_evaluator(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).sub(lambda x: (x, x))
     assert result.equals(expected)
 
 def test_enumerate_pool_vs_cartesian_product():
-    result = icepool.enumerate_gen(d6.pool(3))
+    result = icepool.enumerate_generator(d6.pool(3))
     expected = icepool.Die([(d6, d6, d6)]).sub(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
@@ -129,8 +129,8 @@ def test_enumerate_pool_vs_cartesian_product():
 def test_enumerate_pool_vs_sum(pool):
     if any(x < 0 for x in pool.post_roll_counts()):
         with pytest.raises(ValueError):
-            icepool.enumerate_gen(pool)
+            icepool.enumerate_generator(pool)
     else:
-        result = icepool.enumerate_gen(pool).sub(sum)
+        result = icepool.enumerate_generator(pool).sub(sum)
         expected = pool.sum()
         assert result.equals(expected)

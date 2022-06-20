@@ -268,8 +268,8 @@ class Pool(OutcomeGroupGenerator):
         else:
             result = Pool._new_pool_from_tuple(self._dice, post_roll_counts)
         if convert_to_die:
-            return result.eval(lambda state, outcome, count: outcome
-                               if count else state)
+            return result.evaluate(lambda state, outcome, count: outcome
+                                   if count else state)
         else:
             return result
 

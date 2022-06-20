@@ -19,12 +19,12 @@ def sum_each(state, outcome, *counts):
 
 def test_empty_deal():
     deal = icepool.Deck(range(13), times=4).deal()
-    result = deal.eval(trivial_next_state)
+    result = deal.evaluate(trivial_next_state)
     assert result.equals(icepool.Die([0]))
 
 def test_poker_straight():
     deal = icepool.Deck(range(13), times=4).deal(5)
-    result = find_best_run.eval(deal).marginals[0] == 5
+    result = find_best_run.evaluate(deal).marginals[0] == 5
     assert result.equals(icepool.coin(9216, 2598960))
 
 
@@ -34,7 +34,7 @@ def test_two_hand_sum_same_size():
     result1 = deal1.sum()
     
     deal2 = deck.deal(5, 5)
-    result2 = deal2.eval(sum_each)
+    result2 = deal2.evaluate(sum_each)
     
     assert deal2.denominator() == result2.denominator()
     assert result1.equals(result2.marginals[0], reduce=True)
@@ -45,7 +45,7 @@ def test_two_hand_sum_diff_size():
     deck = icepool.Deck(range(4), times=4)
     
     deal = deck.deal(2, 4)
-    result = deal.eval(sum_each)
+    result = deal.evaluate(sum_each)
     
     assert deal.denominator() == result.denominator()
     assert (result.marginals[0] * 2).mean() == result.marginals[1].mean()
