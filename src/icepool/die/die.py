@@ -803,7 +803,7 @@ class Die(Population):
 
     __ceil__ = ceil
 
-    class Marginals():
+    class _Marginals():
         """Helper class for implementing marginals()."""
 
         _die: 'Die'
@@ -823,7 +823,7 @@ class Die(Population):
         to slice tuples. For example, `die.marginals[:2]` will marginalize the
         first two elements of tuples.
         """
-        return Die.Marginals(self)
+        return Die._Marginals(self)
 
     @staticmethod
     def _zero(x):

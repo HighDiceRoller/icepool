@@ -138,7 +138,7 @@ class Deck(Population):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    class Marginals():
+    class _Marginals():
         """Helper class for implementing marginals()."""
 
         _deck: 'Deck'
@@ -158,7 +158,7 @@ class Deck(Population):
         to slice tuples. For example, `deck.marginals[:2]` will marginalize the
         first two elements of tuples.
         """
-        return Deck.Marginals(self)
+        return Deck._Marginals(self)
 
     @cached_property
     def _key_tuple(self) -> tuple:
