@@ -2,20 +2,20 @@
   "content": [
     {
       "content": null,
-      "created": "2022-06-20T06:52:18.273601Z",
+      "created": "2022-06-20T06:55:28.544199Z",
       "format": null,
-      "last_modified": "2022-06-20T06:51:56.449444Z",
+      "last_modified": "2022-06-20T06:55:12.040248Z",
       "mimetype": null,
       "name": "limited_wildcard.ipynb",
       "path": "decks/limited_wildcard.ipynb",
-      "size": 3478,
+      "size": 3491,
       "type": "notebook",
       "writable": true
     }
   ],
-  "created": "2022-06-20T06:52:18.273601Z",
+  "created": "2022-06-20T06:55:28.544199Z",
   "format": "json",
-  "last_modified": "2022-06-20T06:52:18.273601Z",
+  "last_modified": "2022-06-20T06:55:28.544199Z",
   "mimetype": null,
   "name": "decks",
   "path": "decks",
