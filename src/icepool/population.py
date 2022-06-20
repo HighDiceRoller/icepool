@@ -155,7 +155,7 @@ class Population(ABC, Mapping[Any, int]):
         return tuple(itertools.accumulate(self.values()))
 
     def quantities_le(self) -> Sequence[int]:
-        """Cumulative quantities. The quantity <= each outcome in order. """
+        """The quantity <= each outcome in order. """
         return self._quantities_le
 
     @cached_property
@@ -166,7 +166,7 @@ class Population(ABC, Mapping[Any, int]):
                                  initial=self.denominator()))
 
     def quantities_ge(self) -> Sequence[int]:
-        """Survival quantities. The quantity >= each outcome in order. """
+        """The quantity >= each outcome in order. """
         return self._quantities_ge
 
     @cached_property
@@ -175,7 +175,10 @@ class Population(ABC, Mapping[Any, int]):
             quantity / self.denominator() for quantity in self.quantities_le())
 
     def probabilities_le(self, percent: bool = False):
-        """Cumulative distribution function. The chance of rolling <= each outcome in order.
+        """The chance of rolling <= each outcome in order.
+
+        Also known as the cumulative distribution function (CDF),
+        though this term is ambigiuous whether it is < or <=.
 
         Args:
             percent: If set, the results will be in percent (i.e. total of 100.0).
@@ -192,7 +195,11 @@ class Population(ABC, Mapping[Any, int]):
             quantity / self.denominator() for quantity in self.quantities_ge())
 
     def probabilities_ge(self, percent: bool = False):
-        """Survival function. The chance of rolling >= each outcome in order.
+        """The chance of rolling >= each outcome in order.
+
+        Also known as the survival function (SF) or
+        complementary cumulative distribution function (CCDF),
+        though these term are ambigiuous whether they are is > or >=.
 
         Args:
             percent: If set, the results will be in percent (i.e. total of 100.0).
@@ -387,7 +394,8 @@ class Population(ABC, Mapping[Any, int]):
         * `o`: Outcomes.
         * `*o`: Outcomes, unpacked if applicable.
         * `q==`, `q<=`, `q>=`: Quantities ==, <=, or >= each outcome.
-        * `%==`, `%<=`, `%>=`: Chance (%) ==, <=, or >= each outcome.
+        * `p==`, `p<=`, `p>=`: Probabilities (0-1) ==, <=, or >= each outcome.
+        * `%==`, `%<=`, `%>=`: Chance (0%-100%) ==, <=, or >= each outcome.
 
         Columns may optionally be separated using ` ` (space) or `|` characters.
 

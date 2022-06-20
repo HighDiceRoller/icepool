@@ -12,7 +12,7 @@ from typing import Sequence
 OUTCOME_PATTERN = r'(?:\*o|o)'
 
 COMPARATOR_OPTIONS = '|'.join(['==', '<=', '>='])
-COMPARATOR_PATTERN = f'(?:[q%](?:{COMPARATOR_OPTIONS}))'
+COMPARATOR_PATTERN = f'(?:[%pq](?:{COMPARATOR_OPTIONS}))'
 """A comparator followed by q for quantity or % for probability percent."""
 
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
@@ -45,7 +45,7 @@ def make_headers(mapping: Population,
 
             if token[0] == 'q':
                 heading += 'Quantity'
-            elif token[0] == '%':
+            elif token[0] in ['p', '%']:
                 heading += 'Chance'
 
             comparator = token[1:]
@@ -81,7 +81,7 @@ def gather_cols(mapping: Population,
                 elif comparator == '>=':
                     col = mapping.quantities_ge()
                 result.append([str(x) for x in col])
-            elif denom_type == '%':
+            elif denom_type in ['p', '%']:
                 if mapping.denominator() == 0:
                     result.append(['n/a' for x in mapping.outcomes()])
                 else:
@@ -91,7 +91,11 @@ def gather_cols(mapping: Population,
                         col = mapping.probabilities_le()
                     elif comparator == '>=':
                         col = mapping.probabilities_ge()
-                    result.append([f'{x:0.6%}' for x in col])
+
+                    if denom_type == 'p':
+                        result.append([f'{x:0.6f}' for x in col])
+                    else:
+                        result.append([f'{x:0.6%}' for x in col])
     return result
 
 

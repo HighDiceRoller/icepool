@@ -18,8 +18,10 @@ def test_str(die):
 format_specs = [
     '',
     'md:q==|q<=|q>=',
+    'md:p==|p<=|p>=',
     'md:%==|%>=|%>=',
     'csv:q==|q<=|q>=',
+    'csv:p==|p<=|p>=',
     'csv:%==|%>=|%>=',
 ]
 

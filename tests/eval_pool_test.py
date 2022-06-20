@@ -5,7 +5,7 @@ import pytest
 
 from icepool import d4, d6, d8, d10, d12
 
-class SumRerollIfAnyOnes(icepool.OutcomeCountEval):
+class SumRerollIfAnyOnes(icepool.OutcomeGroupEvaluator):
     def next_state(self, state, outcome, count):
         if outcome == 1 and count > 0:
             return icepool.Reroll
@@ -85,7 +85,7 @@ def test_runs_skip():
     result = icepool.FindBestRun()(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
-class SumFixedDirection(icepool.OutcomeCountEval):
+class SumFixedDirection(icepool.OutcomeGroupEvaluator):
     def __init__(self, direction):
         self._direction = direction
 

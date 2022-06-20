@@ -6,12 +6,12 @@ from abc import ABC, abstractmethod
 
 from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
 
-GenGenerator: TypeAlias = Generator[tuple['OutcomeCountGen', Sequence[int],
-                                          int], None, None]
+GenGenerator: TypeAlias = Generator[tuple['OutcomeGroupGenerator',
+                                          Sequence[int], int], None, None]
 """The generator type returned by `_gen_min` and `_gen_max`."""
 
 
-class OutcomeCountGen(ABC):
+class OutcomeGroupGenerator(ABC):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card decks (`Deck`).
@@ -70,29 +70,29 @@ class OutcomeCountGen(ABC):
 
     @abstractmethod
     def __eq__(self, other) -> bool:
-        """All `OutcomeCountGen`s must implement equality."""
+        """All `OutcomeGroupGenerator`s must implement equality."""
 
     @abstractmethod
     def __hash__(self) -> int:
-        """All `OutcomeCountGen`s must be hashable."""
+        """All `OutcomeGroupGenerator`s must be hashable."""
 
-    def eval(self, eval_or_func: 'icepool.OutcomeCountEval' | Callable,
+    def eval(self, eval_or_func: 'icepool.OutcomeGroupEvaluator' | Callable,
              /) -> 'icepool.Die':
-        """Evaluates this gen using the given `OutcomeCountEval` or function.
+        """Evaluates this gen using the given `OutcomeGroupEval` or function.
 
-        Note that each `OutcomeCountEval` instance carries its own cache;
+        Note that each `OutcomeGroupEval` instance carries its own cache;
         if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `OutcomeCountEval` instance
+        you may want to explicitly create an `OutcomeGroupEval` instance
         rather than passing a function to this method directly.
 
         Args:
-            func: This can be an `OutcomeCountEval`, in which case it evaluates
-                the gen directly. Or it can be a `OutcomeCountEval.next_state()`
+            func: This can be an `OutcomeGroupEval`, in which case it evaluates
+                the gen directly. Or it can be a `OutcomeGroupEval.next_state()`
                 -like function, taking in `state, outcome, *counts` and
                 returning the next state. In this case a temporary `WrapFuncEval`
                 is constructed and used to evaluate this gen.
         """
-        if not isinstance(eval_or_func, icepool.OutcomeCountEval):
+        if not isinstance(eval_or_func, icepool.OutcomeGroupEvaluator):
             eval_or_func = icepool.WrapFuncEval(eval_or_func)
         return eval_or_func.eval(self)
 

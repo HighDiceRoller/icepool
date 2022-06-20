@@ -2,14 +2,14 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.gen import GenGenerator, OutcomeCountGen
+from icepool.gen import GenGenerator, OutcomeGroupGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
 import math
 
 
-class Deal(OutcomeCountGen):
+class Deal(OutcomeGroupGenerator):
     """EXPERIMENTAL: Represents an unordered deal of cards from a deck.
 
     API and naming WIP.
@@ -27,7 +27,7 @@ class Deal(OutcomeCountGen):
         Args:
             deck: The `Deck` to deal from.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
-                provided, `OutcomeCountEval.next_state` will recieve one count
+                provided, `OutcomeGroupEval.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
                 as this can be computationally intensive.
         """

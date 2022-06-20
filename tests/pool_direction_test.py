@@ -5,7 +5,7 @@ import pytest
 
 from icepool import d4, d6, d8, d10, d12, Pool
 
-class VerifyDirection(icepool.OutcomeCountEval):
+class VerifyDirection(icepool.OutcomeGroupEvaluator):
     def __init__(self, direction):
         self._direction = direction
         

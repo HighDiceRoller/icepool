@@ -15,25 +15,26 @@ PREFERRED_DIRECTION_COST_FACTOR = 10
 """The preferred direction will be favored this times as much."""
 
 
-class OutcomeCountEval(ABC):
-    """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGens`s.
+class OutcomeGroupEvaluator(ABC):
+    """An abstract, immutable, callable class for evaulating one or more `OutcomeGroupGenerators`s.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result given one outcome at a time
     along with how many of that outcome were produced.
+
     An example sequence of calls, as far as `next_state()` is concerned, is:
 
-    1. `state = next_state(state=None, outcome=1, count=how_many_1s)`
-    2. `state = next_state(state, 2, how_many_2s)`
-    3. `state = next_state(state, 3, how_many_3s)`
-    4. `state = next_state(state, 4, how_many_4s)`
-    5. `state = next_state(state, 5, how_many_5s)`
-    6. `state = next_state(state, 6, how_many_6s)`
+    1. `state = next_state(state=None, outcome=1, count_of_1s)`
+    2. `state = next_state(state, 2, count_of_2s)`
+    3. `state = next_state(state, 3, count_of_3s)`
+    4. `state = next_state(state, 4, count_of_4s)`
+    5. `state = next_state(state, 5, count_of_5s)`
+    6. `state = next_state(state, 6, count_of_6s)`
     7. `outcome = final_outcome(state, *gens)`
 
     A few other methods can optionally be overridden to further customize behavior.
 
-    It is not expected that subclasses of `OutcomeCountEval`
+    It is not expected that subclasses of `OutcomeGroupEval`
     be able to handle arbitrary types or numbers of gens.
     Indeed, most are expected to handle only a fixed number of gens,
     and often even only gens with a particular type of die.
@@ -89,7 +90,7 @@ class OutcomeCountEval(ABC):
         """
 
     def final_outcome(self, final_state: Hashable, /,
-                      *gens: icepool.OutcomeCountGen) -> Any:
+                      *gens: icepool.OutcomeGroupGenerator) -> Any:
         """Optional function to generate a final outcome from a final state.
 
         Within `eval()`, this will be called using only positional arguments.
@@ -103,7 +104,7 @@ class OutcomeCountEval(ABC):
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *gens: One or more `OutcomeCountGen`s being evaluated.
+            *gens: One or more `OutcomeGroupGenerator`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -114,14 +115,14 @@ class OutcomeCountEval(ABC):
         """
         return final_state
 
-    def direction(self, *gens: icepool.OutcomeCountGen) -> int:
+    def direction(self, *gens: icepool.OutcomeGroupGenerator) -> int:
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
         The default is ascending order. This works well with mixed standard dice,
         and other dice that differ only by right-truncation.
 
         Args:
-            *gens: One or more `OutcomeCountGen`s being evaluated.
+            *gens: One or more `OutcomeGroupGenerator`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -133,14 +134,14 @@ class OutcomeCountEval(ABC):
         """
         return 1
 
-    def alignment(self, *gens: icepool.OutcomeCountGen) -> Collection:
+    def alignment(self, *gens: icepool.OutcomeGroupGenerator) -> Collection:
         """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
 
         If you want the outcomes seen by `next_state` to be consecutive
-        `int`s, you can set `alignment = icepool.OutcomeCountEval.range_alignment`.
+        `int`s, you can set `alignment = icepool.OutcomeGroupEval.range_alignment`.
         See `range_alignment()` below.
 
         Returns:
@@ -149,11 +150,11 @@ class OutcomeCountEval(ABC):
         """
         return ()
 
-    def range_alignment(self,
-                        *gens: icepool.OutcomeCountGen) -> Collection[int]:
+    def range_alignment(
+            self, *gens: icepool.OutcomeGroupGenerator) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
-        Set `alignment = icepool.OutcomeCountEval.range_alignment` to use this.
+        Set `alignment = icepool.OutcomeGroupEval.range_alignment` to use this.
 
         Returns:
             All `int`s from the min outcome to the max outcome among the generators,
@@ -183,16 +184,17 @@ class OutcomeCountEval(ABC):
         return {}
 
     def eval(
-        self, *gens: icepool.OutcomeCountGen | Mapping[Any, int] | Sequence
+        self,
+        *gens: icepool.OutcomeGroupGenerator | Mapping[Any, int] | Sequence
     ) -> 'icepool.Die':
         """Evaluates generators.
 
-        You can call the `OutcomeCountEval` object directly for the same effect,
+        You can call the `OutcomeGroupEval` object directly for the same effect,
         e.g. `sum_gen(gen)` is an alias for `sum_gen.eval(gen)`.
 
         Args:
             *gens: Each element may be one of the following:
-                * A `OutcomeCountGen`.
+                * A `OutcomeGroupGenerator`.
                 * A mappable mapping dice to the number of those dice.
                 * A sequence of arguments to create a `Pool`.
                 Most evaluators will expect a fixed number of gens.
@@ -203,9 +205,9 @@ class OutcomeCountEval(ABC):
         """
 
         # Convert non-pool arguments to `Pool`.
-        converted_gens = tuple(gen if isinstance(gen, icepool.OutcomeCountGen
-                                                ) else icepool.Pool(gen)
-                               for gen in gens)
+        converted_gens = tuple(
+            gen if isinstance(gen, icepool.OutcomeGroupGenerator
+                             ) else icepool.Pool(gen) for gen in gens)
 
         if not all(gen._is_resolvable() for gen in converted_gens):
             return icepool.Die([])
@@ -224,8 +226,8 @@ class OutcomeCountEval(ABC):
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
-                    "This may have resulted from supplying an empty gen to OutcomeCountEval. "
-                    "If so, refrain from using empty gens, or override OutcomeCountEval.final_outcome() to handle this case."
+                    "This may have resulted from supplying an empty gen to OutcomeGroupEval. "
+                    "If so, refrain from using empty gens, or override OutcomeGroupEval.final_outcome() to handle this case."
                 )
             if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
@@ -236,7 +238,7 @@ class OutcomeCountEval(ABC):
     __call__ = eval
 
     def _select_algorithm(
-            self, *gens: icepool.OutcomeCountGen) -> tuple[Callable, int]:
+            self, *gens: icepool.OutcomeGroupGenerator) -> tuple[Callable, int]:
         """Selects an algorithm and iteration direction.
 
         Returns:
@@ -280,7 +282,8 @@ class OutcomeCountEval(ABC):
 
     def _eval_internal(
             self, direction: int, alignment: Alignment,
-            gens: tuple[icepool.OutcomeCountGen, ...]) -> Mapping[Any, int]:
+            gens: tuple[icepool.OutcomeGroupGenerator,
+                        ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred direction,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -290,7 +293,7 @@ class OutcomeCountEval(ABC):
             direction: The direction in which to send outcomes to `next_state()`.
             alignment: As `alignment()`. Elements will be popped off this
                 during recursion.
-            gens: One or more `OutcomeCountGens`s to evaluate. Elements
+            gens: One or more `OutcomeGroupGenerators`s to evaluate. Elements
                 will be popped off this during recursion.
 
         Returns:
@@ -323,7 +326,8 @@ class OutcomeCountEval(ABC):
 
     def _eval_internal_iterative(
             self, direction: int, alignment: Alignment,
-            gens: tuple[icepool.OutcomeCountGen, ...]) -> Mapping[Any, int]:
+            gens: tuple[icepool.OutcomeGroupGenerator,
+                        ...]) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred direction,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
@@ -356,7 +360,8 @@ class OutcomeCountEval(ABC):
 
 
 def _pop_gens(
-    side: int, alignment: Alignment, gens: tuple[icepool.OutcomeCountGen, ...]
+    side: int, alignment: Alignment, gens: tuple[icepool.OutcomeGroupGenerator,
+                                                 ...]
 ) -> tuple[Any, Alignment, tuple['icepool.GenGenerator', ...]]:
     """Pops a single outcome from the gens.
 
@@ -384,8 +389,8 @@ def _pop_gens(
             gen._gen_min(outcome) for gen in gens)
 
 
-class WrapFuncEval(OutcomeCountEval):
-    """An `OutcomeCountEval` created from a single provided function.
+class WrapFuncEval(OutcomeGroupEvaluator):
+    """An `OutcomeGroupEval` created from a single provided function.
 
     `next_state()` simply calls that function.
     """
@@ -402,14 +407,14 @@ class WrapFuncEval(OutcomeCountEval):
         return self._func(state, outcome, *counts)
 
 
-class JointEval(OutcomeCountEval):
-    """EXPERIMENTAL: An `OutcomeCountEval` that jointly evaluates subevals on the same roll(s) of a gen.
+class JointEval(OutcomeGroupEvaluator):
+    """EXPERIMENTAL: An `OutcomeGroupEval` that jointly evaluates subevals on the same roll(s) of a gen.
 
     It may be more efficient to write the joint evaluation directly; this is
     provided as a convenience.
     """
 
-    def __init__(self, *subevals: 'OutcomeCountEval'):
+    def __init__(self, *subevals: 'OutcomeGroupEvaluator'):
         self._subevals = subevals
 
     def next_state(self, state, outcome, *counts: int):
@@ -426,7 +431,7 @@ class JointEval(OutcomeCountEval):
                 subeval.next_state(substate, outcome, *counts)
                 for subeval, substate in zip(self._subevals, state))
 
-    def final_outcome(self, final_state, *gens: icepool.OutcomeCountGen):
+    def final_outcome(self, final_state, *gens: icepool.OutcomeGroupGenerator):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
@@ -435,7 +440,7 @@ class JointEval(OutcomeCountEval):
             subeval.final_outcome(final_substate, *gens)
             for subeval, final_substate in zip(self._subevals, final_state))
 
-    def direction(self, *gens: icepool.OutcomeCountGen):
+    def direction(self, *gens: icepool.OutcomeGroupGenerator):
         """Determines the common direction of the subevals.
 
         Raises:
@@ -456,8 +461,8 @@ class JointEval(OutcomeCountEval):
             return 0
 
 
-class SumGen(OutcomeCountEval):
-    """A simple `OutcomeCountEval` that just sums the outcomes in a gen. """
+class SumGen(OutcomeGroupEvaluator):
+    """A simple `OutcomeGroupEval` that just sums the outcomes in a gen. """
 
     def next_state(self, state, outcome, count):
         """Add the outcomes to the running total. """
@@ -481,8 +486,8 @@ sum_gen = SumGen()
 """A shared `SumGens` object for caching results. """
 
 
-class EnumerateGen(OutcomeCountEval):
-    """A `OutcomeCountEval` that enumerates all possible (sorted) results.
+class EnumerateGen(OutcomeGroupEvaluator):
+    """A `OutcomeGroupEval` that enumerates all possible (sorted) results.
 
     This is expensive and not recommended unless there are few elements being output.
     """
@@ -511,8 +516,8 @@ enumerate_gen = EnumerateGen()
 """A shared `EnumerateGens` object for caching results. """
 
 
-class FindBestSet(OutcomeCountEval):
-    """A `OutcomeCountEval` that takes the best matching set in a gen.
+class FindBestSet(OutcomeGroupEvaluator):
+    """A `OutcomeGroupEval` that takes the best matching set in a gen.
 
     This prioritizes set size, then the outcome.
 
@@ -534,8 +539,8 @@ class FindBestSet(OutcomeCountEval):
         return 0
 
 
-class FindBestRun(OutcomeCountEval):
-    """A `OutcomeCountEval` that takes the best run (aka "straight") in a gen.
+class FindBestRun(OutcomeGroupEvaluator):
+    """A `OutcomeGroupEval` that takes the best run (aka "straight") in a gen.
 
     Outcomes must be `int`s.
 
@@ -563,4 +568,4 @@ class FindBestRun(OutcomeCountEval):
         """This only considers outcomes in ascending order. """
         return 1
 
-    alignment = OutcomeCountEval.range_alignment
+    alignment = OutcomeGroupEvaluator.range_alignment
