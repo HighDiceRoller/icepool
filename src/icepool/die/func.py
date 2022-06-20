@@ -58,7 +58,7 @@ coin = bernoulli
 
 def from_quantities_le(outcomes: Sequence,
                        quantities_le: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from cumulative quantities. """
+    """Constructs a die from a sequence of cumulative quantities."""
     prev = 0
     d = {}
     for outcome, quantity in zip(outcomes, quantities_le):
@@ -69,7 +69,7 @@ def from_quantities_le(outcomes: Sequence,
 
 def from_quantities_ge(outcomes: Sequence,
                        quantities_ge: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from survival quantities. """
+    """Constructs a die from a sequence of complementary cumulative quantities."""
     prev = 0
     d = {}
     for outcome, quantity in zip(reversed(outcomes),
@@ -217,7 +217,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
-        `icepool.Pool` and `icepool.EvalPool`.
+        `icepool.Pool` and `icepool.OutcomeGroupEvaluator`.
     * If the order in which the dice are rolled is not important, you can use
         `apply_sorted()`. This is less efficient than either of the above two,
         but is still more efficient than `apply()`.
@@ -253,7 +253,7 @@ def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
     """Applies `func(lowest_outcome, next_lowest_outcome...)` for all possible sorted outcomes of the dice.
 
     This is more efficient than `apply` but still not very efficient.
-    Use `EvalPool` instead if at all possible.
+    Use `OutcomeGroupEvaluator` instead if at all possible.
 
     Args:
         func: A function that takes one argument per input die and returns an

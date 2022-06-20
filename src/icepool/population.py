@@ -301,7 +301,7 @@ class Population(ABC, Mapping[Any, int]):
     def quantile_left(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the CDF.
 
-        If the result lies between two outcomes, returns the lower of the two.
+        If the result lies between two outcomes, returns the lesser of the two.
         """
         index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
@@ -312,7 +312,7 @@ class Population(ABC, Mapping[Any, int]):
     def quantile_right(self, n: int, d: int = 100):
         """Returns a quantile, `n / d` of the way through the CDF.
 
-        If the result lies between two outcomes, returns the higher of the two.
+        If the result lies between two outcomes, returns the greater of the two.
         """
         index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)

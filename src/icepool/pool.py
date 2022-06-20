@@ -39,7 +39,7 @@ def clear_pool_cache():
 class Pool(OutcomeGroupGenerator):
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
-    This should be used in conjunction with `EvalPool` to generate a result.
+    This should be used in conjunction with `OutcomeGroupEvaluator` to generate a result.
     """
 
     _post_roll_counts: tuple[int, ...]
