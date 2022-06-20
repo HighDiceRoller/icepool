@@ -102,13 +102,13 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
 
 
 def min_outcome(*dice):
-    """Returns the minimum possible outcome among the dice. """
+    """The minimum outcome among the dice. """
     dice = [icepool.Die([die]) for die in dice]
     return min(die.outcomes()[0] for die in dice)
 
 
 def max_outcome(*dice):
-    """Returns the maximum possible outcome among the dice. """
+    """The maximum outcome among the dice. """
     dice = [icepool.Die([die]) for die in dice]
     return max(die.outcomes()[-1] for die in dice)
 
@@ -206,7 +206,7 @@ def accumulate(func: Callable[[Any, Any], Any], dice, *, initial=None):
 
 
 def apply(func: Callable, *dice) -> 'icepool.Die':
-    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all possible outcomes of the dice.
+    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
@@ -226,8 +226,8 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         func: A function that takes one argument per input die and returns an
             argument to `Die()`.
         *dice: Any number of dice (or objects convertible to dice).
-            `func` will be called with all possible joint outcomes of `dice`,
-            with one argument per die.
+            `func` will be called with all joint outcomes of `dice`, with one
+            argument per die.
 
     Returns:
         A die constructed from the outputs of `func` and the product of the
@@ -250,7 +250,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
 
 
 def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
-    """Applies `func(lowest_outcome, next_lowest_outcome...)` for all possible sorted outcomes of the dice.
+    """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
     This is more efficient than `apply` but still not very efficient.
     Use `OutcomeCountEvaluator` instead if at all possible.
@@ -259,7 +259,7 @@ def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
         func: A function that takes one argument per input die and returns an
             argument to `Die()`.
         *dice: Any number of dice (or objects convertible to dice).
-            `func` will be called with all possible sorted outcomes of `dice`,
+            `func` will be called with all sorted joint outcomes of `dice`,
             with one argument per die. All outcomes must be totally orderable.
 
     Returns:

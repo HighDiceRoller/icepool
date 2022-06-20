@@ -70,22 +70,25 @@ class Population(ABC, Mapping[Any, int]):
         return result
 
     def outcome_len(self) -> int | None:
+        """The common length of tuple outcomes.
+
+        This is `None` if outcomes are not tuples,
+        or if there are tuples of different lengths.
+        """
         return self._outcome_len
 
     def is_empty(self) -> bool:
-        """Returns `True` if this mapping has no outcomes. """
+        """`True` iff this mapping has no outcomes. """
         return len(self) == 0
 
     def min_outcome(self):
-        """Returns the minimum outcome."""
         return self.outcomes()[0]
 
     def max_outcome(self):
-        """Returns the maximum outcome."""
         return self.outcomes()[-1]
 
     def nearest_le(self, outcome):
-        """Returns the nearest outcome that is <= the argument.
+        """The nearest outcome that is <= the argument.
 
         Returns `None` if there is no such outcome.
         """
@@ -95,7 +98,7 @@ class Population(ABC, Mapping[Any, int]):
         return self.outcomes()[index]
 
     def nearest_ge(self, outcome):
-        """Returns the nearest outcome that is >= the argument.
+        """The nearest outcome that is >= the argument.
 
         Returns `None` if there is no such outcome.
         """
@@ -211,49 +214,49 @@ class Population(ABC, Mapping[Any, int]):
             return self._probabilities_ge
 
     def quantity(self, outcome) -> int:
-        """Returns the quantity of a single outcome, or 0 if not present. """
+        """The quantity of a single outcome, or 0 if not present. """
         return self.get(outcome, 0)
 
     def quantity_ne(self, outcome) -> int:
-        """Returns the quantity != a single outcome. """
+        """The quantity != a single outcome. """
         return self.denominator() - self.quantity(outcome)
 
     def quantity_le(self, outcome) -> int:
-        """Returns the quantity <= a single outcome. """
+        """The quantity <= a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
         return self.quantities_le()[index]
 
     def quantity_lt(self, outcome) -> int:
-        """Returns the quantity < a single outcome. """
+        """The quantity < a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome) - 1
         if index < 0:
             return 0
         return self.quantities_le()[index]
 
     def quantity_ge(self, outcome) -> int:
-        """Returns the quantity >= a single outcome. """
+        """The quantity >= a single outcome. """
         index = bisect.bisect_left(self.outcomes(), outcome)
         if index >= len(self):
             return 0
         return self.quantities_ge()[index]
 
     def quantity_gt(self, outcome) -> int:
-        """Returns the quantity > a single outcome. """
+        """The quantity > a single outcome. """
         index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self):
             return 0
         return self.quantities_ge()[index]
 
     def probability(self, outcome):
-        """Returns the probability of a single outcome. """
+        """The probability of a single outcome. """
         return self.quantity(outcome) / self.denominator()
 
     # Scalar statistics.
 
     def mode(self) -> tuple:
-        """Returns a tuple containing the most common outcome(s) of the population.
+        """A tuple containing the most common outcome(s) of the population.
 
         These are sorted from lowest to highest.
         """
@@ -278,31 +281,23 @@ class Population(ABC, Mapping[Any, int]):
                    for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
     def median_left(self):
-        """Returns the median.
-
-        If the median lies between two outcomes, returns the lower of the two. """
+        """The median, taking the lesser in case of a tie."""
         return self.quantile_left(1, 2)
 
     def median_right(self):
-        """Returns the median.
-
-        If the median lies between two outcomes, returns the higher of the two. """
+        """The median, taking the greater in case of a tie."""
         return self.quantile_right(1, 2)
 
     def median(self):
-        """Returns the median.
+        """The median, taking the mean in case of a tie.
 
-        If the median lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
         in this case, use `median_left` or `median_right` instead.
         """
         return self.quantile(1, 2)
 
     def quantile_left(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the CDF.
-
-        If the result lies between two outcomes, returns the lesser of the two.
-        """
+        """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
         index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
         if index >= len(self):
@@ -310,10 +305,7 @@ class Population(ABC, Mapping[Any, int]):
         return self.outcomes()[index]
 
     def quantile_right(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the CDF.
-
-        If the result lies between two outcomes, returns the greater of the two.
-        """
+        """The outcome `n / d` of the way through the CDF, taking the greater in case of a tie."""
         index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)
         if index >= len(self):
@@ -321,9 +313,8 @@ class Population(ABC, Mapping[Any, int]):
         return self.outcomes()[index]
 
     def quantile(self, n: int, d: int = 100):
-        """Returns a quantile, `n / d` of the way through the CDF.
+        """The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.
 
-        If the result lies between two outcomes, returns the mean of the two.
         This will fail if the outcomes do not support division;
         in this case, use `quantile_left` or `quantile_right` instead.
         """

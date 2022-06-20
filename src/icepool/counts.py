@@ -47,7 +47,7 @@ class Counts(Mapping[Any, int]):
         return 0 in self.values()
 
     def has_zero_values(self) -> bool:
-        """Returns `True` iff `self` contains at least one zero value. """
+        """`True` iff `self` contains at least one zero value. """
         return self._has_zero_values
 
     def __len__(self) -> int:
@@ -107,7 +107,7 @@ class Counts(Mapping[Any, int]):
         return Counts(self.items()[1:])
 
     def remove_min(self) -> 'Counts':
-        """Returns a `Counts` with the min element removed."""
+        """A `Counts` with the min element removed."""
         return self._remove_min
 
     @cached_property
@@ -115,7 +115,7 @@ class Counts(Mapping[Any, int]):
         return Counts(self.items()[:-1])
 
     def remove_max(self) -> 'Counts':
-        """Returns a `Counts` with the max element removed."""
+        """A `Counts` with the max element removed."""
         return self._remove_max
 
     def reduce(self) -> 'Counts':

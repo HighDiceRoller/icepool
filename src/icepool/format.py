@@ -114,7 +114,7 @@ def compute_col_widths(headers: Sequence[str],
 
 
 def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
-    """Returns a list of '<' or '>' for each column specifying alignment.
+    """A list of '<' or '>' for each column specifying alignment.
 
     Columns are aligned right iff all values are numeric.
     """

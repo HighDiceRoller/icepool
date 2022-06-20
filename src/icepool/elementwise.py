@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 
 def tuple_len(a) -> int | None:
-    """Returns the length of a tuple, or `None` if the argument is not a tuple."""
+    """The length of a tuple, or `None` if the argument is not a tuple."""
     if type(a) == tuple:
         return len(a)
     else:

@@ -51,7 +51,7 @@ def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:
 
 
 def lo_hi_skip(post_roll_counts: tuple[int, ...]) -> tuple[int, int]:
-    """Returns the number of dice that can be skipped from the ends of post_roll_counts.
+    """The number of dice that can be skipped from the ends of post_roll_counts.
 
     Returns:
         lo_skip: The number of dice that can be skipped on the low side.

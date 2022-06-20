@@ -120,7 +120,7 @@ class Deck(Population):
         return self._new_deck(self._data.remove_min()), self.quantities()[0]
 
     def _pop_min(self) -> tuple['Deck', int]:
-        """Returns a deck with the min outcome removed."""
+        """A deck with the min outcome removed."""
         return self._popped_min
 
     @cached_property
@@ -128,7 +128,7 @@ class Deck(Population):
         return self._new_deck(self._data.remove_max()), self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Deck', int]:
-        """Returns a deck with the max outcome removed."""
+        """A deck with the max outcome removed."""
         return self._popped_max
 
     def deal(self, *hand_sizes: int) -> 'icepool.Deal':
@@ -139,7 +139,7 @@ class Deck(Population):
         return icepool.Deal(self, *hand_sizes)
 
     class _Marginals():
-        """Helper class for implementing marginals()."""
+        """Helper class for implementing `marginals()`."""
 
         _deck: 'Deck'
 

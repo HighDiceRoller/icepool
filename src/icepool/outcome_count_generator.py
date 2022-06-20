@@ -22,11 +22,11 @@ class OutcomeCountGenerator(ABC):
 
     @abstractmethod
     def outcomes(self) -> Sequence:
-        """The set of possible outcomes, in sorted order."""
+        """The set of outcomes, in sorted order."""
 
     @abstractmethod
     def _is_resolvable(self) -> bool:
-        """Returns `True` iff the generator is capable of producing an overall outcome.
+        """`True` iff the generator is capable of producing an overall outcome.
 
         For example, a dice pool will return `False` if it contains any dice
         with no outcomes.

@@ -378,7 +378,7 @@ def _pop_generators(
     Returns:
         * The popped outcome.
         * The remaining alignment.
-        * A tuple of iterators over the possible resulting generators, counts, and weights.
+        * A tuple of iterators over the resulting generators, counts, and weights.
     """
     alignment_and_generators = (alignment,) + generators
     if side >= 0:
@@ -501,7 +501,7 @@ evaluate_sum = EvaluateSum()
 
 
 class EnumerateSorted(OutcomeCountEvaluator):
-    """A `OutcomeCountEvaluator` that enumerates all possible (sorted) results.
+    """A `OutcomeCountEvaluator` that enumerates all (sorted) results.
 
     This is expensive and not recommended unless there are few elements being output.
     """
@@ -575,7 +575,7 @@ class FindBestRun(OutcomeCountEvaluator):
         return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
     def final_outcome(self, final_state, *generators):
-        """Returns the best run. """
+        """The best run. """
         return final_state[:2]
 
     def direction(self, *generators):

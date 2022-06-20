@@ -464,7 +464,7 @@ class Die(Population):
         return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
-        """Returns a die with the min outcome removed, and the quantity of the removed outcome.
+        """A die with the min outcome removed, and the quantity of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.
@@ -477,7 +477,7 @@ class Die(Population):
         return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
-        """Returns a die with the max outcome removed, and the quantity of the removed outcome.
+        """A die with the max outcome removed, and the quantity of the removed outcome.
 
         Raises:
             `IndexError` if this die has no outcome to pop.
@@ -804,7 +804,7 @@ class Die(Population):
     __ceil__ = ceil
 
     class _Marginals():
-        """Helper class for implementing marginals()."""
+        """Helper class for implementing `marginals()`."""
 
         _die: 'Die'
 
@@ -846,7 +846,7 @@ class Die(Population):
         return result
 
     def zero_outcome(self):
-        """Returns a zero-outcome for this die.
+        """A zero-outcome for this die.
 
         E.g. `0` for a die whose outcomes are `int`s.
         """
@@ -1057,7 +1057,7 @@ class Die(Population):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def cmp(self, other) -> 'Die':
-        """Returns a die with possible outcomes 1, -1, and 0.
+        """A die with outcomes 1, -1, and 0.
 
         The quantities are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
@@ -1107,7 +1107,7 @@ class Die(Population):
         return tuple(self.items())
 
     def key_tuple(self) -> tuple:
-        """Returns a tuple that uniquely (as `equals()`) identifies this die.
+        """A tuple that uniquely (as `equals()`) identifies this die.
 
         Apart from being hashable and totally orderable, this is not guaranteed
         to be in any particular format or have any other properties.
@@ -1122,7 +1122,7 @@ class Die(Population):
         return self._hash
 
     def equals(self, other, *, reduce=False):
-        """Returns `True` iff both dice have the same outcomes and quantities.
+        """`True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
         to an equal `Die`.

@@ -186,7 +186,7 @@ class Pool(OutcomeCountGenerator):
 
     def set_post_roll_counts(self,
                              post_roll_counts: int | slice | tuple[int, ...]):
-        """Returns a pool with the selected dice counted after rolling and sorting.
+        """A pool with the selected dice counted after rolling and sorting.
 
         Use `pool[post_roll_counts]` for the same effect as this method.
 
@@ -280,7 +280,7 @@ class Pool(OutcomeCountGenerator):
         return min(die.min_outcome() for die in self.unique_dice())
 
     def min_outcome(self):
-        """Returns the min outcome among all dice in this pool."""
+        """The min outcome among all dice in this pool."""
         return self._min_outcome
 
     @cached_property
@@ -288,7 +288,7 @@ class Pool(OutcomeCountGenerator):
         return max(die.max_outcome() for die in self.unique_dice())
 
     def max_outcome(self):
-        """Returns the max outcome among all dice in this pool."""
+        """The max outcome among all dice in this pool."""
         return self._max_outcome
 
     def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
@@ -517,7 +517,7 @@ def post_roll_counts_tuple(
 
 
 def standard_pool(die_sizes: Collection[int]) -> 'Pool':
-    """Returns a pool of standard dice.
+    """A pool of standard dice (e.g. d6, d8...).
 
     Args:
         die_sizes: For each of these die_size X, the pool will contain one dX.
