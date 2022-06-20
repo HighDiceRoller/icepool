@@ -19,7 +19,7 @@ def standard(sides: int, /) -> 'icepool.Die':
 
     Don't confuse this with `icepool.Die()`:
 
-    * `icepool.Die([6])`: A die that always rolls the integer 6.
+    * `icepool.Die([6])`: A `Die` that always rolls the integer 6.
     * `icepool.d(6)`: A d6.
     """
     if not isinstance(sides, int):
@@ -49,9 +49,9 @@ def __getattr__(key: str):
 
 
 def bernoulli(numerator: int, denominator: int, /) -> 'icepool.Die':
-    """A die that rolls `True` with probability `n / d`, and `False` otherwise.
+    """A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.
 
-    The die will have both `True` and `False` as outcomes even if one has
+    The `Die` will have both `True` and `False` as outcomes even if one has
     zero quantity.
     """
     return icepool.Die({False: denominator - numerator, True: numerator})
@@ -64,7 +64,7 @@ def from_cumulative_quantities(outcomes: Sequence,
                                cumulative_quantities: Sequence[int],
                                *,
                                reverse: bool = False) -> 'icepool.Die':
-    """Constructs a die from a sequence of cumulative quantities.
+    """Constructs a `Die` from a sequence of cumulative quantities.
 
     Args:
         outcomes: The outcomes of the resulting die. Sorted order is recommended
@@ -86,13 +86,13 @@ def from_cumulative_quantities(outcomes: Sequence,
 
 
 def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
-    """Constructs a die from a rv object (as `scipy.stats`).
+    """Constructs a `Die` from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
         outcomes: An iterable of `int`s or `float`s that will be the outcomes
-            of the resulting die.
+            of the resulting `Die`.
             If the distribution is discrete, outcomes must be `int`s.
-        denominator: The denominator of the resulting die will be set to this.
+        denominator: The denominator of the resulting `Die` will be set to this.
         **kwargs: These will be provided to `rv.cdf()`.
     """
     if hasattr(rv, 'pdf'):
@@ -219,7 +219,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
     `apply()` is flexible but not very efficient for more than two dice.
     Instead of using more than two arguments:
 
-    * If the problem is easy to solve by considering one additional die at a
+    * If the problem is easy to solve by considering one additional `Die` at a
         time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
@@ -229,14 +229,14 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         but is still more efficient than `apply()`.
 
     Args:
-        func: A function that takes one argument per input die and returns an
+        func: A function that takes one argument per input `Die` and returns an
             argument to `Die()`.
         *dice: Any number of dice (or objects convertible to dice).
             `func` will be called with all joint outcomes of `dice`, with one
-            argument per die.
+            argument per `Die`.
 
     Returns:
-        A die constructed from the outputs of `func` and the product of the
+        A `Die` constructed from the outputs of `func` and the product of the
         quantities of the dice.
     """
     if len(dice) == 0:
@@ -262,14 +262,14 @@ def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
     Use `OutcomeCountEvaluator` instead if at all possible.
 
     Args:
-        func: A function that takes one argument per input die and returns an
+        func: A function that takes one argument per input `Die` and returns an
             argument to `Die()`.
         *dice: Any number of dice (or objects convertible to dice).
             `func` will be called with all sorted joint outcomes of `dice`,
             with one argument per die. All outcomes must be totally orderable.
 
     Returns:
-        A die constructed from the outputs of `func` and the weight of rolling
+        A `Die` constructed from the outputs of `func` and the weight of rolling
         the corresponding sorted outcomes.
     """
     pool = icepool.Pool(dice)

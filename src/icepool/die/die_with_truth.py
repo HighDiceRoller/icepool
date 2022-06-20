@@ -11,7 +11,7 @@ from typing import Callable
 
 
 class DieWithTruth(Die):
-    """A die with a truth value.
+    """A `Die` with a truth value.
 
     Additionally, the data is evaluated lazily since the caller may only be
     interested in the truth value.

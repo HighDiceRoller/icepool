@@ -8,7 +8,7 @@ from typing import Collection
 
 
 def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:
-    """Determines if the dice can be expressed as a one-sided truncation of a single base die.
+    """Determines if the dice can be expressed as a one-sided truncation of a single base `Die`.
 
     Args:
         dice: A sequence of dice.

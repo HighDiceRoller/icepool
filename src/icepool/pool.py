@@ -18,10 +18,10 @@ from typing import Any, Collection, Generator, Mapping, MutableMapping, Sequence
 @cache
 def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
                     post_roll_counts: tuple[int, ...], /) -> 'Pool':
-    """Creates a new pool. This function is cached.
+    """Creates a new `Pool`. This function is cached.
 
     Args:
-        cls: The pool class.
+        cls: The `Pool` class.
         dice: A sorted sequence of (die, rolls) pairs.
         post_roll_counts: A tuple of length equal to the number of dice.
     """
@@ -55,12 +55,12 @@ class Pool(OutcomeCountGenerator):
         same-side truncations of d12.
 
         Args:
-            dice: The dice to put in the pool. This can be one of the following:
+            dice: The dice to put in the `Pool`. This can be one of the following:
 
                 * A sequence of dice.
-                * A mapping of dice and how many of that die to put in the pool.
+                * A mapping of dice and how many of that `Die` to put in the `Pool`.
 
-                All outcomes within a pool must be totally orderable.
+                All outcomes within a `Pool` must be totally orderable.
             times: Multiplies the number of times each element of `dice` will
                 be put into the pool.
                 `times` can either be a sequence of the same length as
@@ -69,7 +69,7 @@ class Pool(OutcomeCountGenerator):
 
         Raises:
             ValueError: If a bare `Deck` or `Die` argument is provided.
-                A pool of a single `Die` should constructed as `Pool([die])`.
+                A `Pool` of a single `Die` should constructed as `Pool([die])`.
         """
         if isinstance(dice, Pool):
             if times == 1:
@@ -132,7 +132,7 @@ class Pool(OutcomeCountGenerator):
         return sum(count for _, count in self._dice)
 
     def size(self) -> int:
-        """The number of dice in this pool, counting multiples of the same die."""
+        """The number of dice in this pool, counting multiples of the same `Die`."""
         return self._size
 
     def _is_resolvable(self) -> bool:
@@ -180,14 +180,14 @@ class Pool(OutcomeCountGenerator):
     def post_roll_counts(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
 
-        The tuple has one element per die in the pool, from lowest roll to
+        The tuple has one element per `Die` in the pool, from lowest roll to
         highest roll.
         """
         return self._post_roll_counts
 
     def set_post_roll_counts(self,
                              post_roll_counts: int | slice | tuple[int, ...]):
-        """A pool with the selected dice counted after rolling and sorting.
+        """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[post_roll_counts]` for the same effect as this method.
 
@@ -206,7 +206,7 @@ class Pool(OutcomeCountGenerator):
         * `pool[..., 1, 1]`
 
         These will also select the two highest dice out of 5, and will also
-        resize the pool to 5 dice first:
+        resize the `Pool` to 5 dice first:
 
         * `pool[3::5]`
         * `pool[3:5:5]`
@@ -219,23 +219,23 @@ class Pool(OutcomeCountGenerator):
         * `pool[-1, ..., 1]`
 
         Args:
-            An `int`. This will count only the die at the specified index (once).
+            An `int`. This will count only the `Die` at the specified index (once).
                 In this case, the result will be a `Die`, not a pool.
             A `slice`. The selected dice are counted once each.
                 If provided, the third argument resizes the pool,
                 rather than being a step; however, this is only valid if the
-                pool consists of a single type of die.
-            A sequence of one `int` for each die.
-                Each die is counted that many times, which could be multiple or
+                `Pool` consists of a single type of `Die`.
+            A sequence of one `int` for each `Die`.
+                Each `Die` is counted that many times, which could be multiple or
                 negative times. This may resize the pool, but only if the
-                pool consists of a single type of die.
+                `Pool` consists of a single type of `Die`.
 
                 Up to one `Ellipsis` (`...`) may be used.
-                If an `Ellipsis` is used, the size of the pool won't change.
+                If an `Ellipsis` is used, the size of the `Pool` won't change.
                 Instead, the `Ellipsis` will be replaced with a number of zero
-                counts, sufficient to maintain the current size of this pool.
+                counts, sufficient to maintain the current size of this `Pool`.
                 This number may be "negative" if more `int`s are provided than
-                the size of the pool. Specifically:
+                the size of the `Pool`. Specifically:
 
                 * If `post_roll_counts` is shorter than `size`, the `Ellipsis`
                     acts as enough zero counts to make up the difference.
@@ -249,12 +249,12 @@ class Pool(OutcomeCountGenerator):
                     is in the middle, the counts will be as the sum of two
                     one-sided `Ellipsis`.
                     E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                    On a pool consisting of a single single die this would have
+                    On a `Pool` consisting of a single single `Die` this would have
                     the -1 and 1 cancel each other out.
 
         Raises:
-            ValueError:  If `post_roll_counts` would change the size of a pool
-                with more than one type of die, or if more than one `Ellipsis`
+            ValueError:  If `post_roll_counts` would change the size of a `Pool`
+                with more than one type of `Die`, or if more than one `Ellipsis`
                 is used.
         """
         convert_to_die = isinstance(post_roll_counts, int)
@@ -518,10 +518,10 @@ def post_roll_counts_tuple(
 
 
 def standard_pool(die_sizes: Collection[int]) -> 'Pool':
-    """A pool of standard dice (e.g. d6, d8...).
+    """A `Pool` of standard dice (e.g. d6, d8...).
 
     Args:
-        die_sizes: For each of these die_size X, the pool will contain one dX.
+        die_sizes: For each of these die_size X, the `Pool` will contain one dX.
     """
     return Pool(list(icepool.d(x) for x in die_sizes))
 
@@ -532,9 +532,9 @@ def iter_die_pop_min(
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
-        die: The die to pop.
-        rolls: The number of this kind of die.
-        min_outcome: The outcome to pop. This is <= the die's min outcome.
+        die: The `Die` to pop.
+        rolls: The number of this kind of `Die`.
+        min_outcome: The outcome to pop. This is <= the `Die`'s min outcome.
 
     Yields:
         popped_die
@@ -571,9 +571,9 @@ def iter_die_pop_max(
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:
-        die: The die to pop.
-        rolls: The number of this kind of die.
-        max_outcome: The outcome to pop. This is >= the die's max outcome.
+        die: The `Die` to pop.
+        rolls: The number of this kind of `Die`.
+        max_outcome: The outcome to pop. This is >= the `Die`'s max outcome.
 
     Yields:
         popped_die

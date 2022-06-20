@@ -20,10 +20,10 @@ from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, 
 class Die(Population):
     """Sampling with replacement. Quantities represent weights.
 
-    Dice are immutable. Methods do not modify the die in-place;
-    rather they return a die representing the result.
+    Dice are immutable. Methods do not modify the `Die` in-place;
+    rather they return a `Die` representing the result.
 
-    It *is* (mostly) well-defined to have a die with zero-quantity outcomes,
+    It *is* (mostly) well-defined to have a `Die` with zero-quantity outcomes,
     even though this is not a proper probability distribution.
     These can be useful in a few cases, such as:
 
@@ -49,17 +49,17 @@ class Die(Population):
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 denominator_method: str = 'lcm') -> 'Die':
-        """Constructor for a die.
+        """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
 
-        * `Die([6])`: A die that always rolls the `int` 6.
+        * `Die([6])`: A `Die` that always rolls the `int` 6.
         * `d(6)`: A d6.
 
         Also, don't confuse this with `Pool()`:
 
         * `Die([1, 2, 3, 4, 5, 6])`: A d6.
-        * `Pool([1, 2, 3, 4, 5, 6])`: A pool of six dice that always rolls one
+        * `Pool([1, 2, 3, 4, 5, 6])`: A `Pool` of six dice that always rolls one
             of each number.
 
         Here are some different ways of constructing a d6:
@@ -74,7 +74,7 @@ class Die(Population):
         All quantities must be non-negative, though they can be zero.
 
         Args:
-            outcomes: The faces of the die. This can be one of the following:
+            outcomes: The faces of the `Die`. This can be one of the following:
                 * A `Mapping` from outcomes to quantities.
                 * A sequence of outcomes. Each element will have the same total
                     quantity.
@@ -123,7 +123,7 @@ class Die(Population):
                     to help determine the result of the selected argument.
                 * 'reduce': The final quantities are divided by their GCD.
         Raises:
-            ValueError: `None` is not a valid outcome for a die.
+            ValueError: `None` is not a valid outcome for a `Die`.
         """
         if isinstance(outcomes, Die):
             if times == 1:
@@ -160,7 +160,7 @@ class Die(Population):
         outcomes.
 
         Returns:
-            A die representing the result.
+            A `Die` representing the result.
 
         Raises:
             ValueError: If tuples are of mismatched length.
@@ -190,7 +190,7 @@ class Die(Population):
         rather than an operator.
 
         By the time this is called, the other operand has already been
-        converted to a die.
+        converted to a `Die`.
 
         This is used for the standard binary operators
         `+, -, *, /, //, %, **, <<, >>, &, |, ^`.
@@ -201,16 +201,16 @@ class Die(Population):
         The comparators (`<, <=, >=, >, ==, !=, cmp`) use a linear algorithm
         using the fact that outcomes are totally ordered.
 
-        `==` and `!=` additionally set the truth value of the die according to
+        `==` and `!=` additionally set the truth value of the `Die` according to
         whether the dice themselves are the same or not.
 
         The `@` operator does NOT use this method directly.
-        It rolls the left die, which must have integer outcomes,
-        then rolls the right die that many times and sums the outcomes.
+        It rolls the left `Die`, which must have integer outcomes,
+        then rolls the right `Die` that many times and sums the outcomes.
         Only the sum is performed element-wise.
 
         Returns:
-            A die representing the result.
+            A `Die` representing the result.
 
         Raises:
             ValueError: If tuples are of mismatched length within one of the
@@ -281,7 +281,7 @@ class Die(Population):
                 If `outcomes` is not a callable, this has no effect.
 
         Returns:
-            A die representing the reroll.
+            A `Die` representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
 
         Raises:
@@ -351,7 +351,7 @@ class Die(Population):
                 If `outcomes` is not a callable, this has no effect.
 
         Returns:
-            A die representing the reroll.
+            A `Die` representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
 
         Raises:
@@ -381,7 +381,7 @@ class Die(Population):
         return self.reroll(not_outcomes, max_depth=max_depth)
 
     def truncate(self, min_outcome=None, max_outcome=None) -> 'Die':
-        """Truncates the outcomes of this die to the given range.
+        """Truncates the outcomes of this `Die` to the given range.
 
         The endpoints are included in the result if applicable.
         If one of the arguments is not provided, that side will not be truncated.
@@ -405,7 +405,7 @@ class Die(Population):
         return icepool.Die(data)
 
     def clip(self, min_outcome=None, max_outcome=None) -> 'Die':
-        """Clips the outcomes of this die to the given values.
+        """Clips the outcomes of this `Die` to the given values.
 
         The endpoints are included in the result if applicable.
         If one of the arguments is not provided, that side will not be clipped.
@@ -428,13 +428,13 @@ class Die(Population):
     def set_range(self,
                   min_outcome: int | None = None,
                   max_outcome: int | None = None) -> 'Die':
-        """Sets the outcomes of this die to the given `int` range (inclusive).
+        """Sets the outcomes of this `Die` to the given `int` range (inclusive).
 
         Args:
             min_outcome: The min outcome of the result.
-                If omitted, the min outcome of this die will be used.
+                If omitted, the min outcome of this `Die` will be used.
             max_outcome: The max outcome of the result.
-                If omitted, the max outcome of this die will be used.
+                If omitted, the max outcome of this `Die` will be used.
         """
         if min_outcome is None:
             min_outcome = self.min_outcome()
@@ -447,7 +447,7 @@ class Die(Population):
         """Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
-        and/or add zero-quantity outcomes (if they are not present in this die).
+        and/or add zero-quantity outcomes (if they are not present in this `Die`).
         """
         data = {x: self.quantity(x) for x in outcomes}
         return icepool.Die(data)
@@ -463,10 +463,10 @@ class Die(Population):
         return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die', int]:
-        """A die with the min outcome removed, and the quantity of the removed outcome.
+        """A `Die` with the min outcome removed, and the quantity of the removed outcome.
 
         Raises:
-            IndexError: If this die has no outcome to pop.
+            IndexError: If this `Die` has no outcome to pop.
         """
         return self._popped_min
 
@@ -476,10 +476,10 @@ class Die(Population):
         return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die', int]:
-        """A die with the max outcome removed, and the quantity of the removed outcome.
+        """A `Die` with the max outcome removed, and the quantity of the removed outcome.
 
         Raises:
-            IndexError: If this die has no outcome to pop.
+            IndexError: If this `Die` has no outcome to pop.
         """
         return self._popped_max
 
@@ -492,11 +492,11 @@ class Die(Population):
             max_depth: int | None = 1,
             star: int = 0,
             denominator_method: str = 'lcm') -> 'Die':
-        """Changes outcomes of the die to other outcomes.
+        """Changes outcomes of the `Die` to other outcomes.
 
-        You can think of this as `sub`stituting outcomes of this die for other
+        You can think of this as `sub`stituting outcomes of this `Die` for other
         outcomes or dice. Or, as executing a `sub`routine based on the roll of
-        this die.
+        this `Die`.
 
         Args:
             repl: One of the following:
@@ -518,7 +518,7 @@ class Die(Population):
             denominator_method: As `icepool.Die()`.
 
         Returns:
-            The relabeled die.
+            The `Die` after the modification.
 
         Raises:
             ValueError: if `extra_args` are supplied with a non-callable `repl`.
@@ -654,9 +654,9 @@ class Die(Population):
         return {}
 
     def _sum_all(self, rolls: int, /) -> 'Die':
-        """Roll this die `rolls` times and sum the results.
+        """Roll this `Die` `rolls` times and sum the results.
 
-        If `rolls` is negative, roll the die `abs(rolls)` times and negate
+        If `rolls` is negative, roll the `Die` `abs(rolls)` times and negate
         the result.
 
         If you instead want to replace tuple (or other sequence) outcomes with
@@ -679,7 +679,7 @@ class Die(Population):
         return result
 
     def __matmul__(self, other) -> 'Die':
-        """Roll the left die, then roll the right die that many times and sum the outcomes."""
+        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         other = icepool.Die([other])
 
         data: MutableMapping[int, Any] = defaultdict(int)
@@ -696,20 +696,20 @@ class Die(Population):
         return icepool.Die(data)
 
     def __rmatmul__(self, other) -> 'Die':
-        """Roll the left die, then roll the right die that many times and sum the outcomes."""
+        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         other = icepool.Die([other])
         return other.__matmul__(self)
 
     def pool(self, rolls: int = 1, /) -> 'icepool.Pool':
-        """Creates a pool from this die.
+        """Creates a `Pool` from this `Die`.
 
         Args:
-            rolls: The number of copies of this die to put in the pool.
+            rolls: The number of copies of this `Die` to put in the pool.
         """
         return icepool.Pool({self: rolls})
 
     def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
-        """Roll several of this die and sum the sorted results from the lowest.
+        """Roll several of this `Die` and sum the sorted results from the lowest.
 
         Args:
             rolls: The number of dice to roll. All dice will have the same
@@ -719,7 +719,7 @@ class Die(Population):
                 keeping.
 
         Returns:
-            A die representing the probability distribution of the sum.
+            A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
             return self._keep_lowest_single(rolls)
@@ -730,7 +730,7 @@ class Die(Population):
         return self.pool(rolls)[post_roll_counts].sum()
 
     def _keep_lowest_single(self, rolls: int, /) -> 'Die':
-        """Faster algorithm for keeping just the single lowest die. """
+        """Faster algorithm for keeping just the single lowest `Die`. """
         if rolls == 0:
             return self.zero()
         return icepool.from_cumulative_quantities(
@@ -742,7 +742,7 @@ class Die(Population):
                      /,
                      keep: int = 1,
                      drop: int = 0) -> 'Die':
-        """Roll several of this die and sum the sorted results from the highest.
+        """Roll several of this `Die` and sum the sorted results from the highest.
 
         Args:
             rolls: The number of dice to roll.
@@ -751,7 +751,7 @@ class Die(Population):
                 keeping.
 
         Returns:
-            A die representing the probability distribution of the sum.
+            A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
             return self._keep_highest_single(rolls)
@@ -761,7 +761,7 @@ class Die(Population):
         return self.pool(rolls)[post_roll_counts].sum()
 
     def _keep_highest_single(self, rolls: int, /) -> 'Die':
-        """Faster algorithm for keeping just the single highest die. """
+        """Faster algorithm for keeping just the single highest `Die`. """
         if rolls == 0:
             return self.zero()
         return icepool.from_cumulative_quantities(
@@ -848,7 +848,7 @@ class Die(Population):
     def zero_outcome(self):
         """A zero-outcome for this die.
 
-        E.g. `0` for a die whose outcomes are `int`s.
+        E.g. `0` for a `Die` whose outcomes are `int`s.
         """
         return self.zero().outcomes()[0]
 
@@ -958,8 +958,8 @@ class Die(Population):
 
         Args:
             op: Either `operator.lt` or `operator.le`.
-            lo: The die on the left of `op`.
-            hi: The die on the right of `op`.
+            lo: The `Die` on the left of `op`.
+            hi: The `Die` on the right of `op`.
         """
         if lo.is_empty() or hi.is_empty():
             return icepool.Die([])
@@ -1057,7 +1057,7 @@ class Die(Population):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def cmp(self, other) -> 'Die':
-        """A die with outcomes 1, -1, and 0.
+        """A `Die` with outcomes 1, -1, and 0.
 
         The quantities are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
@@ -1095,7 +1095,7 @@ class Die(Population):
     def bool(self) -> 'Die':
         """Takes `bool()` of all outcomes.
 
-        Note that a die as a whole is not considered to have a truth value
+        Note that a `Die` as a whole is not considered to have a truth value
         unless it is the result of the `==` or `!=` operators.
         """
         return self.unary_op(bool)
@@ -1104,7 +1104,7 @@ class Die(Population):
 
     def __bool__(self):
         raise ValueError(
-            'A die only has a truth value if it is the result of == or !=. '
+            'A `Die` only has a truth value if it is the result of == or !=. '
             'If this is in the conditional of an if-statement, you probably '
             'want to use die.if_else() instead.')
 
@@ -1135,10 +1135,10 @@ class Die(Population):
 
         Truth value does NOT matter.
 
-        If one die has a zero-quantity outcome and the other die does not
+        If one `Die` has a zero-quantity outcome and the other `Die` does not
         contain that outcome, they are treated as unequal by this function.
 
-        The `==` and `!=` operators have a dual purpose; they return a die
+        The `==` and `!=` operators have a dual purpose; they return a `Die`
         with a truth value determined by this method.
         Only dice returned by these methods have a truth value. The data of
         these dice is lazily evaluated since the caller may only be interested

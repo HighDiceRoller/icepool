@@ -9,7 +9,7 @@ def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The lowest outcome or sum of the lowest outcomes among the dice.
 
     Args:
-        *dice: The dice to be considered. At least one die must be provided.
+        *dice: The dice to be considered. At least one `Die` must be provided.
         keep: The number of lowest dice will be summed.
         drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
@@ -28,7 +28,7 @@ def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The highest outcome or sum of the highest outcomes among the dice.
 
     Args:
-        *dice: The dice to be considered. At least one die must be provided.
+        *dice: The dice to be considered. At least one `Die` must be provided.
         keep: The number of highest dice will be summed.
         drop: This number of highest dice will be dropped before keeping dice
             to be summed.

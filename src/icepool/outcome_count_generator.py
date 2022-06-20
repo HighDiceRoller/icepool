@@ -32,7 +32,7 @@ class OutcomeCountGenerator(ABC):
     def _is_resolvable(self) -> bool:
         """`True` iff the generator is capable of producing an overall outcome.
 
-        For example, a dice pool will return `False` if it contains any dice
+        For example, a dice `Pool` will return `False` if it contains any dice
         with no outcomes.
         """
 
@@ -117,7 +117,7 @@ class OutcomeCountGenerator(ABC):
         This uses `icepool.sum_pool`.
 
         Returns:
-            A die representing the sum.
+            A `Die` representing the sum.
         """
         return icepool.evaluate_sum(self)
 

@@ -25,10 +25,10 @@ class Deck(Population):
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1) -> 'Deck':
-        """Constructor for a deck.
+        """Constructor for a `Deck`.
 
         Args:
-            outcomes: The cards of the deck. This can be one of the following:
+            outcomes: The cards of the `Deck`. This can be one of the following:
                 * A `Mapping` from outcomes to quantities.
                 * A sequence of outcomes.
 
@@ -53,7 +53,7 @@ class Deck(Population):
                     The same outcome can appear multiple times, in which case
                     the corresponding quantities will be accumulated.
             times: Multiplies the number of times each element of `outcomes`
-                will be put into the deck.
+                will be put into the `Deck`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
@@ -86,7 +86,7 @@ class Deck(Population):
 
     @classmethod
     def _new_deck(cls, data: Counts) -> 'Deck':
-        """Creates a new deck using already-processed arguments.
+        """Creates a new `Deck` using already-processed arguments.
 
         Args:
             data: At this point, this is a Counts.
@@ -120,7 +120,7 @@ class Deck(Population):
         return self._new_deck(self._data.remove_min()), self.quantities()[0]
 
     def _pop_min(self) -> tuple['Deck', int]:
-        """A deck with the min outcome removed."""
+        """A `Deck` with the min outcome removed."""
         return self._popped_min
 
     @cached_property
@@ -128,7 +128,7 @@ class Deck(Population):
         return self._new_deck(self._data.remove_max()), self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Deck', int]:
-        """A deck with the max outcome removed."""
+        """A `Deck` with the max outcome removed."""
         return self._popped_max
 
     def deal(self, *hand_sizes: int) -> 'icepool.Deal':

@@ -37,7 +37,7 @@ class OutcomeCountEvaluator(ABC):
     It is not expected that subclasses of `OutcomeCountEvaluator`
     be able to handle arbitrary types or numbers of generators.
     Indeed, most are expected to handle only a fixed number of generators,
-    and often even only generators with a particular type of die.
+    and often even only generators with a particular type of `Die`.
 
     Instances cache all intermediate state distributions.
     You should therefore reuse instances when possible.
@@ -100,7 +100,7 @@ class OutcomeCountEvaluator(ABC):
         set of parameters.
 
         By default, the final outcome is equal to the final state.
-        Note that `None` is not a valid outcome for a die,
+        Note that `None` is not a valid outcome for a `Die`,
         and if there are no outcomes, the final state will be `None`.
         Subclasses that want to handle this case should explicitly define what
         happens.
@@ -113,8 +113,8 @@ class OutcomeCountEvaluator(ABC):
                 parameters.
 
         Returns:
-            A final outcome that will be used as part of constructing the result die.
-            As usual for `Die()`, this could itself be a die or `icepool.Reroll`.
+            A final outcome that will be used as part of constructing the result `Die`.
+            As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
         """
         return final_state
 
@@ -221,7 +221,7 @@ class OutcomeCountEvaluator(ABC):
             A `Die` representing the distribution of the final score.
         """
 
-        # Convert non-pool arguments to `Pool`.
+        # Convert non-`Pool` arguments to `Pool`.
         converted_generators = tuple(
             generator if isinstance(generator, icepool.OutcomeCountGenerator
                                    ) else icepool.Pool(generator)
@@ -578,7 +578,7 @@ class FindBestRun(OutcomeCountEvaluator):
     """
 
     def next_state(self, state, outcome, count):
-        """Increments the current run if at least one die rolled this outcome,
+        """Increments the current run if at least one `Die` rolled this outcome,
         then saves the run to the state.
         """
         best_run, best_run_outcome, run = state or (0, outcome, 0)

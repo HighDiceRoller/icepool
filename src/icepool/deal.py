@@ -10,7 +10,7 @@ import math
 
 
 class Deal(OutcomeCountGenerator):
-    """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a deck. """
+    """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck'
     _hand_sizes: tuple[int, ...]
@@ -38,7 +38,7 @@ class Deal(OutcomeCountGenerator):
             )
 
     def deck(self) -> 'icepool.Deck':
-        """The deck the cards are dealt from."""
+        """The `Deck` the cards are dealt from."""
         return self._deck
 
     def hand_sizes(self) -> tuple[int, ...]:
@@ -50,9 +50,9 @@ class Deal(OutcomeCountGenerator):
         return sum(self.hand_sizes())
 
     def outcomes(self) -> CountsKeysView:
-        """The outcomes of the deck in sorted order.
+        """The outcomes of the `Deck` in sorted order.
 
-        These are also the `keys` of the deck as a `Mapping`.
+        These are also the `keys` of the `Deck` as a `Mapping`.
         Prefer to use the name `outcomes`.
         """
         return self.deck().outcomes()

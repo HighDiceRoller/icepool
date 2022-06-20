@@ -30,10 +30,10 @@ def comb(n: int, k: int, b: int = 1) -> int:
 def iter_hypergeom(
         deck: tuple[int, ...],
         draws: int) -> Generator[tuple[tuple[int, ...], int], None, None]:
-    """Iterates over the (hand, weight)s in the given deck.
+    """Iterates over the (hand, weight)s in the given `Deck`.
 
     Args:
-        deck: The number of duplicates of each card in the deck.
+        deck: The number of duplicates of each card in the `Deck`.
         draws: The total number of cards to draw.
 
     Yields:
