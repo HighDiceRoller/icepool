@@ -1061,13 +1061,19 @@ class Die(Population):
 
         The quantities are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
+
+        This will include all three outcomes even if they have zero quantity.
         """
         other = icepool.Die([other])
 
         d = self.denominator() * other.denominator()
         lt = (self < other)[True]
-        eq = (self == other)[True]
-        return Die({-1: lt, 0: eq, 1: d - lt - eq})
+        gt = (self > other)[True]
+        return Die({
+            -1: lt,
+            0: d - lt - gt,
+            1: gt,
+        })
 
     @staticmethod
     def _sign(x) -> int:
