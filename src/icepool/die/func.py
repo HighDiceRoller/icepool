@@ -48,13 +48,13 @@ def __getattr__(key: str):
     raise AttributeError(key)
 
 
-def bernoulli(n: int, d: int, /) -> 'icepool.Die':
+def bernoulli(numerator: int, denominator: int, /) -> 'icepool.Die':
     """A die that rolls `True` with probability `n / d`, and `False` otherwise.
 
     The die will have both `True` and `False` as outcomes even if one has
     zero quantity.
     """
-    return icepool.Die({False: d - n, True: n})
+    return icepool.Die({False: denominator - numerator, True: numerator})
 
 
 coin = bernoulli
