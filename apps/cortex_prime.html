@@ -268,8 +268,8 @@
                 js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
                 js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf(inclusive=False)])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf(inclusive=False)])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_player.cdf()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_opposition.cdf()])
                 
             `);
             
