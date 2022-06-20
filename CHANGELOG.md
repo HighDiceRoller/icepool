@@ -1,3 +1,16 @@
+## 0.17.0
+
+More renaming, experimental `sample()` methods.
+
+* Both `Die` and `Deck` now have `quantities` rather than `weight`, `dups`, etc.
+* Many `Die` methods moved to base class and are now available to `Deck`.
+* "Eval" is now the full word "Evaluator".
+* Parameter and method names are no longer prefixed with "num_".
+* `reduce_weights` renamed back to `reduce`.
+* `Deck`s can be formatted like `Die`.
+* Allow formatting 0-1 probability.
+* Experimental `sample()` methods for `OutcomeCountGenerator` and `OutcomeCountEvaluator`.
+
 ## 0.16.1
 
 Development of deck API.
