@@ -133,19 +133,26 @@ class OutcomeCountGenerator(ABC):
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
 
-        outcome = self.min_outcome()
+        min_cost, max_cost = self._estimate_direction_costs()
 
-        popped_generators, counts_s, weights = zip(*self._generate_min(outcome))
-        cumulative_weights = tuple(itertools.accumulate(weights))
+        if min_cost < max_cost:
+            outcome = self.min_outcome()
+            generated = tuple(self._generate_min(outcome))
+        else:
+            outcome = self.max_outcome()
+            generated = tuple(self._generate_max(outcome))
+
+        cumulative_weights = tuple(
+            itertools.accumulate(g.denominator() * w for g, c, w in generated))
         denominator = cumulative_weights[-1]
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(denominator)
         index = bisect.bisect_right(cumulative_weights, r)
-        popped_generator = popped_generators[index]
-        counts = counts_s[index]
+        # print(cumulative_weights, denominator, r, index)
+        popped_generator, counts, _ = generated[index]
         head = tuple((outcome,) * count for count in counts)
         if popped_generator.outcomes():
             tail = popped_generator.sample()
-            return tuple(h + t for h, t, in zip(head, tail))
+            return tuple(tuple(sorted(h + t)) for h, t, in zip(head, tail))
         else:
             return head
