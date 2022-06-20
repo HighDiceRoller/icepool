@@ -33,7 +33,7 @@ def iter_hypergeom(
     """Iterates over the possible (hand, weight)s in the given deck.
 
     Args:
-        deck: The number of dups of each card in the deck.
+        deck: The number of duplicates of each card in the deck.
         draws: The total number of cards to draw.
 
     Yields:

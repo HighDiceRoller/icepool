@@ -14,7 +14,7 @@ from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence
 
 
 class Deck(Population):
-    """EXPERIMENTAL: Sampling without replacement. Quantities represent dups.
+    """EXPERIMENTAL: Sampling without replacement. Quantities represent duplicates.
 
     API and naming WIP.
     """

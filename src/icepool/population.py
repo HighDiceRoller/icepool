@@ -119,7 +119,7 @@ class Population(ABC, Mapping[Any, int]):
         return sum(self.values())
 
     def denominator(self) -> int:
-        """The sum of all quantities (e.g. weights or dups).
+        """The sum of all quantities (e.g. weights or duplicates).
 
         For the number of unique outcomes, including those with zero quantity,
         use `len()`.

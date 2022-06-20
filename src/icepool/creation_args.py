@@ -57,7 +57,7 @@ def expand_args_for_die(args, times, denominator_method: str):
 
 
 def expand_args_for_deck(args, times):
-    merge_func = merge_dups
+    merge_func = merge_duplicates
     subdatas = [expand(arg, merge_func) for arg in args]
     data = merge_func(subdatas, times)
     return Counts(data.items())
@@ -90,8 +90,8 @@ def expand_tuple(arg, merge_func: Callable) -> Mapping[Any, int]:
     subdatas = [expand(x, merge_func) for x in arg]
     data: MutableMapping[Any, int] = defaultdict(int)
     for t in itertools.product(*(subdata.items() for subdata in subdatas)):
-        outcomes, dups = zip(*t)
-        data[outcomes] += math.prod(dups)
+        outcomes, duplicates = zip(*t)
+        data[outcomes] += math.prod(duplicates)
     return data
 
 
@@ -177,13 +177,13 @@ merge_weights_funcs = {
 }
 
 
-def merge_dups(subdatas: Sequence[Mapping[Any, int]],
-               dups: Sequence[int]) -> Mapping[Any, int]:
-    if any(x < 0 for x in dups):
-        raise ValueError('dups cannot be negative.')
+def merge_duplicates(subdatas: Sequence[Mapping[Any, int]],
+                     duplicates: Sequence[int]) -> Mapping[Any, int]:
+    if any(x < 0 for x in duplicates):
+        raise ValueError('duplicates cannot be negative.')
 
     data: MutableMapping[Any, int] = defaultdict(int)
-    for subdata, subdup in zip(subdatas, dups):
+    for subdata, subdup in zip(subdatas, duplicates):
         for outcome, dup in subdata.items():
             data[outcome] += dup * subdup
 
