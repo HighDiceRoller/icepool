@@ -376,7 +376,7 @@ class OutcomeGroupEvaluator(ABC):
 def _pop_generators(
     side: int, alignment: Alignment,
     generators: tuple[icepool.OutcomeGroupGenerator, ...]
-) -> tuple[Any, Alignment, tuple['icepool.GenGenerator', ...]]:
+) -> tuple[Any, Alignment, tuple['icepool.NextGroupGenerator', ...]]:
     """Pops a single outcome from the generators.
 
     Returns:
@@ -390,19 +390,19 @@ def _pop_generators(
                       for generator in alignment_and_generators
                       if generator.outcomes())
 
-        next_alignment, _, _ = next(alignment._gen_max(outcome))
+        next_alignment, _, _ = next(alignment._generate_max(outcome))
 
         return outcome, next_alignment, tuple(
-            generator._gen_max(outcome) for generator in generators)
+            generator._generate_max(outcome) for generator in generators)
     else:
         outcome = min(generator.min_outcome()
                       for generator in alignment_and_generators
                       if generator.outcomes())
 
-        next_alignment, _, _ = next(alignment._gen_min(outcome))
+        next_alignment, _, _ = next(alignment._generate_min(outcome))
 
         return outcome, next_alignment, tuple(
-            generator._gen_min(outcome) for generator in generators)
+            generator._generate_min(outcome) for generator in generators)
 
 
 class WrapFuncEvaluator(OutcomeGroupEvaluator):
@@ -479,7 +479,7 @@ class JointEvaluator(OutcomeGroupEvaluator):
             return 0
 
 
-class SumGenerator(OutcomeGroupEvaluator):
+class EvaluateSum(OutcomeGroupEvaluator):
     """A simple `OutcomeGroupEvaluator` that just sums the outcomes in a generator. """
 
     def next_state(self, state, outcome, count):
@@ -500,11 +500,11 @@ class SumGenerator(OutcomeGroupEvaluator):
         return 0
 
 
-sum_generator = SumGenerator()
+evaluate_sum = EvaluateSum()
 """A shared `Sumgenerators` object for caching results. """
 
 
-class EnumerateGenerator(OutcomeGroupEvaluator):
+class EnumerateSorted(OutcomeGroupEvaluator):
     """A `OutcomeGroupEvaluator` that enumerates all possible (sorted) results.
 
     This is expensive and not recommended unless there are few elements being output.
@@ -530,7 +530,7 @@ class EnumerateGenerator(OutcomeGroupEvaluator):
         return self._direction
 
 
-enumerate_generator = EnumerateGenerator()
+enumerate_sorted = EnumerateSorted()
 """A shared `EnumerateGenerator` object for caching results. """
 
 

@@ -6,9 +6,9 @@ from abc import ABC, abstractmethod
 
 from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
 
-GenGenerator: TypeAlias = Generator[tuple['OutcomeGroupGenerator',
-                                          Sequence[int], int], None, None]
-"""The generator type returned by `_gen_min` and `_gen_max`."""
+NextGroupGenerator: TypeAlias = Generator[tuple['OutcomeGroupGenerator',
+                                                Sequence[int], int], None, None]
+"""The generator type returned by `_generate_min` and `_generate_max`."""
 
 
 class OutcomeGroupGenerator(ABC):
@@ -32,7 +32,7 @@ class OutcomeGroupGenerator(ABC):
         """
 
     @abstractmethod
-    def _gen_min(self, min_outcome) -> GenGenerator:
+    def _generate_min(self, min_outcome) -> NextGroupGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -45,7 +45,7 @@ class OutcomeGroupGenerator(ABC):
         """
 
     @abstractmethod
-    def _gen_max(self, max_outcome) -> GenGenerator:
+    def _generate_max(self, max_outcome) -> NextGroupGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
@@ -114,4 +114,4 @@ class OutcomeGroupGenerator(ABC):
         Returns:
             A die representing the sum.
         """
-        return icepool.sum_generator(self)
+        return icepool.evaluate_sum(self)

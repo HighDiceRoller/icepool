@@ -22,14 +22,14 @@ class Alignment(OutcomeGroupGenerator):
     def _is_resolvable(self) -> bool:
         return True
 
-    def _gen_min(self, min_outcome) -> AlignmentGenerator:
+    def _generate_min(self, min_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
         else:
             yield Alignment(self.outcomes()[1:]), (0,), 1
 
-    def _gen_max(self, max_outcome) -> AlignmentGenerator:
+    def _generate_max(self, max_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1

@@ -33,8 +33,8 @@ from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.die.lowest_highest import lowest, highest
 
 from icepool.pool import Pool, standard_pool, clear_pool_cache
-from icepool.outcome_group_generator import OutcomeGroupGenerator, GenGenerator
-from icepool.outcome_group_evaluator import OutcomeGroupEvaluator, WrapFuncEvaluator, JointEvaluator, SumGenerator, sum_generator, enumerate_generator, FindBestSet, FindBestRun
+from icepool.outcome_group_generator import OutcomeGroupGenerator, NextGroupGenerator
+from icepool.outcome_group_evaluator import OutcomeGroupEvaluator, WrapFuncEvaluator, JointEvaluator, EvaluateSum, evaluate_sum, enumerate_sorted, FindBestSet, FindBestRun
 
 from icepool.deck import Deck
 from icepool.deal import Deal
@@ -56,6 +56,6 @@ __all__ = [
     'from_quantities_ge', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
     'apply_sorted', 'Reroll', 'OutcomeGroupGenerator', 'Pool', 'standard_pool',
-    'OutcomeGroupEvaluator', 'JointEvaluator', 'SumGenerator', 'Deck', 'Deal',
+    'OutcomeGroupEvaluator', 'JointEvaluator', 'EvaluateSum', 'Deck', 'Deal',
     'clear_pool_cache'
 ]

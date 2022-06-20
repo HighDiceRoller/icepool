@@ -5,7 +5,7 @@ import icepool.math
 import icepool.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.outcome_group_generator import GenGenerator, OutcomeGroupGenerator
+from icepool.outcome_group_generator import NextGroupGenerator, OutcomeGroupGenerator
 
 import itertools
 import math
@@ -291,7 +291,7 @@ class Pool(OutcomeGroupGenerator):
         """Returns the max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _gen_min(self, min_outcome) -> GenGenerator:
+    def _generate_min(self, min_outcome) -> NextGroupGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -336,7 +336,7 @@ class Pool(OutcomeGroupGenerator):
         if skip_weight is not None:
             yield Pool([]), (sum(self.post_roll_counts()),), skip_weight
 
-    def _gen_max(self, max_outcome) -> GenGenerator:
+    def _generate_max(self, max_outcome) -> NextGroupGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:

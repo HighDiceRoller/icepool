@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.outcome_group_generator import GenGenerator, OutcomeGroupGenerator
+from icepool.outcome_group_generator import NextGroupGenerator, OutcomeGroupGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
@@ -75,9 +75,9 @@ class Deal(OutcomeGroupGenerator):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _gen_common(self, popped_deck: 'icepool.Deck',
-                    deck_count: int) -> GenGenerator:
-        """Common implementation for _gen_min and _gen_max."""
+    def _generate_common(self, popped_deck: 'icepool.Deck',
+                         deck_count: int) -> NextGroupGenerator:
+        """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().size())
         max_count = min(deck_count, self.total_cards_dealt())
@@ -92,23 +92,23 @@ class Deal(OutcomeGroupGenerator):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _gen_min(self, min_outcome) -> GenGenerator:
+    def _generate_min(self, min_outcome) -> NextGroupGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_min()
 
-        yield from self._gen_common(popped_deck, deck_count)
+        yield from self._generate_common(popped_deck, deck_count)
 
-    def _gen_max(self, max_outcome) -> GenGenerator:
+    def _generate_max(self, max_outcome) -> NextGroupGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_max()
 
-        yield from self._gen_common(popped_deck, deck_count)
+        yield from self._generate_common(popped_deck, deck_count)
 
     def _estimate_direction_costs(self) -> tuple[int, int]:
         result = len(self.outcomes()) * math.prod(self.hand_sizes())
