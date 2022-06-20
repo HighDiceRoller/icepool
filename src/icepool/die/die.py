@@ -954,7 +954,7 @@ class Die(Population):
 
     @staticmethod
     def _lt_le(op: Callable, lo: 'Die', hi: 'Die') -> 'Die':
-        """Linear algorithm  for < and <=.
+        """Linear algorithm for < and <=.
 
         Args:
             op: Either `operator.lt` or `operator.le`.
@@ -964,8 +964,17 @@ class Die(Population):
         if lo.is_empty() or hi.is_empty():
             return icepool.Die([])
 
-        n = 0
         d = lo.denominator() * hi.denominator()
+
+        # One-outcome cases.
+
+        if op(lo.max_outcome(), hi.min_outcome()):
+            return icepool.Die({True: d})
+
+        if not op(lo.min_outcome(), hi.max_outcome()):
+            return icepool.Die({False: d})
+
+        n = 0
 
         lo_cweight = 0
         lo_iter = iter(zip(lo.outcomes(), lo.quantities_le()))
@@ -978,7 +987,9 @@ class Die(Population):
                 except StopIteration:
                     break
             n += lo_cweight * hi_weight
-        return icepool.bernoulli(n, d)
+
+        # We don't use bernoulli because it trims zero-quantity outcomes.
+        return icepool.Die({False: d - n, True: n})
 
     def __lt__(self, other) -> 'Die':
         other = icepool.Die([other])
@@ -1000,7 +1011,7 @@ class Die(Population):
 
     @staticmethod
     def _eq(invert: bool, a: 'Die', b: 'Die') -> 'Counts':
-        """Linear algorithm  for == and !=.
+        """Linear algorithm for == and !=.
 
         Args:
             invert: If `False`, this computes ==; if `True` this computes !=.
@@ -1009,8 +1020,13 @@ class Die(Population):
         if a.is_empty() or b.is_empty():
             return Counts([])
 
-        n = 0
         d = a.denominator() * b.denominator()
+
+        # Single-outcome case.
+        if (a.keys().isdisjoint(b.keys())):
+            return Counts([(invert, d)])
+
+        n = 0
 
         a_iter = iter(a.items())
         b_iter = iter(b.items())
@@ -1066,14 +1082,19 @@ class Die(Population):
         """
         other = icepool.Die([other])
 
-        d = self.denominator() * other.denominator()
-        lt = (self < other)[True]
-        gt = (self > other)[True]
-        return Die({
-            -1: lt,
-            0: d - lt - gt,
-            1: gt,
-        })
+        data = {}
+
+        lt = self < other
+        if True in lt:
+            data[-1] = lt[True]
+        eq = self == other
+        if True in eq:
+            data[0] = eq[True]
+        gt = self > other
+        if True in gt:
+            data[1] = gt[True]
+
+        return Die(data)
 
     @staticmethod
     def _sign(x) -> int:

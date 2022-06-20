@@ -13,6 +13,11 @@ def test_lt_fixed():
     assert (icepool.d6 < 7).mean() == 1.0
 
 
+def test_lt_len():
+    assert len(icepool.d6 < 1) == 1
+    assert len(icepool.d6 < 7) == 1
+
+
 def test_gt():
     result = icepool.d6 > icepool.d6
     expected = icepool.bernoulli(15, 36)
@@ -22,6 +27,11 @@ def test_gt():
 def test_gt_fixed():
     assert (icepool.d6 > 0).mean() == 1.0
     assert (icepool.d6 > 6).mean() == 0.0
+
+
+def test_gt_len():
+    assert len(icepool.d6 > 0) == 1
+    assert len(icepool.d6 > 6) == 1
 
 
 def test_leq():
@@ -35,6 +45,11 @@ def test_leq_fixed():
     assert (icepool.d6 <= 6).mean() == 1.0
 
 
+def test_leq_len():
+    assert len(icepool.d6 <= 0) == 1
+    assert len(icepool.d6 <= 6) == 1
+
+
 def test_geq():
     result = icepool.d6 >= icepool.d6
     expected = icepool.bernoulli(21, 36)
@@ -44,6 +59,11 @@ def test_geq():
 def test_geq_fixed():
     assert (icepool.d6 >= 1).mean() == 1.0
     assert (icepool.d6 >= 7).mean() == 0.0
+
+
+def test_geq_len():
+    assert len(icepool.d6 >= 1) == 1
+    assert len(icepool.d6 >= 7) == 1
 
 
 def test_eq():
@@ -78,6 +98,13 @@ def test_cmp():
     result = icepool.d6.cmp(icepool.d6 - 1)
     expected = icepool.Die({-1: 10, 0: 5, 1: 21})
     assert result.equals(expected)
+
+
+def test_cmp_len():
+    assert len(icepool.d6.cmp(0)) == 1
+    assert len(icepool.d6.cmp(7)) == 1
+    assert len(icepool.Die([1]).cmp(1)) == 1
+    assert len(icepool.Die({-1: 0, 0: 0, 1: 0}).cmp(0)) == 3
 
 
 def test_quantity_le():
