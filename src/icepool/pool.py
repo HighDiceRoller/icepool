@@ -517,12 +517,19 @@ def post_roll_counts_tuple(
                         post_roll_counts[split + 1:])
 
 
-def standard_pool(die_sizes: Collection[int]) -> 'Pool':
+def standard_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool':
     """A `Pool` of standard dice (e.g. d6, d8...).
 
     Args:
-        die_sizes: For each of these die_size X, the `Pool` will contain one dX.
+        die_sizes: A collection of die sizes, which will put one die of that
+            sizes in the pool for each element.
+            Or, a mapping of die sizes to how many dice of that size to put
+            into the pool.
     """
+    if icepool.creation_args.is_mapping(die_sizes):
+        die_sizes = list(
+            itertools.chain.from_iterable(
+                [k] * v for k, v in die_sizes.items()))  # type: ignore
     return Pool(list(icepool.d(x) for x in die_sizes))
 
 

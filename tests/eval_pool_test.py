@@ -68,6 +68,9 @@ def test_standard_pool():
     expected = 3 @ icepool.d6 + 2 @ icepool.d8
     assert result.equals(expected)
 
+    result_dict = icepool.standard_pool({8: 2, 6: 3}).sum()
+    assert result.equals(result_dict)
+
 
 def test_standard_pool_zero_dice():
     result = icepool.standard_pool([]).sum()
