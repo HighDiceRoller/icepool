@@ -2,14 +2,14 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.outcome_group_generator import NextGroupGenerator, OutcomeGroupGenerator
+from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
 import math
 
 
-class Deal(OutcomeGroupGenerator):
+class Deal(OutcomeCountGenerator):
     """EXPERIMENTAL: Represents an unordered deal of cards from a deck.
 
     API and naming WIP.
@@ -27,7 +27,7 @@ class Deal(OutcomeGroupGenerator):
         Args:
             deck: The `Deck` to deal from.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
-                provided, `OutcomeGroupEvaluator.next_state` will recieve one count
+                provided, `OutcomeCountEvaluator.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
                 as this can be computationally intensive.
         """
@@ -76,7 +76,7 @@ class Deal(OutcomeGroupGenerator):
         return self._denomiator
 
     def _generate_common(self, popped_deck: 'icepool.Deck',
-                         deck_count: int) -> NextGroupGenerator:
+                         deck_count: int) -> NextOutcomeCountGenerator:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().size())
@@ -92,7 +92,7 @@ class Deal(OutcomeGroupGenerator):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _generate_min(self, min_outcome) -> NextGroupGenerator:
+    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
             return
@@ -101,7 +101,7 @@ class Deal(OutcomeGroupGenerator):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _generate_max(self, max_outcome) -> NextGroupGenerator:
+    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
             return

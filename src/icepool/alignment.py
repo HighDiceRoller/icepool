@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.outcome_group_generator import OutcomeGroupGenerator
+from icepool.outcome_count_generator import OutcomeCountGenerator
 
 from functools import cached_property
 
@@ -10,7 +10,7 @@ AlignmentGenerator: TypeAlias = Generator[tuple['Alignment', Sequence[int],
                                                 int], None, None]
 
 
-class Alignment(OutcomeGroupGenerator):
+class Alignment(OutcomeCountGenerator):
     """A generator that only outputs 0 counts with weight 1."""
 
     def __init__(self, outcomes: Collection):

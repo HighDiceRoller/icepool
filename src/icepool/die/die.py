@@ -27,7 +27,7 @@ class Die(Population):
     even though this is not a proper probability distribution.
     These can be useful in a few cases, such as:
 
-    * `Pool` and `OutcomeGroupEvaluator` will iterate through zero-quantity outcomes
+    * `Pool` and `OutcomeCountEvaluator` will iterate through zero-quantity outcomes
         with 0 `count`, rather than `None` or skipping that outcome.
     * `icepool.align()` and the like are convenient for making dice share the
         same set of outcomes.

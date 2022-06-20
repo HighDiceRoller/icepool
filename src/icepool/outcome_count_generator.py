@@ -6,17 +6,18 @@ from abc import ABC, abstractmethod
 
 from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
 
-NextGroupGenerator: TypeAlias = Generator[tuple['OutcomeGroupGenerator',
-                                                Sequence[int], int], None, None]
+NextOutcomeCountGenerator: TypeAlias = Generator[tuple['OutcomeCountGenerator',
+                                                       Sequence[int], int],
+                                                 None, None]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
-class OutcomeGroupGenerator(ABC):
+class OutcomeCountGenerator(ABC):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card decks (`Deck`).
 
-    These generators can be evaluated by an `OutcomeGroupEvaluator`.
+    These generators can be evaluated by an `OutcomeCountEvaluator`.
     """
 
     @abstractmethod
@@ -32,7 +33,7 @@ class OutcomeGroupGenerator(ABC):
         """
 
     @abstractmethod
-    def _generate_min(self, min_outcome) -> NextGroupGenerator:
+    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -45,7 +46,7 @@ class OutcomeGroupGenerator(ABC):
         """
 
     @abstractmethod
-    def _generate_max(self, max_outcome) -> NextGroupGenerator:
+    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
@@ -72,31 +73,31 @@ class OutcomeGroupGenerator(ABC):
 
     @abstractmethod
     def __eq__(self, other) -> bool:
-        """All `OutcomeGroupGenerator`s must implement equality."""
+        """All `OutcomeCountGenerator`s must implement equality."""
 
     @abstractmethod
     def __hash__(self) -> int:
-        """All `OutcomeGroupGenerator`s must be hashable."""
+        """All `OutcomeCountGenerator`s must be hashable."""
 
     def evaluate(self,
-                 evaluator_or_func: 'icepool.OutcomeGroupEvaluator' | Callable,
+                 evaluator_or_func: 'icepool.OutcomeCountEvaluator' | Callable,
                  /) -> 'icepool.Die':
-        """Evaluates this generator using the given `OutcomeGroupEvaluator` or function.
+        """Evaluates this generator using the given `OutcomeCountEvaluator` or function.
 
-        Note that each `OutcomeGroupEvaluator` instance carries its own cache;
+        Note that each `OutcomeCountEvaluator` instance carries its own cache;
         if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `OutcomeGroupEvaluator` instance
+        you may want to explicitly create an `OutcomeCountEvaluator` instance
         rather than passing a function to this method directly.
 
         Args:
-            func: This can be an `OutcomeGroupEvaluator`, in which case it evaluates
+            func: This can be an `OutcomeCountEvaluator`, in which case it evaluates
                 the generator directly.
-                Or it can be a `OutcomeGroupEvaluator.next_state()`-like
+                Or it can be a `OutcomeCountEvaluator.next_state()`-like
                 function, taking in `state, outcome, *counts` and returning the
                 next state. In this case a temporary `WrapFuncEvaluator`
                 is constructed and used to evaluate this generator.
         """
-        if not isinstance(evaluator_or_func, icepool.OutcomeGroupEvaluator):
+        if not isinstance(evaluator_or_func, icepool.OutcomeCountEvaluator):
             evaluator_or_func = icepool.WrapFuncEvaluator(evaluator_or_func)
         return evaluator_or_func.evaluate(self)
 

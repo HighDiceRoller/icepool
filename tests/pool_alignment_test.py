@@ -3,13 +3,13 @@ import _context
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, OutcomeGroupEvaluator, Pool
+from icepool import d4, d6, d8, d10, d12, OutcomeCountEvaluator, Pool
 
-class CallPathLength(OutcomeGroupEvaluator):
+class CallPathLength(OutcomeCountEvaluator):
     def next_state(self, state, outcome, *pools):
         return (state or 0) + 1
     
-    alignment = OutcomeGroupEvaluator.range_alignment
+    alignment = OutcomeCountEvaluator.range_alignment
         
 call_path_length = CallPathLength()
 

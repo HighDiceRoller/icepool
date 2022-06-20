@@ -5,7 +5,7 @@ import icepool.math
 import icepool.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.outcome_group_generator import NextGroupGenerator, OutcomeGroupGenerator
+from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 
 import itertools
 import math
@@ -36,10 +36,10 @@ def clear_pool_cache():
     new_pool_cached.cache_clear()
 
 
-class Pool(OutcomeGroupGenerator):
+class Pool(OutcomeCountGenerator):
     """Represents a set of unordered dice, only distinguished by the outcomes they roll.
 
-    This should be used in conjunction with `OutcomeGroupEvaluator` to generate a result.
+    This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.
     """
 
     _post_roll_counts: tuple[int, ...]
@@ -291,7 +291,7 @@ class Pool(OutcomeGroupGenerator):
         """Returns the max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _generate_min(self, min_outcome) -> NextGroupGenerator:
+    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -336,7 +336,7 @@ class Pool(OutcomeGroupGenerator):
         if skip_weight is not None:
             yield Pool([]), (sum(self.post_roll_counts()),), skip_weight
 
-    def _generate_max(self, max_outcome) -> NextGroupGenerator:
+    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
