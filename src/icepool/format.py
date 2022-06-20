@@ -46,7 +46,7 @@ def make_headers(mapping: Population,
             if token[0] == 'q':
                 heading += 'Quantity'
             elif token[0] in ['p', '%']:
-                heading += 'Chance'
+                heading += 'Probability'
 
             comparator = token[1:]
             if comparator != '==':

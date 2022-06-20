@@ -175,7 +175,7 @@ class Population(ABC, Mapping[Any, int]):
             quantity / self.denominator() for quantity in self.quantities_le())
 
     def probabilities_le(self, percent: bool = False):
-        """The chance of rolling <= each outcome in order.
+        """The probability of rolling <= each outcome in order.
 
         Also known as the cumulative distribution function (CDF),
         though this term is ambigiuous whether it is < or <=.
@@ -195,7 +195,7 @@ class Population(ABC, Mapping[Any, int]):
             quantity / self.denominator() for quantity in self.quantities_ge())
 
     def probabilities_ge(self, percent: bool = False):
-        """The chance of rolling >= each outcome in order.
+        """The probability of rolling >= each outcome in order.
 
         Also known as the survival function (SF) or
         complementary cumulative distribution function (CCDF),
@@ -395,7 +395,7 @@ class Population(ABC, Mapping[Any, int]):
         * `*o`: Outcomes, unpacked if applicable.
         * `q==`, `q<=`, `q>=`: Quantities ==, <=, or >= each outcome.
         * `p==`, `p<=`, `p>=`: Probabilities (0-1) ==, <=, or >= each outcome.
-        * `%==`, `%<=`, `%>=`: Chance (0%-100%) ==, <=, or >= each outcome.
+        * `%==`, `%<=`, `%>=`: Probabilities (0%-100%) ==, <=, or >= each outcome.
 
         Columns may optionally be separated using ` ` (space) or `|` characters.
 

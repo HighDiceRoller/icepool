@@ -49,7 +49,7 @@ def __getattr__(key: str):
 
 
 def bernoulli(n: int, d: int, /) -> 'icepool.Die':
-    """A die that rolls `True` with chance `n / d`, and `False` otherwise. """
+    """A die that rolls `True` with probability `n / d`, and `False` otherwise. """
     return icepool.Die({False: d - n, True: n})
 
 
