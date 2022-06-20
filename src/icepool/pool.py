@@ -132,7 +132,7 @@ class Pool(OutcomeCountGenerator):
         return sum(count for _, count in self._dice)
 
     def size(self) -> int:
-        """The number of dice in this pool."""
+        """The number of dice in this pool, counting multiples of the same die."""
         return self._size
 
     def _is_resolvable(self) -> bool:
@@ -154,6 +154,7 @@ class Pool(OutcomeCountGenerator):
         return tuple(die for die, _ in self._dice)
 
     def unique_dice(self) -> Collection['icepool.Die']:
+        """The collection of unique dice in this pool (including those with 0 rolls)."""
         return self._unique_dice
 
     @cached_property

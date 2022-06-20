@@ -256,7 +256,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
 def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
     """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
-    This is more efficient than `apply` but still not very efficient.
+    This is more efficient than `apply()` but still not very efficient.
     Use `OutcomeCountEvaluator` instead if at all possible.
 
     Args:

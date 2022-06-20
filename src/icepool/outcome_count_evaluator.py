@@ -136,7 +136,7 @@ class OutcomeCountEvaluator(ABC):
 
     def alignment(self,
                   *generators: icepool.OutcomeCountGenerator) -> Collection:
-        """Optional function to specify an iterable of outcomes that should always be given to `next_state()` even if they have zero count.
+        """Optional function to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
 
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
@@ -144,10 +144,6 @@ class OutcomeCountEvaluator(ABC):
         If you want the outcomes seen by `next_state` to be consecutive
         `int`s, you can set `alignment = icepool.OutcomeCountEvaluator.range_alignment`.
         See `range_alignment()` below.
-
-        Returns:
-            An iterable of outcomes that should be given to `next_state()` even
-            if they have zero count.
         """
         return ()
 
@@ -189,18 +185,19 @@ class OutcomeCountEvaluator(ABC):
         self, *generators: icepool.OutcomeCountGenerator | Mapping[Any, int] |
         Sequence
     ) -> 'icepool.Die':
-        """Evaluates generators.
+        """Evaluates generator(s).
 
         You can call the `OutcomeCountEvaluator` object directly for the same effect,
-        e.g. `sum_generator(generator)` is an alias for `sum_generator.evaluate(generator)`.
+        e.g. `evaluate_sum(generator)` is an alias for `evaluate_sum.evaluate(generator)`.
+
+        Most evaluators will expect a fixed number of generators.
+        The union of the outcomes of the generator(s) must be totally orderable.
 
         Args:
             *generators: Each element may be one of the following:
                 * A `OutcomeCountGenerator`.
                 * A mappable mapping dice to the number of those dice.
                 * A sequence of arguments to create a `Pool`.
-                Most evaluators will expect a fixed number of generators.
-                The union of the outcomes of the generators must be totally orderable.
 
         Returns:
             A `Die` representing the distribution of the final score.
