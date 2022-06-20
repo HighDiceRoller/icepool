@@ -123,7 +123,7 @@ def align(*dice) -> tuple['icepool.Die', ...]:
     """Pads dice with zero quantities so that all have the same set of outcomes.
 
     Args:
-        *dice: One die per argument.
+        *dice: One `Die` per argument.
 
     Returns:
         A tuple of aligned dice.
@@ -138,7 +138,7 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     """Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
 
     Args:
-        *dice: One die per argument.
+        *dice: One `Die` per argument.
 
     Returns:
         A tuple of aligned dice.

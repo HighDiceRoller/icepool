@@ -131,24 +131,6 @@ class Population(ABC, Mapping[Any, int]):
         """
         return self._denominator
 
-    # Probabilities.
-
-    @cached_property
-    def _probabilities(self):
-        return tuple(v / self.denominator() for v in self.values())
-
-    def probabilities(self, percent: bool = False):
-        """Probability mass function. The probability of each outcome in order.
-
-        Args:
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
-        """
-        if percent:
-            return tuple(100.0 * x for x in self._probabilities)
-        else:
-            return self._probabilities
-
     # Quantities.
 
     def has_zero_quantities(self) -> bool:
@@ -173,6 +155,62 @@ class Population(ABC, Mapping[Any, int]):
     def quantities_ge(self) -> Sequence[int]:
         """The quantity >= each outcome in order. """
         return self._quantities_ge
+
+    def quantity(self, outcome) -> int:
+        """The quantity of a single outcome, or 0 if not present. """
+        return self.get(outcome, 0)
+
+    def quantity_ne(self, outcome) -> int:
+        """The quantity != a single outcome. """
+        return self.denominator() - self.quantity(outcome)
+
+    def quantity_le(self, outcome) -> int:
+        """The quantity <= a single outcome. """
+        index = bisect.bisect_right(self.outcomes(), outcome) - 1
+        if index < 0:
+            return 0
+        return self.quantities_le()[index]
+
+    def quantity_lt(self, outcome) -> int:
+        """The quantity < a single outcome. """
+        index = bisect.bisect_left(self.outcomes(), outcome) - 1
+        if index < 0:
+            return 0
+        return self.quantities_le()[index]
+
+    def quantity_ge(self, outcome) -> int:
+        """The quantity >= a single outcome. """
+        index = bisect.bisect_left(self.outcomes(), outcome)
+        if index >= len(self):
+            return 0
+        return self.quantities_ge()[index]
+
+    def quantity_gt(self, outcome) -> int:
+        """The quantity > a single outcome. """
+        index = bisect.bisect_right(self.outcomes(), outcome)
+        if index >= len(self):
+            return 0
+        return self.quantities_ge()[index]
+
+    # Probabilities.
+
+    @cached_property
+    def _probabilities(self):
+        return tuple(v / self.denominator() for v in self.values())
+
+    def probabilities(self, percent: bool = False):
+        """The probability of each outcome in order.
+
+        Also known as the probability mass function (PMF).
+
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * x for x in self._probabilities)
+        else:
+            return self._probabilities
 
     @cached_property
     def _probabilities_le(self):
@@ -215,44 +253,8 @@ class Population(ABC, Mapping[Any, int]):
         else:
             return self._probabilities_ge
 
-    def quantity(self, outcome) -> int:
-        """The quantity of a single outcome, or 0 if not present. """
-        return self.get(outcome, 0)
-
-    def quantity_ne(self, outcome) -> int:
-        """The quantity != a single outcome. """
-        return self.denominator() - self.quantity(outcome)
-
-    def quantity_le(self, outcome) -> int:
-        """The quantity <= a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome) - 1
-        if index < 0:
-            return 0
-        return self.quantities_le()[index]
-
-    def quantity_lt(self, outcome) -> int:
-        """The quantity < a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome) - 1
-        if index < 0:
-            return 0
-        return self.quantities_le()[index]
-
-    def quantity_ge(self, outcome) -> int:
-        """The quantity >= a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.quantities_ge()[index]
-
-    def quantity_gt(self, outcome) -> int:
-        """The quantity > a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.quantities_ge()[index]
-
     def probability(self, outcome):
-        """The probability of a single outcome. """
+        """The probability of a single outcome, or 0.0 if not present. """
         return self.quantity(outcome) / self.denominator()
 
     # Scalar statistics.
@@ -282,6 +284,14 @@ class Population(ABC, Mapping[Any, int]):
         return sum((a - b)**2
                    for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
+    def median(self):
+        """The median, taking the mean in case of a tie.
+
+        This will fail if the outcomes do not support division;
+        in this case, use `median_left` or `median_right` instead.
+        """
+        return self.quantile(1, 2)
+
     def median_left(self):
         """The median, taking the lesser in case of a tie."""
         return self.quantile_left(1, 2)
@@ -290,13 +300,13 @@ class Population(ABC, Mapping[Any, int]):
         """The median, taking the greater in case of a tie."""
         return self.quantile_right(1, 2)
 
-    def median(self):
-        """The median, taking the mean in case of a tie.
+    def quantile(self, n: int, d: int = 100):
+        """The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.
 
         This will fail if the outcomes do not support division;
-        in this case, use `median_left` or `median_right` instead.
+        in this case, use `quantile_left` or `quantile_right` instead.
         """
-        return self.quantile(1, 2)
+        return (self.quantile_left(n, d) + self.quantile_right(n, d)) / 2
 
     def quantile_left(self, n: int, d: int = 100):
         """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
@@ -314,20 +324,12 @@ class Population(ABC, Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def quantile(self, n: int, d: int = 100):
-        """The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.
-
-        This will fail if the outcomes do not support division;
-        in this case, use `quantile_left` or `quantile_right` instead.
-        """
-        return (self.quantile_left(n, d) + self.quantile_right(n, d)) / 2
-
     def mean(self):
         return sum(outcome * quantity
                    for outcome, quantity in self.items()) / self.denominator()
 
     def variance(self):
-        """The population variance (not the sample variance)."""
+        """This is the population variance, not the sample variance."""
         mean = self.mean()
         mean_of_squares = sum(
             quantity * outcome**2
