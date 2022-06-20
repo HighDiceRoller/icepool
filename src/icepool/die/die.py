@@ -23,12 +23,12 @@ class Die(Population):
     Dice are immutable. Methods do not modify the `Die` in-place;
     rather they return a `Die` representing the result.
 
-    It *is* (mostly) well-defined to have a `Die` with zero-quantity outcomes,
-    even though this is not a proper probability distribution.
+    It *is* (mostly) well-defined to have a `Die` with zero-quantity outcomes.
     These can be useful in a few cases, such as:
 
-    * `Pool` and `OutcomeCountEvaluator` will iterate through zero-quantity outcomes
-        with 0 `count`, rather than `None` or skipping that outcome.
+    * `OutcomeCountEvaluator` will iterate through zero-quantity outcomes,
+        rather than possibly skipping that outcome. (Though in most cases it's
+        better to use `OutcomeCountEvaluator.alignment()`.)
     * `icepool.align()` and the like are convenient for making dice share the
         same set of outcomes.
 
@@ -36,8 +36,8 @@ class Die(Population):
     outcome. Unless you have a specific use case in mind, it's best to leave
     them out.
 
-    Most operators and methods will not introduce zero-quantity outcomes if their
-    arguments do not have any.
+    Most operators and methods will not introduce zero-quantity outcomes if
+    their arguments do not have any; nor remove zero-quantity outcomes.
 
     It's also possible to have "empty" dice with no outcomes at all,
     though these have little use other than being sentinel values.
@@ -69,7 +69,7 @@ class Die(Population):
         * Use a d6 that you already have: `Die(d6)` or `Die([d6])`
         * Mix a d3 and a d3+3: `Die([d3, d3+3])`
         * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
-        * Give the faces as args: `Die([1, 2, 3, 4, 5, 6])`
+        * Give the faces as a sequence: `Die([1, 2, 3, 4, 5, 6])`
 
         All quantities must be non-negative, though they can be zero.
 
