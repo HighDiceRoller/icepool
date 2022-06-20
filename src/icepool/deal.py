@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.gen import GenGenerator, OutcomeGroupGenerator
+from icepool.outcome_group_generator import GenGenerator, OutcomeGroupGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
