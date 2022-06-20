@@ -68,8 +68,8 @@ class Pool(OutcomeCountGenerator):
                 `outcomes`.
 
         Raises:
-            ValueError for a `Deck` or `Die` argument. A pool of a single `Die`
-                should constructed as `Pool([die])`.
+            ValueError: If a bare `Deck` or `Die` argument is provided.
+                A pool of a single `Die` should constructed as `Pool([die])`.
         """
         if isinstance(dice, Pool):
             if times == 1:
@@ -253,8 +253,8 @@ class Pool(OutcomeCountGenerator):
                     the -1 and 1 cancel each other out.
 
         Raises:
-            ValueError:  If `post_roll_counts` would change the size of a pool with
-                more than one type of die, or if more than one `Ellipsis`
+            ValueError:  If `post_roll_counts` would change the size of a pool
+                with more than one type of die, or if more than one `Ellipsis`
                 is used.
         """
         convert_to_die = isinstance(post_roll_counts, int)
@@ -453,7 +453,7 @@ def post_roll_counts_tuple(
         `pool_size`: An `int` specifying the size of the pool.
         `post_roll_counts`: Raw specification for how the dice are to be counted.
     Raises:
-        `ValueError` if:
+        ValueError: If:
             * More than one `Ellipsis` is used.
             * An `Ellipsis` is used in the center with too few `pool_size`.
     """

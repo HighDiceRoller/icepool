@@ -80,7 +80,6 @@ class Die(Population):
                     quantity.
 
                 Note that `Die` and `Deck` both count as `Mapping`s.
-
                 Each outcome may be one of the following:
                 * A `Mapping` from outcomes to quantities.
                     The outcomes of the `Mapping` will be "flattened" into the
@@ -124,7 +123,7 @@ class Die(Population):
                     to help determine the result of the selected argument.
                 * 'reduce': The final quantities are divided by their GCD.
         Raises:
-            `ValueError`: `None` is not a valid outcome for a die.
+            ValueError: `None` is not a valid outcome for a die.
         """
         if isinstance(outcomes, Die):
             if times == 1:
@@ -164,7 +163,7 @@ class Die(Population):
             A die representing the result.
 
         Raises:
-            ValueError if tuples are of mismatched length.
+            ValueError: If tuples are of mismatched length.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, quantity in self.items():
@@ -214,7 +213,7 @@ class Die(Population):
             A die representing the result.
 
         Raises:
-            `ValueError` if tuples are of mismatched length within one of the
+            ValueError: If tuples are of mismatched length within one of the
                 dice or between the dice.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
@@ -286,7 +285,7 @@ class Die(Population):
             If the reroll would never terminate, the result has no outcomes.
 
         Raises:
-            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
+            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
         if extra_args and not callable(outcomes):
             raise ValueError(
@@ -356,7 +355,7 @@ class Die(Population):
             If the reroll would never terminate, the result has no outcomes.
 
         Raises:
-            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
+            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
         if extra_args and not callable(outcomes):
             raise ValueError(
@@ -467,7 +466,7 @@ class Die(Population):
         """A die with the min outcome removed, and the quantity of the removed outcome.
 
         Raises:
-            `IndexError` if this die has no outcome to pop.
+            IndexError: If this die has no outcome to pop.
         """
         return self._popped_min
 
@@ -480,7 +479,7 @@ class Die(Population):
         """A die with the max outcome removed, and the quantity of the removed outcome.
 
         Raises:
-            `IndexError` if this die has no outcome to pop.
+            IndexError: If this die has no outcome to pop.
         """
         return self._popped_max
 
@@ -522,7 +521,7 @@ class Die(Population):
             The relabeled die.
 
         Raises:
-            `ValueError` if `extra_args` are supplied with a non-callable `repl`.
+            ValueError: if `extra_args` are supplied with a non-callable `repl`.
         """
         if extra_args and not callable(repl):
             raise ValueError(
@@ -594,7 +593,7 @@ class Die(Population):
                 If `outcomes` is not a callable, this has no effect.
 
         Raises:
-            `ValueError` if `extra_args` are supplied with a non-callable `outcomes`.
+            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
         if extra_args and not callable(outcomes):
             raise ValueError(
@@ -838,7 +837,7 @@ class Die(Population):
         The result will have the same denominator as this die.
 
         Raises:
-            `ValueError` if the zeros did not resolve to a single outcome.
+            ValueError: If the zeros did not resolve to a single outcome.
         """
         result = self.unary_op(Die._zero)
         if len(result) != 1:

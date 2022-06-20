@@ -159,7 +159,7 @@ class OutcomeCountEvaluator(ABC):
             inclusive.
 
         Raises:
-            `TypeError` if any generator has any non-`int` outcome.
+            TypeError: if any generator has any non-`int` outcome.
         """
         if len(generators) == 0:
             return ()
