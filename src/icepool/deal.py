@@ -10,10 +10,7 @@ import math
 
 
 class Deal(OutcomeCountGenerator):
-    """EXPERIMENTAL: Represents an unordered deal of cards from a deck.
-
-    API and naming WIP.
-    """
+    """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a deck. """
 
     _deck: 'icepool.Deck'
     _hand_sizes: tuple[int, ...]

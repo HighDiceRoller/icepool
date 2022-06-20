@@ -37,7 +37,7 @@ def clear_pool_cache():
 
 
 class Pool(OutcomeCountGenerator):
-    """Represents a set of unordered dice, only distinguished by the outcomes they roll.
+    """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.
     """

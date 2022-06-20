@@ -54,34 +54,35 @@ class OutcomeCountEvaluator(ABC):
         This should produce a state given the previous state, an outcome,
         and the number that outcome produced by each generator.
 
-        Within `evaluate()`, this will be called using only positional arguments.
-        Thus, you may rename any of the arguments if you wish.
+        `evaluate()` will always call this using only positional arguments.
+        Furthermore, there is no expectation that a subclass be able to handle
+        an arbitrary number of counts. Thus, you are free to rename any of
+        the parameters in a subclass, or to replace `*counts` with a fixed set
+        of parameters.
 
         Make sure to handle the base case where `state is None`.
 
+        States must be hashable, but unlike outcomes they do not need to be
+        orderable. However, if they are not totally orderable, you must override
+        `final_outcome` to create legal final outcomes.
+
         Args:
             state: A hashable object indicating the state before rolling the
-                current outcome. If there was no previous outcome, this will be
-                `None`.
+                current outcome. If this is the first outcome being considered,
+                `state` will be `None`.
             outcome: The current outcome.
                 `next_state` will see all rolled outcomes in monotonic order;
                 either ascending or descending depending on `direction()`.
                 If there are multiple generators, the set of outcomes is the
                 union of the outcomes of the invididual generators. All outcomes
-                with nonzero  count will be visited. Outcomes with zero count
-                may or may not be visited. If you need to enforce that certain
-                outcomes are visited even if they have zero count, see
+                with nonzero count will be seen. Outcomes with zero count
+                may or may not be seen. If you need to enforce that certain
+                outcomes are seen even if they have zero count, see
                 `alignment()`.
-            *counts: One `int` for each generator indicating how many of the current
-                outcome were produced. If there are multiple
-                generators, it's possible that some outcomes will not appear in
-                all generators. In this case, the count for the generator(s)
-                that do not have the outcome will be 0. Zero-quantity outcomes
-                count as having that outcome.
-
-                Most subclasses will expect a fixed number of generators and
-                can replace this variadic parameter with a fixed number of named
-                parameters.
+            *counts: One `int` for each generator output indicating how many of
+                the current outcome were produced. All outcomes with nonzero
+                count are guaranteed to be seen. To guarantee that outcomes
+                are seen even if they have zero count, override `alignment()`.
 
         Returns:
             A hashable object indicating the next state.
@@ -93,8 +94,10 @@ class OutcomeCountEvaluator(ABC):
                       *generators: icepool.OutcomeCountGenerator) -> Any:
         """Optional function to generate a final outcome from a final state.
 
-        Within `evaluate()`, this will be called using only positional arguments.
-        Thus, you may rename any of the arguments if you wish.
+        Tthere is no expectation that a subclass be able to handle
+        an arbitrary number of generators. Thus, you are free to rename any of
+        the parameters in a subclass, or to replace `*generators` with a fixed
+        set of parameters.
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a die,
@@ -118,6 +121,11 @@ class OutcomeCountEvaluator(ABC):
     def direction(self, *generators: icepool.OutcomeCountGenerator) -> int:
         """Optional function to determine the direction in which `next_state()` will see outcomes.
 
+        There is no expectation that a subclass be able to handle
+        an arbitrary number of generators. Thus, you are free to rename any of
+        the parameters in a subclass, or to replace `*generators` with a fixed
+        set of parameters.
+
         The default is ascending order. This works well with mixed standard dice,
         and other dice that differ only by right-truncation.
 
@@ -138,6 +146,11 @@ class OutcomeCountEvaluator(ABC):
                   *generators: icepool.OutcomeCountGenerator) -> Collection:
         """Optional function to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
 
+        There is no expectation that a subclass be able to handle
+        an arbitrary number of generators. Thus, you are free to rename any of
+        the parameters in a subclass, or to replace `*generators` with a fixed
+        set of parameters.
+
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
 
@@ -151,6 +164,11 @@ class OutcomeCountEvaluator(ABC):
             self,
             *generators: icepool.OutcomeCountGenerator) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
+
+        There is no expectation that a subclass be able to handle
+        an arbitrary number of generators. Thus, you are free to rename any of
+        the parameters in a subclass, or to replace `*generators` with a fixed
+        set of parameters.
 
         Set `alignment = icepool.OutcomeCountEvaluator.range_alignment` to use this.
 
@@ -247,7 +265,6 @@ class OutcomeCountEvaluator(ABC):
             * The algorithm to use (`_eval_internal*`).
             * The direction in which `next_state()` sees outcomes.
                 1 for ascending and -1 for descending.
-
         """
         eval_direction = self.direction(*generators)
 
@@ -312,7 +329,7 @@ class OutcomeCountEvaluator(ABC):
                for generator in generators) and not alignment.outcomes():
             result = {None: 1}
         else:
-            outcome, prev_alignment, iterators = _pop_generators(
+            outcome, prev_alignment, iterators = OutcomeCountEvaluator._pop_generators(
                 direction, alignment, generators)
             for p in itertools.product(*iterators):
                 prev_generators, counts, weights = zip(*p)
@@ -348,7 +365,7 @@ class OutcomeCountEvaluator(ABC):
             for (prev_state, prev_alignment,
                  prev_generators), weight in dist.items():
                 # The direction flip here is the only purpose of this algorithm.
-                outcome, alignment, iterators = _pop_generators(
+                outcome, alignment, iterators = OutcomeCountEvaluator._pop_generators(
                     -direction, prev_alignment, prev_generators)
                 for p in itertools.product(*iterators):
                     generators, counts, weights = zip(*p)
@@ -365,37 +382,37 @@ class OutcomeCountEvaluator(ABC):
             dist = next_dist
         return final_dist
 
+    @staticmethod
+    def _pop_generators(
+        side: int, alignment: Alignment,
+        generators: tuple[icepool.OutcomeCountGenerator, ...]
+    ) -> tuple[Any, Alignment, tuple['icepool.NextOutcomeCountGenerator', ...]]:
+        """Pops a single outcome from the generators.
 
-def _pop_generators(
-    side: int, alignment: Alignment,
-    generators: tuple[icepool.OutcomeCountGenerator, ...]
-) -> tuple[Any, Alignment, tuple['icepool.NextOutcomeCountGenerator', ...]]:
-    """Pops a single outcome from the generators.
+        Returns:
+            * The popped outcome.
+            * The remaining alignment.
+            * A tuple of iterators over the resulting generators, counts, and weights.
+        """
+        alignment_and_generators = (alignment,) + generators
+        if side >= 0:
+            outcome = max(generator.max_outcome()
+                          for generator in alignment_and_generators
+                          if generator.outcomes())
 
-    Returns:
-        * The popped outcome.
-        * The remaining alignment.
-        * A tuple of iterators over the resulting generators, counts, and weights.
-    """
-    alignment_and_generators = (alignment,) + generators
-    if side >= 0:
-        outcome = max(generator.max_outcome()
-                      for generator in alignment_and_generators
-                      if generator.outcomes())
+            next_alignment, _, _ = next(alignment._generate_max(outcome))
 
-        next_alignment, _, _ = next(alignment._generate_max(outcome))
+            return outcome, next_alignment, tuple(
+                generator._generate_max(outcome) for generator in generators)
+        else:
+            outcome = min(generator.min_outcome()
+                          for generator in alignment_and_generators
+                          if generator.outcomes())
 
-        return outcome, next_alignment, tuple(
-            generator._generate_max(outcome) for generator in generators)
-    else:
-        outcome = min(generator.min_outcome()
-                      for generator in alignment_and_generators
-                      if generator.outcomes())
+            next_alignment, _, _ = next(alignment._generate_min(outcome))
 
-        next_alignment, _, _ = next(alignment._generate_min(outcome))
-
-        return outcome, next_alignment, tuple(
-            generator._generate_min(outcome) for generator in generators)
+            return outcome, next_alignment, tuple(
+                generator._generate_min(outcome) for generator in generators)
 
 
 class WrapFuncEvaluator(OutcomeCountEvaluator):
@@ -412,7 +429,7 @@ class WrapFuncEvaluator(OutcomeCountEvaluator):
         """
         self._func = func
 
-    def next_state(self, state, outcome, *counts: int):
+    def next_state(self, state: Hashable, outcome, *counts: int) -> Hashable:
         return self._func(state, outcome, *counts)
 
 
@@ -426,7 +443,7 @@ class JointEvaluator(OutcomeCountEvaluator):
     def __init__(self, *sub_evaluators: 'OutcomeCountEvaluator'):
         self._sub_evaluators = sub_evaluators
 
-    def next_state(self, state, outcome, *counts: int):
+    def next_state(self, state, outcome, *counts: int) -> tuple[Hashable, ...]:
         """Runs `next_state` for all subevals.
 
         The state is a tuple of the substates.
@@ -450,7 +467,7 @@ class JointEvaluator(OutcomeCountEvaluator):
             evaluator.final_outcome(final_substate, *generators) for evaluator,
             final_substate in zip(self._sub_evaluators, final_state))
 
-    def direction(self, *generators: icepool.OutcomeCountGenerator):
+    def direction(self, *generators: icepool.OutcomeCountGenerator) -> int:
         """Determines the common direction of the subevals.
 
         Raises:
@@ -482,13 +499,13 @@ class EvaluateSum(OutcomeCountEvaluator):
         else:
             return state + outcome * count
 
-    def final_outcome(self, final_state, *generators):
+    def final_outcome(self, final_state, *_):
         if final_state is None:
             return 0
         else:
             return final_state
 
-    def direction(self, *generators):
+    def direction(self, *_):
         """This evaluator doesn't care about direction. """
         return 0
 
@@ -519,7 +536,7 @@ class EnumerateSorted(OutcomeCountEvaluator):
         else:
             return state + (outcome,) * count
 
-    def direction(self, *generators):
+    def direction(self, *_):
         return self._direction
 
 
@@ -545,7 +562,7 @@ class FindBestSet(OutcomeCountEvaluator):
         else:
             return max(state, (count, outcome))
 
-    def direction(self, *generators):
+    def direction(self, *_):
         """This evaluator doesn't care about direction. """
         return 0
 
@@ -571,11 +588,11 @@ class FindBestRun(OutcomeCountEvaluator):
             run = 0
         return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
-    def final_outcome(self, final_state, *generators):
+    def final_outcome(self, final_state, *_):
         """The best run. """
         return final_state[:2]
 
-    def direction(self, *generators):
+    def direction(self, *_):
         """This only considers outcomes in ascending order. """
         return 1
 
