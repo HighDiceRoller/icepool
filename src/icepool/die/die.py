@@ -244,7 +244,7 @@ class Die(Population):
         return iter(self.keys())
 
     def __len__(self) -> int:
-        """The number of outcomes (including those with zero quantity). """
+        """The number of outcomes. """
         return len(self._data)
 
     def __contains__(self, outcome) -> bool:

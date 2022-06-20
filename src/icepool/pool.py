@@ -154,7 +154,7 @@ class Pool(OutcomeCountGenerator):
         return tuple(die for die, _ in self._dice)
 
     def unique_dice(self) -> Collection['icepool.Die']:
-        """The collection of unique dice in this pool (including those with 0 rolls)."""
+        """The collection of unique dice in this pool."""
         return self._unique_dice
 
     @cached_property

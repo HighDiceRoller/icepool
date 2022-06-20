@@ -82,9 +82,11 @@ class Population(ABC, Mapping[Any, int]):
         return len(self) == 0
 
     def min_outcome(self):
+        """The least outcome."""
         return self.outcomes()[0]
 
     def max_outcome(self):
+        """The greatest outcome."""
         return self.outcomes()[-1]
 
     def nearest_le(self, outcome):
@@ -267,15 +269,15 @@ class Population(ABC, Mapping[Any, int]):
         """The highest quantity of any single outcome. """
         return max(self.quantities())
 
-    def ks_stat(self, other):
-        """Kolmogorov–Smirnov stat. The maximum absolute difference between CDFs. """
+    def kolmogorov_smirnov(self, other):
+        """Kolmogorov–Smirnov statistic. The maximum absolute difference between CDFs. """
         a, b = icepool.align(self, other)
         return max(
             abs(a - b)
             for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
-    def cvm_stat(self, other):
-        """Cramér-von Mises stat. The sum-of-squares difference between CDFs. """
+    def cramer_von_mises(self, other):
+        """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
         a, b = icepool.align(self, other)
         return sum((a - b)**2
                    for a, b in zip(a.probabilities_le(), b.probabilities_le()))

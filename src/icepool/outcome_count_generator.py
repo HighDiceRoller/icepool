@@ -128,7 +128,7 @@ class OutcomeCountGenerator(ABC):
         secure.
 
         Returns:
-            A tuple of counts for each output of this generator.
+            A sorted tuple of outcomes for each output of this generator.
         """
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
@@ -143,7 +143,7 @@ class OutcomeCountGenerator(ABC):
             generated = tuple(self._generate_max(outcome))
 
         cumulative_weights = tuple(
-            itertools.accumulate(g.denominator() * w for g, c, w in generated))
+            itertools.accumulate(g.denominator() * w for g, _, w in generated))
         denominator = cumulative_weights[-1]
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(denominator)

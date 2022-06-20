@@ -11,6 +11,8 @@ General conventions:
     like it mutates an instance actually returns a separate instance with the
     change.
 * Unless explictly specified otherwise, all sorting is in ascending order.
+* Unless explictly specified otherwise, elements with zero quantity, rolls, etc.
+    are considered.
 * The words "min" and "max" refer to outcomes, and the words "low" and "high"
 refer to dice in a pool.
 """
