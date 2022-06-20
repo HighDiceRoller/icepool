@@ -708,6 +708,35 @@ class Die(Population):
         """
         return icepool.Pool({self: rolls})
 
+    def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+        """Roll several of this die and sum the sorted results from the lowest.
+
+        Args:
+            rolls: The number of dice to roll. All dice will have the same
+                outcomes as `self`.
+            keep: The number of dice to keep.
+            drop: If provided, this many lowest dice will be dropped before
+                keeping.
+
+        Returns:
+            A die representing the probability distribution of the sum.
+        """
+        if keep == 1 and drop == 0:
+            return self._keep_lowest_single(rolls)
+
+        start = drop if drop > 0 else None
+        stop = keep + (drop or 0)
+        post_roll_counts = slice(start, stop)
+        return self.pool(rolls)[post_roll_counts].sum()
+
+    def _keep_lowest_single(self, rolls: int, /) -> 'Die':
+        """Faster algorithm for keeping just the single lowest die. """
+        if rolls == 0:
+            return self.zero()
+        return icepool.from_cumulative_quantities(
+            self.outcomes(), [x**rolls for x in self.quantities_ge()],
+            reverse=True)
+
     def keep_highest(self,
                      rolls: int,
                      /,
@@ -735,36 +764,8 @@ class Die(Population):
         """Faster algorithm for keeping just the single highest die. """
         if rolls == 0:
             return self.zero()
-        return icepool.from_quantities_le(
+        return icepool.from_cumulative_quantities(
             self.outcomes(), [x**rolls for x in self.quantities_le()])
-
-    def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
-        """Roll several of this die and sum the sorted results from the lowest.
-
-        Args:
-            rolls: The number of dice to roll. All dice will have the same
-                outcomes as `self`.
-            keep: The number of dice to keep.
-            drop: If provided, this many lowest dice will be dropped before
-                keeping.
-
-        Returns:
-            A die representing the probability distribution of the sum.
-        """
-        if keep == 1 and drop == 0:
-            return self._keep_lowest_single(rolls)
-
-        start = drop if drop > 0 else None
-        stop = keep + (drop or 0)
-        post_roll_counts = slice(start, stop)
-        return self.pool(rolls)[post_roll_counts].sum()
-
-    def _keep_lowest_single(self, rolls: int, /) -> 'Die':
-        """Faster algorithm for keeping just the single lowest die. """
-        if rolls == 0:
-            return self.zero()
-        return icepool.from_quantities_ge(
-            self.outcomes(), [x**rolls for x in self.quantities_ge()])
 
     # Unary operators.
 

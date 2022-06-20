@@ -60,24 +60,26 @@ def bernoulli(numerator: int, denominator: int, /) -> 'icepool.Die':
 coin = bernoulli
 
 
-def from_quantities_le(outcomes: Sequence,
-                       quantities_le: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from a sequence of cumulative quantities."""
+def from_cumulative_quantities(outcomes: Sequence,
+                               cumulative_quantities: Sequence[int],
+                               *,
+                               reverse: bool = False) -> 'icepool.Die':
+    """Constructs a die from a sequence of cumulative quantities.
+
+    Args:
+        outcomes: The outcomes of the resulting die. Sorted order is recommended
+            but not necessary.
+        cumulative_quantities: The cumulative quantities (inclusive) of the
+            outcomes in the order they are given to this function.
+        reverse: Iff true, both of the arguments will be reversed. This allows
+            e.g. constructing using a survival distribution.
+    """
+
     prev = 0
     d = {}
-    for outcome, quantity in zip(outcomes, quantities_le):
-        d[outcome] = quantity - prev
-        prev = quantity
-    return icepool.Die(d)
-
-
-def from_quantities_ge(outcomes: Sequence,
-                       quantities_ge: Sequence[int]) -> 'icepool.Die':
-    """Constructs a die from a sequence of complementary cumulative quantities."""
-    prev = 0
-    d = {}
-    for outcome, quantity in zip(reversed(outcomes),
-                                 reversed(tuple(quantities_ge))):
+    for outcome, quantity in zip((reversed(outcomes) if reverse else outcomes),
+                                 (reversed(cumulative_quantities)
+                                  if reverse else cumulative_quantities)):
         d[outcome] = quantity - prev
         prev = quantity
     return icepool.Die(d)
@@ -102,7 +104,7 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
     else:
         cdf = rv.cdf(outcomes, **kwargs)
         quantities_le = tuple(int(round(x * denominator)) for x in cdf)
-    return from_quantities_le(outcomes, quantities_le)
+    return from_cumulative_quantities(outcomes, quantities_le)
 
 
 def min_outcome(*dice):

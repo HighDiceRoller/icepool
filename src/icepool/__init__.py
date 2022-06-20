@@ -20,9 +20,9 @@ __docformat__ = 'google'
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              from_quantities_le, from_quantities_ge, from_rv,
-                              min_outcome, max_outcome, align, align_range,
-                              reduce, accumulate, apply, apply_sorted)
+                              from_cumulative_quantities, from_rv, min_outcome,
+                              max_outcome, align, align_range, reduce,
+                              accumulate, apply, apply_sorted)
 
 from icepool.population import Population
 from icepool.die.die import Die
@@ -52,10 +52,9 @@ Reroll = SpecialValue.Reroll
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'CountsKeysView',
-    'CountsValuesView', 'CountsItemsView', 'from_quantities_le',
-    'from_quantities_ge', 'from_rv', 'align', 'align_range', 'lowest',
-    'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
-    'OutcomeCountEvaluator', 'JointEvaluator', 'EvaluateSum', 'Deck', 'Deal',
-    'clear_pool_cache'
+    'CountsValuesView', 'CountsItemsView', 'from_cumulative_quantities',
+    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
+    'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
+    'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
+    'JointEvaluator', 'EvaluateSum', 'Deck', 'Deal', 'clear_pool_cache'
 ]

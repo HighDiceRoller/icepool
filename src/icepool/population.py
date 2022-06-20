@@ -325,6 +325,7 @@ class Population(ABC, Mapping[Any, int]):
                    for outcome, quantity in self.items()) / self.denominator()
 
     def variance(self):
+        """The population variance (not the sample variance)."""
         mean = self.mean()
         mean_of_squares = sum(
             quantity * outcome**2
