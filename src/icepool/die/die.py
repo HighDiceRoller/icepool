@@ -157,7 +157,7 @@ class Die(Population):
 
         This is NOT used for the `[]` operator; when used directly, this is
         interpreted as a `Mapping` operation and returns the count corresponding
-        to a given outcome. See `marginal()` for applying the `[]` operator to
+        to a given outcome. See `marginals()` for applying the `[]` operator to
         outcomes.
 
         Returns:
