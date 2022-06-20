@@ -16,7 +16,11 @@ PREFERRED_DIRECTION_COST_FACTOR = 10
 
 
 class OutcomeGroupEvaluator(ABC):
-    """An abstract, immutable, callable class for evaulating one or more `OutcomeGroupGenerators`s.
+    """An abstract, immutable, callable class for evaulating one or more `OutcomeGroupGenerator`s.
+
+    The word "group" is similar to SQL's `GROUP BY`: imagine rolling a pool of
+    dice or drawing a hand of cards, grouping them by outcome, and then
+    iterating over the (outcome, count) pairs.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result given one outcome at a time

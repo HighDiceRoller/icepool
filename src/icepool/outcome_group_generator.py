@@ -15,6 +15,8 @@ class OutcomeGroupGenerator(ABC):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card decks (`Deck`).
+
+    These generators can be evaluated by an `OutcomeGroupEvaluator`.
     """
 
     @abstractmethod
