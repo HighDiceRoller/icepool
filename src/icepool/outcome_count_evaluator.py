@@ -414,6 +414,23 @@ class OutcomeCountEvaluator(ABC):
             return outcome, next_alignment, tuple(
                 generator._generate_min(outcome) for generator in generators)
 
+    def sample(self, *generators: icepool.OutcomeCountGenerator |
+               Mapping[Any, int] | Sequence):
+        """EXPERIMENTAL: Samples one result from the generator(s) and evaluates the result."""
+        # Convert non-`Pool` arguments to `Pool`.
+        converted_generators = tuple(
+            generator if isinstance(generator, icepool.OutcomeCountGenerator
+                                   ) else icepool.Pool(generator)
+            for generator in generators)
+
+        result = self.evaluate(*itertools.chain.from_iterable(
+            generator.sample() for generator in converted_generators))
+
+        if not result.is_empty():
+            return result.outcomes()[0]
+        else:
+            return result
+
 
 class WrapFuncEvaluator(OutcomeCountEvaluator):
     """An `OutcomeCountEvaluator` created from a single provided function.
