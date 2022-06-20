@@ -35,6 +35,9 @@
             <input name="od" id="od" type="number" min="0" max="10" value="0" required onwheel="" /> highest dice, then keeping the
             <input name="ok" id="ok" type="number" min="1" max="10" value="2" required onwheel="" /> next highest dice.
         </form>
+        <form id="options">
+            <input name="hitch1", id="hitch1", type="checkbox"> Hitches count as 1s. If checked, the dice act as standard dice.
+        </form>
     </div>
     
     <h2>Probability distribution of the total</h2>
@@ -197,7 +200,6 @@
                 import pyodide
                 import icepool
                 
-                reference_die = icepool.d12.sub({1: 0})
                 die_sizes = [4, 6, 8, 10, 12]
                 
                 die_player_unaligned, hitch_player_unaligned = icepool.Die(0), icepool.Die(0)
@@ -207,6 +209,9 @@
                     truncate_max = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
+                    reference_die = icepool.d12
+                    if not js.document.getElementById('hitch1').checked:
+                        reference_die = reference_die.sub({1: 0})
                     die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, truncate_max=truncate_max)
                     hitch = icepool.Die(0)
                     for n in truncate_max:
@@ -326,6 +331,14 @@
         oinputs.addEventListener('input', updateTotalResults);
         oinputs.addEventListener('input', updateHitchResults);
         oinputs.addEventListener('input', updateSearchQueryFromForms);
+        
+        let options = document.querySelector('#options');
+        options.addEventListener('input', validateInputs);
+        options.addEventListener('input', updatePlayerRoll);
+        options.addEventListener('input', updateOppositionRoll);
+        options.addEventListener('input', updateTotalResults);
+        options.addEventListener('input', updateHitchResults);
+        options.addEventListener('input', updateSearchQueryFromForms);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalResults);
