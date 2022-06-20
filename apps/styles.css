@@ -15,6 +15,10 @@ input[type='number'] {
     width: 2em;
 }
 
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
 select {
     font-size: 100%;
 }
