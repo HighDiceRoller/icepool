@@ -40,7 +40,6 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 * [Ability score rolling method calculator.](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
 * [*Cortex Prime* calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator.](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
-* [Just a REPL.](https://highdiceroller.github.io/icepool/apps/repl.html)
 
 ## Inline examples
 
