@@ -285,24 +285,3 @@ class ApplySorted():
 
 
 apply_sorted = ApplySorted()
-"""Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
-
-This is more efficient than `apply()` but still not very efficient.
-Use `OutcomeCountEvaluator` instead if at all possible.
-
-You can use `apply_sorted[]` to only see outcomes at particular sorted indexes.
-For example, `apply_sorted[-2:](func, *dice)` would give the two highest
-outcomes to `func()`. This is more efficient than selecting outcomes inside
-`func`.
-
-Args:
-    func: A function that takes one argument per input `Die` and returns an
-        argument to `Die()`.
-    *dice: Any number of dice (or objects convertible to dice).
-        `func` will be called with all sorted joint outcomes of `dice`,
-        with one argument per die. All outcomes must be totally orderable.
-
-Returns:
-    A `Die` constructed from the outputs of `func` and the weight of rolling
-    the corresponding sorted outcomes.
-"""
