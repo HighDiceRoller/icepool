@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import d6
+
 
 def test_apply_reroll():
     result = icepool.apply(lambda x: icepool.Reroll if x > 4 else x, icepool.d6)
@@ -17,6 +19,13 @@ def test_apply_die():
 def test_apply_sorted_max():
     result = icepool.apply_sorted(lambda x, y: y, icepool.d6, icepool.d6)
     expected = icepool.d6.keep_highest(2)
+    assert result.equals(expected)
+
+
+def test_apply_sorted_4d6kh3():
+    result = icepool.apply_sorted[-3:]((lambda x, y, z: x + y + z), d6, d6, d6,
+                                       d6)
+    expected = icepool.d6.keep_highest(4, 3)
     assert result.equals(expected)
 
 

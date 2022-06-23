@@ -259,22 +259,50 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
     return icepool.Die(final_outcomes, final_quantities)
 
 
-def apply_sorted(func: Callable, *dice) -> 'icepool.Die':
-    """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
+class ApplySorted():
+    """Implements `apply_sorted()`."""
 
-    This is more efficient than `apply()` but still not very efficient.
-    Use `OutcomeCountEvaluator` instead if at all possible.
+    def __call__(self, func: Callable, *dice) -> 'icepool.Die':
 
-    Args:
-        func: A function that takes one argument per input `Die` and returns an
-            argument to `Die()`.
-        *dice: Any number of dice (or objects convertible to dice).
-            `func` will be called with all sorted joint outcomes of `dice`,
-            with one argument per die. All outcomes must be totally orderable.
+        pool = icepool.Pool(dice)
+        return icepool.enumerate_sorted(pool).sub(func, star=1)
 
-    Returns:
-        A `Die` constructed from the outputs of `func` and the weight of rolling
-        the corresponding sorted outcomes.
-    """
-    pool = icepool.Pool(dice)
-    return icepool.enumerate_sorted(pool).sub(func, star=1)
+    def __getitem__(self, post_roll_counts: int | slice | tuple[int, ...],
+                    /) -> Callable[..., 'icepool.Die']:
+        """Implements `[]` syntax for `apply_sorted`."""
+        if isinstance(post_roll_counts, int):
+
+            def result(func: Callable, *dice) -> 'icepool.Die':
+                die = icepool.Pool(dice)[post_roll_counts]
+                return die.sub(func)
+        else:
+
+            def result(func: Callable, *dice) -> 'icepool.Die':
+                pool = icepool.Pool(dice)[post_roll_counts]
+                return icepool.enumerate_sorted(pool).sub(func, star=1)
+
+        return result
+
+
+apply_sorted = ApplySorted()
+"""Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
+
+This is more efficient than `apply()` but still not very efficient.
+Use `OutcomeCountEvaluator` instead if at all possible.
+
+You can use `apply_sorted[]` to only see outcomes at particular sorted indexes.
+For example, `apply_sorted[-2:](func, *dice)` would give the two highest
+outcomes to `func()`. This is more efficient than selecting outcomes inside
+`func`.
+
+Args:
+    func: A function that takes one argument per input `Die` and returns an
+        argument to `Die()`.
+    *dice: Any number of dice (or objects convertible to dice).
+        `func` will be called with all sorted joint outcomes of `dice`,
+        with one argument per die. All outcomes must be totally orderable.
+
+Returns:
+    A `Die` constructed from the outputs of `func` and the weight of rolling
+    the corresponding sorted outcomes.
+"""
