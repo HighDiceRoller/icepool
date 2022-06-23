@@ -7006,36 +7006,36 @@ secure.</p>
 </span><span id="Pool-213"><a href="#Pool-213"><span class="linenos">213</span></a><span class="sd">        * `pool[-1, ..., 1]`</span>
 </span><span id="Pool-214"><a href="#Pool-214"><span class="linenos">214</span></a>
 </span><span id="Pool-215"><a href="#Pool-215"><span class="linenos">215</span></a><span class="sd">        Args: One of the following:</span>
-</span><span id="Pool-216"><a href="#Pool-216"><span class="linenos">216</span></a><span class="sd">            An `int`. This will count only the `Die` at the specified index (once).</span>
-</span><span id="Pool-217"><a href="#Pool-217"><span class="linenos">217</span></a><span class="sd">                In this case, the result will be a `Die`, not a pool.</span>
-</span><span id="Pool-218"><a href="#Pool-218"><span class="linenos">218</span></a><span class="sd">            A `slice`. The selected dice are counted once each.</span>
-</span><span id="Pool-219"><a href="#Pool-219"><span class="linenos">219</span></a><span class="sd">            A sequence of one `int` for each `Die`.</span>
+</span><span id="Pool-216"><a href="#Pool-216"><span class="linenos">216</span></a><span class="sd">            * An `int`. This will count only the `Die` at the specified index</span>
+</span><span id="Pool-217"><a href="#Pool-217"><span class="linenos">217</span></a><span class="sd">                (once). In this case, the result will be a `Die`, not a `Pool`.</span>
+</span><span id="Pool-218"><a href="#Pool-218"><span class="linenos">218</span></a><span class="sd">            * A `slice`. The selected dice are counted once each.</span>
+</span><span id="Pool-219"><a href="#Pool-219"><span class="linenos">219</span></a><span class="sd">            * A sequence of one `int` for each `Die`.</span>
 </span><span id="Pool-220"><a href="#Pool-220"><span class="linenos">220</span></a><span class="sd">                Each `Die` is counted that many times, which could be multiple or</span>
 </span><span id="Pool-221"><a href="#Pool-221"><span class="linenos">221</span></a><span class="sd">                negative times.</span>
 </span><span id="Pool-222"><a href="#Pool-222"><span class="linenos">222</span></a>
-</span><span id="Pool-223"><a href="#Pool-223"><span class="linenos">223</span></a><span class="sd">                Up to one `Ellipsis` (`...`) may be used.</span>
-</span><span id="Pool-224"><a href="#Pool-224"><span class="linenos">224</span></a><span class="sd">                The `Ellipsis` will be replaced with a number of zero</span>
+</span><span id="Pool-223"><a href="#Pool-223"><span class="linenos">223</span></a><span class="sd">                Up to one `...` (`Ellipsis`) may be used.</span>
+</span><span id="Pool-224"><a href="#Pool-224"><span class="linenos">224</span></a><span class="sd">                `...` will be replaced with a number of zero</span>
 </span><span id="Pool-225"><a href="#Pool-225"><span class="linenos">225</span></a><span class="sd">                counts depending on the size of the pool.</span>
 </span><span id="Pool-226"><a href="#Pool-226"><span class="linenos">226</span></a><span class="sd">                This number may be &quot;negative&quot; if more `int`s are provided than</span>
 </span><span id="Pool-227"><a href="#Pool-227"><span class="linenos">227</span></a><span class="sd">                the size of the `Pool`. Specifically:</span>
 </span><span id="Pool-228"><a href="#Pool-228"><span class="linenos">228</span></a>
-</span><span id="Pool-229"><a href="#Pool-229"><span class="linenos">229</span></a><span class="sd">                * If `post_roll_counts` is shorter than `size`, the `Ellipsis`</span>
+</span><span id="Pool-229"><a href="#Pool-229"><span class="linenos">229</span></a><span class="sd">                * If `post_roll_counts` is shorter than `size`, `...`</span>
 </span><span id="Pool-230"><a href="#Pool-230"><span class="linenos">230</span></a><span class="sd">                    acts as enough zero counts to make up the difference.</span>
 </span><span id="Pool-231"><a href="#Pool-231"><span class="linenos">231</span></a><span class="sd">                    E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.</span>
-</span><span id="Pool-232"><a href="#Pool-232"><span class="linenos">232</span></a><span class="sd">                * If `post_roll_counts` has length equal to `size`, the `Ellipsis` has no effect.</span>
+</span><span id="Pool-232"><a href="#Pool-232"><span class="linenos">232</span></a><span class="sd">                * If `post_roll_counts` has length equal to `size`, `...` has no effect.</span>
 </span><span id="Pool-233"><a href="#Pool-233"><span class="linenos">233</span></a><span class="sd">                    E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.</span>
-</span><span id="Pool-234"><a href="#Pool-234"><span class="linenos">234</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and the `Ellipsis` is on one side,</span>
-</span><span id="Pool-235"><a href="#Pool-235"><span class="linenos">235</span></a><span class="sd">                    elements will be dropped from `post_roll_counts` on the side with the `Ellipsis`.</span>
+</span><span id="Pool-234"><a href="#Pool-234"><span class="linenos">234</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and `...` is on one side,</span>
+</span><span id="Pool-235"><a href="#Pool-235"><span class="linenos">235</span></a><span class="sd">                    elements will be dropped from `post_roll_counts` on the side with `...`.</span>
 </span><span id="Pool-236"><a href="#Pool-236"><span class="linenos">236</span></a><span class="sd">                    E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.</span>
-</span><span id="Pool-237"><a href="#Pool-237"><span class="linenos">237</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and the `Ellipsis`</span>
+</span><span id="Pool-237"><a href="#Pool-237"><span class="linenos">237</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and `...`</span>
 </span><span id="Pool-238"><a href="#Pool-238"><span class="linenos">238</span></a><span class="sd">                    is in the middle, the counts will be as the sum of two</span>
-</span><span id="Pool-239"><a href="#Pool-239"><span class="linenos">239</span></a><span class="sd">                    one-sided `Ellipsis`.</span>
+</span><span id="Pool-239"><a href="#Pool-239"><span class="linenos">239</span></a><span class="sd">                    one-sided `...`.</span>
 </span><span id="Pool-240"><a href="#Pool-240"><span class="linenos">240</span></a><span class="sd">                    E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.</span>
 </span><span id="Pool-241"><a href="#Pool-241"><span class="linenos">241</span></a><span class="sd">                    On a `Pool` consisting of a single `Die` this would have</span>
 </span><span id="Pool-242"><a href="#Pool-242"><span class="linenos">242</span></a><span class="sd">                    the -1 and 1 cancel each other out.</span>
 </span><span id="Pool-243"><a href="#Pool-243"><span class="linenos">243</span></a>
 </span><span id="Pool-244"><a href="#Pool-244"><span class="linenos">244</span></a><span class="sd">        Raises:</span>
-</span><span id="Pool-245"><a href="#Pool-245"><span class="linenos">245</span></a><span class="sd">            ValueError: If more than one `Ellipsis` is used.</span>
+</span><span id="Pool-245"><a href="#Pool-245"><span class="linenos">245</span></a><span class="sd">            ValueError: If more than one `...` is used.</span>
 </span><span id="Pool-246"><a href="#Pool-246"><span class="linenos">246</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Pool-247"><a href="#Pool-247"><span class="linenos">247</span></a>        <span class="n">convert_to_die</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">post_roll_counts</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
 </span><span id="Pool-248"><a href="#Pool-248"><span class="linenos">248</span></a>        <span class="n">post_roll_counts</span> <span class="o">=</span> <span class="n">post_roll_counts_tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">post_roll_counts</span><span class="p">)</span>
@@ -7481,36 +7481,36 @@ highest roll.</p>
 </span><span id="Pool.set_post_roll_counts-213"><a href="#Pool.set_post_roll_counts-213"><span class="linenos">213</span></a><span class="sd">        * `pool[-1, ..., 1]`</span>
 </span><span id="Pool.set_post_roll_counts-214"><a href="#Pool.set_post_roll_counts-214"><span class="linenos">214</span></a>
 </span><span id="Pool.set_post_roll_counts-215"><a href="#Pool.set_post_roll_counts-215"><span class="linenos">215</span></a><span class="sd">        Args: One of the following:</span>
-</span><span id="Pool.set_post_roll_counts-216"><a href="#Pool.set_post_roll_counts-216"><span class="linenos">216</span></a><span class="sd">            An `int`. This will count only the `Die` at the specified index (once).</span>
-</span><span id="Pool.set_post_roll_counts-217"><a href="#Pool.set_post_roll_counts-217"><span class="linenos">217</span></a><span class="sd">                In this case, the result will be a `Die`, not a pool.</span>
-</span><span id="Pool.set_post_roll_counts-218"><a href="#Pool.set_post_roll_counts-218"><span class="linenos">218</span></a><span class="sd">            A `slice`. The selected dice are counted once each.</span>
-</span><span id="Pool.set_post_roll_counts-219"><a href="#Pool.set_post_roll_counts-219"><span class="linenos">219</span></a><span class="sd">            A sequence of one `int` for each `Die`.</span>
+</span><span id="Pool.set_post_roll_counts-216"><a href="#Pool.set_post_roll_counts-216"><span class="linenos">216</span></a><span class="sd">            * An `int`. This will count only the `Die` at the specified index</span>
+</span><span id="Pool.set_post_roll_counts-217"><a href="#Pool.set_post_roll_counts-217"><span class="linenos">217</span></a><span class="sd">                (once). In this case, the result will be a `Die`, not a `Pool`.</span>
+</span><span id="Pool.set_post_roll_counts-218"><a href="#Pool.set_post_roll_counts-218"><span class="linenos">218</span></a><span class="sd">            * A `slice`. The selected dice are counted once each.</span>
+</span><span id="Pool.set_post_roll_counts-219"><a href="#Pool.set_post_roll_counts-219"><span class="linenos">219</span></a><span class="sd">            * A sequence of one `int` for each `Die`.</span>
 </span><span id="Pool.set_post_roll_counts-220"><a href="#Pool.set_post_roll_counts-220"><span class="linenos">220</span></a><span class="sd">                Each `Die` is counted that many times, which could be multiple or</span>
 </span><span id="Pool.set_post_roll_counts-221"><a href="#Pool.set_post_roll_counts-221"><span class="linenos">221</span></a><span class="sd">                negative times.</span>
 </span><span id="Pool.set_post_roll_counts-222"><a href="#Pool.set_post_roll_counts-222"><span class="linenos">222</span></a>
-</span><span id="Pool.set_post_roll_counts-223"><a href="#Pool.set_post_roll_counts-223"><span class="linenos">223</span></a><span class="sd">                Up to one `Ellipsis` (`...`) may be used.</span>
-</span><span id="Pool.set_post_roll_counts-224"><a href="#Pool.set_post_roll_counts-224"><span class="linenos">224</span></a><span class="sd">                The `Ellipsis` will be replaced with a number of zero</span>
+</span><span id="Pool.set_post_roll_counts-223"><a href="#Pool.set_post_roll_counts-223"><span class="linenos">223</span></a><span class="sd">                Up to one `...` (`Ellipsis`) may be used.</span>
+</span><span id="Pool.set_post_roll_counts-224"><a href="#Pool.set_post_roll_counts-224"><span class="linenos">224</span></a><span class="sd">                `...` will be replaced with a number of zero</span>
 </span><span id="Pool.set_post_roll_counts-225"><a href="#Pool.set_post_roll_counts-225"><span class="linenos">225</span></a><span class="sd">                counts depending on the size of the pool.</span>
 </span><span id="Pool.set_post_roll_counts-226"><a href="#Pool.set_post_roll_counts-226"><span class="linenos">226</span></a><span class="sd">                This number may be &quot;negative&quot; if more `int`s are provided than</span>
 </span><span id="Pool.set_post_roll_counts-227"><a href="#Pool.set_post_roll_counts-227"><span class="linenos">227</span></a><span class="sd">                the size of the `Pool`. Specifically:</span>
 </span><span id="Pool.set_post_roll_counts-228"><a href="#Pool.set_post_roll_counts-228"><span class="linenos">228</span></a>
-</span><span id="Pool.set_post_roll_counts-229"><a href="#Pool.set_post_roll_counts-229"><span class="linenos">229</span></a><span class="sd">                * If `post_roll_counts` is shorter than `size`, the `Ellipsis`</span>
+</span><span id="Pool.set_post_roll_counts-229"><a href="#Pool.set_post_roll_counts-229"><span class="linenos">229</span></a><span class="sd">                * If `post_roll_counts` is shorter than `size`, `...`</span>
 </span><span id="Pool.set_post_roll_counts-230"><a href="#Pool.set_post_roll_counts-230"><span class="linenos">230</span></a><span class="sd">                    acts as enough zero counts to make up the difference.</span>
 </span><span id="Pool.set_post_roll_counts-231"><a href="#Pool.set_post_roll_counts-231"><span class="linenos">231</span></a><span class="sd">                    E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.</span>
-</span><span id="Pool.set_post_roll_counts-232"><a href="#Pool.set_post_roll_counts-232"><span class="linenos">232</span></a><span class="sd">                * If `post_roll_counts` has length equal to `size`, the `Ellipsis` has no effect.</span>
+</span><span id="Pool.set_post_roll_counts-232"><a href="#Pool.set_post_roll_counts-232"><span class="linenos">232</span></a><span class="sd">                * If `post_roll_counts` has length equal to `size`, `...` has no effect.</span>
 </span><span id="Pool.set_post_roll_counts-233"><a href="#Pool.set_post_roll_counts-233"><span class="linenos">233</span></a><span class="sd">                    E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.</span>
-</span><span id="Pool.set_post_roll_counts-234"><a href="#Pool.set_post_roll_counts-234"><span class="linenos">234</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and the `Ellipsis` is on one side,</span>
-</span><span id="Pool.set_post_roll_counts-235"><a href="#Pool.set_post_roll_counts-235"><span class="linenos">235</span></a><span class="sd">                    elements will be dropped from `post_roll_counts` on the side with the `Ellipsis`.</span>
+</span><span id="Pool.set_post_roll_counts-234"><a href="#Pool.set_post_roll_counts-234"><span class="linenos">234</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and `...` is on one side,</span>
+</span><span id="Pool.set_post_roll_counts-235"><a href="#Pool.set_post_roll_counts-235"><span class="linenos">235</span></a><span class="sd">                    elements will be dropped from `post_roll_counts` on the side with `...`.</span>
 </span><span id="Pool.set_post_roll_counts-236"><a href="#Pool.set_post_roll_counts-236"><span class="linenos">236</span></a><span class="sd">                    E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.</span>
-</span><span id="Pool.set_post_roll_counts-237"><a href="#Pool.set_post_roll_counts-237"><span class="linenos">237</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and the `Ellipsis`</span>
+</span><span id="Pool.set_post_roll_counts-237"><a href="#Pool.set_post_roll_counts-237"><span class="linenos">237</span></a><span class="sd">                * If `post_roll_counts` is longer than `size` and `...`</span>
 </span><span id="Pool.set_post_roll_counts-238"><a href="#Pool.set_post_roll_counts-238"><span class="linenos">238</span></a><span class="sd">                    is in the middle, the counts will be as the sum of two</span>
-</span><span id="Pool.set_post_roll_counts-239"><a href="#Pool.set_post_roll_counts-239"><span class="linenos">239</span></a><span class="sd">                    one-sided `Ellipsis`.</span>
+</span><span id="Pool.set_post_roll_counts-239"><a href="#Pool.set_post_roll_counts-239"><span class="linenos">239</span></a><span class="sd">                    one-sided `...`.</span>
 </span><span id="Pool.set_post_roll_counts-240"><a href="#Pool.set_post_roll_counts-240"><span class="linenos">240</span></a><span class="sd">                    E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.</span>
 </span><span id="Pool.set_post_roll_counts-241"><a href="#Pool.set_post_roll_counts-241"><span class="linenos">241</span></a><span class="sd">                    On a `Pool` consisting of a single `Die` this would have</span>
 </span><span id="Pool.set_post_roll_counts-242"><a href="#Pool.set_post_roll_counts-242"><span class="linenos">242</span></a><span class="sd">                    the -1 and 1 cancel each other out.</span>
 </span><span id="Pool.set_post_roll_counts-243"><a href="#Pool.set_post_roll_counts-243"><span class="linenos">243</span></a>
 </span><span id="Pool.set_post_roll_counts-244"><a href="#Pool.set_post_roll_counts-244"><span class="linenos">244</span></a><span class="sd">        Raises:</span>
-</span><span id="Pool.set_post_roll_counts-245"><a href="#Pool.set_post_roll_counts-245"><span class="linenos">245</span></a><span class="sd">            ValueError: If more than one `Ellipsis` is used.</span>
+</span><span id="Pool.set_post_roll_counts-245"><a href="#Pool.set_post_roll_counts-245"><span class="linenos">245</span></a><span class="sd">            ValueError: If more than one `...` is used.</span>
 </span><span id="Pool.set_post_roll_counts-246"><a href="#Pool.set_post_roll_counts-246"><span class="linenos">246</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Pool.set_post_roll_counts-247"><a href="#Pool.set_post_roll_counts-247"><span class="linenos">247</span></a>        <span class="n">convert_to_die</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">post_roll_counts</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
 </span><span id="Pool.set_post_roll_counts-248"><a href="#Pool.set_post_roll_counts-248"><span class="linenos">248</span></a>        <span class="n">post_roll_counts</span> <span class="o">=</span> <span class="n">post_roll_counts_tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">post_roll_counts</span><span class="p">)</span>
@@ -7560,30 +7560,30 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
 </ul>
 
 <p>Args: One of the following:
-    An <code>int</code>. This will count only the <code><a href="#Die">Die</a></code> at the specified index (once).
-        In this case, the result will be a <code><a href="#Die">Die</a></code>, not a pool.
-    A <code>slice</code>. The selected dice are counted once each.
-    A sequence of one <code>int</code> for each <code><a href="#Die">Die</a></code>.
+    * An <code>int</code>. This will count only the <code><a href="#Die">Die</a></code> at the specified index
+        (once). In this case, the result will be a <code><a href="#Die">Die</a></code>, not a <code><a href="#Pool">Pool</a></code>.
+    * A <code>slice</code>. The selected dice are counted once each.
+    * A sequence of one <code>int</code> for each <code><a href="#Die">Die</a></code>.
         Each <code><a href="#Die">Die</a></code> is counted that many times, which could be multiple or
         negative times.</p>
 
-<pre><code>    Up to one `Ellipsis` (`...`) may be used.
-    The `Ellipsis` will be replaced with a number of zero
+<pre><code>    Up to one `...` (`Ellipsis`) may be used.
+    `...` will be replaced with a number of zero
     counts depending on the size of the pool.
     This number may be "negative" if more `int`s are provided than
     the size of the `Pool`. Specifically:
 
-    * If `post_roll_counts` is shorter than `size`, the `Ellipsis`
+    * If `post_roll_counts` is shorter than `size`, `...`
         acts as enough zero counts to make up the difference.
         E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
-    * If `post_roll_counts` has length equal to `size`, the `Ellipsis` has no effect.
+    * If `post_roll_counts` has length equal to `size`, `...` has no effect.
         E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-    * If `post_roll_counts` is longer than `size` and the `Ellipsis` is on one side,
-        elements will be dropped from `post_roll_counts` on the side with the `Ellipsis`.
+    * If `post_roll_counts` is longer than `size` and `...` is on one side,
+        elements will be dropped from `post_roll_counts` on the side with `...`.
         E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-    * If `post_roll_counts` is longer than `size` and the `Ellipsis`
+    * If `post_roll_counts` is longer than `size` and `...`
         is in the middle, the counts will be as the sum of two
-        one-sided `Ellipsis`.
+        one-sided `...`.
         E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
         On a `Pool` consisting of a single `Die` this would have
         the -1 and 1 cancel each other out.
@@ -7592,7 +7592,7 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>ValueError:</strong>  If more than one <code>Ellipsis</code> is used.</li>
+<li><strong>ValueError:</strong>  If more than one <code>...</code> is used.</li>
 </ul>
 </div>
 
