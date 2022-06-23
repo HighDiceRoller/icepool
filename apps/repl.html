@@ -6,6 +6,7 @@
     <title>Icepool REPL</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
     <script defer src="https://pyscript.net/unstable/pyscript.js"></script>
     <script defer type="module">
         let repl = document.getElementById('repl');
@@ -44,10 +45,59 @@
         <li><a href="./apidoc/icepool.html">API documentation.</a></li>
         <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
     </ul>
+    
+    <py-script>
+import js
+import pyodide
+
+def plot():
+    js.chart.data.labels = pyodide.to_js([1, 2, 3])
+    js.chart.data.datasets.push(pyodide.to_js({'label': 'test', 'borderColor' : 'rgba(0, 0, 255, 1.0)', 'data': [1, 2, 3]}, dict_converter=js.Object.fromEntries))
+    js.chart.update()
+    </py-script>
 
     <py-box>
         <py-repl id="repl" output="output" output-mode="replace" std-err="error"></py-repl>
         <div id="output" style="white-space: pre-wrap; font-family: monospace;"></div>
         <div id="error" style="color: red; white-space: pre-wrap; font-family: monospace;"></div>
     </py-box>
+    
+    <canvas id="chart"></canvas>
+    
+    <script type="text/javascript">
+        var chartContext = document.getElementById('chart').getContext('2d');
+        var chart = new Chart(chartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'test',
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Outcome',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Probability (%)',
+                        },
+                    },
+                },
+            },
+        });
+        
+    </script>
 </body>
