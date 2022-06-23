@@ -7,7 +7,7 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Generator, Sequence
 
 
 @cache
@@ -154,7 +154,10 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def reduce(func: Callable[[Any, Any], Any], dice, *, initial=None):
+def reduce(func: Callable[[Any, Any], Any],
+           dice,
+           *,
+           initial=None) -> 'icepool.Die':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -172,7 +175,7 @@ def reduce(func: Callable[[Any, Any], Any], dice, *, initial=None):
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = initial
+        result = icepool.Die([initial])
     else:
         result = next(iter_dice)
     for die in iter_dice:
@@ -180,7 +183,10 @@ def reduce(func: Callable[[Any, Any], Any], dice, *, initial=None):
     return result
 
 
-def accumulate(func: Callable[[Any, Any], Any], dice, *, initial=None):
+def accumulate(func: Callable[[Any, Any], Any],
+               dice,
+               *,
+               initial=None) -> Generator['icepool.Die', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -203,7 +209,7 @@ def accumulate(func: Callable[[Any, Any], Any], dice, *, initial=None):
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = initial
+        result = icepool.Die([initial])
     else:
         try:
             result = next(iter_dice)
