@@ -35,10 +35,10 @@ def test_direction(eval_pool, pool):
 # The auto direction should maximize skips if numerous enough.
 def test_auto_direction_uniform():
     algorithm, direction = icepool.evaluate_sum._select_algorithm(
-        icepool.d6.pool()[0, 0, 1, 1])
+        icepool.d6.pool([0, 0, 1, 1]))
     assert direction > 0
     algorithm, direction = icepool.evaluate_sum._select_algorithm(
-        icepool.d6.pool()[1, 1, 0, 0])
+        icepool.d6.pool([1, 1, 0, 0]))
     assert direction < 0
 
 

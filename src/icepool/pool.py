@@ -186,7 +186,7 @@ class Pool(OutcomeCountGenerator):
         return self._post_roll_counts
 
     def set_post_roll_counts(self,
-                             post_roll_counts: int | slice | tuple[int, ...]):
+                             post_roll_counts: int | slice | Sequence[int]):
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[post_roll_counts]` for the same effect as this method.
@@ -204,13 +204,6 @@ class Pool(OutcomeCountGenerator):
         * `pool[3:]`
         * `pool[-2:]`
         * `pool[..., 1, 1]`
-
-        These will also select the two highest dice out of 5, and will also
-        resize the `Pool` to 5 dice first:
-
-        * `pool[3::5]`
-        * `pool[3:5:5]`
-        * `pool[-2::5]`
         * `pool[0, 0, 0, 1, 1]`
 
         These will count the highest as a positive and the lowest as a negative:
@@ -218,22 +211,17 @@ class Pool(OutcomeCountGenerator):
         * `pool[-1, 0, 0, 0, 1]`
         * `pool[-1, ..., 1]`
 
-        Args:
+        Args: One of the following:
             An `int`. This will count only the `Die` at the specified index (once).
                 In this case, the result will be a `Die`, not a pool.
             A `slice`. The selected dice are counted once each.
-                If provided, the third argument resizes the pool,
-                rather than being a step; however, this is only valid if the
-                `Pool` consists of a single type of `Die`.
             A sequence of one `int` for each `Die`.
                 Each `Die` is counted that many times, which could be multiple or
-                negative times. This may resize the pool, but only if the
-                `Pool` consists of a single type of `Die`.
+                negative times.
 
                 Up to one `Ellipsis` (`...`) may be used.
-                If an `Ellipsis` is used, the size of the `Pool` won't change.
-                Instead, the `Ellipsis` will be replaced with a number of zero
-                counts, sufficient to maintain the current size of this `Pool`.
+                The `Ellipsis` will be replaced with a number of zero
+                counts depending on the size of the pool.
                 This number may be "negative" if more `int`s are provided than
                 the size of the `Pool`. Specifically:
 
@@ -249,13 +237,11 @@ class Pool(OutcomeCountGenerator):
                     is in the middle, the counts will be as the sum of two
                     one-sided `Ellipsis`.
                     E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                    On a `Pool` consisting of a single single `Die` this would have
+                    On a `Pool` consisting of a single `Die` this would have
                     the -1 and 1 cancel each other out.
 
         Raises:
-            ValueError:  If `post_roll_counts` would change the size of a `Pool`
-                with more than one type of `Die`, or if more than one `Ellipsis`
-                is used.
+            ValueError: If more than one `Ellipsis` is used.
         """
         convert_to_die = isinstance(post_roll_counts, int)
         post_roll_counts = post_roll_counts_tuple(self.size(), post_roll_counts)
@@ -444,7 +430,7 @@ class Pool(OutcomeCountGenerator):
 
 def post_roll_counts_tuple(
         pool_size: int,
-        post_roll_counts: int | slice | tuple[int, ...]) -> tuple[int, ...]:
+        post_roll_counts: int | slice | Sequence[int]) -> tuple[int, ...]:
     """Expresses `post_roll_counts` as a tuple.
 
     See `Pool.set_post_roll_counts()` for details.
@@ -463,11 +449,7 @@ def post_roll_counts_tuple(
         return tuple(result)
     elif isinstance(post_roll_counts, slice):
         if post_roll_counts.step is not None:
-            # "Step" is not useful here, so we repurpose it to set the number
-            # of dice.
-            pool_size = post_roll_counts.step
-            post_roll_counts = slice(post_roll_counts.start,
-                                     post_roll_counts.stop)
+            raise ValueError('step is not supported for pool subscripting')
         result = [0] * pool_size
         result[post_roll_counts] = [1] * len(result[post_roll_counts])
         return tuple(result)
@@ -483,6 +465,10 @@ def post_roll_counts_tuple(
                     )
 
         if split is None:
+            if len(post_roll_counts) != pool_size:
+                raise ValueError(
+                    f'Length of {post_roll_counts} does not match pool size of {pool_size}'
+                )
             return tuple(post_roll_counts)
 
         extra_dice = pool_size - len(post_roll_counts) + 1

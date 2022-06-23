@@ -700,13 +700,22 @@ class Die(Population):
         other = icepool.Die([other])
         return other.__matmul__(self)
 
-    def pool(self, rolls: int = 1, /) -> 'icepool.Pool':
+    def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool':
         """Creates a `Pool` from this `Die`.
+
+        You might subscript the pool immediately afterwards, e.g.
+        `d6.pool(5)[-1, ..., 1]` takes the difference between the highest and
+        lowest of 5d6.
 
         Args:
             rolls: The number of copies of this `Die` to put in the pool.
+                Or, a sequence of `int`s acting as `post_roll_counts`.
         """
-        return icepool.Pool({self: rolls})
+        if isinstance(rolls, int):
+            return icepool.Pool({self: rolls})
+        else:
+            pool_size = len(rolls)
+            return icepool.Pool({self: pool_size})[rolls]
 
     def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this `Die` and sum the sorted results from the lowest.

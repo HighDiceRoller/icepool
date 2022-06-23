@@ -43,7 +43,7 @@ def test_sum_descending_limit_outcomes():
 
 
 def test_sum_descending_keep_highest():
-    result = SumPoolDescending().evaluate(icepool.d6.pool()[0, 1, 1, 1])
+    result = SumPoolDescending().evaluate(icepool.d6.pool([0, 1, 1, 1]))
     expected = icepool.d6.keep_highest(4, 3)
     assert result.equals(expected)
 
@@ -58,7 +58,7 @@ def sum_dice_func(state, outcome, count):
 
 
 def test_wrap_func_evaluate():
-    result = icepool.d6.pool()[0, 0, 1, 1, 1].evaluate(sum_dice_func)
+    result = icepool.d6.pool([0, 0, 1, 1, 1]).evaluate(sum_dice_func)
     expected = icepool.d6.keep_highest(5, 3)
     assert result.equals(expected)
 
