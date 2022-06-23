@@ -352,7 +352,7 @@
                     <a class="function" href="#apply">apply</a>
             </li>
             <li>
-                    <a class="function" href="#apply_sorted">apply_sorted</a>
+                    <a class="variable" href="#apply_sorted">apply_sorted</a>
             </li>
             <li>
                     <a class="variable" href="#Reroll">Reroll</a>
@@ -6228,61 +6228,14 @@ argument per <code><a href="#Die">Die</a></code>.</li>
 
                 </section>
                 <section id="apply_sorted">
-                            <input id="apply_sorted-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">apply_sorted</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span>, </span><span class="param"><span class="o">*</span><span class="n">dice</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+                    <div class="attr variable">
+            <span class="name">apply_sorted</span><span class="default_value"> = &lt;icepool.die.func.ApplySorted object&gt;</span>
 
-                <label class="view-source-button" for="apply_sorted-view-source"><span>View Source</span></label>
-
+        
     </div>
     <a class="headerlink" href="#apply_sorted"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="apply_sorted-263"><a href="#apply_sorted-263"><span class="linenos">263</span></a><span class="k">def</span> <span class="nf">apply_sorted</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">dice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="apply_sorted-264"><a href="#apply_sorted-264"><span class="linenos">264</span></a>    <span class="sd">&quot;&quot;&quot;Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.</span>
-</span><span id="apply_sorted-265"><a href="#apply_sorted-265"><span class="linenos">265</span></a>
-</span><span id="apply_sorted-266"><a href="#apply_sorted-266"><span class="linenos">266</span></a><span class="sd">    This is more efficient than `apply()` but still not very efficient.</span>
-</span><span id="apply_sorted-267"><a href="#apply_sorted-267"><span class="linenos">267</span></a><span class="sd">    Use `OutcomeCountEvaluator` instead if at all possible.</span>
-</span><span id="apply_sorted-268"><a href="#apply_sorted-268"><span class="linenos">268</span></a>
-</span><span id="apply_sorted-269"><a href="#apply_sorted-269"><span class="linenos">269</span></a><span class="sd">    Args:</span>
-</span><span id="apply_sorted-270"><a href="#apply_sorted-270"><span class="linenos">270</span></a><span class="sd">        func: A function that takes one argument per input `Die` and returns an</span>
-</span><span id="apply_sorted-271"><a href="#apply_sorted-271"><span class="linenos">271</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply_sorted-272"><a href="#apply_sorted-272"><span class="linenos">272</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
-</span><span id="apply_sorted-273"><a href="#apply_sorted-273"><span class="linenos">273</span></a><span class="sd">            `func` will be called with all sorted joint outcomes of `dice`,</span>
-</span><span id="apply_sorted-274"><a href="#apply_sorted-274"><span class="linenos">274</span></a><span class="sd">            with one argument per die. All outcomes must be totally orderable.</span>
-</span><span id="apply_sorted-275"><a href="#apply_sorted-275"><span class="linenos">275</span></a>
-</span><span id="apply_sorted-276"><a href="#apply_sorted-276"><span class="linenos">276</span></a><span class="sd">    Returns:</span>
-</span><span id="apply_sorted-277"><a href="#apply_sorted-277"><span class="linenos">277</span></a><span class="sd">        A `Die` constructed from the outputs of `func` and the weight of rolling</span>
-</span><span id="apply_sorted-278"><a href="#apply_sorted-278"><span class="linenos">278</span></a><span class="sd">        the corresponding sorted outcomes.</span>
-</span><span id="apply_sorted-279"><a href="#apply_sorted-279"><span class="linenos">279</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply_sorted-280"><a href="#apply_sorted-280"><span class="linenos">280</span></a>    <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="apply_sorted-281"><a href="#apply_sorted-281"><span class="linenos">281</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">enumerate_sorted</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Applies <code>func(lowest_outcome, next_lowest_outcome...)</code> for all sorted joint outcomes of the dice.</p>
-
-<p>This is more efficient than <code><a href="#apply">apply()</a></code> but still not very efficient.
-Use <code><a href="#OutcomeCountEvaluator">OutcomeCountEvaluator</a></code> instead if at all possible.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>func:</strong>  A function that takes one argument per input <code><a href="#Die">Die</a></code> and returns an
-argument to <code><a href="#Die">Die()</a></code>.</li>
-<li><strong>*dice:</strong>  Any number of dice (or objects convertible to dice).
-<code>func</code> will be called with all sorted joint outcomes of <code>dice</code>,
-with one argument per die. All outcomes must be totally orderable.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>A <code><a href="#Die">Die</a></code> constructed from the outputs of <code>func</code> and the weight of rolling
-  the corresponding sorted outcomes.</p>
-</blockquote>
-</div>
-
+    
+    
 
                 </section>
                 <section id="Reroll">
