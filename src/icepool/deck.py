@@ -152,12 +152,6 @@ class Deck(Population):
 
     @property
     def marginals(self):
-        """A property that applies the `[]` operator to outcomes.
-
-        This is not performed elementwise on tuples, so that this can be used
-        to slice tuples. For example, `deck.marginals[:2]` will marginalize the
-        first two elements of tuples.
-        """
         return Deck._Marginals(self)
 
     @cached_property

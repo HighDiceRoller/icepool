@@ -181,7 +181,8 @@ class Pool(OutcomeCountGenerator):
         """The tuple indicating which dice in the pool will be counted.
 
         The tuple has one element per `Die` in the pool, from lowest roll to
-        highest roll.
+        highest roll. The `Die` in the corresponding sorted position will be
+        counted that many times.
         """
         return self._post_roll_counts
 

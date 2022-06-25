@@ -42,8 +42,8 @@ class Population(ABC, Mapping[Any, int]):
         """A property that applies the `[]` operator to outcomes.
 
         This is not performed elementwise on tuples, so that this can be used
-        to slice tuples. For example, `mapping.marginals[:2]` will marginalize
-        the first two elements of tuples.
+        to slice tuple outcomes. For example, `population.marginals[:2]` will
+        marginalize the first two elements of tuples.
         """
 
     # Outcomes.

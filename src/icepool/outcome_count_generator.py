@@ -148,7 +148,6 @@ class OutcomeCountGenerator(ABC):
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(denominator)
         index = bisect.bisect_right(cumulative_weights, r)
-        # print(cumulative_weights, denominator, r, index)
         popped_generator, counts, _ = generated[index]
         head = tuple((outcome,) * count for count in counts)
         if popped_generator.outcomes():
