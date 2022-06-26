@@ -45,6 +45,10 @@ class Pool(OutcomeCountGenerator):
     _post_roll_counts: tuple[int, ...]
     _dice: tuple[tuple['icepool.Die', int]]
 
+    __pdoc__ = {
+        '__getitem__': True,
+    }
+
     def __new__(cls,
                 dice: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1) -> 'Pool':
