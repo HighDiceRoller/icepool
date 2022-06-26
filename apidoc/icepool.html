@@ -6822,18 +6822,14 @@ secure.</p>
 
     </div>
     <a class="headerlink" href="#Pool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool-40"><a href="#Pool-40"><span class="linenos"> 40</span></a><span class="k">class</span> <span class="nc">Pool</span><span class="p">(</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
-</span><span id="Pool-41"><a href="#Pool-41"><span class="linenos"> 41</span></a>    <span class="sd">&quot;&quot;&quot;Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.</span>
-</span><span id="Pool-42"><a href="#Pool-42"><span class="linenos"> 42</span></a>
-</span><span id="Pool-43"><a href="#Pool-43"><span class="linenos"> 43</span></a><span class="sd">    This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.</span>
-</span><span id="Pool-44"><a href="#Pool-44"><span class="linenos"> 44</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Pool-45"><a href="#Pool-45"><span class="linenos"> 45</span></a>
-</span><span id="Pool-46"><a href="#Pool-46"><span class="linenos"> 46</span></a>    <span class="n">_post_roll_counts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
-</span><span id="Pool-47"><a href="#Pool-47"><span class="linenos"> 47</span></a>    <span class="n">_dice</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
-</span><span id="Pool-48"><a href="#Pool-48"><span class="linenos"> 48</span></a>
-</span><span id="Pool-49"><a href="#Pool-49"><span class="linenos"> 49</span></a>    <span class="n">__pdoc__</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="Pool-50"><a href="#Pool-50"><span class="linenos"> 50</span></a>        <span class="s1">&#39;Pool.__getitem__&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="Pool-51"><a href="#Pool-51"><span class="linenos"> 51</span></a>    <span class="p">}</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool-44"><a href="#Pool-44"><span class="linenos"> 44</span></a><span class="k">class</span> <span class="nc">Pool</span><span class="p">(</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
+</span><span id="Pool-45"><a href="#Pool-45"><span class="linenos"> 45</span></a>    <span class="sd">&quot;&quot;&quot;Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.</span>
+</span><span id="Pool-46"><a href="#Pool-46"><span class="linenos"> 46</span></a>
+</span><span id="Pool-47"><a href="#Pool-47"><span class="linenos"> 47</span></a><span class="sd">    This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.</span>
+</span><span id="Pool-48"><a href="#Pool-48"><span class="linenos"> 48</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Pool-49"><a href="#Pool-49"><span class="linenos"> 49</span></a>
+</span><span id="Pool-50"><a href="#Pool-50"><span class="linenos"> 50</span></a>    <span class="n">_post_roll_counts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</span><span id="Pool-51"><a href="#Pool-51"><span class="linenos"> 51</span></a>    <span class="n">_dice</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
 </span><span id="Pool-52"><a href="#Pool-52"><span class="linenos"> 52</span></a>
 </span><span id="Pool-53"><a href="#Pool-53"><span class="linenos"> 53</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
 </span><span id="Pool-54"><a href="#Pool-54"><span class="linenos"> 54</span></a>                <span class="n">dice</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">,</span>
@@ -9979,9 +9975,9 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 
     </div>
     <a class="headerlink" href="#clear_pool_cache"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="clear_pool_cache-35"><a href="#clear_pool_cache-35"><span class="linenos">35</span></a><span class="k">def</span> <span class="nf">clear_pool_cache</span><span class="p">():</span>
-</span><span id="clear_pool_cache-36"><a href="#clear_pool_cache-36"><span class="linenos">36</span></a>    <span class="sd">&quot;&quot;&quot;Clears the global pool cache.&quot;&quot;&quot;</span>
-</span><span id="clear_pool_cache-37"><a href="#clear_pool_cache-37"><span class="linenos">37</span></a>    <span class="n">new_pool_cached</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="clear_pool_cache-39"><a href="#clear_pool_cache-39"><span class="linenos">39</span></a><span class="k">def</span> <span class="nf">clear_pool_cache</span><span class="p">():</span>
+</span><span id="clear_pool_cache-40"><a href="#clear_pool_cache-40"><span class="linenos">40</span></a>    <span class="sd">&quot;&quot;&quot;Clears the global pool cache.&quot;&quot;&quot;</span>
+</span><span id="clear_pool_cache-41"><a href="#clear_pool_cache-41"><span class="linenos">41</span></a>    <span class="n">new_pool_cached</span><span class="o">.</span><span class="n">cache_clear</span><span class="p">()</span>
 </span></pre></div>
 
 
