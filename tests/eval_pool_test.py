@@ -153,7 +153,7 @@ def test_enumerate_pool_vs_cartesian_product():
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_enumerate_pool_vs_sum(pool):
-    if any(x < 0 for x in pool.post_roll_counts()):
+    if any(x < 0 for x in pool.sorted_roll_counts()):
         with pytest.raises(ValueError):
             icepool.enumerate_sorted(pool)
     else:

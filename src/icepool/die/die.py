@@ -709,7 +709,7 @@ class Die(Population):
 
         Args:
             rolls: The number of copies of this `Die` to put in the pool.
-                Or, a sequence of `int`s acting as `post_roll_counts`.
+                Or, a sequence of `int`s acting as `sorted_roll_counts`.
         """
         if isinstance(rolls, int):
             return icepool.Pool({self: rolls})
@@ -735,8 +735,8 @@ class Die(Population):
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
-        post_roll_counts = slice(start, stop)
-        return self.pool(rolls)[post_roll_counts].sum()
+        sorted_roll_counts = slice(start, stop)
+        return self.pool(rolls)[sorted_roll_counts].sum()
 
     def _keep_lowest_single(self, rolls: int, /) -> 'Die':
         """Faster algorithm for keeping just the single lowest `Die`. """
@@ -766,8 +766,8 @@ class Die(Population):
             return self._keep_highest_single(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
-        post_roll_counts = slice(start, stop)
-        return self.pool(rolls)[post_roll_counts].sum()
+        sorted_roll_counts = slice(start, stop)
+        return self.pool(rolls)[sorted_roll_counts].sum()
 
     def _keep_highest_single(self, rolls: int, /) -> 'Die':
         """Faster algorithm for keeping just the single highest `Die`. """

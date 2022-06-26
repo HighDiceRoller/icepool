@@ -299,18 +299,19 @@ class apply_sorted():
         pool = icepool.Pool(dice)
         return icepool.enumerate_sorted(pool).sub(func, star=1)
 
-    def __class_getitem__(cls, post_roll_counts: int | slice | tuple[int, ...],
+    def __class_getitem__(cls,
+                          sorted_roll_counts: int | slice | tuple[int, ...],
                           /) -> Callable[..., 'icepool.Die']:
         """Implements `[]` syntax for `apply_sorted`."""
-        if isinstance(post_roll_counts, int):
+        if isinstance(sorted_roll_counts, int):
 
             def result(func: Callable, *dice) -> 'icepool.Die':
-                die = icepool.Pool(dice)[post_roll_counts]
+                die = icepool.Pool(dice)[sorted_roll_counts]
                 return die.sub(func)
         else:
 
             def result(func: Callable, *dice) -> 'icepool.Die':
-                pool = icepool.Pool(dice)[post_roll_counts]
+                pool = icepool.Pool(dice)[sorted_roll_counts]
                 return icepool.enumerate_sorted(pool).sub(func, star=1)
 
         return result
