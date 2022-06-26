@@ -709,7 +709,10 @@ class Die(Population):
 
         Args:
             rolls: The number of copies of this `Die` to put in the pool.
-                Or, a sequence of `int`s acting as `sorted_roll_counts`.
+                Or, a sequence of one `int` per die acting as
+                `sorted_roll_counts`. Note that `...` cannot be used in the
+                argument to this method, as the argument determines the size of
+                the pool.
         """
         if isinstance(rolls, int):
             return icepool.Pool({self: rolls})
