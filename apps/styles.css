@@ -35,3 +35,17 @@ th, td {
 td {
     text-align: right;
 }
+
+/* Create two equal columns that floats next to each other */
+.col {
+    float: left;
+    padding: 0.25em;
+    width: 49%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
