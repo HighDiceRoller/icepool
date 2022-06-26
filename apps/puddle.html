@@ -12,10 +12,8 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <style type="text/css" media="screen">
     .ace_editor {
-        border: 1px solid lightgray;
         font-size: 100%;
-        height: 600px;
-        margin: auto;
+        height: 100%;
         min-width: 600px;
     }
 </style>
@@ -24,7 +22,7 @@
 <body>
 <h1>Icepuddle</h1>
 
-<p>This is still experimental.</p>
+<p>Experimental AnyDice-like interface.</p>
 
 <h2>Useful links</h2>
 
@@ -34,9 +32,9 @@
     <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
 </ul>
 
-<div class="row">
+<div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow: hidden; height: 300px; min-height: 300px;">
     <div class="col" id="editor"></div>
-    <div class="col" style="height: 600px; overflow: auto;">
+    <div class="col" style="overflow: auto; height: 100%;">
         <h3 style="margin-top:0;">Output</h3>
         <div id="output" style="white-space: pre; font-family: monospace;"></div>
         <h3>Error</h3>
@@ -45,7 +43,16 @@
 </div>
 
 <div>
-    <button id="run">Run</button>
+    <form>
+        <button type="button" id="run" style="font-size: 100%;">Run</button>
+        Probability:
+        <input type="radio" name="probability" id="probability_eq" checked="checked" />
+        <label for="probability_eq">Equal to</label>
+        <input type="radio" name="probability" id="probability_ge" />
+        <label for="probability_ge">At least</label>
+        <input type="radio" name="probability" id="probability_le" />
+        <label for="probability_le">At most</label>
+    </form>
 </div>
 
 <canvas id="chart"></canvas>
@@ -55,6 +62,10 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/python");
+editor.setOption("showPrintMargin", false);
+
+var resizer = new ResizeObserver(entries => {editor.resize();});
+resizer.observe(document.getElementById("main"));
 
 let initial_code = 'import icepool\n\n';
 let searchParams = new URLSearchParams(window.location.search);
@@ -118,7 +129,6 @@ function setLoadingText(text) {
     chart.update();
 }
 
-
 async function initPyodide(){
     setLoadingText('Loading pyodide')
     let pyodide = await loadPyodide({
@@ -130,10 +140,22 @@ async function initPyodide(){
     await pyodide.loadPackage(["micropip"], setLoadingText);
     
     setLoadingText('Loading icepool')
-    await pyodide.runPythonAsync(`
+    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool==0.17.1')`)
+    chart.options.plugins.title = {
+        text: "",
+        fullSize: false,
+        display : false,
+    };
+    chart.update();
+    return pyodide;
+}
 
-import micropip
-await micropip.install('icepool==0.17.1')
+let pyodideReadyPromise = initPyodide();
+
+async function resetIcepool() {
+    let pyodide = await pyodideReadyPromise;
+    pyodide.runPython(`
+
 import icepool
 import pyodide
 import js
@@ -160,6 +182,15 @@ class ChartManager():
         self.dice = []
         self.labels = []
         self.colors = []
+    
+    @staticmethod
+    def probabilities(die):
+        if js.document.getElementById('probability_ge').checked:
+            return die.probabilities_ge()
+        elif js.document.getElementById('probability_le').checked:
+            return die.probabilities_le()
+        else:
+            return die.probabilities()
 
     def append(self, die, label, *, print_table):
         i = len(self.dice)
@@ -187,7 +218,7 @@ class ChartManager():
         js.chart.data.labels = outcomes
         js.chart.data.datasets = pyodide.to_js([
             {
-                'data': die.probabilities_ge(),
+                'data': self.probabilities(die),
                 'label': label,
                 'borderColor': color,
             } for die, label, color in zip(aligned_dice, self.labels, self.colors)
@@ -204,17 +235,8 @@ def output(die, /, label=None):
     """Plots a die and also prints it."""
     _chart_manager.append(die, label, print_table=True)
 
-`)  // End Python.
-    chart.options.plugins.title = {
-        text: "",
-        fullSize: false,
-        display : false,
-    };
-    chart.update();
-    return pyodide;
+`)
 }
-
-let pyodideReadyPromise = initPyodide();
 
 async function run() {
     let pyodide = await pyodideReadyPromise;
@@ -224,6 +246,8 @@ async function run() {
     
     let code = editor.getValue();
     history.replaceState(null, "", "?code=" + btoa(code));
+    
+    await resetIcepool();
     
     pyodide.runPython(`_chart_manager.reset()`);
     
@@ -237,6 +261,9 @@ async function run() {
 }
 
 document.getElementById("run").addEventListener("click", run);
+document.getElementById("probability_eq").addEventListener("change", run);
+document.getElementById("probability_ge").addEventListener("change", run);
+document.getElementById("probability_le").addEventListener("change", run);
 
 run();
 
