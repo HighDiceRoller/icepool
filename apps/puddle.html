@@ -19,19 +19,8 @@
 </head>
 
 <body>
-<h1>Icepuddle</h1>
 
-<p>Experimental AnyDice-like interface.</p>
-
-<h2>Useful links</h2>
-
-<ul>
-    <li><a href="https://github.com/HighDiceRoller/icepool">Icepool Github.</a></li>
-    <li><a href="./apidoc/icepool.html">API documentation.</a></li>
-    <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
-</ul>
-
-<div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 300px; min-height: 300px;">
+<div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 30vh; min-height: 150px;">
     <div class="col" id="editor"></div>
     <div class="col" style="overflow: auto; height: 100%;">
         <h3 style="margin-top:0;">Output</h3>
@@ -54,7 +43,23 @@
     </form>
 </div>
 
-<canvas id="chart"></canvas>
+<div style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 60vh; min-height: 300px;">
+    <canvas id="chart"></canvas>
+</div>
+
+<h1>Icepuddle</h1>
+
+An experimental AnyDice-like interface to Icepool.
+
+<h2>Useful links</h2>
+
+<ul>
+    <li><a href="https://github.com/HighDiceRoller/icepool">Icepool Github.</a></li>
+    <li><a href="./apidoc/icepool.html">API documentation.</a></li>
+    <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
+</ul>
+
+Built using the <a href="https://ace.c9.io/">Ace code editor</a> and <a href="https://www.chartjs.org/">Chart.js</a>.
 
 <script type="text/javascript">
 // Setup editor.
@@ -69,13 +74,15 @@ editor.setOptions({
 var resizer = new ResizeObserver(entries => {editor.resize();});
 resizer.observe(document.getElementById("main"));
 
-let initial_code = 'import icepool\n\n';
+let initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
 let searchParams = new URLSearchParams(window.location.search);
 let url_code = searchParams.get('code');
 if (url_code) {
-    initial_code = atob(url_code);
+    initialCode = atob(url_code);
 }
-editor.setValue(initial_code, 1);
+editor.setValue(initialCode, 1);
+
+let prevCode = '';
 
 // Setup chart.
 var chartContext = document.getElementById('chart').getContext('2d');
@@ -94,6 +101,7 @@ var chart = new Chart(chartContext, {
             duration: 0,
         },
         responsive: true,
+        maintainAspectRatio: false,
         interaction: {
             intersect: false,
         },
@@ -191,13 +199,22 @@ class ChartManager():
     @staticmethod
     def probabilities(die):
         if js.document.getElementById('probability_ge').checked:
-            return die.probabilities_ge()
+            return die.probabilities_ge(percent=True)
         elif js.document.getElementById('probability_le').checked:
-            return die.probabilities_le()
+            return die.probabilities_le(percent=True)
         else:
-            return die.probabilities()
+            return die.probabilities(percent=True)
+            
+    @staticmethod
+    def format_string(die):
+        if js.document.getElementById('probability_ge').checked:
+            return 'md:*o|q>=|%>='
+        elif js.document.getElementById('probability_le').checked:
+            return 'md:*o|q<=|%<='
+        else:
+            return 'md:*o|q==|%=='
 
-    def append(self, die, label, *, print_table):
+    def append(self, die, label):
         i = len(self.dice)
         if label is None:
             label = f'Output #{i}'
@@ -208,12 +225,8 @@ class ChartManager():
         self.labels.append(label)
         color = ChartManager.DEFAULT_COLORS[i % len(ChartManager.DEFAULT_COLORS)]
         self.colors.append(color)
-        
-        if print_table:
-            print(label)
-            print(die)
     
-    def update_chart(self):
+    def update_outputs(self):
         if not self.dice:
             js.chart.data.labels = pyodide.to_js([])
             js.chart.data.datasets = pyodide.to_js([])
@@ -229,16 +242,16 @@ class ChartManager():
             } for die, label, color in zip(aligned_dice, self.labels, self.colors)
         ], dict_converter=js.Object.fromEntries)
         js.chart.update()
+        
+        for die, label in zip(aligned_dice, self.labels):
+            print(label)
+            print(f'{die:{self.format_string(die)}}')
 
 _chart_manager = ChartManager()
 
-def plot(die, /, label=None):
-    """Plots a die (without printing anything)."""
-    _chart_manager.append(die, label, print_table=False)
-
 def output(die, /, label=None):
     """Plots a die and also prints it."""
-    _chart_manager.append(die, label, print_table=True)
+    _chart_manager.append(die, label)
 
 `)
 }
@@ -250,25 +263,35 @@ async function run() {
     document.getElementById("error").textContent = "";
     
     let code = editor.getValue();
-    history.replaceState(null, "", "?code=" + btoa(code));
-    
-    await resetIcepool();
-    
-    pyodide.runPython(`_chart_manager.reset()`);
-    
-    try {
-        pyodide.runPython(code);
-    } catch (err) {
-        document.getElementById("error").textContent += err;
+    if (code != prevCode) {
+        history.replaceState(null, "", "?code=" + btoa(code));
+        
+        await resetIcepool();
+        
+        pyodide.runPython(`_chart_manager.reset()`);
+        
+        try {
+            pyodide.runPython(code);
+        } catch (err) {
+            document.getElementById("error").textContent += err;
+        }
+        
+        prevCode = code;
     }
     
-    pyodide.runPython(`_chart_manager.update_chart()`);
+    pyodide.runPython(`_chart_manager.update_outputs()`);
 }
 
 document.getElementById("run").addEventListener("click", run);
 document.getElementById("probability_eq").addEventListener("change", run);
 document.getElementById("probability_ge").addEventListener("change", run);
 document.getElementById("probability_le").addEventListener("change", run);
+document.body.addEventListener('keydown', function (e) {
+    if (e.key == 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        run();
+    }
+});
 
 run();
 
