@@ -36,15 +36,12 @@ td {
     text-align: right;
 }
 
-.col {
-    display: inline-block;
-    margin: 0.25em;
-    float: left;
-    width: 49%;
+.row {
+    display: flex;
 }
 
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
+.col {
+    
+    margin: 0.25em;
+    flex: 50%;
 }
