@@ -130,7 +130,81 @@ async function initPyodide(){
     await pyodide.loadPackage(["micropip"], setLoadingText);
     
     setLoadingText('Loading icepool')
-    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool==0.17.1')`)
+    await pyodide.runPythonAsync(`
+
+import micropip
+await micropip.install('icepool==0.17.1')
+import icepool
+import pyodide
+import js
+
+class ChartManager():
+
+    DEFAULT_COLORS = [
+        'rgba(49, 189, 245, 1.0)',
+        'rgba(189, 35, 42, 1.0)',
+        'rgba(42, 217, 49, 1.0)',
+        'rgba(140, 35, 196, 1.0)',
+        'rgba(217, 147, 49, 1.0)',
+        'rgba(35, 210, 210, 1.0)',
+        'rgba(210, 98, 189, 1.0)',
+        'rgba(35, 154, 98, 1.0)',
+        'rgba(49, 21, 245, 1.0)',
+        'rgba(217, 210, 105, 1.0)',
+    ]
+    
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.dice = []
+        self.labels = []
+        self.colors = []
+
+    def append(self, die, label, *, print_table):
+        i = len(self.dice)
+        if label is None:
+            label = f'Output #{i}'
+        else:
+            label = str(label)
+        
+        self.dice.append(die)
+        self.labels.append(label)
+        color = ChartManager.DEFAULT_COLORS[i % len(ChartManager.DEFAULT_COLORS)]
+        self.colors.append(color)
+        
+        if print_table:
+            print(label)
+            print(die)
+    
+    def update_chart(self):
+        if not self.dice:
+            js.chart.data.labels = pyodide.to_js([])
+            js.chart.data.datasets = pyodide.to_js([])
+            return
+        aligned_dice = icepool.align(*self.dice)
+        outcomes = pyodide.to_js(list(aligned_dice[0].outcomes()))
+        js.chart.data.labels = outcomes
+        js.chart.data.datasets = pyodide.to_js([
+            {
+                'data': die.probabilities_ge(),
+                'label': label,
+                'borderColor': color,
+            } for die, label, color in zip(aligned_dice, self.labels, self.colors)
+        ], dict_converter=js.Object.fromEntries)
+        js.chart.update()
+
+_chart_manager = ChartManager()
+
+def plot(die, /, label=None):
+    """Plots a die (without printing anything)."""
+    _chart_manager.append(die, label, print_table=False)
+
+def output(die, /, label=None):
+    """Plots a die and also prints it."""
+    _chart_manager.append(die, label, print_table=True)
+
+`)  // End Python.
     chart.options.plugins.title = {
         text: "",
         fullSize: false,
@@ -150,11 +224,16 @@ async function run() {
     
     let code = editor.getValue();
     history.replaceState(null, "", "?code=" + btoa(code));
+    
+    pyodide.runPython(`_chart_manager.reset()`);
+    
     try {
         pyodide.runPython(code);
     } catch (err) {
         document.getElementById("error").textContent += err;
     }
+    
+    pyodide.runPython(`_chart_manager.update_chart()`);
 }
 
 document.getElementById("run").addEventListener("click", run);
