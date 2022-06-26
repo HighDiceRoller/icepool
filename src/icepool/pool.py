@@ -14,10 +14,6 @@ from functools import cache, cached_property
 
 from typing import Any, Collection, Generator, Mapping, MutableMapping, Sequence
 
-__pdoc__ = {
-    'Pool.__getitem__': True,
-}
-
 
 @cache
 def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
