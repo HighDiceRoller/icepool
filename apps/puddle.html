@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" />
+<title>Icepuddle</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="shortcut icon" type="image/png" href="favicon.png">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min-noconflict/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<style type="text/css" media="screen">
+    .ace_editor {
+        border: 1px solid lightgray;
+        font-size: 100%;
+        height: 600px;
+        margin: auto;
+        min-width: 600px;
+    }
+</style>
+</head>
+
+<body>
+<h1>Icepuddle</h1>
+
+<p>This is still experimental.</p>
+
+<h2>Useful links</h2>
+
+<ul>
+    <li><a href="https://github.com/HighDiceRoller/icepool">Icepool Github.</a></li>
+    <li><a href="./apidoc/icepool.html">API documentation.</a></li>
+    <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
+</ul>
+
+<div class="row">
+    <div class="col" id="editor"></div>
+    <div class="col" style="height: 600px; overflow: auto;">
+        <h3 style="margin-top:0;">Output</h3>
+        <div id="output" style="white-space: pre; font-family: monospace;"></div>
+        <h3>Error</h3>
+        <div id="error" style="color: red; white-space: pre; font-family: monospace;"></div>
+    </div>
+</div>
+
+<div>
+    <button id="run">Run</button>
+</div>
+
+<canvas id="chart"></canvas>
+
+<script type="text/javascript">
+// Setup editor.
+var editor = ace.edit("editor");
+editor.setTheme("ace/theme/monokai");
+editor.session.setMode("ace/mode/python");
+
+let initial_code = 'import icepool\n\n';
+let searchParams = new URLSearchParams(window.location.search);
+let url_code = searchParams.get('code');
+if (url_code) {
+    initial_code = atob(url_code);
+}
+editor.setValue(initial_code, 1);
+
+// Setup chart.
+var chartContext = document.getElementById('chart').getContext('2d');
+var chart = new Chart(chartContext, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: 'test',
+            },
+        ],
+    },
+    options: {
+        responsive: true,
+        interaction: {
+            intersect: false,
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Outcome',
+                },
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Probability (%)',
+                },
+            },
+        },
+        plugins: {
+            title: {
+                fullSize: true,
+                display : true,
+                font: {
+                    size: 36,
+                },
+            },
+        },
+    },
+});
+
+function setLoadingText(text) {
+    console.log(text);
+    let loadingText = text.match(/Loading \w+/);
+    if (!loadingText) {
+        return;
+    }
+    chart.options.plugins.title.text = loadingText[0];
+    chart.update();
+}
+
+
+async function initPyodide(){
+    setLoadingText('Loading pyodide')
+    let pyodide = await loadPyodide({
+        indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+        stdout: (text) => {document.getElementById("output").textContent += text + '\n';},
+        stderr: (text) => {document.getElementById("error").textContent += text + '\n';}
+    });
+    
+    await pyodide.loadPackage(["micropip"], setLoadingText);
+    
+    setLoadingText('Loading icepool')
+    await pyodide.runPythonAsync(`
+
+import micropip
+await micropip.install('icepool==0.17.1')
+import icepool
+import pyodide
+import js
+
+class ChartManager():
+
+    DEFAULT_COLORS = [
+        'rgba(49, 189, 245, 1.0)',
+        'rgba(189, 35, 42, 1.0)',
+        'rgba(42, 217, 49, 1.0)',
+        'rgba(140, 35, 196, 1.0)',
+        'rgba(217, 147, 49, 1.0)',
+        'rgba(35, 210, 210, 1.0)',
+        'rgba(210, 98, 189, 1.0)',
+        'rgba(35, 154, 98, 1.0)',
+        'rgba(49, 21, 245, 1.0)',
+        'rgba(217, 210, 105, 1.0)',
+    ]
+    
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.dice = []
+        self.labels = []
+        self.colors = []
+
+    def append(self, die, label, *, print_table):
+        i = len(self.dice)
+        if label is None:
+            label = f'Output #{i}'
+        else:
+            label = str(label)
+        
+        self.dice.append(die)
+        self.labels.append(label)
+        color = ChartManager.DEFAULT_COLORS[i % len(ChartManager.DEFAULT_COLORS)]
+        self.colors.append(color)
+        
+        if print_table:
+            print(label)
+            print(die)
+    
+    def update_chart(self):
+        if not self.dice:
+            js.chart.data.labels = pyodide.to_js([])
+            js.chart.data.datasets = pyodide.to_js([])
+            return
+        aligned_dice = icepool.align(*self.dice)
+        outcomes = pyodide.to_js(list(aligned_dice[0].outcomes()))
+        js.chart.data.labels = outcomes
+        js.chart.data.datasets = pyodide.to_js([
+            {
+                'data': die.probabilities_ge(),
+                'label': label,
+                'borderColor': color,
+            } for die, label, color in zip(aligned_dice, self.labels, self.colors)
+        ], dict_converter=js.Object.fromEntries)
+        js.chart.update()
+
+_chart_manager = ChartManager()
+
+def plot(die, /, label=None):
+    """Plots a die (without printing anything)."""
+    _chart_manager.append(die, label, print_table=False)
+
+def output(die, /, label=None):
+    """Plots a die and also prints it."""
+    _chart_manager.append(die, label, print_table=True)
+
+`)  // End Python.
+    chart.options.plugins.title = {
+        text: "",
+        fullSize: false,
+        display : false,
+    };
+    chart.update();
+    return pyodide;
+}
+
+let pyodideReadyPromise = initPyodide();
+
+async function run() {
+    let pyodide = await pyodideReadyPromise;
+    
+    document.getElementById("output").textContent = "";
+    document.getElementById("error").textContent = "";
+    
+    let code = editor.getValue();
+    history.replaceState(null, "", "?code=" + btoa(code));
+    
+    pyodide.runPython(`_chart_manager.reset()`);
+    
+    try {
+        pyodide.runPython(code);
+    } catch (err) {
+        document.getElementById("error").textContent += err;
+    }
+    
+    pyodide.runPython(`_chart_manager.update_chart()`);
+}
+
+document.getElementById("run").addEventListener("click", run);
+
+run();
+
+</script>
+
+</body>
