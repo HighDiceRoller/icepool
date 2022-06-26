@@ -14,6 +14,10 @@ from functools import cache, cached_property
 
 from typing import Any, Collection, Generator, Mapping, MutableMapping, Sequence
 
+__pdoc__ = {
+    'Pool.__getitem__': True,
+}
+
 
 @cache
 def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
@@ -44,10 +48,6 @@ class Pool(OutcomeCountGenerator):
 
     _post_roll_counts: tuple[int, ...]
     _dice: tuple[tuple['icepool.Die', int]]
-
-    __pdoc__ = {
-        'Pool.__getitem__': True,
-    }
 
     def __new__(cls,
                 dice: Mapping[Any, int] | Sequence,
