@@ -60,7 +60,3 @@ __all__ = [
     'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
     'JointEvaluator', 'EvaluateSum', 'Deck', 'Deal', 'clear_pool_cache'
 ]
-
-__pdoc__ = {
-    'Pool.__getitem__': True,
-}
