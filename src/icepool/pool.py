@@ -46,7 +46,7 @@ class Pool(OutcomeCountGenerator):
     _dice: tuple[tuple['icepool.Die', int]]
 
     __pdoc__ = {
-        '__getitem__': True,
+        'Pool.__getitem__': True,
     }
 
     def __new__(cls,
