@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min-noconflict/ace.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <style type="text/css" media="screen">
     .ace_editor {
         font-size: 100%;
@@ -32,7 +31,7 @@
     <li><a href="./notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
 </ul>
 
-<div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow: hidden; height: 300px; min-height: 300px;">
+<div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 300px; min-height: 300px;">
     <div class="col" id="editor"></div>
     <div class="col" style="overflow: auto; height: 100%;">
         <h3 style="margin-top:0;">Output</h3>
@@ -62,7 +61,10 @@
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/python");
-editor.setOption("showPrintMargin", false);
+editor.setOptions({
+    "showPrintMargin": false,
+    "useSoftTabs" : true
+});
 
 var resizer = new ResizeObserver(entries => {editor.resize();});
 resizer.observe(document.getElementById("main"));
