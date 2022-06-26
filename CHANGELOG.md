@@ -1,3 +1,12 @@
+## 0.17.1
+
+* Standardize outcome count of `bernoulli`/`coin` and comparators.
+* `standard_pool` now accepts a `dict` argument.
+* `post_roll_counts` renamed again to `sorted_roll_counts`.
+* `apply_sorted` can be subscripted to set the `sorted_roll_counts`.
+* Pools are no longer resizable after creation.
+* `Die.pool()` now has mandatory argument, now accepts a sequence argument to set `sorted_roll_counts`.
+
 ## 0.17.0
 
 More renaming, experimental `sample()` methods.
