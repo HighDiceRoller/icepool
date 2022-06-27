@@ -23,9 +23,9 @@
 <div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 30vh; min-height: 150px;">
     <div class="col" id="editor"></div>
     <div class="col" style="overflow: auto; height: 100%;">
-        <h3 style="margin-top:0;">Output</h3>
+        <h3 style="margin-top:0;">Output log</h3>
         <div id="output" style="white-space: pre; font-family: monospace;"></div>
-        <h3>Error</h3>
+        <h3>Error log</h3>
         <div id="error" style="color: red; white-space: pre; font-family: monospace;"></div>
     </div>
 </div>
@@ -40,6 +40,7 @@
         <label for="probability_ge">At least</label>
         <input type="radio" name="probability" id="probability_le" />
         <label for="probability_le">At most</label>
+        <button type="button" id="copy_url" style="font-size: 100%; width: 150px;">Copy URL</button>
     </form>
 </div>
 
@@ -47,9 +48,19 @@
     <canvas id="chart"></canvas>
 </div>
 
+<div id="computation_time">Computation time:</div>
+
 <h1>Icecup</h1>
 
-An experimental AnyDice-like interface to Icepool.
+<p>A simple frontend for the Icepool Python package.</p>
+
+<h2>Tips</h2>
+
+<ul>
+    <li>Use the <tt>output(die, [label])</tt> function to add a die to the plot and print its probabilities. You can use the optional second <tt>label</tt> argument to give the die a name.</li>
+    <li>In addition to the "Run" button, you can use Ctrl-Enter or Cmd-Enter to run the script.</li>
+    <li>The URL updates automatically when you run the script.</li>
+</ul>
 
 <h2>Useful links</h2>
 
@@ -64,7 +75,7 @@ Built using the <a href="https://ace.c9.io/">Ace code editor</a>, <a href="https
 <script type="text/javascript">
 // Setup editor.
 var editor = ace.edit("editor");
-editor.setTheme("ace/theme/monokai");
+editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/python");
 editor.setOptions({
     "showPrintMargin": false,
@@ -74,15 +85,15 @@ editor.setOptions({
 var resizer = new ResizeObserver(entries => {editor.resize();});
 resizer.observe(document.getElementById("main"));
 
-let initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
-let searchParams = new URLSearchParams(window.location.search);
-let url_code = searchParams.get('code');
+var initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
+var searchParams = new URLSearchParams(window.location.search);
+var url_code = searchParams.get('code');
 if (url_code) {
     initialCode = atob(url_code);
 }
 editor.setValue(initialCode, 1);
 
-let prevCode = '';
+var prevCode = '';
 
 // Setup chart.
 var chartContext = document.getElementById('chart').getContext('2d');
@@ -256,6 +267,8 @@ def output(die, /, label=None):
 `)
 }
 
+var computationTime;
+
 async function run() {
     let pyodide = await pyodideReadyPromise;
     
@@ -271,7 +284,9 @@ async function run() {
         pyodide.runPython(`_chart_manager.reset()`);
         
         try {
+            let computationStart = performance.now();
             pyodide.runPython(code);
+            computationTime = (performance.now() - computationStart) / 1000.0;
         } catch (err) {
             document.getElementById("error").textContent += err;
         }
@@ -279,18 +294,25 @@ async function run() {
         prevCode = code;
     }
     
+    document.getElementById("computation_time").textContent = 'Computation time: ' + computationTime.toFixed(3) + ' s';
     pyodide.runPython(`_chart_manager.update_outputs()`);
 }
 
 document.getElementById("run").addEventListener("click", run);
-document.getElementById("probability_eq").addEventListener("change", run);
-document.getElementById("probability_ge").addEventListener("change", run);
-document.getElementById("probability_le").addEventListener("change", run);
 document.body.addEventListener('keydown', function (e) {
     if (e.key == 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         run();
     }
+});
+document.getElementById("probability_eq").addEventListener("change", run);
+document.getElementById("probability_ge").addEventListener("change", run);
+document.getElementById("probability_le").addEventListener("change", run);
+
+document.getElementById("copy_url").addEventListener("click", function (e) {
+    navigator.clipboard.writeText(window.location.href);
+    document.getElementById("copy_url").textContent = 'Copied!';
+    setTimeout( () => {document.getElementById("copy_url").textContent = 'Copy URL';}, 1000);
 });
 
 run();
