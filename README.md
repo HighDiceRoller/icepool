@@ -39,7 +39,7 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 
 ## Web applications
 
-* [Icepuddle](https://highdiceroller.github.io/icepool/apps/puddle.html), an AnyDice-like interface. Currently experimental.
+* [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), an AnyDice-like interface. Currently experimental.
 * [Ability score rolling method calculator.](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
 * [*Cortex Prime* calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator.](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
