@@ -249,6 +249,10 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         A `Die` constructed from the outputs of `func` and the product of the
         quantities of the dice.
     """
+    if not callable(func):
+        raise TypeError(
+            'The first argument must be callable. Did you forget to provide a function?'
+        )
     if len(dice) == 0:
         return icepool.Die([func()])
     dice = tuple(icepool.Die([die]) for die in dice)
@@ -295,7 +299,10 @@ class apply_sorted():
             A `Die` constructed from the outputs of `func` and the weight of rolling
             the corresponding sorted outcomes.
         """
-
+        if not callable(func):
+            raise TypeError(
+                'The first argument must be callable. Did you forget to provide a function?'
+            )
         pool = icepool.Pool(dice)
         return icepool.enumerate_sorted(pool).sub(func, star=1)
 
@@ -306,11 +313,19 @@ class apply_sorted():
         if isinstance(sorted_roll_counts, int):
 
             def result(func: Callable, *dice) -> 'icepool.Die':
+                if not callable(func):
+                    raise TypeError(
+                        'The first argument must be callable. Did you forget to provide a function?'
+                    )
                 die = icepool.Pool(dice)[sorted_roll_counts]
                 return die.sub(func)
         else:
 
             def result(func: Callable, *dice) -> 'icepool.Die':
+                if not callable(func):
+                    raise TypeError(
+                        'The first argument must be callable. Did you forget to provide a function?'
+                    )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
                 return icepool.enumerate_sorted(pool).sub(func, star=1)
 
