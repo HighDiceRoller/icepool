@@ -530,133 +530,133 @@
     },
     {
       "name": "@jupyterlite/app-lab",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-repl",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-retro",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/contents",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/iframe-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/kernel",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/licenses",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/localforage",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/repl-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/retro-application-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server-extension",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/session",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/settings",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/translation",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/ui-components",
-      "versionInfo": "0.1.0-beta.9",
+      "versionInfo": "0.1.0-beta.10",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
