@@ -121,7 +121,7 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     result: list[str] = ['>'] * len(rows[0])
     for row in rows:
         for i, cell in enumerate(row):
-            if not re.match(r'\d+(\.\d*)?', cell):
+            if not re.match(r'-?\d+(\.\d*)?', cell):
                 result[i] = '<'
     return result
 
