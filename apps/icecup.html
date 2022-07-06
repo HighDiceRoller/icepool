@@ -60,6 +60,7 @@
     <li>Use the <tt>output(die, [label])</tt> function to add a die to the plot and print its probabilities. You can use the optional second <tt>label</tt> argument to give the die a name.</li>
     <li>In addition to the "Run" button, you can use Ctrl-Enter or Cmd-Enter to run the script.</li>
     <li>The URL updates automatically when you run the script.</li>
+    <li>If you use the <tt>random</tt> module (including <tt>.sample()</tt> methods), the script will be re-run each time.</li>
 </ul>
 
 <h2>Useful links</h2>
@@ -101,11 +102,7 @@ var chart = new Chart(chartContext, {
     type: 'line',
     data: {
         labels: [],
-        datasets: [
-            {
-                label: 'test',
-            },
-        ],
+        datasets: [],
     },
     options: {
         animation: {
@@ -184,7 +181,7 @@ import icepool
 import pyodide
 import js
 
-class ChartManager():
+class OutputManager():
 
     DEFAULT_COLORS = [
         'rgba(49, 189, 245, 1.0)',
@@ -203,9 +200,11 @@ class ChartManager():
         self.reset()
 
     def reset(self):
+        import random
         self.dice = []
         self.labels = []
         self.colors = []
+        self.starting_random_state = random.getstate()
     
     @staticmethod
     def probabilities(die):
@@ -234,7 +233,7 @@ class ChartManager():
         
         self.dice.append(die)
         self.labels.append(label)
-        color = ChartManager.DEFAULT_COLORS[i % len(ChartManager.DEFAULT_COLORS)]
+        color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
         self.colors.append(color)
     
     def update_outputs(self):
@@ -257,17 +256,22 @@ class ChartManager():
         for die, label in zip(aligned_dice, self.labels):
             print(label)
             print(f'{die:{self.format_string(die)}}')
+    
+    def used_random(self):
+        import random
+        return random.getstate() != self.starting_random_state
 
-_chart_manager = ChartManager()
+_manager = OutputManager()
 
 def output(die, /, label=None):
     """Plots a die and also prints it."""
-    _chart_manager.append(die, label)
+    _manager.append(die, label)
 
 `)
 }
 
 var computationTime;
+var usedRandom = false;
 
 async function run() {
     let pyodide = await pyodideReadyPromise;
@@ -276,12 +280,12 @@ async function run() {
     document.getElementById("error").textContent = "";
     
     let code = editor.getValue();
-    if (code != prevCode) {
+    if (usedRandom || code != prevCode) {
         history.replaceState(null, "", "?code=" + btoa(code));
         
         await resetIcepool();
         
-        pyodide.runPython(`_chart_manager.reset()`);
+        pyodide.runPython(`_manager.reset()`);
         
         try {
             let computationStart = performance.now();
@@ -292,10 +296,11 @@ async function run() {
         }
         
         prevCode = code;
+        usedRandom = pyodide.runPython(`_manager.used_random()`);
     }
     
     document.getElementById("computation_time").textContent = 'Computation time: ' + computationTime.toFixed(3) + ' s';
-    pyodide.runPython(`_chart_manager.update_outputs()`);
+    pyodide.runPython(`_manager.update_outputs()`);
 }
 
 document.getElementById("run").addEventListener("click", run);
