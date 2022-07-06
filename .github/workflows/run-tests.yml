@@ -25,3 +25,4 @@ jobs:
           pip install pytest numpy scipy
       - name: Run Tests
         run: pytest
+        timeout-minutes: 1
