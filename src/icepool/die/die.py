@@ -564,6 +564,7 @@ class Die(Population):
                             denominator_method=denominator_method)
             return next.sub(repl,
                             max_depth=max_depth - 1,
+                            *extra_args,
                             denominator_method=denominator_method)
         else:
             # Seek fixed point.
@@ -585,7 +586,7 @@ class Die(Population):
                     if next_outcome.outcomes() == [outcome]:
                         return outcome
                     else:
-                        # Reroll 1-cycles.
+                        # Reroll non-terminal 1-cycles.
                         return next_outcome.reroll([outcome])
                 else:
                     return next_outcome
