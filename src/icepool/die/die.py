@@ -486,7 +486,7 @@ class Die(Population):
     # Mixtures.
 
     def sub(self,
-            repl: Mapping | Callable[[Any], Any] | Sequence,
+            repl: Callable[[Any], Any] | Mapping,
             /,
             *extra_args,
             max_depth: int | None = 1,
@@ -503,7 +503,6 @@ class Die(Population):
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 * A callable returning a new outcome for each old outcome.
-                * A sequence specifying new outcomes in order.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
             *extra_args: These will be supplied to `repl` as extra positional
@@ -531,10 +530,7 @@ class Die(Population):
         if max_depth == 0:
             return self
         elif max_depth == 1:
-            if isinstance(repl, Mapping):
-                final_repl = [(repl[outcome] if outcome in repl else outcome)
-                              for outcome in self.outcomes()]
-            elif callable(repl):
+            if callable(repl):
                 if star:
                     final_repl = [
                         repl(*outcome, *extra_args)
@@ -546,7 +542,9 @@ class Die(Population):
                         for outcome in self.outcomes()
                     ]
             else:
-                final_repl = list(repl)
+                # Mapping.
+                final_repl = [(repl[outcome] if outcome in repl else outcome)
+                              for outcome in self.outcomes()]
 
             return icepool.Die(final_repl,
                                self.quantities(),
@@ -554,6 +552,7 @@ class Die(Population):
         elif max_depth is not None:
             next = self.sub(repl,
                             max_depth=1,
+                            *extra_args,
                             denominator_method=denominator_method)
             return next.sub(repl,
                             max_depth=max_depth - 1,
@@ -562,12 +561,14 @@ class Die(Population):
             # Seek fixed point.
             next = self.sub(repl,
                             max_depth=1,
+                            *extra_args,
                             denominator_method=denominator_method)
             if self.equals(next, reduce=True):
                 return self
             else:
                 return next.sub(repl,
                                 max_depth=None,
+                                *extra_args,
                                 denominator_method=denominator_method)
 
     def explode(self,
