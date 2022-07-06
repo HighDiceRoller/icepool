@@ -9,7 +9,7 @@ from icepool.population import Population
 
 import bisect
 from collections import defaultdict
-from functools import cached_property
+from functools import cache, cached_property
 import itertools
 import math
 import operator
@@ -500,17 +500,25 @@ class Die(Population):
 
         Args:
             repl: One of the following:
+                * A callable returning a new outcome for each old outcome.
                 * A map from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
-                * A callable returning a new outcome for each old outcome.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
             *extra_args: These will be supplied to `repl` as extra positional
                 arguments after the outcome argument(s). `extra_args` can only
                 be supplied if `repl` is callable.
             max_depth: `sub()` will be repeated with the same argument on the
-                result this many times. If set to `None`, this will repeat until
-                a fixed point is reached.
+                result this many times.
+
+                If set to `None`, this will seek a fixed point, as a Markov
+                process where the states are outcomes and the transition
+                function is defined by `repl`. The set of reachable states must
+                be finite, and every state must either be terminal (transition
+                to itself only) or be able to reach some terminal state.
+                At current the transition function must also not produce any
+                cycles of length greater than 1; I'm still working out how I
+                want to compute the more general case.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `repl` function. If `repl`
                 is not a callable, this has no effect.
@@ -532,21 +540,21 @@ class Die(Population):
         elif max_depth == 1:
             if callable(repl):
                 if star:
-                    final_repl = [
+                    repl_list = [
                         repl(*outcome, *extra_args)
                         for outcome in self.outcomes()
                     ]
                 else:
-                    final_repl = [
+                    repl_list = [
                         repl(outcome, *extra_args)
                         for outcome in self.outcomes()
                     ]
             else:
                 # Mapping.
-                final_repl = [(repl[outcome] if outcome in repl else outcome)
-                              for outcome in self.outcomes()]
+                repl_list = [(repl[outcome] if outcome in repl else outcome)
+                             for outcome in self.outcomes()]
 
-            return icepool.Die(final_repl,
+            return icepool.Die(repl_list,
                                self.quantities(),
                                denominator_method=denominator_method)
         elif max_depth is not None:
@@ -559,17 +567,41 @@ class Die(Population):
                             denominator_method=denominator_method)
         else:
             # Seek fixed point.
-            next = self.sub(repl,
+            if callable(repl):
+                if star:
+                    repl_func = lambda outcome: repl(*outcome, *extra_args)
+                else:
+                    repl_func = lambda outcome: repl(  # type: ignore
+                        outcome, *extra_args)
+            else:
+                # Mapping.
+                repl_func = lambda outcome: repl.get(  # type: ignore
+                    outcome, outcome)
+
+            @cache
+            def step_outcome(outcome):
+                next_outcome = repl_func(outcome)
+                if isinstance(next_outcome, Die):
+                    if next_outcome.outcomes() == [outcome]:
+                        return outcome
+                    else:
+                        # Reroll 1-cycles.
+                        return next_outcome.reroll([outcome])
+                else:
+                    return next_outcome
+
+            prev = self
+            curr = prev.sub(step_outcome,
                             max_depth=1,
                             *extra_args,
                             denominator_method=denominator_method)
-            if self.equals(next, reduce=True):
-                return self
-            else:
-                return next.sub(repl,
-                                max_depth=None,
+            while not curr.equals(prev, reduce=True):
+                prev = curr
+                curr = prev.sub(step_outcome,
+                                max_depth=1,
                                 *extra_args,
                                 denominator_method=denominator_method)
+            return curr
 
     def explode(self,
                 outcomes: Container | Callable[..., bool] | None = None,

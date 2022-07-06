@@ -48,6 +48,17 @@ def test_sub_fixed_point():
     assert result.equals(expected)
 
 
+def test_sub_fixed_point_1_cycle():
+
+    def repl(outcome):
+        if outcome >= 10:
+            return outcome
+        return outcome + icepool.Die([0, 1])
+
+    result = icepool.Die([0]).sub(repl, max_depth=None).reduce()
+    assert result.equals(icepool.Die([10]))
+
+
 def test_sub_extra_args():
 
     def sub_plus_die(outcome, die):
