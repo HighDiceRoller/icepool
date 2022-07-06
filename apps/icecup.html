@@ -80,7 +80,8 @@ editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/python");
 editor.setOptions({
     "showPrintMargin": false,
-    "useSoftTabs" : true
+    "useSoftTabs" : true,
+    "scrollPastEnd" : 1.0
 });
 
 var resizer = new ResizeObserver(entries => {editor.resize();});
