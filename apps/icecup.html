@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min-noconflict/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
 <style type="text/css" media="screen">
     .ace_editor {
         font-size: 100%;
@@ -79,7 +80,6 @@ var editor = ace.edit("editor");
 editor.setTheme("ace/theme/github");
 editor.session.setMode("ace/mode/python");
 editor.setOptions({
-    "showPrintMargin": false,
     "useSoftTabs" : true,
     "scrollPastEnd" : 1.0
 });
@@ -91,7 +91,11 @@ var initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
 var searchParams = new URLSearchParams(window.location.search);
 var url_code = searchParams.get('code');
 if (url_code) {
-    initialCode = atob(url_code);
+    try {
+        initialCode = LZString.decompressFromEncodedURIComponent(url_code);
+    } catch (err) {
+        document.getElementById("error").textContent = "Failed to decompress code from URL.";
+    }
 }
 editor.setValue(initialCode, 1);
 
@@ -282,7 +286,7 @@ async function run() {
     
     let code = editor.getValue();
     if (usedRandom || code != prevCode) {
-        history.replaceState(null, "", "?code=" + btoa(code));
+        history.replaceState(null, "", "?code=" + LZString.compressToEncodedURIComponent(code));
         
         await resetIcepool();
         
