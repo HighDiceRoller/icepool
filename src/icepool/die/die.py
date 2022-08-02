@@ -561,10 +561,12 @@ class Die(Population):
             next = self.sub(repl,
                             max_depth=1,
                             *extra_args,
+                            star=star,
                             denominator_method=denominator_method)
             return next.sub(repl,
                             max_depth=max_depth - 1,
                             *extra_args,
+                            star=star,
                             denominator_method=denominator_method)
         else:
             # Seek fixed point.
@@ -595,12 +597,14 @@ class Die(Population):
             curr = prev.sub(step_outcome,
                             max_depth=1,
                             *extra_args,
+                            star=star,
                             denominator_method=denominator_method)
             while not curr.equals(prev, reduce=True):
                 prev = curr
                 curr = prev.sub(step_outcome,
                                 max_depth=1,
                                 *extra_args,
+                                star=star,
                                 denominator_method=denominator_method)
             return curr
 
