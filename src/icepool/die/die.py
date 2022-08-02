@@ -597,14 +597,12 @@ class Die(Population):
             curr = prev.sub(step_outcome,
                             max_depth=1,
                             *extra_args,
-                            star=star,
                             denominator_method=denominator_method)
             while not curr.equals(prev, reduce=True):
                 prev = curr
                 curr = prev.sub(step_outcome,
                                 max_depth=1,
                                 *extra_args,
-                                star=star,
                                 denominator_method=denominator_method)
             return curr
 

@@ -32,6 +32,14 @@ def test_sub_max_depth():
     assert result.equals(expected)
 
 
+def test_sub_star():
+    a = icepool.Die([(0, 0)]).sub(lambda x, y: (x, y), max_depth=1, star=1)
+    b = icepool.Die([(0, 0)]).sub(lambda x, y: (x, y), max_depth=2, star=1)
+    c = icepool.Die([(0, 0)]).sub(lambda x, y: (x, y), max_depth=None, star=1)
+    assert a == b
+    assert b == c
+
+
 def collatz(x):
     if x == 1:
         return 1
