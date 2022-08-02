@@ -511,13 +511,13 @@ class Die(Population):
             max_depth: `sub()` will be repeated with the same argument on the
                 result this many times.
 
-                If set to `None`, this will seek a fixed point, as a Markov
-                process where the states are outcomes and the transition
-                function is defined by `repl`. The set of reachable states must
-                be finite, and every state must either be terminal (transition
-                to itself only) or be able to reach some terminal state.
-                At current the transition function must also not produce any
-                cycles of length greater than 1; I'm still working out how I
+                EXPERIMENTAL: If set to `None`, this will seek a fixed point,
+                as a Markov process where the states are outcomes and the
+                transition function is defined by `repl`. The set of reachable
+                states must be finite, and every state must either be terminal
+                (transition to itself only) or be able to reach some terminal
+                state. At current the transition function must also not produce
+                any cycles of length greater than 1; I'm still working out how I
                 want to compute the more general case.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `repl` function. If `repl`
@@ -583,15 +583,13 @@ class Die(Population):
 
             @cache
             def step_outcome(outcome):
-                next_outcome = repl_func(outcome)
-                if isinstance(next_outcome, Die):
-                    if next_outcome.outcomes() == [outcome]:
-                        return outcome
-                    else:
-                        # Reroll non-terminal 1-cycles.
-                        return next_outcome.reroll([outcome])
-                else:
+                next_outcome = Die([repl_func(outcome)])
+                if list(next_outcome.outcomes()) == [outcome]:
+                    # Absorbing state.
                     return next_outcome
+                else:
+                    # Reroll non-terminal 1-cycles.
+                    return next_outcome.reroll([outcome])
 
             prev = self
             curr = prev.sub(step_outcome,
