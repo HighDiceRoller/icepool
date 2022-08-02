@@ -1,3 +1,8 @@
+## 0.17.4
+
+* Fixes to `max_depth=None` case of `sub()`.
+* This is now marked experimental.
+
 ## 0.17.3
 
 * Pass `star` parameter to `sub()` to recursive calls.
