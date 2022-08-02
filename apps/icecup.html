@@ -166,7 +166,7 @@ async function initPyodide(){
     await pyodide.loadPackage(["micropip"], setLoadingText);
     
     setLoadingText('Loading icepool')
-    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool==0.17.1')`)
+    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool')`)
     chart.options.plugins.title = {
         text: "",
         fullSize: false,
