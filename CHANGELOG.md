@@ -1,3 +1,9 @@
+## 0.17.2
+
+* `sub()` with `max_depth=None` now handles "monotonic" transitions with finite states. Full absorbing Markov chain calculation still under consideration.
+* `sub()` no longer accept sequence input.
+* Some minor formatting fixes.
+
 ## 0.17.1
 
 * Standardize outcome count of `bernoulli`/`coin` and comparators.
