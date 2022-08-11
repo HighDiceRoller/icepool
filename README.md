@@ -149,3 +149,37 @@ Die with denominator 10000000000
 | (8, 2)          |       4050 |   0.000041% |
 | (9,)            |        900 |   0.000009% |
 | (10,)           |         10 |   0.000000% |
+
+## Similar projects
+
+In roughly chronological order:
+
+### Troll by Torben Ægidius Mogensen
+
+http://hjemmesider.diku.dk/~torbenm/Troll/
+
+The oldest general-purpose dice probability calculator I know of. It has an accompanying peer-reviewed paper.
+
+### AnyDice by Jasper Flick
+
+https://anydice.com/
+
+Probably the most popular dice probability calculator in existence, and with good reason---its accessibility and shareability remains unparalleled. I still use it often for prototyping and as a second opinion.
+
+### SnakeEyes by Noé Falzon
+
+https://snake-eyes.io/
+
+SnakeEyes demonstrated the viability of browser-based, client-side dice calculation, as well as introducing me to [Chart.js](https://www.chartjs.org/).
+
+### dice_roll.py by Ilmari Karonen
+
+https://gist.github.com/vyznev/8f5e62c91ce4d8ca7841974c87271e2f
+
+This demonstrated the trick of iterating "vertically" over the outcomes of dice in a dice pool, rather than "horizontally" through the dice---one of the insights into creating a much faster dice pool algorithm.
+
+### `dyce` by Matt Bogosian
+
+https://github.com/posita/dyce
+
+Another Python dice probability package. I've benefited greatly from exchanging our experiences.
