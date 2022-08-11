@@ -44,6 +44,24 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 * [*Cortex Prime* calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator.](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
 
+## Paper on algorithm
+
+This is to be published in Artificial Intelligence and Interactive Digital Entertainment 2022.
+
+[Preprint.](https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf)
+
+BibTeX:
+
+```bibtex
+@inproceedings{liu2022icepool,
+    title={Icepool: Efficient Computation of Dice Pool Probabilities},
+    author={Albert Julius Liu},
+    booktitle={18th AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment},
+    series={AIIDE},
+    year={2022}
+}
+```
+
 ## Inline examples
 
 ### Summing ability scores
