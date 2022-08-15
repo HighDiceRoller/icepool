@@ -130,8 +130,8 @@ def test_div():
     assert result.equals(expected)
 
 
-def test_reduce():
-    result = icepool.Die(range(3), times=[2, 4, 6]).reduce()
+def test_simplify():
+    result = icepool.Die(range(3), times=[2, 4, 6]).simplify()
     expected = icepool.Die(range(3), times=[1, 2, 3])
     assert result.equals(expected)
 

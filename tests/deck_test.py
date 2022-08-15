@@ -39,7 +39,7 @@ def test_two_hand_sum_same_size():
     result2 = deal2.evaluate(sum_each)
 
     assert deal2.denominator() == result2.denominator()
-    assert result1.equals(result2.marginals[0], reduce=True)
+    assert result1.equals(result2.marginals[0], simplify=True)
     assert result2.marginals[0].equals(result2.marginals[1])
 
 

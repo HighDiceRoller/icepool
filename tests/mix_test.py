@@ -32,7 +32,7 @@ def test_mix_reroll():
 
 def test_mix_dict_reroll():
     data = {1: 1, 2: 1, 3: 1, 4: 1, icepool.Reroll: 10}
-    result = icepool.Die([data, data]).reduce()
+    result = icepool.Die([data, data]).simplify()
     expected = icepool.d4
     assert result.equals(expected)
 
@@ -40,6 +40,6 @@ def test_mix_dict_reroll():
 def test_if_else():
     assert (icepool.d6 >= 4).if_else(icepool.d6,
                                      icepool.d6 + 6).equals(icepool.d12,
-                                                            reduce=True)
+                                                            simplify=True)
     assert (icepool.d6 - 3).if_else(True, False).equals(icepool.d6 != 6,
-                                                        reduce=True)
+                                                        simplify=True)

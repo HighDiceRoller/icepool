@@ -158,8 +158,8 @@ def merge_weights_lcm_joint(subdatas: Sequence[Mapping[Any, int]],
     return data
 
 
-def merge_weights_reduce(subdatas: Sequence[Mapping[Any, int]],
-                         weights: Sequence[int]) -> Mapping[Any, int]:
+def merge_weights_simplify(subdatas: Sequence[Mapping[Any, int]],
+                           weights: Sequence[int]) -> Mapping[Any, int]:
     data = merge_weights_lcm_joint(subdatas, weights)
 
     gcd = math.gcd(*data.values())
@@ -173,7 +173,7 @@ merge_weights_funcs = {
     'prod': merge_weights_prod,
     'lcm': merge_weights_lcm,
     'lcm_joint': merge_weights_lcm_joint,
-    'reduce': merge_weights_reduce,
+    'simplify': merge_weights_simplify,
 }
 
 

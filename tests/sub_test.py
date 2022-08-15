@@ -27,7 +27,7 @@ def test_sub_mix():
 
 
 def test_sub_max_depth():
-    result = (icepool.d8 - 1).sub(lambda x: x // 2, max_depth=2).reduce()
+    result = (icepool.d8 - 1).sub(lambda x: x // 2, max_depth=2).simplify()
     expected = icepool.d2 - 1
     assert result.equals(expected)
 
@@ -51,7 +51,7 @@ def collatz(x):
 
 def test_sub_fixed_point():
     # Collatz conjecture.
-    result = icepool.d100.sub(collatz, max_depth=None).reduce()
+    result = icepool.d100.sub(collatz, max_depth=None).simplify()
     expected = icepool.Die([1])
     assert result.equals(expected)
 
@@ -63,7 +63,7 @@ def test_sub_fixed_point_1_cycle():
             return outcome
         return outcome + icepool.Die([0, 1])
 
-    result = icepool.Die([0]).sub(repl, max_depth=None).reduce()
+    result = icepool.Die([0]).sub(repl, max_depth=None).simplify()
     assert result.equals(icepool.Die([10]))
 
 

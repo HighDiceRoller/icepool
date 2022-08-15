@@ -65,13 +65,13 @@ def test_denominator_method(args):
     prod = icepool.Die(args, denominator_method='prod')
     lcm = icepool.Die(args, denominator_method='lcm')
     lcm_joint = icepool.Die(args, denominator_method='lcm_joint')
-    reduced = icepool.Die(args, denominator_method='reduce')
-    assert prod.reduce().equals(reduced)
-    assert lcm.reduce().equals(reduced)
-    assert lcm_joint.reduce().equals(reduced)
+    simplified = icepool.Die(args, denominator_method='simplify')
+    assert prod.simplify().equals(simplified)
+    assert lcm.simplify().equals(simplified)
+    assert lcm_joint.simplify().equals(simplified)
     assert prod.denominator() >= lcm.denominator()
     assert lcm.denominator() >= lcm_joint.denominator()
-    assert lcm_joint.denominator() >= reduced.denominator()
+    assert lcm_joint.denominator() >= simplified.denominator()
 
 
 def test_denominator_lcm_joint():

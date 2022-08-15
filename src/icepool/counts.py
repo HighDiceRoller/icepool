@@ -118,7 +118,7 @@ class Counts(Mapping[Any, int]):
         """A `Counts` with the max element removed."""
         return self._remove_max
 
-    def reduce(self) -> 'Counts':
+    def simplify(self) -> 'Counts':
         """Divides all counts by their greatest common denominator."""
         gcd = math.gcd(*self.values())
         if gcd <= 1:

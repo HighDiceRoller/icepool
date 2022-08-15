@@ -121,7 +121,7 @@ class Die(Population):
                     times corresponding element of `quantities`). This is like
                     rolling the above, but the specific quantity rolled is used
                     to help determine the result of the selected argument.
-                * 'reduce': The final quantities are divided by their GCD.
+                * 'simplify': The final quantities are divided by their GCD.
         Raises:
             ValueError: `None` is not a valid outcome for a `Die`.
         """
@@ -252,9 +252,9 @@ class Die(Population):
 
     # Quantity management.
 
-    def reduce(self) -> 'Die':
+    def simplify(self) -> 'Die':
         """Divides all quantities by their greatest common denominator. """
-        return icepool.Die(self._data.reduce())
+        return icepool.Die(self._data.simplify())
 
     # Rerolls and other outcome management.
 
@@ -596,7 +596,7 @@ class Die(Population):
                             max_depth=1,
                             *extra_args,
                             denominator_method=denominator_method)
-            while not curr.equals(prev, reduce=True):
+            while not curr.equals(prev, simplify=True):
                 prev = curr
                 curr = prev.sub(step_outcome,
                                 max_depth=1,
@@ -1188,7 +1188,7 @@ class Die(Population):
     def __hash__(self) -> int:
         return self._hash
 
-    def equals(self, other, *, reduce=False):
+    def equals(self, other, *, simplify=False):
         """`True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
@@ -1206,14 +1206,14 @@ class Die(Population):
         in the `Die` value or the truth value.
 
         Args:
-            reduce: If `True`, the dice will be reduced before comparing.
+            simplify: If `True`, the dice will be simplified before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
         if not isinstance(other, Die):
             return False
 
-        if reduce:
-            return self.reduce().key_tuple() == other.reduce().key_tuple()
+        if simplify:
+            return self.simplify().key_tuple() == other.simplify().key_tuple()
         else:
             return self.key_tuple() == other.key_tuple()
 
