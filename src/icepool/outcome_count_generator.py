@@ -63,7 +63,7 @@ class OutcomeCountGenerator(ABC):
         """
 
     @abstractmethod
-    def _estimate_direction_costs(self) -> tuple[int, int]:
+    def _estimate_order_costs(self) -> tuple[int, int]:
         """Estimates the cost of popping from the min and max sides during an evaluation.
 
         Returns:
@@ -133,7 +133,7 @@ class OutcomeCountGenerator(ABC):
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
 
-        min_cost, max_cost = self._estimate_direction_costs()
+        min_cost, max_cost = self._estimate_order_costs()
 
         if min_cost < max_cost:
             outcome = self.min_outcome()

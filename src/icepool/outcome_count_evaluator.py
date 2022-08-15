@@ -5,14 +5,22 @@ from icepool.alignment import Alignment
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
+import enum
 from functools import cached_property
 import itertools
 import math
 
 from typing import Any, Callable, Collection, Hashable, Mapping, MutableMapping, Sequence
 
-PREFERRED_DIRECTION_COST_FACTOR = 10
-"""The preferred direction will be favored this times as much."""
+PREFERRED_ORDER_COST_FACTOR = 10
+"""The preferred order will be favored this times as much."""
+
+
+class Order(enum.IntEnum):
+    """Can be used to define what order outcomes are seen in by OutcomeCountEvaluators."""
+    Ascending = 1
+    Descending = -1
+    Any = 0
 
 
 class OutcomeCountEvaluator(ABC):
@@ -72,7 +80,7 @@ class OutcomeCountEvaluator(ABC):
                 `state` will be `None`.
             outcome: The current outcome.
                 `next_state` will see all rolled outcomes in monotonic order;
-                either ascending or descending depending on `direction()`.
+                either ascending or descending depending on `order()`.
                 If there are multiple generators, the set of outcomes is the
                 union of the outcomes of the invididual generators. All outcomes
                 with nonzero count will be seen. Outcomes with zero count
@@ -118,8 +126,8 @@ class OutcomeCountEvaluator(ABC):
         """
         return final_state
 
-    def direction(self, *generators: icepool.OutcomeCountGenerator) -> int:
-        """Optional function to determine the direction in which `next_state()` will see outcomes.
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> int:
+        """Optional function to determine the order in which `next_state()` will see outcomes.
 
         There is no expectation that a subclass be able to handle
         an arbitrary number of generators. Thus, you are free to rename any of
@@ -140,7 +148,7 @@ class OutcomeCountEvaluator(ABC):
             * < 0 if `next_state()` should always see the outcomes in descending order.
             * 0 if the order may be determined automatically.
         """
-        return 1
+        return Order.Ascending
 
     def alignment(self,
                   *generators: icepool.OutcomeCountGenerator) -> Collection:
@@ -196,7 +204,7 @@ class OutcomeCountEvaluator(ABC):
 
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
-        """A cache of (direction, generators) -> weight distribution over states. """
+        """A cache of (order, generators) -> weight distribution over states. """
         return {}
 
     def evaluate(
@@ -231,12 +239,12 @@ class OutcomeCountEvaluator(ABC):
                    for generator in converted_generators):
             return icepool.Die([])
 
-        algorithm, direction = self._select_algorithm(*converted_generators)
+        algorithm, order = self._select_algorithm(*converted_generators)
 
         # We use a separate class to guarantee all outcomes are visited.
         alignment = Alignment(self.alignment(*converted_generators))
 
-        dist = algorithm(direction, alignment, tuple(converted_generators))
+        dist = algorithm(order, alignment, tuple(converted_generators))
 
         final_outcomes = []
         final_weights = []
@@ -259,57 +267,57 @@ class OutcomeCountEvaluator(ABC):
     def _select_algorithm(
             self,
             *generators: icepool.OutcomeCountGenerator) -> tuple[Callable, int]:
-        """Selects an algorithm and iteration direction.
+        """Selects an algorithm and iteration order.
 
         Returns:
             * The algorithm to use (`_eval_internal*`).
-            * The direction in which `next_state()` sees outcomes.
+            * The order in which `next_state()` sees outcomes.
                 1 for ascending and -1 for descending.
         """
-        eval_direction = self.direction(*generators)
+        eval_order = self.order(*generators)
 
-        pop_min_costs, pop_max_costs = zip(*(
-            generator._estimate_direction_costs() for generator in generators))
+        pop_min_costs, pop_max_costs = zip(
+            *(generator._estimate_order_costs() for generator in generators))
 
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)
 
-        # No preferred direction case: go directly with cost.
-        if eval_direction == 0:
+        # No preferred order case: go directly with cost.
+        if eval_order == 0:
             if pop_max_cost <= pop_min_cost:
                 return self._eval_internal, 1
             else:
                 return self._eval_internal, -1
 
-        # Preferred direction case.
-        # Go with the preferred direction unless there is a "significant"
+        # Preferred order case.
+        # Go with the preferred order unless there is a "significant"
         # cost factor.
 
-        if PREFERRED_DIRECTION_COST_FACTOR * pop_max_cost < pop_min_cost:
-            cost_direction = 1
-        elif PREFERRED_DIRECTION_COST_FACTOR * pop_min_cost < pop_max_cost:
-            cost_direction = -1
+        if PREFERRED_ORDER_COST_FACTOR * pop_max_cost < pop_min_cost:
+            cost_order = 1
+        elif PREFERRED_ORDER_COST_FACTOR * pop_min_cost < pop_max_cost:
+            cost_order = -1
         else:
-            cost_direction = 0
+            cost_order = 0
 
-        if cost_direction == 0 or eval_direction == cost_direction:
+        if cost_order == 0 or eval_order == cost_order:
             # Use the preferred algorithm.
-            return self._eval_internal, eval_direction
+            return self._eval_internal, eval_order
         else:
             # Use the less-preferred algorithm.
-            return self._eval_internal_iterative, eval_direction
+            return self._eval_internal_iterative, eval_order
 
     def _eval_internal(
-        self, direction: int, alignment: Alignment,
+        self, order: int, alignment: Alignment,
         generators: tuple[icepool.OutcomeCountGenerator,
                           ...]) -> Mapping[Any, int]:
-        """Internal algorithm for iterating in the more-preferred direction,
+        """Internal algorithm for iterating in the more-preferred order,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
         All intermediate return values are cached in the instance.
 
         Arguments:
-            direction: The direction in which to send outcomes to `next_state()`.
+            order: The order in which to send outcomes to `next_state()`.
             alignment: As `alignment()`. Elements will be popped off this
                 during recursion.
             generators: One or more `OutcomeCountGenerators`s to evaluate. Elements
@@ -319,7 +327,7 @@ class OutcomeCountEvaluator(ABC):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (direction, alignment, generators)
+        cache_key = (order, alignment, generators)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
@@ -330,12 +338,12 @@ class OutcomeCountEvaluator(ABC):
             result = {None: 1}
         else:
             outcome, prev_alignment, iterators = OutcomeCountEvaluator._pop_generators(
-                direction, alignment, generators)
+                order, alignment, generators)
             for p in itertools.product(*iterators):
                 prev_generators, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(direction, prev_alignment,
+                prev = self._eval_internal(order, prev_alignment,
                                            prev_generators)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
@@ -346,10 +354,10 @@ class OutcomeCountEvaluator(ABC):
         return result
 
     def _eval_internal_iterative(
-        self, direction: int, alignment: Alignment,
+        self, order: int, alignment: Alignment,
         generators: tuple[icepool.OutcomeCountGenerator,
                           ...]) -> Mapping[Any, int]:
-        """Internal algorithm for iterating in the less-preferred direction,
+        """Internal algorithm for iterating in the less-preferred order,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
         This algorithm does not perform persistent memoization.
@@ -364,9 +372,9 @@ class OutcomeCountEvaluator(ABC):
             next_dist: MutableMapping[Any, int] = defaultdict(int)
             for (prev_state, prev_alignment,
                  prev_generators), weight in dist.items():
-                # The direction flip here is the only purpose of this algorithm.
+                # The order flip here is the only purpose of this algorithm.
                 outcome, alignment, iterators = OutcomeCountEvaluator._pop_generators(
-                    -direction, prev_alignment, prev_generators)
+                    -order, prev_alignment, prev_generators)
                 for p in itertools.product(*iterators):
                     generators, counts, weights = zip(*p)
                     counts = tuple(itertools.chain.from_iterable(counts))
@@ -484,20 +492,19 @@ class JointEvaluator(OutcomeCountEvaluator):
             evaluator.final_outcome(final_substate, *generators) for evaluator,
             final_substate in zip(self._sub_evaluators, final_state))
 
-    def direction(self, *generators: icepool.OutcomeCountGenerator) -> int:
-        """Determines the common direction of the subevals.
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> int:
+        """Determines the common order of the subevals.
 
         Raises:
-            ValueError: If subevals have conflicting directions, i.e. some are
+            ValueError: If subevals have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
-        subdirections = tuple(
-            evaluator.direction(*generators)
-            for evaluator in self._sub_evaluators)
-        ascending = any(x > 0 for x in subdirections)
-        descending = any(x < 0 for x in subdirections)
+        suborders = tuple(
+            evaluator.order(*generators) for evaluator in self._sub_evaluators)
+        ascending = any(x > 0 for x in suborders)
+        descending = any(x < 0 for x in suborders)
         if ascending and descending:
-            raise ValueError('Sub-evals have conflicting directions.')
+            raise ValueError('Sub-evals have conflicting orders.')
         elif ascending:
             return 1
         elif descending:
@@ -522,8 +529,8 @@ class EvaluateSum(OutcomeCountEvaluator):
         else:
             return final_state
 
-    def direction(self, *_):
-        """This evaluator doesn't care about direction. """
+    def order(self, *_):
+        """This evaluator doesn't care about order. """
         return 0
 
 
@@ -537,12 +544,12 @@ class EnumerateSorted(OutcomeCountEvaluator):
     This is expensive and not recommended unless there are few elements being output.
     """
 
-    def __init__(self, direction=1):
-        """`direction` determines the sort order.
+    def __init__(self, order=Order.Ascending):
+        """`order` determines the sort order.
 
         Positive for ascending and negative for descending.
         """
-        self._direction = direction
+        self._order = order
 
     def next_state(self, state, outcome, count):
         if count < 0:
@@ -553,8 +560,8 @@ class EnumerateSorted(OutcomeCountEvaluator):
         else:
             return state + (outcome,) * count
 
-    def direction(self, *_):
-        return self._direction
+    def order(self, *_):
+        return self._order
 
 
 enumerate_sorted = EnumerateSorted()
@@ -579,8 +586,8 @@ class FindBestSet(OutcomeCountEvaluator):
         else:
             return max(state, (count, outcome))
 
-    def direction(self, *_):
-        """This evaluator doesn't care about direction. """
+    def order(self, *_):
+        """This evaluator doesn't care about order. """
         return 0
 
 
@@ -609,7 +616,7 @@ class FindBestRun(OutcomeCountEvaluator):
         """The best run. """
         return final_state[:2]
 
-    def direction(self, *_):
+    def order(self, *_):
         """This only considers outcomes in ascending order. """
         return 1
 

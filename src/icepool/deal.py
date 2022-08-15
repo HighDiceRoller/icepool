@@ -107,7 +107,7 @@ class Deal(OutcomeCountGenerator):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _estimate_direction_costs(self) -> tuple[int, int]:
+    def _estimate_order_costs(self) -> tuple[int, int]:
         result = len(self.outcomes()) * math.prod(self.hand_sizes())
         return result, result
 

@@ -14,7 +14,7 @@ class SumRerollIfAnyOnes(icepool.OutcomeCountEvaluator):
         else:
             return state + outcome * count
 
-    def direction(self, *_):
+    def order(self, *_):
         return 0
 
 
@@ -26,7 +26,7 @@ def test_reroll():
 
 class SumPoolDescending(icepool.EvaluateSum):
 
-    def direction(self, pool):
+    def order(self, pool):
         return -1
 
 
@@ -104,16 +104,16 @@ def test_runs_skip():
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
-class SumFixedDirection(icepool.OutcomeCountEvaluator):
+class SumFixedOrder(icepool.OutcomeCountEvaluator):
 
-    def __init__(self, direction):
-        self._direction = direction
+    def __init__(self, order):
+        self._order = order
 
     def next_state(self, state, outcome, count):
         return (state or 0) + outcome * count
 
-    def direction(self, *pools):
-        return self._direction
+    def order(self, *pools):
+        return self._order
 
 
 test_pools = [
@@ -126,13 +126,13 @@ test_pools = [
     (3 @ icepool.d6).pool(12)[-6:],
 ]
 
-eval_ascending = SumFixedDirection(1)
-eval_descending = SumFixedDirection(-1)
-eval_auto = SumFixedDirection(0)
+eval_ascending = SumFixedOrder(1)
+eval_descending = SumFixedOrder(-1)
+eval_auto = SumFixedOrder(0)
 
 
 @pytest.mark.parametrize('pool', test_pools)
-def test_sum_direction(pool):
+def test_sum_order(pool):
     assert eval_ascending.evaluate(pool).equals(eval_descending.evaluate(pool))
     assert eval_ascending.evaluate(pool).equals(eval_auto.evaluate(pool))
 

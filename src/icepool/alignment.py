@@ -36,7 +36,7 @@ class Alignment(OutcomeCountGenerator):
         else:
             yield Alignment(self.outcomes()[:-1]), (0,), 1
 
-    def _estimate_direction_costs(self) -> tuple[int, int]:
+    def _estimate_order_costs(self) -> tuple[int, int]:
         result = len(self.outcomes())
         return result, result
 

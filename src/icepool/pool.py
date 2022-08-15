@@ -168,7 +168,7 @@ class Pool(OutcomeCountGenerator):
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
-    def _estimate_direction_costs(self) -> tuple[int, int]:
+    def _estimate_order_costs(self) -> tuple[int, int]:
         """Estimates the cost of popping from the min and max sides.
 
         Returns:
