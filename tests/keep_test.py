@@ -96,28 +96,28 @@ def test_sum_from_pool():
 
 def test_pool_select_multi():
     pool = icepool.d6.pool(5)
-    result = icepool.evaluate_sum.evaluate(pool[0, 0, 2, 0, 0])
+    result = icepool.sum_evaluator.evaluate(pool[0, 0, 2, 0, 0])
     expected = 2 * icepool.d6.keep_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 
 def test_pool_select_negative():
     pool = icepool.d6.pool(5)
-    result = icepool.evaluate_sum.evaluate(pool[0, 0, -2, 0, 0])
+    result = icepool.sum_evaluator.evaluate(pool[0, 0, -2, 0, 0])
     expected = -2 * icepool.d6.keep_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 
 def test_pool_select_mixed_sign():
     pool = icepool.d6.pool(2)
-    result = icepool.evaluate_sum.evaluate(pool[-1, 1])
+    result = icepool.sum_evaluator.evaluate(pool[-1, 1])
     expected = abs(icepool.d6 - icepool.d6)
     assert result.equals(expected)
 
 
 def test_pool_select_mixed_sign_split():
     pool = icepool.d6.pool(4)
-    result = icepool.evaluate_sum.evaluate(pool[-1, 0, 0, 1])
+    result = icepool.sum_evaluator.evaluate(pool[-1, 0, 0, 1])
     expected = bf_diff_highest_lowest(icepool.d6, 4)
     assert result.equals(expected)
 

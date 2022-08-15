@@ -119,7 +119,7 @@ class OutcomeCountGenerator(ABC):
         Returns:
             A `Die` representing the sum.
         """
-        return icepool.evaluate_sum(self)
+        return icepool.sum_evaluator(self)
 
     def sample(self) -> tuple[tuple, ...]:
         """EXPERIMENTAL: A single random sample from this generator.

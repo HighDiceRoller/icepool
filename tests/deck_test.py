@@ -1,10 +1,10 @@
 import icepool
 import pytest
 
-from icepool import FindBestRun
+from icepool import BestRunEvaluator
 
 # no wraparound
-find_best_run = FindBestRun()
+find_best_run = BestRunEvaluator()
 
 
 def trivial_next_state(state, outcome, *counts):

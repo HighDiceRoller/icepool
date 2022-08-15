@@ -24,7 +24,7 @@ def test_reroll():
     assert result.equals(expected)
 
 
-class SumPoolDescending(icepool.EvaluateSum):
+class SumPoolDescending(icepool.SumEvaluator):
 
     def order(self, pool):
         return -1
@@ -79,7 +79,7 @@ def test_standard_pool_zero_dice():
 
 
 def test_runs():
-    result = icepool.FindBestRun()(icepool.standard_pool([12, 10, 8]))
+    result = icepool.BestRunEvaluator()(icepool.standard_pool([12, 10, 8]))
 
     def func(*outcomes):
         outcomes = sorted(outcomes)
@@ -100,7 +100,7 @@ def test_runs():
 
 def test_runs_skip():
     die = icepool.Die([0, 10])
-    result = icepool.FindBestRun()(die.pool(10))
+    result = icepool.BestRunEvaluator()(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
@@ -138,15 +138,15 @@ def test_sum_order(pool):
 
 
 def test_joint_evaluate():
-    test_evaluator = icepool.JointEvaluator(icepool.evaluate_sum,
-                                            icepool.evaluate_sum)
+    test_evaluator = icepool.JointEvaluator(icepool.sum_evaluator,
+                                            icepool.sum_evaluator)
     result = test_evaluator(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).sub(lambda x: (x, x))
     assert result.equals(expected)
 
 
 def test_enumerate_pool_vs_cartesian_product():
-    result = icepool.enumerate_sorted(d6.pool(3))
+    result = icepool.expand_evaluator(d6.pool(3))
     expected = icepool.Die([(d6, d6, d6)]).sub(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
@@ -155,8 +155,8 @@ def test_enumerate_pool_vs_cartesian_product():
 def test_enumerate_pool_vs_sum(pool):
     if any(x < 0 for x in pool.sorted_roll_counts()):
         with pytest.raises(ValueError):
-            icepool.enumerate_sorted(pool)
+            icepool.expand_evaluator(pool)
     else:
-        result = icepool.enumerate_sorted(pool).sub(sum)
+        result = icepool.expand_evaluator(pool).sub(sum)
         expected = pool.sum()
         assert result.equals(expected)

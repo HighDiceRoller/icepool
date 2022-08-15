@@ -304,7 +304,7 @@ class apply_sorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return icepool.enumerate_sorted(pool).sub(func, star=1)
+        return icepool.expand_evaluator(pool).sub(func, star=1)
 
     def __class_getitem__(cls,
                           sorted_roll_counts: int | slice | tuple[int, ...],
@@ -327,6 +327,6 @@ class apply_sorted():
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
-                return icepool.enumerate_sorted(pool).sub(func, star=1)
+                return icepool.expand_evaluator(pool).sub(func, star=1)
 
         return result
