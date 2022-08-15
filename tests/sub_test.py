@@ -75,3 +75,21 @@ def test_sub_extra_args():
     result = icepool.d6.sub(sub_plus_die, icepool.d6)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
+
+
+def test_is_in():
+    result = (2 @ icepool.d6).is_in({2, 12})
+    expected = icepool.coin(2, 36)
+    assert result.equals(expected)
+
+
+def test_count():
+    result = icepool.d6.count(2, 4)
+    expected = 2 @ icepool.coin(1, 6)
+    assert result.equals(expected)
+
+
+def test_count_in():
+    result = icepool.d6.count_in(2, {2, 4})
+    expected = 2 @ icepool.coin(2, 6)
+    assert result.equals(expected)

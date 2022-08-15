@@ -681,6 +681,18 @@ class Die(Population):
                                if x else outcome_if_false,
                                denominator_method=denominator_method)
 
+    def is_in(self, target: Container, /) -> 'Die':
+        """A die that returns True iff the roll of the die is contained in the target."""
+        return self.sub(lambda x: x in target)
+
+    def count(self, rolls: int, target, /) -> 'Die':
+        """Roll this dice a number of time and count how many are == the target."""
+        return rolls @ (self == target)
+
+    def count_in(self, rolls: int, target: Container, /) -> 'Die':
+        """Roll this dice a number of time and count how many are in the target."""
+        return rolls @ self.is_in(target)
+
     # Pools and sums.
 
     @cached_property
