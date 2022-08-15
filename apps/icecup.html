@@ -6,7 +6,6 @@
 <title>Icecup</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="shortcut icon" type="image/png" href="favicon.png">
-<script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min-noconflict/ace.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
@@ -34,6 +33,7 @@
 <div>
     <form>
         <button type="button" id="run" style="font-size: 100%; border: 2px solid green;">Run</button>
+        <button type="button" id="stop" style="font-size: 100%; border: 2px solid red;">Stop</button>
         Probability:
         <input type="radio" name="probability" id="probability_eq" checked="checked" />
         <label for="probability_eq">Equal to</label>
@@ -74,7 +74,215 @@
 
 Built using the <a href="https://ace.c9.io/">Ace code editor</a>, <a href="https://www.chartjs.org/">Chart.js</a>, and <a href="https://pyodide.org/">Pyodide</a>.
 
+<script id="icecupWorker" type="javascript/worker">
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js");
+
+async function initPyodide(){
+    self.postMessage({ cmd: 'setLoadingText', text: 'Loading pyodide' });
+    let pyodide = await loadPyodide({
+        indexURL : "https://cdn.jsdelivr.net/pyodide/v0.21.0/full/",
+        stdout: (s) => {self.postMessage({ cmd: 'appendOutput', text: s + '\n'});},
+        stderr: (s) => {self.postMessage({ cmd: 'appendError', text: s + '\n'});}
+    });
+    
+    await pyodide.loadPackage(["micropip"], 
+        (s) => {self.postMessage({ cmd: 'setLoadingText', text: s });});
+    
+    self.postMessage({ cmd: 'setLoadingText', text: 'Loading icepool' });
+    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool')`)
+    self.postMessage({ cmd: 'setLoadingText', text: '' });
+    return pyodide;
+}
+
+let pyodideReadyPromise = initPyodide();
+
+async function resetIcepool() {
+    let pyodide = await pyodideReadyPromise;
+    pyodide.runPython(`
+
+import icepool
+import pyodide
+import js
+
+class OutputManager():
+
+    DEFAULT_COLORS = [
+        'rgba(49, 189, 245, 1.0)',
+        'rgba(189, 35, 42, 1.0)',
+        'rgba(42, 217, 49, 1.0)',
+        'rgba(140, 35, 196, 1.0)',
+        'rgba(217, 147, 49, 1.0)',
+        'rgba(35, 210, 210, 1.0)',
+        'rgba(210, 98, 189, 1.0)',
+        'rgba(35, 154, 98, 1.0)',
+        'rgba(49, 21, 245, 1.0)',
+        'rgba(217, 210, 105, 1.0)',
+    ]
+    
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        import random
+        self.dice = []
+        self.die_labels = []
+        self.colors = []
+        self.starting_random_state = random.getstate()
+    
+    @staticmethod
+    def probabilities(die, probability_type):
+        if probability_type == 'ge':
+            return die.probabilities_ge(percent=True)
+        elif probability_type == 'le':
+            return die.probabilities_le(percent=True)
+        else:
+            return die.probabilities(percent=True)
+            
+    @staticmethod
+    def format_string(die, probability_type):
+        if probability_type == 'ge':
+            return 'md:*o|q>=|%>='
+        elif probability_type == 'le':
+            return 'md:*o|q<=|%<='
+        else:
+            return 'md:*o|q==|%=='
+
+    def append(self, die, die_label):
+        i = len(self.dice)
+        if die_label is None:
+            die_label = f'Output #{i}'
+        else:
+            die_label = str(die_label)
+        
+        self.dice.append(die)
+        self.die_labels.append(die_label)
+        color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
+        self.colors.append(color)
+    
+    def chart_data(self, probability_type):
+        """
+        Returns:
+            labels, datasets in js format
+        """
+        if not self.dice:
+            return pyodide.ffi.to_js({'labels': [], 'datasets': []}, dict_converter=js.Object.fromEntries)
+        
+        aligned_dice = icepool.align(*self.dice)
+        output_labels = list(aligned_dice[0].outcomes())
+        output_datasets = [
+            {
+                'data': self.probabilities(die, probability_type),
+                'label': die_label,
+                'borderColor': color,
+            } for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors)
+        ]
+        
+        for die, die_label in zip(aligned_dice, self.die_labels):
+            print(die_label)
+            format_string = self.format_string(die, probability_type)
+            print(f'{die:{format_string}}')
+        
+        return pyodide.ffi.to_js({'labels': output_labels, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
+    
+    def used_random(self):
+        import random
+        return random.getstate() != self.starting_random_state
+
+_manager = OutputManager()
+
+def output(die, /, label=None):
+    """Plots a die and also prints it."""
+    _manager.append(die, label)
+
+`)
+}
+
+var usedRandom = false;
+var computationTime = 0.0;
+var prevCode = '';
+
+async function runCode(code, probabilityType) {
+    let pyodide = await pyodideReadyPromise;
+    if (usedRandom || code != prevCode) {
+        self.postMessage({ cmd: 'clearOutput' });
+        self.postMessage({ cmd: 'clearError' });
+        await resetIcepool();
+        pyodide.runPython(`_manager.reset()`);
+        try {
+            let computationStart = performance.now();
+            pyodide.runPython(code);
+            usedRandom = pyodide.runPython(`_manager.used_random()`);
+            computationTime = (performance.now() - computationStart) / 1000.0;
+            self.postMessage({ cmd: 'updateComputationTime', computationTime });
+        } catch (err) {
+            self.postMessage({ cmd: 'appendError', text: err + '\n'});
+        }
+        prevCode = code;
+    }
+    
+    let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "')");
+    self.postMessage({ cmd: 'updateChart', labels: chart_data.labels, datasets: chart_data.datasets });
+}
+
+self.onmessage = async (msg) => {
+    if (msg.data.cmd === "setInterruptBuffer") {
+        pyodide.setInterruptBuffer(msg.data.interruptBuffer);
+    } else if (msg.data.cmd === "runCode") {
+        runCode(msg.data.code, msg.data.probabilityType);
+    }
+}
+</script>
+
 <script type="text/javascript">
+// Setup Pyodide worker.
+const worker_blob = new Blob([document.getElementById('icecupWorker').textContent],
+                             {type: "text/javascript"});
+                             
+function createPyodideWorker() {
+    let worker = new Worker(window.URL.createObjectURL(worker_blob));
+    worker.onmessage = (msg) => {
+        if (msg.data.cmd === "clearOutput") {
+            clearOutput();
+        } else if (msg.data.cmd === "clearError") {
+            clearError();
+        } else if (msg.data.cmd === "appendOutput") {
+            appendOutput(msg.data.text);
+        } else if (msg.data.cmd === "appendError") {
+            appendError(msg.data.text);
+        } else if (msg.data.cmd === "updateChart") {
+            updateChart(msg.data.labels, msg.data.datasets);
+        } else if (msg.data.cmd === "updateComputationTime") {
+            updateComputationTime(msg.data.computationTime);
+        } else if (msg.data.cmd === "setLoadingText") {
+            setLoadingText(msg.data.text);
+        }
+    }
+    return worker;
+}
+
+var pyodideWorker = createPyodideWorker();
+
+function interruptExecution() {
+    // The signal method seems difficult to implement for now.
+    // We use a crude termination instead.
+    pyodideWorker.terminate();
+    pyodideWorker = createPyodideWorker();
+}
+
+async function runCode() {
+    let code = editor.getValue();
+    history.replaceState(null, "", "?code=" + LZString.compressToEncodedURIComponent(code));
+    let probabilityType;
+    if (document.getElementById('probability_ge').checked) {
+        probabilityType = 'ge';
+    } else if (document.getElementById('probability_le').checked) {
+        probabilityType = 'le';
+    } else {
+        probabilityType = 'eq';
+    }
+    pyodideWorker.postMessage({ cmd: "runCode", code, probabilityType });
+}
+
 // Setup editor.
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/github");
@@ -98,8 +306,6 @@ if (url_code) {
     }
 }
 editor.setValue(initialCode, 1);
-
-var prevCode = '';
 
 // Setup chart.
 var chartContext = document.getElementById('chart').getContext('2d');
@@ -148,182 +354,68 @@ var chart = new Chart(chartContext, {
 function setLoadingText(text) {
     console.log(text);
     let loadingText = text.match(/Loading \w+/);
-    if (!loadingText) {
-        return;
+    if (loadingText) {
+        chart.options.plugins.title = {
+            text: loadingText[0],
+            fullSize: true,
+            display: true,
+        };
+    } else {
+        chart.options.plugins.title = {
+            text: "",
+            fullSize: false,
+            display : false,
+        };
     }
-    chart.options.plugins.title.text = loadingText[0];
     chart.update();
 }
 
-async function initPyodide(){
-    setLoadingText('Loading pyodide')
-    let pyodide = await loadPyodide({
-        indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
-        stdout: (text) => {document.getElementById("output").textContent += text + '\n';},
-        stderr: (text) => {document.getElementById("error").textContent += text + '\n';}
-    });
-    
-    await pyodide.loadPackage(["micropip"], setLoadingText);
-    
-    setLoadingText('Loading icepool')
-    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool')`)
-    chart.options.plugins.title = {
-        text: "",
-        fullSize: false,
-        display : false,
-    };
+function clearOutput() {
+    document.getElementById("output").textContent = '';
+}
+
+function clearError() {
+    document.getElementById("error").textContent = '';
+}
+
+function appendOutput(text) {
+    document.getElementById("output").textContent += text;
+}
+
+function appendError(text) {
+    document.getElementById("error").textContent += text;
+}
+
+function updateChart(labels, datasets) {
+    chart.data.labels = labels;
+    chart.data.datasets = datasets;
     chart.update();
-    return pyodide;
 }
 
-let pyodideReadyPromise = initPyodide();
-
-async function resetIcepool() {
-    let pyodide = await pyodideReadyPromise;
-    pyodide.runPython(`
-
-import icepool
-import pyodide
-import js
-
-class OutputManager():
-
-    DEFAULT_COLORS = [
-        'rgba(49, 189, 245, 1.0)',
-        'rgba(189, 35, 42, 1.0)',
-        'rgba(42, 217, 49, 1.0)',
-        'rgba(140, 35, 196, 1.0)',
-        'rgba(217, 147, 49, 1.0)',
-        'rgba(35, 210, 210, 1.0)',
-        'rgba(210, 98, 189, 1.0)',
-        'rgba(35, 154, 98, 1.0)',
-        'rgba(49, 21, 245, 1.0)',
-        'rgba(217, 210, 105, 1.0)',
-    ]
-    
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        import random
-        self.dice = []
-        self.labels = []
-        self.colors = []
-        self.starting_random_state = random.getstate()
-    
-    @staticmethod
-    def probabilities(die):
-        if js.document.getElementById('probability_ge').checked:
-            return die.probabilities_ge(percent=True)
-        elif js.document.getElementById('probability_le').checked:
-            return die.probabilities_le(percent=True)
-        else:
-            return die.probabilities(percent=True)
-            
-    @staticmethod
-    def format_string(die):
-        if js.document.getElementById('probability_ge').checked:
-            return 'md:*o|q>=|%>='
-        elif js.document.getElementById('probability_le').checked:
-            return 'md:*o|q<=|%<='
-        else:
-            return 'md:*o|q==|%=='
-
-    def append(self, die, label):
-        i = len(self.dice)
-        if label is None:
-            label = f'Output #{i}'
-        else:
-            label = str(label)
-        
-        self.dice.append(die)
-        self.labels.append(label)
-        color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
-        self.colors.append(color)
-    
-    def update_outputs(self):
-        if not self.dice:
-            js.chart.data.labels = pyodide.to_js([])
-            js.chart.data.datasets = pyodide.to_js([])
-            return
-        aligned_dice = icepool.align(*self.dice)
-        outcomes = pyodide.to_js(list(aligned_dice[0].outcomes()))
-        js.chart.data.labels = outcomes
-        js.chart.data.datasets = pyodide.to_js([
-            {
-                'data': self.probabilities(die),
-                'label': label,
-                'borderColor': color,
-            } for die, label, color in zip(aligned_dice, self.labels, self.colors)
-        ], dict_converter=js.Object.fromEntries)
-        js.chart.update()
-        
-        for die, label in zip(aligned_dice, self.labels):
-            print(label)
-            print(f'{die:{self.format_string(die)}}')
-    
-    def used_random(self):
-        import random
-        return random.getstate() != self.starting_random_state
-
-_manager = OutputManager()
-
-def output(die, /, label=None):
-    """Plots a die and also prints it."""
-    _manager.append(die, label)
-
-`)
-}
-
-var computationTime;
-var usedRandom = false;
-
-async function run() {
-    let pyodide = await pyodideReadyPromise;
-    
-    document.getElementById("output").textContent = "";
-    document.getElementById("error").textContent = "";
-    
-    let code = editor.getValue();
-    if (usedRandom || code != prevCode) {
-        history.replaceState(null, "", "?code=" + LZString.compressToEncodedURIComponent(code));
-        
-        await resetIcepool();
-        
-        pyodide.runPython(`_manager.reset()`);
-        
-        try {
-            let computationStart = performance.now();
-            pyodide.runPython(code);
-            computationTime = (performance.now() - computationStart) / 1000.0;
-        } catch (err) {
-            document.getElementById("error").textContent += err;
-        }
-        
-        prevCode = code;
-        usedRandom = pyodide.runPython(`_manager.used_random()`);
-    }
-    
+function updateComputationTime(computationTime) {
     document.getElementById("computation_time").textContent = 'Computation time: ' + computationTime.toFixed(3) + ' s';
-    pyodide.runPython(`_manager.update_outputs()`);
 }
 
-document.getElementById("run").addEventListener("click", run);
+document.getElementById("run").addEventListener("click", runCode);
+document.getElementById("stop").addEventListener("click", interruptExecution);
 document.body.addEventListener('keydown', function (e) {
     if (e.key == 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         run();
     }
 });
-document.getElementById("probability_eq").addEventListener("change", run);
-document.getElementById("probability_ge").addEventListener("change", run);
-document.getElementById("probability_le").addEventListener("change", run);
+document.getElementById("probability_eq").addEventListener("change", runCode);
+document.getElementById("probability_ge").addEventListener("change", runCode);
+document.getElementById("probability_le").addEventListener("change", runCode);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
     navigator.clipboard.writeText(window.location.href);
     document.getElementById("copy_url").textContent = 'Copied!';
     setTimeout( () => {document.getElementById("copy_url").textContent = 'Copy URL';}, 1000);
 });
+
+// Initial run.
+runCode();
 
 </script>
 
