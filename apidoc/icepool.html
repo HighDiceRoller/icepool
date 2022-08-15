@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.0.2"/>
+    <meta name="generator" content="pdoc 12.1.0"/>
     <title>icepool API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -61,7 +61,7 @@
                                 <a class="function" href="#Die.items">items</a>
                         </li>
                         <li>
-                                <a class="function" href="#Die.reduce">reduce</a>
+                                <a class="function" href="#Die.simplify">simplify</a>
                         </li>
                         <li>
                                 <a class="function" href="#Die.reroll">reroll</a>
@@ -932,7 +932,7 @@ with quantity 1 each.</p>
 </span><span id="Die-122"><a href="#Die-122"><span class="linenos"> 122</span></a><span class="sd">                    times corresponding element of `quantities`). This is like</span>
 </span><span id="Die-123"><a href="#Die-123"><span class="linenos"> 123</span></a><span class="sd">                    rolling the above, but the specific quantity rolled is used</span>
 </span><span id="Die-124"><a href="#Die-124"><span class="linenos"> 124</span></a><span class="sd">                    to help determine the result of the selected argument.</span>
-</span><span id="Die-125"><a href="#Die-125"><span class="linenos"> 125</span></a><span class="sd">                * &#39;reduce&#39;: The final quantities are divided by their GCD.</span>
+</span><span id="Die-125"><a href="#Die-125"><span class="linenos"> 125</span></a><span class="sd">                * &#39;simplify&#39;: The final quantities are divided by their GCD.</span>
 </span><span id="Die-126"><a href="#Die-126"><span class="linenos"> 126</span></a><span class="sd">        Raises:</span>
 </span><span id="Die-127"><a href="#Die-127"><span class="linenos"> 127</span></a><span class="sd">            ValueError: `None` is not a valid outcome for a `Die`.</span>
 </span><span id="Die-128"><a href="#Die-128"><span class="linenos"> 128</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -1063,9 +1063,9 @@ with quantity 1 each.</p>
 </span><span id="Die-253"><a href="#Die-253"><span class="linenos"> 253</span></a>
 </span><span id="Die-254"><a href="#Die-254"><span class="linenos"> 254</span></a>    <span class="c1"># Quantity management.</span>
 </span><span id="Die-255"><a href="#Die-255"><span class="linenos"> 255</span></a>
-</span><span id="Die-256"><a href="#Die-256"><span class="linenos"> 256</span></a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die-256"><a href="#Die-256"><span class="linenos"> 256</span></a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-257"><a href="#Die-257"><span class="linenos"> 257</span></a>        <span class="sd">&quot;&quot;&quot;Divides all quantities by their greatest common denominator. &quot;&quot;&quot;</span>
-</span><span id="Die-258"><a href="#Die-258"><span class="linenos"> 258</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">())</span>
+</span><span id="Die-258"><a href="#Die-258"><span class="linenos"> 258</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">simplify</span><span class="p">())</span>
 </span><span id="Die-259"><a href="#Die-259"><span class="linenos"> 259</span></a>
 </span><span id="Die-260"><a href="#Die-260"><span class="linenos"> 260</span></a>    <span class="c1"># Rerolls and other outcome management.</span>
 </span><span id="Die-261"><a href="#Die-261"><span class="linenos"> 261</span></a>
@@ -1407,7 +1407,7 @@ with quantity 1 each.</p>
 </span><span id="Die-597"><a href="#Die-597"><span class="linenos"> 597</span></a>                            <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="Die-598"><a href="#Die-598"><span class="linenos"> 598</span></a>                            <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
 </span><span id="Die-599"><a href="#Die-599"><span class="linenos"> 599</span></a>                            <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
-</span><span id="Die-600"><a href="#Die-600"><span class="linenos"> 600</span></a>            <span class="k">while</span> <span class="ow">not</span> <span class="n">curr</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+</span><span id="Die-600"><a href="#Die-600"><span class="linenos"> 600</span></a>            <span class="k">while</span> <span class="ow">not</span> <span class="n">curr</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">simplify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 </span><span id="Die-601"><a href="#Die-601"><span class="linenos"> 601</span></a>                <span class="n">prev</span> <span class="o">=</span> <span class="n">curr</span>
 </span><span id="Die-602"><a href="#Die-602"><span class="linenos"> 602</span></a>                <span class="n">curr</span> <span class="o">=</span> <span class="n">prev</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">step_outcome</span><span class="p">,</span>
 </span><span id="Die-603"><a href="#Die-603"><span class="linenos"> 603</span></a>                                <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -1999,7 +1999,7 @@ with quantity 1 each.</p>
 </span><span id="Die-1189"><a href="#Die-1189"><span class="linenos">1189</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Die-1190"><a href="#Die-1190"><span class="linenos">1190</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 </span><span id="Die-1191"><a href="#Die-1191"><span class="linenos">1191</span></a>
-</span><span id="Die-1192"><a href="#Die-1192"><span class="linenos">1192</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="Die-1192"><a href="#Die-1192"><span class="linenos">1192</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">simplify</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 </span><span id="Die-1193"><a href="#Die-1193"><span class="linenos">1193</span></a>        <span class="sd">&quot;&quot;&quot;`True` iff both dice have the same outcomes and quantities.</span>
 </span><span id="Die-1194"><a href="#Die-1194"><span class="linenos">1194</span></a>
 </span><span id="Die-1195"><a href="#Die-1195"><span class="linenos">1195</span></a><span class="sd">        This is `False` if `other` is not a `Die`, even if it would convert</span>
@@ -2017,14 +2017,14 @@ with quantity 1 each.</p>
 </span><span id="Die-1207"><a href="#Die-1207"><span class="linenos">1207</span></a><span class="sd">        in the `Die` value or the truth value.</span>
 </span><span id="Die-1208"><a href="#Die-1208"><span class="linenos">1208</span></a>
 </span><span id="Die-1209"><a href="#Die-1209"><span class="linenos">1209</span></a><span class="sd">        Args:</span>
-</span><span id="Die-1210"><a href="#Die-1210"><span class="linenos">1210</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
+</span><span id="Die-1210"><a href="#Die-1210"><span class="linenos">1210</span></a><span class="sd">            simplify: If `True`, the dice will be simplified before comparing.</span>
 </span><span id="Die-1211"><a href="#Die-1211"><span class="linenos">1211</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
 </span><span id="Die-1212"><a href="#Die-1212"><span class="linenos">1212</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-1213"><a href="#Die-1213"><span class="linenos">1213</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="p">):</span>
 </span><span id="Die-1214"><a href="#Die-1214"><span class="linenos">1214</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die-1215"><a href="#Die-1215"><span class="linenos">1215</span></a>
-</span><span id="Die-1216"><a href="#Die-1216"><span class="linenos">1216</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die-1217"><a href="#Die-1217"><span class="linenos">1217</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die-1216"><a href="#Die-1216"><span class="linenos">1216</span></a>        <span class="k">if</span> <span class="n">simplify</span><span class="p">:</span>
+</span><span id="Die-1217"><a href="#Die-1217"><span class="linenos">1217</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span><span id="Die-1218"><a href="#Die-1218"><span class="linenos">1218</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Die-1219"><a href="#Die-1219"><span class="linenos">1219</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span><span id="Die-1220"><a href="#Die-1220"><span class="linenos">1220</span></a>
@@ -2151,7 +2151,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-122"><a href="#Die.__init__-122"><span class="linenos">122</span></a><span class="sd">                    times corresponding element of `quantities`). This is like</span>
 </span><span id="Die.__init__-123"><a href="#Die.__init__-123"><span class="linenos">123</span></a><span class="sd">                    rolling the above, but the specific quantity rolled is used</span>
 </span><span id="Die.__init__-124"><a href="#Die.__init__-124"><span class="linenos">124</span></a><span class="sd">                    to help determine the result of the selected argument.</span>
-</span><span id="Die.__init__-125"><a href="#Die.__init__-125"><span class="linenos">125</span></a><span class="sd">                * &#39;reduce&#39;: The final quantities are divided by their GCD.</span>
+</span><span id="Die.__init__-125"><a href="#Die.__init__-125"><span class="linenos">125</span></a><span class="sd">                * &#39;simplify&#39;: The final quantities are divided by their GCD.</span>
 </span><span id="Die.__init__-126"><a href="#Die.__init__-126"><span class="linenos">126</span></a><span class="sd">        Raises:</span>
 </span><span id="Die.__init__-127"><a href="#Die.__init__-127"><span class="linenos">127</span></a><span class="sd">            ValueError: `None` is not a valid outcome for a `Die`.</span>
 </span><span id="Die.__init__-128"><a href="#Die.__init__-128"><span class="linenos">128</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -2261,7 +2261,7 @@ first, then selecting an argument to roll.</li>
 times corresponding element of <code><a href="#Die.quantities">quantities</a></code>). This is like
 rolling the above, but the specific quantity rolled is used
 to help determine the result of the selected argument.</li>
-<li>'reduce': The final quantities are divided by their GCD.</li>
+<li>'simplify': The final quantities are divided by their GCD.</li>
 </ul></li>
 </ul>
 
@@ -2540,20 +2540,20 @@ dice or between the dice.</li>
 
 
                             </div>
-                            <div id="Die.reduce" class="classattr">
-                                        <input id="Die.reduce-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Die.simplify" class="classattr">
+                                        <input id="Die.simplify-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">reduce</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">simplify</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
-                <label class="view-source-button" for="Die.reduce-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Die.simplify-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Die.reduce"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.reduce-256"><a href="#Die.reduce-256"><span class="linenos">256</span></a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
-</span><span id="Die.reduce-257"><a href="#Die.reduce-257"><span class="linenos">257</span></a>        <span class="sd">&quot;&quot;&quot;Divides all quantities by their greatest common denominator. &quot;&quot;&quot;</span>
-</span><span id="Die.reduce-258"><a href="#Die.reduce-258"><span class="linenos">258</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">())</span>
+    <a class="headerlink" href="#Die.simplify"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.simplify-256"><a href="#Die.simplify-256"><span class="linenos">256</span></a>    <span class="k">def</span> <span class="nf">simplify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
+</span><span id="Die.simplify-257"><a href="#Die.simplify-257"><span class="linenos">257</span></a>        <span class="sd">&quot;&quot;&quot;Divides all quantities by their greatest common denominator. &quot;&quot;&quot;</span>
+</span><span id="Die.simplify-258"><a href="#Die.simplify-258"><span class="linenos">258</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">simplify</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -3106,7 +3106,7 @@ and/or add zero-quantity outcomes (if they are not present in this <code><a href
 </span><span id="Die.sub-597"><a href="#Die.sub-597"><span class="linenos">597</span></a>                            <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 </span><span id="Die.sub-598"><a href="#Die.sub-598"><span class="linenos">598</span></a>                            <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
 </span><span id="Die.sub-599"><a href="#Die.sub-599"><span class="linenos">599</span></a>                            <span class="n">denominator_method</span><span class="o">=</span><span class="n">denominator_method</span><span class="p">)</span>
-</span><span id="Die.sub-600"><a href="#Die.sub-600"><span class="linenos">600</span></a>            <span class="k">while</span> <span class="ow">not</span> <span class="n">curr</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+</span><span id="Die.sub-600"><a href="#Die.sub-600"><span class="linenos">600</span></a>            <span class="k">while</span> <span class="ow">not</span> <span class="n">curr</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="n">simplify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 </span><span id="Die.sub-601"><a href="#Die.sub-601"><span class="linenos">601</span></a>                <span class="n">prev</span> <span class="o">=</span> <span class="n">curr</span>
 </span><span id="Die.sub-602"><a href="#Die.sub-602"><span class="linenos">602</span></a>                <span class="n">curr</span> <span class="o">=</span> <span class="n">prev</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">step_outcome</span><span class="p">,</span>
 </span><span id="Die.sub-603"><a href="#Die.sub-603"><span class="linenos">603</span></a>                                <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -3635,7 +3635,7 @@ arguments.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">zero_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">zero_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Die.zero_outcome-view-source"><span>View Source</span></label>
 
@@ -3794,13 +3794,13 @@ to be in any particular format or have any other properties.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">equals</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">reduce</span><span class="o">=</span><span class="kc">False</span></span>)</span>
+        <span class="name">equals</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">simplify</span><span class="o">=</span><span class="kc">False</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Die.equals-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Die.equals"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.equals-1192"><a href="#Die.equals-1192"><span class="linenos">1192</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die.equals-1192"><a href="#Die.equals-1192"><span class="linenos">1192</span></a>    <span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">simplify</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 </span><span id="Die.equals-1193"><a href="#Die.equals-1193"><span class="linenos">1193</span></a>        <span class="sd">&quot;&quot;&quot;`True` iff both dice have the same outcomes and quantities.</span>
 </span><span id="Die.equals-1194"><a href="#Die.equals-1194"><span class="linenos">1194</span></a>
 </span><span id="Die.equals-1195"><a href="#Die.equals-1195"><span class="linenos">1195</span></a><span class="sd">        This is `False` if `other` is not a `Die`, even if it would convert</span>
@@ -3818,14 +3818,14 @@ to be in any particular format or have any other properties.</p>
 </span><span id="Die.equals-1207"><a href="#Die.equals-1207"><span class="linenos">1207</span></a><span class="sd">        in the `Die` value or the truth value.</span>
 </span><span id="Die.equals-1208"><a href="#Die.equals-1208"><span class="linenos">1208</span></a>
 </span><span id="Die.equals-1209"><a href="#Die.equals-1209"><span class="linenos">1209</span></a><span class="sd">        Args:</span>
-</span><span id="Die.equals-1210"><a href="#Die.equals-1210"><span class="linenos">1210</span></a><span class="sd">            reduce: If `True`, the dice will be reduced before comparing.</span>
+</span><span id="Die.equals-1210"><a href="#Die.equals-1210"><span class="linenos">1210</span></a><span class="sd">            simplify: If `True`, the dice will be simplified before comparing.</span>
 </span><span id="Die.equals-1211"><a href="#Die.equals-1211"><span class="linenos">1211</span></a><span class="sd">                Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.</span>
 </span><span id="Die.equals-1212"><a href="#Die.equals-1212"><span class="linenos">1212</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.equals-1213"><a href="#Die.equals-1213"><span class="linenos">1213</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Die</span><span class="p">):</span>
 </span><span id="Die.equals-1214"><a href="#Die.equals-1214"><span class="linenos">1214</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die.equals-1215"><a href="#Die.equals-1215"><span class="linenos">1215</span></a>
-</span><span id="Die.equals-1216"><a href="#Die.equals-1216"><span class="linenos">1216</span></a>        <span class="k">if</span> <span class="n">reduce</span><span class="p">:</span>
-</span><span id="Die.equals-1217"><a href="#Die.equals-1217"><span class="linenos">1217</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
+</span><span id="Die.equals-1216"><a href="#Die.equals-1216"><span class="linenos">1216</span></a>        <span class="k">if</span> <span class="n">simplify</span><span class="p">:</span>
+</span><span id="Die.equals-1217"><a href="#Die.equals-1217"><span class="linenos">1217</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span><span id="Die.equals-1218"><a href="#Die.equals-1218"><span class="linenos">1218</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Die.equals-1219"><a href="#Die.equals-1219"><span class="linenos">1219</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">()</span>
 </span></pre></div>
@@ -3850,7 +3850,7 @@ in the <code><a href="#Die">Die</a></code> value or the truth value.</p>
 <h6 id="args">Args</h6>
 
 <ul>
-<li><strong>reduce:</strong>  If <code>True</code>, the dice will be reduced before comparing.
+<li><strong>simplify:</strong>  If <code>True</code>, the dice will be simplified before comparing.
 Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code> to a 1:1 coin.</li>
 </ul>
 </div>
@@ -4514,7 +4514,7 @@ or if there are tuples of different lengths.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.min_outcome-view-source"><span>View Source</span></label>
 
@@ -4536,7 +4536,7 @@ or if there are tuples of different lengths.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.max_outcome-view-source"><span>View Source</span></label>
 
@@ -4558,7 +4558,7 @@ or if there are tuples of different lengths.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">nearest_le</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span>)</span>
+        <span class="name">nearest_le</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.nearest_le-view-source"><span>View Source</span></label>
 
@@ -4588,7 +4588,7 @@ or if there are tuples of different lengths.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">nearest_ge</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span>)</span>
+        <span class="name">nearest_ge</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.nearest_ge-view-source"><span>View Source</span></label>
 
@@ -4886,7 +4886,7 @@ use <code>len()</code>.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">probabilities</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+        <span class="name">probabilities</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.probabilities-view-source"><span>View Source</span></label>
 
@@ -4927,7 +4927,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">probabilities_le</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+        <span class="name">probabilities_le</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.probabilities_le-view-source"><span>View Source</span></label>
 
@@ -4970,7 +4970,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">probabilities_ge</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span>)</span>
+        <span class="name">probabilities_ge</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">percent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.probabilities_ge-view-source"><span>View Source</span></label>
 
@@ -5015,7 +5015,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">probability</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span>)</span>
+        <span class="name">probability</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcome</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.probability-view-source"><span>View Source</span></label>
 
@@ -5087,7 +5087,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">kolmogorov_smirnov</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span></span>)</span>
+        <span class="name">kolmogorov_smirnov</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.kolmogorov_smirnov-view-source"><span>View Source</span></label>
 
@@ -5112,7 +5112,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">cramer_von_mises</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span></span>)</span>
+        <span class="name">cramer_von_mises</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.cramer_von_mises-view-source"><span>View Source</span></label>
 
@@ -5136,7 +5136,7 @@ Otherwise, the total will be 1.0.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">median</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">median</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.median-view-source"><span>View Source</span></label>
 
@@ -5165,7 +5165,7 @@ in this case, use <code><a href="#Population.median_left">median_left</a></code>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">median_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">median_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.median_left-view-source"><span>View Source</span></label>
 
@@ -5187,7 +5187,7 @@ in this case, use <code><a href="#Population.median_left">median_left</a></code>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">median_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">median_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.median_right-view-source"><span>View Source</span></label>
 
@@ -5209,7 +5209,7 @@ in this case, use <code><a href="#Population.median_left">median_left</a></code>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span>)</span>
+        <span class="name">quantile</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.quantile-view-source"><span>View Source</span></label>
 
@@ -5238,7 +5238,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span>)</span>
+        <span class="name">quantile_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.quantile_left-view-source"><span>View Source</span></label>
 
@@ -5264,7 +5264,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span>)</span>
+        <span class="name">quantile_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.quantile_right-view-source"><span>View Source</span></label>
 
@@ -5290,7 +5290,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">mean</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">mean</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.mean-view-source"><span>View Source</span></label>
 
@@ -5310,7 +5310,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">variance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">variance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.variance-view-source"><span>View Source</span></label>
 
@@ -5336,7 +5336,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">standard_deviation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">standard_deviation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.standard_deviation-view-source"><span>View Source</span></label>
 
@@ -5355,7 +5355,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">sd</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">sd</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.sd-view-source"><span>View Source</span></label>
 
@@ -5374,7 +5374,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">standardized_moment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">k</span><span class="p">:</span> <span class="nb">int</span></span>)</span>
+        <span class="name">standardized_moment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">k</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.standardized_moment-view-source"><span>View Source</span></label>
 
@@ -5397,7 +5397,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">skewness</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">skewness</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.skewness-view-source"><span>View Source</span></label>
 
@@ -5416,7 +5416,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">excess_kurtosis</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">excess_kurtosis</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.excess_kurtosis-view-source"><span>View Source</span></label>
 
@@ -5435,7 +5435,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">covariance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">i</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">j</span><span class="p">:</span> <span class="nb">int</span></span>)</span>
+        <span class="name">covariance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">i</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">j</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.covariance-view-source"><span>View Source</span></label>
 
@@ -5457,7 +5457,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">correlation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">i</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">j</span><span class="p">:</span> <span class="nb">int</span></span>)</span>
+        <span class="name">correlation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">i</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">j</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.correlation-view-source"><span>View Source</span></label>
 
@@ -5478,7 +5478,7 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">sample</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">sample</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Population.sample-view-source"><span>View Source</span></label>
 
@@ -5840,7 +5840,7 @@ e.g. constructing using a survival distribution.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">from_rv</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">rv</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>, </span><span class="param"><span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span>)</span>
+        <span class="name">from_rv</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">rv</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span>, </span><span class="param"><span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="from_rv-view-source"><span>View Source</span></label>
 
@@ -6069,7 +6069,7 @@ to be summed.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">dice</span></span>)</span>
+        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">dice</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="min_outcome-view-source"><span>View Source</span></label>
 
@@ -6092,7 +6092,7 @@ to be summed.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">dice</span></span>)</span>
+        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">dice</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="max_outcome-view-source"><span>View Source</span></label>
 
@@ -6782,7 +6782,7 @@ is constructed and used to evaluate this generator.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="OutcomeCountGenerator.min_outcome-view-source"><span>View Source</span></label>
 
@@ -6801,7 +6801,7 @@ is constructed and used to evaluate this generator.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="OutcomeCountGenerator.max_outcome-view-source"><span>View Source</span></label>
 
@@ -7549,7 +7549,7 @@ counted that many times.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">set_sorted_roll_counts</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">sorted_roll_counts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span></span>)</span>
+        <span class="name">set_sorted_roll_counts</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">sorted_roll_counts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Pool.set_sorted_roll_counts-view-source"><span>View Source</span></label>
 
@@ -7705,7 +7705,7 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">min_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Pool.min_outcome-view-source"><span>View Source</span></label>
 
@@ -7727,7 +7727,7 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span>)</span>
+        <span class="name">max_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Pool.max_outcome-view-source"><span>View Source</span></label>
 
@@ -8825,7 +8825,7 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">sample</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#OutcomeCountGenerator">icepool.OutcomeCountGenerator</a></span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">]</span></span>)</span>
+        <span class="name">sample</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#OutcomeCountGenerator">icepool.OutcomeCountGenerator</a></span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="OutcomeCountEvaluator.sample-view-source"><span>View Source</span></label>
 
@@ -8988,7 +8988,7 @@ provided as a convenience.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n"><a href="#OutcomeCountGenerator">icepool.OutcomeCountGenerator</a></span></span>)</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n"><a href="#OutcomeCountGenerator">icepool.OutcomeCountGenerator</a></span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JointEvaluator.final_outcome-view-source"><span>View Source</span></label>
 
@@ -9126,7 +9126,7 @@ ascending and others are descending.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span>)</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="EvaluateSum.next_state-view-source"><span>View Source</span></label>
 
@@ -9151,7 +9151,7 @@ ascending and others are descending.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span>)</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="EvaluateSum.final_outcome-view-source"><span>View Source</span></label>
 
@@ -9203,7 +9203,7 @@ parameters.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">direction</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span>)</span>
+        <span class="name">direction</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="EvaluateSum.direction-view-source"><span>View Source</span></label>
 
@@ -10076,7 +10076,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">clear_pool_cache</span><span class="signature pdoc-code condensed">()</span>
+        <span class="name">clear_pool_cache</span><span class="signature pdoc-code condensed">(<span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="clear_pool_cache-view-source"><span>View Source</span></label>
 
