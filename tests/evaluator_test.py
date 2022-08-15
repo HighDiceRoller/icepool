@@ -79,7 +79,7 @@ def test_standard_pool_zero_dice():
 
 
 def test_runs():
-    result = icepool.BestRunEvaluator()(icepool.standard_pool([12, 10, 8]))
+    result = icepool.BestStraightEvaluator()(icepool.standard_pool([12, 10, 8]))
 
     def func(*outcomes):
         outcomes = sorted(outcomes)
@@ -100,7 +100,7 @@ def test_runs():
 
 def test_runs_skip():
     die = icepool.Die([0, 10])
-    result = icepool.BestRunEvaluator()(die.pool(10))
+    result = icepool.BestStraightEvaluator()(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
@@ -160,3 +160,16 @@ def test_enumerate_pool_vs_sum(pool):
         result = icepool.expand_evaluator(pool).sub(sum)
         expected = pool.sum()
         assert result.equals(expected)
+
+
+def test_count_in_evaluator():
+    result = icepool.d6.pool(10).count_in({-1, 4, 6})
+    expected = icepool.d6.count_in(10, {4, 6})
+    assert result.equals(expected)
+
+
+def test_contains_subset_vs_intersection_size():
+    pool = icepool.d6.pool(10)
+    result_a = pool.contains_subset([1, 2, 3, 3])
+    result_b = pool.intersection_size([1, 2, 3, 3]) == 4
+    assert result_a == result_b

@@ -5,7 +5,8 @@ __docformat__ = 'google'
 import icepool
 from icepool.outcome_count_evaluator import Order, OutcomeCountEvaluator
 
-from typing import Callable, Hashable
+from collections import defaultdict
+from typing import Any, Callable, Collection, Container, Hashable, Mapping
 
 
 class WrapFuncEvaluator(OutcomeCountEvaluator):
@@ -98,8 +99,7 @@ class SumEvaluator(OutcomeCountEvaluator):
             return final_state
 
     def order(self, *_):
-        """This evaluator doesn't care about order. """
-        return 0
+        return Order.Any
 
 
 sum_evaluator = SumEvaluator()
@@ -112,10 +112,7 @@ class ExpandEvaluator(OutcomeCountEvaluator):
     """
 
     def __init__(self, order=Order.Ascending):
-        """`order` determines the sort order.
-
-        Positive for ascending and negative for descending.
-        """
+        """`order` determines the sort order. """
         self._order = order
 
     def next_state(self, state, outcome, count):
@@ -134,7 +131,81 @@ class ExpandEvaluator(OutcomeCountEvaluator):
 expand_evaluator = ExpandEvaluator()
 
 
-class BestSetEvaluator(OutcomeCountEvaluator):
+class CountInEvaluator(OutcomeCountEvaluator):
+    """Counts how many of the given outcome are produced by the generator."""
+
+    def __init__(self, target: Container, /):
+        self._target = target
+
+    def next_state(self, state, outcome, count):
+        if outcome in self._target:
+            state = (state or 0) + count
+        return state
+
+    def final_outcome(self, final_state, *_):
+        return final_state or 0
+
+    def order(self, *_):
+        return Order.Any
+
+
+class SubsetTargetEvaluator(OutcomeCountEvaluator):
+    """Base class for evaluators that look for a subset (possibly with repeated elements)."""
+
+    def __init__(self, target: Collection | Mapping[Any, int], /):
+        """
+        Args:
+            target: Either a collection of outcomes, possibly with repeated elements.
+                Or a mapping from outcomes to counts.
+        """
+        if isinstance(target, Mapping):
+            self._target = target
+        else:
+            self._target = defaultdict(int)
+            for outcome in target:
+                self._target[outcome] += 1
+
+    def order(self, *_):
+        return Order.Any
+
+    def alignment(self, *_) -> Collection:
+        return self._target.keys()
+
+
+class ContainsSubsetEvaluator(SubsetTargetEvaluator):
+    """Whether the target is a subset of the generator."""
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = True
+        if self._target.get(outcome, 0) > count:
+            state = False
+        return state
+
+    def final_outcome(self, final_state, *_):
+        if final_state is None:
+            return True
+        else:
+            return final_state
+
+
+class IntersectionSizeEvaluator(SubsetTargetEvaluator):
+    """How many elements overlap between the generator and the target."""
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = 0
+        state += min(self._target.get(outcome, 0), count)
+        return state
+
+    def final_outcome(self, final_state, *_):
+        if final_state is None:
+            return 0
+        else:
+            return final_state
+
+
+class BestMatchingSetEvaluator(OutcomeCountEvaluator):
     """The best matching set of a generator.
 
     This prioritizes set size, then the outcome.
@@ -153,12 +224,14 @@ class BestSetEvaluator(OutcomeCountEvaluator):
             return max(state, (count, outcome))
 
     def order(self, *_):
-        """This evaluator doesn't care about order. """
-        return 0
+        return Order.Any
 
 
-class BestRunEvaluator(OutcomeCountEvaluator):
-    """The best run (aka "straight") in a generator.
+best_matching_set_evaluator = BestMatchingSetEvaluator()
+
+
+class BestStraightEvaluator(OutcomeCountEvaluator):
+    """The best straight in a generator.
 
     Outcomes must be `int`s.
 
@@ -179,11 +252,12 @@ class BestRunEvaluator(OutcomeCountEvaluator):
         return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
     def final_outcome(self, final_state, *_):
-        """The best run. """
         return final_state[:2]
 
     def order(self, *_):
-        """This only considers outcomes in ascending order. """
-        return 1
+        return Order.Ascending
 
     alignment = OutcomeCountEvaluator.range_alignment
+
+
+best_straight_evaluator = BestStraightEvaluator()

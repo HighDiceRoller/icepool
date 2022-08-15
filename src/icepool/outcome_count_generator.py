@@ -8,7 +8,7 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Callable, Generator, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Container, Generator, Mapping, Sequence, TypeAlias, TypeVar
 
 NextOutcomeCountGenerator: TypeAlias = Generator[tuple['OutcomeCountGenerator',
                                                        Sequence[int], int],
@@ -111,15 +111,67 @@ class OutcomeCountGenerator(ABC):
     def max_outcome(self):
         return self.outcomes()[-1]
 
-    def sum(self) -> 'icepool.Die':
-        """Convenience method to simply sum the dice in this generator.
+    # Built-in evaluators.
 
-        This uses `icepool.sum_pool`.
+    def sum(self) -> 'icepool.Die':
+        """The sum of the outcomes."""
+        return icepool.sum_evaluator(self)
+
+    def count(self, target, /) -> 'icepool.Die':
+        """The number of outcomes that are == the target."""
+        return icepool.CountInEvaluator({target}).evaluate(self)
+
+    def count_in(self, target: Container, /) -> 'icepool.Die':
+        """The number of outcomes that are in the target."""
+        return icepool.CountInEvaluator(target).evaluate(self)
+
+    def contains_subset(self, target: Collection | Mapping[Any, int],
+                        /) -> 'icepool.Die':
+        """Whether the outcomes contain the target subset.
+
+        Elements in the target may be repeated.
+
+        Args:
+            target: Either a collection of outcomes, counting once per appearance.
+                Or a mapping from outcomes to target counts.
+        """
+        return icepool.ContainsSubsetEvaluator(target).evaluate(self)
+
+    def intersection_size(self, target: Collection | Mapping[Any, int],
+                          /) -> 'icepool.Die':
+        """The size of the intersection of the outcomes and the target subset.
+
+        Elements in the target may be repeated.
+
+        E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.
+
+        Args:
+            target: Either a collection of outcomes, counting once per appearance.
+                Or a mapping from outcomes to target counts.
+        """
+        return icepool.IntersectionSizeEvaluator(target).evaluate(self)
+
+    def best_matching_set(self) -> 'icepool.Die':
+        """The best matching set among the outcomes.
 
         Returns:
-            A `Die` representing the sum.
+            A `Die` with outcomes (set_size, outcome).
+            The greatest single such set is returned.
         """
-        return icepool.sum_evaluator(self)
+        return icepool.best_matching_set_evaluator.evaluate(self)
+
+    def best_straight(self) -> 'icepool.Die':
+        """The best straight among the outcomes.
+
+        Outcomes must be `int`s.
+
+        Returns:
+            A `Die` with outcomes (straight_length, outcome).
+            The greatest single such straight is returned.
+        """
+        return icepool.best_straight_evaluator.evaluate(self)
+
+    # Sampling.
 
     def sample(self) -> tuple[tuple, ...]:
         """EXPERIMENTAL: A single random sample from this generator.

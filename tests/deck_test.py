@@ -1,10 +1,10 @@
 import icepool
 import pytest
 
-from icepool import BestRunEvaluator
+from icepool import BestStraightEvaluator
 
 # no wraparound
-find_best_run = BestRunEvaluator()
+best_run_evaluator = BestStraightEvaluator()
 
 
 def trivial_next_state(state, outcome, *counts):
@@ -26,7 +26,7 @@ def test_empty_deal():
 
 def test_poker_straight():
     deal = icepool.Deck(range(13), times=4).deal(5)
-    result = find_best_run.evaluate(deal).marginals[0] == 5
+    result = best_run_evaluator.evaluate(deal).marginals[0] == 5
     assert result.equals(icepool.coin(9216, 2598960))
 
 

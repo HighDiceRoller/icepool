@@ -214,7 +214,7 @@ class OutcomeCountEvaluator(ABC):
         """Evaluates generator(s).
 
         You can call the `OutcomeCountEvaluator` object directly for the same effect,
-        e.g. `evaluate_sum(generator)` is an alias for `evaluate_sum.evaluate(generator)`.
+        e.g. `sum_evaluator(generator)` is an alias for `sum_evaluator.evaluate(generator)`.
 
         Most evaluators will expect a fixed number of generators.
         The union of the outcomes of the generator(s) must be totally orderable.

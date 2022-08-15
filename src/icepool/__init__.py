@@ -37,7 +37,12 @@ from icepool.die.lowest_highest import lowest, highest
 from icepool.pool import Pool, standard_pool, clear_pool_cache
 from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
 from icepool.outcome_count_evaluator import OutcomeCountEvaluator, Order
-from icepool.evaluators import WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator, expand_evaluator, BestSetEvaluator, BestRunEvaluator
+from icepool.evaluators import (
+    WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
+    expand_evaluator, CountInEvaluator, SubsetTargetEvaluator,
+    ContainsSubsetEvaluator, IntersectionSizeEvaluator,
+    BestMatchingSetEvaluator, best_matching_set_evaluator,
+    BestStraightEvaluator, best_straight_evaluator)
 
 from icepool.deck import Deck
 from icepool.deal import Deal
