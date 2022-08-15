@@ -106,14 +106,10 @@ sum_evaluator = SumEvaluator()
 
 
 class ExpandEvaluator(OutcomeCountEvaluator):
-    """Expands all (sorted) results of a generator.
+    """Expands all results of a generator.
 
-    This is expensive and not recommended unless there are few elements being output.
+    This is expensive and not recommended unless there are few possibilities.
     """
-
-    def __init__(self, order=Order.Ascending):
-        """`order` determines the sort order. """
-        self._order = order
 
     def next_state(self, state, outcome, count):
         if count < 0:
@@ -125,7 +121,7 @@ class ExpandEvaluator(OutcomeCountEvaluator):
             return state + (outcome,) * count
 
     def order(self, *_):
-        return self._order
+        return Order.Any
 
 
 expand_evaluator = ExpandEvaluator()

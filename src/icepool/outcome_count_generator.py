@@ -113,6 +113,13 @@ class OutcomeCountGenerator(ABC):
 
     # Built-in evaluators.
 
+    def expand(self) -> 'icepool.Die':
+        """All possible (unordered) tuples of outcomes.
+
+        This is expensive and not recommended unless there are few possibilities.
+        """
+        return icepool.expand_evaluator(self)
+
     def sum(self) -> 'icepool.Die':
         """The sum of the outcomes."""
         return icepool.sum_evaluator(self)
