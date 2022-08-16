@@ -10,9 +10,8 @@ from abc import ABC, abstractmethod
 
 from typing import Any, Callable, Collection, Container, Generator, Mapping, Sequence, TypeAlias, TypeVar
 
-NextOutcomeCountGenerator: TypeAlias = Generator[tuple['OutcomeCountGenerator',
-                                                       Sequence[int], int],
-                                                 None, None]
+NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
+    'icepool.OutcomeCountGenerator', Sequence[int], int], None, None]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
