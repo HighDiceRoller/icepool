@@ -1,3 +1,10 @@
+## 0.18.0
+
+* Rename `Die.reduce()` to `Die.simplify()` to avoid confusion with the free function `reduce()`.
+* Rename `OutcomeCountEvaluator.direction()` to `order()` and add explicitly named `Order` enums.
+* Add `is_in`, `count`, and `count_in` methods to dice.
+* Add built-in evaluators as convenience functions of `OutcomeCountGenerator`.
+
 ## 0.17.4
 
 * Fixes to `max_depth=None` case of `sub()`.
