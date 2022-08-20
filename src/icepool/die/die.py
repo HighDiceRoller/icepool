@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.again
 import icepool.format
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
@@ -48,7 +49,10 @@ class Die(Population):
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
-                denominator_method: str = 'lcm') -> 'Die':
+                *,
+                denominator_method: str = 'lcm',
+                max_depth: int = 1,
+                default_again=None) -> 'Die':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
@@ -72,6 +76,17 @@ class Die(Population):
         * Give the faces as a sequence: `Die([1, 2, 3, 4, 5, 6])`
 
         All quantities must be non-negative, though they can be zero.
+
+        EXPERIMENTAL: You can use `icepool.Again()` to roll the dice again
+        with a modification. For example,
+
+        ```
+        Die([1, 2, 3, 4, 5, 6 + Again()])
+        ```
+
+        would be an exploding d6. Use the `max_depth` parameter to control the
+        maximum depth. If the roll reaches the maximum depth, the
+        `default_again` is used instead of rolling again.
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
@@ -130,6 +145,33 @@ class Die(Population):
                 return outcomes
             else:
                 outcomes = outcomes._data
+        else:
+            # Check for Again.
+            if icepool.again.contains_again(outcomes):
+                if default_again is None:
+                    # Create a test die with `Again`s removed,
+                    # then find the zero.
+                    test = Die(outcomes, max_depth=0, default_again=Die([]))
+                    if len(test) == 0:
+                        raise ValueError(
+                            'If all outcomes contain Again, an explicit default_again must be provided.'
+                        )
+                    default_again = test.zero_outcome()
+                else:
+                    if icepool.again.contains_again(default_again):
+                        raise ValueError(
+                            'default_again cannot itself contain Again.')
+                default_again = icepool.Die([default_again])
+                if max_depth == 0:
+                    # Base case.
+                    outcomes = icepool.again.sub_agains(outcomes, default_again)
+                else:
+                    tail = Die(outcomes,
+                               times,
+                               denominator_method=denominator_method,
+                               max_depth=max_depth - 1,
+                               default_again=default_again)
+                    outcomes = icepool.again.sub_agains(outcomes, tail)
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
