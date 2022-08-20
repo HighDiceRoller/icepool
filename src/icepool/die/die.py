@@ -52,7 +52,7 @@ class Die(Population):
                 *,
                 denominator_method: str = 'lcm',
                 max_depth: int = 1,
-                default_again=None) -> 'Die':
+                again_end=None) -> 'Die':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
@@ -86,7 +86,8 @@ class Die(Population):
 
         would be an exploding d6. Use the `max_depth` parameter to control the
         maximum depth. If the roll reaches the maximum depth, the
-        `default_again` is used instead of rolling again.
+        `again_end` is used instead of rolling again. If no `again_end`
+        is provided, it defaults to a zero value.
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
@@ -148,29 +149,29 @@ class Die(Population):
         else:
             # Check for Again.
             if icepool.again.contains_again(outcomes):
-                if default_again is None:
+                if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test = Die(outcomes, max_depth=0, default_again=Die([]))
+                    test = Die(outcomes, max_depth=0, again_end=Die([]))
                     if len(test) == 0:
                         raise ValueError(
-                            'If all outcomes contain Again, an explicit default_again must be provided.'
+                            'If all outcomes contain Again, an explicit again_end must be provided.'
                         )
-                    default_again = test.zero_outcome()
+                    again_end = test.zero_outcome()
                 else:
-                    if icepool.again.contains_again(default_again):
+                    if icepool.again.contains_again(again_end):
                         raise ValueError(
-                            'default_again cannot itself contain Again.')
-                default_again = icepool.Die([default_again])
+                            'again_end cannot itself contain Again.')
+                again_end = icepool.Die([again_end])
                 if max_depth == 0:
                     # Base case.
-                    outcomes = icepool.again.sub_agains(outcomes, default_again)
+                    outcomes = icepool.again.sub_agains(outcomes, again_end)
                 else:
                     tail = Die(outcomes,
                                times,
                                denominator_method=denominator_method,
                                max_depth=max_depth - 1,
-                               default_again=default_again)
+                               again_end=again_end)
                     outcomes = icepool.again.sub_agains(outcomes, tail)
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
@@ -550,10 +551,10 @@ class Die(Population):
             *extra_args: These will be supplied to `repl` as extra positional
                 arguments after the outcome argument(s). `extra_args` can only
                 be supplied if `repl` is callable.
-            max_depth: `sub()` will be repeated with the same argument on the
-                result this many times.
+            max_depth: EXPERIMENTAL: `sub()` will be repeated with the same
+                argument on the result this many times.
 
-                EXPERIMENTAL: If set to `None`, this will seek a fixed point,
+                If set to `None`, this will seek a fixed point,
                 as a Markov process where the states are outcomes and the
                 transition function is defined by `repl`. The set of reachable
                 states must be finite, and every state must either be terminal

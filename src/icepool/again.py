@@ -11,6 +11,8 @@ from typing import Any, Callable, Mapping, Sequence
 class Again():
     """EXPERIMENTAL: A placeholder value used to indicate that the die should be rolled again with some modification.
 
+    This is only recommended for use as a literal in the constructor of `Die`.
+
     Examples:
 
     * `Again()` + 6: Roll again and add 6.
@@ -40,13 +42,99 @@ class Again():
             return self._func(
                 *(self._substitute_arg(arg, die) for arg in self._args))
 
-    # Operators.
+    # Unary operators.
+
+    def __neg__(self) -> 'Again':
+        return Again(operator.neg, self)
+
+    def __pos__(self) -> 'Again':
+        return Again(operator.pos, self)
+
+    def __invert__(self) -> 'Again':
+        return Again(operator.invert, self)
+
+    def __abs__(self) -> 'Again':
+        return Again(operator.abs, self)
+
+    # Binary operators.
 
     def __add__(self, other) -> 'Again':
         return Again(operator.add, self, other)
 
-    def __radd__(self, other):
+    def __radd__(self, other) -> 'Again':
         return Again(operator.add, other, self)
+
+    def __sub__(self, other) -> 'Again':
+        return Again(operator.sub, self, other)
+
+    def __rsub__(self, other) -> 'Again':
+        return Again(operator.sub, other, self)
+
+    def __mul__(self, other) -> 'Again':
+        return Again(operator.mul, self, other)
+
+    def __rmul__(self, other) -> 'Again':
+        return Again(operator.mul, other, self)
+
+    def __truediv__(self, other) -> 'Again':
+        return Again(operator.truediv, self, other)
+
+    def __rtruediv__(self, other) -> 'Again':
+        return Again(operator.truediv, other, self)
+
+    def __floordiv__(self, other) -> 'Again':
+        return Again(operator.floordiv, self, other)
+
+    def __rfloordiv__(self, other) -> 'Again':
+        return Again(operator.floordiv, other, self)
+
+    def __pow__(self, other) -> 'Again':
+        return Again(operator.pow, self, other)
+
+    def __rpow__(self, other) -> 'Again':
+        return Again(operator.pow, other, self)
+
+    def __mod__(self, other) -> 'Again':
+        return Again(operator.mod, self, other)
+
+    def __rmod__(self, other) -> 'Again':
+        return Again(operator.mod, other, self)
+
+    def __lshift__(self, other) -> 'Again':
+        return Again(operator.lshift, self, other)
+
+    def __rlshift__(self, other) -> 'Again':
+        return Again(operator.lshift, other, self)
+
+    def __rshift__(self, other) -> 'Again':
+        return Again(operator.rshift, self, other)
+
+    def __rrshift__(self, other) -> 'Again':
+        return Again(operator.rshift, other, self)
+
+    def __and__(self, other) -> 'Again':
+        return Again(operator.and_, self, other)
+
+    def __rand__(self, other) -> 'Again':
+        return Again(operator.and_, other, self)
+
+    def __or__(self, other) -> 'Again':
+        return Again(operator.or_, self, other)
+
+    def __ror__(self, other) -> 'Again':
+        return Again(operator.or_, other, self)
+
+    def __xor__(self, other) -> 'Again':
+        return Again(operator.xor, self, other)
+
+    def __rxor__(self, other) -> 'Again':
+        return Again(operator.xor, other, self)
+
+    def __matmul__(self, other) -> 'Again':
+        return Again(operator.matmul, self, other)
+
+    def __rmatmul__(self, other) -> 'Again':
+        return Again(operator.matmul, other, self)
 
     # Hashing and equality.
 

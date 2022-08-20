@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import Again, d6, Die
+from icepool import Again, d6, Die, Reroll
 
 
 def test_again_evaluate():
@@ -35,10 +35,15 @@ def test_explode_d6_depth_4():
 
 
 def test_again_plus_again_depth_0():
-    die = Die([1, 2, 3, 4, 5, Again() + Again()], max_depth=0, default_again=3)
+    die = Die([1, 2, 3, 4, 5, Again() + Again()], max_depth=0, again_end=3)
     assert die == Die([1, 2, 3, 4, 5, 6])
 
 
 def test_again_plus_again_depth_1():
-    die = Die([1, 2, 3, 4, 5, Again() + Again()], default_again=3)
+    die = Die([1, 2, 3, 4, 5, Again() + Again()], again_end=3)
     assert die == Die([1, 2, 3, 4, 5, 2 @ d6])
+
+
+def test_again_reroll():
+    die = Die([1, 2, 3, 4, 5, Again()], max_depth=0, again_end=Reroll)
+    assert die == icepool.d(5)
