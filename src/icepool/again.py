@@ -159,19 +159,24 @@ def is_mapping(arg) -> bool:
         arg, 'items') and hasattr(arg, '__getitem__')
 
 
-def contains_again(outcome) -> bool:
+def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     """Returns True iff the outcome (recursively) contains any instances of Again.
 
     Raises:
         TypeError if Again is nested inside a tuple.
     """
-    if isinstance(outcome, icepool.Again):
+    return any(_contains_again_inner(x) for x in outcomes)
+
+
+def _contains_again_inner(outcome) -> bool:
+    if is_mapping(outcome):
+        return any(_contains_again_inner(x) for x in outcome)
+    elif isinstance(outcome, icepool.Again):
         return True
-    elif isinstance(outcome, Sequence):
-        result = any(contains_again(x) for x in outcome)
-        if result and isinstance(outcome, tuple):
+    elif isinstance(outcome, tuple):
+        if any(_contains_again_inner(x) for x in outcome):
             raise TypeError('tuple outcomes cannot contain Again objects.')
-        return result
+        return False
     else:
         return False
 
