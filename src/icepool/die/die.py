@@ -93,7 +93,8 @@ class Die(Population):
             the outcomes that don't involve `Again`.
         * A single outcome, or a `Die`.
         * `Reroll`, which will reroll any end roll involving `Again`.
-        * You could also consider using some sort of placeholder value.
+        * You could also consider using some sort of placeholder value such as
+            `math.inf`.
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:

@@ -3,6 +3,8 @@ import pytest
 
 from icepool import Again, d6, Die, Reroll
 
+import math
+
 
 def test_again_evaluate():
     x = Again()
@@ -47,3 +49,8 @@ def test_again_plus_again_depth_1():
 def test_again_reroll():
     die = Die([1, 2, 3, 4, 5, Again()], max_depth=0, again_end=Reroll)
     assert die == icepool.d(5)
+
+
+def test_again_infinity():
+    die = Die([1, 2, 3, 4, 5, Again()], max_depth=0, again_end=math.inf)
+    assert die == Die([1, 2, 3, 4, 5, math.inf])
