@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.again
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
@@ -63,6 +64,9 @@ class Deck(Population):
                 return outcomes
             else:
                 outcomes = outcomes._data
+
+        if icepool.again.contains_again(outcomes):
+            raise ValueError('Again cannot be used with Decks.')
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
