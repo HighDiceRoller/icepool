@@ -1,3 +1,7 @@
+## 0.19.1
+
+Fix `contains_again` checking of sequences.
+
 ## 0.19.0
 
 New feature: `Again()`, a placeholder that allows to roll again with some modification.
