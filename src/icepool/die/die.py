@@ -51,7 +51,7 @@ class Die(Population):
                 times: Sequence[int] | int = 1,
                 *,
                 denominator_method: str = 'lcm',
-                max_depth: int = 1,
+                again_max_depth: int = 1,
                 again_end=None) -> 'Die':
         """Constructor for a `Die`.
 
@@ -84,8 +84,8 @@ class Die(Population):
         Die([1, 2, 3, 4, 5, 6 + Again()])
         ```
 
-        would be an exploding d6. Use the `max_depth` parameter to control the
-        maximum depth. If the roll reaches the maximum depth, the
+        would be an exploding d6. Use the `again_max_depth` parameter to control
+        the maximum depth. If the roll reaches the maximum depth, the
         `again_end` is used instead of rolling again. Options for `again_end`
         include:
 
@@ -159,7 +159,7 @@ class Die(Population):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test = Die(outcomes, max_depth=0, again_end=Die([]))
+                    test = Die(outcomes, again_max_depth=0, again_end=Die([]))
                     if len(test) == 0:
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
@@ -170,14 +170,14 @@ class Die(Population):
                         raise ValueError(
                             'again_end cannot itself contain Again.')
                 again_end = icepool.Die([again_end])
-                if max_depth == 0:
+                if again_max_depth == 0:
                     # Base case.
                     outcomes = icepool.again.sub_agains(outcomes, again_end)
                 else:
                     tail = Die(outcomes,
                                times,
                                denominator_method=denominator_method,
-                               max_depth=max_depth - 1,
+                               again_max_depth=again_max_depth - 1,
                                again_end=again_end)
                     outcomes = icepool.again.sub_agains(outcomes, tail)
 
