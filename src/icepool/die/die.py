@@ -169,12 +169,12 @@ class Die(Population):
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
                         )
-                    again_end = test.zero_outcome()
+                    again_end = icepool.Die([test.zero_outcome()])
                 else:
+                    again_end = icepool.Die([again_end])
                     if icepool.again.contains_again(again_end):
                         raise ValueError(
                             'again_end cannot itself contain Again.')
-                again_end = icepool.Die([again_end])
                 if again_max_depth == 0:
                     # Base case.
                     outcomes = icepool.again.sub_agains(outcomes, again_end)
