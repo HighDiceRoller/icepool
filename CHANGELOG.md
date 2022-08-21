@@ -1,3 +1,11 @@
+## 0.19.0
+
+New feature: `Again()`, a placeholder that allows to roll again with some modification.
+
+* `**kwargs` are forwarded to the constructor of the yielded or returned die for `sub`, `if_else`, `reduce`, `accumulate`, `apply`, `apply_sorted`.
+* Add optional `final_kwargs` method to evaluators.
+* Rename `max_depth` parameter of `sub()` to `repeat`.
+
 ## 0.18.0
 
 * Rename `Die.reduce()` to `Die.simplify()` to avoid confusion with the free function `reduce()`.
