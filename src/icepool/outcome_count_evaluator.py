@@ -144,11 +144,11 @@ class OutcomeCountEvaluator(ABC):
                 parameters.
 
         Returns:
-            * Order.Ascending, or a value > 0
+            * Order.Ascending (= 1)
                 if `next_state()` should always see the outcomes in ascending order.
-            * Order.Descending, or a value < 0
+            * Order.Descending (= -1)
                 if `next_state()` should always see the outcomes in descending order.
-            * Order.Any, or a value == 0
+            * Order.Any (= 0)
                 if the result of the evaluation is order-independent.
         """
         return Order.Ascending
