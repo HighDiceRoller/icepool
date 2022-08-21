@@ -61,7 +61,7 @@ class JointEvaluator(OutcomeCountEvaluator):
             evaluator.final_outcome(final_substate, *generators) for evaluator,
             final_substate in zip(self._sub_evaluators, final_state))
 
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> int:
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
         """Determines the common order of the subevals.
 
         Raises:
@@ -75,11 +75,11 @@ class JointEvaluator(OutcomeCountEvaluator):
         if ascending and descending:
             raise ValueError('Sub-evals have conflicting orders.')
         elif ascending:
-            return 1
+            return Order.Ascending
         elif descending:
-            return -1
+            return Order.Descending
         else:
-            return 0
+            return Order.Any
 
 
 class SumEvaluator(OutcomeCountEvaluator):

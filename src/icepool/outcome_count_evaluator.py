@@ -126,7 +126,7 @@ class OutcomeCountEvaluator(ABC):
         """
         return final_state
 
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> int:
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
         """Optional function to determine the order in which `next_state()` will see outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -144,9 +144,12 @@ class OutcomeCountEvaluator(ABC):
                 parameters.
 
         Returns:
-            * > 0 if `next_state()` should always see the outcomes in ascending order.
-            * < 0 if `next_state()` should always see the outcomes in descending order.
-            * 0 if the order may be determined automatically.
+            * Order.Ascending, or a value > 0
+                if `next_state()` should always see the outcomes in ascending order.
+            * Order.Descending, or a value < 0
+                if `next_state()` should always see the outcomes in descending order.
+            * Order.Any, or a value == 0
+                if the order may be determined automatically.
         """
         return Order.Ascending
 
@@ -265,8 +268,8 @@ class OutcomeCountEvaluator(ABC):
     __call__ = evaluate
 
     def _select_algorithm(
-            self,
-            *generators: icepool.OutcomeCountGenerator) -> tuple[Callable, int]:
+            self, *generators: icepool.OutcomeCountGenerator
+    ) -> tuple[Callable, Order]:
         """Selects an algorithm and iteration order.
 
         Returns:
@@ -283,24 +286,24 @@ class OutcomeCountEvaluator(ABC):
         pop_max_cost = math.prod(pop_max_costs)
 
         # No preferred order case: go directly with cost.
-        if eval_order == 0:
+        if eval_order == Order.Any:
             if pop_max_cost <= pop_min_cost:
-                return self._eval_internal, 1
+                return self._eval_internal, Order.Ascending
             else:
-                return self._eval_internal, -1
+                return self._eval_internal, Order.Descending
 
         # Preferred order case.
         # Go with the preferred order unless there is a "significant"
         # cost factor.
 
         if PREFERRED_ORDER_COST_FACTOR * pop_max_cost < pop_min_cost:
-            cost_order = 1
+            cost_order = Order.Ascending
         elif PREFERRED_ORDER_COST_FACTOR * pop_min_cost < pop_max_cost:
-            cost_order = -1
+            cost_order = Order.Descending
         else:
-            cost_order = 0
+            cost_order = Order.Any
 
-        if cost_order == 0 or eval_order == cost_order:
+        if cost_order == Order.Any or eval_order == cost_order:
             # Use the preferred algorithm.
             return self._eval_internal, eval_order
         else:
