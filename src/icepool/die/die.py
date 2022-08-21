@@ -77,6 +77,11 @@ class Die(Population):
 
         All quantities must be non-negative, though they can be zero.
 
+        Several methods and functions foward **kwargs to this constructor.
+        However, these only affect the construction of the returned or yielded
+        dice. Any other implicit conversions of arguments or operands to dice
+        will be done with the default keyword arguments.
+
         EXPERIMENTAL: You can use `icepool.Again()` to roll the dice again
         with a modification. For example,
 
