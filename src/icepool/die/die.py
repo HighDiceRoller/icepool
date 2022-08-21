@@ -540,12 +540,18 @@ class Die(Population):
             *extra_args,
             repeat: int | None = 1,
             star: int = 0,
-            denominator_method: str = 'lcm') -> 'Die':
+            denominator_method: str = 'lcm',
+            max_depth: int = 1,
+            again_end=None) -> 'Die':
         """Changes outcomes of the `Die` to other outcomes.
 
         You can think of this as `sub`stituting outcomes of this `Die` for other
         outcomes or dice. Or, as executing a `sub`routine based on the roll of
         this `Die`.
+
+        EXPERIMENTAL: `Again`, `max_depth`, and `again_end` can be used as the
+        `Die` constructor. It is not advised to use these with `repeat` other
+        than 1.
 
         Args:
             repl: One of the following:
@@ -605,18 +611,24 @@ class Die(Population):
 
             return icepool.Die(repl_list,
                                self.quantities(),
-                               denominator_method=denominator_method)
+                               denominator_method=denominator_method,
+                               max_depth=max_depth,
+                               again_end=again_end)
         elif repeat is not None:
             next = self.sub(repl,
                             repeat=1,
                             *extra_args,
                             star=star,
-                            denominator_method=denominator_method)
+                            denominator_method=denominator_method,
+                            max_depth=max_depth,
+                            again_end=again_end)
             return next.sub(repl,
                             repeat=repeat - 1,
                             *extra_args,
                             star=star,
-                            denominator_method=denominator_method)
+                            denominator_method=denominator_method,
+                            max_depth=max_depth,
+                            again_end=again_end)
         else:
             # Seek fixed point.
             if callable(repl):
@@ -644,13 +656,17 @@ class Die(Population):
             curr = prev.sub(step_outcome,
                             repeat=1,
                             *extra_args,
-                            denominator_method=denominator_method)
+                            denominator_method=denominator_method,
+                            max_depth=max_depth,
+                            again_end=again_end)
             while not curr.equals(prev, simplify=True):
                 prev = curr
                 curr = prev.sub(step_outcome,
                                 repeat=1,
                                 *extra_args,
-                                denominator_method=denominator_method)
+                                denominator_method=denominator_method,
+                                max_depth=max_depth,
+                                again_end=again_end)
             return curr
 
     def explode(self,
