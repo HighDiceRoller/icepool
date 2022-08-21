@@ -157,7 +157,8 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
 def reduce(func: Callable[[Any, Any], Any],
            dice,
            *,
-           initial=None) -> 'icepool.Die':
+           initial=None,
+           **kwargs) -> 'icepool.Die':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -171,6 +172,8 @@ def reduce(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
+        **kwargs: Any additional keyword arguments will be provided to the
+            `Die()` constructor for each result.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -179,14 +182,15 @@ def reduce(func: Callable[[Any, Any], Any],
     else:
         result = next(iter_dice)
     for die in iter_dice:
-        result = apply(func, result, die)
+        result = apply(func, result, die, **kwargs)
     return result
 
 
 def accumulate(func: Callable[[Any, Any], Any],
                dice,
                *,
-               initial=None) -> Generator['icepool.Die', None, None]:
+               initial=None,
+               **kwargs) -> Generator['icepool.Die', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -205,6 +209,8 @@ def accumulate(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
+        **kwargs: Any additional keyword arguments will be provided to the
+            `Die()` constructor for each result.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -217,23 +223,23 @@ def accumulate(func: Callable[[Any, Any], Any],
             return
     yield result
     for die in iter_dice:
-        result = apply(func, result, die)
+        result = apply(func, result, die, **kwargs)
         yield result
 
 
-def apply(func: Callable, *dice) -> 'icepool.Die':
+def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
-    `apply()` is flexible but not very efficient for more than two dice.
-    Instead of using more than two arguments:
+    `apply()` is flexible but not very efficient for more than a few dice.
+    Instead of using several arguments:
 
-    * If the problem is easy to solve by considering one additional `Die` at a
-        time, try using `reduce()` instead.
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
         `icepool.Pool` and `icepool.OutcomeCountEvaluator`.
+    * If the problem is easy to solve by considering one additional `Die` at a
+        time, try using `reduce()` instead.
     * If the order in which the dice are rolled is not important, you can use
         `apply_sorted()`. This is less efficient than either of the above two,
         but is still more efficient than `apply()`.
@@ -244,6 +250,8 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
         *dice: Any number of dice (or objects convertible to dice).
             `func` will be called with all joint outcomes of `dice`, with one
             argument per `Die`.
+        **kwargs: Any additional keyword arguments will be provided to the
+            final `Die()` constructor.
 
     Returns:
         A `Die` constructed from the outputs of `func` and the product of the
@@ -254,7 +262,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
             'The first argument must be callable. Did you forget to provide a function?'
         )
     if len(dice) == 0:
-        return icepool.Die([func()])
+        return icepool.Die([func()], **kwargs)
     dice = tuple(icepool.Die([die]) for die in dice)
     final_outcomes = []
     final_quantities = []
@@ -266,7 +274,7 @@ def apply(func: Callable, *dice) -> 'icepool.Die':
             final_outcomes.append(final_outcome)
             final_quantities.append(final_quantity)
 
-    return icepool.Die(final_outcomes, final_quantities)
+    return icepool.Die(final_outcomes, final_quantities, **kwargs)
 
 
 class apply_sorted():
@@ -275,13 +283,14 @@ class apply_sorted():
     See the "constructor" for details.
     """
 
-    def __new__(cls, func: Callable, *dice) -> 'icepool.Die':  # type: ignore
+    def __new__(  # type: ignore
+            cls, func: Callable, *dice, **kwargs) -> 'icepool.Die':
         """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
-        Not actually a constructor.
+        Treat this as an ordinary function, not a constructor.
 
-        This is more efficient than `apply()` but still not very efficient.
-        Use `OutcomeCountEvaluator` instead if at all possible.
+        `apply_sorted()` is more efficient than `apply()` but still not very
+        efficient. Use `OutcomeCountEvaluator` instead if at all possible.
 
         You can use `apply_sorted[]` to only see outcomes at particular sorted indexes.
         For example, `apply_sorted[-2:](func, *dice)` would give the two highest
@@ -294,6 +303,8 @@ class apply_sorted():
             *dice: Any number of dice (or objects convertible to dice).
                 `func` will be called with all sorted joint outcomes of `dice`,
                 with one argument per die. All outcomes must be totally orderable.
+            **kwargs: Any additional keyword arguments will be provided to the
+                final `Die()` constructor.
 
         Returns:
             A `Die` constructed from the outputs of `func` and the weight of rolling
@@ -304,7 +315,7 @@ class apply_sorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return icepool.expand_evaluator(pool).sub(func, star=1)
+        return icepool.expand_evaluator(pool).sub(func, star=1, **kwargs)
 
     def __class_getitem__(cls,
                           sorted_roll_counts: int | slice | tuple[int, ...],
@@ -312,21 +323,23 @@ class apply_sorted():
         """Implements `[]` syntax for `apply_sorted`."""
         if isinstance(sorted_roll_counts, int):
 
-            def result(func: Callable, *dice) -> 'icepool.Die':
+            def result(func: Callable, *dice, **kwargs) -> 'icepool.Die':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 die = icepool.Pool(dice)[sorted_roll_counts]
-                return die.sub(func)
+                return die.sub(func, **kwargs)
         else:
 
-            def result(func: Callable, *dice) -> 'icepool.Die':
+            def result(func: Callable, *dice, **kwargs) -> 'icepool.Die':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
-                return icepool.expand_evaluator(pool).sub(func, star=1)
+                return icepool.expand_evaluator(pool).sub(func,
+                                                          star=1,
+                                                          **kwargs)
 
         return result
