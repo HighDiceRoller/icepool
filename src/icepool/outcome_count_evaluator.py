@@ -155,7 +155,7 @@ class OutcomeCountEvaluator(ABC):
 
     def alignment(self,
                   *generators: icepool.OutcomeCountGenerator) -> Collection:
-        """Optional function to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
+        """Optional method to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
 
         There is no expectation that a subclass be able to handle
         an arbitrary number of generators. Thus, you are free to rename any of
@@ -204,6 +204,12 @@ class OutcomeCountEvaluator(ABC):
         min_outcome = min(generator.min_outcome() for generator in generators)
         max_outcome = max(generator.max_outcome() for generator in generators)
         return range(min_outcome, max_outcome + 1)
+
+    def final_kwargs(
+            self,
+            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
+        """Optional method to specify any extra keyword arguments to the final die constructor."""
+        return {}
 
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
@@ -263,7 +269,8 @@ class OutcomeCountEvaluator(ABC):
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
 
-        return icepool.Die(final_outcomes, final_weights)
+        return icepool.Die(final_outcomes, final_weights,
+                           **self.final_kwargs(*converted_generators))
 
     __call__ = evaluate
 
