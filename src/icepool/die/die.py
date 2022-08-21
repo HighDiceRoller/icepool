@@ -538,7 +538,7 @@ class Die(Population):
             repl: Callable[[Any], Any] | Mapping,
             /,
             *extra_args,
-            max_depth: int | None = 1,
+            repeat: int | None = 1,
             star: int = 0,
             denominator_method: str = 'lcm') -> 'Die':
         """Changes outcomes of the `Die` to other outcomes.
@@ -557,7 +557,7 @@ class Die(Population):
             *extra_args: These will be supplied to `repl` as extra positional
                 arguments after the outcome argument(s). `extra_args` can only
                 be supplied if `repl` is callable.
-            max_depth: EXPERIMENTAL: `sub()` will be repeated with the same
+            repeat: EXPERIMENTAL: `sub()` will be repeated with the same
                 argument on the result this many times.
 
                 If set to `None`, this will seek a fixed point,
@@ -584,9 +584,9 @@ class Die(Population):
                 'Extra positional arguments are only valid if repl is callable.'
             )
 
-        if max_depth == 0:
+        if repeat == 0:
             return self
-        elif max_depth == 1:
+        elif repeat == 1:
             if callable(repl):
                 if star:
                     repl_list = [
@@ -606,14 +606,14 @@ class Die(Population):
             return icepool.Die(repl_list,
                                self.quantities(),
                                denominator_method=denominator_method)
-        elif max_depth is not None:
+        elif repeat is not None:
             next = self.sub(repl,
-                            max_depth=1,
+                            repeat=1,
                             *extra_args,
                             star=star,
                             denominator_method=denominator_method)
             return next.sub(repl,
-                            max_depth=max_depth - 1,
+                            repeat=repeat - 1,
                             *extra_args,
                             star=star,
                             denominator_method=denominator_method)
@@ -642,13 +642,13 @@ class Die(Population):
 
             prev = self
             curr = prev.sub(step_outcome,
-                            max_depth=1,
+                            repeat=1,
                             *extra_args,
                             denominator_method=denominator_method)
             while not curr.equals(prev, simplify=True):
                 prev = curr
                 curr = prev.sub(step_outcome,
-                                max_depth=1,
+                                repeat=1,
                                 *extra_args,
                                 denominator_method=denominator_method)
             return curr
