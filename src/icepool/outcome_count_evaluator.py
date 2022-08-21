@@ -149,7 +149,7 @@ class OutcomeCountEvaluator(ABC):
             * Order.Descending, or a value < 0
                 if `next_state()` should always see the outcomes in descending order.
             * Order.Any, or a value == 0
-                if the order may be determined automatically.
+                if the result of the evaluation is order-independent.
         """
         return Order.Ascending
 

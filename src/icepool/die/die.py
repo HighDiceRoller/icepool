@@ -86,8 +86,14 @@ class Die(Population):
 
         would be an exploding d6. Use the `max_depth` parameter to control the
         maximum depth. If the roll reaches the maximum depth, the
-        `again_end` is used instead of rolling again. If no `again_end`
-        is provided, it defaults to a zero value.
+        `again_end` is used instead of rolling again. Options for `again_end`
+        include:
+
+        * No value (`None`), which will attempt to determine a zero value from
+            the outcomes that don't involve `Again`.
+        * A single outcome, or a `Die`.
+        * `Reroll`, which will reroll any end roll involving `Again`.
+        * You could also consider using some sort of placeholder value.
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
