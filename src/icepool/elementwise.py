@@ -21,7 +21,7 @@ def unary_elementwise(a, op: Callable, *args, **kwargs):
     Args:
         op: The unary operation to perform.
         a: The argument to the operation.
-        *args, **kwargs: Any additional arguments are provided to `op`.
+        *args, **kwargs: Any extra arguments are forwarded to `op`.
     """
     if type(a) == tuple:
         return tuple(unary_elementwise(aa, op, *args, **kwargs) for aa in a)
@@ -39,7 +39,7 @@ def binary_elementwise(a, b, op: Callable, *args, **kwargs):
     Args:
         op: The binary operation to perform.
         a, b: The arguments to the operation.
-        *args, **kwargs: Any additional arguments are provided to `op`.
+        *args, **kwargs: Any extra arguments are forwarded to `op`.
 
     Raises:
         ValueError: If a tuple is paired with a non-tuple or a tuple of a

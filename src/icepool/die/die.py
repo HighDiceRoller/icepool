@@ -576,7 +576,7 @@ class Die(Population):
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `repl` function. If `repl`
                 is not a callable, this has no effect.
-            **kwargs: Any extra keyworkd arguments are sent to the `Die()`
+            **kwargs: Any extra keyword arguments are forwarded to the final die
                 constructor.
 
         Returns:
@@ -709,20 +709,18 @@ class Die(Population):
 
         return self.sub(sub_func, denominator_method='lcm')
 
-    def if_else(self,
-                outcome_if_true,
-                outcome_if_false,
-                /,
-                *,
-                denominator_method: str = 'lcm') -> 'Die':
+    def if_else(self, outcome_if_true, outcome_if_false, /, **kwargs) -> 'Die':
         """Ternary conditional operator.
 
         This replaces truthy outcomes with the first argument and falsy outcomes
         with the second argument.
+
+        Args:
+            **kwargs: Any extra keyword arguments are forwarded to the final die
+                constructor.
         """
-        return self.bool().sub(lambda x: outcome_if_true
-                               if x else outcome_if_false,
-                               denominator_method=denominator_method)
+        return self.bool().sub(
+            lambda x: outcome_if_true if x else outcome_if_false, **kwargs)
 
     def is_in(self, target: Container, /) -> 'Die':
         """A die that returns True iff the roll of the die is contained in the target."""

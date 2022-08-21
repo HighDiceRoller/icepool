@@ -97,7 +97,7 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
             of the resulting `Die`.
             If the distribution is discrete, outcomes must be `int`s.
         denominator: The denominator of the resulting `Die` will be set to this.
-        **kwargs: These will be provided to `rv.cdf()`.
+        **kwargs: These will be forwarded to `rv.cdf()`.
     """
     if hasattr(rv, 'pdf'):
         # Continuous distributions use midpoints.
@@ -172,8 +172,8 @@ def reduce(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        **kwargs: Any additional keyword arguments will be provided to the
-            `Die()` constructor for each result.
+        **kwargs: Any extra keyword arguments are forwarded to the die
+            constructor for the final result.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -209,8 +209,8 @@ def accumulate(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        **kwargs: Any additional keyword arguments will be provided to the
-            `Die()` constructor for each result.
+        **kwargs: Any extra keyword arguments are forwarded to the die
+            constructor for each yielded result.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -250,8 +250,8 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
         *dice: Any number of dice (or objects convertible to dice).
             `func` will be called with all joint outcomes of `dice`, with one
             argument per `Die`.
-        **kwargs: Any additional keyword arguments will be provided to the
-            final `Die()` constructor.
+        **kwargs: Any extra keyword arguments are forwarded to the die
+            constructor for the final result.
 
     Returns:
         A `Die` constructed from the outputs of `func` and the product of the
@@ -303,8 +303,8 @@ class apply_sorted():
             *dice: Any number of dice (or objects convertible to dice).
                 `func` will be called with all sorted joint outcomes of `dice`,
                 with one argument per die. All outcomes must be totally orderable.
-            **kwargs: Any additional keyword arguments will be provided to the
-                final `Die()` constructor.
+            **kwargs: Any extra keyword arguments are forwarded to the die
+                constructor for the final result.
 
         Returns:
             A `Die` constructed from the outputs of `func` and the weight of rolling
