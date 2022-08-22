@@ -57,7 +57,14 @@ class SpecialValue(enum.Enum):
 
 
 Reroll = SpecialValue.Reroll
-"""Indicates an outcome should be rerolled (with unlimited depth)."""
+"""Indicates an outcome should be rerolled (with unlimited depth).
+
+Specific cases:
+
+* When used with `Again`, only that stage is rerolled, not the entire `Again`
+    tree.
+* When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
+"""
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'Again',

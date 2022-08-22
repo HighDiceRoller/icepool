@@ -81,23 +81,24 @@ class Die(Population):
         dice. Any other implicit conversions of arguments or operands to dice
         will be done with the default keyword arguments.
 
-        EXPERIMENTAL: You can use `icepool.Again()` to roll the dice again
-        with a modification. For example,
+        EXPERIMENTAL: Use `icepool.Again()` to roll the dice again, usually with
+        some modification. For example,
 
         ```
         Die([1, 2, 3, 4, 5, 6 + Again()])
         ```
 
         would be an exploding d6. Use the `again_depth` parameter to control
-        the maximum depth. If the roll reaches the maximum depth, the
-        `again_end` is used instead of rolling again. Options for `again_end`
-        include:
+        the maximum depth. `again_depth` does not apply to `Reroll`.
+
+        If the roll reaches the maximum depth, the `again_end` is used instead
+        of rolling again. Options for `again_end` include:
 
         * No value (`None`), which will attempt to determine a zero value from
             the outcomes that don't involve `Again`.
         * A single outcome, or a `Die`.
         * `Reroll`, which will reroll any end roll involving `Again`.
-        * You could also consider using some sort of placeholder value such as
+        * You could also consider some sort of placeholder value such as
             `math.inf`.
 
         Denominator: For a flat set of outcomes, the denominator is just the
