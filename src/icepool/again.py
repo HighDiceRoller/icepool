@@ -165,6 +165,9 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     Raises:
         TypeError if Again is nested inside a tuple.
     """
+    if isinstance(outcomes, icepool.Die):
+        # Dice should already have flattened out any Agains.
+        return False
     return any(_contains_again_inner(x) for x in outcomes)
 
 
