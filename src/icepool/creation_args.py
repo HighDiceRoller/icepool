@@ -49,17 +49,15 @@ def itemize(keys: Mapping[Any, int] | Sequence,
     return keys, times
 
 
-def expand_args_for_die(args, times, denominator_method: str):
-    merge_func = merge_weights_funcs[denominator_method]
-    subdatas = [expand(arg, merge_func) for arg in args]
-    data = merge_func(subdatas, times)
+def expand_args_for_die(args, times):
+    subdatas = [expand(arg, merge_weights_lcm) for arg in args]
+    data = merge_weights_lcm(subdatas, times)
     return Counts(data.items())
 
 
 def expand_args_for_deck(args, times):
-    merge_func = merge_duplicates
-    subdatas = [expand(arg, merge_func) for arg in args]
-    data = merge_func(subdatas, times)
+    subdatas = [expand(arg, merge_duplicates) for arg in args]
+    data = merge_duplicates(subdatas, times)
     return Counts(data.items())
 
 
@@ -102,26 +100,14 @@ def expand_scalar(arg) -> Mapping[Any, int]:
         return {arg: 1}
 
 
-def merge_weights_prod(subdatas: Sequence[Mapping[Any, int]],
-                       weights: Sequence[int]) -> Mapping[Any, int]:
-    if any(x < 0 for x in weights):
-        raise ValueError('weights cannot be negative.')
-
-    subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
-
-    denominator_prod = math.prod(d for d in subdata_denominators if d > 0)
-
-    data: MutableMapping[Any, int] = defaultdict(int)
-    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
-                                               weights):
-        factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
-        for outcome, weight in subdata.items():
-            data[outcome] += weight * factor
-    return data
-
-
 def merge_weights_lcm(subdatas: Sequence[Mapping[Any, int]],
                       weights: Sequence[int]) -> Mapping[Any, int]:
+    """Merge for dice.
+
+    Every subdata gets total weight proportional to the corresponding element of `weights`.
+
+    The final denominator is equal to the primary denominator times the LCM of the secondary denominators.
+    """
     if any(x < 0 for x in weights):
         raise ValueError('weights cannot be negative.')
 
@@ -138,47 +124,13 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[Any, int]],
     return data
 
 
-def merge_weights_lcm_joint(subdatas: Sequence[Mapping[Any, int]],
-                            weights: Sequence[int]) -> Mapping[Any, int]:
-    if any(x < 0 for x in weights):
-        raise ValueError('weights cannot be negative.')
-
-    subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
-
-    denominator_prod = math.lcm(*(d // math.gcd(d, w)
-                                  for d, w in zip(subdata_denominators, weights)
-                                  if d > 0))
-
-    data: MutableMapping[Any, int] = defaultdict(int)
-    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
-                                               weights):
-        factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
-        for outcome, weight in subdata.items():
-            data[outcome] += weight * factor
-    return data
-
-
-def merge_weights_simplify(subdatas: Sequence[Mapping[Any, int]],
-                           weights: Sequence[int]) -> Mapping[Any, int]:
-    data = merge_weights_lcm_joint(subdatas, weights)
-
-    gcd = math.gcd(*data.values())
-    if gcd > 1:
-        data = {outcome: weight // gcd for outcome, weight in data.items()}
-
-    return data
-
-
-merge_weights_funcs = {
-    'prod': merge_weights_prod,
-    'lcm': merge_weights_lcm,
-    'lcm_joint': merge_weights_lcm_joint,
-    'simplify': merge_weights_simplify,
-}
-
-
 def merge_duplicates(subdatas: Sequence[Mapping[Any, int]],
                      duplicates: Sequence[int]) -> Mapping[Any, int]:
+    """Merge for decks.
+
+    Every subdata gets dups equal to the corresponding element of duplicates
+    times its original dups.
+    """
     if any(x < 0 for x in duplicates):
         raise ValueError('duplicates cannot be negative.')
 

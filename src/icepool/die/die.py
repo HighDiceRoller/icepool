@@ -50,7 +50,6 @@ class Die(Population):
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 *,
-                denominator_method: str = 'lcm',
                 again_max_depth: int = 1,
                 again_end=None) -> 'Die':
         """Constructor for a `Die`.
@@ -101,6 +100,15 @@ class Die(Population):
         * You could also consider using some sort of placeholder value such as
             `math.inf`.
 
+        Denominator: For a flat set of outcomes, the denominator is just the
+        sum of the corresponding quantities. If the outcomes themselves have
+        secondary denominators, then the overall denominator is the primary
+        denominator times the LCM of the outcome denominators.
+
+        For example, `Die([d3, d4, d6])` has a final denominator of 36: 3 for
+        the primary selection between the three secondary dice, times 12 for
+        the LCM of 3, 4, and 6.
+
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
                 * A `Mapping` from outcomes to quantities.
@@ -136,20 +144,6 @@ class Die(Population):
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
-            denominator_method: How to determine the denominator of the result
-                if the arguments themselves contain quantities. This is also used
-                for `Mapping` arguments. From greatest to least:
-                * 'prod': Product of the individual argument denominators, times
-                    the total of `quantities`. This is like rolling all of the
-                    possible dice, and then selecting a result.
-                * 'lcm' (default): LCM of the individual argument denominators,
-                    times the total of `quantities`. This is like rolling `quantities`
-                    first, then selecting an argument to roll.
-                * 'lcm_joint': LCM of the individual (argument denominators
-                    times corresponding element of `quantities`). This is like
-                    rolling the above, but the specific quantity rolled is used
-                    to help determine the result of the selected argument.
-                * 'simplify': The final quantities are divided by their GCD.
         Raises:
             ValueError: `None` is not a valid outcome for a `Die`.
         """
@@ -181,7 +175,6 @@ class Die(Population):
                 else:
                     tail = Die(outcomes,
                                times,
-                               denominator_method=denominator_method,
                                again_max_depth=again_max_depth - 1,
                                again_end=again_end)
                     outcomes = icepool.again.sub_agains(outcomes, tail)
@@ -193,8 +186,7 @@ class Die(Population):
             return outcomes[0]
 
         self = super(Die, cls).__new__(cls)
-        self._data = icepool.creation_args.expand_args_for_die(
-            outcomes, times, denominator_method=denominator_method)
+        self._data = icepool.creation_args.expand_args_for_die(outcomes, times)
         return self
 
     def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
@@ -713,10 +705,7 @@ class Die(Population):
             else:
                 return outcome
 
-        return self.sub(sub_func,
-                        denominator_method='lcm',
-                        again_max_depth=max_depth,
-                        again_end=end)
+        return self.sub(sub_func, again_max_depth=max_depth, again_end=end)
 
     def if_else(self, outcome_if_true, outcome_if_false, /, **kwargs) -> 'Die':
         """Ternary conditional operator.

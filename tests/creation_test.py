@@ -46,41 +46,6 @@ def test_return_self():
     assert icepool.Die([die]) is die
 
 
-denominator_method_test_args = [
-    (),
-    (icepool.d5, icepool.d7),
-    (icepool.d6, icepool.d8),
-    (icepool.d6, icepool.d8, icepool.d10),
-    {
-        icepool.d6: 4,
-        icepool.d8: 3,
-        icepool.d10: 2,
-        icepool.d12: 1
-    },
-]
-
-
-@pytest.mark.parametrize('args', denominator_method_test_args)
-def test_denominator_method(args):
-    prod = icepool.Die(args, denominator_method='prod')
-    lcm = icepool.Die(args, denominator_method='lcm')
-    lcm_joint = icepool.Die(args, denominator_method='lcm_joint')
-    simplified = icepool.Die(args, denominator_method='simplify')
-    assert prod.simplify().equals(simplified)
-    assert lcm.simplify().equals(simplified)
-    assert lcm_joint.simplify().equals(simplified)
-    assert prod.denominator() >= lcm.denominator()
-    assert lcm.denominator() >= lcm_joint.denominator()
-    assert lcm_joint.denominator() >= simplified.denominator()
-
-
-def test_denominator_lcm_joint():
-    result = icepool.Die([icepool.d6, icepool.d8, icepool.d10, icepool.d12],
-                         times=(3, 4, 5, 6),
-                         denominator_method='lcm_joint')
-    assert result.denominator() == 36
-
-
 def test_negative_weight_error():
     with pytest.raises(ValueError):
         icepool.Die({1: -1})
@@ -97,3 +62,8 @@ def test_empty_tuple():
 def test_reroll_tuple():
     result = icepool.Die([(1, icepool.Reroll)])
     assert result.equals(icepool.Die([]))
+
+
+def test_denominator():
+    result = icepool.Die([icepool.d(3), icepool.d(4), icepool.d(6)])
+    assert result.denominator() == 36
