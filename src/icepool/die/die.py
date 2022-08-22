@@ -656,6 +656,7 @@ class Die(Population):
                 outcomes: Container | Callable[..., bool] | None = None,
                 *extra_args,
                 max_depth: int = 9,
+                end=None,
                 star: int = 0) -> 'Die':
         """Causes outcomes to be rolled again and added to the total.
 
@@ -670,6 +671,8 @@ class Die(Population):
                 `extra_args` can only be supplied if `outcomes` is callable.
             max_depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
+            end: Once max_depth is reached, further explosions will be treated
+                as this value. By default, a zero value will be used.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
@@ -704,15 +707,16 @@ class Die(Population):
         elif max_depth == 0:
             return self
 
-        tail_die = self.explode(outcomes=outcomes, max_depth=max_depth - 1)
-
         def sub_func(outcome):
             if outcome in outcomes:
-                return outcome + tail_die
+                return outcome + icepool.Again()
             else:
                 return outcome
 
-        return self.sub(sub_func, denominator_method='lcm')
+        return self.sub(sub_func,
+                        denominator_method='lcm',
+                        again_max_depth=max_depth,
+                        again_end=end)
 
     def if_else(self, outcome_if_true, outcome_if_false, /, **kwargs) -> 'Die':
         """Ternary conditional operator.

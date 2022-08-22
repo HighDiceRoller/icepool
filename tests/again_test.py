@@ -28,12 +28,19 @@ def test_explode_d6_depth_0():
 
 def test_explode_d6_depth_1():
     die = Die([1, 2, 3, 4, 5, 6 + Again()], again_max_depth=1)
-    assert die == d6.explode(max_depth=1)
-
-
-def test_explode_d6_depth_4():
-    die = Die([1, 2, 3, 4, 5, 6 + Again()], again_max_depth=4)
-    assert die == d6.explode(max_depth=4)
+    assert die == Die({
+        1: 6,
+        2: 6,
+        3: 6,
+        4: 6,
+        5: 6,
+        7: 1,
+        8: 1,
+        9: 1,
+        10: 1,
+        11: 1,
+        12: 1,
+    })
 
 
 def test_again_plus_again_depth_0():
