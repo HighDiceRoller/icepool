@@ -711,11 +711,11 @@ refer to dice in a pool.</li>
 </span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="k">class</span> <span class="nc">SpecialValue</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="n">Reroll</span> <span class="o">=</span> <span class="n">SpecialValue</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with no max depth).&quot;&quot;&quot;</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;Again&#39;</span><span class="p">,</span>
@@ -931,7 +931,7 @@ with quantity 1 each.</p>
 </span><span id="Die-51"><a href="#Die-51"><span class="linenos">  51</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">,</span>
 </span><span id="Die-52"><a href="#Die-52"><span class="linenos">  52</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die-53"><a href="#Die-53"><span class="linenos">  53</span></a>                <span class="o">*</span><span class="p">,</span>
-</span><span id="Die-54"><a href="#Die-54"><span class="linenos">  54</span></a>                <span class="n">again_max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="Die-54"><a href="#Die-54"><span class="linenos">  54</span></a>                <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die-55"><a href="#Die-55"><span class="linenos">  55</span></a>                <span class="n">again_end</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-56"><a href="#Die-56"><span class="linenos">  56</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a `Die`.</span>
 </span><span id="Die-57"><a href="#Die-57"><span class="linenos">  57</span></a>
@@ -969,7 +969,7 @@ with quantity 1 each.</p>
 </span><span id="Die-89"><a href="#Die-89"><span class="linenos">  89</span></a><span class="sd">        Die([1, 2, 3, 4, 5, 6 + Again()])</span>
 </span><span id="Die-90"><a href="#Die-90"><span class="linenos">  90</span></a><span class="sd">        ```</span>
 </span><span id="Die-91"><a href="#Die-91"><span class="linenos">  91</span></a>
-</span><span id="Die-92"><a href="#Die-92"><span class="linenos">  92</span></a><span class="sd">        would be an exploding d6. Use the `again_max_depth` parameter to control</span>
+</span><span id="Die-92"><a href="#Die-92"><span class="linenos">  92</span></a><span class="sd">        would be an exploding d6. Use the `again_depth` parameter to control</span>
 </span><span id="Die-93"><a href="#Die-93"><span class="linenos">  93</span></a><span class="sd">        the maximum depth. If the roll reaches the maximum depth, the</span>
 </span><span id="Die-94"><a href="#Die-94"><span class="linenos">  94</span></a><span class="sd">        `again_end` is used instead of rolling again. Options for `again_end`</span>
 </span><span id="Die-95"><a href="#Die-95"><span class="linenos">  95</span></a><span class="sd">        include:</span>
@@ -1039,7 +1039,7 @@ with quantity 1 each.</p>
 </span><span id="Die-159"><a href="#Die-159"><span class="linenos"> 159</span></a>                <span class="k">if</span> <span class="n">again_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-160"><a href="#Die-160"><span class="linenos"> 160</span></a>                    <span class="c1"># Create a test die with `Again`s removed,</span>
 </span><span id="Die-161"><a href="#Die-161"><span class="linenos"> 161</span></a>                    <span class="c1"># then find the zero.</span>
-</span><span id="Die-162"><a href="#Die-162"><span class="linenos"> 162</span></a>                    <span class="n">test</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_max_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">Die</span><span class="p">([]))</span>
+</span><span id="Die-162"><a href="#Die-162"><span class="linenos"> 162</span></a>                    <span class="n">test</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">Die</span><span class="p">([]))</span>
 </span><span id="Die-163"><a href="#Die-163"><span class="linenos"> 163</span></a>                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die-164"><a href="#Die-164"><span class="linenos"> 164</span></a>                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="Die-165"><a href="#Die-165"><span class="linenos"> 165</span></a>                            <span class="s1">&#39;If all outcomes contain Again, an explicit again_end must be provided.&#39;</span>
@@ -1050,13 +1050,13 @@ with quantity 1 each.</p>
 </span><span id="Die-170"><a href="#Die-170"><span class="linenos"> 170</span></a>                    <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">again_end</span><span class="p">):</span>
 </span><span id="Die-171"><a href="#Die-171"><span class="linenos"> 171</span></a>                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="Die-172"><a href="#Die-172"><span class="linenos"> 172</span></a>                            <span class="s1">&#39;again_end cannot itself contain Again.&#39;</span><span class="p">)</span>
-</span><span id="Die-173"><a href="#Die-173"><span class="linenos"> 173</span></a>                <span class="k">if</span> <span class="n">again_max_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-173"><a href="#Die-173"><span class="linenos"> 173</span></a>                <span class="k">if</span> <span class="n">again_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die-174"><a href="#Die-174"><span class="linenos"> 174</span></a>                    <span class="c1"># Base case.</span>
 </span><span id="Die-175"><a href="#Die-175"><span class="linenos"> 175</span></a>                    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">sub_agains</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_end</span><span class="p">)</span>
 </span><span id="Die-176"><a href="#Die-176"><span class="linenos"> 176</span></a>                <span class="k">else</span><span class="p">:</span>
 </span><span id="Die-177"><a href="#Die-177"><span class="linenos"> 177</span></a>                    <span class="n">tail</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span>
 </span><span id="Die-178"><a href="#Die-178"><span class="linenos"> 178</span></a>                               <span class="n">times</span><span class="p">,</span>
-</span><span id="Die-179"><a href="#Die-179"><span class="linenos"> 179</span></a>                               <span class="n">again_max_depth</span><span class="o">=</span><span class="n">again_max_depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="Die-179"><a href="#Die-179"><span class="linenos"> 179</span></a>                               <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die-180"><a href="#Die-180"><span class="linenos"> 180</span></a>                               <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
 </span><span id="Die-181"><a href="#Die-181"><span class="linenos"> 181</span></a>                    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">sub_agains</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
 </span><span id="Die-182"><a href="#Die-182"><span class="linenos"> 182</span></a>
@@ -1189,7 +1189,7 @@ with quantity 1 each.</p>
 </span><span id="Die-309"><a href="#Die-309"><span class="linenos"> 309</span></a>    <span class="k">def</span> <span class="nf">reroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die-310"><a href="#Die-310"><span class="linenos"> 310</span></a>               <span class="n">outcomes</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Container</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die-311"><a href="#Die-311"><span class="linenos"> 311</span></a>               <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die-312"><a href="#Die-312"><span class="linenos"> 312</span></a>               <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="Die-312"><a href="#Die-312"><span class="linenos"> 312</span></a>               <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die-313"><a href="#Die-313"><span class="linenos"> 313</span></a>               <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-314"><a href="#Die-314"><span class="linenos"> 314</span></a>        <span class="sd">&quot;&quot;&quot;Rerolls the given outcomes.</span>
 </span><span id="Die-315"><a href="#Die-315"><span class="linenos"> 315</span></a>
@@ -1202,7 +1202,7 @@ with quantity 1 each.</p>
 </span><span id="Die-322"><a href="#Die-322"><span class="linenos"> 322</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die-323"><a href="#Die-323"><span class="linenos"> 323</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die-324"><a href="#Die-324"><span class="linenos"> 324</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die-325"><a href="#Die-325"><span class="linenos"> 325</span></a><span class="sd">            max_depth: The maximum number of times to reroll.</span>
+</span><span id="Die-325"><a href="#Die-325"><span class="linenos"> 325</span></a><span class="sd">            depth: The maximum number of times to reroll.</span>
 </span><span id="Die-326"><a href="#Die-326"><span class="linenos"> 326</span></a><span class="sd">                If omitted, rerolls an unlimited number of times.</span>
 </span><span id="Die-327"><a href="#Die-327"><span class="linenos"> 327</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die-328"><a href="#Die-328"><span class="linenos"> 328</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -1234,7 +1234,7 @@ with quantity 1 each.</p>
 </span><span id="Die-354"><a href="#Die-354"><span class="linenos"> 354</span></a>                    <span class="k">if</span> <span class="n">outcomes</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">)</span>
 </span><span id="Die-355"><a href="#Die-355"><span class="linenos"> 355</span></a>                <span class="p">}</span>
 </span><span id="Die-356"><a href="#Die-356"><span class="linenos"> 356</span></a>
-</span><span id="Die-357"><a href="#Die-357"><span class="linenos"> 357</span></a>        <span class="k">if</span> <span class="n">max_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die-357"><a href="#Die-357"><span class="linenos"> 357</span></a>        <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-358"><a href="#Die-358"><span class="linenos"> 358</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="Die-359"><a href="#Die-359"><span class="linenos"> 359</span></a>                <span class="n">outcome</span><span class="p">:</span> <span class="n">quantity</span>
 </span><span id="Die-360"><a href="#Die-360"><span class="linenos"> 360</span></a>                <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -1244,9 +1244,9 @@ with quantity 1 each.</p>
 </span><span id="Die-364"><a href="#Die-364"><span class="linenos"> 364</span></a>            <span class="n">total_reroll_quantity</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
 </span><span id="Die-365"><a href="#Die-365"><span class="linenos"> 365</span></a>                <span class="n">quantity</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span><span id="Die-366"><a href="#Die-366"><span class="linenos"> 366</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">)</span>
-</span><span id="Die-367"><a href="#Die-367"><span class="linenos"> 367</span></a>            <span class="n">rerollable_factor</span> <span class="o">=</span> <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">max_depth</span>
-</span><span id="Die-368"><a href="#Die-368"><span class="linenos"> 368</span></a>            <span class="n">stop_factor</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span><span class="o">**</span><span class="n">max_depth</span> <span class="o">+</span>
-</span><span id="Die-369"><a href="#Die-369"><span class="linenos"> 369</span></a>                           <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">max_depth</span><span class="p">)</span>
+</span><span id="Die-367"><a href="#Die-367"><span class="linenos"> 367</span></a>            <span class="n">rerollable_factor</span> <span class="o">=</span> <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">depth</span>
+</span><span id="Die-368"><a href="#Die-368"><span class="linenos"> 368</span></a>            <span class="n">stop_factor</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span><span class="o">**</span><span class="n">depth</span> <span class="o">+</span>
+</span><span id="Die-369"><a href="#Die-369"><span class="linenos"> 369</span></a>                           <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">depth</span><span class="p">)</span>
 </span><span id="Die-370"><a href="#Die-370"><span class="linenos"> 370</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="Die-371"><a href="#Die-371"><span class="linenos"> 371</span></a>                <span class="n">outcome</span><span class="p">:</span>
 </span><span id="Die-372"><a href="#Die-372"><span class="linenos"> 372</span></a>                <span class="p">(</span><span class="n">rerollable_factor</span> <span class="o">*</span>
@@ -1258,7 +1258,7 @@ with quantity 1 each.</p>
 </span><span id="Die-378"><a href="#Die-378"><span class="linenos"> 378</span></a>    <span class="k">def</span> <span class="nf">reroll_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die-379"><a href="#Die-379"><span class="linenos"> 379</span></a>                     <span class="n">outcomes</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Container</span><span class="p">,</span>
 </span><span id="Die-380"><a href="#Die-380"><span class="linenos"> 380</span></a>                     <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die-381"><a href="#Die-381"><span class="linenos"> 381</span></a>                     <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="Die-381"><a href="#Die-381"><span class="linenos"> 381</span></a>                     <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die-382"><a href="#Die-382"><span class="linenos"> 382</span></a>                     <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-383"><a href="#Die-383"><span class="linenos"> 383</span></a>        <span class="sd">&quot;&quot;&quot;Rerolls until getting one of the given outcomes.</span>
 </span><span id="Die-384"><a href="#Die-384"><span class="linenos"> 384</span></a>
@@ -1272,7 +1272,7 @@ with quantity 1 each.</p>
 </span><span id="Die-392"><a href="#Die-392"><span class="linenos"> 392</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die-393"><a href="#Die-393"><span class="linenos"> 393</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die-394"><a href="#Die-394"><span class="linenos"> 394</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die-395"><a href="#Die-395"><span class="linenos"> 395</span></a><span class="sd">            max_depth: The maximum number of times to reroll.</span>
+</span><span id="Die-395"><a href="#Die-395"><span class="linenos"> 395</span></a><span class="sd">            depth: The maximum number of times to reroll.</span>
 </span><span id="Die-396"><a href="#Die-396"><span class="linenos"> 396</span></a><span class="sd">                If omitted, rerolls an unlimited number of times.</span>
 </span><span id="Die-397"><a href="#Die-397"><span class="linenos"> 397</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die-398"><a href="#Die-398"><span class="linenos"> 398</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -1306,7 +1306,7 @@ with quantity 1 each.</p>
 </span><span id="Die-426"><a href="#Die-426"><span class="linenos"> 426</span></a>                <span class="n">not_outcome</span> <span class="k">for</span> <span class="n">not_outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span>
 </span><span id="Die-427"><a href="#Die-427"><span class="linenos"> 427</span></a>                <span class="k">if</span> <span class="n">not_outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outcomes</span>
 </span><span id="Die-428"><a href="#Die-428"><span class="linenos"> 428</span></a>            <span class="p">}</span>
-</span><span id="Die-429"><a href="#Die-429"><span class="linenos"> 429</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="n">not_outcomes</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+</span><span id="Die-429"><a href="#Die-429"><span class="linenos"> 429</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="n">not_outcomes</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
 </span><span id="Die-430"><a href="#Die-430"><span class="linenos"> 430</span></a>
 </span><span id="Die-431"><a href="#Die-431"><span class="linenos"> 431</span></a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-432"><a href="#Die-432"><span class="linenos"> 432</span></a>        <span class="sd">&quot;&quot;&quot;Truncates the outcomes of this `Die` to the given range.</span>
@@ -1426,7 +1426,7 @@ with quantity 1 each.</p>
 </span><span id="Die-546"><a href="#Die-546"><span class="linenos"> 546</span></a><span class="sd">        outcomes or dice. Or, as executing a `sub`routine based on the roll of</span>
 </span><span id="Die-547"><a href="#Die-547"><span class="linenos"> 547</span></a><span class="sd">        this `Die`.</span>
 </span><span id="Die-548"><a href="#Die-548"><span class="linenos"> 548</span></a>
-</span><span id="Die-549"><a href="#Die-549"><span class="linenos"> 549</span></a><span class="sd">        EXPERIMENTAL: `Again`, `max_depth`, and `again_end` can be used as the</span>
+</span><span id="Die-549"><a href="#Die-549"><span class="linenos"> 549</span></a><span class="sd">        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the</span>
 </span><span id="Die-550"><a href="#Die-550"><span class="linenos"> 550</span></a><span class="sd">        `Die()` constructor. It is not advised to use these with `repeat` other</span>
 </span><span id="Die-551"><a href="#Die-551"><span class="linenos"> 551</span></a><span class="sd">        than 1.</span>
 </span><span id="Die-552"><a href="#Die-552"><span class="linenos"> 552</span></a>
@@ -1528,7 +1528,7 @@ with quantity 1 each.</p>
 </span><span id="Die-648"><a href="#Die-648"><span class="linenos"> 648</span></a>    <span class="k">def</span> <span class="nf">explode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die-649"><a href="#Die-649"><span class="linenos"> 649</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Container</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die-650"><a href="#Die-650"><span class="linenos"> 650</span></a>                <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die-651"><a href="#Die-651"><span class="linenos"> 651</span></a>                <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+</span><span id="Die-651"><a href="#Die-651"><span class="linenos"> 651</span></a>                <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
 </span><span id="Die-652"><a href="#Die-652"><span class="linenos"> 652</span></a>                <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 </span><span id="Die-653"><a href="#Die-653"><span class="linenos"> 653</span></a>                <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-654"><a href="#Die-654"><span class="linenos"> 654</span></a>        <span class="sd">&quot;&quot;&quot;Causes outcomes to be rolled again and added to the total.</span>
@@ -1542,9 +1542,9 @@ with quantity 1 each.</p>
 </span><span id="Die-662"><a href="#Die-662"><span class="linenos"> 662</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die-663"><a href="#Die-663"><span class="linenos"> 663</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die-664"><a href="#Die-664"><span class="linenos"> 664</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die-665"><a href="#Die-665"><span class="linenos"> 665</span></a><span class="sd">            max_depth: The maximum number of additional dice to roll.</span>
+</span><span id="Die-665"><a href="#Die-665"><span class="linenos"> 665</span></a><span class="sd">            depth: The maximum number of additional dice to roll.</span>
 </span><span id="Die-666"><a href="#Die-666"><span class="linenos"> 666</span></a><span class="sd">                If not supplied, a default value will be used.</span>
-</span><span id="Die-667"><a href="#Die-667"><span class="linenos"> 667</span></a><span class="sd">            end: Once max_depth is reached, further explosions will be treated</span>
+</span><span id="Die-667"><a href="#Die-667"><span class="linenos"> 667</span></a><span class="sd">            end: Once depth is reached, further explosions will be treated</span>
 </span><span id="Die-668"><a href="#Die-668"><span class="linenos"> 668</span></a><span class="sd">                as this value. By default, a zero value will be used.</span>
 </span><span id="Die-669"><a href="#Die-669"><span class="linenos"> 669</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die-670"><a href="#Die-670"><span class="linenos"> 670</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -1575,9 +1575,9 @@ with quantity 1 each.</p>
 </span><span id="Die-695"><a href="#Die-695"><span class="linenos"> 695</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
 </span><span id="Die-696"><a href="#Die-696"><span class="linenos"> 696</span></a>                <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die-697"><a href="#Die-697"><span class="linenos"> 697</span></a>
-</span><span id="Die-698"><a href="#Die-698"><span class="linenos"> 698</span></a>        <span class="k">if</span> <span class="n">max_depth</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die-699"><a href="#Die-699"><span class="linenos"> 699</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;max_depth cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Die-700"><a href="#Die-700"><span class="linenos"> 700</span></a>        <span class="k">elif</span> <span class="n">max_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-698"><a href="#Die-698"><span class="linenos"> 698</span></a>        <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die-699"><a href="#Die-699"><span class="linenos"> 699</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;depth cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Die-700"><a href="#Die-700"><span class="linenos"> 700</span></a>        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die-701"><a href="#Die-701"><span class="linenos"> 701</span></a>            <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die-702"><a href="#Die-702"><span class="linenos"> 702</span></a>
 </span><span id="Die-703"><a href="#Die-703"><span class="linenos"> 703</span></a>        <span class="k">def</span> <span class="nf">sub_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
@@ -1586,7 +1586,7 @@ with quantity 1 each.</p>
 </span><span id="Die-706"><a href="#Die-706"><span class="linenos"> 706</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die-707"><a href="#Die-707"><span class="linenos"> 707</span></a>                <span class="k">return</span> <span class="n">outcome</span>
 </span><span id="Die-708"><a href="#Die-708"><span class="linenos"> 708</span></a>
-</span><span id="Die-709"><a href="#Die-709"><span class="linenos"> 709</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub_func</span><span class="p">,</span> <span class="n">again_max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+</span><span id="Die-709"><a href="#Die-709"><span class="linenos"> 709</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub_func</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 </span><span id="Die-710"><a href="#Die-710"><span class="linenos"> 710</span></a>
 </span><span id="Die-711"><a href="#Die-711"><span class="linenos"> 711</span></a>    <span class="k">def</span> <span class="nf">if_else</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome_if_true</span><span class="p">,</span> <span class="n">outcome_if_false</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die-712"><a href="#Die-712"><span class="linenos"> 712</span></a>        <span class="sd">&quot;&quot;&quot;Ternary conditional operator.</span>
@@ -2190,7 +2190,7 @@ though these have little use other than being sentinel values.</p>
                                         <input id="Die.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Die</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">]</span>,</span><span class="param">	<span class="n">times</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">again_max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="o">=</span><span class="kc">None</span></span>)</span>
+        <span class="name">Die</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">]</span>,</span><span class="param">	<span class="n">times</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="o">=</span><span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="Die.__init__-view-source"><span>View Source</span></label>
 
@@ -2200,7 +2200,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-51"><a href="#Die.__init__-51"><span class="linenos"> 51</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">,</span>
 </span><span id="Die.__init__-52"><a href="#Die.__init__-52"><span class="linenos"> 52</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die.__init__-53"><a href="#Die.__init__-53"><span class="linenos"> 53</span></a>                <span class="o">*</span><span class="p">,</span>
-</span><span id="Die.__init__-54"><a href="#Die.__init__-54"><span class="linenos"> 54</span></a>                <span class="n">again_max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="Die.__init__-54"><a href="#Die.__init__-54"><span class="linenos"> 54</span></a>                <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die.__init__-55"><a href="#Die.__init__-55"><span class="linenos"> 55</span></a>                <span class="n">again_end</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die.__init__-56"><a href="#Die.__init__-56"><span class="linenos"> 56</span></a>        <span class="sd">&quot;&quot;&quot;Constructor for a `Die`.</span>
 </span><span id="Die.__init__-57"><a href="#Die.__init__-57"><span class="linenos"> 57</span></a>
@@ -2238,7 +2238,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-89"><a href="#Die.__init__-89"><span class="linenos"> 89</span></a><span class="sd">        Die([1, 2, 3, 4, 5, 6 + Again()])</span>
 </span><span id="Die.__init__-90"><a href="#Die.__init__-90"><span class="linenos"> 90</span></a><span class="sd">        ```</span>
 </span><span id="Die.__init__-91"><a href="#Die.__init__-91"><span class="linenos"> 91</span></a>
-</span><span id="Die.__init__-92"><a href="#Die.__init__-92"><span class="linenos"> 92</span></a><span class="sd">        would be an exploding d6. Use the `again_max_depth` parameter to control</span>
+</span><span id="Die.__init__-92"><a href="#Die.__init__-92"><span class="linenos"> 92</span></a><span class="sd">        would be an exploding d6. Use the `again_depth` parameter to control</span>
 </span><span id="Die.__init__-93"><a href="#Die.__init__-93"><span class="linenos"> 93</span></a><span class="sd">        the maximum depth. If the roll reaches the maximum depth, the</span>
 </span><span id="Die.__init__-94"><a href="#Die.__init__-94"><span class="linenos"> 94</span></a><span class="sd">        `again_end` is used instead of rolling again. Options for `again_end`</span>
 </span><span id="Die.__init__-95"><a href="#Die.__init__-95"><span class="linenos"> 95</span></a><span class="sd">        include:</span>
@@ -2308,7 +2308,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-159"><a href="#Die.__init__-159"><span class="linenos">159</span></a>                <span class="k">if</span> <span class="n">again_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.__init__-160"><a href="#Die.__init__-160"><span class="linenos">160</span></a>                    <span class="c1"># Create a test die with `Again`s removed,</span>
 </span><span id="Die.__init__-161"><a href="#Die.__init__-161"><span class="linenos">161</span></a>                    <span class="c1"># then find the zero.</span>
-</span><span id="Die.__init__-162"><a href="#Die.__init__-162"><span class="linenos">162</span></a>                    <span class="n">test</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_max_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">Die</span><span class="p">([]))</span>
+</span><span id="Die.__init__-162"><a href="#Die.__init__-162"><span class="linenos">162</span></a>                    <span class="n">test</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">Die</span><span class="p">([]))</span>
 </span><span id="Die.__init__-163"><a href="#Die.__init__-163"><span class="linenos">163</span></a>                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die.__init__-164"><a href="#Die.__init__-164"><span class="linenos">164</span></a>                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="Die.__init__-165"><a href="#Die.__init__-165"><span class="linenos">165</span></a>                            <span class="s1">&#39;If all outcomes contain Again, an explicit again_end must be provided.&#39;</span>
@@ -2319,13 +2319,13 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-170"><a href="#Die.__init__-170"><span class="linenos">170</span></a>                    <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">again_end</span><span class="p">):</span>
 </span><span id="Die.__init__-171"><a href="#Die.__init__-171"><span class="linenos">171</span></a>                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="Die.__init__-172"><a href="#Die.__init__-172"><span class="linenos">172</span></a>                            <span class="s1">&#39;again_end cannot itself contain Again.&#39;</span><span class="p">)</span>
-</span><span id="Die.__init__-173"><a href="#Die.__init__-173"><span class="linenos">173</span></a>                <span class="k">if</span> <span class="n">again_max_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.__init__-173"><a href="#Die.__init__-173"><span class="linenos">173</span></a>                <span class="k">if</span> <span class="n">again_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die.__init__-174"><a href="#Die.__init__-174"><span class="linenos">174</span></a>                    <span class="c1"># Base case.</span>
 </span><span id="Die.__init__-175"><a href="#Die.__init__-175"><span class="linenos">175</span></a>                    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">sub_agains</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">again_end</span><span class="p">)</span>
 </span><span id="Die.__init__-176"><a href="#Die.__init__-176"><span class="linenos">176</span></a>                <span class="k">else</span><span class="p">:</span>
 </span><span id="Die.__init__-177"><a href="#Die.__init__-177"><span class="linenos">177</span></a>                    <span class="n">tail</span> <span class="o">=</span> <span class="n">Die</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span>
 </span><span id="Die.__init__-178"><a href="#Die.__init__-178"><span class="linenos">178</span></a>                               <span class="n">times</span><span class="p">,</span>
-</span><span id="Die.__init__-179"><a href="#Die.__init__-179"><span class="linenos">179</span></a>                               <span class="n">again_max_depth</span><span class="o">=</span><span class="n">again_max_depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="Die.__init__-179"><a href="#Die.__init__-179"><span class="linenos">179</span></a>                               <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="Die.__init__-180"><a href="#Die.__init__-180"><span class="linenos">180</span></a>                               <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
 </span><span id="Die.__init__-181"><a href="#Die.__init__-181"><span class="linenos">181</span></a>                    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">sub_agains</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
 </span><span id="Die.__init__-182"><a href="#Die.__init__-182"><span class="linenos">182</span></a>
@@ -2382,7 +2382,7 @@ with a modification. For example,</p>
 <pre><code>Die([1, 2, 3, 4, 5, 6 + Again()])
 </code></pre>
 
-<p>would be an exploding d6. Use the <code>again_max_depth</code> parameter to control
+<p>would be an exploding d6. Use the <code>again_depth</code> parameter to control
 the maximum depth. If the roll reaches the maximum depth, the
 <code>again_end</code> is used instead of rolling again. Options for <code>again_end</code>
 include:</p>
@@ -2752,7 +2752,7 @@ dice or between the dice.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">reroll</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">reroll</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="Die.reroll-view-source"><span>View Source</span></label>
 
@@ -2761,7 +2761,7 @@ dice or between the dice.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.reroll-309"><a href="#Die.reroll-309"><span class="linenos">309</span></a>    <span class="k">def</span> <span class="nf">reroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die.reroll-310"><a href="#Die.reroll-310"><span class="linenos">310</span></a>               <span class="n">outcomes</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Container</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die.reroll-311"><a href="#Die.reroll-311"><span class="linenos">311</span></a>               <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die.reroll-312"><a href="#Die.reroll-312"><span class="linenos">312</span></a>               <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="Die.reroll-312"><a href="#Die.reroll-312"><span class="linenos">312</span></a>               <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die.reroll-313"><a href="#Die.reroll-313"><span class="linenos">313</span></a>               <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die.reroll-314"><a href="#Die.reroll-314"><span class="linenos">314</span></a>        <span class="sd">&quot;&quot;&quot;Rerolls the given outcomes.</span>
 </span><span id="Die.reroll-315"><a href="#Die.reroll-315"><span class="linenos">315</span></a>
@@ -2774,7 +2774,7 @@ dice or between the dice.</li>
 </span><span id="Die.reroll-322"><a href="#Die.reroll-322"><span class="linenos">322</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die.reroll-323"><a href="#Die.reroll-323"><span class="linenos">323</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die.reroll-324"><a href="#Die.reroll-324"><span class="linenos">324</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die.reroll-325"><a href="#Die.reroll-325"><span class="linenos">325</span></a><span class="sd">            max_depth: The maximum number of times to reroll.</span>
+</span><span id="Die.reroll-325"><a href="#Die.reroll-325"><span class="linenos">325</span></a><span class="sd">            depth: The maximum number of times to reroll.</span>
 </span><span id="Die.reroll-326"><a href="#Die.reroll-326"><span class="linenos">326</span></a><span class="sd">                If omitted, rerolls an unlimited number of times.</span>
 </span><span id="Die.reroll-327"><a href="#Die.reroll-327"><span class="linenos">327</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die.reroll-328"><a href="#Die.reroll-328"><span class="linenos">328</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -2806,7 +2806,7 @@ dice or between the dice.</li>
 </span><span id="Die.reroll-354"><a href="#Die.reroll-354"><span class="linenos">354</span></a>                    <span class="k">if</span> <span class="n">outcomes</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">)</span>
 </span><span id="Die.reroll-355"><a href="#Die.reroll-355"><span class="linenos">355</span></a>                <span class="p">}</span>
 </span><span id="Die.reroll-356"><a href="#Die.reroll-356"><span class="linenos">356</span></a>
-</span><span id="Die.reroll-357"><a href="#Die.reroll-357"><span class="linenos">357</span></a>        <span class="k">if</span> <span class="n">max_depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Die.reroll-357"><a href="#Die.reroll-357"><span class="linenos">357</span></a>        <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.reroll-358"><a href="#Die.reroll-358"><span class="linenos">358</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="Die.reroll-359"><a href="#Die.reroll-359"><span class="linenos">359</span></a>                <span class="n">outcome</span><span class="p">:</span> <span class="n">quantity</span>
 </span><span id="Die.reroll-360"><a href="#Die.reroll-360"><span class="linenos">360</span></a>                <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -2816,9 +2816,9 @@ dice or between the dice.</li>
 </span><span id="Die.reroll-364"><a href="#Die.reroll-364"><span class="linenos">364</span></a>            <span class="n">total_reroll_quantity</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
 </span><span id="Die.reroll-365"><a href="#Die.reroll-365"><span class="linenos">365</span></a>                <span class="n">quantity</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span><span id="Die.reroll-366"><a href="#Die.reroll-366"><span class="linenos">366</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">)</span>
-</span><span id="Die.reroll-367"><a href="#Die.reroll-367"><span class="linenos">367</span></a>            <span class="n">rerollable_factor</span> <span class="o">=</span> <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">max_depth</span>
-</span><span id="Die.reroll-368"><a href="#Die.reroll-368"><span class="linenos">368</span></a>            <span class="n">stop_factor</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span><span class="o">**</span><span class="n">max_depth</span> <span class="o">+</span>
-</span><span id="Die.reroll-369"><a href="#Die.reroll-369"><span class="linenos">369</span></a>                           <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">max_depth</span><span class="p">)</span>
+</span><span id="Die.reroll-367"><a href="#Die.reroll-367"><span class="linenos">367</span></a>            <span class="n">rerollable_factor</span> <span class="o">=</span> <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">depth</span>
+</span><span id="Die.reroll-368"><a href="#Die.reroll-368"><span class="linenos">368</span></a>            <span class="n">stop_factor</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span><span class="o">**</span><span class="n">depth</span> <span class="o">+</span>
+</span><span id="Die.reroll-369"><a href="#Die.reroll-369"><span class="linenos">369</span></a>                           <span class="n">total_reroll_quantity</span><span class="o">**</span><span class="n">depth</span><span class="p">)</span>
 </span><span id="Die.reroll-370"><a href="#Die.reroll-370"><span class="linenos">370</span></a>            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="Die.reroll-371"><a href="#Die.reroll-371"><span class="linenos">371</span></a>                <span class="n">outcome</span><span class="p">:</span>
 </span><span id="Die.reroll-372"><a href="#Die.reroll-372"><span class="linenos">372</span></a>                <span class="p">(</span><span class="n">rerollable_factor</span> <span class="o">*</span>
@@ -2844,7 +2844,7 @@ should be rerolled.</li>
 <li><strong>*extra_args:</strong>  These will be supplied to <code><a href="#Die.outcomes">outcomes</a></code> as extra
 positional arguments after the outcome argument(s).
 <code>extra_args</code> can only be supplied if <code><a href="#Die.outcomes">outcomes</a></code> is callable.</li>
-<li><strong>max_depth:</strong>  The maximum number of times to reroll.
+<li><strong>depth:</strong>  The maximum number of times to reroll.
 If omitted, rerolls an unlimited number of times.</li>
 <li><strong>star:</strong>  If set to <code>True</code> or 1, outcomes will be unpacked as
 <code>*outcome</code> before giving it to the <code><a href="#Die.outcomes">outcomes</a></code> function.
@@ -2872,7 +2872,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">reroll_until</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">]</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">reroll_until</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">]</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="Die.reroll_until-view-source"><span>View Source</span></label>
 
@@ -2881,7 +2881,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.reroll_until-378"><a href="#Die.reroll_until-378"><span class="linenos">378</span></a>    <span class="k">def</span> <span class="nf">reroll_until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die.reroll_until-379"><a href="#Die.reroll_until-379"><span class="linenos">379</span></a>                     <span class="n">outcomes</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="n">Container</span><span class="p">,</span>
 </span><span id="Die.reroll_until-380"><a href="#Die.reroll_until-380"><span class="linenos">380</span></a>                     <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die.reroll_until-381"><a href="#Die.reroll_until-381"><span class="linenos">381</span></a>                     <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="Die.reroll_until-381"><a href="#Die.reroll_until-381"><span class="linenos">381</span></a>                     <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die.reroll_until-382"><a href="#Die.reroll_until-382"><span class="linenos">382</span></a>                     <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die.reroll_until-383"><a href="#Die.reroll_until-383"><span class="linenos">383</span></a>        <span class="sd">&quot;&quot;&quot;Rerolls until getting one of the given outcomes.</span>
 </span><span id="Die.reroll_until-384"><a href="#Die.reroll_until-384"><span class="linenos">384</span></a>
@@ -2895,7 +2895,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
 </span><span id="Die.reroll_until-392"><a href="#Die.reroll_until-392"><span class="linenos">392</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die.reroll_until-393"><a href="#Die.reroll_until-393"><span class="linenos">393</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die.reroll_until-394"><a href="#Die.reroll_until-394"><span class="linenos">394</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die.reroll_until-395"><a href="#Die.reroll_until-395"><span class="linenos">395</span></a><span class="sd">            max_depth: The maximum number of times to reroll.</span>
+</span><span id="Die.reroll_until-395"><a href="#Die.reroll_until-395"><span class="linenos">395</span></a><span class="sd">            depth: The maximum number of times to reroll.</span>
 </span><span id="Die.reroll_until-396"><a href="#Die.reroll_until-396"><span class="linenos">396</span></a><span class="sd">                If omitted, rerolls an unlimited number of times.</span>
 </span><span id="Die.reroll_until-397"><a href="#Die.reroll_until-397"><span class="linenos">397</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die.reroll_until-398"><a href="#Die.reroll_until-398"><span class="linenos">398</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -2929,7 +2929,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
 </span><span id="Die.reroll_until-426"><a href="#Die.reroll_until-426"><span class="linenos">426</span></a>                <span class="n">not_outcome</span> <span class="k">for</span> <span class="n">not_outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span>
 </span><span id="Die.reroll_until-427"><a href="#Die.reroll_until-427"><span class="linenos">427</span></a>                <span class="k">if</span> <span class="n">not_outcome</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outcomes</span>
 </span><span id="Die.reroll_until-428"><a href="#Die.reroll_until-428"><span class="linenos">428</span></a>            <span class="p">}</span>
-</span><span id="Die.reroll_until-429"><a href="#Die.reroll_until-429"><span class="linenos">429</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="n">not_outcomes</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+</span><span id="Die.reroll_until-429"><a href="#Die.reroll_until-429"><span class="linenos">429</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reroll</span><span class="p">(</span><span class="n">not_outcomes</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2949,7 +2949,7 @@ should be accepted.</li>
 <li><strong>*extra_args:</strong>  These will be supplied to <code><a href="#Die.outcomes">outcomes</a></code> as extra
 positional arguments after the outcome argument(s).
 <code>extra_args</code> can only be supplied if <code><a href="#Die.outcomes">outcomes</a></code> is callable.</li>
-<li><strong>max_depth:</strong>  The maximum number of times to reroll.
+<li><strong>depth:</strong>  The maximum number of times to reroll.
 If omitted, rerolls an unlimited number of times.</li>
 <li><strong>star:</strong>  If set to <code>True</code> or 1, outcomes will be unpacked as
 <code>*outcome</code> before giving it to the <code><a href="#Die.outcomes">outcomes</a></code> function.
@@ -3193,7 +3193,7 @@ and/or add zero-quantity outcomes (if they are not present in this <code><a href
 </span><span id="Die.sub-546"><a href="#Die.sub-546"><span class="linenos">546</span></a><span class="sd">        outcomes or dice. Or, as executing a `sub`routine based on the roll of</span>
 </span><span id="Die.sub-547"><a href="#Die.sub-547"><span class="linenos">547</span></a><span class="sd">        this `Die`.</span>
 </span><span id="Die.sub-548"><a href="#Die.sub-548"><span class="linenos">548</span></a>
-</span><span id="Die.sub-549"><a href="#Die.sub-549"><span class="linenos">549</span></a><span class="sd">        EXPERIMENTAL: `Again`, `max_depth`, and `again_end` can be used as the</span>
+</span><span id="Die.sub-549"><a href="#Die.sub-549"><span class="linenos">549</span></a><span class="sd">        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the</span>
 </span><span id="Die.sub-550"><a href="#Die.sub-550"><span class="linenos">550</span></a><span class="sd">        `Die()` constructor. It is not advised to use these with `repeat` other</span>
 </span><span id="Die.sub-551"><a href="#Die.sub-551"><span class="linenos">551</span></a><span class="sd">        than 1.</span>
 </span><span id="Die.sub-552"><a href="#Die.sub-552"><span class="linenos">552</span></a>
@@ -3300,7 +3300,7 @@ and/or add zero-quantity outcomes (if they are not present in this <code><a href
 outcomes or dice. Or, as executing a <code><a href="#Die.sub">sub</a></code>routine based on the roll of
 this <code><a href="#Die">Die</a></code>.</p>
 
-<p>EXPERIMENTAL: <code><a href="#Again">Again</a></code>, <code>max_depth</code>, and <code>again_end</code> can be used as the
+<p>EXPERIMENTAL: <code><a href="#Again">Again</a></code>, <code>again_depth</code>, and <code>again_end</code> can be used as the
 <code><a href="#Die">Die()</a></code> constructor. It is not advised to use these with <code>repeat</code> other
 than 1.</p>
 
@@ -3356,7 +3356,7 @@ constructor.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">explode</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span>,</span><span class="param">	<span class="n">end</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">explode</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">outcomes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Container</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span><span class="n">extra_args</span>,</span><span class="param">	<span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span>,</span><span class="param">	<span class="n">end</span><span class="o">=</span><span class="kc">None</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="Die.explode-view-source"><span>View Source</span></label>
 
@@ -3365,7 +3365,7 @@ constructor.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Die.explode-648"><a href="#Die.explode-648"><span class="linenos">648</span></a>    <span class="k">def</span> <span class="nf">explode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="Die.explode-649"><a href="#Die.explode-649"><span class="linenos">649</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Container</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="Die.explode-650"><a href="#Die.explode-650"><span class="linenos">650</span></a>                <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
-</span><span id="Die.explode-651"><a href="#Die.explode-651"><span class="linenos">651</span></a>                <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+</span><span id="Die.explode-651"><a href="#Die.explode-651"><span class="linenos">651</span></a>                <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
 </span><span id="Die.explode-652"><a href="#Die.explode-652"><span class="linenos">652</span></a>                <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 </span><span id="Die.explode-653"><a href="#Die.explode-653"><span class="linenos">653</span></a>                <span class="n">star</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Die&#39;</span><span class="p">:</span>
 </span><span id="Die.explode-654"><a href="#Die.explode-654"><span class="linenos">654</span></a>        <span class="sd">&quot;&quot;&quot;Causes outcomes to be rolled again and added to the total.</span>
@@ -3379,9 +3379,9 @@ constructor.</li>
 </span><span id="Die.explode-662"><a href="#Die.explode-662"><span class="linenos">662</span></a><span class="sd">            *extra_args: These will be supplied to `outcomes` as extra</span>
 </span><span id="Die.explode-663"><a href="#Die.explode-663"><span class="linenos">663</span></a><span class="sd">                positional arguments after the outcome argument(s).</span>
 </span><span id="Die.explode-664"><a href="#Die.explode-664"><span class="linenos">664</span></a><span class="sd">                `extra_args` can only be supplied if `outcomes` is callable.</span>
-</span><span id="Die.explode-665"><a href="#Die.explode-665"><span class="linenos">665</span></a><span class="sd">            max_depth: The maximum number of additional dice to roll.</span>
+</span><span id="Die.explode-665"><a href="#Die.explode-665"><span class="linenos">665</span></a><span class="sd">            depth: The maximum number of additional dice to roll.</span>
 </span><span id="Die.explode-666"><a href="#Die.explode-666"><span class="linenos">666</span></a><span class="sd">                If not supplied, a default value will be used.</span>
-</span><span id="Die.explode-667"><a href="#Die.explode-667"><span class="linenos">667</span></a><span class="sd">            end: Once max_depth is reached, further explosions will be treated</span>
+</span><span id="Die.explode-667"><a href="#Die.explode-667"><span class="linenos">667</span></a><span class="sd">            end: Once depth is reached, further explosions will be treated</span>
 </span><span id="Die.explode-668"><a href="#Die.explode-668"><span class="linenos">668</span></a><span class="sd">                as this value. By default, a zero value will be used.</span>
 </span><span id="Die.explode-669"><a href="#Die.explode-669"><span class="linenos">669</span></a><span class="sd">            star: If set to `True` or 1, outcomes will be unpacked as</span>
 </span><span id="Die.explode-670"><a href="#Die.explode-670"><span class="linenos">670</span></a><span class="sd">                `*outcome` before giving it to the `outcomes` function.</span>
@@ -3412,9 +3412,9 @@ constructor.</li>
 </span><span id="Die.explode-695"><a href="#Die.explode-695"><span class="linenos">695</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
 </span><span id="Die.explode-696"><a href="#Die.explode-696"><span class="linenos">696</span></a>                <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die.explode-697"><a href="#Die.explode-697"><span class="linenos">697</span></a>
-</span><span id="Die.explode-698"><a href="#Die.explode-698"><span class="linenos">698</span></a>        <span class="k">if</span> <span class="n">max_depth</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Die.explode-699"><a href="#Die.explode-699"><span class="linenos">699</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;max_depth cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Die.explode-700"><a href="#Die.explode-700"><span class="linenos">700</span></a>        <span class="k">elif</span> <span class="n">max_depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.explode-698"><a href="#Die.explode-698"><span class="linenos">698</span></a>        <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Die.explode-699"><a href="#Die.explode-699"><span class="linenos">699</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;depth cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Die.explode-700"><a href="#Die.explode-700"><span class="linenos">700</span></a>        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Die.explode-701"><a href="#Die.explode-701"><span class="linenos">701</span></a>            <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Die.explode-702"><a href="#Die.explode-702"><span class="linenos">702</span></a>
 </span><span id="Die.explode-703"><a href="#Die.explode-703"><span class="linenos">703</span></a>        <span class="k">def</span> <span class="nf">sub_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
@@ -3423,7 +3423,7 @@ constructor.</li>
 </span><span id="Die.explode-706"><a href="#Die.explode-706"><span class="linenos">706</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die.explode-707"><a href="#Die.explode-707"><span class="linenos">707</span></a>                <span class="k">return</span> <span class="n">outcome</span>
 </span><span id="Die.explode-708"><a href="#Die.explode-708"><span class="linenos">708</span></a>
-</span><span id="Die.explode-709"><a href="#Die.explode-709"><span class="linenos">709</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub_func</span><span class="p">,</span> <span class="n">again_max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+</span><span id="Die.explode-709"><a href="#Die.explode-709"><span class="linenos">709</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub_func</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">again_end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -3442,9 +3442,9 @@ should be exploded.</li>
 <li><strong>*extra_args:</strong>  These will be supplied to <code><a href="#Die.outcomes">outcomes</a></code> as extra
 positional arguments after the outcome argument(s).
 <code>extra_args</code> can only be supplied if <code><a href="#Die.outcomes">outcomes</a></code> is callable.</li>
-<li><strong>max_depth:</strong>  The maximum number of additional dice to roll.
+<li><strong>depth:</strong>  The maximum number of additional dice to roll.
 If not supplied, a default value will be used.</li>
-<li><strong>end:</strong>  Once max_depth is reached, further explosions will be treated
+<li><strong>end:</strong>  Once depth is reached, further explosions will be treated
 as this value. By default, a zero value will be used.</li>
 <li><strong>star:</strong>  If set to <code>True</code> or 1, outcomes will be unpacked as
 <code>*outcome</code> before giving it to the <code><a href="#Die.outcomes">outcomes</a></code> function.
@@ -7032,7 +7032,7 @@ constructor for the final result.</li>
     </div>
     <a class="headerlink" href="#Reroll"></a>
     
-            <div class="docstring"><p>Indicates an outcome should be rerolled (with no max depth).</p>
+            <div class="docstring"><p>Indicates an outcome should be rerolled (with unlimited depth).</p>
 </div>
 
 
