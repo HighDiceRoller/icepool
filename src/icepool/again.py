@@ -11,36 +11,43 @@ from typing import Any, Callable, Mapping, Sequence
 class Again():
     """EXPERIMENTAL: A placeholder value used to indicate that the die should be rolled again with some modification.
 
-    This is only recommended for use as a literal in the constructor of `Die`.
-
     Examples:
 
     * `Again()` + 6: Roll again and add 6.
     * `Again(lambda x: x + 6)`: Another way of doing the same thing.
     * `Again()` + `Again()`: Roll again twice and sum.
+
+    This can also be used as part of a return value with functions such as
+    `Die.sub()`, though I don't recommend getting too fancy---it can get
+    confusing very quickly.
     """
 
     def __init__(self, func: Callable | None = None, /, *args):
-        """
+        """Creates an `Again` placeholder from the given function and args.
 
-        The supplied function will be called with the base die in place of any
-        `Again`s in the `args`. This function should not itself return `Again`.
+        Any of the args may themselves be instances of `Again`. These are
+        considered to be at the same level for purposes of `again_depth`.
+
+        The supplied function will be called with the given args, except any
+        arguments of type `Again` will have resolved to the `Die` resulting
+        from rolling again.
         """
         self._func = func
         self._args = args
 
-    def _substitute_arg(self, arg, die: 'icepool.Die'):
+    def _evaluate_arg(self, arg, die: 'icepool.Die'):
         if isinstance(arg, Again):
             return arg.evaluate(die)
         else:
             return arg
 
     def evaluate(self, die: 'icepool.Die'):
+        """Recursively substitutes the provided `Die` for the `Again` placeholders."""
         if self._func is None:
             return die
         else:
             return self._func(
-                *(self._substitute_arg(arg, die) for arg in self._args))
+                *(self._evaluate_arg(arg, die) for arg in self._args))
 
     # Unary operators.
 

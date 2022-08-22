@@ -63,6 +63,8 @@ Specific cases:
 
 * When used with `Again`, only that stage is rerolled, not the entire `Again`
     tree.
+* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no
+    modification.
 * When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
 """
 
