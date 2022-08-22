@@ -21,25 +21,25 @@ def test_reroll_2():
 
 
 def test_reroll_limit():
-    result = icepool.d4.reroll([1], max_depth=1)
+    result = icepool.d4.reroll([1], depth=1)
     expected = icepool.Die(range(1, 5), times=[1, 5, 5, 5])
     assert result.equals(expected)
 
 
 def test_reroll_until_limit():
-    result = icepool.d4.reroll_until([2, 3, 4], max_depth=1)
+    result = icepool.d4.reroll_until([2, 3, 4], depth=1)
     expected = icepool.Die(range(1, 5), times=[1, 5, 5, 5])
     assert result.equals(expected)
 
 
 def test_reroll_func():
-    result = icepool.d4.reroll(lambda x: x == 1, max_depth=1)
+    result = icepool.d4.reroll(lambda x: x == 1, depth=1)
     expected = icepool.Die(range(1, 5), times=[1, 5, 5, 5])
     assert result.equals(expected)
 
 
 def test_reroll_until_func():
-    result = icepool.d4.reroll_until(lambda x: x != 1, max_depth=1)
+    result = icepool.d4.reroll_until(lambda x: x != 1, depth=1)
     expected = icepool.Die(range(1, 5), times=[1, 5, 5, 5])
     assert result.equals(expected)
 

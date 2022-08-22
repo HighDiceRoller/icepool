@@ -53,11 +53,11 @@ import enum
 
 class SpecialValue(enum.Enum):
     Reroll = 'Reroll'
-    """Indicates an outcome should be rerolled (with no max depth)."""
+    """Indicates an outcome should be rerolled (with unlimited depth)."""
 
 
 Reroll = SpecialValue.Reroll
-"""Indicates an outcome should be rerolled (with no max depth)."""
+"""Indicates an outcome should be rerolled (with unlimited depth)."""
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'Again',

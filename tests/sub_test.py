@@ -26,7 +26,7 @@ def test_sub_mix():
     assert result.equals(expected)
 
 
-def test_sub_max_depth():
+def test_sub_depth():
     result = (icepool.d8 - 1).sub(lambda x: x // 2, repeat=2).simplify()
     expected = icepool.d2 - 1
     assert result.equals(expected)

@@ -4,7 +4,7 @@ import pytest
 abs_tol = 1e-9
 
 
-def bf_explode_basic(die, max_depth):
+def bf_explode_basic(die, depth):
 
     def func(*outcomes):
         result = 0
@@ -14,19 +14,19 @@ def bf_explode_basic(die, max_depth):
                 break
         return result
 
-    return icepool.apply(func, *([die] * (max_depth + 1)))
+    return icepool.apply(func, *([die] * (depth + 1)))
 
 
-@pytest.mark.parametrize('max_depth', range(6))
-def test_explode_d6(max_depth):
-    result = icepool.d6.explode(max_depth=max_depth)
-    result_int = icepool.d6.explode(outcomes=[6], max_depth=max_depth)
-    expected = bf_explode_basic(icepool.d6, max_depth)
+@pytest.mark.parametrize('depth', range(6))
+def test_explode_d6(depth):
+    result = icepool.d6.explode(depth=depth)
+    result_int = icepool.d6.explode(outcomes=[6], depth=depth)
+    expected = bf_explode_basic(icepool.d6, depth)
     assert result.equals(expected)
     assert result_int.equals(expected)
 
 
-@pytest.mark.parametrize('max_depth', range(6))
-def test_explode_multiple_weight(max_depth):
-    result = icepool.d6.explode(outcomes=[5, 6], max_depth=max_depth)
-    assert result.denominator() == 6**(max_depth + 1)
+@pytest.mark.parametrize('depth', range(6))
+def test_explode_multiple_weight(depth):
+    result = icepool.d6.explode(outcomes=[5, 6], depth=depth)
+    assert result.denominator() == 6**(depth + 1)

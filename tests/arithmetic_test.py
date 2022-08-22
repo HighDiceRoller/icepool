@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-test_dice = [icepool.d6, icepool.d8, icepool.d10.explode(max_depth=2)]
+test_dice = [icepool.d6, icepool.d8, icepool.d10.explode(depth=2)]
 
 
 @pytest.mark.parametrize('a', test_dice)

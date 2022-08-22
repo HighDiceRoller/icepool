@@ -22,12 +22,12 @@ def test_again_evaluate_plus_again():
 
 
 def test_explode_d6_depth_0():
-    die = Die([1, 2, 3, 4, 5, 6 + Again()], again_max_depth=0)
+    die = Die([1, 2, 3, 4, 5, 6 + Again()], again_depth=0)
     assert die == d6
 
 
 def test_explode_d6_depth_1():
-    die = Die([1, 2, 3, 4, 5, 6 + Again()], again_max_depth=1)
+    die = Die([1, 2, 3, 4, 5, 6 + Again()], again_depth=1)
     assert die == Die({
         1: 6,
         2: 6,
@@ -44,9 +44,7 @@ def test_explode_d6_depth_1():
 
 
 def test_again_plus_again_depth_0():
-    die = Die([1, 2, 3, 4, 5, Again() + Again()],
-              again_max_depth=0,
-              again_end=3)
+    die = Die([1, 2, 3, 4, 5, Again() + Again()], again_depth=0, again_end=3)
     assert die == Die([1, 2, 3, 4, 5, 6])
 
 
@@ -56,10 +54,10 @@ def test_again_plus_again_depth_1():
 
 
 def test_again_reroll():
-    die = Die([1, 2, 3, 4, 5, Again()], again_max_depth=0, again_end=Reroll)
+    die = Die([1, 2, 3, 4, 5, Again()], again_depth=0, again_end=Reroll)
     assert die == icepool.d(5)
 
 
 def test_again_infinity():
-    die = Die([1, 2, 3, 4, 5, Again()], again_max_depth=0, again_end=math.inf)
+    die = Die([1, 2, 3, 4, 5, Again()], again_depth=0, again_end=math.inf)
     assert die == Die([1, 2, 3, 4, 5, math.inf])

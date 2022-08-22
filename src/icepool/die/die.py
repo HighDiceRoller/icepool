@@ -50,7 +50,7 @@ class Die(Population):
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
                 *,
-                again_max_depth: int = 1,
+                again_depth: int = 1,
                 again_end=None) -> 'Die':
         """Constructor for a `Die`.
 
@@ -88,7 +88,7 @@ class Die(Population):
         Die([1, 2, 3, 4, 5, 6 + Again()])
         ```
 
-        would be an exploding d6. Use the `again_max_depth` parameter to control
+        would be an exploding d6. Use the `again_depth` parameter to control
         the maximum depth. If the roll reaches the maximum depth, the
         `again_end` is used instead of rolling again. Options for `again_end`
         include:
@@ -158,7 +158,7 @@ class Die(Population):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test = Die(outcomes, again_max_depth=0, again_end=Die([]))
+                    test = Die(outcomes, again_depth=0, again_end=Die([]))
                     if len(test) == 0:
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
@@ -169,13 +169,13 @@ class Die(Population):
                     if icepool.again.contains_again(again_end):
                         raise ValueError(
                             'again_end cannot itself contain Again.')
-                if again_max_depth == 0:
+                if again_depth == 0:
                     # Base case.
                     outcomes = icepool.again.sub_agains(outcomes, again_end)
                 else:
                     tail = Die(outcomes,
                                times,
-                               again_max_depth=again_max_depth - 1,
+                               again_depth=again_depth - 1,
                                again_end=again_end)
                     outcomes = icepool.again.sub_agains(outcomes, tail)
 
@@ -308,7 +308,7 @@ class Die(Population):
     def reroll(self,
                outcomes: Callable[..., bool] | Container | None = None,
                *extra_args,
-               max_depth: int | None = None,
+               depth: int | None = None,
                star: int = 0) -> 'Die':
         """Rerolls the given outcomes.
 
@@ -321,7 +321,7 @@ class Die(Population):
             *extra_args: These will be supplied to `outcomes` as extra
                 positional arguments after the outcome argument(s).
                 `extra_args` can only be supplied if `outcomes` is callable.
-            max_depth: The maximum number of times to reroll.
+            depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
@@ -353,7 +353,7 @@ class Die(Population):
                     if outcomes(outcome, *extra_args)
                 }
 
-        if max_depth is None:
+        if depth is None:
             data = {
                 outcome: quantity
                 for outcome, quantity in self.items()
@@ -363,9 +363,9 @@ class Die(Population):
             total_reroll_quantity = sum(
                 quantity for outcome, quantity in self.items()
                 if outcome in outcomes)
-            rerollable_factor = total_reroll_quantity**max_depth
-            stop_factor = (self.denominator()**max_depth +
-                           total_reroll_quantity**max_depth)
+            rerollable_factor = total_reroll_quantity**depth
+            stop_factor = (self.denominator()**depth +
+                           total_reroll_quantity**depth)
             data = {
                 outcome:
                 (rerollable_factor *
@@ -377,7 +377,7 @@ class Die(Population):
     def reroll_until(self,
                      outcomes: Callable[..., bool] | Container,
                      *extra_args,
-                     max_depth: int | None = None,
+                     depth: int | None = None,
                      star: int = 0) -> 'Die':
         """Rerolls until getting one of the given outcomes.
 
@@ -391,7 +391,7 @@ class Die(Population):
             *extra_args: These will be supplied to `outcomes` as extra
                 positional arguments after the outcome argument(s).
                 `extra_args` can only be supplied if `outcomes` is callable.
-            max_depth: The maximum number of times to reroll.
+            depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
@@ -425,7 +425,7 @@ class Die(Population):
                 not_outcome for not_outcome in self.outcomes()
                 if not_outcome not in outcomes
             }
-        return self.reroll(not_outcomes, max_depth=max_depth)
+        return self.reroll(not_outcomes, depth=depth)
 
     def truncate(self, min_outcome=None, max_outcome=None) -> 'Die':
         """Truncates the outcomes of this `Die` to the given range.
@@ -545,7 +545,7 @@ class Die(Population):
         outcomes or dice. Or, as executing a `sub`routine based on the roll of
         this `Die`.
 
-        EXPERIMENTAL: `Again`, `max_depth`, and `again_end` can be used as the
+        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
         `Die()` constructor. It is not advised to use these with `repeat` other
         than 1.
 
@@ -647,7 +647,7 @@ class Die(Population):
     def explode(self,
                 outcomes: Container | Callable[..., bool] | None = None,
                 *extra_args,
-                max_depth: int = 9,
+                depth: int = 9,
                 end=None,
                 star: int = 0) -> 'Die':
         """Causes outcomes to be rolled again and added to the total.
@@ -661,9 +661,9 @@ class Die(Population):
             *extra_args: These will be supplied to `outcomes` as extra
                 positional arguments after the outcome argument(s).
                 `extra_args` can only be supplied if `outcomes` is callable.
-            max_depth: The maximum number of additional dice to roll.
+            depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
-            end: Once max_depth is reached, further explosions will be treated
+            end: Once depth is reached, further explosions will be treated
                 as this value. By default, a zero value will be used.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
@@ -694,9 +694,9 @@ class Die(Population):
             if not outcomes:
                 return self
 
-        if max_depth < 0:
-            raise ValueError('max_depth cannot be negative.')
-        elif max_depth == 0:
+        if depth < 0:
+            raise ValueError('depth cannot be negative.')
+        elif depth == 0:
             return self
 
         def sub_func(outcome):
@@ -705,7 +705,7 @@ class Die(Population):
             else:
                 return outcome
 
-        return self.sub(sub_func, again_max_depth=max_depth, again_end=end)
+        return self.sub(sub_func, again_depth=depth, again_end=end)
 
     def if_else(self, outcome_if_true, outcome_if_false, /, **kwargs) -> 'Die':
         """Ternary conditional operator.
