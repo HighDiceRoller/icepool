@@ -172,7 +172,10 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
 
 
 def _contains_again_inner(outcome) -> bool:
-    if is_mapping(outcome):
+    if isinstance(outcome, icepool.Die):
+        # Dice should already have flattened out any Agains.
+        return False
+    elif is_mapping(outcome):
         return any(_contains_again_inner(x) for x in outcome)
     elif isinstance(outcome, icepool.Again):
         return True
@@ -190,7 +193,10 @@ def sub_agains(outcomes: Mapping[Any, int] | Sequence,
 
     This is not applied to tuples.
     """
-    if is_mapping(outcomes):
+    if isinstance(outcomes, icepool.Die):
+        # Dice should already have flattened out any Agains.
+        return outcomes
+    elif is_mapping(outcomes):
         return {
             _sub_agains_inner(k, die): v
             for k, v in outcomes.items()  # type: ignore
@@ -200,10 +206,13 @@ def sub_agains(outcomes: Mapping[Any, int] | Sequence,
 
 
 def _sub_agains_inner(outcome, die: 'icepool.Die'):
-    if is_mapping(outcome):
+    if isinstance(outcome, icepool.Die):
+        # Dice should already have flattened out any Agains.
+        return outcome
+    elif is_mapping(outcome):
         return {_sub_agains_inner(k, die): v for k, v in outcome.items()}
     elif isinstance(outcome, Again):
         return outcome.evaluate(die)
     else:
-        # tuple or Base arg that is not Again.
+        # tuple or simple arg that is not Again.
         return outcome
