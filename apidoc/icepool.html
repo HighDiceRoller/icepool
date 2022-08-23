@@ -307,9 +307,6 @@
                                 <a class="function" href="#Again.__init__">Again</a>
                         </li>
                         <li>
-                                <a class="function" href="#Again.evaluate">evaluate</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Again.key_tuple">key_tuple</a>
                         </li>
                 </ul>
@@ -5955,11 +5952,11 @@ if any quantity exceeds 10**30.</p>
 </span><span id="Again-38"><a href="#Again-38"><span class="linenos"> 38</span></a>
 </span><span id="Again-39"><a href="#Again-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="nf">_evaluate_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">):</span>
 </span><span id="Again-40"><a href="#Again-40"><span class="linenos"> 40</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Again</span><span class="p">):</span>
-</span><span id="Again-41"><a href="#Again-41"><span class="linenos"> 41</span></a>            <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">die</span><span class="p">)</span>
+</span><span id="Again-41"><a href="#Again-41"><span class="linenos"> 41</span></a>            <span class="k">return</span> <span class="n">arg</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">(</span><span class="n">die</span><span class="p">)</span>
 </span><span id="Again-42"><a href="#Again-42"><span class="linenos"> 42</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="Again-43"><a href="#Again-43"><span class="linenos"> 43</span></a>            <span class="k">return</span> <span class="n">arg</span>
 </span><span id="Again-44"><a href="#Again-44"><span class="linenos"> 44</span></a>
-</span><span id="Again-45"><a href="#Again-45"><span class="linenos"> 45</span></a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">):</span>
+</span><span id="Again-45"><a href="#Again-45"><span class="linenos"> 45</span></a>    <span class="k">def</span> <span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">):</span>
 </span><span id="Again-46"><a href="#Again-46"><span class="linenos"> 46</span></a>        <span class="sd">&quot;&quot;&quot;Recursively substitutes the provided `Die` for the `Again` placeholders.&quot;&quot;&quot;</span>
 </span><span id="Again-47"><a href="#Again-47"><span class="linenos"> 47</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Again-48"><a href="#Again-48"><span class="linenos"> 48</span></a>            <span class="k">return</span> <span class="n">die</span>
@@ -6129,32 +6126,6 @@ considered to be at the same level for purposes of <code>again_depth</code>.</p>
 <p>The supplied function will be called with the given args, except any
 arguments of type <code><a href="#Again">Again</a></code> will have resolved to the <code><a href="#Die">Die</a></code> resulting
 from rolling again.</p>
-</div>
-
-
-                            </div>
-                            <div id="Again.evaluate" class="classattr">
-                                        <input id="Again.evaluate-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">evaluate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">die</span><span class="p">:</span> <span class="n"><a href="#Die">icepool.Die</a></span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="Again.evaluate-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Again.evaluate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Again.evaluate-45"><a href="#Again.evaluate-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">):</span>
-</span><span id="Again.evaluate-46"><a href="#Again.evaluate-46"><span class="linenos">46</span></a>        <span class="sd">&quot;&quot;&quot;Recursively substitutes the provided `Die` for the `Again` placeholders.&quot;&quot;&quot;</span>
-</span><span id="Again.evaluate-47"><a href="#Again.evaluate-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Again.evaluate-48"><a href="#Again.evaluate-48"><span class="linenos">48</span></a>            <span class="k">return</span> <span class="n">die</span>
-</span><span id="Again.evaluate-49"><a href="#Again.evaluate-49"><span class="linenos">49</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Again.evaluate-50"><a href="#Again.evaluate-50"><span class="linenos">50</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span>
-</span><span id="Again.evaluate-51"><a href="#Again.evaluate-51"><span class="linenos">51</span></a>                <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_arg</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Recursively substitutes the provided <code><a href="#Die">Die</a></code> for the <code><a href="#Again">Again</a></code> placeholders.</p>
 </div>
 
 
