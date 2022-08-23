@@ -16,6 +16,16 @@ def test_again_evaluate_plus_6():
     assert x.evaluate(d6) == d6 + 6
 
 
+def test_again_evaluate_plus_d6():
+    x = Again() + d6
+    assert x.evaluate(d6) == 2 @ d6
+
+
+def test_again_evaluate_d6_plus():
+    x = d6 + Again()
+    assert x.evaluate(d6) == 2 @ d6
+
+
 def test_again_evaluate_plus_again():
     x = Again() + Again()
     assert x.evaluate(d6) == 2 @ d6

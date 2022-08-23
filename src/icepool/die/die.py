@@ -766,6 +766,8 @@ class Die(Population):
 
     def __matmul__(self, other) -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
 
         data: MutableMapping[int, Any] = defaultdict(int)
@@ -783,6 +785,8 @@ class Die(Population):
 
     def __rmatmul__(self, other) -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.__matmul__(self)
 
@@ -947,98 +951,146 @@ class Die(Population):
     # Binary operators.
 
     def __add__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.add)
 
     def __radd__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.add)
 
     def __sub__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.sub)
 
     def __rsub__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.sub)
 
     def __mul__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.mul)
 
     def __rmul__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.mul)
 
     def __truediv__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.truediv)
 
     def __rtruediv__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.truediv)
 
     def __floordiv__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.floordiv)
 
     def __rfloordiv__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.floordiv)
 
     def __pow__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.pow)
 
     def __rpow__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.pow)
 
     def __mod__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.mod)
 
     def __rmod__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.mod)
 
     def __lshift__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.lshift)
 
     def __rlshift__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.lshift)
 
     def __rshift__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.rshift)
 
     def __rrshift__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.rshift)
 
     def __and__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.and_)
 
     def __rand__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.and_)
 
     def __or__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.or_)
 
     def __ror__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.or_)
 
     def __xor__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return self.binary_op(other, operator.xor)
 
     def __rxor__(self, other) -> 'Die':
+        if isinstance(other, icepool.Again):
+            return NotImplemented
         other = icepool.Die([other])
         return other.binary_op(self, operator.xor)
 
