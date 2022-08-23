@@ -37,11 +37,11 @@ class Again():
 
     def _evaluate_arg(self, arg, die: 'icepool.Die'):
         if isinstance(arg, Again):
-            return arg.evaluate(die)
+            return arg._evaluate(die)
         else:
             return arg
 
-    def evaluate(self, die: 'icepool.Die'):
+    def _evaluate(self, die: 'icepool.Die'):
         """Recursively substitutes the provided `Die` for the `Again` placeholders."""
         if self._func is None:
             return die
@@ -219,7 +219,7 @@ def _sub_agains_inner(outcome, die: 'icepool.Die'):
     elif is_mapping(outcome):
         return {_sub_agains_inner(k, die): v for k, v in outcome.items()}
     elif isinstance(outcome, Again):
-        return outcome.evaluate(die)
+        return outcome._evaluate(die)
     else:
         # tuple or simple arg that is not Again.
         return outcome
