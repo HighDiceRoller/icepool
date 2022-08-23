@@ -21,6 +21,9 @@ from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, 
 def implicit_convert_to_die(outcome) -> 'Die':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
+    If the outcome is already a Die, it is returned as-is (even if it has
+    multiple outcomes).
+
     Raises:
         `TypeError` if `Again` or a mapping is given.
     """
@@ -31,7 +34,7 @@ def implicit_convert_to_die(outcome) -> 'Die':
     if isinstance(outcome, Mapping):
         raise TypeError(
             'Only single outcomes may be implicitly converted to a Die. '
-            'Explicitly use the Die constructor for mappings.')
+            'Explicitly use a Die for multiple outcomes.')
     return Die([outcome])
 
 
@@ -176,7 +179,9 @@ class Die(Population):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test = Die(outcomes, again_depth=0, again_end=Die([]))
+                    test = Die(outcomes,
+                               again_depth=0,
+                               again_end=icepool.Reroll)
                     if len(test) == 0:
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'

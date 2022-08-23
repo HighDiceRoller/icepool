@@ -36,7 +36,7 @@ def itemize(keys: Mapping[Any, int] | Sequence,
                 f'The number of times ({len(times)}) must equal the number of keys ({len(keys)}).'
             )
 
-    if is_mapping(keys):
+    if isinstance(keys, Mapping):
         times = tuple(
             v * x for v, x in zip(keys.values(), times))  # type: ignore
         keys = tuple(keys.keys())  # type: ignore
@@ -63,17 +63,12 @@ def expand_args_for_deck(args, times):
 
 def expand(arg, merge_func: Callable):
 
-    if is_mapping(arg):
+    if isinstance(arg, Mapping):
         return expand_dict(arg, merge_func)
     elif isinstance(arg, tuple):
         return expand_tuple(arg, merge_func)
     else:
         return expand_scalar(arg)
-
-
-def is_mapping(arg) -> bool:
-    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
-        arg, 'items') and hasattr(arg, '__getitem__')
 
 
 def expand_dict(arg, merge_func: Callable) -> Mapping[Any, int]:

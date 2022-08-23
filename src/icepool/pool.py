@@ -516,7 +516,7 @@ def standard_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool':
             Or, a mapping of die sizes to how many dice of that size to put
             into the pool.
     """
-    if icepool.creation_args.is_mapping(die_sizes):
+    if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable(
                 [k] * v for k, v in die_sizes.items()))  # type: ignore

@@ -161,11 +161,6 @@ class Again():
         return hash(self.key_tuple())
 
 
-def is_mapping(arg) -> bool:
-    return hasattr(arg, 'keys') and hasattr(arg, 'values') and hasattr(
-        arg, 'items') and hasattr(arg, '__getitem__')
-
-
 def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     """Returns True iff the outcome (recursively) contains any instances of Again.
 
@@ -182,7 +177,7 @@ def _contains_again_inner(outcome) -> bool:
     if isinstance(outcome, icepool.Die):
         # Dice should already have flattened out any Agains.
         return False
-    elif is_mapping(outcome):
+    elif isinstance(outcome, Mapping):
         return any(_contains_again_inner(x) for x in outcome)
     elif isinstance(outcome, icepool.Again):
         return True
@@ -203,7 +198,7 @@ def sub_agains(outcomes: Mapping[Any, int] | Sequence,
     if isinstance(outcomes, icepool.Die):
         # Dice should already have flattened out any Agains.
         return outcomes
-    elif is_mapping(outcomes):
+    elif isinstance(outcomes, Mapping):
         return {
             _sub_agains_inner(k, die): v
             for k, v in outcomes.items()  # type: ignore
@@ -216,7 +211,7 @@ def _sub_agains_inner(outcome, die: 'icepool.Die'):
     if isinstance(outcome, icepool.Die):
         # Dice should already have flattened out any Agains.
         return outcome
-    elif is_mapping(outcome):
+    elif isinstance(outcome, Mapping):
         return {_sub_agains_inner(k, die): v for k, v in outcome.items()}
     elif isinstance(outcome, Again):
         return outcome._evaluate(die)
