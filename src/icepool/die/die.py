@@ -558,7 +558,7 @@ class Die(Population):
     def sub(self,
             repl: Callable[[Any], Any] | Mapping,
             /,
-            *extra_args,
+            *extra_dice,
             repeat: int | None = 1,
             star: int = 0,
             **kwargs) -> 'Die':
@@ -579,20 +579,15 @@ class Die(Population):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            *extra_args: These will be supplied to `repl` as extra positional
-                arguments after the outcome argument(s). `extra_args` can only
-                be supplied if `repl` is callable.
+            *extra_dice: Outcomes from these will be supplied to `repl` as extra
+                positional arguments after the outcome argument(s). `extra_dice`
+                can only be supplied if `repl` is callable.
             repeat: EXPERIMENTAL: `sub()` will be repeated with the same
                 argument on the result this many times.
 
-                If set to `None`, this will seek a fixed point,
-                as a Markov process where the states are outcomes and the
-                transition function is defined by `repl`. The set of reachable
-                states must be finite, and every state must either be terminal
-                (transition to itself only) or be able to reach some terminal
-                state. At current the transition function must also not produce
-                any cycles of length greater than 1; I'm still working out how I
-                want to compute the more general case.
+                If set to `None`, this will repeat until reaching a fixed point.
+                I'm still working out if / how I want to compute the more
+                general case.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `repl` function. If `repl`
                 is not a callable, this has no effect.
@@ -605,7 +600,7 @@ class Die(Population):
         Raises:
             ValueError: if `extra_args` are supplied with a non-callable `repl`.
         """
-        if extra_args and not callable(repl):
+        if extra_dice and not callable(repl):
             raise ValueError(
                 'Extra positional arguments are only valid if repl is callable.'
             )
@@ -615,56 +610,40 @@ class Die(Population):
         elif repeat == 1:
             if callable(repl):
                 if star:
-                    repl_list = [
-                        repl(*outcome, *extra_args)
-                        for outcome in self.outcomes()
-                    ]
+
+                    def starred(self_outcome, *extra_outcomes):
+                        return repl(*self_outcome, *extra_outcomes)
+
+                    return icepool.apply(starred, self, *extra_dice, **kwargs)
                 else:
-                    repl_list = [
-                        repl(outcome, *extra_args)
-                        for outcome in self.outcomes()
-                    ]
+                    return icepool.apply(repl, self, *extra_dice, **kwargs)
             else:
                 # Mapping.
+                if extra_dice:
+                    raise ValueError(
+                        'extra_dice may only be supplied to sub() if the first argument is a function.'
+                    )
                 repl_list = [(repl[outcome] if outcome in repl else outcome)
                              for outcome in self.outcomes()]
+                return icepool.Die(repl_list, self.quantities(), **kwargs)
 
-            return icepool.Die(repl_list, self.quantities(), **kwargs)
         elif repeat is not None:
-            next = self.sub(repl, repeat=1, *extra_args, star=star, **kwargs)
+            next = self.sub(repl, repeat=1, *extra_dice, star=star, **kwargs)
             return next.sub(repl,
                             repeat=repeat - 1,
-                            *extra_args,
+                            *extra_dice,
                             star=star,
                             **kwargs)
         else:
-            # Seek fixed point.
-            if callable(repl):
-                if star:
-                    repl_func = lambda outcome: repl(*outcome, *extra_args)
-                else:
-                    repl_func = lambda outcome: repl(  # type: ignore
-                        outcome, *extra_args)
-            else:
-                # Mapping.
-                repl_func = lambda outcome: repl.get(  # type: ignore
-                    outcome, outcome)
-
-            @cache
-            def step_outcome(outcome):
-                next_outcome = Die([repl_func(outcome)])
-                if list(next_outcome.outcomes()) == [outcome]:
-                    # Absorbing state.
-                    return next_outcome
-                else:
-                    # Reroll non-terminal 1-cycles.
-                    return next_outcome.reroll([outcome])
-
             prev = self
-            curr = prev.sub(step_outcome, repeat=1, *extra_args, **kwargs)
+            curr = prev.sub(repl, repeat=1, *extra_dice, star=star, **kwargs)
             while not curr.equals(prev, simplify=True):
                 prev = curr
-                curr = prev.sub(step_outcome, repeat=1, *extra_args, **kwargs)
+                curr = prev.sub(repl,
+                                repeat=1,
+                                *extra_dice,
+                                star=star,
+                                **kwargs)
             return curr
 
     def explode(self,

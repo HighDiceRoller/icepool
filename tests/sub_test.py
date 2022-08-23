@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import d6, Die
+
 expected_d6x1 = icepool.Die(range(1, 13),
                             times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
 
@@ -40,6 +42,26 @@ def test_sub_star():
     assert b == c
 
 
+def test_sub_star_extra_dice():
+
+    def test_func(x, y, z):
+        return x + y + z
+
+    a = d6.sub(test_func, d6, d6)
+    b = Die([(d6, d6)]).sub(test_func, d6, star=1)
+    assert a == b
+
+
+def test_sub_star_extra_constants():
+
+    def test_func(x, y, z):
+        return x + y + z
+
+    a = d6.sub(test_func, 10, 20)
+    b = Die([(d6, 10)]).sub(test_func, 20, star=1)
+    assert a == b
+
+
 def collatz(x):
     if x == 1:
         return 1
@@ -56,6 +78,7 @@ def test_sub_fixed_point():
     assert result.equals(expected)
 
 
+@pytest.mark.skip(reason="pending re-implementation")
 def test_sub_fixed_point_1_cycle():
 
     def repl(outcome):

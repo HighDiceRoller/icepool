@@ -227,6 +227,24 @@ def accumulate(func: Callable[[Any, Any], Any],
         yield result
 
 
+def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
+    """Yields the independent joint distribution of the arguments.
+
+    Args:
+        *args: These may be dice, which will be expanded into their joint
+            outcomes. Non-dice are left as-is.
+
+    Yields:
+        Tuples containing one outcome per arg and the joint quantity.
+    """
+    for t in itertools.product(
+            *((arg.items() if isinstance(arg, icepool.Die) else [(arg, 1)])
+              for arg in args)):
+        outcomes, quantities = zip(*t)
+        final_quantity = math.prod(quantities)
+        yield outcomes, final_quantity
+
+
 def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
@@ -263,13 +281,10 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
         )
     if len(dice) == 0:
         return icepool.Die([func()], **kwargs)
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
     final_outcomes = []
     final_quantities = []
-    for t in itertools.product(*(die.items() for die in dice)):
-        outcomes, quantities = zip(*t)
+    for outcomes, final_quantity in iter_product_args(*dice):
         final_outcome = func(*outcomes)
-        final_quantity = math.prod(quantities)
         if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)
             final_quantities.append(final_quantity)
