@@ -113,13 +113,13 @@ def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
 
 def min_outcome(*dice):
     """The minimum outcome among the dice. """
-    dice = [icepool.Die([die]) for die in dice]
+    dice = [icepool.implicit_convert_to_die(die) for die in dice]
     return min(die.outcomes()[0] for die in dice)
 
 
 def max_outcome(*dice):
     """The maximum outcome among the dice. """
-    dice = [icepool.Die([die]) for die in dice]
+    dice = [icepool.implicit_convert_to_die(die) for die in dice]
     return max(die.outcomes()[-1] for die in dice)
 
 
@@ -132,7 +132,7 @@ def align(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.Die([die]) for die in dice)
+    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
     outcomes = set(itertools.chain.from_iterable(
         die.outcomes() for die in dice))
     return tuple(die.set_outcomes(outcomes) for die in dice)
@@ -147,7 +147,7 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.Die([die]) for die in dice)
+    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
     outcomes = tuple(
         range(icepool.min_outcome(*dice),
               icepool.max_outcome(*dice) + 1))
@@ -178,7 +178,7 @@ def reduce(func: Callable[[Any, Any], Any],
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = icepool.Die([initial])
+        result = icepool.implicit_convert_to_die(initial)
     else:
         result = next(iter_dice)
     for die in iter_dice:
@@ -215,7 +215,7 @@ def accumulate(func: Callable[[Any, Any], Any],
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = icepool.Die([initial])
+        result = icepool.implicit_convert_to_die(initial)
     else:
         try:
             result = next(iter_dice)
@@ -263,7 +263,7 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
         )
     if len(dice) == 0:
         return icepool.Die([func()], **kwargs)
-    dice = tuple(icepool.Die([die]) for die in dice)
+    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
     final_outcomes = []
     final_quantities = []
     for t in itertools.product(*(die.items() for die in dice)):

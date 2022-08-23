@@ -18,6 +18,23 @@ import operator
 from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
 
 
+def implicit_convert_to_die(outcome) -> 'Die':
+    """Converts a single outcome to a `Die` that always rolls that outcome.
+
+    Raises:
+        `TypeError` if `Again` or a mapping is given.
+    """
+    if isinstance(outcome, Die):
+        return outcome
+    if isinstance(outcome, icepool.Again):
+        raise TypeError('Again object cannot be implicitly converted to a Die.')
+    if isinstance(outcome, Mapping):
+        raise TypeError(
+            'Only single outcomes may be implicitly converted to a Die. '
+            'Explicitly use the Die constructor for mappings.')
+    return Die([outcome])
+
+
 class Die(Population):
     """Sampling with replacement. Quantities represent weights.
 
@@ -164,9 +181,9 @@ class Die(Population):
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
                         )
-                    again_end = icepool.Die([test.zero_outcome()])
+                    again_end = test.zero().simplify()
                 else:
-                    again_end = icepool.Die([again_end])
+                    again_end = implicit_convert_to_die(again_end)
                     if icepool.again.contains_again(again_end):
                         raise ValueError(
                             'again_end cannot itself contain Again.')
@@ -768,7 +785,7 @@ class Die(Population):
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
 
         data: MutableMapping[int, Any] = defaultdict(int)
 
@@ -787,7 +804,7 @@ class Die(Population):
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
     def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool':
@@ -953,145 +970,145 @@ class Die(Population):
     def __add__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.add)
 
     def __radd__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.add)
 
     def __sub__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.sub)
 
     def __rsub__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.sub)
 
     def __mul__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.mul)
 
     def __rmul__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.mul)
 
     def __truediv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.truediv)
 
     def __rtruediv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.truediv)
 
     def __floordiv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.floordiv)
 
     def __rfloordiv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.floordiv)
 
     def __pow__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.pow)
 
     def __rpow__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.pow)
 
     def __mod__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.mod)
 
     def __rmod__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.mod)
 
     def __lshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.lshift)
 
     def __rlshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.lshift)
 
     def __rshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.rshift)
 
     def __rrshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.rshift)
 
     def __and__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.and_)
 
     def __rand__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.and_)
 
     def __or__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.or_)
 
     def __ror__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.or_)
 
     def __xor__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return self.binary_op(other, operator.xor)
 
     def __rxor__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return other.binary_op(self, operator.xor)
 
     # Comparators.
@@ -1136,19 +1153,19 @@ class Die(Population):
         return icepool.Die({False: d - n, True: n})
 
     def __lt__(self, other) -> 'Die':
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return Die._lt_le(operator.lt, self, other)
 
     def __le__(self, other) -> 'Die':
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return Die._lt_le(operator.le, self, other)
 
     def __ge__(self, other) -> 'Die':
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return Die._lt_le(operator.le, other, self)
 
     def __gt__(self, other) -> 'Die':
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
         return Die._lt_le(operator.lt, other, self)
 
     # Equality operators. These produce a `DieWithTruth`.
@@ -1195,7 +1212,7 @@ class Die(Population):
                     return Counts([(False, d - n), (True, n)])
 
     def __eq__(self, other):
-        other_die = icepool.Die([other])
+        other_die = implicit_convert_to_die(other)
 
         def data_callback():
             return Die._eq(False, self, other_die)
@@ -1206,7 +1223,7 @@ class Die(Population):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def __ne__(self, other):
-        other_die = icepool.Die([other])
+        other_die = implicit_convert_to_die(other)
 
         def data_callback():
             return Die._eq(True, self, other_die)
@@ -1224,7 +1241,7 @@ class Die(Population):
 
         This will include all three outcomes even if they have zero quantity.
         """
-        other = icepool.Die([other])
+        other = implicit_convert_to_die(other)
 
         data = {}
 

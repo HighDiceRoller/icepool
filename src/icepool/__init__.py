@@ -27,7 +27,7 @@ from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
                               accumulate, apply, apply_sorted)
 
 from icepool.population import Population
-from icepool.die.die import Die
+from icepool.die.die import implicit_convert_to_die, Die
 from icepool.again import Again
 from icepool.die.die_with_truth import DieWithTruth
 

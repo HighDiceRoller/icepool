@@ -89,7 +89,7 @@ class Pool(OutcomeCountGenerator):
             )
 
         dice, times = icepool.creation_args.itemize(dice, times)
-        dice = tuple(icepool.Die([die]) for die in dice)
+        dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
 
         dice_counts: MutableMapping['icepool.Die', int] = defaultdict(int)
         for die, qty in zip(dice, times):

@@ -14,7 +14,7 @@ def test_create_empty(die):
 
 
 def test_op_empty():
-    result = icepool.d6 + {}
+    result = icepool.d6 + icepool.Die([])
     expected = icepool.Die([])
     assert result.equals(expected)
 

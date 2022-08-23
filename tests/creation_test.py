@@ -54,6 +54,11 @@ def test_negative_weight_error():
         icepool.Die([1], times=[-1])
 
 
+def test_implicit_mapping_error():
+    with pytest.raises(TypeError):
+        icepool.d6 + {}
+
+
 def test_empty_tuple():
     result = icepool.Die([()])
     assert result.equals(result + ())
