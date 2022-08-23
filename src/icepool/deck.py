@@ -11,7 +11,7 @@ from collections import defaultdict
 from functools import cached_property
 import operator
 
-from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence, overload
 
 
 class Deck(Population):
@@ -142,7 +142,7 @@ class Deck(Population):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    class _Marginals():
+    class _Marginals(Sequence['Deck']):
         """Helper class for implementing `marginals()`."""
 
         _deck: 'Deck'
@@ -150,8 +150,21 @@ class Deck(Population):
         def __init__(self, deck: 'Deck', /):
             self._deck = deck
 
-        def __getitem__(self, dims, /) -> 'Deck':
+        def __len__(self) -> int:
+            """The minimum len() of all outcomes."""
+            return min(len(x) for x in self._deck.outcomes())
 
+        @overload
+        def __getitem__(self, dims: int, /) -> 'Deck':
+            ...
+
+        @overload
+        def __getitem__(self, dims: slice, /) -> Sequence['Deck']:
+            ...
+
+        def __getitem__(self, dims: int | slice,
+                        /) -> 'Deck' | Sequence['Deck']:
+            """Marginalizes the given dimensions."""
             return self._deck.unary_op_non_elementwise(operator.getitem, dims)
 
     @property

@@ -79,3 +79,10 @@ def test_explode_star():
     result = base.explode(lambda a, b: a == 6 and b == 6, star=1)
     expected = base.explode()
     assert result.equals(expected)
+
+
+def test_unpack_marginals():
+    base = icepool.Die([(icepool.d6, icepool.d6)])
+    a, b = base.marginals
+    assert a == b
+    assert a.simplify() == icepool.d6

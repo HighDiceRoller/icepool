@@ -15,7 +15,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence, overload
 
 
 def implicit_convert_to_die(outcome) -> 'Die':
@@ -927,7 +927,7 @@ class Die(Population):
 
     __ceil__ = ceil
 
-    class _Marginals():
+    class _Marginals(Sequence['Die']):
         """Helper class for implementing `marginals()`."""
 
         _die: 'Die'
@@ -935,8 +935,20 @@ class Die(Population):
         def __init__(self, die: 'Die', /):
             self._die = die
 
-        def __getitem__(self, dims, /) -> 'Die':
+        def __len__(self) -> int:
+            """The minimum len() of all outcomes."""
+            return min(len(x) for x in self._die.outcomes())
 
+        @overload
+        def __getitem__(self, dims: int, /) -> 'Die':
+            ...
+
+        @overload
+        def __getitem__(self, dims: slice, /) -> Sequence['Die']:
+            ...
+
+        def __getitem__(self, dims: int | slice, /) -> 'Die' | Sequence['Die']:
+            """Marginalizes the given dimensions."""
             return self._die.unary_op_non_elementwise(operator.getitem, dims)
 
     @property
