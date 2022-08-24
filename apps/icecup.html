@@ -207,6 +207,7 @@ async function runCode(code, probabilityType) {
 
     if (usedRandom || code != prevCode) {
         await resetIcepool();
+        self.postMessage({ cmd: 'clearError' });
         pyodide.runPython(`_manager.reset()`);
         try {
             let computationStart = performance.now();
@@ -215,7 +216,6 @@ async function runCode(code, probabilityType) {
             computationTime = (performance.now() - computationStart) / 1000.0;
             self.postMessage({ cmd: 'updateComputationTime', computationTime });
         } catch (err) {
-            self.postMessage({ cmd: 'clearError' });
             self.postMessage({ cmd: 'appendError', text: err + '\n'});
         }
         prevCode = code;
