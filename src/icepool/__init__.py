@@ -59,7 +59,13 @@ class SpecialValue(enum.Enum):
 Reroll = SpecialValue.Reroll
 """Indicates an outcome should be rerolled (with unlimited depth).
 
-Specific cases:
+This effectively removes the outcome from the probability space, along with its
+contribution to the denominator.
+
+This can be used for conditional probability by removing all outcomes not
+consistent with the given observations.
+
+Operation in specific cases:
 
 * When used with `Again`, only that stage is rerolled, not the entire `Again`
     tree.
