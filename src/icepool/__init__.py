@@ -19,6 +19,29 @@ refer to dice in a pool.
 
 __docformat__ = 'google'
 
+from icepool.constant import SpecialValue
+
+Reroll = SpecialValue.Reroll
+"""Indicates an outcome should be rerolled (with unlimited depth).
+
+This effectively removes the outcome from the probability space, along with its
+contribution to the denominator.
+
+This can be used for conditional probability by removing all outcomes not
+consistent with the given observations.
+
+Operation in specific cases:
+
+* When used with `Again`, only that stage is rerolled, not the entire `Again`
+    tree.
+* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no
+    modification.
+* When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
+"""
+
+Unlimited = SpecialValue.Unlimited
+"""Used for `depth` and `repeat` parameters to indicate unlimited depth."""
+
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
@@ -47,32 +70,6 @@ from icepool.evaluators import (
 
 from icepool.deck import Deck
 from icepool.deal import Deal
-
-import enum
-
-
-class SpecialValue(enum.Enum):
-    Reroll = 'Reroll'
-    """Indicates an outcome should be rerolled (with unlimited depth)."""
-
-
-Reroll = SpecialValue.Reroll
-"""Indicates an outcome should be rerolled (with unlimited depth).
-
-This effectively removes the outcome from the probability space, along with its
-contribution to the denominator.
-
-This can be used for conditional probability by removing all outcomes not
-consistent with the given observations.
-
-Operation in specific cases:
-
-* When used with `Again`, only that stage is rerolled, not the entire `Again`
-    tree.
-* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no
-    modification.
-* When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
-"""
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'Again',
