@@ -22,7 +22,10 @@ __docformat__ = 'google'
 from icepool.constant import SpecialValue
 
 Reroll = SpecialValue.Reroll
-"""Indicates an outcome should be rerolled (with unlimited depth).
+"""Indicates that an outcome should be rerolled (with unlimited depth).
+
+This can be used in place of outcomes in many places. See individual function
+and method descriptions for details.
 
 This effectively removes the outcome from the probability space, along with its
 contribution to the denominator.
@@ -38,9 +41,6 @@ Operation in specific cases:
     modification.
 * When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
 """
-
-Unlimited = SpecialValue.Unlimited
-"""Used for `depth` and `repeat` parameters to indicate unlimited depth."""
 
 # Expose certain names at top-level.
 
@@ -76,7 +76,7 @@ __all__ = [
     'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
-    'OutcomeCountEvaluator', 'Order', 'JointEvaluator', 'SumEvaluator', 'Deck',
-    'Deal', 'clear_pool_cache'
+    'apply_sorted', 'Reroll', 'Unlimited', 'OutcomeCountGenerator', 'Pool',
+    'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
+    'SumEvaluator', 'Deck', 'Deal', 'clear_pool_cache'
 ]
