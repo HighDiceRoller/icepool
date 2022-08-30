@@ -588,9 +588,10 @@ class Die(Population):
                 If set to `None`, this will repeat until reaching a fixed point.
                 I'm still working out if / how I want to compute the more
                 general case.
-            star: If set to `True` or 1, outcomes will be unpacked as
-                `*outcome` before giving it to the `repl` function. If `repl`
-                is not a callable, this has no effect.
+            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+                `*outcome` before giving it to the `repl` function. `extra_dice`
+                are not unpacked. If `repl` is not a callable, this has no
+                effect.
             **kwargs: Any extra keyword arguments are forwarded to the final die
                 constructor.
 
