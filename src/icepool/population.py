@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from collections import defaultdict
 import icepool
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
@@ -11,7 +12,10 @@ import math
 import operator
 import random
 
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeVar, overload
+
+T = TypeVar('T', bound='Population')
+"""Type variable representing a subclass of `Population`."""
 
 
 class Population(ABC, Mapping[Any, int]):
@@ -25,6 +29,10 @@ class Population(ABC, Mapping[Any, int]):
     # Abstract methods.
 
     @abstractmethod
+    def _new_type(self) -> type:
+        """The type to use when constructing a new instance."""
+
+    @abstractmethod
     def keys(self) -> CountsKeysView:
         """The outcomes within the population in sorted order."""
 
@@ -35,16 +43,6 @@ class Population(ABC, Mapping[Any, int]):
     @abstractmethod
     def items(self) -> CountsItemsView:
         """The (outcome, quantity)s of the population in sorted order."""
-
-    @property
-    @abstractmethod
-    def marginals(self):
-        """A property that applies the `[]` operator to outcomes.
-
-        This is not performed elementwise on tuples, so that this can be used
-        to slice tuple outcomes. For example, `population.marginals[:2]` will
-        marginalize the first two elements of tuples.
-        """
 
     # Outcomes.
 
@@ -355,6 +353,52 @@ class Population(ABC, Mapping[Any, int]):
         return self.standardized_moment(4.0) - 3.0
 
     # Joint statistics.
+
+    class _Marginals(Sequence[T]):
+        """Helper class for implementing `marginals()`."""
+
+        _population: T
+
+        def __init__(self, population: T, /):
+            self._population = population
+
+        def __len__(self) -> int:
+            """The minimum len() of all outcomes."""
+            return min(len(x) for x in self._population.outcomes())
+
+        @overload
+        def __getitem__(self, dims: int, /) -> T:
+            ...
+
+        @overload
+        def __getitem__(self, dims: slice, /) -> Sequence[T]:
+            ...
+
+        def __getitem__(self, dims: int | slice, /) -> T | Sequence[T]:
+            """Marginalizes the given dimensions."""
+            return self._population.unary_op_non_elementwise(
+                operator.getitem, dims)
+
+    @property
+    def marginals(self: T) -> Sequence[T]:
+        """A property that applies the `[]` operator to outcomes.
+
+        This is not performed elementwise on tuples, so that this can be used
+        to slice tuple outcomes. For example, `population.marginals[:2]` will
+        marginalize the first two elements of tuples.
+        """
+        return Population._Marginals(self)
+
+    def unary_op_non_elementwise(self: T, op: Callable, *args, **kwargs) -> T:
+        """As `unary_op()`, but not elementwise.
+
+        This is used for `marginals()`.
+        """
+        data: MutableMapping[Any, int] = defaultdict(int)
+        for outcome, quantity in self.items():
+            new_outcome = op(outcome, *args, **kwargs)
+            data[new_outcome] += quantity
+        return self._new_type()(data)
 
     def covariance(self, i: int, j: int):
         mean_i = self.marginals[i].mean()

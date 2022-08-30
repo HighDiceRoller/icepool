@@ -23,6 +23,9 @@ class Deck(Population):
     _data: Counts
     _deal: int
 
+    def _new_type(self) -> type:
+        return Deck
+
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1) -> 'Deck':
@@ -77,17 +80,6 @@ class Deck(Population):
         data = icepool.creation_args.expand_args_for_deck(outcomes, times)
         return Deck._new_deck(data)
 
-    def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Deck':
-        """As `unary_op()`, but not elementwise.
-
-        This is used for `marginals()`.
-        """
-        data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, quantity in self.items():
-            new_outcome = op(outcome, *args, **kwargs)
-            data[new_outcome] += quantity
-        return Deck(data)
-
     @classmethod
     def _new_deck(cls, data: Counts) -> 'Deck':
         """Creates a new `Deck` using already-processed arguments.
@@ -95,7 +87,7 @@ class Deck(Population):
         Args:
             data: At this point, this is a Counts.
         """
-        self = super(Deck, cls).__new__(cls)
+        self = super(Population, cls).__new__(cls)
         self._data = data
         return self
 
@@ -141,35 +133,6 @@ class Deck(Population):
         See `Deal()` for details.
         """
         return icepool.Deal(self, *hand_sizes)
-
-    class _Marginals(Sequence['Deck']):
-        """Helper class for implementing `marginals()`."""
-
-        _deck: 'Deck'
-
-        def __init__(self, deck: 'Deck', /):
-            self._deck = deck
-
-        def __len__(self) -> int:
-            """The minimum len() of all outcomes."""
-            return min(len(x) for x in self._deck.outcomes())
-
-        @overload
-        def __getitem__(self, dims: int, /) -> 'Deck':
-            ...
-
-        @overload
-        def __getitem__(self, dims: slice, /) -> Sequence['Deck']:
-            ...
-
-        def __getitem__(self, dims: int | slice,
-                        /) -> 'Deck' | Sequence['Deck']:
-            """Marginalizes the given dimensions."""
-            return self._deck.unary_op_non_elementwise(operator.getitem, dims)
-
-    @property
-    def marginals(self):
-        return Deck._Marginals(self)
 
     @cached_property
     def _key_tuple(self) -> tuple:

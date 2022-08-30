@@ -66,6 +66,9 @@ class Die(Population):
 
     _data: Counts
 
+    def _new_type(self) -> type:
+        return Die
+
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
                 times: Sequence[int] | int = 1,
@@ -208,7 +211,7 @@ class Die(Population):
                 outcomes[0], Die):
             return outcomes[0]
 
-        self = super(Die, cls).__new__(cls)
+        self = super(Population, cls).__new__(cls)
         self._data = icepool.creation_args.expand_args_for_die(outcomes, times)
         return self
 
@@ -238,17 +241,6 @@ class Die(Population):
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, quantity in self.items():
             new_outcome = unary_elementwise(outcome, op, *args, **kwargs)
-            data[new_outcome] += quantity
-        return icepool.Die(data)
-
-    def unary_op_non_elementwise(self, op: Callable, *args, **kwargs) -> 'Die':
-        """As `unary_op()`, but not elementwise.
-
-        This is used for `marginals()`.
-        """
-        data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, quantity in self.items():
-            new_outcome = op(outcome, *args, **kwargs)
             data[new_outcome] += quantity
         return icepool.Die(data)
 
@@ -906,34 +898,6 @@ class Die(Population):
         return self.unary_op(math.ceil)
 
     __ceil__ = ceil
-
-    class _Marginals(Sequence['Die']):
-        """Helper class for implementing `marginals()`."""
-
-        _die: 'Die'
-
-        def __init__(self, die: 'Die', /):
-            self._die = die
-
-        def __len__(self) -> int:
-            """The minimum len() of all outcomes."""
-            return min(len(x) for x in self._die.outcomes())
-
-        @overload
-        def __getitem__(self, dims: int, /) -> 'Die':
-            ...
-
-        @overload
-        def __getitem__(self, dims: slice, /) -> Sequence['Die']:
-            ...
-
-        def __getitem__(self, dims: int | slice, /) -> 'Die' | Sequence['Die']:
-            """Marginalizes the given dimensions."""
-            return self._die.unary_op_non_elementwise(operator.getitem, dims)
-
-    @property
-    def marginals(self):
-        return Die._Marginals(self)
 
     @staticmethod
     def _zero(x):
