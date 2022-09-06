@@ -1,3 +1,12 @@
+## 0.20.0
+
+* Retired `denominator_method`.
+* Renamed `max_depth` parameters to just `depth`.
+* Binary operators delegate to `Again`'s behavior.
+* Only single outcomes implicity convert to `Die`.
+* `marginals` is now a Sequence, and can be iterated over, unpacked, etc.
+* `Die.sub()` now expands extra die arguments into their outcomes.
+
 ## 0.19.1
 
 Fix `contains_again` checking of sequences.
