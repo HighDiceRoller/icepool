@@ -272,7 +272,7 @@ function interruptExecution() {
 
 async function runCode() {
     let code = editor.getValue();
-    history.replaceState(null, "", "?code=" + LZString.compressToEncodedURIComponent(code));
+    history.replaceState(null, "", "?c=" + LZString.compressToEncodedURIComponent(code));
     let probabilityType;
     if (document.getElementById('probability_ge').checked) {
         probabilityType = 'ge';
@@ -298,7 +298,7 @@ resizer.observe(document.getElementById("main"));
 
 var initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
 var searchParams = new URLSearchParams(window.location.search);
-var url_code = searchParams.get('code');
+var url_code = searchParams.get('c');
 if (url_code) {
     try {
         initialCode = LZString.decompressFromEncodedURIComponent(url_code);
