@@ -3,10 +3,9 @@ __docformat__ = 'google'
 import icepool
 from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 
-import itertools
 from collections import defaultdict
 from functools import cached_property
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 
 
 class SuitGenerator(OutcomeCountGenerator):
@@ -35,7 +34,7 @@ class SuitGenerator(OutcomeCountGenerator):
 
     def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
-            defaultdict(int) for x in range(self.counts_len())
+            defaultdict(int) for _ in range(self.counts_len())
         ]
         for popped_src, counts, weights in _generate_min_internal(
                 min_outcome, self._src, blank_counts, 1):
@@ -43,7 +42,7 @@ class SuitGenerator(OutcomeCountGenerator):
 
     def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
-            defaultdict(int) for x in range(self.counts_len())
+            defaultdict(int) for _ in range(self.counts_len())
         ]
         for popped_src, counts, weights in _generate_max_internal(
                 max_outcome, self._src, blank_counts, 1):
