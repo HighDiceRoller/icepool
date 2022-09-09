@@ -56,7 +56,7 @@ class OutcomeCountEvaluator(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state: Hashable, outcome, /, *counts: int) -> Hashable:
+    def next_state(self, state: Hashable, outcome, /, *counts) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -87,10 +87,11 @@ class OutcomeCountEvaluator(ABC):
                 may or may not be seen. If you need to enforce that certain
                 outcomes are seen even if they have zero count, see
                 `alignment()`.
-            *counts: One `int` for each generator output indicating how many of
-                the current outcome were produced. All outcomes with nonzero
-                count are guaranteed to be seen. To guarantee that outcomes
-                are seen even if they have zero count, override `alignment()`.
+            *counts: One value (usually an `int`) for each generator output
+                indicating how many of the current outcome were produced.
+                All outcomes with nonzero count are guaranteed to be seen.
+                To guarantee that outcomes are seen even if they have zero
+                count, override `alignment()`.
 
         Returns:
             A hashable object indicating the next state.

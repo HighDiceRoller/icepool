@@ -40,12 +40,16 @@ class OutcomeCountGenerator(ABC):
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
-            A generator with the min outcome popped.
-            A tuple of counts for the min outcome.
-            The weight for this many of the min outcome appearing.
+            * A generator with the min outcome popped.
+            * A tuple of counts for the min outcome.
+            * The weight for this many of the min outcome appearing.
 
             If the argument does not match the min outcome, or this generator
-            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.
+            has no outcomes, only a single tuple is yielded:
+
+            * `self`
+            * A tuple of zeros.
+            * weight = 1.
         """
 
     @abstractmethod
@@ -53,12 +57,16 @@ class OutcomeCountGenerator(ABC):
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
-            A generator with the max outcome popped.
-            A tuple of counts for the max outcome.
-            The weight for this many of the max outcome appearing.
+            * A generator with the min outcome popped.
+            * A tuple of counts for the min outcome.
+            * The weight for this many of the min outcome appearing.
 
-            If the argument does not match the max outcome, or this generator
-            has no outcomes, only the single tuple `(self, 0, 1)` is yielded.
+            If the argument does not match the min outcome, or this generator
+            has no outcomes, only a single tuple is yielded:
+
+            * `self`
+            * A tuple of zeros.
+            * weight = 1.
         """
 
     @abstractmethod
