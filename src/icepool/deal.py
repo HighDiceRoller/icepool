@@ -57,6 +57,9 @@ class Deal(OutcomeCountGenerator):
         """
         return self.deck().outcomes()
 
+    def counts_len(self) -> int:
+        return len(self._hand_sizes)
+
     def _is_resolvable(self) -> bool:
         return len(self.outcomes()) > 0
 

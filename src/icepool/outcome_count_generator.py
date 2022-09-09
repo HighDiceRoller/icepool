@@ -28,6 +28,10 @@ class OutcomeCountGenerator(ABC):
         """The set of outcomes, in sorted order."""
 
     @abstractmethod
+    def counts_len(self) -> int:
+        """The number of counts generated. Must be constant."""
+
+    @abstractmethod
     def _is_resolvable(self) -> bool:
         """`True` iff the generator is capable of producing an overall outcome.
 

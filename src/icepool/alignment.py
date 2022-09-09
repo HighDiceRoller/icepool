@@ -19,6 +19,9 @@ class Alignment(OutcomeCountGenerator):
     def outcomes(self) -> Sequence:
         return self._outcomes
 
+    def counts_len(self) -> int:
+        return 0
+
     def _is_resolvable(self) -> bool:
         return True
 
@@ -27,14 +30,14 @@ class Alignment(OutcomeCountGenerator):
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
         else:
-            yield Alignment(self.outcomes()[1:]), (0,), 1
+            yield Alignment(self.outcomes()[1:]), (), 1
 
     def _generate_max(self, max_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
         else:
-            yield Alignment(self.outcomes()[:-1]), (0,), 1
+            yield Alignment(self.outcomes()[:-1]), (), 1
 
     def _estimate_order_costs(self) -> tuple[int, int]:
         result = len(self.outcomes())
