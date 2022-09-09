@@ -71,6 +71,8 @@ from icepool.evaluators import (
 from icepool.deck import Deck
 from icepool.deal import Deal
 
+from icepool.suits import SuitGenerator
+
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'Die', 'Population', 'Again',
     'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
@@ -78,5 +80,5 @@ __all__ = [
     'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
     'apply_sorted', 'Reroll', 'Unlimited', 'OutcomeCountGenerator', 'Pool',
     'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
-    'SumEvaluator', 'Deck', 'Deal', 'clear_pool_cache'
+    'SumEvaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
 ]
