@@ -86,3 +86,20 @@ def test_unpack_marginals():
     a, b = base.marginals
     assert a == b
     assert a.simplify() == icepool.d6
+
+
+def test_one_hot():
+
+    class OneHotEvaluator(icepool.OutcomeCountEvaluator):
+
+        def next_state(self, state, _, count):
+            if state is None:
+                state = ()
+            return state + (count,)
+
+        def alignment(self, *_):
+            return [1, 2, 3, 4, 5, 6]
+
+    result = 3 @ icepool.one_hot(6)
+    expected = icepool.d6.pool(3).evaluate(OneHotEvaluator())
+    assert result == expected

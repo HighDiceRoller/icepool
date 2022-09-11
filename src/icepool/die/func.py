@@ -64,6 +64,21 @@ def bernoulli(n: int, d: int, /) -> 'icepool.Die':
 coin = bernoulli
 
 
+def one_hot(sides: int, /):
+    """A `Die` with tuple outcomes with one element set to `True` uniformly at random and the rest `False`.
+
+    This is an easy (if expensive) way of representing how many dice in a pool
+    rolled each number. For example, the outcomes of `10 @ one_hot(6)` are
+    the `(ones, twos, threes, fours, fives, sixes)` rolled in 10d6.
+    """
+    data = []
+    for i in range(sides):
+        outcome = [False] * sides
+        outcome[i] = True
+        data.append(tuple(outcome))
+    return icepool.Die(data)
+
+
 def from_cumulative_quantities(outcomes: Sequence,
                                cumulative_quantities: Sequence[int],
                                *,
