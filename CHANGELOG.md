@@ -1,3 +1,8 @@
+## 0.20.1
+
+* Added `one_hot` function.
+* Added experimental suit generator that wraps a generator and produces counts for all suits for each value.
+
 ## 0.20.0
 
 * Retired `denominator_method`.
