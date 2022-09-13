@@ -14,7 +14,7 @@ import random
 
 from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-T = TypeVar('T', bound='Population')
+P = TypeVar('P', bound='Population')
 """Type variable representing a subclass of `Population`."""
 
 
@@ -354,12 +354,12 @@ class Population(ABC, Mapping[Any, int]):
 
     # Joint statistics.
 
-    class _Marginals(Sequence[T]):
+    class _Marginals(Sequence[P]):
         """Helper class for implementing `marginals()`."""
 
-        _population: T
+        _population: P
 
-        def __init__(self, population: T, /):
+        def __init__(self, population: P, /):
             self._population = population
 
         def __len__(self) -> int:
@@ -367,20 +367,20 @@ class Population(ABC, Mapping[Any, int]):
             return min(len(x) for x in self._population.outcomes())
 
         @overload
-        def __getitem__(self, dims: int, /) -> T:
+        def __getitem__(self, dims: int, /) -> P:
             ...
 
         @overload
-        def __getitem__(self, dims: slice, /) -> Sequence[T]:
+        def __getitem__(self, dims: slice, /) -> Sequence[P]:
             ...
 
-        def __getitem__(self, dims: int | slice, /) -> T | Sequence[T]:
+        def __getitem__(self, dims: int | slice, /) -> P | Sequence[P]:
             """Marginalizes the given dimensions."""
             return self._population.unary_op_non_elementwise(
                 operator.getitem, dims)
 
     @property
-    def marginals(self: T) -> Sequence[T]:
+    def marginals(self: P) -> Sequence[P]:
         """A property that applies the `[]` operator to outcomes.
 
         This is not performed elementwise on tuples, so that this can be used
@@ -389,7 +389,7 @@ class Population(ABC, Mapping[Any, int]):
         """
         return Population._Marginals(self)
 
-    def unary_op_non_elementwise(self: T, op: Callable, *args, **kwargs) -> T:
+    def unary_op_non_elementwise(self: P, op: Callable, *args, **kwargs) -> P:
         """As `unary_op()`, but not elementwise.
 
         This is used for `marginals()`.
