@@ -18,9 +18,12 @@ NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
 class OutcomeCountGenerator(ABC):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
-    These include dice pools (`Pool`) and card decks (`Deck`).
+    These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
+    will be using one of these two rather than writing your own subclass of
+    `OutcomeCountGenerator`.
 
-    These generators can be evaluated by an `OutcomeCountEvaluator`.
+    These generators can be evaluated by an `OutcomeCountEvaluator`, which you
+    *are* likely to write your own concrete subclass of.
     """
 
     @abstractmethod
