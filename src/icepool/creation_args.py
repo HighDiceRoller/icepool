@@ -7,12 +7,12 @@ import itertools
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeAlias
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,
             times: Sequence[int] | int) -> tuple[Sequence, Sequence[int]]:
-    """Converts the argument(s) into a sequence of keys and a sequence of counts.
+    """Converts the arguments into a sequence of keys and a sequence of times.
 
     Args:
         keys: One of the following:
@@ -49,19 +49,23 @@ def itemize(keys: Mapping[Any, int] | Sequence,
     return keys, times
 
 
-def expand_args_for_die(args, times):
+def expand_args_for_die(args: Sequence, times: Sequence[int]) -> Counts:
     subdatas = [expand(arg, merge_weights_lcm) for arg in args]
     data = merge_weights_lcm(subdatas, times)
     return Counts(data.items())
 
 
-def expand_args_for_deck(args, times):
+def expand_args_for_deck(args: Sequence, times: Sequence[int]) -> Counts:
     subdatas = [expand(arg, merge_duplicates) for arg in args]
     data = merge_duplicates(subdatas, times)
     return Counts(data.items())
 
 
-def expand(arg, merge_func: Callable):
+MergeFunc: TypeAlias = Callable[[Sequence[Mapping[Any, int]], Sequence[int]],
+                                Mapping[Any, int]]
+
+
+def expand(arg, merge_func: MergeFunc):
 
     if isinstance(arg, Mapping):
         return expand_dict(arg, merge_func)
@@ -71,13 +75,13 @@ def expand(arg, merge_func: Callable):
         return expand_scalar(arg)
 
 
-def expand_dict(arg, merge_func: Callable) -> Mapping[Any, int]:
+def expand_dict(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
     subdatas = [expand(k, merge_func) for k in arg.keys()]
     weights = [v for v in arg.values()]
     return merge_func(subdatas, weights)
 
 
-def expand_tuple(arg, merge_func: Callable) -> Mapping[Any, int]:
+def expand_tuple(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
     if len(arg) == 0:
         return {(): 1}
     subdatas = [expand(x, merge_func) for x in arg]
@@ -108,12 +112,12 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[Any, int]],
 
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
 
-    denominator_prod = math.lcm(*(d for d in subdata_denominators if d > 0))
+    denominator_lcm = math.lcm(*(d for d in subdata_denominators if d > 0))
 
     data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
                                                weights):
-        factor = denominator_prod * w // subdata_denominator if subdata_denominator else 0
+        factor = denominator_lcm * w // subdata_denominator if subdata_denominator else 0
         for outcome, weight in subdata.items():
             data[outcome] += weight * factor
     return data
