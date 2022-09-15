@@ -70,9 +70,10 @@ class OutcomeCountEvaluator(ABC):
 
         Make sure to handle the base case where `state is None`.
 
-        States must be hashable, but unlike outcomes they do not need to be
-        orderable. However, if they are not totally orderable, you must override
-        `final_outcome` to create legal final outcomes.
+        States must be hashable. At current, they do not have to be orderable.
+        However, this may change in the future, and if they are not totally
+        orderable, you must override `final_outcome` to create totally orderable
+        final outcomes.
 
         Args:
             state: A hashable object indicating the state before rolling the
