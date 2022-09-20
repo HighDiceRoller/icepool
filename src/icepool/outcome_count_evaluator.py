@@ -75,6 +75,9 @@ class OutcomeCountEvaluator(ABC):
         orderable, you must override `final_outcome` to create totally orderable
         final outcomes.
 
+        The behavior of returning a `Die` from `next_state` is currently
+        undefined.
+
         Args:
             state: A hashable object indicating the state before rolling the
                 current outcome. If this is the first outcome being considered,
