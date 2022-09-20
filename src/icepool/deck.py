@@ -51,6 +51,8 @@ class Deck(Population):
                     For example, `(d6, d6)` will expand to 36 ordered tuples
                     with dup 1 each. Use this carefully since it may create a
                     large number of outcomes.
+                * `str` or `bytes`, which will be treated as a single outcome.
+                * Any other sequence. Each element will be weighted equally.
                 * Anything else will be treated as a single outcome.
                     Each outcome must be hashable, and the
                     set of outcomes must be totally orderable (after expansion).

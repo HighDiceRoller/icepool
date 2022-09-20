@@ -24,6 +24,12 @@ def test_mix_mixed():
                                                      2]).probabilities()
 
 
+def test_mix_lists():
+    result = icepool.Die([[1, 2, 3, 4], [1, 2, 3, 4, 5, 6]])
+    expected = icepool.Die([icepool.d4, icepool.d6])
+    assert result == expected
+
+
 def test_mix_reroll():
     result = icepool.Die([1, 2, 3, 4, icepool.Reroll, icepool.Reroll])
     expected = icepool.d4

@@ -71,6 +71,10 @@ def expand(arg, merge_func: MergeFunc):
         return expand_dict(arg, merge_func)
     elif isinstance(arg, tuple):
         return expand_tuple(arg, merge_func)
+    elif isinstance(arg, (str, bytes)):
+        return expand_scalar(arg)
+    elif isinstance(arg, Sequence):
+        return expand_sequence(arg, merge_func)
     else:
         return expand_scalar(arg)
 
@@ -90,6 +94,12 @@ def expand_tuple(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
         outcomes, duplicates = zip(*t)
         data[outcomes] += math.prod(duplicates)
     return data
+
+
+def expand_sequence(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
+    subdatas = [expand(x, merge_func) for x in arg]
+    weights = [1] * len(subdatas)
+    return merge_func(subdatas, weights)
 
 
 def expand_scalar(arg) -> Mapping[Any, int]:

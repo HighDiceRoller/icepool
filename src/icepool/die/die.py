@@ -156,6 +156,8 @@ class Die(Population):
                     For example, `(d6, d6)` will expand to 36 ordered tuples
                     with quantity 1 each. Use this carefully since it may create a
                     large number of outcomes.
+                * `str` or `bytes`, which will be treated as a single outcome.
+                * Any other sequence. Each element will be weighted equally.
                 * `icepool.Reroll`, which will drop itself
                     and the corresponding element of `times` from consideration.
                     If inside a tuple, the tuple will be dropped.
