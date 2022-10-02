@@ -8,11 +8,10 @@ A Python package for computing dice probabilities.
 
 ## Features
 
-* Pure Python implementation.
-* Exact fractional probabilities using Python `int`s.
+* Pure Python implementation using only the Standard Library. Run it anywhere Python runs: program locally, share Jupyter notebooks, or build your own client-side web apps using Pyodide.
 * Dice support all standard operators (+, -, <, >, etc.) as well as an extensive library of functions (rerolling, exploding, etc.)
-* Can outperform sequence/multiset-based algorithms on many dice pool problems.
-    In some cases it may be thousands or millions of times faster.
+* Efficient dice pool algorithm can solve keep-highest, finding sets and/or straights, *RISK*-like mechanics, and more in milliseconds, even for large pools.
+* Exact fractional probabilities using Python `int`s.
 * Experimental support for decks (sampling without replacement).
 
 ## Installing
@@ -21,7 +20,7 @@ A Python package for computing dice probabilities.
 pip install icepool
 ```
 
-The source is pure Python, so making a direct copy can work as well.
+The source is pure Python, so including a direct copy can work as well.
 
 ## Contact
 
