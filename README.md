@@ -12,7 +12,7 @@ A Python package for computing dice probabilities.
 * Dice support all standard operators (+, -, <, >, etc.) as well as an extensive library of functions (rerolling, exploding, etc.)
 * Efficient dice pool algorithm can solve keep-highest, finding sets and/or straights, *RISK*-like mechanics, and more in milliseconds, even for large pools.
 * Exact fractional probabilities using Python `int`s.
-* Experimental support for decks (sampling without replacement).
+* Experimental support for decks (aka sampling without replacement).
 
 ## Installing
 
@@ -20,7 +20,7 @@ A Python package for computing dice probabilities.
 pip install icepool
 ```
 
-The source is pure Python, so including a direct copy can work as well.
+The source is pure Python, so including a direct copy in your project can work as well.
 
 ## Contact
 
@@ -38,6 +38,8 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 
 ## Web applications
 
+These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps you can use them as inspiration for your own application.
+
 * [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing.
 * [Ability score rolling method calculator.](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
 * [*Cortex Prime* calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
@@ -45,7 +47,7 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 
 ## Paper on algorithm
 
-This is to be published in Artificial Intelligence and Interactive Digital Entertainment 2022.
+This will be published in [Artificial Intelligence and Interactive Digital Entertainment (AIIDE) 2022](https://sites.google.com/view/aiide-2022/).
 
 [Preprint.](https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf)
 
