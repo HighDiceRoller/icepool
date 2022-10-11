@@ -444,6 +444,12 @@
             updateSearchQueryFromForms();
         }
         
+        function updateAllIfValid() {
+            if (inputsAreValid()) {
+                updateAll();
+            }
+        }
+        
         function validateInputsAndUpdate() {
             if (validateInputs()) {
                 updateAll();
@@ -457,11 +463,11 @@
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('change', validateInputsAndUpdate);
-        single_array_inputs.addEventListener('input', updateAll);
+        single_array_inputs.addEventListener('input', updateAllIfValid);
         
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('change', validateInputsAndUpdate);
-        multiple_array_inputs.addEventListener('input', updateAll);
+        multiple_array_inputs.addEventListener('input', updateAllIfValid);
         
         let rank_view_select = document.querySelector('#rankDistSelect');
         rank_view_select.addEventListener('input', updateRankChart);
