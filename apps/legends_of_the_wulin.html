@@ -225,14 +225,32 @@
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
-                updateResults();
+                updateTotalChart();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updatePlayerIfValid() {
+            if (inputsAreValid()) {
+                updatePlayerRoll();
+                updateTotalChart();
+                updateSearchQueryFromForms();
             }
         }
         
         function validateOppositionInputsAndUpdate() {
             if (validateInputs()) {
                 updateOppositionRoll();
-                updateResults();
+                updateTotalChart();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updateOppositionIfValid() {
+            if (inputsAreValid()) {
+                updateOppositionRoll();
+                updateTotalChart();
+                updateSearchQueryFromForms();
             }
         }
         
@@ -243,15 +261,11 @@
         
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
-        pinputs.addEventListener('input', updatePlayerRoll);
-        pinputs.addEventListener('input', updateTotalChart);
-        pinputs.addEventListener('input', updateSearchQueryFromForms);
+        pinputs.addEventListener('input', updatePlayerIfValid);
         
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
-        oinputs.addEventListener('input', updateOppositionRoll);
-        oinputs.addEventListener('input', updateTotalChart);
-        oinputs.addEventListener('input', updateSearchQueryFromForms);
+        oinputs.addEventListener('input', updateOppositionIfValid);
         
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalChart);

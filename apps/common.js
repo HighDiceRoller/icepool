@@ -1,4 +1,3 @@
-
 // Clips all inputs to their min/max values.
 // Returns true iff any input was changed.
 function validateInputs() {
@@ -11,7 +10,11 @@ function validateInputs() {
             let originalVal = parseInt($(this).val());
             let maxVal = parseInt($(this).attr('max'));
             let minVal = parseInt($(this).attr('min'));
-            if (originalVal > maxVal) {
+            if (isNaN(originalVal)) {
+                let defaultVal = parseInt($(this).prop('defaultValue'));
+                $(this).val(defaultVal);
+                changed = true;
+            } else if (originalVal > maxVal) {
                 $(this).val(maxVal);
                 changed = true;
             } else if (originalVal < minVal) {
@@ -22,6 +25,22 @@ function validateInputs() {
     });
     
     return changed;
+}
+
+function inputsAreValid() {
+    let allValid = true;
+    $("input").each(function() {
+        if ($(this).attr('type') != 'number') {
+            return;
+        }
+        let val = parseInt($(this).val());
+        let maxVal = parseInt($(this).attr('max'));
+        let minVal = parseInt($(this).attr('min'));
+        if (isNaN(val) || val > maxVal || val < minVal) {
+            allValid = false;
+        }
+    });
+    return allValid;
 }
 
 // Sets inputs based on search query by id (assumed to be equal to name).

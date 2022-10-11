@@ -313,14 +313,36 @@
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
-                updateResults();
+                updateTotalResults();
+                updateHitchResults();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updatePlayerIfValid() {
+            if (inputsAreValid()) {
+                updatePlayerRoll();
+                updateTotalResults();
+                updateHitchResults();
+                updateSearchQueryFromForms();
             }
         }
         
         function validateOppositionInputsAndUpdate() {
             if (validateInputs()) {
                 updateOppositionRoll();
-                updateResults();
+                updateTotalResults();
+                updateHitchResults();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updateOppositionIfValid() {
+            if (inputsAreValid()) {
+                updateOppositionRoll();
+                updateTotalResults();
+                updateHitchResults();
+                updateSearchQueryFromForms();
             }
         }
         
@@ -332,17 +354,11 @@
         
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
-        pinputs.addEventListener('input', updatePlayerRoll);
-        pinputs.addEventListener('input', updateTotalResults);
-        pinputs.addEventListener('input', updateHitchResults);
-        pinputs.addEventListener('input', updateSearchQueryFromForms);
+        pinputs.addEventListener('input', updatePlayerIfValid);
         
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
-        oinputs.addEventListener('input', updateOppositionRoll);
-        oinputs.addEventListener('input', updateTotalResults);
-        oinputs.addEventListener('input', updateHitchResults);
-        oinputs.addEventListener('input', updateSearchQueryFromForms);
+        oinputs.addEventListener('input', updateOppositionIfValid);
         
         let options = document.querySelector('#options');
         options.addEventListener('input', validateInputs);
