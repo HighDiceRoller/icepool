@@ -37,11 +37,10 @@ def itemize(keys: Mapping[Any, int] | Sequence,
             )
 
     if isinstance(keys, Mapping):
-        times = tuple(
-            v * x for v, x in zip(keys.values(), times))  # type: ignore
-        keys = tuple(keys.keys())  # type: ignore
+        times = [v * x for v, x in zip(keys.values(), times)]  # type: ignore
+        keys = list(keys.keys())  # type: ignore
     else:
-        keys = tuple(keys)
+        keys = list(keys)
 
     if any(x < 0 for x in times):
         raise ValueError('times cannot have negative values.')
