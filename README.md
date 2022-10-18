@@ -47,9 +47,11 @@ These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps y
 
 ## Paper on algorithm
 
-This will be published in [Artificial Intelligence and Interactive Digital Entertainment (AIIDE) 2022](https://sites.google.com/view/aiide-2022/).
+Published in [Artificial Intelligence and Interactive Digital Entertainment (AIIDE) 2022](https://sites.google.com/view/aiide-2022/).
 
-[Preprint.](https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf)
+[In the official proceedings.](https://ojs.aaai.org/index.php/AIIDE/article/view/21971)
+
+[Preprint in this repository.](https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf)
 
 BibTeX:
 
