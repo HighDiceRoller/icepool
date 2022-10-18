@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.1.0"/>
+    <meta name="generator" content="pdoc 12.2.0"/>
     <title>icepool API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -516,15 +516,6 @@
             <li>
                     <a class="class" href="#Order">Order</a>
                             <ul class="memberlist">
-                        <li>
-                                <a class="variable" href="#Order.Ascending">Ascending</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Order.Descending">Descending</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Order.Any">Any</a>
-                        </li>
                 </ul>
 
             </li>
@@ -673,9 +664,9 @@ refer to dice in a pool.</li>
 </ul>
 </div>
 
-                        <input id="icepool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                        <input id="mod-icepool-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
-                        <label class="view-source-button" for="icepool-view-source"><span>View Source</span></label>
+                        <label class="view-source-button" for="mod-icepool-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Package for computing dice and card probabilities.</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
@@ -9604,11 +9595,11 @@ parameters.</li>
 
 <blockquote>
   <ul>
-  <li><a href="#Order.Ascending">Order.Ascending</a> (= 1)
+  <li>Order.Ascending (= 1)
   if <code><a href="#OutcomeCountEvaluator.next_state">next_state()</a></code> should always see the outcomes in ascending order.</li>
-  <li><a href="#Order.Descending">Order.Descending</a> (= -1)
+  <li>Order.Descending (= -1)
   if <code><a href="#OutcomeCountEvaluator.next_state">next_state()</a></code> should always see the outcomes in descending order.</li>
-  <li><a href="#Order.Any">Order.Any</a> (= 0)
+  <li>Order.Any (= 0)
   if the result of the evaluation is order-independent.</li>
   </ul>
 </blockquote>
@@ -9916,39 +9907,6 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </div>
 
 
-                            <div id="Order.Ascending" class="classattr">
-                                <div class="attr variable">
-            <span class="name">Ascending</span><span class="default_value"> = &lt;<a href="#Order.Ascending">Order.Ascending</a>: 1&gt;</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Order.Ascending"></a>
-    
-    
-
-                            </div>
-                            <div id="Order.Descending" class="classattr">
-                                <div class="attr variable">
-            <span class="name">Descending</span><span class="default_value"> = &lt;<a href="#Order.Descending">Order.Descending</a>: -1&gt;</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Order.Descending"></a>
-    
-    
-
-                            </div>
-                            <div id="Order.Any" class="classattr">
-                                <div class="attr variable">
-            <span class="name">Any</span><span class="default_value"> = &lt;<a href="#Order.Any">Order.Any</a>: 0&gt;</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Order.Any"></a>
-    
-    
-
-                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -10352,11 +10310,11 @@ parameters.</li>
 
 <blockquote>
   <ul>
-  <li><a href="#Order.Ascending">Order.Ascending</a> (= 1)
+  <li>Order.Ascending (= 1)
   if <code><a href="#SumEvaluator.next_state">next_state()</a></code> should always see the outcomes in ascending order.</li>
-  <li><a href="#Order.Descending">Order.Descending</a> (= -1)
+  <li>Order.Descending (= -1)
   if <code><a href="#SumEvaluator.next_state">next_state()</a></code> should always see the outcomes in descending order.</li>
-  <li><a href="#Order.Any">Order.Any</a> (= 0)
+  <li>Order.Any (= 0)
   if the result of the evaluation is order-independent.</li>
   </ul>
 </blockquote>
