@@ -59,9 +59,16 @@ BibTeX:
 @inproceedings{liu2022icepool,
     title={Icepool: Efficient Computation of Dice Pool Probabilities},
     author={Albert Julius Liu},
-    booktitle={18th AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment},
-    series={AIIDE},
-    year={2022}
+    booktitle={Eighteenth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment},
+    volume={18},
+    number={1},
+    pages={258-265},
+    year={2022},
+    month={Oct.},
+    eventdate={2022-10-24/2022-10-28},
+    venue={Pomona, California},
+    url={https://ojs.aaai.org/index.php/AIIDE/article/view/21971},
+    doi={10.1609/aiide.v18i1.21971}
 }
 ```
 
