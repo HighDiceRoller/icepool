@@ -15,55 +15,55 @@
     <h1>Legends of the Wulin calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
     
     <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
-        <form id="pinputs" />
-        <form id="oinputs" />
-        <table>
-            <tr>
-                <th rowspan="2"></th>
-                <th rowspan="2" style="border-right: 2px solid #bfbfbf;">Lake</th>
-                <th colspan="10">River</th>
-            </tr>
-            <tr>
-                <th>0</th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>7</th>
-                <th>8</th>
-                <th>9</th>
-            </tr>
-            <tr>
-                <th style="text-align:left;">Player</th>
-                <td style="border-right: 2px solid #bfbfbf;"><input form="pinputs" name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /></td>
-                <td><input form="pinputs" name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p1" id="p1" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p2" id="p2" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p3" id="p3" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p5" id="p5" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p6" id="p6" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p7" id="p7" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-            </tr>
-            <tr>
-                <th style="text-align:left;">Opposition</th>
-                <td style="border-right: 2px solid #bfbfbf;"><input form="oinputs" name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /></td>
-                <td><input form="oinputs" name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o1" id="o1" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o2" id="o2" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o3" id="o3" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o5" id="o5" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o6" id="o6" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o7" id="o7" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o9" id="o9" type="number" min="0" max="9" value="0" required onwheel="" /></td>
-            </tr>
-        </table>
+        <form id="inputs">
+            <table>
+                <tr>
+                    <th rowspan="2"></th>
+                    <th rowspan="2" style="border-right: 2px solid #bfbfbf;">Lake</th>
+                    <th colspan="10">River</th>
+                </tr>
+                <tr>
+                    <th>0</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                </tr>
+                <tr id="pinputs">
+                    <th style="text-align:left;">Player</th>
+                    <td style="border-right: 2px solid #bfbfbf;"><input name="plake" id="plake" type="number" min="1" max="19" value="7" required onwheel="" /></td>
+                    <td><input name="p0" id="p0" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p1" id="p1" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p2" id="p2" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p3" id="p3" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p4" id="p4" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p5" id="p5" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p6" id="p6" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p7" id="p7" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p8" id="p8" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="p9" id="p9" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                </tr>
+                <tr id="oinputs">
+                    <th style="text-align:left;">Opposition</th>
+                    <td style="border-right: 2px solid #bfbfbf;"><input name="olake" id="olake" type="number" min="1" max="19" value="7" required onwheel="" /></td>
+                    <td><input name="o0" id="o0" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o1" id="o1" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o2" id="o2" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o3" id="o3" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o4" id="o4" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o5" id="o5" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o6" id="o6" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o7" id="o7" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o8" id="o8" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                    <td><input name="o9" id="o9" type="number" min="0" max="9" value="0" required onwheel="" /></td>
+                </tr>
+            </table>
+        </form>
     </div>
     
     <h2>Probability distribution of the total results</h2>

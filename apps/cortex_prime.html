@@ -27,40 +27,40 @@
     <h1>Cortex Prime calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
     
     <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
-        <form id="pinputs" />
-        <form id="oinputs" />
-        <table>
-            <tr>
-                <th></th>
-                <th>d4</th>
-                <th>d6</th>
-                <th>d8</th>
-                <th>d10</th>
-                <th>d12</th>
-                <th style="border-left: 2px solid #bfbfbf;">Drop</th>
-                <th>Keep</th>
-            </tr>
-            <tr>
-                <th style="text-align:left;">Player</th>
-                <td><input form="pinputs" name="p4" id="p4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p6" id="p6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
-                <td><input form="pinputs" name="p8" id="p8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p10" id="p10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="p12" id="p12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td style="border-left: 2px solid #bfbfbf;"><input form="pinputs" name="pd" id="pd" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="pinputs" name="pk" id="pk" type="number" min="0" max="20" value="2" required onwheel="" /></td>
-            </tr>
-            <tr>
-                <th style="text-align:left;">Opposition</th>
-                <td><input form="oinputs" name="o4" id="o4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o6" id="o6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
-                <td><input form="oinputs" name="o8" id="o8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o10" id="o10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="o12" id="o12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td style="border-left: 2px solid #bfbfbf;"><input form="oinputs" name="od" id="od" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                <td><input form="oinputs" name="ok" id="ok" type="number" min="0" max="20" value="2" required onwheel="" /></td>
-            </tr>
-        </table>
+        <form id="inputs">
+            <table>
+                <tr>
+                    <th></th>
+                    <th>d4</th>
+                    <th>d6</th>
+                    <th>d8</th>
+                    <th>d10</th>
+                    <th>d12</th>
+                    <th style="border-left: 2px solid #bfbfbf;">Drop</th>
+                    <th>Keep</th>
+                </tr>
+                <tr id="pinputs">
+                    <th style="text-align:left;">Player</th>
+                    <td><input name="p4" id="p4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="p6" id="p6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
+                    <td><input name="p8" id="p8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="p10" id="p10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="p12" id="p12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="pd" id="pd" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="pk" id="pk" type="number" min="0" max="20" value="2" required onwheel="" /></td>
+                </tr>
+                <tr id="oinputs">
+                    <th style="text-align:left;">Opposition</th>
+                    <td><input name="o4" id="o4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="o6" id="o6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
+                    <td><input name="o8" id="o8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="o10" id="o10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="o12" id="o12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="od" id="od" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="ok" id="ok" type="number" min="0" max="20" value="2" required onwheel="" /></td>
+                </tr>
+            </table>
+        </form>
         <form id="options">
             <input name="hitch1", id="hitch1", type="checkbox"> Hitches count as 1s (rather than 0s). If checked, the dice act as standard dice.
         </form>
