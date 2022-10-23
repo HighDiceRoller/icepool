@@ -1,14 +1,19 @@
 import svgwrite
 import svgwrite.shapes
 
+light_blue = svgwrite.rgb(63, 189, 245)
+white_ish = svgwrite.rgb(252, 252, 252)
+
 size = 64
 dot_radius = 7
 dot_spacing = 4
-dot_color = svgwrite.rgb(252, 252, 252)
+dot_color = light_blue
 background_radius = 7
-background_color = svgwrite.rgb(63, 189, 245)
+background_color = white_ish
 
-draw = svgwrite.Drawing('misc/icon.svg', size=(size, size), profile='tiny')
+draw = svgwrite.Drawing('misc/icon_invert.svg',
+                        size=(size, size),
+                        profile='tiny')
 
 # Background.
 draw.add(

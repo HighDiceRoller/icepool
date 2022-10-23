@@ -13,8 +13,8 @@ targets = [
      'https://highdiceroller.github.io/icepool/notebooks/lab/index.html'),
 ]
 
-error_correction = qrcode.ERROR_CORRECT_M
-box_size = 32
+error_correction = qrcode.ERROR_CORRECT_L
+box_size = 1
 
 max_version = 1
 
