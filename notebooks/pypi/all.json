@@ -1,0 +1,80 @@
+{
+  "icepool": {
+    "releases": {
+      "0.20.1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "8d668d5bf00d1cc6d15e9e1d211e2062",
+            "sha256": "7db21e7e4a70fa19a324dc657a4bc322b0958bc71728a81ded790ce445a66c94"
+          },
+          "downloads": -1,
+          "filename": "icepool-0.20.1-py3-none-any.whl",
+          "has_sig": false,
+          "md5_digest": "8d668d5bf00d1cc6d15e9e1d211e2062",
+          "packagetype": "bdist_wheel",
+          "python_version": "py3",
+          "requires_python": ">=3.10",
+          "size": 57612,
+          "upload_time": "2022-09-11T04:07:47Z",
+          "upload_time_iso_8601": "2022-09-11T04:07:47Z",
+          "url": "./icepool-0.20.1-py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ]
+    }
+  },
+  "ipywidgets": {
+    "releases": {
+      "7.7.1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "5d0d93be8e4eb05ae6051eacc35f95c8",
+            "sha256": "aa1076ab7102b2486ae2607c43c243200a07c17d6093676c419d4b6762489a50"
+          },
+          "downloads": -1,
+          "filename": "ipywidgets-7.7.1-py2.py3-none-any.whl",
+          "has_sig": false,
+          "md5_digest": "5d0d93be8e4eb05ae6051eacc35f95c8",
+          "packagetype": "bdist_wheel",
+          "python_version": "py3",
+          "requires_python": null,
+          "size": 123384,
+          "upload_time": "2022-06-22T17:40:26Z",
+          "upload_time_iso_8601": "2022-06-22T17:40:26Z",
+          "url": "./ipywidgets-7.7.1-py2.py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ]
+    }
+  },
+  "jupyterlab-widgets": {
+    "releases": {
+      "1.1.1": [
+        {
+          "comment_text": "",
+          "digests": {
+            "md5": "ecdaeb35d1cb0bfabd90f87c230d7379",
+            "sha256": "90ab47d99da03a3697074acb23b2975ead1d6171aa41cb2812041a7f2a08177a"
+          },
+          "downloads": -1,
+          "filename": "jupyterlab_widgets-1.1.1-py3-none-any.whl",
+          "has_sig": false,
+          "md5_digest": "ecdaeb35d1cb0bfabd90f87c230d7379",
+          "packagetype": "bdist_wheel",
+          "python_version": "py3",
+          "requires_python": ">=3.6",
+          "size": 245322,
+          "upload_time": "2022-06-22T17:38:27Z",
+          "upload_time_iso_8601": "2022-06-22T17:38:27Z",
+          "url": "./jupyterlab_widgets-1.1.1-py3-none-any.whl",
+          "yanked": false,
+          "yanked_reason": null
+        }
+      ]
+    }
+  }
+}
