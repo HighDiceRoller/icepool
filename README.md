@@ -6,6 +6,8 @@ A Python package for computing dice probabilities.
 
 [PyPi page.](https://pypi.org/project/icepool/)
 
+[Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing.
+
 ## Features
 
 * Pure Python implementation using only the Standard Library. Run it anywhere Python runs: program locally, share Jupyter notebooks, or build your own client-side web apps using Pyodide.
