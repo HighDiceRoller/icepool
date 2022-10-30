@@ -6,7 +6,7 @@ A Python package for computing dice probabilities.
 
 [PyPi page.](https://pypi.org/project/icepool/)
 
-[Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing.
+Try coding in your browser using [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing similar to AnyDice, SnakeEyes, and Troll.
 
 ## Features
 
@@ -49,7 +49,7 @@ These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps y
 
 ## Paper on algorithm
 
-Published in [Artificial Intelligence and Interactive Digital Entertainment (AIIDE) 2022](https://sites.google.com/view/aiide-2022/).
+Presented at [Artificial Intelligence and Interactive Digital Entertainment (AIIDE) 2022](https://sites.google.com/view/aiide-2022/).
 
 [In the official proceedings.](https://ojs.aaai.org/index.php/AIIDE/article/view/21971)
 
