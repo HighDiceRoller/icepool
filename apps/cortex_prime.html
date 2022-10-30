@@ -220,29 +220,35 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.8.0')
+                await micropip.install('icepool==0.20.1')
                 
                 import js
                 import pyodide
                 import icepool
                 
-                die_sizes = [4, 6, 8, 10, 12]
+                possible_die_sizes = [4, 6, 8, 10, 12]
                 
-                die_player_unaligned, hitch_player_unaligned = icepool.Die(0), icepool.Die(0)
-                die_opposition_unaligned, hitch_opposition_unaligned = icepool.Die(0), icepool.Die(0)
+                die_player_unaligned, hitch_player_unaligned = icepool.Die([0]), icepool.Die([0])
+                die_opposition_unaligned, hitch_opposition_unaligned = icepool.Die([0]), icepool.Die([0])
                 
                 def calc_pool(prefix):
-                    truncate_max = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in die_sizes), [])
+                    def c(die_size):
+                        if js.document.getElementById('hitch1').checked:
+                            return icepool.d(die_size)
+                        else:
+                            return icepool.d(die_size).sub({1: 0})
+                            
+                    die_sizes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in possible_die_sizes), [])
+                    dice = [c(die_size) for die_size in die_sizes]
+                    num_dice = len(dice)
                     num_drop = int(js.document.getElementById(prefix + 'd').value)
                     num_keep = int(js.document.getElementById(prefix + 'k').value)
-                    reference_die = icepool.d12
-                    if not js.document.getElementById('hitch1').checked:
-                        reference_die = reference_die.sub({1: 0})
-                    die = reference_die.keep_highest(num_keep=num_keep, num_drop=num_drop, truncate_max=truncate_max)
-                    hitch = icepool.Die(0)
-                    for n in truncate_max:
+                    total = icepool.Pool(dice)[num_dice-num_drop-num_keep:num_dice-num_drop].sum()
+
+                    hitch = icepool.Die([0])
+                    for n in die_sizes:
                         hitch += icepool.coin(1, n)
-                    return die, hitch
+                    return total, hitch
             `);
             
             totalChart.options.plugins.title = {
@@ -291,11 +297,11 @@
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_player.cdf()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_opposition.cdf()])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_player.probabilities_le()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_opposition.probabilities_le()])
                 
             `);
             
@@ -314,11 +320,11 @@
             selected_dist = js.document.getElementById('hitchDistSelect').value
             
             if selected_dist == 'pmf':
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.pmf()])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.pmf()])
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.probabilities()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities()])
             else:
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.sf()])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.sf()])
+                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.probabilities_ge()])
+                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities_ge()])
             `);
             
             hitchChart.update();
