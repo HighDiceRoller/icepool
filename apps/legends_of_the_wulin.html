@@ -155,7 +155,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.7.0')
+                await micropip.install('icepool==0.20.1')
                 
                 import js
                 import pyodide
@@ -163,25 +163,24 @@
                 
                 die = icepool.d10 - 1
                 
-                die_player_unaligned = icepool.Die(0)
-                die_opposition_unaligned = icepool.Die(0)
+                die_player_unaligned = icepool.Die([0])
+                die_opposition_unaligned = icepool.Die([0])
                 
-                class WulinEval(icepool.EvalPool):
-                    def __init__(self, river):
-                        self._river = river
-                    
+                class WulinEvaluator(icepool.OutcomeCountEvaluator):
                     def next_state(self, state, outcome, count):
                         if state is None:
                             state = 0
-                        score = (count + self._river[outcome]) * 10 + outcome
+                        score = count * 10 + outcome
                         return max(state, score)
+                        
+                evaluator = WulinEvaluator()
                 
                 def calc_pool(prefix):
-                    lake = int(js.document.getElementById('%slake' % prefix).value)
-                    river = tuple(int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10))
+                    lake = [die] * int(js.document.getElementById('%slake' % prefix).value)
+                    river = sum(([n] * int(js.document.getElementById('%s%d' % (prefix, n)).value) for n in range(10)), [])
                     
-                    pool = icepool.Pool(die, lake)
-                    return WulinEval(river).eval(pool)
+                    pool = icepool.Pool(lake + river)
+                    return evaluator.evaluate(pool)
             `);
             
             totalChart.options.plugins.title = {
@@ -225,11 +224,11 @@
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.pmf()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.pmf()])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.sf()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.sf()])
+                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
+                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
             `);
             
             totalChart.update();
