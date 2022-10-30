@@ -81,7 +81,7 @@
         <tr id="rankTableRow6"><td style="text-align: left;">Mean</td></tr>
     </table>
     
-    <h2>Multiple arrays</h2>
+    <h2>Multiple arrays and pricing</h2>
     
     <p>(The preceding chart and table are for a single array.)</p>
     
@@ -89,41 +89,59 @@
         Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
     </form>
     
+    <form id="pricing">
+        Pricing:
+        <select id="pricingPresetSelect">
+            <option value="custom"></option>
+            <option value="raw">Raw</option>
+            <option value="mod">Modifier (D&#38;D 3e, 4e, 5e; Pathfinder)</option>
+            <option value="mod_dcc">Modifier (Dungeon Crawl Classics)</option>
+            <option value="mod_swn">Modifier (Stars/Worlds Without Number)</option>
+            <option value="pb_5e">Point buy (D&#38;D 5e)</option>
+            <option value="pb_pf">Point buy (Pathfinder)</option>
+        </select>
+        <table>
+            <tr>
+                <td>3: <input name="p3" id="p3" type="number" min="-25" max="50" value="3" required onwheel="" /></td>
+                <td>4: <input name="p4" id="p4" type="number" min="-25" max="50" value="4" required onwheel="" /></td>
+                <td>5: <input name="p5" id="p5" type="number" min="-25" max="50" value="5" required onwheel="" /></td>
+                <td>6: <input name="p6" id="p6" type="number" min="-25" max="50" value="6" required onwheel="" /></td>
+                <td>7: <input name="p7" id="p7" type="number" min="-25" max="50" value="7" required onwheel="" /></td>
+                <td>8: <input name="p8" id="p8" type="number" min="-25" max="50" value="8" required onwheel="" /></td>
+                <td>9: <input name="p9" id="p9" type="number" min="-25" max="50" value="9" required onwheel="" /></td>
+                <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" /></td>
+            </tr>
+            <tr>
+                <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" /></td>
+                <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" /></td>
+                <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" /></td>
+                <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" /></td>
+                <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" /></td>
+                <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" /></td>
+                <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" /></td>
+                <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" /></td>
+            </tr>
+        </table>
+    </form>
+    
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
-            Pricing method: 
-            <select id="multiViewSelect">
-                <option value="raw">Raw total</option>
-                <option value="5e"><i>D&#38;D</i> 5e point buy</option>
-                <option value="pf"><i>Pathfinder</i> point buy</option>
-            </select><br/>
             Show:
-            <select id="multiViewDistSelect">
+            <select id="pricesViewDistSelect">
                 <option value="pmf">Chance of rolling exactly</option>
                 <option value="ccdf"><i>Chance of rolling at least</option>
             </select>
         </div>
-        <canvas id="multiChart"></canvas>
+        <canvas id="pricesChart"></canvas>
+        
         <table style="margin: auto;">
             <tr>
-                <th style="text-align: left;">Pricing method</th>
                 <th style="width: 4em;">Mean</th>
                 <th style="width: 4em;">SD</th>
             </tr>
             <tr>
-                <td>Raw total</td>
-                <td id="mean_raw"></td>
-                <td id="sd_raw"></td>
-            </tr>
-            <tr>
-                <td><i>D&#38;D</i> 5e point buy (<a href="https://chicken-dinner.com/5e/5e-point-buy.html">ref</a>)</td>
-                <td id="mean_5e"></td>
-                <td id="sd_5e"></td>
-            </tr>
-            <tr>
-                <td><i>Pathfinder</i> point buy (<a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">ref</a>)</td>
-                <td id="mean_pf"></td>
-                <td id="sd_pf"></td>
+                <td id="price_mean"></td>
+                <td id="price_sd"></td>
             </tr>
         </table>
     </div>
@@ -240,8 +258,8 @@
             });
         }
         
-        var multiChartContext = document.getElementById('multiChart').getContext('2d');
-        var multiChart = new Chart(multiChartContext, {
+        var pricesChartContext = document.getElementById('pricesChart').getContext('2d');
+        var pricesChart = new Chart(pricesChartContext, {
             type: 'line',
             data: {
                 labels: [],
@@ -295,9 +313,9 @@
                 return;
             }
             rankChart.options.plugins.title.text = loadingText[0];
-            multiChart.options.plugins.title.text = loadingText[0];
+            pricesChart.options.plugins.title.text = loadingText[0];
             rankChart.update();
-            multiChart.update();
+            pricesChart.update();
         }
         
         async function initPyodide(){
@@ -317,9 +335,6 @@
                 import pyodide
                 import icepool
                 
-                point_buy_5e = (-9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19)
-                point_buy_pf = (-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17)
-                
                 def set_rank_data(rank, die):
                     data = (0,) * 16
                     selected_dist = js.document.getElementById('rankDistSelect').value
@@ -331,12 +346,6 @@
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
                     js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
-                    
-                def output_multiple_arrays(points, name):
-                    total = points.keep_highest(num_abilities, 6).keep_highest(num_arrays)
-                    js.document.getElementById('mean_' + name).innerHTML = '%0.2f' % total.mean()
-                    js.document.getElementById('sd_' + name).innerHTML = '%0.2f' % total.standard_deviation()
-                    return total
             `);
             
             rankChart.options.plugins.title = {
@@ -345,7 +354,7 @@
                 display : false,
             };
             
-            multiChart.options.plugins.title = {
+            pricesChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
                 display : false,
@@ -392,13 +401,6 @@
             ranks.append(icepool.Die(*ranks))
             
             js.maxProb = max_prob * 100.0
-            
-            single_ability_5e = single_ability.sub(lambda outcome: point_buy_5e[outcome - 3])
-            single_ability_pf = single_ability.sub(lambda outcome: point_buy_pf[outcome - 3])
-            
-            total_raw = output_multiple_arrays(single_ability, 'raw')
-            total_5e = output_multiple_arrays(single_ability_5e, '5e')
-            total_pf = output_multiple_arrays(single_ability_pf, 'pf')
             `);
         }
         
@@ -412,54 +414,116 @@
             rankChart.update();
         }
         
-        async function updateMulti() {
+        const PRICING_PRESETS = {
+            "raw" : [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            "mod" : [-4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4],
+            "mod_dcc" : [-3, -2, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3],
+            "mod_swn" : [-2, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2],
+            "pb_5e" : [-9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19],
+            "pb_pf" : [-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17]
+        };
+        
+        async function setPricingPreset() {
+            let pricingPresetSelect = document.getElementById('pricingPresetSelect');
+            if (pricingPresetSelect.value === 'custom') {
+                return;
+            }
+            let prices = PRICING_PRESETS[pricingPresetSelect.value];
+            for (let i = 3; i < 19; i++) {
+                let e = document.getElementById('p' + i);
+                e.value = prices[i-3];
+            }
+        }
+        
+        async function updatePrices() {
+            let pricingPresetSelect = document.getElementById('pricingPresetSelect');
+            
+            let prices = [];
+            for (let i = 3; i < 19; i++) {
+                let e = document.getElementById('p' + i);
+                prices[i-3] = e.value;
+            }
+            
+            pricingPresetSelect.value = "custom";
+            for (const [preset, presetPrices] of Object.entries(PRICING_PRESETS)) {
+                if (prices.every((price, i) => price == presetPrices[i])) {
+                    pricingPresetSelect.value = preset;
+                    break;
+                }
+            }
+            // TODO: Check monotonicity
+        
             let pyodide = await pyodideReadyPromise;
             let rollReady = await rollReadyPromise;
             
             pyodide.runPython(`
-                selected_view = js.document.getElementById('multiViewSelect').value
-                if selected_view == '5e':
-                    total_select = total_5e
-                elif selected_view == 'pf':
-                    total_select = total_pf
-                else:
-                    total_select = total_raw
-                
-                selected_dist = js.document.getElementById('multiViewDistSelect').value
-                
-                js.multiChart.data.labels = pyodide.to_js([float(x) for x in total_select.outcomes()])
-                if selected_dist == 'pmf':
-                    js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.pmf()])
-                else:
-                    js.multiChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_select.sf()])
-            `)
-
-            multiChart.update();
+                prices = {}
+                for i in range(3, 19):
+                    prices[i] = int(js.document.getElementById('p%d' % i).value)
+                single_ability_price = single_ability.sub(lambda outcome: prices[outcome])
+                total_price = single_ability_price.keep_highest(num_abilities, 6).keep_highest(num_arrays)
+                js.document.getElementById('price_mean').innerHTML = '%0.2f' % total_price.mean()
+                js.document.getElementById('price_sd').innerHTML = '%0.2f' % total_price.standard_deviation()
+            `);
         }
         
-        function updateAll() {
-            updateRoll();
-            updateRankChart();
-            updateMulti();
-            updateSearchQueryFromForms();
+        async function updatePricesChart() {
+            let pyodide = await pyodideReadyPromise;
+            let pricesReady = await pricesReadyPromise;
+            
+            pyodide.runPython(`
+                selected_dist = js.document.getElementById('pricesViewDistSelect').value
+                
+                js.pricesChart.data.labels = pyodide.to_js([float(x) for x in total_price.outcomes()])
+                if selected_dist == 'pmf':
+                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.pmf()])
+                else:
+                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.sf()])
+            `);
+            pricesChart.update();
         }
         
         function updateAllIfValid() {
             if (inputsAreValid()) {
-                updateAll();
+                updateRoll();
+                updateRankChart();
+                updatePrices();
+                updatePricesChart();
+                updateSearchQueryFromForms();
             }
         }
         
         function validateInputsAndUpdate() {
             if (validateInputs()) {
-                updateAll();
+                updateRoll();
+                updateRankChart();
+                updatePrices();
+                updatePricesChart();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updatePricesIfValid() {
+            if (inputsAreValid()) {
+                updatePrices();
+                updatePricesChart();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function validateInputsAndUpdatePrices() {
+            if (validateInputs()) {
+                updatePrices();
+                updatePricesChart();
+                updateSearchQueryFromForms();
             }
         }
 
         let rollReadyPromise = updateRoll();
-        updateSearchQueryFromForms();
         updateRankChart();
-        updateMulti();
+        let pricesReadyPromise = updatePrices();
+        updatePricesChart();
+        updateSearchQueryFromForms();
         
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('change', validateInputsAndUpdate);
@@ -472,11 +536,16 @@
         let rank_view_select = document.querySelector('#rankDistSelect');
         rank_view_select.addEventListener('input', updateRankChart);
         
-        let multiple_view_select = document.querySelector('#multiViewSelect');
-        multiple_view_select.addEventListener('input', updateMulti);
+        let pricing_preset_select = document.querySelector('#pricingPresetSelect');
+        pricing_preset_select.addEventListener('input', setPricingPreset);
+        pricing_preset_select.addEventListener('input', updatePricesIfValid);
         
-        let multiple_view_dist_select = document.querySelector('#multiViewDistSelect');
-        multiple_view_dist_select.addEventListener('input', updateMulti);
+        let pricing = document.querySelector('#pricing');
+        pricing.addEventListener('change', validateInputsAndUpdatePrices);
+        pricing.addEventListener('input', updatePricesIfValid);
+        
+        let prices_view_dist_select = document.querySelector('#pricesViewDistSelect');
+        prices_view_dist_select.addEventListener('input', updatePricesChart);
     </script>
 </body>
 
