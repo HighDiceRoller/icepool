@@ -34,8 +34,8 @@
         <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
         Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
         Generate <input name="num_abilities" id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
-        Scores not between <input name="min_ability" id="min_ability" type="number" min="3" max="10" value="3" required onwheel="" /> and
-        <input name="max_ability" id="max_ability" type="number" min="11" max="18" value="18" required onwheel="" /> are set to the nearest value within that range.
+        Scores not between <input name="min_ability" id="min_ability" type="number" min="3" max="18" value="3" required onwheel="" /> and
+        <input name="max_ability" id="max_ability" type="number" min="3" max="18" value="18" required onwheel="" /> are set to the nearest value within that range.
     </form>
         
     <h2>Probability distribution of the 6 highest ability scores</h2>
@@ -378,6 +378,8 @@
             num_abilities = int(js.document.getElementById('num_abilities').value);
             min_ability = int(js.document.getElementById('min_ability').value);
             max_ability = int(js.document.getElementById('max_ability').value);
+            if min_ability > max_ability:
+                min_ability, max_ability = max_ability, min_ability
             num_arrays = int(js.document.getElementById('num_arrays').value);
             
             if reroll_dice >= die_size:
