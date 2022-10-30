@@ -122,6 +122,7 @@
                 <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" /></td>
             </tr>
         </table>
+        <span name="monotonicityWarning" id="monotonicityWarning" style="display:none; color:red;">Warning: Prices are not in increasing order. The most expensive ability scores and arrays will be taken even if they are not the highest.</span>
     </form>
     
     <div style="width: 80%; margin: auto;">
@@ -441,7 +442,7 @@
             let prices = [];
             for (let i = 3; i < 19; i++) {
                 let e = document.getElementById('p' + i);
-                prices[i-3] = e.value;
+                prices[i-3] = parseInt(e.value);
             }
             
             pricingPresetSelect.value = "custom";
@@ -451,7 +452,15 @@
                     break;
                 }
             }
-            // TODO: Check monotonicity
+            
+            let monotonicityWarning = document.getElementById('monotonicityWarning');
+            monotonicityWarning.style.display = 'none';
+            for (let i = 3; i < 18; i++) {
+                if (prices[i-3] > prices[i-2]) {
+                    monotonicityWarning.style.display = 'inline';
+                    break;
+                }
+            }
         
             let pyodide = await pyodideReadyPromise;
             let rollReady = await rollReadyPromise;
