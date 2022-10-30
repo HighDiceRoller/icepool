@@ -67,7 +67,7 @@
     </div>
     
     <h2>Probability distribution of the total results</h2>
-    <div style="width: 80%; margin: auto;">
+    <div style="width:80%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
             <select id="distSelect">
@@ -77,8 +77,13 @@
         </div>
         <canvas id="totalChart"></canvas>
         <div style="font-size: 200%;">
-            Chance of player rolling greater than opposition: <span id="successChance"></span><br/>
-            Chance of player tying opposition: <span id="tieChance"></span>
+            <table style="width:90%;margin-left:auto;margin-right:auto;">
+                <tr>
+                    <td style="width:30%;text-align:left;">Player wins: <span id="successChance" style="color:blue;"></span></td>
+                    <td style="width:20%;text-align:left;">Tie: <span id="tieChance"></span></td>
+                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChance" style="color:red;"></span></td>
+                </tr>
+            </table>
         </div>
     </div>
     
@@ -218,6 +223,7 @@
             
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
             js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
+            js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((die_player < die_opposition).mean() * 100.0)
             
             js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
             
