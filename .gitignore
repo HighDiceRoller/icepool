@@ -16,3 +16,4 @@
 /src/.vscode/settings.json
 /*.bat
 /.vscode
+/misc/*.svg
