@@ -330,7 +330,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.7.0')
+                await micropip.install('icepool==0.20.1')
                 
                 import js
                 import pyodide
@@ -340,9 +340,9 @@
                     data = (0,) * 16
                     selected_dist = js.document.getElementById('rankDistSelect').value
                     if selected_dist == 'pmf':
-                        data = [100.0 * x for x in die.pmf()]
+                        data = [100.0 * x for x in die.probabilities()]
                     else:
-                        data = [100.0 * x for x in die.sf()]
+                        data = [100.0 * x for x in die.probabilities_ge()]
                     js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
@@ -387,21 +387,20 @@
             
             single_die = icepool.d(die_size).reroll(outcomes=range(1, reroll_dice+1))
             single_ability = single_die.keep_highest(num_dice, num_keep) + modifier
-            single_ability = single_ability.highest(min_ability)
-            single_ability = single_ability.lowest(max_ability)
+            single_ability = single_ability.clip(min_ability, max_ability)
             single_ability = single_ability.keep_highest(num_ability_repeat)
             
             max_prob = 0.0
             ranks = []
             
             for i in range(6):
-                rank_ability = single_ability.keep(num_abilities, count_dice=num_abilities - 1 - i)
+                rank_ability = single_ability.pool(num_abilities)[num_abilities - 1 - i]
                 rank_ability, _ = icepool.align_range(rank_ability, 3 @ icepool.d6)
                 ranks.append(rank_ability)
                 
-                max_prob = max(max_prob, max(rank_ability.pmf()))
+                max_prob = max(max_prob, max(rank_ability.probabilities()))
                 
-            ranks.append(icepool.Die(*ranks))
+            ranks.append(icepool.Die(ranks))
             
             js.maxProb = max_prob * 100.0
             `);
@@ -487,9 +486,9 @@
                 
                 js.pricesChart.data.labels = pyodide.to_js([float(x) for x in total_price.outcomes()])
                 if selected_dist == 'pmf':
-                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.pmf()])
+                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.probabilities()])
                 else:
-                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.sf()])
+                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.probabilities_ge()])
             `);
             pricesChart.update();
         }
