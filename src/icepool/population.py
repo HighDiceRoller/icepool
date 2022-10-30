@@ -211,11 +211,11 @@ class Population(ABC, Mapping[Any, int]):
             return self._probabilities
 
     @cached_property
-    def _probabilities_le(self):
+    def _probabilities_le(self) -> Sequence[float]:
         return tuple(
             quantity / self.denominator() for quantity in self.quantities_le())
 
-    def probabilities_le(self, percent: bool = False):
+    def probabilities_le(self, percent: bool = False) -> Sequence[float]:
         """The probability of rolling <= each outcome in order.
 
         Also known as the cumulative distribution function (CDF),
@@ -231,11 +231,11 @@ class Population(ABC, Mapping[Any, int]):
             return self._probabilities_le
 
     @cached_property
-    def _probabilities_ge(self):
+    def _probabilities_ge(self) -> Sequence[float]:
         return tuple(
             quantity / self.denominator() for quantity in self.quantities_ge())
 
-    def probabilities_ge(self, percent: bool = False):
+    def probabilities_ge(self, percent: bool = False) -> Sequence[float]:
         """The probability of rolling >= each outcome in order.
 
         Also known as the survival function (SF) or
@@ -251,7 +251,31 @@ class Population(ABC, Mapping[Any, int]):
         else:
             return self._probabilities_ge
 
-    def probability(self, outcome):
+    def probabilities_lt(self, percent: bool = False) -> Sequence[float]:
+        """The probability of rolling < each outcome in order.
+
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * (1.0 - x) for x in self._probabilities_ge)
+        else:
+            return tuple((1.0 - x) for x in self._probabilities_ge)
+
+    def probabilities_gt(self, percent: bool = False) -> Sequence[float]:
+        """The probability of rolling > each outcome in order.
+
+        Args:
+            percent: If set, the results will be in percent (i.e. total of 100.0).
+                Otherwise, the total will be 1.0.
+        """
+        if percent:
+            return tuple(100.0 * (1.0 - x) for x in self._probabilities_le)
+        else:
+            return tuple((1.0 - x) for x in self._probabilities_le)
+
+    def probability(self, outcome) -> float:
         """The probability of a single outcome, or 0.0 if not present. """
         return self.quantity(outcome) / self.denominator()
 

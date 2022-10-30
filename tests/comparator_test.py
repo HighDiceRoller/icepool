@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import d4, d6
+
 
 def test_lt():
     result = icepool.d6 < icepool.d6
@@ -215,3 +217,17 @@ def test_lowest():
     result = icepool.lowest(icepool.d4 + 1, icepool.d6)
     expected = icepool.Die({1: 4, 2: 8, 3: 6, 4: 4, 5: 2})
     assert result.equals(expected)
+
+
+def test_probabilities():
+    assert list(d4.probabilities()) == [0.25, 0.25, 0.25, 0.25]
+    assert list(d4.probabilities_le()) == [0.25, 0.5, 0.75, 1.0]
+    assert list(d4.probabilities_lt()) == [0.0, 0.25, 0.5, 0.75]
+    assert list(d4.probabilities_ge()) == [1.0, 0.75, 0.5, 0.25]
+    assert list(d4.probabilities_gt()) == [0.75, 0.5, 0.25, 0.0]
+
+    assert list(d4.probabilities(percent=True)) == [25, 25, 25, 25]
+    assert list(d4.probabilities_le(percent=True)) == [25, 50, 75, 100]
+    assert list(d4.probabilities_lt(percent=True)) == [0, 25, 50, 75]
+    assert list(d4.probabilities_ge(percent=True)) == [100, 75, 50, 25]
+    assert list(d4.probabilities_gt(percent=True)) == [75, 50, 25, 0]
