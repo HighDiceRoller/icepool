@@ -148,17 +148,14 @@ class Again():
     def __eq__(self, other):
         if not isinstance(other, Again):
             return False
-        return self is other or self.key_tuple() == other.key_tuple()
+        return self is other or self._key_tuple == other._key_tuple
 
     @cached_property
     def _key_tuple(self) -> tuple:
         return (self._func, self._args)
 
-    def key_tuple(self) -> tuple:
-        return self._key_tuple
-
     def __hash__(self):
-        return hash(self.key_tuple())
+        return hash(self._key_tuple)
 
 
 def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
