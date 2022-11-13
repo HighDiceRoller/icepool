@@ -280,10 +280,10 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
     Args:
         func: A function that takes one argument per input `Die` and returns an
             argument to `Die()`.
-        *dice: Any number of dice (or objects convertible to dice).
-            `func` will be called with all joint outcomes of `dice`, with one
-            argument per `Die`.
-        **kwargs: Any extra keyword arguments are forwarded to the die
+        *dice: Any number of dice. `func` will be called with all joint outcomes
+            of `dice`, with one argument per `Die`.
+            Non-dice will be left as-is.
+        **kwargs: Any extra keyword arguments are forwarded to the `Die`
             constructor for the final result.
 
     Returns:
@@ -345,7 +345,7 @@ class apply_sorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return icepool.expand_evaluator(pool).sub(func, star=1, **kwargs)
+        return pool.expand().sub(func, star=1, **kwargs)
 
     def __class_getitem__(cls,
                           sorted_roll_counts: int | slice | tuple[int, ...],
@@ -368,8 +368,6 @@ class apply_sorted():
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
-                return icepool.expand_evaluator(pool).sub(func,
-                                                          star=1,
-                                                          **kwargs)
+                return pool.expand().sub(func, star=1, **kwargs)
 
         return result
