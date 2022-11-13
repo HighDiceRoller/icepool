@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.2.1"/>
+    <meta name="generator" content="pdoc 12.2.2"/>
     <title>icepool API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -519,6 +519,15 @@
             <li>
                     <a class="class" href="#Order">Order</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Order.Ascending">Ascending</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Order.Descending">Descending</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Order.Any">Any</a>
+                        </li>
                 </ul>
 
             </li>
@@ -2489,7 +2498,7 @@ denominator times the LCM of the outcome denominators.</p>
 the primary selection between the three secondary dice, times 12 for
 the LCM of 3, 4, and 6.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><p><strong>outcomes:</strong>  The faces of the <code><a href="#Die">Die</a></code>. This can be one of the following:</p>
@@ -2536,7 +2545,7 @@ the corresponding quantities will be accumulated.</li>
 <code><a href="#Die.outcomes">outcomes</a></code>.</li>
 </ul>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  <code>None</code> is not a valid outcome for a <code><a href="#Die">Die</a></code>.</li>
@@ -2603,13 +2612,13 @@ interpreted as a <code>Mapping</code> operation and returns the count correspond
 to a given outcome. See <code><a href="#Die.marginals">marginals()</a></code> for applying the <code>[]</code> operator to
 outcomes.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the result.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If tuples are of mismatched length.</li>
@@ -2701,13 +2710,13 @@ It rolls the left <code><a href="#Die">Die</a></code>, which must have integer o
 then rolls the right <code><a href="#Die">Die</a></code> that many times and sums the outcomes.
 Only the sum is performed element-wise.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the result.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If tuples are of mismatched length within one of the
@@ -2886,7 +2895,7 @@ dice or between the dice.</li>
 
             <div class="docstring"><p>Rerolls the given outcomes.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>outcomes:</strong>  Selects which outcomes to reroll. Options:
@@ -2906,14 +2915,14 @@ If omitted, rerolls an unlimited number of times.</li>
 If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has no effect.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the reroll.
   If the reroll would never terminate, the result has no outcomes.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If <code>extra_args</code> are supplied with a non-callable <code><a href="#Die.outcomes">outcomes</a></code>.</li>
@@ -2992,7 +3001,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
 
 <p>Essentially the complement of <code><a href="#Die.reroll">reroll()</a></code>.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>outcomes:</strong>  Selects which outcomes to reroll until. Options:
@@ -3011,14 +3020,14 @@ If omitted, rerolls an unlimited number of times.</li>
 If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has no effect.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the reroll.
   If the reroll would never terminate, the result has no outcomes.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If <code>extra_args</code> are supplied with a non-callable <code><a href="#Die.outcomes">outcomes</a></code>.</li>
@@ -3159,7 +3168,7 @@ If you want to reroll outcomes beyond this range, use <code><a href="#Die.trunca
 
             <div class="docstring"><p>Sets the outcomes of this <code><a href="#Die">Die</a></code> to the given <code>int</code> range (inclusive).</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>min_outcome:</strong>  The min outcome of the result.
@@ -3339,7 +3348,7 @@ this <code><a href="#Die">Die</a></code>.</p>
 <code><a href="#Die">Die()</a></code> constructor. It is not advised to use these with <code>repeat</code> other
 than 1.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>repl:</strong>  One of the following:
@@ -3367,13 +3376,13 @@ effect.</li>
 constructor.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>The <code><a href="#Die">Die</a></code> after the modification.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  if <code>extra_args</code> are supplied with a non-callable <code>repl</code>.</li>
@@ -3460,7 +3469,7 @@ constructor.</li>
 
             <div class="docstring"><p>Causes outcomes to be rolled again and added to the total.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>outcomes:</strong>  Which outcomes to explode. Options:
@@ -3482,7 +3491,7 @@ as this value. By default, a zero value will be used.</li>
 If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has no effect.</li>
 </ul>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If <code>extra_args</code> are supplied with a non-callable <code><a href="#Die.outcomes">outcomes</a></code>.</li>
@@ -3522,7 +3531,7 @@ If <code><a href="#Die.outcomes">outcomes</a></code> is not a callable, this has
 <p>This replaces truthy outcomes with the first argument and falsy outcomes
 with the second argument.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>**kwargs:</strong>  Any extra keyword arguments are forwarded to the final die
@@ -3637,7 +3646,7 @@ constructor.</li>
 <code>d6.pool(5)[-1, ..., 1]</code> takes the difference between the highest and
 lowest of 5d6.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>rolls:</strong>  The number of copies of this <code><a href="#Die">Die</a></code> to put in the pool.
@@ -3686,7 +3695,7 @@ the pool.</li>
 
             <div class="docstring"><p>Roll several of this <code><a href="#Die">Die</a></code> and sum the sorted results from the lowest.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>rolls:</strong>  The number of dice to roll. All dice will have the same
@@ -3696,7 +3705,7 @@ outcomes as <code>self</code>.</li>
 keeping.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the probability distribution of the sum.</p>
@@ -3743,7 +3752,7 @@ keeping.</li>
 
             <div class="docstring"><p>Roll several of this <code><a href="#Die">Die</a></code> and sum the sorted results from the highest.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>rolls:</strong>  The number of dice to roll.</li>
@@ -3752,7 +3761,7 @@ keeping.</li>
 keeping.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the probability distribution of the sum.</p>
@@ -3892,7 +3901,7 @@ arguments.</p>
 
 <p>The result will have the same denominator as this die.</p>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If the zeros did not resolve to a single outcome.</li>
@@ -4118,7 +4127,7 @@ Only dice returned by these methods have a truth value. The data of
 these dice is lazily evaluated since the caller may only be interested
 in the <code><a href="#Die">Die</a></code> value or the truth value.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>simplify:</strong>  If <code>True</code>, the dice will be simplified before comparing.
@@ -5234,7 +5243,7 @@ use <code>len()</code>.</p>
 
 <p>Also known as the probability mass function (PMF).</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>percent:</strong>  If set, the results will be in percent (i.e. total of 100.0).
@@ -5277,7 +5286,7 @@ Otherwise, the total will be 1.0.</li>
 <p>Also known as the cumulative distribution function (CDF),
 though this term is ambigiuous whether it is &lt; or &lt;=.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>percent:</strong>  If set, the results will be in percent (i.e. total of 100.0).
@@ -5322,7 +5331,7 @@ Otherwise, the total will be 1.0.</li>
 complementary cumulative distribution function (CCDF),
 though these term are ambigiuous whether they are is &gt; or &gt;=.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>percent:</strong>  If set, the results will be in percent (i.e. total of 100.0).
@@ -5359,7 +5368,7 @@ Otherwise, the total will be 1.0.</li>
 
             <div class="docstring"><p>The probability of rolling &lt; each outcome in order.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>percent:</strong>  If set, the results will be in percent (i.e. total of 100.0).
@@ -5396,7 +5405,7 @@ Otherwise, the total will be 1.0.</li>
 
             <div class="docstring"><p>The probability of rolling &gt; each outcome in order.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>percent:</strong>  If set, the results will be in percent (i.e. total of 100.0).
@@ -6481,7 +6490,7 @@ from rolling again.</p>
 
             <div class="docstring"><p>Constructs a <code><a href="#Die">Die</a></code> from a sequence of cumulative quantities.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>outcomes:</strong>  The outcomes of the resulting die. Sorted order is recommended
@@ -6531,7 +6540,7 @@ e.g. constructing using a survival distribution.</li>
 
             <div class="docstring"><p>Constructs a <code><a href="#Die">Die</a></code> from a rv object (as <code>scipy.stats</code>).</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>rv:</strong>  A rv object (as <code>scipy.stats</code>).</li>
@@ -6574,13 +6583,13 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
             <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of outcomes.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*dice:</strong>  One <code><a href="#Die">Die</a></code> per argument.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A tuple of aligned dice.</p>
@@ -6619,13 +6628,13 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
             <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of consecutive <code>int</code> outcomes.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*dice:</strong>  One <code><a href="#Die">Die</a></code> per argument.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A tuple of aligned dice.</p>
@@ -6667,7 +6676,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
             <div class="docstring"><p>The lowest outcome or sum of the lowest outcomes among the dice.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*dice:</strong>  The dice to be considered. At least one <code><a href="#Die">Die</a></code> must be provided.</li>
@@ -6712,7 +6721,7 @@ to be summed.</li>
 
             <div class="docstring"><p>The highest outcome or sum of the highest outcomes among the dice.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*dice:</strong>  The dice to be considered. At least one <code><a href="#Die">Die</a></code> must be provided.</li>
@@ -6821,7 +6830,7 @@ to be summed.</li>
 
 <p>The function is applied non-elementwise to tuple outcomes.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>func:</strong>  The function to apply. The function should take two arguments,
@@ -6901,7 +6910,7 @@ one additional element if <code>initial</code> is provided.</p>
 
 <p>The function is applied non-elementwise to tuple outcomes.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>func:</strong>  The function to apply. The function should take two arguments,
@@ -6993,7 +7002,7 @@ time, try using <code><a href="#reduce">reduce()</a></code> instead.</li>
 but is still more efficient than <code><a href="#apply">apply()</a></code>.</li>
 </ul>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>func:</strong>  A function that takes one argument per input <code><a href="#Die">Die</a></code> and returns an
@@ -7005,7 +7014,7 @@ argument per <code><a href="#Die">Die</a></code>.</li>
 constructor for the final result.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> constructed from the outputs of <code>func</code> and the product of the
@@ -7159,7 +7168,7 @@ For example, <code>apply_sorted[-2:](func, *dice)</code> would give the two high
 outcomes to <code>func()</code>. This is more efficient than selecting outcomes inside
 <code>func</code>.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>func:</strong>  A function that takes one argument per input <code><a href="#Die">Die</a></code> and returns an
@@ -7171,7 +7180,7 @@ with one argument per die. All outcomes must be totally orderable.</li>
 constructor for the final result.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> constructed from the outputs of <code>func</code> and the weight of rolling
@@ -7367,88 +7376,98 @@ modification.</li>
 </span><span id="OutcomeCountGenerator-147"><a href="#OutcomeCountGenerator-147"><span class="linenos">147</span></a>        <span class="sd">&quot;&quot;&quot;The number of outcomes that are in the target.&quot;&quot;&quot;</span>
 </span><span id="OutcomeCountGenerator-148"><a href="#OutcomeCountGenerator-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">CountInEvaluator</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="OutcomeCountGenerator-149"><a href="#OutcomeCountGenerator-149"><span class="linenos">149</span></a>
-</span><span id="OutcomeCountGenerator-150"><a href="#OutcomeCountGenerator-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">contains_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="OutcomeCountGenerator-151"><a href="#OutcomeCountGenerator-151"><span class="linenos">151</span></a>                        <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-152"><a href="#OutcomeCountGenerator-152"><span class="linenos">152</span></a>        <span class="sd">&quot;&quot;&quot;Whether the outcomes contain the target subset.</span>
-</span><span id="OutcomeCountGenerator-153"><a href="#OutcomeCountGenerator-153"><span class="linenos">153</span></a>
-</span><span id="OutcomeCountGenerator-154"><a href="#OutcomeCountGenerator-154"><span class="linenos">154</span></a><span class="sd">        Elements in the target may be repeated.</span>
-</span><span id="OutcomeCountGenerator-155"><a href="#OutcomeCountGenerator-155"><span class="linenos">155</span></a>
-</span><span id="OutcomeCountGenerator-156"><a href="#OutcomeCountGenerator-156"><span class="linenos">156</span></a><span class="sd">        Args:</span>
-</span><span id="OutcomeCountGenerator-157"><a href="#OutcomeCountGenerator-157"><span class="linenos">157</span></a><span class="sd">            target: Either a collection of outcomes, counting once per appearance.</span>
-</span><span id="OutcomeCountGenerator-158"><a href="#OutcomeCountGenerator-158"><span class="linenos">158</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
-</span><span id="OutcomeCountGenerator-159"><a href="#OutcomeCountGenerator-159"><span class="linenos">159</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator-160"><a href="#OutcomeCountGenerator-160"><span class="linenos">160</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ContainsSubsetEvaluator</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-161"><a href="#OutcomeCountGenerator-161"><span class="linenos">161</span></a>
-</span><span id="OutcomeCountGenerator-162"><a href="#OutcomeCountGenerator-162"><span class="linenos">162</span></a>    <span class="k">def</span> <span class="nf">intersection_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="OutcomeCountGenerator-163"><a href="#OutcomeCountGenerator-163"><span class="linenos">163</span></a>                          <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-164"><a href="#OutcomeCountGenerator-164"><span class="linenos">164</span></a>        <span class="sd">&quot;&quot;&quot;The size of the intersection of the outcomes and the target subset.</span>
-</span><span id="OutcomeCountGenerator-165"><a href="#OutcomeCountGenerator-165"><span class="linenos">165</span></a>
-</span><span id="OutcomeCountGenerator-166"><a href="#OutcomeCountGenerator-166"><span class="linenos">166</span></a><span class="sd">        Elements in the target may be repeated.</span>
-</span><span id="OutcomeCountGenerator-167"><a href="#OutcomeCountGenerator-167"><span class="linenos">167</span></a>
-</span><span id="OutcomeCountGenerator-168"><a href="#OutcomeCountGenerator-168"><span class="linenos">168</span></a><span class="sd">        E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.</span>
-</span><span id="OutcomeCountGenerator-169"><a href="#OutcomeCountGenerator-169"><span class="linenos">169</span></a>
-</span><span id="OutcomeCountGenerator-170"><a href="#OutcomeCountGenerator-170"><span class="linenos">170</span></a><span class="sd">        Args:</span>
-</span><span id="OutcomeCountGenerator-171"><a href="#OutcomeCountGenerator-171"><span class="linenos">171</span></a><span class="sd">            target: Either a collection of outcomes, counting once per appearance.</span>
-</span><span id="OutcomeCountGenerator-172"><a href="#OutcomeCountGenerator-172"><span class="linenos">172</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
-</span><span id="OutcomeCountGenerator-173"><a href="#OutcomeCountGenerator-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator-174"><a href="#OutcomeCountGenerator-174"><span class="linenos">174</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">IntersectionSizeEvaluator</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-150"><a href="#OutcomeCountGenerator-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">contains_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-151"><a href="#OutcomeCountGenerator-151"><span class="linenos">151</span></a>                        <span class="n">targets</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="OutcomeCountGenerator-152"><a href="#OutcomeCountGenerator-152"><span class="linenos">152</span></a>                        <span class="o">/</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-153"><a href="#OutcomeCountGenerator-153"><span class="linenos">153</span></a>                        <span class="o">*</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-154"><a href="#OutcomeCountGenerator-154"><span class="linenos">154</span></a>                        <span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-155"><a href="#OutcomeCountGenerator-155"><span class="linenos">155</span></a>        <span class="sd">&quot;&quot;&quot;Whether the outcomes contain all of the targets.</span>
+</span><span id="OutcomeCountGenerator-156"><a href="#OutcomeCountGenerator-156"><span class="linenos">156</span></a>
+</span><span id="OutcomeCountGenerator-157"><a href="#OutcomeCountGenerator-157"><span class="linenos">157</span></a><span class="sd">        The targets may contain duplicate elements.</span>
+</span><span id="OutcomeCountGenerator-158"><a href="#OutcomeCountGenerator-158"><span class="linenos">158</span></a>
+</span><span id="OutcomeCountGenerator-159"><a href="#OutcomeCountGenerator-159"><span class="linenos">159</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGenerator-160"><a href="#OutcomeCountGenerator-160"><span class="linenos">160</span></a><span class="sd">            targets: Either a collection of outcomes, counting once per appearance.</span>
+</span><span id="OutcomeCountGenerator-161"><a href="#OutcomeCountGenerator-161"><span class="linenos">161</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
+</span><span id="OutcomeCountGenerator-162"><a href="#OutcomeCountGenerator-162"><span class="linenos">162</span></a><span class="sd">            wilds: A collection of outcomes that will be treated as wilds.</span>
+</span><span id="OutcomeCountGenerator-163"><a href="#OutcomeCountGenerator-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator-164"><a href="#OutcomeCountGenerator-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ContainsSubsetEvaluator</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-165"><a href="#OutcomeCountGenerator-165"><span class="linenos">165</span></a>                                               <span class="n">wilds</span><span class="o">=</span><span class="n">wilds</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-166"><a href="#OutcomeCountGenerator-166"><span class="linenos">166</span></a>
+</span><span id="OutcomeCountGenerator-167"><a href="#OutcomeCountGenerator-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">intersection_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-168"><a href="#OutcomeCountGenerator-168"><span class="linenos">168</span></a>                          <span class="n">targets</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="OutcomeCountGenerator-169"><a href="#OutcomeCountGenerator-169"><span class="linenos">169</span></a>                          <span class="o">/</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-170"><a href="#OutcomeCountGenerator-170"><span class="linenos">170</span></a>                          <span class="o">*</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-171"><a href="#OutcomeCountGenerator-171"><span class="linenos">171</span></a>                          <span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-172"><a href="#OutcomeCountGenerator-172"><span class="linenos">172</span></a>        <span class="sd">&quot;&quot;&quot;The size of the intersection of the outcomes and the targets.</span>
+</span><span id="OutcomeCountGenerator-173"><a href="#OutcomeCountGenerator-173"><span class="linenos">173</span></a>
+</span><span id="OutcomeCountGenerator-174"><a href="#OutcomeCountGenerator-174"><span class="linenos">174</span></a><span class="sd">        The targets may contain duplicate elements.</span>
 </span><span id="OutcomeCountGenerator-175"><a href="#OutcomeCountGenerator-175"><span class="linenos">175</span></a>
-</span><span id="OutcomeCountGenerator-176"><a href="#OutcomeCountGenerator-176"><span class="linenos">176</span></a>    <span class="k">def</span> <span class="nf">best_matching_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-177"><a href="#OutcomeCountGenerator-177"><span class="linenos">177</span></a>        <span class="sd">&quot;&quot;&quot;The best matching set among the outcomes.</span>
-</span><span id="OutcomeCountGenerator-178"><a href="#OutcomeCountGenerator-178"><span class="linenos">178</span></a>
-</span><span id="OutcomeCountGenerator-179"><a href="#OutcomeCountGenerator-179"><span class="linenos">179</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator-180"><a href="#OutcomeCountGenerator-180"><span class="linenos">180</span></a><span class="sd">            A `Die` with outcomes (set_size, outcome).</span>
-</span><span id="OutcomeCountGenerator-181"><a href="#OutcomeCountGenerator-181"><span class="linenos">181</span></a><span class="sd">            The greatest single such set is returned.</span>
+</span><span id="OutcomeCountGenerator-176"><a href="#OutcomeCountGenerator-176"><span class="linenos">176</span></a><span class="sd">        E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.</span>
+</span><span id="OutcomeCountGenerator-177"><a href="#OutcomeCountGenerator-177"><span class="linenos">177</span></a>
+</span><span id="OutcomeCountGenerator-178"><a href="#OutcomeCountGenerator-178"><span class="linenos">178</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGenerator-179"><a href="#OutcomeCountGenerator-179"><span class="linenos">179</span></a><span class="sd">            targets: Either a collection of outcomes, counting once per appearance.</span>
+</span><span id="OutcomeCountGenerator-180"><a href="#OutcomeCountGenerator-180"><span class="linenos">180</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
+</span><span id="OutcomeCountGenerator-181"><a href="#OutcomeCountGenerator-181"><span class="linenos">181</span></a><span class="sd">            wilds: A collection of outcomes that will be treated as wilds.</span>
 </span><span id="OutcomeCountGenerator-182"><a href="#OutcomeCountGenerator-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator-183"><a href="#OutcomeCountGenerator-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_matching_set_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-184"><a href="#OutcomeCountGenerator-184"><span class="linenos">184</span></a>
-</span><span id="OutcomeCountGenerator-185"><a href="#OutcomeCountGenerator-185"><span class="linenos">185</span></a>    <span class="k">def</span> <span class="nf">best_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-186"><a href="#OutcomeCountGenerator-186"><span class="linenos">186</span></a>        <span class="sd">&quot;&quot;&quot;The best straight among the outcomes.</span>
-</span><span id="OutcomeCountGenerator-187"><a href="#OutcomeCountGenerator-187"><span class="linenos">187</span></a>
-</span><span id="OutcomeCountGenerator-188"><a href="#OutcomeCountGenerator-188"><span class="linenos">188</span></a><span class="sd">        Outcomes must be `int`s.</span>
-</span><span id="OutcomeCountGenerator-189"><a href="#OutcomeCountGenerator-189"><span class="linenos">189</span></a>
-</span><span id="OutcomeCountGenerator-190"><a href="#OutcomeCountGenerator-190"><span class="linenos">190</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator-191"><a href="#OutcomeCountGenerator-191"><span class="linenos">191</span></a><span class="sd">            A `Die` with outcomes (straight_length, outcome).</span>
-</span><span id="OutcomeCountGenerator-192"><a href="#OutcomeCountGenerator-192"><span class="linenos">192</span></a><span class="sd">            The greatest single such straight is returned.</span>
-</span><span id="OutcomeCountGenerator-193"><a href="#OutcomeCountGenerator-193"><span class="linenos">193</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator-194"><a href="#OutcomeCountGenerator-194"><span class="linenos">194</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_straight_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-195"><a href="#OutcomeCountGenerator-195"><span class="linenos">195</span></a>
-</span><span id="OutcomeCountGenerator-196"><a href="#OutcomeCountGenerator-196"><span class="linenos">196</span></a>    <span class="c1"># Sampling.</span>
+</span><span id="OutcomeCountGenerator-183"><a href="#OutcomeCountGenerator-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">IntersectionSizeEvaluator</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator-184"><a href="#OutcomeCountGenerator-184"><span class="linenos">184</span></a>                                                 <span class="n">wilds</span><span class="o">=</span><span class="n">wilds</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-185"><a href="#OutcomeCountGenerator-185"><span class="linenos">185</span></a>
+</span><span id="OutcomeCountGenerator-186"><a href="#OutcomeCountGenerator-186"><span class="linenos">186</span></a>    <span class="k">def</span> <span class="nf">best_matching_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-187"><a href="#OutcomeCountGenerator-187"><span class="linenos">187</span></a>        <span class="sd">&quot;&quot;&quot;The best matching set among the outcomes.</span>
+</span><span id="OutcomeCountGenerator-188"><a href="#OutcomeCountGenerator-188"><span class="linenos">188</span></a>
+</span><span id="OutcomeCountGenerator-189"><a href="#OutcomeCountGenerator-189"><span class="linenos">189</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator-190"><a href="#OutcomeCountGenerator-190"><span class="linenos">190</span></a><span class="sd">            A `Die` with outcomes (set_size, outcome).</span>
+</span><span id="OutcomeCountGenerator-191"><a href="#OutcomeCountGenerator-191"><span class="linenos">191</span></a><span class="sd">            The greatest single such set is returned.</span>
+</span><span id="OutcomeCountGenerator-192"><a href="#OutcomeCountGenerator-192"><span class="linenos">192</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator-193"><a href="#OutcomeCountGenerator-193"><span class="linenos">193</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_matching_set_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-194"><a href="#OutcomeCountGenerator-194"><span class="linenos">194</span></a>
+</span><span id="OutcomeCountGenerator-195"><a href="#OutcomeCountGenerator-195"><span class="linenos">195</span></a>    <span class="k">def</span> <span class="nf">best_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-196"><a href="#OutcomeCountGenerator-196"><span class="linenos">196</span></a>        <span class="sd">&quot;&quot;&quot;The best straight among the outcomes.</span>
 </span><span id="OutcomeCountGenerator-197"><a href="#OutcomeCountGenerator-197"><span class="linenos">197</span></a>
-</span><span id="OutcomeCountGenerator-198"><a href="#OutcomeCountGenerator-198"><span class="linenos">198</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="OutcomeCountGenerator-199"><a href="#OutcomeCountGenerator-199"><span class="linenos">199</span></a>        <span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A single random sample from this generator.</span>
-</span><span id="OutcomeCountGenerator-200"><a href="#OutcomeCountGenerator-200"><span class="linenos">200</span></a>
-</span><span id="OutcomeCountGenerator-201"><a href="#OutcomeCountGenerator-201"><span class="linenos">201</span></a><span class="sd">        This uses the standard `random` package and is not cryptographically</span>
-</span><span id="OutcomeCountGenerator-202"><a href="#OutcomeCountGenerator-202"><span class="linenos">202</span></a><span class="sd">        secure.</span>
-</span><span id="OutcomeCountGenerator-203"><a href="#OutcomeCountGenerator-203"><span class="linenos">203</span></a>
-</span><span id="OutcomeCountGenerator-204"><a href="#OutcomeCountGenerator-204"><span class="linenos">204</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator-205"><a href="#OutcomeCountGenerator-205"><span class="linenos">205</span></a><span class="sd">            A sorted tuple of outcomes for each output of this generator.</span>
-</span><span id="OutcomeCountGenerator-206"><a href="#OutcomeCountGenerator-206"><span class="linenos">206</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator-207"><a href="#OutcomeCountGenerator-207"><span class="linenos">207</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-</span><span id="OutcomeCountGenerator-208"><a href="#OutcomeCountGenerator-208"><span class="linenos">208</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot sample from an empty set of outcomes.&#39;</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-209"><a href="#OutcomeCountGenerator-209"><span class="linenos">209</span></a>
-</span><span id="OutcomeCountGenerator-210"><a href="#OutcomeCountGenerator-210"><span class="linenos">210</span></a>        <span class="n">min_cost</span><span class="p">,</span> <span class="n">max_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_order_costs</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator-211"><a href="#OutcomeCountGenerator-211"><span class="linenos">211</span></a>
-</span><span id="OutcomeCountGenerator-212"><a href="#OutcomeCountGenerator-212"><span class="linenos">212</span></a>        <span class="k">if</span> <span class="n">min_cost</span> <span class="o">&lt;</span> <span class="n">max_cost</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-213"><a href="#OutcomeCountGenerator-213"><span class="linenos">213</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator-214"><a href="#OutcomeCountGenerator-214"><span class="linenos">214</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_min</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator-215"><a href="#OutcomeCountGenerator-215"><span class="linenos">215</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-216"><a href="#OutcomeCountGenerator-216"><span class="linenos">216</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator-217"><a href="#OutcomeCountGenerator-217"><span class="linenos">217</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_max</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator-218"><a href="#OutcomeCountGenerator-218"><span class="linenos">218</span></a>
-</span><span id="OutcomeCountGenerator-219"><a href="#OutcomeCountGenerator-219"><span class="linenos">219</span></a>        <span class="n">cumulative_weights</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="OutcomeCountGenerator-220"><a href="#OutcomeCountGenerator-220"><span class="linenos">220</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">*</span> <span class="n">w</span> <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">generated</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator-221"><a href="#OutcomeCountGenerator-221"><span class="linenos">221</span></a>        <span class="n">denominator</span> <span class="o">=</span> <span class="n">cumulative_weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="OutcomeCountGenerator-222"><a href="#OutcomeCountGenerator-222"><span class="linenos">222</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
-</span><span id="OutcomeCountGenerator-223"><a href="#OutcomeCountGenerator-223"><span class="linenos">223</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-224"><a href="#OutcomeCountGenerator-224"><span class="linenos">224</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">cumulative_weights</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-225"><a href="#OutcomeCountGenerator-225"><span class="linenos">225</span></a>        <span class="n">popped_generator</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generated</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</span><span id="OutcomeCountGenerator-226"><a href="#OutcomeCountGenerator-226"><span class="linenos">226</span></a>        <span class="n">head</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">outcome</span><span class="p">,)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator-227"><a href="#OutcomeCountGenerator-227"><span class="linenos">227</span></a>        <span class="k">if</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-</span><span id="OutcomeCountGenerator-228"><a href="#OutcomeCountGenerator-228"><span class="linenos">228</span></a>            <span class="n">tail</span> <span class="o">=</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator-229"><a href="#OutcomeCountGenerator-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator-230"><a href="#OutcomeCountGenerator-230"><span class="linenos">230</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator-231"><a href="#OutcomeCountGenerator-231"><span class="linenos">231</span></a>            <span class="k">return</span> <span class="n">head</span>
+</span><span id="OutcomeCountGenerator-198"><a href="#OutcomeCountGenerator-198"><span class="linenos">198</span></a><span class="sd">        Outcomes must be `int`s.</span>
+</span><span id="OutcomeCountGenerator-199"><a href="#OutcomeCountGenerator-199"><span class="linenos">199</span></a>
+</span><span id="OutcomeCountGenerator-200"><a href="#OutcomeCountGenerator-200"><span class="linenos">200</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator-201"><a href="#OutcomeCountGenerator-201"><span class="linenos">201</span></a><span class="sd">            A `Die` with outcomes (straight_length, outcome).</span>
+</span><span id="OutcomeCountGenerator-202"><a href="#OutcomeCountGenerator-202"><span class="linenos">202</span></a><span class="sd">            The greatest single such straight is returned.</span>
+</span><span id="OutcomeCountGenerator-203"><a href="#OutcomeCountGenerator-203"><span class="linenos">203</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator-204"><a href="#OutcomeCountGenerator-204"><span class="linenos">204</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_straight_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-205"><a href="#OutcomeCountGenerator-205"><span class="linenos">205</span></a>
+</span><span id="OutcomeCountGenerator-206"><a href="#OutcomeCountGenerator-206"><span class="linenos">206</span></a>    <span class="c1"># Sampling.</span>
+</span><span id="OutcomeCountGenerator-207"><a href="#OutcomeCountGenerator-207"><span class="linenos">207</span></a>
+</span><span id="OutcomeCountGenerator-208"><a href="#OutcomeCountGenerator-208"><span class="linenos">208</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="OutcomeCountGenerator-209"><a href="#OutcomeCountGenerator-209"><span class="linenos">209</span></a>        <span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A single random sample from this generator.</span>
+</span><span id="OutcomeCountGenerator-210"><a href="#OutcomeCountGenerator-210"><span class="linenos">210</span></a>
+</span><span id="OutcomeCountGenerator-211"><a href="#OutcomeCountGenerator-211"><span class="linenos">211</span></a><span class="sd">        This uses the standard `random` package and is not cryptographically</span>
+</span><span id="OutcomeCountGenerator-212"><a href="#OutcomeCountGenerator-212"><span class="linenos">212</span></a><span class="sd">        secure.</span>
+</span><span id="OutcomeCountGenerator-213"><a href="#OutcomeCountGenerator-213"><span class="linenos">213</span></a>
+</span><span id="OutcomeCountGenerator-214"><a href="#OutcomeCountGenerator-214"><span class="linenos">214</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator-215"><a href="#OutcomeCountGenerator-215"><span class="linenos">215</span></a><span class="sd">            A sorted tuple of outcomes for each output of this generator.</span>
+</span><span id="OutcomeCountGenerator-216"><a href="#OutcomeCountGenerator-216"><span class="linenos">216</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator-217"><a href="#OutcomeCountGenerator-217"><span class="linenos">217</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
+</span><span id="OutcomeCountGenerator-218"><a href="#OutcomeCountGenerator-218"><span class="linenos">218</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot sample from an empty set of outcomes.&#39;</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-219"><a href="#OutcomeCountGenerator-219"><span class="linenos">219</span></a>
+</span><span id="OutcomeCountGenerator-220"><a href="#OutcomeCountGenerator-220"><span class="linenos">220</span></a>        <span class="n">min_cost</span><span class="p">,</span> <span class="n">max_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_order_costs</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator-221"><a href="#OutcomeCountGenerator-221"><span class="linenos">221</span></a>
+</span><span id="OutcomeCountGenerator-222"><a href="#OutcomeCountGenerator-222"><span class="linenos">222</span></a>        <span class="k">if</span> <span class="n">min_cost</span> <span class="o">&lt;</span> <span class="n">max_cost</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-223"><a href="#OutcomeCountGenerator-223"><span class="linenos">223</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator-224"><a href="#OutcomeCountGenerator-224"><span class="linenos">224</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_min</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator-225"><a href="#OutcomeCountGenerator-225"><span class="linenos">225</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-226"><a href="#OutcomeCountGenerator-226"><span class="linenos">226</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator-227"><a href="#OutcomeCountGenerator-227"><span class="linenos">227</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_max</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator-228"><a href="#OutcomeCountGenerator-228"><span class="linenos">228</span></a>
+</span><span id="OutcomeCountGenerator-229"><a href="#OutcomeCountGenerator-229"><span class="linenos">229</span></a>        <span class="n">cumulative_weights</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="OutcomeCountGenerator-230"><a href="#OutcomeCountGenerator-230"><span class="linenos">230</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">*</span> <span class="n">w</span> <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">generated</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator-231"><a href="#OutcomeCountGenerator-231"><span class="linenos">231</span></a>        <span class="n">denominator</span> <span class="o">=</span> <span class="n">cumulative_weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="OutcomeCountGenerator-232"><a href="#OutcomeCountGenerator-232"><span class="linenos">232</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
+</span><span id="OutcomeCountGenerator-233"><a href="#OutcomeCountGenerator-233"><span class="linenos">233</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-234"><a href="#OutcomeCountGenerator-234"><span class="linenos">234</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">cumulative_weights</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-235"><a href="#OutcomeCountGenerator-235"><span class="linenos">235</span></a>        <span class="n">popped_generator</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generated</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="OutcomeCountGenerator-236"><a href="#OutcomeCountGenerator-236"><span class="linenos">236</span></a>        <span class="n">head</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">outcome</span><span class="p">,)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator-237"><a href="#OutcomeCountGenerator-237"><span class="linenos">237</span></a>        <span class="k">if</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
+</span><span id="OutcomeCountGenerator-238"><a href="#OutcomeCountGenerator-238"><span class="linenos">238</span></a>            <span class="n">tail</span> <span class="o">=</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator-239"><a href="#OutcomeCountGenerator-239"><span class="linenos">239</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator-240"><a href="#OutcomeCountGenerator-240"><span class="linenos">240</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator-241"><a href="#OutcomeCountGenerator-241"><span class="linenos">241</span></a>            <span class="k">return</span> <span class="n">head</span>
 </span></pre></div>
 
 
@@ -7574,7 +7593,7 @@ if you plan to use an evaluation multiple times,
 you may want to explicitly create an <code><a href="#OutcomeCountEvaluator">OutcomeCountEvaluator</a></code> instance
 rather than passing a function to this method directly.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>func:</strong>  This can be an <code><a href="#OutcomeCountEvaluator">OutcomeCountEvaluator</a></code>, in which case it evaluates
@@ -7724,35 +7743,41 @@ is constructed and used to evaluate this generator.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">contains_subset</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Collection</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">contains_subset</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">targets</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Collection</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">()</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="OutcomeCountGenerator.contains_subset-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGenerator.contains_subset"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.contains_subset-150"><a href="#OutcomeCountGenerator.contains_subset-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">contains_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="OutcomeCountGenerator.contains_subset-151"><a href="#OutcomeCountGenerator.contains_subset-151"><span class="linenos">151</span></a>                        <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.contains_subset-152"><a href="#OutcomeCountGenerator.contains_subset-152"><span class="linenos">152</span></a>        <span class="sd">&quot;&quot;&quot;Whether the outcomes contain the target subset.</span>
-</span><span id="OutcomeCountGenerator.contains_subset-153"><a href="#OutcomeCountGenerator.contains_subset-153"><span class="linenos">153</span></a>
-</span><span id="OutcomeCountGenerator.contains_subset-154"><a href="#OutcomeCountGenerator.contains_subset-154"><span class="linenos">154</span></a><span class="sd">        Elements in the target may be repeated.</span>
-</span><span id="OutcomeCountGenerator.contains_subset-155"><a href="#OutcomeCountGenerator.contains_subset-155"><span class="linenos">155</span></a>
-</span><span id="OutcomeCountGenerator.contains_subset-156"><a href="#OutcomeCountGenerator.contains_subset-156"><span class="linenos">156</span></a><span class="sd">        Args:</span>
-</span><span id="OutcomeCountGenerator.contains_subset-157"><a href="#OutcomeCountGenerator.contains_subset-157"><span class="linenos">157</span></a><span class="sd">            target: Either a collection of outcomes, counting once per appearance.</span>
-</span><span id="OutcomeCountGenerator.contains_subset-158"><a href="#OutcomeCountGenerator.contains_subset-158"><span class="linenos">158</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
-</span><span id="OutcomeCountGenerator.contains_subset-159"><a href="#OutcomeCountGenerator.contains_subset-159"><span class="linenos">159</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator.contains_subset-160"><a href="#OutcomeCountGenerator.contains_subset-160"><span class="linenos">160</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ContainsSubsetEvaluator</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.contains_subset-150"><a href="#OutcomeCountGenerator.contains_subset-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">contains_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.contains_subset-151"><a href="#OutcomeCountGenerator.contains_subset-151"><span class="linenos">151</span></a>                        <span class="n">targets</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="OutcomeCountGenerator.contains_subset-152"><a href="#OutcomeCountGenerator.contains_subset-152"><span class="linenos">152</span></a>                        <span class="o">/</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.contains_subset-153"><a href="#OutcomeCountGenerator.contains_subset-153"><span class="linenos">153</span></a>                        <span class="o">*</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.contains_subset-154"><a href="#OutcomeCountGenerator.contains_subset-154"><span class="linenos">154</span></a>                        <span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.contains_subset-155"><a href="#OutcomeCountGenerator.contains_subset-155"><span class="linenos">155</span></a>        <span class="sd">&quot;&quot;&quot;Whether the outcomes contain all of the targets.</span>
+</span><span id="OutcomeCountGenerator.contains_subset-156"><a href="#OutcomeCountGenerator.contains_subset-156"><span class="linenos">156</span></a>
+</span><span id="OutcomeCountGenerator.contains_subset-157"><a href="#OutcomeCountGenerator.contains_subset-157"><span class="linenos">157</span></a><span class="sd">        The targets may contain duplicate elements.</span>
+</span><span id="OutcomeCountGenerator.contains_subset-158"><a href="#OutcomeCountGenerator.contains_subset-158"><span class="linenos">158</span></a>
+</span><span id="OutcomeCountGenerator.contains_subset-159"><a href="#OutcomeCountGenerator.contains_subset-159"><span class="linenos">159</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGenerator.contains_subset-160"><a href="#OutcomeCountGenerator.contains_subset-160"><span class="linenos">160</span></a><span class="sd">            targets: Either a collection of outcomes, counting once per appearance.</span>
+</span><span id="OutcomeCountGenerator.contains_subset-161"><a href="#OutcomeCountGenerator.contains_subset-161"><span class="linenos">161</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
+</span><span id="OutcomeCountGenerator.contains_subset-162"><a href="#OutcomeCountGenerator.contains_subset-162"><span class="linenos">162</span></a><span class="sd">            wilds: A collection of outcomes that will be treated as wilds.</span>
+</span><span id="OutcomeCountGenerator.contains_subset-163"><a href="#OutcomeCountGenerator.contains_subset-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator.contains_subset-164"><a href="#OutcomeCountGenerator.contains_subset-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">ContainsSubsetEvaluator</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.contains_subset-165"><a href="#OutcomeCountGenerator.contains_subset-165"><span class="linenos">165</span></a>                                               <span class="n">wilds</span><span class="o">=</span><span class="n">wilds</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Whether the outcomes contain the target subset.</p>
+            <div class="docstring"><p>Whether the outcomes contain all of the targets.</p>
 
-<p>Elements in the target may be repeated.</p>
+<p>The targets may contain duplicate elements.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
-<li><strong>target:</strong>  Either a collection of outcomes, counting once per appearance.
+<li><strong>targets:</strong>  Either a collection of outcomes, counting once per appearance.
 Or a mapping from outcomes to target counts.</li>
+<li><strong>wilds:</strong>  A collection of outcomes that will be treated as wilds.</li>
 </ul>
 </div>
 
@@ -7763,39 +7788,45 @@ Or a mapping from outcomes to target counts.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">intersection_size</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Collection</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">intersection_size</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">targets</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Collection</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">()</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
                 <label class="view-source-button" for="OutcomeCountGenerator.intersection_size-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGenerator.intersection_size"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.intersection_size-162"><a href="#OutcomeCountGenerator.intersection_size-162"><span class="linenos">162</span></a>    <span class="k">def</span> <span class="nf">intersection_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="OutcomeCountGenerator.intersection_size-163"><a href="#OutcomeCountGenerator.intersection_size-163"><span class="linenos">163</span></a>                          <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.intersection_size-164"><a href="#OutcomeCountGenerator.intersection_size-164"><span class="linenos">164</span></a>        <span class="sd">&quot;&quot;&quot;The size of the intersection of the outcomes and the target subset.</span>
-</span><span id="OutcomeCountGenerator.intersection_size-165"><a href="#OutcomeCountGenerator.intersection_size-165"><span class="linenos">165</span></a>
-</span><span id="OutcomeCountGenerator.intersection_size-166"><a href="#OutcomeCountGenerator.intersection_size-166"><span class="linenos">166</span></a><span class="sd">        Elements in the target may be repeated.</span>
-</span><span id="OutcomeCountGenerator.intersection_size-167"><a href="#OutcomeCountGenerator.intersection_size-167"><span class="linenos">167</span></a>
-</span><span id="OutcomeCountGenerator.intersection_size-168"><a href="#OutcomeCountGenerator.intersection_size-168"><span class="linenos">168</span></a><span class="sd">        E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.</span>
-</span><span id="OutcomeCountGenerator.intersection_size-169"><a href="#OutcomeCountGenerator.intersection_size-169"><span class="linenos">169</span></a>
-</span><span id="OutcomeCountGenerator.intersection_size-170"><a href="#OutcomeCountGenerator.intersection_size-170"><span class="linenos">170</span></a><span class="sd">        Args:</span>
-</span><span id="OutcomeCountGenerator.intersection_size-171"><a href="#OutcomeCountGenerator.intersection_size-171"><span class="linenos">171</span></a><span class="sd">            target: Either a collection of outcomes, counting once per appearance.</span>
-</span><span id="OutcomeCountGenerator.intersection_size-172"><a href="#OutcomeCountGenerator.intersection_size-172"><span class="linenos">172</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
-</span><span id="OutcomeCountGenerator.intersection_size-173"><a href="#OutcomeCountGenerator.intersection_size-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator.intersection_size-174"><a href="#OutcomeCountGenerator.intersection_size-174"><span class="linenos">174</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">IntersectionSizeEvaluator</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.intersection_size-167"><a href="#OutcomeCountGenerator.intersection_size-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">intersection_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.intersection_size-168"><a href="#OutcomeCountGenerator.intersection_size-168"><span class="linenos">168</span></a>                          <span class="n">targets</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="OutcomeCountGenerator.intersection_size-169"><a href="#OutcomeCountGenerator.intersection_size-169"><span class="linenos">169</span></a>                          <span class="o">/</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.intersection_size-170"><a href="#OutcomeCountGenerator.intersection_size-170"><span class="linenos">170</span></a>                          <span class="o">*</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.intersection_size-171"><a href="#OutcomeCountGenerator.intersection_size-171"><span class="linenos">171</span></a>                          <span class="n">wilds</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.intersection_size-172"><a href="#OutcomeCountGenerator.intersection_size-172"><span class="linenos">172</span></a>        <span class="sd">&quot;&quot;&quot;The size of the intersection of the outcomes and the targets.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-173"><a href="#OutcomeCountGenerator.intersection_size-173"><span class="linenos">173</span></a>
+</span><span id="OutcomeCountGenerator.intersection_size-174"><a href="#OutcomeCountGenerator.intersection_size-174"><span class="linenos">174</span></a><span class="sd">        The targets may contain duplicate elements.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-175"><a href="#OutcomeCountGenerator.intersection_size-175"><span class="linenos">175</span></a>
+</span><span id="OutcomeCountGenerator.intersection_size-176"><a href="#OutcomeCountGenerator.intersection_size-176"><span class="linenos">176</span></a><span class="sd">        E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-177"><a href="#OutcomeCountGenerator.intersection_size-177"><span class="linenos">177</span></a>
+</span><span id="OutcomeCountGenerator.intersection_size-178"><a href="#OutcomeCountGenerator.intersection_size-178"><span class="linenos">178</span></a><span class="sd">        Args:</span>
+</span><span id="OutcomeCountGenerator.intersection_size-179"><a href="#OutcomeCountGenerator.intersection_size-179"><span class="linenos">179</span></a><span class="sd">            targets: Either a collection of outcomes, counting once per appearance.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-180"><a href="#OutcomeCountGenerator.intersection_size-180"><span class="linenos">180</span></a><span class="sd">                Or a mapping from outcomes to target counts.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-181"><a href="#OutcomeCountGenerator.intersection_size-181"><span class="linenos">181</span></a><span class="sd">            wilds: A collection of outcomes that will be treated as wilds.</span>
+</span><span id="OutcomeCountGenerator.intersection_size-182"><a href="#OutcomeCountGenerator.intersection_size-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator.intersection_size-183"><a href="#OutcomeCountGenerator.intersection_size-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">IntersectionSizeEvaluator</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span>
+</span><span id="OutcomeCountGenerator.intersection_size-184"><a href="#OutcomeCountGenerator.intersection_size-184"><span class="linenos">184</span></a>                                                 <span class="n">wilds</span><span class="o">=</span><span class="n">wilds</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>The size of the intersection of the outcomes and the target subset.</p>
+            <div class="docstring"><p>The size of the intersection of the outcomes and the targets.</p>
 
-<p>Elements in the target may be repeated.</p>
+<p>The targets may contain duplicate elements.</p>
 
 <p>E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
-<li><strong>target:</strong>  Either a collection of outcomes, counting once per appearance.
+<li><strong>targets:</strong>  Either a collection of outcomes, counting once per appearance.
 Or a mapping from outcomes to target counts.</li>
+<li><strong>wilds:</strong>  A collection of outcomes that will be treated as wilds.</li>
 </ul>
 </div>
 
@@ -7812,20 +7843,20 @@ Or a mapping from outcomes to target counts.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGenerator.best_matching_set"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.best_matching_set-176"><a href="#OutcomeCountGenerator.best_matching_set-176"><span class="linenos">176</span></a>    <span class="k">def</span> <span class="nf">best_matching_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-177"><a href="#OutcomeCountGenerator.best_matching_set-177"><span class="linenos">177</span></a>        <span class="sd">&quot;&quot;&quot;The best matching set among the outcomes.</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-178"><a href="#OutcomeCountGenerator.best_matching_set-178"><span class="linenos">178</span></a>
-</span><span id="OutcomeCountGenerator.best_matching_set-179"><a href="#OutcomeCountGenerator.best_matching_set-179"><span class="linenos">179</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-180"><a href="#OutcomeCountGenerator.best_matching_set-180"><span class="linenos">180</span></a><span class="sd">            A `Die` with outcomes (set_size, outcome).</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-181"><a href="#OutcomeCountGenerator.best_matching_set-181"><span class="linenos">181</span></a><span class="sd">            The greatest single such set is returned.</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-182"><a href="#OutcomeCountGenerator.best_matching_set-182"><span class="linenos">182</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator.best_matching_set-183"><a href="#OutcomeCountGenerator.best_matching_set-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_matching_set_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.best_matching_set-186"><a href="#OutcomeCountGenerator.best_matching_set-186"><span class="linenos">186</span></a>    <span class="k">def</span> <span class="nf">best_matching_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-187"><a href="#OutcomeCountGenerator.best_matching_set-187"><span class="linenos">187</span></a>        <span class="sd">&quot;&quot;&quot;The best matching set among the outcomes.</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-188"><a href="#OutcomeCountGenerator.best_matching_set-188"><span class="linenos">188</span></a>
+</span><span id="OutcomeCountGenerator.best_matching_set-189"><a href="#OutcomeCountGenerator.best_matching_set-189"><span class="linenos">189</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-190"><a href="#OutcomeCountGenerator.best_matching_set-190"><span class="linenos">190</span></a><span class="sd">            A `Die` with outcomes (set_size, outcome).</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-191"><a href="#OutcomeCountGenerator.best_matching_set-191"><span class="linenos">191</span></a><span class="sd">            The greatest single such set is returned.</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-192"><a href="#OutcomeCountGenerator.best_matching_set-192"><span class="linenos">192</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator.best_matching_set-193"><a href="#OutcomeCountGenerator.best_matching_set-193"><span class="linenos">193</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_matching_set_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>The best matching set among the outcomes.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> with outcomes (set_size, outcome).
@@ -7846,16 +7877,16 @@ Or a mapping from outcomes to target counts.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGenerator.best_straight"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.best_straight-185"><a href="#OutcomeCountGenerator.best_straight-185"><span class="linenos">185</span></a>    <span class="k">def</span> <span class="nf">best_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.best_straight-186"><a href="#OutcomeCountGenerator.best_straight-186"><span class="linenos">186</span></a>        <span class="sd">&quot;&quot;&quot;The best straight among the outcomes.</span>
-</span><span id="OutcomeCountGenerator.best_straight-187"><a href="#OutcomeCountGenerator.best_straight-187"><span class="linenos">187</span></a>
-</span><span id="OutcomeCountGenerator.best_straight-188"><a href="#OutcomeCountGenerator.best_straight-188"><span class="linenos">188</span></a><span class="sd">        Outcomes must be `int`s.</span>
-</span><span id="OutcomeCountGenerator.best_straight-189"><a href="#OutcomeCountGenerator.best_straight-189"><span class="linenos">189</span></a>
-</span><span id="OutcomeCountGenerator.best_straight-190"><a href="#OutcomeCountGenerator.best_straight-190"><span class="linenos">190</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator.best_straight-191"><a href="#OutcomeCountGenerator.best_straight-191"><span class="linenos">191</span></a><span class="sd">            A `Die` with outcomes (straight_length, outcome).</span>
-</span><span id="OutcomeCountGenerator.best_straight-192"><a href="#OutcomeCountGenerator.best_straight-192"><span class="linenos">192</span></a><span class="sd">            The greatest single such straight is returned.</span>
-</span><span id="OutcomeCountGenerator.best_straight-193"><a href="#OutcomeCountGenerator.best_straight-193"><span class="linenos">193</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator.best_straight-194"><a href="#OutcomeCountGenerator.best_straight-194"><span class="linenos">194</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_straight_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.best_straight-195"><a href="#OutcomeCountGenerator.best_straight-195"><span class="linenos">195</span></a>    <span class="k">def</span> <span class="nf">best_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.best_straight-196"><a href="#OutcomeCountGenerator.best_straight-196"><span class="linenos">196</span></a>        <span class="sd">&quot;&quot;&quot;The best straight among the outcomes.</span>
+</span><span id="OutcomeCountGenerator.best_straight-197"><a href="#OutcomeCountGenerator.best_straight-197"><span class="linenos">197</span></a>
+</span><span id="OutcomeCountGenerator.best_straight-198"><a href="#OutcomeCountGenerator.best_straight-198"><span class="linenos">198</span></a><span class="sd">        Outcomes must be `int`s.</span>
+</span><span id="OutcomeCountGenerator.best_straight-199"><a href="#OutcomeCountGenerator.best_straight-199"><span class="linenos">199</span></a>
+</span><span id="OutcomeCountGenerator.best_straight-200"><a href="#OutcomeCountGenerator.best_straight-200"><span class="linenos">200</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator.best_straight-201"><a href="#OutcomeCountGenerator.best_straight-201"><span class="linenos">201</span></a><span class="sd">            A `Die` with outcomes (straight_length, outcome).</span>
+</span><span id="OutcomeCountGenerator.best_straight-202"><a href="#OutcomeCountGenerator.best_straight-202"><span class="linenos">202</span></a><span class="sd">            The greatest single such straight is returned.</span>
+</span><span id="OutcomeCountGenerator.best_straight-203"><a href="#OutcomeCountGenerator.best_straight-203"><span class="linenos">203</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator.best_straight-204"><a href="#OutcomeCountGenerator.best_straight-204"><span class="linenos">204</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">best_straight_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -7863,7 +7894,7 @@ Or a mapping from outcomes to target counts.</li>
 
 <p>Outcomes must be <code>int</code>s.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> with outcomes (straight_length, outcome).
@@ -7884,40 +7915,40 @@ Or a mapping from outcomes to target counts.</li>
 
     </div>
     <a class="headerlink" href="#OutcomeCountGenerator.sample"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.sample-198"><a href="#OutcomeCountGenerator.sample-198"><span class="linenos">198</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="OutcomeCountGenerator.sample-199"><a href="#OutcomeCountGenerator.sample-199"><span class="linenos">199</span></a>        <span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A single random sample from this generator.</span>
-</span><span id="OutcomeCountGenerator.sample-200"><a href="#OutcomeCountGenerator.sample-200"><span class="linenos">200</span></a>
-</span><span id="OutcomeCountGenerator.sample-201"><a href="#OutcomeCountGenerator.sample-201"><span class="linenos">201</span></a><span class="sd">        This uses the standard `random` package and is not cryptographically</span>
-</span><span id="OutcomeCountGenerator.sample-202"><a href="#OutcomeCountGenerator.sample-202"><span class="linenos">202</span></a><span class="sd">        secure.</span>
-</span><span id="OutcomeCountGenerator.sample-203"><a href="#OutcomeCountGenerator.sample-203"><span class="linenos">203</span></a>
-</span><span id="OutcomeCountGenerator.sample-204"><a href="#OutcomeCountGenerator.sample-204"><span class="linenos">204</span></a><span class="sd">        Returns:</span>
-</span><span id="OutcomeCountGenerator.sample-205"><a href="#OutcomeCountGenerator.sample-205"><span class="linenos">205</span></a><span class="sd">            A sorted tuple of outcomes for each output of this generator.</span>
-</span><span id="OutcomeCountGenerator.sample-206"><a href="#OutcomeCountGenerator.sample-206"><span class="linenos">206</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="OutcomeCountGenerator.sample-207"><a href="#OutcomeCountGenerator.sample-207"><span class="linenos">207</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-</span><span id="OutcomeCountGenerator.sample-208"><a href="#OutcomeCountGenerator.sample-208"><span class="linenos">208</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot sample from an empty set of outcomes.&#39;</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator.sample-209"><a href="#OutcomeCountGenerator.sample-209"><span class="linenos">209</span></a>
-</span><span id="OutcomeCountGenerator.sample-210"><a href="#OutcomeCountGenerator.sample-210"><span class="linenos">210</span></a>        <span class="n">min_cost</span><span class="p">,</span> <span class="n">max_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_order_costs</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator.sample-211"><a href="#OutcomeCountGenerator.sample-211"><span class="linenos">211</span></a>
-</span><span id="OutcomeCountGenerator.sample-212"><a href="#OutcomeCountGenerator.sample-212"><span class="linenos">212</span></a>        <span class="k">if</span> <span class="n">min_cost</span> <span class="o">&lt;</span> <span class="n">max_cost</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.sample-213"><a href="#OutcomeCountGenerator.sample-213"><span class="linenos">213</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator.sample-214"><a href="#OutcomeCountGenerator.sample-214"><span class="linenos">214</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_min</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator.sample-215"><a href="#OutcomeCountGenerator.sample-215"><span class="linenos">215</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.sample-216"><a href="#OutcomeCountGenerator.sample-216"><span class="linenos">216</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator.sample-217"><a href="#OutcomeCountGenerator.sample-217"><span class="linenos">217</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_max</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator.sample-218"><a href="#OutcomeCountGenerator.sample-218"><span class="linenos">218</span></a>
-</span><span id="OutcomeCountGenerator.sample-219"><a href="#OutcomeCountGenerator.sample-219"><span class="linenos">219</span></a>        <span class="n">cumulative_weights</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="OutcomeCountGenerator.sample-220"><a href="#OutcomeCountGenerator.sample-220"><span class="linenos">220</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">*</span> <span class="n">w</span> <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">generated</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator.sample-221"><a href="#OutcomeCountGenerator.sample-221"><span class="linenos">221</span></a>        <span class="n">denominator</span> <span class="o">=</span> <span class="n">cumulative_weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="OutcomeCountGenerator.sample-222"><a href="#OutcomeCountGenerator.sample-222"><span class="linenos">222</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
-</span><span id="OutcomeCountGenerator.sample-223"><a href="#OutcomeCountGenerator.sample-223"><span class="linenos">223</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator.sample-224"><a href="#OutcomeCountGenerator.sample-224"><span class="linenos">224</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">cumulative_weights</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator.sample-225"><a href="#OutcomeCountGenerator.sample-225"><span class="linenos">225</span></a>        <span class="n">popped_generator</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generated</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</span><span id="OutcomeCountGenerator.sample-226"><a href="#OutcomeCountGenerator.sample-226"><span class="linenos">226</span></a>        <span class="n">head</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">outcome</span><span class="p">,)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
-</span><span id="OutcomeCountGenerator.sample-227"><a href="#OutcomeCountGenerator.sample-227"><span class="linenos">227</span></a>        <span class="k">if</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
-</span><span id="OutcomeCountGenerator.sample-228"><a href="#OutcomeCountGenerator.sample-228"><span class="linenos">228</span></a>            <span class="n">tail</span> <span class="o">=</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-</span><span id="OutcomeCountGenerator.sample-229"><a href="#OutcomeCountGenerator.sample-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">))</span>
-</span><span id="OutcomeCountGenerator.sample-230"><a href="#OutcomeCountGenerator.sample-230"><span class="linenos">230</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="OutcomeCountGenerator.sample-231"><a href="#OutcomeCountGenerator.sample-231"><span class="linenos">231</span></a>            <span class="k">return</span> <span class="n">head</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutcomeCountGenerator.sample-208"><a href="#OutcomeCountGenerator.sample-208"><span class="linenos">208</span></a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="OutcomeCountGenerator.sample-209"><a href="#OutcomeCountGenerator.sample-209"><span class="linenos">209</span></a>        <span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A single random sample from this generator.</span>
+</span><span id="OutcomeCountGenerator.sample-210"><a href="#OutcomeCountGenerator.sample-210"><span class="linenos">210</span></a>
+</span><span id="OutcomeCountGenerator.sample-211"><a href="#OutcomeCountGenerator.sample-211"><span class="linenos">211</span></a><span class="sd">        This uses the standard `random` package and is not cryptographically</span>
+</span><span id="OutcomeCountGenerator.sample-212"><a href="#OutcomeCountGenerator.sample-212"><span class="linenos">212</span></a><span class="sd">        secure.</span>
+</span><span id="OutcomeCountGenerator.sample-213"><a href="#OutcomeCountGenerator.sample-213"><span class="linenos">213</span></a>
+</span><span id="OutcomeCountGenerator.sample-214"><a href="#OutcomeCountGenerator.sample-214"><span class="linenos">214</span></a><span class="sd">        Returns:</span>
+</span><span id="OutcomeCountGenerator.sample-215"><a href="#OutcomeCountGenerator.sample-215"><span class="linenos">215</span></a><span class="sd">            A sorted tuple of outcomes for each output of this generator.</span>
+</span><span id="OutcomeCountGenerator.sample-216"><a href="#OutcomeCountGenerator.sample-216"><span class="linenos">216</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="OutcomeCountGenerator.sample-217"><a href="#OutcomeCountGenerator.sample-217"><span class="linenos">217</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
+</span><span id="OutcomeCountGenerator.sample-218"><a href="#OutcomeCountGenerator.sample-218"><span class="linenos">218</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot sample from an empty set of outcomes.&#39;</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator.sample-219"><a href="#OutcomeCountGenerator.sample-219"><span class="linenos">219</span></a>
+</span><span id="OutcomeCountGenerator.sample-220"><a href="#OutcomeCountGenerator.sample-220"><span class="linenos">220</span></a>        <span class="n">min_cost</span><span class="p">,</span> <span class="n">max_cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_order_costs</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator.sample-221"><a href="#OutcomeCountGenerator.sample-221"><span class="linenos">221</span></a>
+</span><span id="OutcomeCountGenerator.sample-222"><a href="#OutcomeCountGenerator.sample-222"><span class="linenos">222</span></a>        <span class="k">if</span> <span class="n">min_cost</span> <span class="o">&lt;</span> <span class="n">max_cost</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.sample-223"><a href="#OutcomeCountGenerator.sample-223"><span class="linenos">223</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator.sample-224"><a href="#OutcomeCountGenerator.sample-224"><span class="linenos">224</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_min</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator.sample-225"><a href="#OutcomeCountGenerator.sample-225"><span class="linenos">225</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.sample-226"><a href="#OutcomeCountGenerator.sample-226"><span class="linenos">226</span></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator.sample-227"><a href="#OutcomeCountGenerator.sample-227"><span class="linenos">227</span></a>            <span class="n">generated</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate_max</span><span class="p">(</span><span class="n">outcome</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator.sample-228"><a href="#OutcomeCountGenerator.sample-228"><span class="linenos">228</span></a>
+</span><span id="OutcomeCountGenerator.sample-229"><a href="#OutcomeCountGenerator.sample-229"><span class="linenos">229</span></a>        <span class="n">cumulative_weights</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="OutcomeCountGenerator.sample-230"><a href="#OutcomeCountGenerator.sample-230"><span class="linenos">230</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">*</span> <span class="n">w</span> <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">generated</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator.sample-231"><a href="#OutcomeCountGenerator.sample-231"><span class="linenos">231</span></a>        <span class="n">denominator</span> <span class="o">=</span> <span class="n">cumulative_weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="OutcomeCountGenerator.sample-232"><a href="#OutcomeCountGenerator.sample-232"><span class="linenos">232</span></a>        <span class="c1"># We don&#39;t use random.choices since that is based on floats rather than ints.</span>
+</span><span id="OutcomeCountGenerator.sample-233"><a href="#OutcomeCountGenerator.sample-233"><span class="linenos">233</span></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator.sample-234"><a href="#OutcomeCountGenerator.sample-234"><span class="linenos">234</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">cumulative_weights</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator.sample-235"><a href="#OutcomeCountGenerator.sample-235"><span class="linenos">235</span></a>        <span class="n">popped_generator</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generated</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="OutcomeCountGenerator.sample-236"><a href="#OutcomeCountGenerator.sample-236"><span class="linenos">236</span></a>        <span class="n">head</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">outcome</span><span class="p">,)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
+</span><span id="OutcomeCountGenerator.sample-237"><a href="#OutcomeCountGenerator.sample-237"><span class="linenos">237</span></a>        <span class="k">if</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">():</span>
+</span><span id="OutcomeCountGenerator.sample-238"><a href="#OutcomeCountGenerator.sample-238"><span class="linenos">238</span></a>            <span class="n">tail</span> <span class="o">=</span> <span class="n">popped_generator</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</span><span id="OutcomeCountGenerator.sample-239"><a href="#OutcomeCountGenerator.sample-239"><span class="linenos">239</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span><span class="p">))</span>
+</span><span id="OutcomeCountGenerator.sample-240"><a href="#OutcomeCountGenerator.sample-240"><span class="linenos">240</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="OutcomeCountGenerator.sample-241"><a href="#OutcomeCountGenerator.sample-241"><span class="linenos">241</span></a>            <span class="k">return</span> <span class="n">head</span>
 </span></pre></div>
 
 
@@ -7926,7 +7957,7 @@ Or a mapping from outcomes to target counts.</li>
 <p>This uses the standard <code>random</code> package and is not cryptographically
 secure.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A sorted tuple of outcomes for each output of this generator.</p>
@@ -8423,7 +8454,7 @@ secure.</p>
 truncations of each other. For example, d4, d6, d8, d10, d12 are all
 same-side truncations of d12.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><p><strong>dice:</strong>  The dice to put in the <code><a href="#Pool">Pool</a></code>. This can be one of the following:</p>
@@ -8441,7 +8472,7 @@ be put into the pool.
 <code><a href="#Pool.outcomes">outcomes</a></code>.</li>
 </ul></p>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If a bare <code><a href="#Deck">Deck</a></code> or <code><a href="#Die">Die</a></code> argument is provided.
@@ -8737,7 +8768,7 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
         the -1 and 1 cancel each other out.
 </code></pre>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If more than one <code>...</code> is used.</li>
@@ -8826,7 +8857,7 @@ which would be ambiguous in the presence of multiple or negative counts.</p>
 
 <p>The args override any <code><a href="#Pool.sorted_roll_counts">sorted_roll_counts</a></code> of this pool.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>keep:</strong>  The number of lowest dice will be summed.</li>
@@ -8873,7 +8904,7 @@ dice to be summed.</li>
 
 <p>The args override any <code><a href="#Pool.sorted_roll_counts">sorted_roll_counts</a></code> of this pool.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>keep:</strong>  The number of highest dice will be summed.</li>
@@ -8933,7 +8964,7 @@ dice to be summed.</li>
 
             <div class="docstring"><p>A <code><a href="#Pool">Pool</a></code> of standard dice (e.g. d6, d8...).</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>die_sizes:</strong>  A collection of die sizes, which will put one die of that
@@ -9506,7 +9537,7 @@ final outcomes.</p>
 <p>The behavior of returning a <code><a href="#Die">Die</a></code> from <code><a href="#OutcomeCountEvaluator.next_state">next_state</a></code> is currently
 undefined.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>state:</strong>  A hashable object indicating the state before rolling the
@@ -9528,7 +9559,7 @@ To guarantee that outcomes are seen even if they have zero
 count, override <code><a href="#OutcomeCountEvaluator.alignment">alignment()</a></code>.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A hashable object indicating the next state.
@@ -9593,7 +9624,7 @@ and if there are no outcomes, the final state will be <code>None</code>.
 Subclasses that want to handle this case should explicitly define what
 happens.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
@@ -9603,7 +9634,7 @@ can replace this variadic parameter with a fixed number of named
 parameters.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A final outcome that will be used as part of constructing the result <code><a href="#Die">Die</a></code>.
@@ -9663,7 +9694,7 @@ set of parameters.</p>
 <p>The default is ascending order. This works well with mixed standard dice,
 and other dice that differ only by right-truncation.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*generators:</strong>  One or more <code><a href="#OutcomeCountGenerator">OutcomeCountGenerator</a></code>s being evaluated.
@@ -9672,15 +9703,15 @@ can replace this variadic parameter with a fixed number of named
 parameters.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <ul>
-  <li>Order.Ascending (= 1)
+  <li><a href="#Order.Ascending">Order.Ascending</a> (= 1)
   if <code><a href="#OutcomeCountEvaluator.next_state">next_state()</a></code> should always see the outcomes in ascending order.</li>
-  <li>Order.Descending (= -1)
+  <li><a href="#Order.Descending">Order.Descending</a> (= -1)
   if <code><a href="#OutcomeCountEvaluator.next_state">next_state()</a></code> should always see the outcomes in descending order.</li>
-  <li>Order.Any (= 0)
+  <li><a href="#Order.Any">Order.Any</a> (= 0)
   if the result of the evaluation is order-independent.</li>
   </ul>
 </blockquote>
@@ -9792,14 +9823,14 @@ set of parameters.</p>
 
 <p>Set <code>alignment = <a href="#OutcomeCountEvaluator.range_alignment">icepool.OutcomeCountEvaluator.range_alignment</a></code> to use this.</p>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>All <code>int</code>s from the min outcome to the max outcome among the generators,
   inclusive.</p>
 </blockquote>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>TypeError:</strong>  if any generator has any non-<code>int</code> outcome.</li>
@@ -9909,7 +9940,7 @@ e.g. <code>sum_evaluator(generator)</code> is an alias for <code>sum_evaluator.e
 <p>Most evaluators will expect a fixed number of generators.
 The union of the outcomes of the generator(s) must be totally orderable.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*generators:</strong>  Each element may be one of the following:
@@ -9920,7 +9951,7 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </ul></li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A <code><a href="#Die">Die</a></code> representing the distribution of the final score.</p>
@@ -9988,6 +10019,39 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </div>
 
 
+                            <div id="Order.Ascending" class="classattr">
+                                <div class="attr variable">
+            <span class="name">Ascending</span><span class="default_value"> = &lt;<a href="#Order.Ascending">Order.Ascending</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Order.Ascending"></a>
+    
+    
+
+                            </div>
+                            <div id="Order.Descending" class="classattr">
+                                <div class="attr variable">
+            <span class="name">Descending</span><span class="default_value"> = &lt;<a href="#Order.Descending">Order.Descending</a>: -1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Order.Descending"></a>
+    
+    
+
+                            </div>
+                            <div id="Order.Any" class="classattr">
+                                <div class="attr variable">
+            <span class="name">Any</span><span class="default_value"> = &lt;<a href="#Order.Any">Order.Any</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Order.Any"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -10203,7 +10267,7 @@ provided as a convenience.</p>
 
             <div class="docstring"><p>Determines the common order of the subevals.</p>
 
-<h6 id="raises">Raises</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
 <li><strong>ValueError:</strong>  If subevals have conflicting orders, i.e. some are
@@ -10332,7 +10396,7 @@ and if there are no outcomes, the final state will be <code>None</code>.
 Subclasses that want to handle this case should explicitly define what
 happens.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
@@ -10342,7 +10406,7 @@ can replace this variadic parameter with a fixed number of named
 parameters.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <p>A final outcome that will be used as part of constructing the result <code><a href="#Die">Die</a></code>.
@@ -10378,7 +10442,7 @@ set of parameters.</p>
 <p>The default is ascending order. This works well with mixed standard dice,
 and other dice that differ only by right-truncation.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>*generators:</strong>  One or more <code><a href="#OutcomeCountGenerator">OutcomeCountGenerator</a></code>s being evaluated.
@@ -10387,15 +10451,15 @@ can replace this variadic parameter with a fixed number of named
 parameters.</li>
 </ul>
 
-<h6 id="returns">Returns</h6>
+<h6 id="returns">Returns:</h6>
 
 <blockquote>
   <ul>
-  <li>Order.Ascending (= 1)
+  <li><a href="#Order.Ascending">Order.Ascending</a> (= 1)
   if <code><a href="#SumEvaluator.next_state">next_state()</a></code> should always see the outcomes in ascending order.</li>
-  <li>Order.Descending (= -1)
+  <li><a href="#Order.Descending">Order.Descending</a> (= -1)
   if <code><a href="#SumEvaluator.next_state">next_state()</a></code> should always see the outcomes in descending order.</li>
-  <li>Order.Any (= 0)
+  <li><a href="#Order.Any">Order.Any</a> (= 0)
   if the result of the evaluation is order-independent.</li>
   </ul>
 </blockquote>
@@ -10649,7 +10713,7 @@ parameters.</li>
 
             <div class="docstring"><p>Constructor for a <code><a href="#Deck">Deck</a></code>.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><p><strong>outcomes:</strong>  The cards of the <code><a href="#Deck">Deck</a></code>. This can be one of the following:</p>
@@ -11059,7 +11123,7 @@ use <code>len()</code>.</p>
 <p>For algorithmic reasons, you must pre-commit to the number of cards to
 deal for each hand.</p>
 
-<h6 id="args">Args</h6>
+<h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>deck:</strong>  The <code><a href="#Deck">Deck</a></code> to deal from.</li>
