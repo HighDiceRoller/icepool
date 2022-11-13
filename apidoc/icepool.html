@@ -6956,10 +6956,10 @@ constructor for each yielded result.</li>
 </span><span id="apply-281"><a href="#apply-281"><span class="linenos">281</span></a><span class="sd">    Args:</span>
 </span><span id="apply-282"><a href="#apply-282"><span class="linenos">282</span></a><span class="sd">        func: A function that takes one argument per input `Die` and returns an</span>
 </span><span id="apply-283"><a href="#apply-283"><span class="linenos">283</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply-284"><a href="#apply-284"><span class="linenos">284</span></a><span class="sd">        *dice: Any number of dice (or objects convertible to dice).</span>
-</span><span id="apply-285"><a href="#apply-285"><span class="linenos">285</span></a><span class="sd">            `func` will be called with all joint outcomes of `dice`, with one</span>
-</span><span id="apply-286"><a href="#apply-286"><span class="linenos">286</span></a><span class="sd">            argument per `Die`.</span>
-</span><span id="apply-287"><a href="#apply-287"><span class="linenos">287</span></a><span class="sd">        **kwargs: Any extra keyword arguments are forwarded to the die</span>
+</span><span id="apply-284"><a href="#apply-284"><span class="linenos">284</span></a><span class="sd">        *dice: Any number of dice. `func` will be called with all joint outcomes</span>
+</span><span id="apply-285"><a href="#apply-285"><span class="linenos">285</span></a><span class="sd">            of `dice`, with one argument per `Die`.</span>
+</span><span id="apply-286"><a href="#apply-286"><span class="linenos">286</span></a><span class="sd">            Non-dice will be left as-is.</span>
+</span><span id="apply-287"><a href="#apply-287"><span class="linenos">287</span></a><span class="sd">        **kwargs: Any extra keyword arguments are forwarded to the `Die`</span>
 </span><span id="apply-288"><a href="#apply-288"><span class="linenos">288</span></a><span class="sd">            constructor for the final result.</span>
 </span><span id="apply-289"><a href="#apply-289"><span class="linenos">289</span></a>
 </span><span id="apply-290"><a href="#apply-290"><span class="linenos">290</span></a><span class="sd">    Returns:</span>
@@ -7007,10 +7007,10 @@ but is still more efficient than <code><a href="#apply">apply()</a></code>.</li>
 <ul>
 <li><strong>func:</strong>  A function that takes one argument per input <code><a href="#Die">Die</a></code> and returns an
 argument to <code><a href="#Die">Die()</a></code>.</li>
-<li><strong>*dice:</strong>  Any number of dice (or objects convertible to dice).
-<code>func</code> will be called with all joint outcomes of <code>dice</code>, with one
-argument per <code><a href="#Die">Die</a></code>.</li>
-<li><strong>**kwargs:</strong>  Any extra keyword arguments are forwarded to the die
+<li><strong>*dice:</strong>  Any number of dice. <code>func</code> will be called with all joint outcomes
+of <code>dice</code>, with one argument per <code><a href="#Die">Die</a></code>.
+Non-dice will be left as-is.</li>
+<li><strong>**kwargs:</strong>  Any extra keyword arguments are forwarded to the <code><a href="#Die">Die</a></code>
 constructor for the final result.</li>
 </ul>
 
@@ -7073,7 +7073,7 @@ constructor for the final result.</li>
 </span><span id="apply_sorted-346"><a href="#apply_sorted-346"><span class="linenos">346</span></a>                <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
 </span><span id="apply_sorted-347"><a href="#apply_sorted-347"><span class="linenos">347</span></a>            <span class="p">)</span>
 </span><span id="apply_sorted-348"><a href="#apply_sorted-348"><span class="linenos">348</span></a>        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="apply_sorted-349"><a href="#apply_sorted-349"><span class="linenos">349</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expand_evaluator</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="apply_sorted-349"><a href="#apply_sorted-349"><span class="linenos">349</span></a>        <span class="k">return</span> <span class="n">pool</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span id="apply_sorted-350"><a href="#apply_sorted-350"><span class="linenos">350</span></a>
 </span><span id="apply_sorted-351"><a href="#apply_sorted-351"><span class="linenos">351</span></a>    <span class="k">def</span> <span class="nf">__class_getitem__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
 </span><span id="apply_sorted-352"><a href="#apply_sorted-352"><span class="linenos">352</span></a>                          <span class="n">sorted_roll_counts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">slice</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
@@ -7096,11 +7096,9 @@ constructor for the final result.</li>
 </span><span id="apply_sorted-369"><a href="#apply_sorted-369"><span class="linenos">369</span></a>                        <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
 </span><span id="apply_sorted-370"><a href="#apply_sorted-370"><span class="linenos">370</span></a>                    <span class="p">)</span>
 </span><span id="apply_sorted-371"><a href="#apply_sorted-371"><span class="linenos">371</span></a>                <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">dice</span><span class="p">)[</span><span class="n">sorted_roll_counts</span><span class="p">]</span>
-</span><span id="apply_sorted-372"><a href="#apply_sorted-372"><span class="linenos">372</span></a>                <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expand_evaluator</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span>
-</span><span id="apply_sorted-373"><a href="#apply_sorted-373"><span class="linenos">373</span></a>                                                          <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="apply_sorted-374"><a href="#apply_sorted-374"><span class="linenos">374</span></a>                                                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="apply_sorted-375"><a href="#apply_sorted-375"><span class="linenos">375</span></a>
-</span><span id="apply_sorted-376"><a href="#apply_sorted-376"><span class="linenos">376</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="apply_sorted-372"><a href="#apply_sorted-372"><span class="linenos">372</span></a>                <span class="k">return</span> <span class="n">pool</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="apply_sorted-373"><a href="#apply_sorted-373"><span class="linenos">373</span></a>
+</span><span id="apply_sorted-374"><a href="#apply_sorted-374"><span class="linenos">374</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -7152,7 +7150,7 @@ constructor for the final result.</li>
 </span><span id="apply_sorted.__init__-346"><a href="#apply_sorted.__init__-346"><span class="linenos">346</span></a>                <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
 </span><span id="apply_sorted.__init__-347"><a href="#apply_sorted.__init__-347"><span class="linenos">347</span></a>            <span class="p">)</span>
 </span><span id="apply_sorted.__init__-348"><a href="#apply_sorted.__init__-348"><span class="linenos">348</span></a>        <span class="n">pool</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="apply_sorted.__init__-349"><a href="#apply_sorted.__init__-349"><span class="linenos">349</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expand_evaluator</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="apply_sorted.__init__-349"><a href="#apply_sorted.__init__-349"><span class="linenos">349</span></a>        <span class="k">return</span> <span class="n">pool</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
