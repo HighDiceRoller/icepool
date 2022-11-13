@@ -210,14 +210,14 @@ choices = [
 
 # Wallpaper.
 bleed = 0
-width = 16 + 2 * bleed
-height = 9 + 2 * bleed
+width = 12 + 2 * bleed
+height = 4 + 2 * bleed
 
 row_height = sqrt(3) / 2
-stroke_color = svgwrite.rgb(234, 248, 255)
+stroke_color = svgwrite.rgb(217, 238, 252)  # svgwrite.rgb(234, 248, 255)
 stroke_width = 1.0
 
-draw = svgwrite.Drawing('misc/dice_slides_wallpaper.svg',
+draw = svgwrite.Drawing('misc/dice_twitter_wallpaper.svg',
                         size=(width * 25.4, height * 25.4),
                         profile='tiny')
 

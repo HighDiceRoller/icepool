@@ -146,31 +146,41 @@ class OutcomeCountGenerator(ABC):
         """The number of outcomes that are in the target."""
         return icepool.CountInEvaluator(target).evaluate(self)
 
-    def contains_subset(self, target: Collection | Mapping[Any, int],
-                        /) -> 'icepool.Die':
-        """Whether the outcomes contain the target subset.
+    def contains_subset(self,
+                        targets: Collection | Mapping[Any, int],
+                        /,
+                        *,
+                        wilds: Collection = ()) -> 'icepool.Die':
+        """Whether the outcomes contain all of the targets.
 
-        Elements in the target may be repeated.
+        The targets may contain duplicate elements.
 
         Args:
-            target: Either a collection of outcomes, counting once per appearance.
+            targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
+            wilds: A collection of outcomes that will be treated as wilds.
         """
-        return icepool.ContainsSubsetEvaluator(target).evaluate(self)
+        return icepool.ContainsSubsetEvaluator(targets,
+                                               wilds=wilds).evaluate(self)
 
-    def intersection_size(self, target: Collection | Mapping[Any, int],
-                          /) -> 'icepool.Die':
-        """The size of the intersection of the outcomes and the target subset.
+    def intersection_size(self,
+                          targets: Collection | Mapping[Any, int],
+                          /,
+                          *,
+                          wilds: Collection = ()) -> 'icepool.Die':
+        """The size of the intersection of the outcomes and the targets.
 
-        Elements in the target may be repeated.
+        The targets may contain duplicate elements.
 
         E.g. a roll of 1, 2, 2 and a target of 1, 1, 2, 3 would result in 2.
 
         Args:
-            target: Either a collection of outcomes, counting once per appearance.
+            targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
+            wilds: A collection of outcomes that will be treated as wilds.
         """
-        return icepool.IntersectionSizeEvaluator(target).evaluate(self)
+        return icepool.IntersectionSizeEvaluator(targets,
+                                                 wilds=wilds).evaluate(self)
 
     def best_matching_set(self) -> 'icepool.Die':
         """The best matching set among the outcomes.

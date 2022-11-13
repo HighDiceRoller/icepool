@@ -148,57 +148,56 @@ class CountInEvaluator(OutcomeCountEvaluator):
 class SubsetTargetEvaluator(OutcomeCountEvaluator):
     """Base class for evaluators that look for a subset (possibly with repeated elements)."""
 
-    def __init__(self, target: Collection | Mapping[Any, int], /):
+    def __init__(self,
+                 targets: Collection | Mapping[Any, int],
+                 /,
+                 *,
+                 wilds: Collection = ()):
         """
         Args:
-            target: Either a collection of outcomes, possibly with repeated elements.
+            targets: Either a collection of outcomes, possibly with repeated elements.
                 Or a mapping from outcomes to counts.
+            wilds: A collection of outcomes to treat as wilds.
         """
-        if isinstance(target, Mapping):
-            self._target = target
+        if isinstance(targets, Mapping):
+            self._targets = targets
         else:
-            self._target = defaultdict(int)
-            for outcome in target:
-                self._target[outcome] += 1
+            self._targets = defaultdict(int)
+            for outcome in targets:
+                self._targets[outcome] += 1
+        self._wilds = frozenset(wilds)
+
+    def next_state(self, state, outcome, count):
+        # The state is the number of extra wilds.
+        # If positive, all targets were hit and there were wilds left over.
+        # If zero, the number of wilds was exactly enough to hit the targets.
+        # If negative, that number of targets are left after wilds.
+        state = state or 0
+        if outcome in self._wilds:
+            state -= self._targets.get(outcome, 0) - count
+        else:
+            state -= max(self._targets.get(outcome, 0) - count, 0)
+        return state
 
     def order(self, *_):
         return Order.Any
 
     def alignment(self, *_) -> Collection:
-        return self._target.keys()
+        return set(self._targets.keys()) | self._wilds
 
 
 class ContainsSubsetEvaluator(SubsetTargetEvaluator):
     """Whether the target is a subset of the generator."""
 
-    def next_state(self, state, outcome, count):
-        if state is None:
-            state = True
-        if self._target.get(outcome, 0) > count:
-            state = False
-        return state
-
     def final_outcome(self, final_state, *_):
-        if final_state is None:
-            return True
-        else:
-            return final_state
+        return (final_state or 0) >= 0
 
 
 class IntersectionSizeEvaluator(SubsetTargetEvaluator):
     """How many elements overlap between the generator and the target."""
 
-    def next_state(self, state, outcome, count):
-        if state is None:
-            state = 0
-        state += min(self._target.get(outcome, 0), count)
-        return state
-
     def final_outcome(self, final_state, *_):
-        if final_state is None:
-            return 0
-        else:
-            return final_state
+        return sum(self._targets.values()) + min(final_state, 0)
 
 
 class BestMatchingSetEvaluator(OutcomeCountEvaluator):
