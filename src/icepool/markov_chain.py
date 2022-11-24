@@ -72,15 +72,14 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
 
     # outcome -> Die representing the next distribution
     transients: MutableMapping[Any, icepool.Die] = {}
-    absorbing_states = set()
 
     frontier = list(die.outcomes())
     while frontier:
         outcome = frontier.pop()
         next_outcome = func(outcome)
         if _is_absorbing(outcome, next_outcome):
-            absorbing_states.add(next_outcome)
-        elif outcome not in transients:
+            continue
+        if outcome not in transients:
             transients[outcome] = icepool.Die([next_outcome]).simplify()
             frontier += list(next_outcome.outcomes())
 
@@ -107,12 +106,15 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
         transient_solve[src_index][Exit] = die.quantity(src)
 
     # Normalize absorption matrix.
+    # Why does this seem to be superfluous?
+    """
     absorption_denominator = math.lcm(
         *(transition.denominator() for transition, absorption_row in zip(
             transients.values(), absorption_matrix) if len(absorption_row) > 0))
     for i, transition in enumerate(transients.values()):
         absorption_matrix[
             i] *= absorption_denominator // transition.denominator()
+    """
 
     # Solve the matrix using Gaussian elimination.
 
