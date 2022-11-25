@@ -17,11 +17,15 @@ particular state."""
 
 
 class SparseVector(MutableMapping[Any, int]):
+    """Internal helper class for representing vectors as a sparse mapping.
+
+    Unlike public objects, this class is mutable.
+    """
 
     def __init__(self):
         self._data = {}
 
-    def __setitem__(self, key, value: int) -> None:
+    def __setitem__(self, key, value: int):
         if value == 0:
             if key in self._data:
                 del self._data[key]
@@ -56,6 +60,7 @@ class SparseVector(MutableMapping[Any, int]):
         return result
 
     def simplify(self):
+        """Simplifies this vector (using mutation)."""
         divisor = math.gcd(*self.values())
         for k in self:
             self[k] //= divisor
@@ -64,7 +69,7 @@ class SparseVector(MutableMapping[Any, int]):
         return str(self._data)
 
 
-def _is_absorbing(outcome, next_outcome) -> bool:
+def is_absorbing(outcome, next_outcome) -> bool:
     if outcome == next_outcome:
         return True
     if isinstance(next_outcome, icepool.Die) and next_outcome.quantity(
@@ -96,7 +101,7 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     while frontier:
         outcome = frontier.pop()
         next_outcome = func(outcome)
-        if _is_absorbing(outcome, next_outcome):
+        if is_absorbing(outcome, next_outcome):
             continue
         if outcome not in transients:
             transients[outcome] = icepool.Die([next_outcome]).simplify()
