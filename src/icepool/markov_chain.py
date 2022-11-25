@@ -105,17 +105,6 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
     for src_index, src in enumerate(transients.keys()):
         transient_solve[src_index][Exit] = die.quantity(src)
 
-    # Normalize absorption matrix.
-    # Why does this seem to be superfluous?
-    """
-    absorption_denominator = math.lcm(
-        *(transition.denominator() for transition, absorption_row in zip(
-            transients.values(), absorption_matrix) if len(absorption_row) > 0))
-    for i, transition in enumerate(transients.values()):
-        absorption_matrix[
-            i] *= absorption_denominator // transition.denominator()
-    """
-
     # Solve the matrix using Gaussian elimination.
 
     # Put into upper triangular form.
