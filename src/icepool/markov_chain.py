@@ -100,7 +100,7 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     frontier = list(die.outcomes())
     while frontier:
         outcome = frontier.pop()
-        next_outcome = func(outcome)
+        next_outcome = icepool.Die([func(outcome)])
         if is_absorbing(outcome, next_outcome):
             continue
         if outcome not in transients:
@@ -119,19 +119,19 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     }
 
     # [dst_index][src]
-    transient_solve = [SparseVector() for _ in transients.keys()]
+    fundamental_solve = [SparseVector() for _ in transients.keys()]
     # [src_index][absorbing state]
     absorption_matrix = [SparseVector() for _ in transients.keys()]
     for src_index, (src, transition) in enumerate(transients.items()):
-        transient_solve[src_index][src] += transition.denominator()
+        fundamental_solve[src_index][src] += transition.denominator()
         for dst, quantity in transition.items():
             if dst in transients:
                 dst_index = outcome_to_index[dst]
-                transient_solve[dst_index][src] -= quantity
+                fundamental_solve[dst_index][src] -= quantity
             else:
                 absorption_matrix[src_index][dst] = quantity
     for src_index, src in enumerate(transients.keys()):
-        transient_solve[src_index][Visit] = die.quantity(src)
+        fundamental_solve[src_index][Visit] = die.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
 
@@ -140,11 +140,11 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     for pivot_index, pivot in enumerate(transients.keys()):
         pivot_row = None
         for i in range(pivot_index, t):
-            row = transient_solve[i]
+            row = fundamental_solve[i]
             if row[pivot] != 0:
-                pivot_row = transient_solve[i]
-                transient_solve[i] = transient_solve[pivot_index]
-                transient_solve[pivot_index] = pivot_row
+                pivot_row = fundamental_solve[i]
+                fundamental_solve[i] = fundamental_solve[pivot_index]
+                fundamental_solve[pivot_index] = pivot_row
                 break
         else:
             raise ValueError(
@@ -152,29 +152,35 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
             )
 
         for i in range(pivot_index + 1, t):
-            transient_solve[i] = transient_solve[i] * pivot_row[
-                pivot] - pivot_row * transient_solve[i][pivot]
-            transient_solve[i].simplify()
+            fundamental_solve[i] = fundamental_solve[i] * pivot_row[
+                pivot] - pivot_row * fundamental_solve[i][pivot]
+            fundamental_solve[i].simplify()
 
     # Solve for the exit variables.
     for pivot_index, pivot in reversed(list(enumerate(transients.keys()))):
-        pivot_row = transient_solve[pivot_index]
+        pivot_row = fundamental_solve[pivot_index]
         for i in range(pivot_index):
-            transient_solve[i] = transient_solve[i] * pivot_row[
-                pivot] - pivot_row * transient_solve[i][pivot]
-            transient_solve[i].simplify()
+            fundamental_solve[i] = fundamental_solve[i] * pivot_row[
+                pivot] - pivot_row * fundamental_solve[i][pivot]
+            fundamental_solve[i].simplify()
+
+    mean_absorption_time = 0.0
 
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
             zip(transients.keys(), absorption_matrix)):
-        n = transient_solve[pivot_index][Visit]
+        n = fundamental_solve[pivot_index][Visit]
         if n == 0:
             continue
-        if len(absorption_row) == 0:
-            continue
+        d = fundamental_solve[pivot_index][pivot]
 
-        d = transient_solve[pivot_index][pivot]
-        results[pivot] = (n * absorption_row, d)
+        # TODO: Is this right?
+        mean_absorption_time += n / d * transients[pivot].denominator()
+
+        if len(absorption_row) > 0:
+            results[pivot] = (n * absorption_row, d)
+
+    # print(mean_absorption_time)
 
     results_denominator = math.lcm(*(d for _, d in results.values()))
     normalized_results: MutableMapping[Any, int] = defaultdict(int)

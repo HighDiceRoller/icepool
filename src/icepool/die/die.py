@@ -553,7 +553,6 @@ class Die(Population):
     def sub(self,
             repl: Callable | Mapping,
             /,
-            *extra_dice,
             repeat: int | None = 1,
             star: int = 0,
             **kwargs) -> 'Die':
@@ -574,10 +573,6 @@ class Die(Population):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            *extra_dice: Outcomes from these will be supplied to `repl` as extra
-                positional arguments after the outcome argument(s). `extra_dice`
-                can only be supplied if `repl` is callable. The `extra_dice`
-                will be rerolled at every iteration.
             repeat: `sub()` will be repeated with the same argument on the
                 result this many times.
 
@@ -597,10 +592,6 @@ class Die(Population):
         Raises:
             ValueError: if `extra_args` are supplied with a non-callable `repl`.
         """
-        if extra_dice and not callable(repl):
-            raise ValueError(
-                'extra_dice may only be supplied if the first argument is callable.'
-            )
 
         if repeat == 0:
             return self
@@ -610,11 +601,11 @@ class Die(Population):
             if star:
 
                 def transition_function(outcome):
-                    return icepool.apply(repl, *outcome, *extra_dice, **kwargs)
+                    return repl(*outcome)
             else:
 
                 def transition_function(outcome):
-                    return icepool.apply(repl, outcome, *extra_dice, **kwargs)
+                    return repl(outcome)
         else:
             # repl is a mapping.
             def transition_function(outcome):
@@ -626,7 +617,7 @@ class Die(Population):
         if repeat is not None:
             result = self
             for _ in range(repeat):
-                result = icepool.apply(transition_function, result)
+                result = icepool.apply(transition_function, result, **kwargs)
             return result
         else:
             # Infinite repeat.
