@@ -78,7 +78,6 @@ def test_sub_fixed_point():
     assert result.equals(expected)
 
 
-@pytest.mark.skip(reason="pending re-implementation")
 def test_sub_fixed_point_1_cycle():
 
     def repl(outcome):
@@ -88,6 +87,28 @@ def test_sub_fixed_point_1_cycle():
 
     result = icepool.Die([0]).sub(repl, repeat=None).simplify()
     assert result.equals(icepool.Die([10]))
+
+
+def test_random_walk():
+
+    def repl(x):
+        if abs(x) >= 2:
+            return x
+        return icepool.Die([x - 1, x + 1])
+
+    result = icepool.Die([0]).sub(repl, repeat=None).simplify()
+    assert result.equals(icepool.Die([-2, 2]))
+
+
+def test_random_walk_biased():
+
+    def repl(x):
+        if abs(x) >= 2:
+            return x
+        return icepool.Die([x - 1, x + 1], times=[1, 2])
+
+    result = icepool.Die([0]).sub(repl, repeat=None).simplify()
+    assert result.equals(icepool.Die([-2, 2], times=[1, 4]))
 
 
 def test_sub_extra_args():

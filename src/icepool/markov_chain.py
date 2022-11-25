@@ -1,15 +1,22 @@
 import icepool
 
+import enum
 import math
 from collections import defaultdict
 
 from typing import Any, Callable, MutableMapping
 
-Exit = object()
-"""Special value for indicating an exit from the Markov chain."""
+
+class SpecialValue(enum.Enum):
+    Visit = 'Visit'
 
 
-class SparseRow(MutableMapping[Any, int]):
+Visit = SpecialValue.Visit
+"""Special value for indicating the numerator of the number of visits to a
+particular state."""
+
+
+class SparseVector(MutableMapping[Any, int]):
 
     def __init__(self):
         self._data = {}
@@ -33,16 +40,16 @@ class SparseRow(MutableMapping[Any, int]):
     def __iter__(self):
         return iter(self._data)
 
-    def __mul__(self, n: int) -> 'SparseRow':
-        result = SparseRow()
+    def __mul__(self, n: int) -> 'SparseVector':
+        result = SparseVector()
         result._data = {k: v * n for k, v in self.items()}
         return result
 
-    def __rmul__(self, n: int) -> 'SparseRow':
+    def __rmul__(self, n: int) -> 'SparseVector':
         return self.__mul__(n)
 
-    def __sub__(self, other: 'SparseRow') -> 'SparseRow':
-        result = SparseRow()
+    def __sub__(self, other: 'SparseVector') -> 'SparseVector':
+        result = SparseVector()
         result._data = self._data.copy()
         for k, v in other.items():
             result[k] -= v
@@ -66,7 +73,19 @@ def _is_absorbing(outcome, next_outcome) -> bool:
     return False
 
 
-def absorbing_markov_chain(die: icepool.Die, func: Callable):
+def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
+    """Computes the absorption distribution of an absorbing Markov chain.
+
+    Zero-weight outcomes will not be preserved.
+
+    Args:
+        die: A die representing the initial state.
+        func: A transition function. Any state that leads only to itself will
+            be considered absorbing.
+
+    Returns:
+        A `Die` in simplest form reprensenting the absorption distribution.
+    """
 
     # Find all reachable states.
 
@@ -86,14 +105,18 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
     # Create the transient matrix to be solved.
     t = len(transients)
 
+    if t == 0:
+        # No transients; everything is absorbed immediately.
+        return die.simplify()
+
     outcome_to_index = {
         outcome: i for i, outcome in enumerate(transients.keys())
     }
 
     # [dst_index][src]
-    transient_solve = [SparseRow() for _ in transients.keys()]
+    transient_solve = [SparseVector() for _ in transients.keys()]
     # [src_index][absorbing state]
-    absorption_matrix = [SparseRow() for _ in transients.keys()]
+    absorption_matrix = [SparseVector() for _ in transients.keys()]
     for src_index, (src, transition) in enumerate(transients.items()):
         transient_solve[src_index][src] += transition.denominator()
         for dst, quantity in transition.items():
@@ -103,7 +126,7 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
             else:
                 absorption_matrix[src_index][dst] = quantity
     for src_index, src in enumerate(transients.keys()):
-        transient_solve[src_index][Exit] = die.quantity(src)
+        transient_solve[src_index][Visit] = die.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
 
@@ -119,7 +142,9 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
                 transient_solve[pivot_index] = pivot_row
                 break
         else:
-            raise RuntimeError('Matrix has deficient rank.')
+            raise ValueError(
+                'Matrix has deficient rank. This likely indicates that the Markov process has a chance of not terminating.'
+            )
 
         for i in range(pivot_index + 1, t):
             transient_solve[i] = transient_solve[i] * pivot_row[
@@ -137,7 +162,7 @@ def absorbing_markov_chain(die: icepool.Die, func: Callable):
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
             zip(transients.keys(), absorption_matrix)):
-        n = transient_solve[pivot_index][Exit]
+        n = transient_solve[pivot_index][Visit]
         if n == 0:
             continue
         if len(absorption_row) == 0:

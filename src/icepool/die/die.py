@@ -4,6 +4,7 @@ import icepool
 import icepool.again
 import icepool.format
 import icepool.creation_args
+import icepool.markov_chain
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.population import Population
@@ -550,7 +551,7 @@ class Die(Population):
     # Mixtures.
 
     def sub(self,
-            repl: Callable[[Any], Any] | Mapping,
+            repl: Callable | Mapping,
             /,
             *extra_dice,
             repeat: int | None = 1,
@@ -576,12 +577,12 @@ class Die(Population):
             *extra_dice: Outcomes from these will be supplied to `repl` as extra
                 positional arguments after the outcome argument(s). `extra_dice`
                 can only be supplied if `repl` is callable.
-            repeat: EXPERIMENTAL: `sub()` will be repeated with the same
-                argument on the result this many times.
+            repeat: `sub()` will be repeated with the same argument on the
+                result this many times.
 
-                If set to `None`, this will repeat until reaching a fixed point.
-                I'm still working out if / how I want to compute the more
-                general case.
+                EXPERIMENTAL: If set to `None`, the result will be as if `sub()`
+                    were repeated an infinite number of times. In this case, the
+                    result will be in simplest form.
             star: If set to `True` or 1, outcomes of `self` will be unpacked as
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
@@ -630,16 +631,33 @@ class Die(Population):
                             star=star,
                             **kwargs)
         else:
-            prev = self
-            curr = prev.sub(repl, repeat=1, *extra_dice, star=star, **kwargs)
-            while not curr.equals(prev, simplify=True):
-                prev = curr
-                curr = prev.sub(repl,
-                                repeat=1,
-                                *extra_dice,
-                                star=star,
-                                **kwargs)
-            return curr
+            # repeat is None
+            if callable(repl):
+                if star:
+
+                    def repl2(outcome):
+                        return icepool.apply(repl, *outcome, *extra_dice,
+                                             **kwargs)
+                else:
+
+                    def repl2(outcome):
+                        return icepool.apply(repl, outcome, *extra_dice,
+                                             **kwargs)
+
+            else:
+                # Mapping.
+                if extra_dice:
+                    raise ValueError(
+                        'extra_dice may only be supplied to sub() if the first argument is a function.'
+                    )
+
+                def repl2(outcome):
+                    if outcome in repl:
+                        return repl[outcome]
+                    else:
+                        return outcome
+
+            return icepool.markov_chain.absorbing_markov_chain(self, repl2)
 
     def explode(self,
                 outcomes: Container | Callable[..., bool] | None = None,
