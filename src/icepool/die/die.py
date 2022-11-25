@@ -576,7 +576,8 @@ class Die(Population):
                 The special value `icepool.Reroll` will reroll that old outcome.
             *extra_dice: Outcomes from these will be supplied to `repl` as extra
                 positional arguments after the outcome argument(s). `extra_dice`
-                can only be supplied if `repl` is callable.
+                can only be supplied if `repl` is callable. The `extra_dice`
+                will be rerolled at every iteration.
             repeat: `sub()` will be repeated with the same argument on the
                 result this many times.
 
@@ -598,66 +599,39 @@ class Die(Population):
         """
         if extra_dice and not callable(repl):
             raise ValueError(
-                'Extra positional arguments are only valid if repl is callable.'
+                'extra_dice may only be supplied if the first argument is callable.'
             )
 
         if repeat == 0:
             return self
-        elif repeat == 1:
-            if callable(repl):
-                if star:
 
-                    def starred(self_outcome, *extra_outcomes):
-                        return repl(*self_outcome, *extra_outcomes)
+        # Convert to a single-argument function.
+        if callable(repl):
+            if star:
 
-                    return icepool.apply(starred, self, *extra_dice, **kwargs)
-                else:
-                    return icepool.apply(repl, self, *extra_dice, **kwargs)
+                def transition_function(outcome):
+                    return icepool.apply(repl, *outcome, *extra_dice, **kwargs)
             else:
-                # Mapping.
-                if extra_dice:
-                    raise ValueError(
-                        'extra_dice may only be supplied to sub() if the first argument is a function.'
-                    )
-                repl_list = [(repl[outcome] if outcome in repl else outcome)
-                             for outcome in self.outcomes()]
-                return icepool.Die(repl_list, self.quantities(), **kwargs)
 
-        elif repeat is not None:
-            next = self.sub(repl, repeat=1, *extra_dice, star=star, **kwargs)
-            return next.sub(repl,
-                            repeat=repeat - 1,
-                            *extra_dice,
-                            star=star,
-                            **kwargs)
+                def transition_function(outcome):
+                    return icepool.apply(repl, outcome, *extra_dice, **kwargs)
         else:
-            # repeat is None
-            if callable(repl):
-                if star:
-
-                    def repl2(outcome):
-                        return icepool.apply(repl, *outcome, *extra_dice,
-                                             **kwargs)
+            # repl is a mapping.
+            def transition_function(outcome):
+                if outcome in repl:
+                    return repl[outcome]
                 else:
+                    return outcome
 
-                    def repl2(outcome):
-                        return icepool.apply(repl, outcome, *extra_dice,
-                                             **kwargs)
-
-            else:
-                # Mapping.
-                if extra_dice:
-                    raise ValueError(
-                        'extra_dice may only be supplied to sub() if the first argument is a function.'
-                    )
-
-                def repl2(outcome):
-                    if outcome in repl:
-                        return repl[outcome]
-                    else:
-                        return outcome
-
-            return icepool.markov_chain.absorbing_markov_chain(self, repl2)
+        if repeat is not None:
+            result = self
+            for _ in range(repeat):
+                result = icepool.apply(transition_function, result)
+            return result
+        else:
+            # Infinite repeat.
+            return icepool.markov_chain.absorbing_markov_chain(
+                self, transition_function)
 
     def explode(self,
                 outcomes: Container | Callable[..., bool] | None = None,
