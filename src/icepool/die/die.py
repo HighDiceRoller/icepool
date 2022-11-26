@@ -32,7 +32,9 @@ def implicit_convert_to_die(outcome) -> 'Die':
         return outcome
     if isinstance(outcome, icepool.Again):
         raise TypeError('Again object cannot be implicitly converted to a Die.')
-    if isinstance(outcome, Mapping):
+    if isinstance(outcome, Mapping) or (isinstance(outcome, Sequence) and
+                                        not isinstance(outcome,
+                                                       (str, bytes, tuple))):
         raise TypeError(
             'Only single outcomes may be implicitly converted to a Die. '
             'Explicitly use a Die for multiple outcomes.')
