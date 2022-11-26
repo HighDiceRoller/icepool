@@ -63,7 +63,7 @@ from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCo
 from icepool.outcome_count_evaluator import OutcomeCountEvaluator, Order
 from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
-    expand_evaluator, CountInEvaluator, SubsetTargetEvaluator,
+    expand_evaluator, unique_evaluator, CountInEvaluator, SubsetTargetEvaluator,
     ContainsSubsetEvaluator, IntersectionSizeEvaluator,
     BestMatchingSetEvaluator, best_matching_set_evaluator,
     BestStraightEvaluator, best_straight_evaluator)

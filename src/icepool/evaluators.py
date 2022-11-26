@@ -123,8 +123,38 @@ class ExpandEvaluator(OutcomeCountEvaluator):
     def order(self, *_):
         return Order.Any
 
+    def final_outcome(self, final_state, *_):
+        if final_state is None:
+            return ()
+        return tuple(sorted(final_state))
+
 
 expand_evaluator = ExpandEvaluator()
+
+
+class UniqueEvaluator(OutcomeCountEvaluator):
+    """Produces a tuple of all outcomes that appeared at least once.
+
+    This tends to be relatively expensive, though less than ExpandEvaluator.
+    """
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = ()
+        if count > 0:
+            state = state + (outcome,)
+        return state
+
+    def order(self, *_):
+        return Order.Any
+
+    def final_outcome(self, final_state, *_):
+        if final_state is None:
+            return ()
+        return tuple(sorted(final_state))
+
+
+unique_evaluator = UniqueEvaluator()
 
 
 class CountInEvaluator(OutcomeCountEvaluator):

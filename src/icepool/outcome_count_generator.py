@@ -134,6 +134,13 @@ class OutcomeCountGenerator(ABC):
         """
         return icepool.expand_evaluator(self)
 
+    def unique(self) -> 'icepool.Die':
+        """All outcomes that appeared at least once.
+
+        This tends to be relatively expensive, though less than expand().
+        """
+        return icepool.unique_evaluator(self)
+
     def sum(self) -> 'icepool.Die':
         """The sum of the outcomes."""
         return icepool.sum_evaluator(self)

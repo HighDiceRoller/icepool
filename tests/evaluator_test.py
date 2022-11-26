@@ -26,7 +26,7 @@ def test_reroll():
 
 class SumPoolDescending(icepool.SumEvaluator):
 
-    def order(self, pool):
+    def order(self, _):
         return -1
 
 
@@ -152,7 +152,7 @@ def test_enumerate_pool_vs_cartesian_product():
 
 
 @pytest.mark.parametrize('pool', test_pools)
-def test_enumerate_pool_vs_sum(pool):
+def test_expand_vs_sum(pool):
     if any(x < 0 for x in pool.sorted_roll_counts()):
         with pytest.raises(ValueError):
             icepool.expand_evaluator(pool)
@@ -160,6 +160,19 @@ def test_enumerate_pool_vs_sum(pool):
         result = icepool.expand_evaluator(pool).sub(sum)
         expected = pool.sum()
         assert result.equals(expected)
+
+
+@pytest.mark.parametrize('pool', test_pools)
+def test_unique_vs_expand(pool):
+    if any(x < 0 for x in pool.sorted_roll_counts()):
+        pytest.skip()
+
+    def unique(x):
+        return tuple(sorted(set(x)))
+
+    result = pool.unique()
+    expected = pool.expand().sub(unique)
+    assert result.equals(expected)
 
 
 def test_count_in_evaluator():

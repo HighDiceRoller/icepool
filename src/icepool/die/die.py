@@ -26,7 +26,7 @@ def implicit_convert_to_die(outcome) -> 'Die':
     multiple outcomes).
 
     Raises:
-        `TypeError` if `Again` or a mapping is given.
+        `TypeError` if `Again` or multiple outcomes are given.
     """
     if isinstance(outcome, Die):
         return outcome
