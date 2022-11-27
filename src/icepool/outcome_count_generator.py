@@ -125,6 +125,18 @@ class OutcomeCountGenerator(ABC):
     def max_outcome(self):
         return self.outcomes()[-1]
 
+    # Meta-evaluators.
+
+    def unique(self) -> 'OutcomeCountGenerator':
+        """Returns a modified generator that counts outcomes at most once.
+
+        For example, `generator.unique().expand()` will produce all tuples of
+        unique outcomes, and `generator.unique().count()` will count the number
+        of unique outcomes.
+        """
+        return icepool.AdjustIntCountGenerator(self,
+                                               lambda _, count: min(1, count))
+
     # Built-in evaluators.
 
     def expand(self) -> 'icepool.Die':
@@ -134,20 +146,19 @@ class OutcomeCountGenerator(ABC):
         """
         return icepool.expand_evaluator(self)
 
-    def unique(self) -> 'icepool.Die':
-        """All outcomes that appeared at least once.
-
-        This tends to be relatively expensive, though less than expand().
-        """
-        return icepool.unique_evaluator(self)
-
     def sum(self) -> 'icepool.Die':
         """The sum of the outcomes."""
         return icepool.sum_evaluator(self)
 
-    def count(self, target, /) -> 'icepool.Die':
-        """The number of outcomes that are == the target."""
-        return icepool.CountInEvaluator({target}).evaluate(self)
+    def count(self, target=None, /) -> 'icepool.Die':
+        """The number of outcomes that are == the target.
+
+        If no target is provided, all outcomes will be counted.
+        """
+        if target is not None:
+            return icepool.CountInEvaluator({target}).evaluate(self)
+        else:
+            return icepool.CountInEvaluator().evaluate(self)
 
     def count_in(self, target: Container, /) -> 'icepool.Die':
         """The number of outcomes that are in the target."""

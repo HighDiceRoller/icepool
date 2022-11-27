@@ -132,39 +132,19 @@ class ExpandEvaluator(OutcomeCountEvaluator):
 expand_evaluator = ExpandEvaluator()
 
 
-class UniqueEvaluator(OutcomeCountEvaluator):
-    """Produces a tuple of all outcomes that appeared at least once.
-
-    This tends to be relatively expensive, though less than ExpandEvaluator.
-    """
-
-    def next_state(self, state, outcome, count):
-        if state is None:
-            state = ()
-        if count > 0:
-            state = state + (outcome,)
-        return state
-
-    def order(self, *_):
-        return Order.Any
-
-    def final_outcome(self, final_state, *_):
-        if final_state is None:
-            return ()
-        return tuple(sorted(final_state))
-
-
-unique_evaluator = UniqueEvaluator()
-
-
 class CountInEvaluator(OutcomeCountEvaluator):
-    """Counts how many of the given outcome are produced by the generator."""
+    """Counts how many of the given outcomes are produced by the generator."""
 
-    def __init__(self, target: Container, /):
+    def __init__(self, target: Container | None = None, /):
+        """
+        Args:
+            target: These outcomes will be counted. If not provided, all
+                outcomes will be counted.
+        """
         self._target = target
 
     def next_state(self, state, outcome, count):
-        if outcome in self._target:
+        if self._target is None or outcome in self._target:
             state = (state or 0) + count
         return state
 

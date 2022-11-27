@@ -162,19 +162,6 @@ def test_expand_vs_sum(pool):
         assert result.equals(expected)
 
 
-@pytest.mark.parametrize('pool', test_pools)
-def test_unique_vs_expand(pool):
-    if any(x < 0 for x in pool.sorted_roll_counts()):
-        pytest.skip()
-
-    def unique(x):
-        return tuple(sorted(set(x)))
-
-    result = pool.unique()
-    expected = pool.expand().sub(unique)
-    assert result.equals(expected)
-
-
 def test_count_in_evaluator():
     result = icepool.d6.pool(10).count_in({-1, 4, 6})
     expected = icepool.d6.count_in(10, {4, 6})
