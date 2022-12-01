@@ -6,7 +6,8 @@ import icepool
 from icepool.outcome_count_evaluator import Order, OutcomeCountEvaluator
 
 from collections import defaultdict
-from typing import Any, Callable, Collection, Container, Hashable, Mapping
+from functools import cached_property
+from typing import Any, Callable, Collection, Container, Hashable, Mapping, MutableMapping
 
 
 class WrapFuncEvaluator(OutcomeCountEvaluator):
@@ -82,6 +83,77 @@ class JointEvaluator(OutcomeCountEvaluator):
             return Order.Any
 
 
+class SubOutcomeEvaluator(OutcomeCountEvaluator):
+    """A meta-evaluator that substitutes outcomes before feeding them to the wrapped evaluator.
+
+    Note that, depending on the mapping, the wrapped evaluator may see outcomes
+    more than once and/or in non-monotonic order. Therefore, this should not
+    be used with order or alignment-dependent evaluators.
+    """
+
+    def __init__(self, src: OutcomeCountEvaluator,
+                 repl: Callable[[Hashable], Hashable] |
+                 Mapping[Hashable, Hashable], /):
+        self._src = src
+        if callable(repl):
+            self._repl = repl
+        else:
+            # repl is a mapping.
+            def repl_final(outcome):
+                return repl.get(outcome, outcome)
+
+            self._repl = repl_final
+
+    def next_state(self, state, outcome, *counts):
+        return self._src.next_state(state, self._repl(outcome), *counts)
+
+    def final_outcome(self, final_state: Hashable, /,
+                      *generators: icepool.OutcomeCountGenerator) -> Any:
+        return self._src.final_outcome(final_state, *generators)
+
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
+        return self._src.order(*generators)
+
+    def alignment(self,
+                  *generators: icepool.OutcomeCountGenerator) -> Collection:
+        return self._src.alignment(*generators)
+
+    def final_kwargs(
+            self,
+            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
+        return self._src.final_kwargs(*generators)
+
+
+class AdjustCountEvaluator(OutcomeCountEvaluator):
+    """A meta-evaluator that adjusts counts before feeding them to the wrapped evaluator."""
+
+    def __init__(self, src: OutcomeCountEvaluator, repl: Callable[[Any], Any],
+                 /):
+        """repl: This will be applied to each count."""
+        self._src = src
+        self._repl = repl
+
+    def next_state(self, state, outcome, *counts):
+        return self._src.next_state(state, outcome,
+                                    *(self._repl(count) for count in counts))
+
+    def final_outcome(self, final_state: Hashable, /,
+                      *generators: icepool.OutcomeCountGenerator) -> Any:
+        return self._src.final_outcome(final_state, *generators)
+
+    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
+        return self._src.order(*generators)
+
+    def alignment(self,
+                  *generators: icepool.OutcomeCountGenerator) -> Collection:
+        return self._src.alignment(*generators)
+
+    def final_kwargs(
+            self,
+            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
+        return self._src.final_kwargs(*generators)
+
+
 class SumEvaluator(OutcomeCountEvaluator):
     """Sums all outcomes."""
 
@@ -100,6 +172,10 @@ class SumEvaluator(OutcomeCountEvaluator):
 
     def order(self, *_):
         return Order.Any
+
+    def of_sub(self, repl: Callable[[Any], Any] | Mapping[Any, Any]):
+        """A modified version of this evaluator that substitutes outcomes before summing."""
+        return SubOutcomeEvaluator(self, repl)
 
 
 sum_evaluator = SumEvaluator()
@@ -128,6 +204,10 @@ class ExpandEvaluator(OutcomeCountEvaluator):
             return ()
         return tuple(sorted(final_state))
 
+    def unique(self):
+        """A modified verison of this evaluator that only counts outcomes at most once."""
+        return AdjustCountEvaluator(self, lambda count: min(count, 1))
+
 
 expand_evaluator = ExpandEvaluator()
 
@@ -135,16 +215,11 @@ expand_evaluator = ExpandEvaluator()
 class CountInEvaluator(OutcomeCountEvaluator):
     """Counts how many of the given outcomes are produced by the generator."""
 
-    def __init__(self, target: Container | None = None, /):
-        """
-        Args:
-            target: These outcomes will be counted. If not provided, all
-                outcomes will be counted.
-        """
+    def __init__(self, target: Container, /):
         self._target = target
 
     def next_state(self, state, outcome, count):
-        if self._target is None or outcome in self._target:
+        if outcome in self._target:
             state = (state or 0) + count
         return state
 
@@ -153,6 +228,22 @@ class CountInEvaluator(OutcomeCountEvaluator):
 
     def order(self, *_):
         return Order.Any
+
+
+class CountUniqueEvaluator(OutcomeCountEvaluator):
+    """Counts how many outcomes appeared more than zero times."""
+
+    def next_state(self, state, _, count):
+        return (state or 0) + (count > 0)
+
+    def final_outcome(self, final_state, *_):
+        return final_state or 0
+
+    def order(self, *_):
+        return Order.Any
+
+
+count_unique_evaluator = CountUniqueEvaluator()
 
 
 class SubsetTargetEvaluator(OutcomeCountEvaluator):

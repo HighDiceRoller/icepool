@@ -63,15 +63,15 @@ from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCo
 from icepool.outcome_count_evaluator import OutcomeCountEvaluator, Order
 from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
-    expand_evaluator, CountInEvaluator, SubsetTargetEvaluator,
-    ContainsSubsetEvaluator, IntersectionSizeEvaluator,
+    expand_evaluator, CountInEvaluator, count_unique_evaluator,
+    SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
     BestMatchingSetEvaluator, best_matching_set_evaluator,
     BestStraightEvaluator, best_straight_evaluator)
 
 from icepool.deck import Deck
 from icepool.deal import Deal
 
-from icepool.generators import AdjustIntCountGenerator, SuitGenerator
+from icepool.generators import SuitGenerator
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'Die', 'Population',

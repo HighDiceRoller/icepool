@@ -8,7 +8,7 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, Collection, Container, Generator, Mapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Container, Generator, Hashable, Mapping, Sequence, TypeAlias, TypeVar
 
 NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
     'icepool.OutcomeCountGenerator', Sequence[int], int], None, None]
@@ -125,44 +125,52 @@ class OutcomeCountGenerator(ABC):
     def max_outcome(self):
         return self.outcomes()[-1]
 
-    # Meta-evaluators.
-
-    def unique(self) -> 'OutcomeCountGenerator':
-        """Returns a modified generator that counts outcomes at most once.
-
-        For example, `generator.unique().expand()` will produce all tuples of
-        unique outcomes, and `generator.unique().count()` will count the number
-        of unique outcomes.
-        """
-        return icepool.AdjustIntCountGenerator(self,
-                                               lambda _, count: min(1, count))
-
     # Built-in evaluators.
 
-    def expand(self) -> 'icepool.Die':
+    def expand(self, unique=False) -> 'icepool.Die':
         """All possible (unordered) tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
+
+        Args:
+            unique: If set, at most one of each outcome will be produced.
         """
-        return icepool.expand_evaluator(self)
+        if unique:
+            return icepool.expand_evaluator.unique().evaluate(self)
+        else:
+            return icepool.expand_evaluator.evaluate(self)
 
-    def sum(self) -> 'icepool.Die':
-        """The sum of the outcomes."""
-        return icepool.sum_evaluator(self)
+    def sum(
+        self,
+        *,
+        sub: Callable[[Hashable], Hashable] | Mapping[Hashable, Hashable] |
+        None = None
+    ) -> 'icepool.Die':
+        """The sum of the outcomes.
 
-    def count(self, target=None, /) -> 'icepool.Die':
+        Args:
+            sub: If provided, the outcomes will be substituted according to
+                this before summing.
+        """
+        if sub is not None:
+            return icepool.sum_evaluator.of_sub(sub)(self)
+        else:
+            return icepool.sum_evaluator(self)
+
+    def count(self, target, /) -> 'icepool.Die':
         """The number of outcomes that are == the target.
 
         If no target is provided, all outcomes will be counted.
         """
-        if target is not None:
-            return icepool.CountInEvaluator({target}).evaluate(self)
-        else:
-            return icepool.CountInEvaluator().evaluate(self)
+        return icepool.CountInEvaluator({target}).evaluate(self)
 
     def count_in(self, target: Container, /) -> 'icepool.Die':
         """The number of outcomes that are in the target."""
         return icepool.CountInEvaluator(target).evaluate(self)
+
+    def count_unique(self) -> 'icepool.Die':
+        """The number of outcomes with count greater than zero."""
+        return icepool.count_unique_evaluator.evaluate(self)
 
     def contains_subset(self,
                         targets: Collection | Mapping[Any, int],
