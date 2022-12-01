@@ -15,7 +15,7 @@ from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence, o
 
 
 class Deck(Population):
-    """EXPERIMENTAL: Sampling without replacement (within a single evaluation).
+    """Sampling without replacement (within a single evaluation).
 
     Quantities represent duplicates.
     """
@@ -135,6 +135,46 @@ class Deck(Population):
         See `Deal()` for details.
         """
         return icepool.Deal(self, *hand_sizes)
+
+    def sub(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck':
+        """Changes outcomes of the `Deck` to other outcomes.
+
+        You can think of this as `sub`stituting outcomes of this `Deck` for
+        other outcomes.
+
+        Args:
+            repl: One of the following:
+                * A callable returning a new outcome for each old outcome.
+                * A map from old outcomes to new outcomes.
+                    Unmapped old outcomes stay the same.
+                The new outcomes may be `Deck`s, in which case one card is
+                replaced with several. This is not recommended.
+            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+                `*outcome` before giving it to the `repl` function. `extra_dice`
+                are not unpacked. If `repl` is not a callable, this has no
+                effect.
+        """
+        # Convert to a single-argument function.
+        if callable(repl):
+            if star:
+
+                def transition_function(outcome):
+                    return repl(*outcome)
+            else:
+
+                def transition_function(outcome):
+                    return repl(outcome)
+        else:
+            # repl is a mapping.
+            def transition_function(outcome):
+                if outcome in repl:
+                    return repl[outcome]
+                else:
+                    return outcome
+
+        return Deck(
+            [transition_function(outcome) for outcome in self.outcomes()],
+            times=self.quantities())
 
     @cached_property
     def _key_tuple(self) -> tuple:

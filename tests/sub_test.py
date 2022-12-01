@@ -107,3 +107,16 @@ def test_count_in():
     result = icepool.d6.count_in(2, {2, 4})
     expected = 2 @ icepool.coin(2, 6)
     assert result.equals(expected)
+
+
+def test_deck_sub():
+    result = icepool.Deck(range(13)).sub(lambda x: x * 2).deal(2).sum()
+    expected = icepool.Deck(range(13)).deal(2).sum() * 2
+    assert result.equals(expected)
+
+
+def test_deck_sub_size_increase():
+    # Not recommended, but technically well-formed.
+    result = icepool.Deck(range(13)).sub({12: icepool.Deck(range(12))})
+    expected = icepool.Deck(range(12), times=2)
+    assert result == expected

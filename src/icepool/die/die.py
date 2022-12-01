@@ -590,9 +590,6 @@ class Die(Population):
 
         Returns:
             The `Die` after the modification.
-
-        Raises:
-            ValueError: if `extra_args` are supplied with a non-callable `repl`.
         """
 
         if repeat == 0:
