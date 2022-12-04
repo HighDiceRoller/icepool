@@ -136,7 +136,7 @@ class OutcomeCountGenerator(ABC):
             unique: If set, at most one of each outcome will be produced.
         """
         if unique:
-            return icepool.expand_evaluator.unique().evaluate(self)
+            return icepool.ExpandEvaluator(unique=True).evaluate(self)
         else:
             return icepool.expand_evaluator.evaluate(self)
 
@@ -153,7 +153,7 @@ class OutcomeCountGenerator(ABC):
                 this before summing.
         """
         if sub is not None:
-            return icepool.sum_evaluator.of_sub(sub)(self)
+            return icepool.SumEvaluator(sub=sub)(self)
         else:
             return icepool.sum_evaluator(self)
 

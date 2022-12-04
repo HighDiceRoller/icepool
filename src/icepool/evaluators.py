@@ -83,82 +83,27 @@ class JointEvaluator(OutcomeCountEvaluator):
             return Order.Any
 
 
-class SubOutcomeEvaluator(OutcomeCountEvaluator):
-    """A meta-evaluator that substitutes outcomes before feeding them to the wrapped evaluator.
-
-    Note that, depending on the mapping, the wrapped evaluator may see outcomes
-    more than once and/or in non-monotonic order. Therefore, this should not
-    be used with order or alignment-dependent evaluators.
-    """
-
-    def __init__(self, src: OutcomeCountEvaluator,
-                 repl: Callable[[Hashable], Hashable] |
-                 Mapping[Hashable, Hashable], /):
-        self._src = src
-        if callable(repl):
-            self._repl = repl
-        else:
-            # repl is a mapping.
-            def repl_final(outcome):
-                return repl.get(outcome, outcome)
-
-            self._repl = repl_final
-
-    def next_state(self, state, outcome, *counts):
-        return self._src.next_state(state, self._repl(outcome), *counts)
-
-    def final_outcome(self, final_state: Hashable, /,
-                      *generators: icepool.OutcomeCountGenerator) -> Any:
-        return self._src.final_outcome(final_state, *generators)
-
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
-        return self._src.order(*generators)
-
-    def alignment(self,
-                  *generators: icepool.OutcomeCountGenerator) -> Collection:
-        return self._src.alignment(*generators)
-
-    def final_kwargs(
-            self,
-            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
-        return self._src.final_kwargs(*generators)
-
-
-class AdjustCountEvaluator(OutcomeCountEvaluator):
-    """A meta-evaluator that adjusts counts before feeding them to the wrapped evaluator."""
-
-    def __init__(self, src: OutcomeCountEvaluator, repl: Callable[[Any], Any],
-                 /):
-        """repl: This will be applied to each count."""
-        self._src = src
-        self._repl = repl
-
-    def next_state(self, state, outcome, *counts):
-        return self._src.next_state(state, outcome,
-                                    *(self._repl(count) for count in counts))
-
-    def final_outcome(self, final_state: Hashable, /,
-                      *generators: icepool.OutcomeCountGenerator) -> Any:
-        return self._src.final_outcome(final_state, *generators)
-
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
-        return self._src.order(*generators)
-
-    def alignment(self,
-                  *generators: icepool.OutcomeCountGenerator) -> Collection:
-        return self._src.alignment(*generators)
-
-    def final_kwargs(
-            self,
-            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
-        return self._src.final_kwargs(*generators)
-
-
 class SumEvaluator(OutcomeCountEvaluator):
     """Sums all outcomes."""
 
+    def __init__(self,
+                 *,
+                 sub: Callable[[Any], Any] | Mapping[Any, Any] | None = None):
+
+        if sub is None:
+            self._sub = lambda outcome: outcome
+        elif callable(sub):
+            self._sub = sub
+        else:
+            # sub is a mapping.
+            def sub_final(outcome):
+                return sub.get(outcome, outcome)
+
+            self._sub = sub_final
+
     def next_state(self, state, outcome, count):
         """Add the outcomes to the running total. """
+        outcome = self._sub(outcome)
         if state is None:
             return outcome * count
         else:
@@ -173,10 +118,6 @@ class SumEvaluator(OutcomeCountEvaluator):
     def order(self, *_):
         return Order.Any
 
-    def of_sub(self, repl: Callable[[Any], Any] | Mapping[Any, Any]):
-        """A modified version of this evaluator that substitutes outcomes before summing."""
-        return SubOutcomeEvaluator(self, repl)
-
 
 sum_evaluator = SumEvaluator()
 
@@ -187,10 +128,19 @@ class ExpandEvaluator(OutcomeCountEvaluator):
     This is expensive and not recommended unless there are few possibilities.
     """
 
+    def __init__(self, *, unique=False):
+        """
+        Args:
+            unique: Iff `True`, duplicate outcomes count only as one.
+        """
+        self._unique = unique
+
     def next_state(self, state, outcome, count):
         if count < 0:
             raise ValueError(
                 'EnumerateGenerator is not compatible with negative counts.')
+        if self._unique:
+            count = min(count, 1)
         if state is None:
             return (outcome,) * count
         else:
@@ -203,10 +153,6 @@ class ExpandEvaluator(OutcomeCountEvaluator):
         if final_state is None:
             return ()
         return tuple(sorted(final_state))
-
-    def unique(self):
-        """A modified verison of this evaluator that only counts outcomes at most once."""
-        return AdjustCountEvaluator(self, lambda count: min(count, 1))
 
 
 expand_evaluator = ExpandEvaluator()

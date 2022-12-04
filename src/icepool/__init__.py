@@ -63,7 +63,7 @@ from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCo
 from icepool.outcome_count_evaluator import OutcomeCountEvaluator, Order
 from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
-    expand_evaluator, CountInEvaluator, count_unique_evaluator,
+    ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
     SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
     BestMatchingSetEvaluator, best_matching_set_evaluator,
     BestStraightEvaluator, best_straight_evaluator)
@@ -80,5 +80,6 @@ __all__ = [
     'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
     'apply_sorted', 'Reroll', 'Unlimited', 'OutcomeCountGenerator', 'Pool',
     'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
-    'SumEvaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
+    'SumEvaluator', 'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator',
+    'clear_pool_cache'
 ]
