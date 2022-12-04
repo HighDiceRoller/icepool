@@ -9,31 +9,41 @@ from typing import Any, Callable, Mapping, Sequence
 
 
 class Again():
-    """EXPERIMENTAL: A placeholder value used to indicate that the die should be rolled again with some modification.
+    """A placeholder value used to indicate that the die should be rolled again with some modification.
 
     Examples:
 
     * `Again()` + 6: Roll again and add 6.
-    * `Again(lambda x: x + 6)`: Another way of doing the same thing.
     * `Again()` + `Again()`: Roll again twice and sum.
 
-    This can also be used as part of a return value with functions such as
-    `Die.sub()`, though I don't recommend getting too fancy---it can get
-    confusing very quickly.
+    I don't recommend using this outside of the `Die()` constructor or
+    single-stage `sub`stitutions, since it can become confusing quite quickly.
     """
 
-    def __init__(self, func: Callable | None = None, /, *args):
+    def __init__(self,
+                 func: Callable | None = None,
+                 /,
+                 *args,
+                 truth_value: bool | None = None):
         """Creates an `Again` placeholder from the given function and args.
 
         Any of the args may themselves be instances of `Again`. These are
         considered to be at the same level for purposes of `again_depth`.
 
-        The supplied function will be called with the given args, except any
-        arguments of type `Again` will have resolved to the `Die` resulting
-        from rolling again.
+        Args:
+            func: The function to apply. If not provided, the returned object
+                represents the again roll directly.
+            args: The arguments that will be sent to `func`, except that any
+                of type `Again` will have resolved to the `Die` resulting
+                from rolling again. Only applicable if `func` is provided.
+            truth_value: The truth value of the resulting object, if applicable.
+                You probably don't need to use this externally.
         """
+        if func is None and args:
+            raise ValueError('args cannot be provided without a func.')
         self._func = func
         self._args = args
+        self._truth_value = truth_value
 
     def _evaluate_arg(self, arg, die: 'icepool.Die'):
         if isinstance(arg, Again):
@@ -143,12 +153,38 @@ class Again():
     def __rmatmul__(self, other) -> 'Again':
         return Again(operator.matmul, other, self)
 
+    def __lt__(self, other) -> 'Again':
+        return Again(operator.lt, self, other)
+
+    def __le__(self, other) -> 'Again':
+        return Again(operator.le, self, other)
+
+    def __gt__(self, other) -> 'Again':
+        return Again(operator.gt, self, other)
+
+    def __ge__(self, other) -> 'Again':
+        return Again(operator.ge, self, other)
+
     # Hashing and equality.
 
     def __eq__(self, other):
         if not isinstance(other, Again):
-            return False
-        return self is other or self._key_tuple == other._key_tuple
+            return Again(operator.eq, self, other, truth_value=False)
+        truth_value = self._key_tuple == other._key_tuple
+        return Again(operator.eq, self, other, truth_value=truth_value)
+
+    def __ne__(self, other):
+        if not isinstance(other, Again):
+            return Again(operator.ne, self, other, truth_value=True)
+        truth_value = self._key_tuple != other._key_tuple
+        return Again(operator.ne, self, other, truth_value=truth_value)
+
+    def __bool__(self):
+        if self._truth_value is None:
+            raise ValueError(
+                'An `Again` only has a truth value if it is the result of == or !=.'
+            )
+        return self._truth_value
 
     @cached_property
     def _key_tuple(self) -> tuple:
