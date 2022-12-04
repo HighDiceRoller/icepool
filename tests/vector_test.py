@@ -68,9 +68,9 @@ def test_reroll_star():
 
 def test_reroll_until_star():
     result = icepool.Die([(icepool.d6, icepool.d6)])
-    result = result.reroll_until(lambda a, b: a == 6 and b == 6, star=1)
+    result = result.filter(lambda a, b: a == 6 and b == 6, star=1)
     result = result.sub(lambda a, b: a + b, star=1)
-    expected = (2 @ icepool.d6).reroll_until({12})
+    expected = (2 @ icepool.d6).filter({12})
     assert result.equals(expected)
 
 

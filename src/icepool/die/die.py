@@ -405,11 +405,11 @@ class Die(Population):
             }
         return icepool.Die(data)
 
-    def reroll_until(self,
-                     outcomes: Callable[..., bool] | Container,
-                     *extra_args,
-                     depth: int | None = None,
-                     star: int = 0) -> 'Die':
+    def filter(self,
+               outcomes: Callable[..., bool] | Container,
+               *extra_args,
+               depth: int | None = None,
+               star: int = 0) -> 'Die':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
