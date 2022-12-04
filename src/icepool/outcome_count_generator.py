@@ -208,14 +208,25 @@ class OutcomeCountGenerator(ABC):
         return icepool.IntersectionSizeEvaluator(targets,
                                                  wilds=wilds).evaluate(self)
 
-    def best_matching_set(self) -> 'icepool.Die':
+    def best_matching_set(self,
+                          *,
+                          include_outcome=False,
+                          wilds: Collection = ()) -> 'icepool.Die':
         """The best matching set among the outcomes.
+
+        Args:
+            include_outcome: If `True`, the result outcomes will be tuples
+                `(set_size, outcome)`. Greater outcomes will be prioritized.
+            wilds: These will be combined with the best matching set of
+                non-wilds. If all draws are wild, the max outcome in the
+                generator will be taken (even if it has 0 quantity).
 
         Returns:
             A `Die` with outcomes (set_size, outcome).
             The greatest single such set is returned.
         """
-        return icepool.best_matching_set_evaluator.evaluate(self)
+        return icepool.BestMatchingSetEvaluator(include_outcome=include_outcome,
+                                                wilds=wilds).evaluate(self)
 
     def best_straight(self) -> 'icepool.Die':
         """The best straight among the outcomes.

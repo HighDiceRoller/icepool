@@ -248,28 +248,55 @@ class IntersectionSizeEvaluator(SubsetTargetEvaluator):
 
 
 class BestMatchingSetEvaluator(OutcomeCountEvaluator):
-    """The best matching set of a generator.
+    """The largest matching set of a generator."""
 
-    This prioritizes set size, then the outcome.
-
-    The outcomes are `(set_size, outcome)`.
-    """
+    def __init__(self, *, include_outcome=False, wilds: Collection = ()):
+        """
+        Args:
+            include_outcome: If `True`, the result outcomes will be tuples
+                `(set_size, outcome)`. Greater outcomes will be prioritized.
+        """
+        self._include_outcome = include_outcome
+        self._wilds = frozenset(wilds)
 
     def next_state(self, state, outcome, count):
         """Replace the last best set if this one is better.
 
         Note the use of tuple comparison, which priortizes elements to the left.
         """
-        if state is None:
-            return count, outcome
+        if count < 0:
+            raise ValueError(
+                'BestMatchingSetEvaluator is not compatible with negative counts.'
+            )
+
+        best_count, best_outcome, wild_count = state or (0, outcome, 0)
+
+        if outcome in self._wilds:
+            wild_count += count
+            return best_count, best_outcome, wild_count
+
+        if not self._include_outcome:
+            best_outcome = None
+            outcome = None
+
+        best_count, best_outcome = max((best_count, best_outcome),
+                                       (count, outcome))
+
+        return best_count, best_outcome, wild_count
+
+    def final_outcome(self, final_state, gen):
+        best_count, best_outcome, wild_count = final_state
+
+        if best_count == 0:
+            best_outcome = gen.max_outcome()
+
+        if self._include_outcome:
+            return (best_count + wild_count), best_outcome
         else:
-            return max(state, (count, outcome))
+            return best_count + wild_count
 
     def order(self, *_):
         return Order.Any
-
-
-best_matching_set_evaluator = BestMatchingSetEvaluator()
 
 
 class BestStraightEvaluator(OutcomeCountEvaluator):

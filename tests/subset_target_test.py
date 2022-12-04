@@ -57,3 +57,37 @@ def test_intersection_size(target, wilds):
 
     expected = d(6).pool(4).expand().map(expected_func)
     assert result == expected
+
+
+@pytest.mark.parametrize('wilds', wilds_to_test)
+def test_best_matching_set(wilds):
+    result = d(6).pool(4).best_matching_set(wilds=wilds)
+
+    def expected_func(rolls):
+        wild_rolls = [x for x in rolls if x in wilds]
+        non_wild_rolls = [x for x in rolls if x not in wilds]
+        if non_wild_rolls:
+            return max(Counter(non_wild_rolls).values()) + len(wild_rolls)
+        else:
+            return len(wild_rolls)
+
+    expected = d(6).pool(4).expand().map(expected_func)
+    assert result == expected
+
+
+@pytest.mark.parametrize('wilds', wilds_to_test)
+def test_best_matching_set_include_outcome(wilds):
+    result = d(6).pool(4).best_matching_set(include_outcome=True, wilds=wilds)
+
+    def expected_func(rolls):
+        wild_rolls = [x for x in rolls if x in wilds]
+        non_wild_rolls = [x for x in rolls if x not in wilds]
+        if non_wild_rolls:
+            count, mode = max(
+                (v, k) for k, v in Counter(non_wild_rolls).items())
+            return count + len(wild_rolls), mode
+        else:
+            return len(wild_rolls), 6
+
+    expected = d(6).pool(4).expand().map(expected_func)
+    assert result == expected
