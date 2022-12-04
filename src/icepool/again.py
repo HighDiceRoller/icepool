@@ -11,17 +11,17 @@ from typing import Any, Callable, Mapping, Sequence
 class Again():
     """A placeholder value used to indicate that the die should be rolled again.
 
-    This is designed to be used with the `Die()` constructor. I don't recommend
-    using it outside of this as it can become confusing quickly. If you want
-    something more complex, use e.g. `Die.sub()` instead.
-
-    This can be used with operators. Examples:
+    This is designed to be used with the `Die()` constructor.
+    `Again` should not be fed to functions or methods other than `Die()`, but
+    it can be used with operators. Examples:
 
     * `Again()` + 6: Roll again and add 6.
     * `Again()` + `Again()`: Roll again twice and sum.
 
     The `again_depth` and `again_end` arguments to `Die()` affect how these
     arguments are processed.
+
+    If you want something more complex, use e.g. `Die.sub()` instead.
     """
 
     def __init__(self):
