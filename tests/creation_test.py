@@ -78,3 +78,11 @@ def test_denominator():
 
 def test_bare_outcome():
     assert Die(6) == Die([6])
+
+
+def test_bare_tuple():
+    assert Die((1, 2, 3, 4)) == Die([(1, 2, 3, 4)])
+
+
+def test_bare_str():
+    assert len(Die("abc")) == 1
