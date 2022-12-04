@@ -1,3 +1,18 @@
+## 0.21.0
+
+* Nested lists are now allowed in the `Die()` constructor.
+* Single outcomes can be sent to the `Die()` constructor without wrapping them in a list.
+* Same for sending a die to the `Pool()` constructor.
+* Add `Die.probabilities_lt()`, `Die.probabilities_gt()` methods.
+* Add `wilds` argument to `contains_subset()` and `intersection_size()` methods.
+* Removed `extra_dice` argument from `Die.sub()`.
+* Added `sub()` method to `Deck`, though with less features than the `Die` version.
+* `sum()` method of generators now has a `sub` option that maps outcomes before summing.
+* `expand()` method of generators now has a `unique` option that counts duplicates only once.
+* Forwarding of `kwargs` to `Die()` replaced with explicit arguments.
+* Add comparators to `Again`.
+* Experimental absorbing Markov chain analysis for `Die.sub(depth=None)`.
+
 ## 0.20.1
 
 * Added `one_hot` function.
