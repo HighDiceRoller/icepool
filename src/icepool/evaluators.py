@@ -91,19 +91,19 @@ class SumEvaluator(OutcomeCountEvaluator):
                  map: Callable[[Any], Any] | Mapping[Any, Any] | None = None):
 
         if map is None:
-            self._sub = lambda outcome: outcome
+            self._map = lambda outcome: outcome
         elif callable(map):
-            self._sub = map
+            self._map = map
         else:
-            # sub is a mapping.
-            def sub_final(outcome):
+            # map is a Mapping.
+            def map_final(outcome):
                 return map.get(outcome, outcome)
 
-            self._sub = sub_final
+            self._map = map_final
 
     def next_state(self, state, outcome, count):
         """Add the outcomes to the running total. """
-        outcome = self._sub(outcome)
+        outcome = self._map(outcome)
         if state is None:
             return outcome * count
         else:

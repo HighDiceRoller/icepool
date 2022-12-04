@@ -241,7 +241,7 @@ def _contains_again_inner(outcome) -> bool:
 
 def replace_agains(outcomes: Mapping[Any, int] | Sequence,
                    die: 'icepool.Die') -> Mapping[Any, int] | Sequence:
-    """Recursively substitutes all occurences of `Again` with the given Die.
+    """Recursively replaces all occurences of `Again` with the given Die.
 
     This is not applied to tuples.
     """
@@ -250,19 +250,19 @@ def replace_agains(outcomes: Mapping[Any, int] | Sequence,
         return outcomes
     elif isinstance(outcomes, Mapping):
         return {
-            _sub_agains_inner(k, die): v
+            _replace_agains_inner(k, die): v
             for k, v in outcomes.items()  # type: ignore
         }
     else:
-        return [_sub_agains_inner(k, die) for k in outcomes]
+        return [_replace_agains_inner(k, die) for k in outcomes]
 
 
-def _sub_agains_inner(outcome, die: 'icepool.Die'):
+def _replace_agains_inner(outcome, die: 'icepool.Die'):
     if isinstance(outcome, icepool.Die):
         # Dice should already have flattened out any Agains.
         return outcome
     elif isinstance(outcome, Mapping):
-        return {_sub_agains_inner(k, die): v for k, v in outcome.items()}
+        return {_replace_agains_inner(k, die): v for k, v in outcome.items()}
     elif isinstance(outcome, Again):
         return outcome._evaluate(die)
     else:
