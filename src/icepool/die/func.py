@@ -173,7 +173,8 @@ def reduce(func: Callable[[Any, Any], Any],
            dice,
            *,
            initial=None,
-           **kwargs) -> 'icepool.Die':
+           again_depth: int = 1,
+           again_end=None) -> 'icepool.Die':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -187,8 +188,8 @@ def reduce(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        **kwargs: Any extra keyword arguments are forwarded to the die
-            constructor for the final result.
+        again_depth: Forwarded to the final die constructor.
+        again_end: Forwarded to the final die constructor.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -197,7 +198,11 @@ def reduce(func: Callable[[Any, Any], Any],
     else:
         result = next(iter_dice)
     for die in iter_dice:
-        result = apply(func, result, die, **kwargs)
+        result = apply(func,
+                       result,
+                       die,
+                       again_depth=again_depth,
+                       again_end=again_end)
     return result
 
 
@@ -205,7 +210,8 @@ def accumulate(func: Callable[[Any, Any], Any],
                dice,
                *,
                initial=None,
-               **kwargs) -> Generator['icepool.Die', None, None]:
+               again_depth: int = 1,
+               again_end=None) -> Generator['icepool.Die', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -224,8 +230,8 @@ def accumulate(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        **kwargs: Any extra keyword arguments are forwarded to the die
-            constructor for each yielded result.
+        again_depth: Forwarded to the final die constructor.
+        again_end: Forwarded to the final die constructor.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
@@ -238,7 +244,11 @@ def accumulate(func: Callable[[Any, Any], Any],
             return
     yield result
     for die in iter_dice:
-        result = apply(func, result, die, **kwargs)
+        result = apply(func,
+                       result,
+                       die,
+                       again_depth=again_depth,
+                       again_end=again_end)
         yield result
 
 
@@ -260,7 +270,10 @@ def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
         yield outcomes, final_quantity
 
 
-def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
+def apply(func: Callable,
+          *dice,
+          again_depth: int = 1,
+          again_end=None) -> 'icepool.Die':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
@@ -283,8 +296,8 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
         *dice: Any number of dice. `func` will be called with all joint outcomes
             of `dice`, with one argument per `Die`.
             Non-dice will be left as-is.
-        **kwargs: Any extra keyword arguments are forwarded to the `Die`
-            constructor for the final result.
+        again_depth: Forwarded to the final die constructor.
+        again_end: Forwarded to the final die constructor.
 
     Returns:
         A `Die` constructed from the outputs of `func` and the product of the
@@ -295,7 +308,9 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
             'The first argument must be callable. Did you forget to provide a function?'
         )
     if len(dice) == 0:
-        return icepool.Die([func()], **kwargs)
+        return icepool.Die([func()],
+                           again_depth=again_depth,
+                           again_end=again_end)
     final_outcomes = []
     final_quantities = []
     for outcomes, final_quantity in iter_product_args(*dice):
@@ -304,7 +319,10 @@ def apply(func: Callable, *dice, **kwargs) -> 'icepool.Die':
             final_outcomes.append(final_outcome)
             final_quantities.append(final_quantity)
 
-    return icepool.Die(final_outcomes, final_quantities, **kwargs)
+    return icepool.Die(final_outcomes,
+                       final_quantities,
+                       again_depth=again_depth,
+                       again_end=again_end)
 
 
 class apply_sorted():
@@ -314,7 +332,11 @@ class apply_sorted():
     """
 
     def __new__(  # type: ignore
-            cls, func: Callable, *dice, **kwargs) -> 'icepool.Die':
+            cls,
+            func: Callable,
+            *dice,
+            again_depth: int = 1,
+            again_end=None) -> 'icepool.Die':
         """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
         Treat this as an ordinary function, not a constructor.
@@ -333,8 +355,8 @@ class apply_sorted():
             *dice: Any number of dice (or objects convertible to dice).
                 `func` will be called with all sorted joint outcomes of `dice`,
                 with one argument per die. All outcomes must be totally orderable.
-            **kwargs: Any extra keyword arguments are forwarded to the die
-                constructor for the final result.
+            again_depth: Forwarded to the final die constructor.
+            again_end: Forwarded to the final die constructor.
 
         Returns:
             A `Die` constructed from the outputs of `func` and the weight of rolling
@@ -345,7 +367,10 @@ class apply_sorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return pool.expand().sub(func, star=1, **kwargs)
+        return pool.expand().sub(func,
+                                 star=1,
+                                 again_depth=again_depth,
+                                 again_end=again_end)
 
     def __class_getitem__(cls,
                           sorted_roll_counts: int | slice | tuple[int, ...],
@@ -353,21 +378,32 @@ class apply_sorted():
         """Implements `[]` syntax for `apply_sorted`."""
         if isinstance(sorted_roll_counts, int):
 
-            def result(func: Callable, *dice, **kwargs) -> 'icepool.Die':
+            def result(func: Callable,
+                       *dice,
+                       again_depth: int = 1,
+                       again_end=None) -> 'icepool.Die':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 die = icepool.Pool(dice)[sorted_roll_counts]
-                return die.sub(func, **kwargs)
+                return die.sub(func,
+                               again_depth=again_depth,
+                               again_end=again_end)
         else:
 
-            def result(func: Callable, *dice, **kwargs) -> 'icepool.Die':
+            def result(func: Callable,
+                       *dice,
+                       again_depth: int = 1,
+                       again_end=None) -> 'icepool.Die':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
-                return pool.expand().sub(func, star=1, **kwargs)
+                return pool.expand().sub(func,
+                                         star=1,
+                                         again_depth=again_depth,
+                                         again_end=again_end)
 
         return result

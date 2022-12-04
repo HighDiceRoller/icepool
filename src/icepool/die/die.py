@@ -557,7 +557,8 @@ class Die(Population):
             /,
             repeat: int | None = 1,
             star: int = 0,
-            **kwargs) -> 'Die':
+            again_depth: int = 1,
+            again_end=None) -> 'Die':
         """Changes outcomes of the `Die` to other outcomes.
 
         You can think of this as `sub`stituting outcomes of this `Die` for other
@@ -585,8 +586,8 @@ class Die(Population):
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
                 effect.
-            **kwargs: Any extra keyword arguments are forwarded to the final die
-                constructor.
+            again_depth: Forwarded to the final die constructor.
+            again_end: Forwarded to the final die constructor.
 
         Returns:
             The `Die` after the modification.
@@ -616,7 +617,10 @@ class Die(Population):
         if repeat is not None:
             result = self
             for _ in range(repeat):
-                result = icepool.apply(transition_function, result, **kwargs)
+                result = icepool.apply(transition_function,
+                                       result,
+                                       again_depth=again_depth,
+                                       again_end=again_end)
             return result
         else:
             # Infinite repeat.
@@ -686,18 +690,25 @@ class Die(Population):
 
         return self.sub(sub_func, again_depth=depth, again_end=end)
 
-    def if_else(self, outcome_if_true, outcome_if_false, /, **kwargs) -> 'Die':
+    def if_else(self,
+                outcome_if_true,
+                outcome_if_false,
+                /,
+                again_depth: int = 1,
+                again_end=None) -> 'Die':
         """Ternary conditional operator.
 
         This replaces truthy outcomes with the first argument and falsy outcomes
         with the second argument.
 
         Args:
-            **kwargs: Any extra keyword arguments are forwarded to the final die
-                constructor.
+            again_depth: Forwarded to the final die constructor.
+            again_end: Forwarded to the final die constructor.
         """
-        return self.bool().sub(
-            lambda x: outcome_if_true if x else outcome_if_false, **kwargs)
+        return self.bool().sub(lambda x: outcome_if_true
+                               if x else outcome_if_false,
+                               again_depth=again_depth,
+                               again_end=again_end)
 
     def is_in(self, target: Container, /) -> 'Die':
         """A die that returns True iff the roll of the die is contained in the target."""
