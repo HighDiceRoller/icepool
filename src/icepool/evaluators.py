@@ -253,8 +253,9 @@ class BestMatchingSetEvaluator(OutcomeCountEvaluator):
     def __init__(self, *, include_outcome=False, wilds: Collection = ()):
         """
         Args:
-            include_outcome: If `True`, the result outcomes will be tuples
+            include_outcome: If `True`, the final outcomes will be tuples
                 `(set_size, outcome)`. Greater outcomes will be prioritized.
+                If `False` the final outcomes will just be `set_size`.
         """
         self._include_outcome = include_outcome
         self._wilds = frozenset(wilds)
@@ -305,9 +306,17 @@ class BestStraightEvaluator(OutcomeCountEvaluator):
     Outcomes must be `int`s.
 
     This prioritizes run size, then the outcome.
-
-    The outcomes are `(run_size, outcome)`.
     """
+
+    def __init__(self, *, include_outcome=False):
+        """
+        Args:
+            include_outcome: If `True`, the final outcomes will be tuples
+                `(straight_size, outcome)`. Greater outcomes will be
+                prioritized, and the result is the greatest outcome in the
+                If `False`, the final outcomes will be just the straight size.
+        """
+        self._include_outcome = include_outcome
 
     def next_state(self, state, outcome, count):
         """Increments the current run if at least one `Die` rolled this outcome,
@@ -318,15 +327,18 @@ class BestStraightEvaluator(OutcomeCountEvaluator):
             run += 1
         else:
             run = 0
+        if not self._include_outcome:
+            best_run_outcome = None
+            outcome = None
         return max((run, outcome), (best_run, best_run_outcome)) + (run,)
 
     def final_outcome(self, final_state, *_):
-        return final_state[:2]
+        if self._include_outcome:
+            return final_state[:2]
+        else:
+            return final_state[0]
 
     def order(self, *_):
         return Order.Ascending
 
     alignment = OutcomeCountEvaluator.range_alignment
-
-
-best_straight_evaluator = BestStraightEvaluator()

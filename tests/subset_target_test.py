@@ -2,7 +2,7 @@ from typing import Collection
 import icepool
 import pytest
 
-from icepool import d
+from icepool import d, Die, Pool
 
 from collections import Counter
 
@@ -90,4 +90,29 @@ def test_best_matching_set_include_outcome(wilds):
             return len(wild_rolls), 6
 
     expected = d(6).pool(4).expand().map(expected_func)
+    assert result == expected
+
+
+def test_best_straight_full():
+    result = Pool([1, 2, 3]).best_straight().simplify()
+    expected = Die(3)
+    assert result == expected
+
+
+def test_best_straight_gap():
+    result = Pool([1, 2, 5, 10, 11]).best_straight().simplify()
+    expected = Die(2)
+    assert result == expected
+
+
+def test_best_straight_include_outcome():
+    result = Pool([1, 2, 3]).best_straight(include_outcome=True).simplify()
+    expected = Die((3, 3))
+    assert result == expected
+
+
+def test_best_straight_include_outcome_tiebreaker():
+    result = Pool([1, 2, 5, 10,
+                   11]).best_straight(include_outcome=True).simplify()
+    expected = Die((2, 11))
     assert result == expected

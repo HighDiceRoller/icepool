@@ -228,7 +228,11 @@ class OutcomeCountGenerator(ABC):
         return icepool.BestMatchingSetEvaluator(include_outcome=include_outcome,
                                                 wilds=wilds).evaluate(self)
 
-    def best_straight(self) -> 'icepool.Die':
+    def best_straight(
+        self,
+        *,
+        include_outcome=False,
+    ) -> 'icepool.Die':
         """The best straight among the outcomes.
 
         Outcomes must be `int`s.
@@ -237,7 +241,8 @@ class OutcomeCountGenerator(ABC):
             A `Die` with outcomes (straight_length, outcome).
             The greatest single such straight is returned.
         """
-        return icepool.best_straight_evaluator.evaluate(self)
+        return icepool.BestStraightEvaluator(
+            include_outcome=include_outcome).evaluate(self)
 
     # Sampling.
 
