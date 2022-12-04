@@ -11,12 +11,25 @@ from icepool.population import Population
 
 import bisect
 from collections import defaultdict
-from functools import cache, cached_property
+from functools import cached_property
 import itertools
 import math
 import operator
 
-from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence, overload
+from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
+
+
+def is_bare_outcome(outcome):
+    """Returns `True` iff the outcome is not a `Mapping` or `Sequence` of a type that holds multiple outcomes.
+
+    Currently product tuples are allowed.
+    """
+    if isinstance(outcome, Mapping):
+        return False
+    if isinstance(outcome, Sequence) and not isinstance(outcome,
+                                                        (str, bytes, tuple)):
+        return False
+    return True
 
 
 def implicit_convert_to_die(outcome) -> 'Die':
@@ -32,12 +45,10 @@ def implicit_convert_to_die(outcome) -> 'Die':
         return outcome
     if isinstance(outcome, icepool.Again):
         raise TypeError('Again object cannot be implicitly converted to a Die.')
-    if isinstance(outcome, Mapping) or (isinstance(outcome, Sequence) and
-                                        not isinstance(outcome,
-                                                       (str, bytes, tuple))):
+    if not is_bare_outcome(outcome):
         raise TypeError(
             'Only single outcomes may be implicitly converted to a Die. '
-            'Explicitly use a Die for multiple outcomes.')
+            'Explicitly construct a Die for multiple outcomes.')
     return Die([outcome])
 
 
@@ -139,36 +150,34 @@ class Die(Population):
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
                 * A `Mapping` from outcomes to quantities.
-                * A sequence of outcomes. Each element will have the same total
-                    quantity.
-
-                Note that `Die` and `Deck` both count as `Mapping`s.
-                Each outcome may be one of the following:
-                * A `Mapping` from outcomes to quantities.
                     The outcomes of the `Mapping` will be "flattened" into the
                     result. This option will be taken in preference to treating
                     the `Mapping` itself as an outcome even if the `Mapping`
                     itself is hashable and totally orderable. This means that
                     `Die` and `Deck` will never be outcomes.
-                * A tuple of outcomes. Operators on dice with tuple outcomes
+                * A tuple. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
 
-                    Any tuple elements that are `Mapping`s will expand the
-                    tuple according to their independent joint distribution.
-                    For example, `(d6, d6)` will expand to 36 ordered tuples
-                    with quantity 1 each. Use this carefully since it may create a
-                    large number of outcomes.
+                    Any tuple elements that indicate multiple outcomes will
+                    expand the tuple according to their independent product
+                    distribution. For example, `(d6, d6)` will expand to 36
+                    ordered tuples with quantity 1 each. Use this carefully
+                    since it may create a large number of outcomes.
+
+                    Otherwise, the tuple is a single outcome. For example,
+                    `Die((1, 2, 3, 4))` is *not* a d4, but a die that always
+                    rolls the tuple `(1, 2, 3, 4)`.
                 * `str` or `bytes`, which will be treated as a single outcome.
-                * Any other sequence. Each element will be weighted equally.
-                * `icepool.Reroll`, which will drop itself
-                    and the corresponding element of `times` from consideration.
-                    If inside a tuple, the tuple will be dropped.
+                * Any other sequence, such as a `list`. Each element will be
+                    treated as a separate outcome, weighted once per occurrence
+                    (unless it is at the top level and `times` is provided).
+                * `icepool.Reroll`, which will drop itself from consideration.
                 * Anything else will be treated as a single outcome.
-                    Each outcome must be hashable, and the
-                    set of outcomes must be totally orderable (after expansion).
-                    The same outcome can appear multiple times, in which case
-                    the corresponding quantities will be accumulated.
+                    Each outcome must be hashable, and the set of outcomes must
+                    be totally orderable (after expansion). The same outcome can
+                    appear multiple times, in which case the corresponding
+                    quantities will be accumulated.
             times: Multiplies the quantity of each element of `outcomes`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
@@ -182,6 +191,8 @@ class Die(Population):
             else:
                 outcomes = outcomes._data
         else:
+            if is_bare_outcome(outcomes):
+                outcomes = [outcomes]
             # Check for Again.
             if icepool.again.contains_again(outcomes):
                 if again_end is None:

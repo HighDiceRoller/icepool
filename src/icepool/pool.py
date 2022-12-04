@@ -57,6 +57,7 @@ class Pool(OutcomeCountGenerator):
         Args:
             dice: The dice to put in the `Pool`. This can be one of the following:
 
+                * A single die.
                 * A sequence of dice.
                 * A mapping of dice and how many of that `Die` to put in the `Pool`.
 
@@ -83,10 +84,7 @@ class Pool(OutcomeCountGenerator):
             )
 
         if isinstance(dice, icepool.Die):
-            raise ValueError(
-                'A Pool cannot be constructed with a Die argument. '
-                'Use Pool([die]) or die.pool() to construct a pool of a single die.'
-            )
+            dice = [dice]
 
         dice, times = icepool.creation_args.itemize(dice, times)
         dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)

@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import Die
+
 
 def test_d_syntax():
     assert icepool.d6.quantities() == (1,) * 6
@@ -72,3 +74,7 @@ def test_reroll_tuple():
 def test_denominator():
     result = icepool.Die([icepool.d(3), icepool.d(4), icepool.d(6)])
     assert result.denominator() == 36
+
+
+def test_bare_outcome():
+    assert Die(6) == Die([6])
