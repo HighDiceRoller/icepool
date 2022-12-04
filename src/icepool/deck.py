@@ -136,11 +136,8 @@ class Deck(Population):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    def sub(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck':
-        """Changes outcomes of the `Deck` to other outcomes.
-
-        You can think of this as `sub`stituting outcomes of this `Deck` for
-        other outcomes.
+    def map(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck':
+        """Maps outcomes of this `Deck` to other outcomes.
 
         Args:
             repl: One of the following:

@@ -77,8 +77,8 @@ def test_owod():
     result = Die({0: 7, 1: 2, Again() + 1: 1}, again_depth=3)
     sub_expected = Die({-1: 7, 0: 2, 1: 1})
     expected = sub_expected
-    expected = expected.sub({1: 1 + sub_expected})
-    expected = expected.sub({2: 2 + sub_expected})
-    expected = expected.sub({3: 3 + icepool.lowest(sub_expected, 0)})
+    expected = expected.map({1: 1 + sub_expected})
+    expected = expected.map({2: 2 + sub_expected})
+    expected = expected.map({3: 3 + icepool.lowest(sub_expected, 0)})
     expected = expected + 1
     assert result == expected

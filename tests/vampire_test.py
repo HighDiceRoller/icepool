@@ -41,5 +41,5 @@ def test_vampire():
         return success, win_type, loss_type
 
     # star=1 unpacks the tuples before giving them to eval_one_hot.
-    result = total.sub(eval_one_hot, star=1)
+    result = total.map(eval_one_hot, star=1)
     assert result.quantity((0, '', '')) == 2000

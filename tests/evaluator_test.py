@@ -141,13 +141,13 @@ def test_joint_evaluate():
     test_evaluator = icepool.JointEvaluator(icepool.sum_evaluator,
                                             icepool.sum_evaluator)
     result = test_evaluator(icepool.d6.pool(3))
-    expected = (3 @ icepool.d6).sub(lambda x: (x, x))
+    expected = (3 @ icepool.d6).map(lambda x: (x, x))
     assert result.equals(expected)
 
 
 def test_enumerate_pool_vs_cartesian_product():
     result = icepool.expand_evaluator(d6.pool(3))
-    expected = icepool.Die([(d6, d6, d6)]).sub(lambda x: tuple(sorted(x)))
+    expected = icepool.Die([(d6, d6, d6)]).map(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
 
@@ -157,7 +157,7 @@ def test_expand_vs_sum(pool):
         with pytest.raises(ValueError):
             icepool.expand_evaluator(pool)
     else:
-        result = icepool.expand_evaluator(pool).sub(sum)
+        result = icepool.expand_evaluator(pool).map(sum)
         expected = pool.sum()
         assert result.equals(expected)
 

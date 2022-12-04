@@ -40,7 +40,7 @@ def test_contains_subset(target: Collection, wilds: Collection):
         non_wild_match = Counter(non_wild_rolls) & Counter(target)
         return non_wild_match.total() + len(wild_rolls) >= len(target)
 
-    expected = d(6).pool(4).expand().sub(expected_func)
+    expected = d(6).pool(4).expand().map(expected_func)
     assert result == expected
 
 
@@ -55,5 +55,5 @@ def test_intersection_size(target, wilds):
         non_wild_match = Counter(non_wild_rolls) & Counter(target)
         return min(non_wild_match.total() + len(wild_rolls), len(target))
 
-    expected = d(6).pool(4).expand().sub(expected_func)
+    expected = d(6).pool(4).expand().map(expected_func)
     assert result == expected

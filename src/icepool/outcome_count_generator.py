@@ -143,17 +143,17 @@ class OutcomeCountGenerator(ABC):
     def sum(
         self,
         *,
-        sub: Callable[[Hashable], Hashable] | Mapping[Hashable, Hashable] |
+        map: Callable[[Hashable], Hashable] | Mapping[Hashable, Hashable] |
         None = None
     ) -> 'icepool.Die':
         """The sum of the outcomes.
 
         Args:
-            sub: If provided, the outcomes will be substituted according to
-                this before summing.
+            map: If provided, the outcomes will be mapped according to this
+                before summing.
         """
-        if sub is not None:
-            return icepool.SumEvaluator(sub=sub)(self)
+        if map is not None:
+            return icepool.SumEvaluator(map=map)(self)
         else:
             return icepool.sum_evaluator(self)
 

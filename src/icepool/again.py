@@ -21,7 +21,7 @@ class Again():
     The `again_depth` and `again_end` arguments to `Die()` affect how these
     arguments are processed.
 
-    If you want something more complex, use e.g. `Die.sub()` instead.
+    If you want something more complex, use e.g. `Die.map()` instead.
     """
 
     def __init__(self):
@@ -63,7 +63,7 @@ class Again():
             return arg
 
     def _evaluate(self, die: 'icepool.Die'):
-        """Recursively substitutes the provided `Die` for the `Again` placeholders."""
+        """Recursively replaces the `Again` placeholders with the provided `Die`."""
         if self._func is None:
             return die
         else:
@@ -239,8 +239,8 @@ def _contains_again_inner(outcome) -> bool:
         return False
 
 
-def sub_agains(outcomes: Mapping[Any, int] | Sequence,
-               die: 'icepool.Die') -> Mapping[Any, int] | Sequence:
+def replace_agains(outcomes: Mapping[Any, int] | Sequence,
+                   die: 'icepool.Die') -> Mapping[Any, int] | Sequence:
     """Recursively substitutes all occurences of `Again` with the given Die.
 
     This is not applied to tuples.

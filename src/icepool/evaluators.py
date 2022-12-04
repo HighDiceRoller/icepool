@@ -88,16 +88,16 @@ class SumEvaluator(OutcomeCountEvaluator):
 
     def __init__(self,
                  *,
-                 sub: Callable[[Any], Any] | Mapping[Any, Any] | None = None):
+                 map: Callable[[Any], Any] | Mapping[Any, Any] | None = None):
 
-        if sub is None:
+        if map is None:
             self._sub = lambda outcome: outcome
-        elif callable(sub):
-            self._sub = sub
+        elif callable(map):
+            self._sub = map
         else:
             # sub is a mapping.
             def sub_final(outcome):
-                return sub.get(outcome, outcome)
+                return map.get(outcome, outcome)
 
             self._sub = sub_final
 

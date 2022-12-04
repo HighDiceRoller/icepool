@@ -367,7 +367,7 @@ class apply_sorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return pool.expand().sub(func,
+        return pool.expand().map(func,
                                  star=1,
                                  again_depth=again_depth,
                                  again_end=again_end)
@@ -387,7 +387,7 @@ class apply_sorted():
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 die = icepool.Pool(dice)[sorted_roll_counts]
-                return die.sub(func,
+                return die.map(func,
                                again_depth=again_depth,
                                again_end=again_end)
         else:
@@ -401,7 +401,7 @@ class apply_sorted():
                         'The first argument must be callable. Did you forget to provide a function?'
                     )
                 pool = icepool.Pool(dice)[sorted_roll_counts]
-                return pool.expand().sub(func,
+                return pool.expand().map(func,
                                          star=1,
                                          again_depth=again_depth,
                                          again_end=again_end)

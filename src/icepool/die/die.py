@@ -213,13 +213,13 @@ class Die(Population):
                             'again_end cannot itself contain Again.')
                 if again_depth == 0:
                     # Base case.
-                    outcomes = icepool.again.sub_agains(outcomes, again_end)
+                    outcomes = icepool.again.replace_agains(outcomes, again_end)
                 else:
                     tail = Die(outcomes,
                                times,
                                again_depth=again_depth - 1,
                                again_end=again_end)
-                    outcomes = icepool.again.sub_agains(outcomes, tail)
+                    outcomes = icepool.again.replace_agains(outcomes, tail)
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
@@ -235,7 +235,7 @@ class Die(Population):
         """Performs the unary operation on the outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
-        some other specific behavior, use your own outcome class, or use `sub()`
+        some other specific behavior, use your own outcome class, or use `map()`
         rather than an operator.
 
         This is used for the standard unary operators
@@ -264,7 +264,7 @@ class Die(Population):
         """Performs the operation on pairs of outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
-        some other specific behavior, use your own outcome class, or use `sub()`
+        some other specific behavior, use your own outcome class, or use `map()`
         rather than an operator.
 
         By the time this is called, the other operand has already been
@@ -563,18 +563,14 @@ class Die(Population):
 
     # Mixtures.
 
-    def sub(self,
+    def map(self,
             repl: Callable | Mapping,
             /,
             repeat: int | None = 1,
             star: int = 0,
             again_depth: int = 1,
             again_end=None) -> 'Die':
-        """Changes outcomes of the `Die` to other outcomes.
-
-        You can think of this as `sub`stituting outcomes of this `Die` for other
-        outcomes or dice. Or, as executing a `sub`routine based on the roll of
-        this `Die`.
+        """Maps outcomes of the `Die` to other outcomes.
 
         EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
         `Die()` constructor. It is not advised to use these with `repeat` other
@@ -587,10 +583,10 @@ class Die(Population):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            repeat: `sub()` will be repeated with the same argument on the
+            repeat: `map()` will be repeated with the same argument on the
                 result this many times.
 
-                EXPERIMENTAL: If set to `None`, the result will be as if `sub()`
+                EXPERIMENTAL: If set to `None`, the result will be as if `map()`
                     were repeated an infinite number of times. In this case, the
                     result will be in simplest form.
             star: If set to `True` or 1, outcomes of `self` will be unpacked as
@@ -693,13 +689,13 @@ class Die(Population):
         elif depth == 0:
             return self
 
-        def sub_func(outcome):
+        def map_final(outcome):
             if outcome in outcomes:
                 return outcome + icepool.Again()
             else:
                 return outcome
 
-        return self.sub(sub_func, again_depth=depth, again_end=end)
+        return self.map(map_final, again_depth=depth, again_end=end)
 
     def if_else(self,
                 outcome_if_true,
@@ -716,14 +712,14 @@ class Die(Population):
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
         """
-        return self.bool().sub(lambda x: outcome_if_true
+        return self.bool().map(lambda x: outcome_if_true
                                if x else outcome_if_false,
                                again_depth=again_depth,
                                again_end=again_end)
 
     def is_in(self, target: Container, /) -> 'Die':
         """A die that returns True iff the roll of the die is contained in the target."""
-        return self.sub(lambda x: x in target)
+        return self.map(lambda x: x in target)
 
     def count(self, rolls: int, target, /) -> 'Die':
         """Roll this dice a number of time and count how many are == the target."""
@@ -746,7 +742,7 @@ class Die(Population):
         the result.
 
         If you instead want to replace tuple (or other sequence) outcomes with
-        their sum, use `die.sub(sum)`.
+        their sum, use `die.map(sum)`.
         """
         if rolls in self._sum_cache:
             return self._sum_cache[rolls]
