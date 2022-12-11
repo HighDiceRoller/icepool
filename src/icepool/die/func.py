@@ -32,7 +32,7 @@ def standard(sides: int, /) -> 'icepool.Die':
 d = standard
 
 
-def __getattr__(key: str):
+def __getattr__(key: str) -> 'icepool.Die':
     """Implements the `dX` syntax for standard die with no parentheses.
 
     For example, `icepool.d6`.
