@@ -153,6 +153,11 @@ class OutputManager():
             die_label = f'Output #{i}'
         else:
             die_label = str(die_label)
+            
+        try:
+            die_label += f' (Mean: {die.mean():.2f} SD: {die.standard_deviation():.2f})'
+        except:
+            pass
         
         self.dice.append(die)
         self.die_labels.append(die_label)
