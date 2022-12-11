@@ -184,7 +184,8 @@ class OutcomeCountGenerator(ABC):
         Args:
             targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
-            wilds: A collection of outcomes that will be treated as wilds.
+            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
+                This API is likely to change in the future.
         """
         return icepool.ContainsSubsetEvaluator(targets,
                                                wilds=wilds).evaluate(self)
@@ -203,7 +204,8 @@ class OutcomeCountGenerator(ABC):
         Args:
             targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
-            wilds: A collection of outcomes that will be treated as wilds.
+            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
+                This API is likely to change in the future.
         """
         return icepool.IntersectionSizeEvaluator(targets,
                                                  wilds=wilds).evaluate(self)
@@ -217,9 +219,8 @@ class OutcomeCountGenerator(ABC):
         Args:
             include_outcome: If `True`, the result outcomes will be tuples
                 `(set_size, outcome)`. Greater outcomes will be prioritized.
-            wilds: These will be combined with the best matching set of
-                non-wilds. If all draws are wild, the max outcome in the
-                generator will be taken (even if it has 0 quantity).
+            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
+                This API is likely to change in the future.
 
         Returns:
             A `Die` with outcomes (set_size, outcome).

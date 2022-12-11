@@ -204,7 +204,8 @@ class SubsetTargetEvaluator(OutcomeCountEvaluator):
         Args:
             targets: Either a collection of outcomes, possibly with repeated elements.
                 Or a mapping from outcomes to counts.
-            wilds: A collection of outcomes to treat as wilds.
+            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
+                This API is likely to change in the future.
         """
         if isinstance(targets, Mapping):
             self._targets = targets
