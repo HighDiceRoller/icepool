@@ -79,7 +79,8 @@ def test_standard_pool_zero_dice():
 
 
 def test_runs():
-    result = icepool.BestStraightEvaluator()(icepool.standard_pool([12, 10, 8]))
+    result = icepool.BestStraightEvaluator(include_outcome=True)(
+        icepool.standard_pool([12, 10, 8]))
 
     def func(*outcomes):
         outcomes = sorted(outcomes)
@@ -100,7 +101,7 @@ def test_runs():
 
 def test_runs_skip():
     die = icepool.Die([0, 10])
-    result = icepool.BestStraightEvaluator()(die.pool(10))
+    result = icepool.BestStraightEvaluator(include_outcome=True)(die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
