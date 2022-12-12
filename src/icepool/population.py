@@ -55,25 +55,23 @@ class Population(ABC, Mapping[Any, int]):
         return self.keys()
 
     @cached_property
-    def _outcome_len(self) -> int | None:
+    def _tuple_len(self) -> int | None:
         result = None
         for outcome in self.outcomes():
-            try:
+            if isinstance(outcome, tuple):
                 if result is None:
                     result = len(outcome)
                 elif len(outcome) != result:
                     return None
-            except TypeError:
-                return None
         return result
 
-    def outcome_len(self) -> int | None:
+    def tuple_len(self) -> int | None:
         """The common length of tuple outcomes.
 
         This is `None` if outcomes are not tuples,
         or if there are tuples of different lengths.
         """
-        return self._outcome_len
+        return self._tuple_len
 
     def is_empty(self) -> bool:
         """`True` iff this mapping has no outcomes. """
