@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-12T08:58:25.517463Z",
+      "created": "2022-12-12T09:10:29.552336Z",
       "format": null,
-      "last_modified": "2022-12-12T08:58:09.313193Z",
+      "last_modified": "2022-12-12T09:10:07.820160Z",
       "mimetype": null,
       "name": "ch01_creating_dice.ipynb",
       "path": "tutorial/ch01_creating_dice.ipynb",
@@ -14,20 +14,20 @@
     },
     {
       "content": null,
-      "created": "2022-12-12T08:58:25.517463Z",
+      "created": "2022-12-12T09:10:29.552336Z",
       "format": null,
-      "last_modified": "2022-12-12T08:58:09.313193Z",
+      "last_modified": "2022-12-12T09:10:07.820160Z",
       "mimetype": null,
       "name": "ch02_operators.ipynb",
       "path": "tutorial/ch02_operators.ipynb",
-      "size": 7158,
+      "size": 8058,
       "type": "notebook",
       "writable": true
     }
   ],
-  "created": "2022-12-12T08:58:25.517463Z",
+  "created": "2022-12-12T09:10:29.552336Z",
   "format": "json",
-  "last_modified": "2022-12-12T08:58:25.517463Z",
+  "last_modified": "2022-12-12T09:10:29.552336Z",
   "mimetype": null,
   "name": "tutorial",
   "path": "tutorial",
