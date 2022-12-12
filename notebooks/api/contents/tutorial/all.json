@@ -1,0 +1,25 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-12T08:34:59.880262Z",
+      "format": null,
+      "last_modified": "2022-12-12T08:34:33.679096Z",
+      "mimetype": null,
+      "name": "ch01_creating_dice.ipynb",
+      "path": "tutorial/ch01_creating_dice.ipynb",
+      "size": 6553,
+      "type": "notebook",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-12T08:34:59.880262Z",
+  "format": "json",
+  "last_modified": "2022-12-12T08:34:59.880262Z",
+  "mimetype": null,
+  "name": "tutorial",
+  "path": "tutorial",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
