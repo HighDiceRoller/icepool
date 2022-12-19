@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, Die
+from icepool import d6, Die, coin
 
 expected_d6x1 = icepool.Die(range(1, 13),
                             times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
@@ -67,6 +67,14 @@ def test_map_fixed_point_1_cycle():
 
     result = icepool.Die([0]).map(repl, repeat=None).simplify()
     assert result.equals(icepool.Die([10]))
+
+
+def test_map_steps():
+    # How many coin flips until two heads?
+    result = icepool.Die([0]).map(lambda x: x if x >= 2 else x + coin(1, 2),
+                                  include_steps=True,
+                                  repeat=100)
+    assert result.marginals[1].mean() == pytest.approx(4.0)
 
 
 def test_random_walk():

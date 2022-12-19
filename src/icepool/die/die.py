@@ -566,11 +566,14 @@ class Die(Population):
     def map(self,
             repl: Callable | Mapping,
             /,
-            repeat: int | None = 1,
             star: int = 0,
+            repeat: int | None = 1,
+            include_steps=False,
             again_depth: int = 1,
             again_end=None) -> 'Die':
         """Maps outcomes of the `Die` to other outcomes.
+
+        This is also useful for representing processes.
 
         EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
         `Die()` constructor. It is not advised to use these with `repeat` other
@@ -579,20 +582,31 @@ class Die(Population):
         Args:
             repl: One of the following:
                 * A callable returning a new outcome for each old outcome.
-                * A map from old outcomes to new outcomes.
+                * A mapping from old outcomes to new outcomes.
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            repeat: `map()` will be repeated with the same argument on the
+            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+                `*outcome` before giving it to the `repl` function. `extra_dice`
+                are not unpacked. If `repl` is not a callable, this has no
+                effect.
+            repeat: `map()` will be repeated with the same arguments on the
                 result this many times.
 
                 EXPERIMENTAL: If set to `None`, the result will be as if `map()`
                     were repeated an infinite number of times. In this case, the
                     result will be in simplest form.
-            star: If set to `True` or 1, outcomes of `self` will be unpacked as
-                `*outcome` before giving it to the `repl` function. `extra_dice`
-                are not unpacked. If `repl` is not a callable, this has no
-                effect.
+            include_steps: If `True`, the outcomes of the result are
+                `(outcome, steps)`, where `steps` is the number of repeats
+                needed to reach an absorbing outcome (an outcome that only leads
+                to itself), or `repeat`, whichever is lesser.
+
+                `map()` will return early if it reaches a fixed point.
+                Therefore, you can set `repeat` equal to the maximum number of
+                steps you could possibly be interested in without worrying about
+                it causing extra computations after the fixed point.
+
+                Not compatible with `repeat=None`.
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
 
@@ -622,15 +636,39 @@ class Die(Population):
                     return outcome
 
         if repeat is not None:
-            result = self
-            for _ in range(repeat):
-                result = icepool.apply(transition_function,
-                                       result,
-                                       again_depth=again_depth,
-                                       again_end=again_end)
-            return result
+            if include_steps:
+                result = Die([(self, 0)])
+
+                def transition_with_steps(outcome_and_steps):
+                    outcome, steps = outcome_and_steps
+                    next_outcome = transition_function(outcome)
+                    if icepool.markov_chain.is_absorbing(outcome, next_outcome):
+                        return outcome, steps
+                    else:
+                        return next_outcome, steps + 1
+
+                for _ in range(repeat):
+                    next_result = icepool.apply(transition_with_steps,
+                                                result,
+                                                again_depth=again_depth,
+                                                again_end=again_end)
+                    if result == next_result:
+                        return next_result
+                    result = next_result
+                return result
+            else:
+                result = self
+                for _ in range(repeat):
+                    result = icepool.apply(transition_function,
+                                           result,
+                                           again_depth=again_depth,
+                                           again_end=again_end)
+                return result
         else:
             # Infinite repeat.
+            if include_steps:
+                raise ValueError(
+                    'include_time cannot be used with repeat=None.')
             return icepool.markov_chain.absorbing_markov_chain(
                 self, transition_function)
 
