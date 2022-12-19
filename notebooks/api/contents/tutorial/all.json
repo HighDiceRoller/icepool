@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-19T02:58:37.125745Z",
+      "created": "2022-12-19T03:23:28.075133Z",
       "format": null,
-      "last_modified": "2022-12-19T02:58:12.301492Z",
+      "last_modified": "2022-12-19T03:23:07.541967Z",
       "mimetype": null,
       "name": "ch01_creating_dice.ipynb",
       "path": "tutorial/ch01_creating_dice.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-19T02:58:37.125745Z",
+      "created": "2022-12-19T03:23:28.071133Z",
       "format": null,
-      "last_modified": "2022-12-19T02:58:12.301492Z",
+      "last_modified": "2022-12-19T03:23:07.541967Z",
       "mimetype": null,
       "name": "ch00_introduction.ipynb",
       "path": "tutorial/ch00_introduction.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-19T02:58:37.125745Z",
+      "created": "2022-12-19T03:23:28.075133Z",
       "format": null,
-      "last_modified": "2022-12-19T02:58:12.305492Z",
+      "last_modified": "2022-12-19T03:23:07.541967Z",
       "mimetype": null,
       "name": "ch03_dice_functions.ipynb",
       "path": "tutorial/ch03_dice_functions.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-19T02:58:37.125745Z",
+      "created": "2022-12-19T03:23:28.075133Z",
       "format": null,
-      "last_modified": "2022-12-19T02:58:12.305492Z",
+      "last_modified": "2022-12-19T03:23:07.541967Z",
       "mimetype": null,
       "name": "ch02_dice_operators.ipynb",
       "path": "tutorial/ch02_dice_operators.ipynb",
@@ -50,9 +50,21 @@
     },
     {
       "content": null,
-      "created": "2022-12-19T02:58:37.125745Z",
+      "created": "2022-12-19T03:23:28.075133Z",
       "format": null,
-      "last_modified": "2022-12-19T02:58:12.305492Z",
+      "last_modified": "2022-12-19T03:23:07.541967Z",
+      "mimetype": null,
+      "name": "ch05_advanced_dice.ipynb",
+      "path": "tutorial/ch05_advanced_dice.ipynb",
+      "size": 6456,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-19T03:23:28.075133Z",
+      "format": null,
+      "last_modified": "2022-12-19T03:23:07.541967Z",
       "mimetype": null,
       "name": "ch04_dice_pools.ipynb",
       "path": "tutorial/ch04_dice_pools.ipynb",
@@ -61,9 +73,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-19T02:58:37.125745Z",
+  "created": "2022-12-19T03:23:28.075133Z",
   "format": "json",
-  "last_modified": "2022-12-19T02:58:37.125745Z",
+  "last_modified": "2022-12-19T03:23:28.075133Z",
   "mimetype": null,
   "name": "tutorial",
   "path": "tutorial",
