@@ -238,6 +238,13 @@ class OutcomeCountGenerator(ABC):
 
         Outcomes must be `int`s.
 
+        Args:
+            include_outcome: If `True`, the final outcomes will be tuples
+                `(straight_size, outcome)`. Greater outcomes will be
+                prioritized, and the result is the greatest outcome in the
+                straight.
+                If `False`, the final outcomes will be just the straight size.
+
         Returns:
             A `Die` with outcomes (straight_length, outcome).
             The greatest single such straight is returned.

@@ -315,6 +315,7 @@ class BestStraightEvaluator(OutcomeCountEvaluator):
             include_outcome: If `True`, the final outcomes will be tuples
                 `(straight_size, outcome)`. Greater outcomes will be
                 prioritized, and the result is the greatest outcome in the
+                straight.
                 If `False`, the final outcomes will be just the straight size.
         """
         self._include_outcome = include_outcome
