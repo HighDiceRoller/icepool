@@ -1,3 +1,12 @@
+## 0.22.0
+
+* `Die.sub()` renamed to `Die.map()`.
+* `Die.map()` can now include the number of steps taken until absorption.
+* `Die.reroll_until()` renamed to `Die.filter()`.
+* `wilds` arguments marked experimental, pending decision on how ordering should affect them.
+* Only tuples get separate columns in tables and not `str` or `bytes`.
+* Non-recursive algorithm for `Again()` handling.
+
 ## 0.21.0
 
 * Nested lists are now allowed in the `Die()` constructor.
