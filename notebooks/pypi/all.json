@@ -1,24 +1,24 @@
 {
   "icepool": {
     "releases": {
-      "0.21.0": [
+      "0.22.0": [
         {
           "comment_text": "",
           "digests": {
-            "md5": "b9cbafff3fa602d16ad9e3c29fee6705",
-            "sha256": "45b2c2a2a6e48af72fbc6c83aae0338107e021f5ed259abf5e0df28d95f8f90c"
+            "md5": "42fdad07af83ae1609d6bc677520c3ce",
+            "sha256": "816dfc8544cbbf5eb28b0445454afa07f7ca1b79731606112d4e78b480949283"
           },
           "downloads": -1,
-          "filename": "icepool-0.21.0-py3-none-any.whl",
+          "filename": "icepool-0.22.0-py3-none-any.whl",
           "has_sig": false,
-          "md5_digest": "b9cbafff3fa602d16ad9e3c29fee6705",
+          "md5_digest": "42fdad07af83ae1609d6bc677520c3ce",
           "packagetype": "bdist_wheel",
           "python_version": "py3",
           "requires_python": ">=3.10",
-          "size": 61904,
-          "upload_time": "2022-12-04T03:02:57Z",
-          "upload_time_iso_8601": "2022-12-04T03:02:57Z",
-          "url": "./icepool-0.21.0-py3-none-any.whl",
+          "size": 62639,
+          "upload_time": "2022-12-19T08:53:50Z",
+          "upload_time_iso_8601": "2022-12-19T08:53:50Z",
+          "url": "./icepool-0.22.0-py3-none-any.whl",
           "yanked": false,
           "yanked_reason": null
         }
