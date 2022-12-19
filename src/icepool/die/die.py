@@ -185,6 +185,9 @@ class Die(Population):
         Raises:
             ValueError: `None` is not a valid outcome for a `Die`.
         """
+        if again_depth < 0:
+            raise ValueError('again_depth cannot be negative.')
+
         if isinstance(outcomes, Die):
             if times == 1:
                 return outcomes
@@ -217,9 +220,14 @@ class Die(Population):
                 else:
                     tail = Die(outcomes,
                                times,
-                               again_depth=again_depth - 1,
+                               again_depth=0,
                                again_end=again_end)
-                    outcomes = icepool.again.replace_agains(outcomes, tail)
+                    for _ in range(again_depth):
+                        tail = Die(outcomes,
+                                   times,
+                                   again_depth=0,
+                                   again_end=tail)
+                    return tail
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
