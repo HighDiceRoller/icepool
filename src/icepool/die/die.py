@@ -16,10 +16,15 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Container, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Callable, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
+
+T0: TypeAlias = 'T | icepool.again.Again | Literal[icepool.SpecialValue.Reroll]'
+"""Type varaible representing outcome types plus special constructor values."""
+T1: TypeAlias = Mapping[T0, int] | Sequence[T0] | T
+T2: TypeAlias = Mapping[T1, int] | Sequence[T1] | T1
 
 U = TypeVar('U', bound=Hashable)
 """Type variable representing a secondary outcome type, e.g. the output of a function."""
@@ -38,7 +43,9 @@ def is_bare_outcome(outcome):
     return True
 
 
-def implicit_convert_to_die(outcome) -> 'Die':
+def implicit_convert_to_die(
+        outcome: T | 'Die[T]' | Literal[icepool.SpecialValue.Reroll]
+) -> 'Die[T]':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
     If the outcome is already a Die, it is returned as-is (even if it has
@@ -89,12 +96,15 @@ class Die(Population[T]):
     def _new_type(self) -> type:
         return Die
 
-    def __new__(cls,
-                outcomes: Mapping[Any, int] | Sequence,
-                times: Sequence[int] | int = 1,
-                *,
-                again_depth: int = 1,
-                again_end=None) -> 'Die':
+    def __new__(
+        cls,
+        outcomes: T2,
+        times: Sequence[int] | int = 1,
+        *,
+        again_depth: int = 1,
+        again_end: T | 'Die[T]' | Literal[icepool.SpecialValue.Reroll] |
+        None = None
+    ) -> 'Die[T]':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
@@ -207,9 +217,9 @@ class Die(Population[T]):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test = Die(outcomes,
-                               again_depth=0,
-                               again_end=icepool.Reroll)
+                    test: Die[T] = Die(outcomes,
+                                       again_depth=0,
+                                       again_end=icepool.Reroll)
                     if len(test) == 0:
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
@@ -224,10 +234,10 @@ class Die(Population[T]):
                     # Base case.
                     outcomes = icepool.again.replace_agains(outcomes, again_end)
                 else:
-                    tail = Die(outcomes,
-                               times,
-                               again_depth=0,
-                               again_end=again_end)
+                    tail: Die[T] = Die(outcomes,
+                                       times,
+                                       again_depth=0,
+                                       again_end=again_end)
                     for _ in range(again_depth):
                         tail = Die(outcomes,
                                    times,
@@ -551,7 +561,7 @@ class Die(Population[T]):
 
     @cached_property
     def _popped_min(self) -> tuple['Die[T]', int]:
-        die = icepool.Die(self._data.remove_min())
+        die: 'Die[T]' = icepool.Die(self._data.remove_min())
         return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die[T]', int]:
@@ -564,7 +574,7 @@ class Die(Population[T]):
 
     @cached_property
     def _popped_max(self) -> tuple['Die[T]', int]:
-        die = icepool.Die(self._data.remove_max())
+        die: 'Die[T]' = icepool.Die(self._data.remove_max())
         return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die[T]', int]:
@@ -651,7 +661,7 @@ class Die(Population[T]):
 
         if repeat is not None:
             if include_steps:
-                result = Die([(self, 0)])
+                result_with_steps: 'Die[tuple[T, int]]' = Die([(self, 0)])
 
                 def transition_with_steps(outcome_and_steps):
                     outcome, steps = outcome_and_steps
@@ -663,15 +673,15 @@ class Die(Population[T]):
 
                 for _ in range(repeat):
                     next_result = icepool.apply(transition_with_steps,
-                                                result,
+                                                result_with_steps,
                                                 again_depth=again_depth,
                                                 again_end=again_end)
-                    if result == next_result:
+                    if result_with_steps == next_result:
                         return next_result
-                    result = next_result
-                return result
+                    result_with_steps = next_result
+                return result_with_steps
             else:
-                result = self
+                result: 'Die[T]' = self
                 for _ in range(repeat):
                     result = icepool.apply(transition_function,
                                            result,
@@ -824,7 +834,7 @@ class Die(Population[T]):
 
         return icepool.Die(data)
 
-    def __rmatmul__(self, other: int | 'Die[int]') -> 'Die':
+    def __rmatmul__(self, other: 'int | Die[int]') -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         if isinstance(other, icepool.Again):
             return NotImplemented
@@ -1220,7 +1230,7 @@ class Die(Population[T]):
                     return Counts([(False, d - n), (True, n)])
 
     def __eq__(self, other) -> 'icepool.DieWithTruth':  # type: ignore
-        other_die = implicit_convert_to_die(other)
+        other_die: Die = implicit_convert_to_die(other)
 
         def data_callback():
             return Die._eq(False, self, other_die)
@@ -1231,7 +1241,7 @@ class Die(Population[T]):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def __ne__(self, other) -> 'icepool.DieWithTruth':  # type: ignore
-        other_die = implicit_convert_to_die(other)
+        other_die: Die = implicit_convert_to_die(other)
 
         def data_callback():
             return Die._eq(True, self, other_die)

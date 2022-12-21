@@ -11,7 +11,7 @@ from typing import Any, Callable, Generator, Sequence
 
 
 @cache
-def standard(sides: int, /) -> 'icepool.Die':
+def standard(sides: int, /) -> 'icepool.Die[int]':
     """A standard die.
 
     Specifically, the outcomes are `int`s from `1` to `sides` inclusive,
@@ -32,7 +32,7 @@ def standard(sides: int, /) -> 'icepool.Die':
 d = standard
 
 
-def __getattr__(key: str) -> 'icepool.Die':
+def __getattr__(key: str) -> 'icepool.Die[int]':
     """Implements the `dX` syntax for standard die with no parentheses.
 
     For example, `icepool.d6`.
@@ -48,7 +48,7 @@ def __getattr__(key: str) -> 'icepool.Die':
     raise AttributeError(key)
 
 
-def bernoulli(n: int, d: int, /) -> 'icepool.Die':
+def bernoulli(n: int, d: int, /) -> 'icepool.Die[bool]':
     """A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.
 
     If `n == 0` or `n == d` the result will have only one outcome.
@@ -172,9 +172,7 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
 def reduce(func: Callable[[Any, Any], Any],
            dice,
            *,
-           initial=None,
-           again_depth: int = 1,
-           again_end=None) -> 'icepool.Die':
+           initial=None) -> 'icepool.Die':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -194,24 +192,18 @@ def reduce(func: Callable[[Any, Any], Any],
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = icepool.implicit_convert_to_die(initial)
+        result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
     else:
         result = next(iter_dice)
     for die in iter_dice:
-        result = apply(func,
-                       result,
-                       die,
-                       again_depth=again_depth,
-                       again_end=again_end)
+        result = apply(func, result, die)
     return result
 
 
 def accumulate(func: Callable[[Any, Any], Any],
                dice,
                *,
-               initial=None,
-               again_depth: int = 1,
-               again_end=None) -> Generator['icepool.Die', None, None]:
+               initial=None) -> Generator['icepool.Die', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -230,13 +222,11 @@ def accumulate(func: Callable[[Any, Any], Any],
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        again_depth: Forwarded to the final die constructor.
-        again_end: Forwarded to the final die constructor.
     """
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result = icepool.implicit_convert_to_die(initial)
+        result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
     else:
         try:
             result = next(iter_dice)
@@ -244,11 +234,7 @@ def accumulate(func: Callable[[Any, Any], Any],
             return
     yield result
     for die in iter_dice:
-        result = apply(func,
-                       result,
-                       die,
-                       again_depth=again_depth,
-                       again_end=again_end)
+        result = apply(func, result, die)
         yield result
 
 
