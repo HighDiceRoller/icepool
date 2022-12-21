@@ -11,16 +11,19 @@ from collections import defaultdict
 from functools import cached_property
 import operator
 
-from typing import Any, Callable, Iterator, Mapping, MutableMapping, Sequence, overload
+from typing import Any, Callable, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar, overload
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the outcome type."""
 
 
-class Deck(Population):
+class Deck(Population[T]):
     """Sampling without replacement (within a single evaluation).
 
     Quantities represent duplicates.
     """
 
-    _data: Counts
+    _data: Counts[T]
     _deal: int
 
     def _new_type(self) -> type:
@@ -28,7 +31,7 @@ class Deck(Population):
 
     def __new__(cls,
                 outcomes: Mapping[Any, int] | Sequence,
-                times: Sequence[int] | int = 1) -> 'Deck':
+                times: Sequence[int] | int = 1) -> 'Deck[T]':
         """Constructor for a `Deck`.
 
         Args:
@@ -83,7 +86,7 @@ class Deck(Population):
         return Deck._new_deck(data)
 
     @classmethod
-    def _new_deck(cls, data: Counts) -> 'Deck':
+    def _new_deck(cls, data: Counts[T]) -> 'Deck[T]':
         """Creates a new `Deck` using already-processed arguments.
 
         Args:
@@ -93,19 +96,19 @@ class Deck(Population):
         self._data = data
         return self
 
-    def keys(self) -> CountsKeysView:
+    def keys(self) -> CountsKeysView[T]:
         return self._data.keys()
 
     def values(self) -> CountsValuesView:
         return self._data.values()
 
-    def items(self) -> CountsItemsView:
+    def items(self) -> CountsItemsView[T]:
         return self._data.items()
 
     def __getitem__(self, outcome) -> int:
         return self._data[outcome]
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[T]:
         return iter(self.keys())
 
     def __len__(self) -> int:
@@ -114,18 +117,18 @@ class Deck(Population):
     size = icepool.Population.denominator
 
     @cached_property
-    def _popped_min(self) -> tuple['Deck', int]:
+    def _popped_min(self) -> tuple['Deck[T]', int]:
         return self._new_deck(self._data.remove_min()), self.quantities()[0]
 
-    def _pop_min(self) -> tuple['Deck', int]:
+    def _pop_min(self) -> tuple['Deck[T]', int]:
         """A `Deck` with the min outcome removed."""
         return self._popped_min
 
     @cached_property
-    def _popped_max(self) -> tuple['Deck', int]:
+    def _popped_max(self) -> tuple['Deck[T]', int]:
         return self._new_deck(self._data.remove_max()), self.quantities()[-1]
 
-    def _pop_max(self) -> tuple['Deck', int]:
+    def _pop_max(self) -> tuple['Deck[T]', int]:
         """A `Deck` with the max outcome removed."""
         return self._popped_max
 
@@ -136,7 +139,7 @@ class Deck(Population):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    def map(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck':
+    def map(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck[T]':
         """Maps outcomes of this `Deck` to other outcomes.
 
         Args:

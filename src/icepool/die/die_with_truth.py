@@ -7,10 +7,13 @@ from icepool.die.die import Die
 from functools import cached_property
 import warnings
 
-from typing import Callable
+from typing import Callable, Hashable, TypeVar
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the outcome type."""
 
 
-class DieWithTruth(Die):
+class DieWithTruth(Die[T]):
     """A `Die` with a truth value.
 
     Additionally, the data is evaluated lazily since the caller may only be
@@ -18,11 +21,11 @@ class DieWithTruth(Die):
     """
     _used_callback: bool
     """Whether either of the callbacks has been used."""
-    _data_callback: Callable[[], Counts]
+    _data_callback: Callable[[], Counts[T]]
     _truth_value_callback: Callable[[], bool]
 
-    def __new__(cls, data_callback: Callable[[], Counts],
-                truth_value_callback: Callable[[], bool]):
+    def __new__(cls, data_callback: Callable[[], Counts[T]],
+                truth_value_callback: Callable[[], bool]) -> 'DieWithTruth[T]':
         """This class does not need to be constructed publically.
 
         Args:
@@ -38,24 +41,24 @@ class DieWithTruth(Die):
         return self
 
     @cached_property
-    def _data(self):
+    def _data(self) -> Counts[T]:  # type: ignore
         if self._used_callback:
             warnings.warn(
                 'Both the Die result and the truth value of a comparator were used. This is likely to be unintentional.',
                 category=RuntimeWarning,
                 stacklevel=3)
         self._used_callback = True
-        return self._data_callback()
+        return self._data_callback()  # type: ignore
 
     @cached_property
-    def _truth_value(self):
+    def _truth_value(self) -> bool:
         if self._used_callback:
             warnings.warn(
                 'Both the Die result and the truth value of a comparator were used. This is likely to be unintentional.',
                 category=RuntimeWarning,
                 stacklevel=4)
         self._used_callback = True
-        return self._truth_value_callback()
+        return self._truth_value_callback()  # type: ignore
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self._truth_value

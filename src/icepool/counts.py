@@ -5,19 +5,22 @@ import icepool
 from functools import cached_property
 import math
 
-from typing import Any, Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
+from typing import Any, Collection, Hashable, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, TypeVar, ValuesView
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the outcome type."""
 
 
-class Counts(Mapping[Any, int]):
+class Counts(Mapping[T, int]):
     """Immutable dictionary with sorted keys and `int` values.
 
     The values of keys(), values(), and items() are also Sequences, which means
     they can be indexed.
     """
 
-    _mapping: Mapping[Any, int]
+    _mapping: Mapping[T, int]
 
-    def __init__(self, items: Collection[tuple[Any, int]]):
+    def __init__(self, items: Collection[tuple[T, int]]):
         """
         Args:
             items: A Collection of key, value pairs.
@@ -27,7 +30,7 @@ class Counts(Mapping[Any, int]):
         """
         items = sorted(items)
 
-        mapping: MutableMapping[Any, int] = {}
+        mapping: MutableMapping[T, int] = {}
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid key.')
@@ -59,28 +62,28 @@ class Counts(Mapping[Any, int]):
     def __getitem__(self, key) -> int:
         return self._mapping[key]
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[T]:
         return iter(self._mapping)
 
     @cached_property
-    def _keys(self):
+    def _keys(self) -> Sequence[T]:
         return tuple(self._mapping.keys())
 
     def keys(self) -> 'CountsKeysView':
         return CountsKeysView(self)
 
     @cached_property
-    def _values(self):
+    def _values(self) -> Sequence[int]:
         return tuple(self._mapping.values())
 
     def values(self) -> 'CountsValuesView':
         return CountsValuesView(self)
 
     @cached_property
-    def _items(self):
+    def _items(self) -> Sequence[tuple[T, int]]:
         return tuple(self._mapping.items())
 
-    def items(self) -> 'CountsItemsView':
+    def items(self) -> 'CountsItemsView[T]':
         return CountsItemsView(self)
 
     def __str__(self) -> str:
@@ -103,22 +106,22 @@ class Counts(Mapping[Any, int]):
         return self._hash
 
     @cached_property
-    def _remove_min(self) -> 'Counts':
+    def _remove_min(self) -> 'Counts[T]':
         return Counts(self.items()[1:])
 
-    def remove_min(self) -> 'Counts':
+    def remove_min(self) -> 'Counts[T]':
         """A `Counts` with the min element removed."""
         return self._remove_min
 
     @cached_property
-    def _remove_max(self) -> 'Counts':
+    def _remove_max(self) -> 'Counts[T]':
         return Counts(self.items()[:-1])
 
-    def remove_max(self) -> 'Counts':
+    def remove_max(self) -> 'Counts[T]':
         """A `Counts` with the max element removed."""
         return self._remove_max
 
-    def simplify(self) -> 'Counts':
+    def simplify(self) -> 'Counts[T]':
         """Divides all counts by their greatest common denominator."""
         gcd = math.gcd(*self.values())
         if gcd <= 1:
@@ -127,10 +130,10 @@ class Counts(Mapping[Any, int]):
         return Counts(data)
 
 
-class CountsKeysView(KeysView, Sequence):
+class CountsKeysView(KeysView[T], Sequence[T]):
     """This functions as both a `KeysView` and a `Sequence`."""
 
-    def __init__(self, counts: Counts):
+    def __init__(self, counts: Counts[T]):
         self._mapping = counts
 
     def __getitem__(self, index):
@@ -159,7 +162,7 @@ class CountsValuesView(ValuesView[int], Sequence[int]):
         return self._mapping._values == other
 
 
-class CountsItemsView(ItemsView[Any, int], Sequence[tuple[Any, int]]):
+class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
     """This functions as both an `ItemsView` and a `Sequence`."""
 
     def __init__(self, counts: Counts):
