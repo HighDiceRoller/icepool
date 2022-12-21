@@ -21,7 +21,7 @@ from typing import Any, Callable, Container, Hashable, Iterator, Literal, Mappin
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
 
-T0: TypeAlias = 'T | icepool.again.Again | Literal[icepool.SpecialValue.Reroll]'
+T0: TypeAlias = 'T | icepool.again.Again | Literal[icepool.RerollType.Reroll]'
 """Type varaible representing outcome types plus special constructor values."""
 T1: TypeAlias = Mapping[T0, int] | Sequence[T0] | T
 T2: TypeAlias = Mapping[T1, int] | Sequence[T1] | T1
@@ -44,8 +44,7 @@ def is_bare_outcome(outcome) -> bool:
 
 
 def implicit_convert_to_die(
-        outcome: T | 'Die[T]' | Literal[icepool.SpecialValue.Reroll]
-) -> 'Die[T]':
+        outcome: T | 'Die[T]' | Literal[icepool.RerollType.Reroll]) -> 'Die[T]':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
     If the outcome is already a Die, it is returned as-is (even if it has
@@ -102,7 +101,7 @@ class Die(Population[T]):
         times: Sequence[int] | int = 1,
         *,
         again_depth: int = 1,
-        again_end: T | 'Die[T]' | Literal[icepool.SpecialValue.Reroll] |
+        again_end: T | 'Die[T]' | Literal[icepool.RerollType.Reroll] |
         None = None
     ) -> 'Die[T]':
         """Constructor for a `Die`.

@@ -4,6 +4,6 @@ import enum
 import math
 
 
-class SpecialValue(enum.Enum):
+class RerollType(enum.Enum):
     Reroll = 'Reroll'
     """Indicates an outcome should be rerolled (with unlimited depth)."""

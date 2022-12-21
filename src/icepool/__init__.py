@@ -19,9 +19,9 @@ refer to dice in a pool.
 
 __docformat__ = 'google'
 
-from icepool.constant import SpecialValue
+from icepool.constant import RerollType
 
-Reroll = SpecialValue.Reroll
+Reroll = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
 
 This can be used in place of outcomes in many places. See individual function
