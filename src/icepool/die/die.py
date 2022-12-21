@@ -761,10 +761,9 @@ class Die(Population[T]):
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
         """
-        return self.bool().map(lambda x: outcome_if_true
-                               if x else outcome_if_false,
-                               again_depth=again_depth,
-                               again_end=again_end)
+        return self.map(lambda x: outcome_if_true if x else outcome_if_false,
+                        again_depth=again_depth,
+                        again_end=again_end)
 
     def is_in(self, target: Container, /) -> 'Die':
         """A die that returns True iff the roll of the die is contained in the target."""
@@ -1286,14 +1285,6 @@ class Die(Population[T]):
         """
         return self.unary_op(Die._sign)
 
-    def bool(self) -> 'Die':
-        """Takes `bool()` of all outcomes.
-
-        Note that a `Die` as a whole is not considered to have a truth value
-        unless it is the result of the `==` or `!=` operators.
-        """
-        return self.unary_op(bool)
-
     # Equality and hashing.
 
     def __bool__(self):
@@ -1321,7 +1312,7 @@ class Die(Population[T]):
     def __hash__(self) -> int:
         return self._hash
 
-    def equals(self, other, *, simplify=False):
+    def equals(self, other, *, simplify=False) -> bool:
         """`True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
