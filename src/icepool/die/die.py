@@ -30,7 +30,7 @@ U = TypeVar('U', bound=Hashable)
 """Type variable representing a secondary outcome type, e.g. the output of a function."""
 
 
-def is_bare_outcome(outcome):
+def is_bare_outcome(outcome) -> bool:
     """Returns `True` iff the outcome is not a `Mapping` or `Sequence` of a type that holds multiple outcomes.
 
     Currently product tuples are allowed.
@@ -255,7 +255,7 @@ class Die(Population[T]):
         self._data = icepool.creation_args.expand_args_for_die(outcomes, times)
         return self
 
-    def unary_op(self, op: Callable, *args, **kwargs) -> 'Die':
+    def unary_op(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
         """Performs the unary operation on the outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -284,7 +284,8 @@ class Die(Population[T]):
             data[new_outcome] += quantity
         return icepool.Die(data)
 
-    def binary_op(self, other: 'Die', op: Callable, *args, **kwargs) -> 'Die':
+    def binary_op(self, other: 'Die', op: Callable[..., U], *args,
+                  **kwargs) -> 'Die[U]':
         """Performs the operation on pairs of outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -588,7 +589,7 @@ class Die(Population[T]):
     # Mixtures.
 
     def map(self,
-            repl: Callable | Mapping[T, Any],
+            repl: Callable | Mapping[T, U],
             /,
             star: int = 0,
             repeat: int | None = 1,
@@ -1132,7 +1133,7 @@ class Die(Population[T]):
     # Comparators.
 
     @staticmethod
-    def _lt_le(op: Callable, lo: 'Die', hi: 'Die') -> 'Die[bool]':
+    def _lt_le(op: Callable[..., bool], lo: 'Die', hi: 'Die') -> 'Die[bool]':
         """Linear algorithm for < and <=.
 
         Args:

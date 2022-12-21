@@ -7,7 +7,12 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Generator, Sequence
+from typing import Any, Callable, Generator, Hashable, Literal, Sequence, TypeVar
+
+T = TypeVar('T', bound=Hashable)
+"""An outcome type."""
+U = TypeVar('U', bound=Hashable)
+"""Another outcome type."""
 
 
 @cache
@@ -169,10 +174,10 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     return tuple(die.set_outcomes(outcomes) for die in dice)
 
 
-def reduce(func: Callable[[Any, Any], Any],
+def reduce(func: Callable[[T, T], T],
            dice,
            *,
-           initial=None) -> 'icepool.Die':
+           initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to
@@ -200,10 +205,10 @@ def reduce(func: Callable[[Any, Any], Any],
     return result
 
 
-def accumulate(func: Callable[[Any, Any], Any],
+def accumulate(func: Callable[[T, T], T],
                dice,
                *,
-               initial=None) -> Generator['icepool.Die', None, None]:
+               initial=None) -> Generator['icepool.Die[T]', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -256,10 +261,10 @@ def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
         yield outcomes, final_quantity
 
 
-def apply(func: Callable,
+def apply(func: Callable[..., T],
           *dice,
           again_depth: int = 1,
-          again_end=None) -> 'icepool.Die':
+          again_end=None) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
@@ -319,10 +324,10 @@ class apply_sorted():
 
     def __new__(  # type: ignore
             cls,
-            func: Callable,
+            func: Callable[..., T],
             *dice,
             again_depth: int = 1,
-            again_end=None) -> 'icepool.Die':
+            again_end=None) -> 'icepool.Die[T]':
         """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
         Treat this as an ordinary function, not a constructor.
@@ -364,10 +369,10 @@ class apply_sorted():
         """Implements `[]` syntax for `apply_sorted`."""
         if isinstance(sorted_roll_counts, int):
 
-            def result(func: Callable,
+            def result(func: Callable[..., T],
                        *dice,
                        again_depth: int = 1,
-                       again_end=None) -> 'icepool.Die':
+                       again_end=None) -> 'icepool.Die[T]':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
@@ -378,10 +383,10 @@ class apply_sorted():
                                again_end=again_end)
         else:
 
-            def result(func: Callable,
+            def result(func: Callable[..., T],
                        *dice,
                        again_depth: int = 1,
-                       again_end=None) -> 'icepool.Die':
+                       again_end=None) -> 'icepool.Die[T]':
                 if not callable(func):
                     raise TypeError(
                         'The first argument must be callable. Did you forget to provide a function?'
