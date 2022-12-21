@@ -16,7 +16,10 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Container, Iterator, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Container, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable respresenting the outcome type."""
 
 
 def is_bare_outcome(outcome):
@@ -52,7 +55,7 @@ def implicit_convert_to_die(outcome) -> 'Die':
     return Die([outcome])
 
 
-class Die(Population):
+class Die(Population[T]):
     """Sampling with replacement. Quantities represent weights.
 
     Dice are immutable. Methods do not modify the `Die` in-place;
@@ -511,7 +514,7 @@ class Die(Population):
                 data[outcome] += quantity
         return icepool.Die(data)
 
-    def set_range(self,
+    def set_range(self: 'Die[int]',
                   min_outcome: int | None = None,
                   max_outcome: int | None = None) -> 'Die':
         """Sets the outcomes of this `Die` to the given `int` range (inclusive).
@@ -806,7 +809,7 @@ class Die(Population):
         self._sum_cache[rolls] = result
         return result
 
-    def __matmul__(self, other) -> 'Die':
+    def __matmul__(self: 'Die[int]', other) -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         if isinstance(other, icepool.Again):
             return NotImplemented
@@ -825,7 +828,7 @@ class Die(Population):
 
         return icepool.Die(data)
 
-    def __rmatmul__(self, other) -> 'Die':
+    def __rmatmul__(self, other: int | 'Die[int]') -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
         if isinstance(other, icepool.Again):
             return NotImplemented

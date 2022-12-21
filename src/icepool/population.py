@@ -12,13 +12,16 @@ import math
 import operator
 import random
 
-from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeVar, overload
+from typing import Any, Callable, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
 
 P = TypeVar('P', bound='Population')
 """Type variable representing a subclass of `Population`."""
 
+T = TypeVar('T', bound=Hashable)
+"""Type variable respresenting the outcome type."""
 
-class Population(ABC, Mapping[Any, int]):
+
+class Population(ABC, Mapping[T, int]):
     """A mapping from outcomes to `int` quantities.
 
     Outcomes with each instance must be hashable and totally orderable.
@@ -77,15 +80,15 @@ class Population(ABC, Mapping[Any, int]):
         """`True` iff this mapping has no outcomes. """
         return len(self) == 0
 
-    def min_outcome(self):
+    def min_outcome(self) -> T:
         """The least outcome."""
         return self.outcomes()[0]
 
-    def max_outcome(self):
+    def max_outcome(self) -> T:
         """The greatest outcome."""
         return self.outcomes()[-1]
 
-    def nearest_le(self, outcome):
+    def nearest_le(self, outcome) -> T | None:
         """The nearest outcome that is <= the argument.
 
         Returns `None` if there is no such outcome.
@@ -95,7 +98,7 @@ class Population(ABC, Mapping[Any, int]):
             return None
         return self.outcomes()[index]
 
-    def nearest_ge(self, outcome):
+    def nearest_ge(self, outcome) -> T | None:
         """The nearest outcome that is >= the argument.
 
         Returns `None` if there is no such outcome.
@@ -191,10 +194,10 @@ class Population(ABC, Mapping[Any, int]):
     # Probabilities.
 
     @cached_property
-    def _probabilities(self):
+    def _probabilities(self) -> Sequence[float]:
         return tuple(v / self.denominator() for v in self.values())
 
-    def probabilities(self, percent: bool = False):
+    def probabilities(self, percent: bool = False) -> Sequence[float]:
         """The probability of each outcome in order.
 
         Also known as the probability mass function (PMF).
@@ -273,7 +276,7 @@ class Population(ABC, Mapping[Any, int]):
         else:
             return tuple((1.0 - x) for x in self._probabilities_le)
 
-    def probability(self, outcome) -> float:
+    def probability(self, outcome: T) -> float:
         """The probability of a single outcome, or 0.0 if not present. """
         return self.quantity(outcome) / self.denominator()
 
@@ -312,23 +315,24 @@ class Population(ABC, Mapping[Any, int]):
         """
         return self.quantile(1, 2)
 
-    def median_left(self):
+    def median_left(self) -> T:
         """The median, taking the lesser in case of a tie."""
         return self.quantile_left(1, 2)
 
-    def median_right(self):
+    def median_right(self) -> T:
         """The median, taking the greater in case of a tie."""
         return self.quantile_right(1, 2)
 
     def quantile(self, n: int, d: int = 100):
         """The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.
 
-        This will fail if the outcomes do not support division;
+        This will fail if the outcomes do not support addition and division;
         in this case, use `quantile_left` or `quantile_right` instead.
         """
-        return (self.quantile_left(n, d) + self.quantile_right(n, d)) / 2
+        return (self.quantile_left(n, d) +
+                self.quantile_right(n, d)) / 2  # type: ignore
 
-    def quantile_left(self, n: int, d: int = 100):
+    def quantile_left(self, n: int, d: int = 100) -> T:
         """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
         index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
@@ -336,7 +340,7 @@ class Population(ABC, Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def quantile_right(self, n: int, d: int = 100):
+    def quantile_right(self, n: int, d: int = 100) -> T:
         """The outcome `n / d` of the way through the CDF, taking the greater in case of a tie."""
         index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)
@@ -433,7 +437,7 @@ class Population(ABC, Mapping[Any, int]):
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
 
-    def sample(self):
+    def sample(self) -> T:
         """A single random sample from this population.
 
         Note that this is always "with replacement" even for `Deck` since
