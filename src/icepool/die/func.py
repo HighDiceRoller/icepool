@@ -69,7 +69,7 @@ def bernoulli(n: int, d: int, /) -> 'icepool.Die[bool]':
 coin = bernoulli
 
 
-def one_hot(sides: int, /):
+def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':
     """A `Die` with tuple outcomes with one element set to `True` uniformly at random and the rest `False`.
 
     This is an easy (if expensive) way of representing how many dice in a pool
@@ -84,10 +84,10 @@ def one_hot(sides: int, /):
     return icepool.Die(data)
 
 
-def from_cumulative_quantities(outcomes: Sequence,
+def from_cumulative_quantities(outcomes: Sequence[T],
                                cumulative_quantities: Sequence[int],
                                *,
-                               reverse: bool = False) -> 'icepool.Die':
+                               reverse: bool = False) -> 'icepool.Die[T]':
     """Constructs a `Die` from a sequence of cumulative quantities.
 
     Args:
@@ -109,7 +109,8 @@ def from_cumulative_quantities(outcomes: Sequence,
     return icepool.Die(d)
 
 
-def from_rv(rv, outcomes: Sequence[int | float], denominator: int, **kwargs):
+def from_rv(rv, outcomes: Sequence[int | float], denominator: int,
+            **kwargs) -> 'icepool.Die[int | float]':
     """Constructs a `Die` from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
