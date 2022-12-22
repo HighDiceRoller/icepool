@@ -8,7 +8,13 @@ def test_reroll_default():
     assert result.equals(expected)
 
 
-def test_reroll():
+def test_reroll_bare():
+    result = icepool.d6.reroll(1)
+    expected = icepool.d5 + 1
+    assert result.equals(expected)
+
+
+def test_reroll_1():
     result = icepool.d6.reroll([1])
     expected = icepool.d5 + 1
     assert result.equals(expected)
