@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 
 from typing import Any, Callable, Collection, Container, Generator, Generic, Hashable, Mapping, Sequence, TypeAlias, TypeVar
 
-T = TypeVar('T', bound=Hashable)
+T_co = TypeVar('T_co', bound=Hashable, covariant=True)
 """Type variable representing the outcome type."""
 
 NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
@@ -18,7 +18,7 @@ NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
-class OutcomeCountGenerator(ABC, Generic[T]):
+class OutcomeCountGenerator(ABC, Generic[T_co]):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
@@ -30,7 +30,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
     """
 
     @abstractmethod
-    def outcomes(self) -> Sequence[T]:
+    def outcomes(self) -> Sequence[T_co]:
         """The set of outcomes, in sorted order."""
 
     @abstractmethod
@@ -46,7 +46,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _generate_min(self, min_outcome: T) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -63,7 +63,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _generate_max(self, max_outcome: T) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
@@ -130,7 +130,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
 
     # Built-in evaluators.
 
-    def expand(self, unique: bool = False) -> 'icepool.Die[tuple[T, ...]]':
+    def expand(self, unique: bool = False) -> 'icepool.Die[tuple[T_co, ...]]':
         """All possible (unordered) tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
@@ -160,14 +160,14 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         else:
             return icepool.sum_evaluator(self)
 
-    def count(self, target: T, /) -> 'icepool.Die[int]':
+    def count(self, target, /) -> 'icepool.Die[int]':
         """The number of outcomes that are == the target.
 
         If no target is provided, all outcomes will be counted.
         """
         return icepool.CountInEvaluator({target}).evaluate(self)
 
-    def count_in(self, target: Container[T], /) -> 'icepool.Die[int]':
+    def count_in(self, target: Container[T_co], /) -> 'icepool.Die[int]':
         """The number of outcomes that are in the target."""
         return icepool.CountInEvaluator(target).evaluate(self)
 
@@ -176,10 +176,10 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         return icepool.count_unique_evaluator.evaluate(self)
 
     def contains_subset(self,
-                        targets: Collection[T] | Mapping[T, int],
+                        targets: Collection[T_co] | Mapping[T_co, int],
                         /,
                         *,
-                        wilds: Collection[T] = ()) -> 'icepool.Die[bool]':
+                        wilds: Collection[T_co] = ()) -> 'icepool.Die[bool]':
         """Whether the outcomes contain all of the targets.
 
         The targets may contain duplicate elements.
@@ -193,11 +193,12 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         return icepool.ContainsSubsetEvaluator(targets,
                                                wilds=wilds).evaluate(self)
 
-    def intersection_size(self,
-                          targets: Collection[T] | Mapping[T, int],
-                          /,
-                          *,
-                          wilds: Collection[T] = ()) -> 'icepool.Die[int]':
+    def intersection_size(
+        self,
+        targets: Collection[T_co] | Mapping[T_co, int],
+        /,
+        *,
+        wilds: Collection[T_co] = ()) -> 'icepool.Die[int]':
         """The size of the intersection of the outcomes and the targets.
 
         The targets may contain duplicate elements.
@@ -213,10 +214,12 @@ class OutcomeCountGenerator(ABC, Generic[T]):
         return icepool.IntersectionSizeEvaluator(targets,
                                                  wilds=wilds).evaluate(self)
 
-    def best_matching_set(self,
-                          *,
-                          include_outcome: bool = False,
-                          wilds: Collection[T] = ()) -> 'icepool.Die':
+    def best_matching_set(
+        self,
+        *,
+        include_outcome: bool = False,
+        wilds: Collection[T_co] = ()
+    ) -> 'icepool.Die':
         """The best matching set among the outcomes.
 
         Args:
