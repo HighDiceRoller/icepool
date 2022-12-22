@@ -354,7 +354,7 @@ class Die(Population[T]):
 
     def reroll(self,
                outcomes: Callable[..., bool] | Container[T] | None = None,
-               *extra_args,
+               *,
                depth: int | None = None,
                star: int = 0) -> 'Die[T]':
         """Rerolls the given outcomes.
@@ -365,9 +365,6 @@ class Die(Population[T]):
                     should be rerolled.
                 * A container of outcomes to reroll.
                 * If not provided, the min outcome will be rerolled.
-            *extra_args: These will be supplied to `outcomes` as extra
-                positional arguments after the outcome argument(s).
-                `extra_args` can only be supplied if `outcomes` is callable.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
@@ -377,27 +374,18 @@ class Die(Population[T]):
         Returns:
             A `Die` representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
-
-        Raises:
-            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
-        if extra_args and not callable(outcomes):
-            raise ValueError(
-                'Extra positional arguments are only valid if outcomes is callable.'
-            )
 
         if outcomes is None:
             outcomes = {self.min_outcome()}
         elif callable(outcomes):
             if star:
                 outcomes = {
-                    outcome for outcome in self.outcomes()
-                    if outcomes(*outcome, *extra_args)
+                    outcome for outcome in self.outcomes() if outcomes(*outcome)
                 }
             else:
                 outcomes = {
-                    outcome for outcome in self.outcomes()
-                    if outcomes(outcome, *extra_args)
+                    outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
 
         if depth is None:
@@ -423,7 +411,7 @@ class Die(Population[T]):
 
     def filter(self,
                outcomes: Callable[..., bool] | Container[T],
-               *extra_args,
+               *,
                depth: int | None = None,
                star: int = 0) -> 'Die[T]':
         """Rerolls until getting one of the given outcomes.
@@ -435,9 +423,6 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A container of outcomes to reroll until.
-            *extra_args: These will be supplied to `outcomes` as extra
-                positional arguments after the outcome argument(s).
-                `extra_args` can only be supplied if `outcomes` is callable.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
@@ -447,25 +432,18 @@ class Die(Population[T]):
         Returns:
             A `Die` representing the reroll.
             If the reroll would never terminate, the result has no outcomes.
-
-        Raises:
-            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
-        if extra_args and not callable(outcomes):
-            raise ValueError(
-                'Extra positional arguments are only valid if outcomes is callable.'
-            )
 
         if callable(outcomes):
             if star:
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(*outcome, *extra_args)
+                    if not outcomes(*outcome)
                 }
             else:
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(outcome, *extra_args)
+                    if not outcomes(outcome)
                 }
         else:
             not_outcomes = {
@@ -580,11 +558,11 @@ class Die(Population[T]):
     # Mixtures.
 
     def map(self,
-            repl: Callable | Mapping[T, U],
+            repl: Callable[..., U] | Mapping[T, U],
             /,
             star: int = 0,
             repeat: int | None = 1,
-            include_steps=False,
+            include_steps: bool = False,
             again_depth: int = 1,
             again_end=None) -> 'Die':
         """Maps outcomes of the `Die` to other outcomes.
@@ -690,7 +668,7 @@ class Die(Population[T]):
 
     def explode(self,
                 outcomes: Container[T] | Callable[..., bool] | None = None,
-                *extra_args,
+                *,
                 depth: int = 9,
                 end=None,
                 star: int = 0) -> 'Die[T]':
@@ -702,9 +680,6 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
-            *extra_args: These will be supplied to `outcomes` as extra
-                positional arguments after the outcome argument(s).
-                `extra_args` can only be supplied if `outcomes` is callable.
             depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             end: Once depth is reached, further explosions will be treated
@@ -712,27 +687,18 @@ class Die(Population[T]):
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
-
-        Raises:
-            ValueError: If `extra_args` are supplied with a non-callable `outcomes`.
         """
-        if extra_args and not callable(outcomes):
-            raise ValueError(
-                'Extra positional arguments are only valid if outcomes is callable.'
-            )
 
         if outcomes is None:
             outcomes = {self.max_outcome()}
         elif callable(outcomes):
             if star:
                 outcomes = {
-                    outcome for outcome in self.outcomes()
-                    if outcomes(*outcome, *extra_args)
+                    outcome for outcome in self.outcomes() if outcomes(*outcome)
                 }
             else:
                 outcomes = {
-                    outcome for outcome in self.outcomes()
-                    if outcomes(outcome, *extra_args)
+                    outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
         else:
             if not outcomes:
