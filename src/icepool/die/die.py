@@ -353,23 +353,24 @@ class Die(Population[T]):
     # Rerolls and other outcome management.
 
     def reroll(self,
-               outcomes: Callable[..., bool] | Container[T] | None = None,
+               outcomes: Callable[..., bool] | Container[T] | T | None = None,
                *,
-               depth: int | None = None,
-               star: int = 0) -> 'Die[T]':
+               star: int = 0,
+               depth: int | None = None) -> 'Die[T]':
         """Rerolls the given outcomes.
 
         Args:
             outcomes: Selects which outcomes to reroll. Options:
+                * A single outcome to reroll.
+                * A container of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
-                * A container of outcomes to reroll.
                 * If not provided, the min outcome will be rerolled.
-            depth: The maximum number of times to reroll.
-                If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
+            depth: The maximum number of times to reroll.
+                If omitted, rerolls an unlimited number of times.
 
         Returns:
             A `Die` representing the reroll.
@@ -377,34 +378,39 @@ class Die(Population[T]):
         """
 
         if outcomes is None:
-            outcomes = {self.min_outcome()}
+            outcome_set = {self.min_outcome()}
+        elif is_bare_outcome(outcomes):
+            outcome_set = {outcomes}  # type: ignore
         elif callable(outcomes):
             if star:
-                outcomes = {
+                outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(*outcome)
                 }
             else:
-                outcomes = {
+                outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
+        else:
+            # Sequence.
+            outcome_set = set(outcomes)  # type: ignore
 
         if depth is None:
             data = {
                 outcome: quantity
                 for outcome, quantity in self.items()
-                if outcome not in outcomes
+                if outcome not in outcome_set
             }
         else:
             total_reroll_quantity = sum(
                 quantity for outcome, quantity in self.items()
-                if outcome in outcomes)
+                if outcome in outcome_set)
             rerollable_factor = total_reroll_quantity**depth
             stop_factor = (self.denominator()**depth +
                            total_reroll_quantity**depth)
             data = {
                 outcome:
                 (rerollable_factor *
-                 quantity if outcome in outcomes else stop_factor * quantity)
+                 quantity if outcome in outcome_set else stop_factor * quantity)
                 for outcome, quantity in self.items()
             }
         return icepool.Die(data)
@@ -412,8 +418,8 @@ class Die(Population[T]):
     def filter(self,
                outcomes: Callable[..., bool] | Container[T],
                *,
-               depth: int | None = None,
-               star: int = 0) -> 'Die[T]':
+               star: int = 0,
+               depth: int | None = None) -> 'Die[T]':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -423,11 +429,11 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A container of outcomes to reroll until.
-            depth: The maximum number of times to reroll.
-                If omitted, rerolls an unlimited number of times.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
+            depth: The maximum number of times to reroll.
+                If omitted, rerolls an unlimited number of times.
 
         Returns:
             A `Die` representing the reroll.
@@ -667,42 +673,46 @@ class Die(Population[T]):
                 self, transition_function)
 
     def explode(self,
-                outcomes: Container[T] | Callable[..., bool] | None = None,
+                outcomes: Container[T] | Callable[..., bool] | T | None = None,
                 *,
+                star: int = 0,
                 depth: int = 9,
-                end=None,
-                star: int = 0) -> 'Die[T]':
+                end=None) -> 'Die[T]':
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
             outcomes: Which outcomes to explode. Options:
+                * A single outcome to explode.
                 * An container of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
+            star: If set to `True` or 1, outcomes will be unpacked as
+                `*outcome` before giving it to the `outcomes` function.
+                If `outcomes` is not a callable, this has no effect.
             depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             end: Once depth is reached, further explosions will be treated
                 as this value. By default, a zero value will be used.
-            star: If set to `True` or 1, outcomes will be unpacked as
-                `*outcome` before giving it to the `outcomes` function.
-                If `outcomes` is not a callable, this has no effect.
         """
 
         if outcomes is None:
-            outcomes = {self.max_outcome()}
+            outcome_set = {self.max_outcome()}
+        elif is_bare_outcome(outcomes):
+            outcome_set = {outcomes}  # type: ignore
         elif callable(outcomes):
             if star:
-                outcomes = {
+                outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(*outcome)
                 }
             else:
-                outcomes = {
+                outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
         else:
             if not outcomes:
                 return self
+            outcome_set = set(outcomes)  # type: ignore
 
         if depth < 0:
             raise ValueError('depth cannot be negative.')
@@ -710,7 +720,7 @@ class Die(Population[T]):
             return self
 
         def map_final(outcome):
-            if outcome in outcomes:
+            if outcome in outcome_set:
                 return outcome + icepool.Again()
             else:
                 return outcome
@@ -720,6 +730,7 @@ class Die(Population[T]):
     def if_else(self,
                 outcome_if_true: U | 'Die[U]',
                 outcome_if_false: U | 'Die[U]',
+                *,
                 again_depth: int = 1,
                 again_end=None) -> 'Die[U]':
         """Ternary conditional operator.
