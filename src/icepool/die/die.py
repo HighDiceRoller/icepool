@@ -16,7 +16,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
@@ -26,14 +26,14 @@ U = TypeVar('U', bound=Hashable)
 
 
 def is_bare_outcome(outcome) -> bool:
-    """Returns `True` iff the outcome is not a `Mapping` or `Sequence` of a type that holds multiple outcomes.
+    """Returns `True` iff the outcome is not a `Mapping` or `Collection` of a type that holds multiple outcomes.
 
     Currently product tuples are allowed.
     """
     if isinstance(outcome, Mapping):
         return False
-    if isinstance(outcome, Sequence) and not isinstance(outcome,
-                                                        (str, bytes, tuple)):
+    if isinstance(outcome,
+                  Collection) and not isinstance(outcome, (str, bytes, tuple)):
         return False
     return True
 
@@ -353,7 +353,7 @@ class Die(Population[T]):
     # Rerolls and other outcome management.
 
     def reroll(self,
-               outcomes: Callable[..., bool] | Container[T] | T | None = None,
+               outcomes: Callable[..., bool] | Collection[T] | T | None = None,
                *,
                star: int = 0,
                depth: int | None = None) -> 'Die[T]':
@@ -362,7 +362,7 @@ class Die(Population[T]):
         Args:
             outcomes: Selects which outcomes to reroll. Options:
                 * A single outcome to reroll.
-                * A container of outcomes to reroll.
+                * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
                 * If not provided, the min outcome will be rerolled.
@@ -379,8 +379,6 @@ class Die(Population[T]):
 
         if outcomes is None:
             outcome_set = {self.min_outcome()}
-        elif is_bare_outcome(outcomes):
-            outcome_set = {outcomes}  # type: ignore
         elif callable(outcomes):
             if star:
                 outcome_set = {
@@ -390,8 +388,10 @@ class Die(Population[T]):
                 outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
+        elif is_bare_outcome(outcomes):
+            outcome_set = {outcomes}  # type: ignore
         else:
-            # Sequence.
+            # Collection.
             outcome_set = set(outcomes)  # type: ignore
 
         if depth is None:
@@ -416,7 +416,7 @@ class Die(Population[T]):
         return icepool.Die(data)
 
     def filter(self,
-               outcomes: Callable[..., bool] | Container[T],
+               outcomes: Callable[..., bool] | Collection[T],
                *,
                star: int = 0,
                depth: int | None = None) -> 'Die[T]':
@@ -428,7 +428,7 @@ class Die(Population[T]):
             outcomes: Selects which outcomes to reroll until. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
-                * A container of outcomes to reroll until.
+                * A collection of outcomes to reroll until.
             star: If set to `True` or 1, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
@@ -673,7 +673,7 @@ class Die(Population[T]):
                 self, transition_function)
 
     def explode(self,
-                outcomes: Container[T] | Callable[..., bool] | T | None = None,
+                outcomes: Collection[T] | Callable[..., bool] | T | None = None,
                 *,
                 star: int = 0,
                 depth: int = 9,
@@ -683,7 +683,7 @@ class Die(Population[T]):
         Args:
             outcomes: Which outcomes to explode. Options:
                 * A single outcome to explode.
-                * An container of outcomes to explode.
+                * An collection of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
@@ -698,8 +698,6 @@ class Die(Population[T]):
 
         if outcomes is None:
             outcome_set = {self.max_outcome()}
-        elif is_bare_outcome(outcomes):
-            outcome_set = {outcomes}  # type: ignore
         elif callable(outcomes):
             if star:
                 outcome_set = {
@@ -709,6 +707,8 @@ class Die(Population[T]):
                 outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
+        elif is_bare_outcome(outcomes):
+            outcome_set = {outcomes}  # type: ignore
         else:
             if not outcomes:
                 return self
@@ -746,7 +746,7 @@ class Die(Population[T]):
                         again_depth=again_depth,
                         again_end=again_end)
 
-    def is_in(self, target: Container, /) -> 'Die[bool]':
+    def is_in(self, target: Container[T], /) -> 'Die[bool]':
         """A die that returns True iff the roll of the die is contained in the target."""
         return self.map(lambda x: x in target)
 
@@ -896,16 +896,16 @@ class Die(Population[T]):
 
     # Unary operators.
 
-    def __neg__(self) -> 'Die':
+    def __neg__(self) -> 'Die[T]':
         return self.unary_op(operator.neg)
 
-    def __pos__(self) -> 'Die':
+    def __pos__(self) -> 'Die[T]':
         return self.unary_op(operator.pos)
 
-    def __invert__(self) -> 'Die':
+    def __invert__(self) -> 'Die[T]':
         return self.unary_op(operator.invert)
 
-    def abs(self) -> 'Die':
+    def abs(self) -> 'Die[T]':
         return self.unary_op(operator.abs)
 
     __abs__ = abs
