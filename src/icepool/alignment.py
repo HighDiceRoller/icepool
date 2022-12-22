@@ -4,19 +4,22 @@ from icepool.outcome_count_generator import OutcomeCountGenerator
 
 from functools import cached_property
 
-from typing import Collection, Generator, Sequence, TypeAlias
+from typing import Collection, Generator, Hashable, Sequence, TypeAlias, TypeVar
 
 AlignmentGenerator: TypeAlias = Generator[tuple['Alignment', Sequence[int],
                                                 int], None, None]
 
+T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+"""Type variable representing the outcome type."""
 
-class Alignment(OutcomeCountGenerator):
+
+class Alignment(OutcomeCountGenerator[T_co]):
     """A generator that only outputs 0 counts with weight 1."""
 
-    def __init__(self, outcomes: Collection):
-        self._outcomes = tuple(sorted(outcomes))
+    def __init__(self, outcomes: Collection[T_co]):
+        self._outcomes = tuple(sorted(outcomes))  # type: ignore
 
-    def outcomes(self) -> Sequence:
+    def outcomes(self) -> Sequence[T_co]:
         return self._outcomes
 
     def counts_len(self) -> int:
