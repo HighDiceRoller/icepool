@@ -21,11 +21,6 @@ from typing import Any, Callable, Container, Hashable, Iterator, Literal, Mappin
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
 
-T0: TypeAlias = 'T | icepool.again.Again | Literal[icepool.RerollType.Reroll]'
-"""Type varaible representing outcome types plus special constructor values."""
-T1: TypeAlias = Mapping[T0, int] | Sequence[T0] | T
-T2: TypeAlias = Mapping[T1, int] | Sequence[T1] | T1
-
 U = TypeVar('U', bound=Hashable)
 """Type variable representing a secondary outcome type, e.g. the output of a function."""
 
@@ -95,15 +90,12 @@ class Die(Population[T]):
     def _new_type(self) -> type:
         return Die
 
-    def __new__(
-        cls,
-        outcomes: T2,
-        times: Sequence[int] | int = 1,
-        *,
-        again_depth: int = 1,
-        again_end: T | 'Die[T]' | Literal[icepool.RerollType.Reroll] |
-        None = None
-    ) -> 'Die[T]':
+    def __new__(cls,
+                outcomes,
+                times: Sequence[int] | int = 1,
+                *,
+                again_depth: int = 1,
+                again_end=None) -> 'Die':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:

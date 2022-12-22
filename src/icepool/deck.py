@@ -16,6 +16,9 @@ from typing import Any, Callable, Hashable, Iterator, Mapping, MutableMapping, S
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
 
+U = TypeVar('U', bound=Hashable)
+"""Type variable representing another outcome type."""
+
 
 class Deck(Population[T]):
     """Sampling without replacement (within a single evaluation).
@@ -29,9 +32,7 @@ class Deck(Population[T]):
     def _new_type(self) -> type:
         return Deck
 
-    def __new__(cls,
-                outcomes: Mapping[Any, int] | Sequence,
-                times: Sequence[int] | int = 1) -> 'Deck[T]':
+    def __new__(cls, outcomes, times: Sequence[int] | int = 1) -> 'Deck':
         """Constructor for a `Deck`.
 
         Args:
@@ -139,7 +140,10 @@ class Deck(Population[T]):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    def map(self, repl: Callable | Mapping, /, star: int = 0) -> 'Deck[T]':
+    def map(self,
+            repl: Callable[..., U] | Mapping[T, U],
+            /,
+            star: int = 0) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
 
         Args:
