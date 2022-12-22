@@ -759,8 +759,11 @@ class Die(Population[T]):
 
         return self.map(map_final, again_depth=depth, again_end=end)
 
-    def if_else(self, outcome_if_true: U | 'Die[U]',
-                outcome_if_false: U | 'Die[U]') -> 'Die[U]':
+    def if_else(self,
+                outcome_if_true: U | 'Die[U]',
+                outcome_if_false: U | 'Die[U]',
+                again_depth: int = 1,
+                again_end=None) -> 'Die[U]':
         """Ternary conditional operator.
 
         This replaces truthy outcomes with the first argument and falsy outcomes
@@ -770,7 +773,9 @@ class Die(Population[T]):
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
         """
-        return self.map(lambda x: outcome_if_true if x else outcome_if_false)
+        return self.map(lambda x: outcome_if_true if x else outcome_if_false,
+                        again_depth=again_depth,
+                        again_end=again_end)
 
     def is_in(self, target: Container, /) -> 'Die[bool]':
         """A die that returns True iff the roll of the die is contained in the target."""
