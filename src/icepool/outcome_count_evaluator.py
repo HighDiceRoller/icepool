@@ -10,7 +10,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Collection, Hashable, Mapping, MutableMapping, Sequence
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
@@ -23,7 +23,14 @@ class Order(enum.IntEnum):
     Any = 0
 
 
-class OutcomeCountEvaluator(ABC):
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the input outcome type."""
+
+U = TypeVar('U', bound=Hashable)
+"""Type variable representing the final outcome type."""
+
+
+class OutcomeCountEvaluator(ABC, Generic[T, U]):
     """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerator`s.
 
     There is one abstract method to implement: `next_state()`.
@@ -56,7 +63,7 @@ class OutcomeCountEvaluator(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state: Hashable, outcome, /, *counts) -> Hashable:
+    def next_state(self, state: Hashable, outcome: T, /, *counts) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -104,7 +111,7 @@ class OutcomeCountEvaluator(ABC):
         """
 
     def final_outcome(self, final_state: Hashable, /,
-                      *generators: icepool.OutcomeCountGenerator) -> Any:
+                      *generators: icepool.OutcomeCountGenerator[T]) -> U:
         """Optional function to generate a final outcome from a final state.
 
         Tthere is no expectation that a subclass be able to handle
@@ -129,9 +136,9 @@ class OutcomeCountEvaluator(ABC):
             A final outcome that will be used as part of constructing the result `Die`.
             As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
         """
-        return final_state
+        return final_state  # type: ignore
 
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
+    def order(self, *generators: icepool.OutcomeCountGenerator[T]) -> Order:
         """Optional function to determine the order in which `next_state()` will see outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -158,8 +165,9 @@ class OutcomeCountEvaluator(ABC):
         """
         return Order.Ascending
 
-    def alignment(self,
-                  *generators: icepool.OutcomeCountGenerator) -> Collection:
+    def alignment(
+            self,
+            *generators: icepool.OutcomeCountGenerator[T]) -> Collection[T]:
         """Optional method to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
 
         There is no expectation that a subclass be able to handle
@@ -178,7 +186,7 @@ class OutcomeCountEvaluator(ABC):
 
     def range_alignment(
             self,
-            *generators: icepool.OutcomeCountGenerator) -> Collection[int]:
+            *generators: icepool.OutcomeCountGenerator[T]) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -212,7 +220,7 @@ class OutcomeCountEvaluator(ABC):
 
     def final_kwargs(
             self,
-            *generators: icepool.OutcomeCountGenerator) -> Mapping[str, Any]:
+            *generators: icepool.OutcomeCountGenerator[T]) -> Mapping[str, Any]:
         """Optional method to specify any extra keyword arguments to the final die constructor."""
         return {}
 
@@ -222,9 +230,9 @@ class OutcomeCountEvaluator(ABC):
         return {}
 
     def evaluate(
-        self, *generators: icepool.OutcomeCountGenerator | Mapping[Any, int] |
+        self, *generators: icepool.OutcomeCountGenerator[T] | Mapping[T, int] |
         Sequence
-    ) -> 'icepool.Die':
+    ) -> 'icepool.Die[U]':
         """Evaluates generator(s).
 
         You can call the `OutcomeCountEvaluator` object directly for the same effect,
@@ -280,7 +288,7 @@ class OutcomeCountEvaluator(ABC):
     __call__ = evaluate
 
     def _select_algorithm(
-            self, *generators: icepool.OutcomeCountGenerator
+        self, *generators: icepool.OutcomeCountGenerator[T]
     ) -> tuple[Callable, Order]:
         """Selects an algorithm and iteration order.
 
@@ -324,8 +332,8 @@ class OutcomeCountEvaluator(ABC):
 
     def _eval_internal(
         self, order: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator,
-                          ...]) -> Mapping[Any, int]:
+        generators: tuple[icepool.OutcomeCountGenerator[T], ...]
+    ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order,
         i.e. giving outcomes to `next_state()` from wide to narrow.
 
@@ -370,8 +378,8 @@ class OutcomeCountEvaluator(ABC):
 
     def _eval_internal_iterative(
         self, order: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator,
-                          ...]) -> Mapping[Any, int]:
+        generators: tuple[icepool.OutcomeCountGenerator[T], ...]
+    ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order,
         i.e. giving outcomes to `next_state()` from narrow to wide.
 
@@ -408,7 +416,7 @@ class OutcomeCountEvaluator(ABC):
     @staticmethod
     def _pop_generators(
         side: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator, ...]
+        generators: tuple[icepool.OutcomeCountGenerator[T], ...]
     ) -> tuple[Any, Alignment, tuple['icepool.NextOutcomeCountGenerator', ...]]:
         """Pops a single outcome from the generators.
 
@@ -437,8 +445,8 @@ class OutcomeCountEvaluator(ABC):
             return outcome, next_alignment, tuple(
                 generator._generate_min(outcome) for generator in generators)
 
-    def sample(self, *generators: icepool.OutcomeCountGenerator |
-               Mapping[Any, int] | Sequence):
+    def sample(self, *generators: icepool.OutcomeCountGenerator[T] |
+               Mapping[T, int] | Sequence[T]):
         """EXPERIMENTAL: Samples one result from the generator(s) and evaluates the result."""
         # Convert non-`Pool` arguments to `Pool`.
         converted_generators = tuple(

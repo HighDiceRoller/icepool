@@ -130,7 +130,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
 
     # Built-in evaluators.
 
-    def expand(self, unique: bool = False) -> 'icepool.Die[T]':
+    def expand(self, unique: bool = False) -> 'icepool.Die[tuple[T, ...]]':
         """All possible (unordered) tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
@@ -179,7 +179,7 @@ class OutcomeCountGenerator(ABC, Generic[T]):
                         targets: Collection[T] | Mapping[T, int],
                         /,
                         *,
-                        wilds: Collection[T] = ()) -> 'icepool.Die[int]':
+                        wilds: Collection[T] = ()) -> 'icepool.Die[bool]':
         """Whether the outcomes contain all of the targets.
 
         The targets may contain duplicate elements.

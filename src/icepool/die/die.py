@@ -756,7 +756,7 @@ class Die(Population[T]):
         """Roll this dice a number of times and count how many are == the target."""
         return rolls @ (self == target)
 
-    def count_in(self, rolls: int, target: Container[T], /) -> 'Die':
+    def count_in(self, rolls: int, target: Container[T], /) -> 'Die[int]':
         """Roll this dice a number of times and count how many are in the target."""
         return rolls @ self.is_in(target)
 
@@ -1205,7 +1205,7 @@ class Die(Population[T]):
                 else:
                     return Counts([(False, d - n), (True, n)])
 
-    def __eq__(self, other) -> 'icepool.DieWithTruth':  # type: ignore
+    def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback():
@@ -1216,7 +1216,7 @@ class Die(Population[T]):
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
-    def __ne__(self, other) -> 'icepool.DieWithTruth':  # type: ignore
+    def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback():

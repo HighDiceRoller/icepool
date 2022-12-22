@@ -7,16 +7,22 @@ from icepool.outcome_count_evaluator import Order, OutcomeCountEvaluator
 
 from collections import defaultdict
 from functools import cached_property
-from typing import Any, Callable, Collection, Container, Hashable, Mapping, MutableMapping
+from typing import Any, Callable, Collection, Container, Hashable, Mapping, MutableMapping, TypeVar
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the input outcome type."""
+
+U = TypeVar('U', bound=Hashable)
+"""Type variable representing the final outcome type."""
 
 
-class WrapFuncEvaluator(OutcomeCountEvaluator):
+class WrapFuncEvaluator(OutcomeCountEvaluator[T, U]):
     """An `OutcomeCountEvaluator` created from a single provided function.
 
     `next_state()` simply calls that function.
     """
 
-    def __init__(self, func: Callable, /):
+    def __init__(self, func: Callable[..., U], /):
         """Constructs a new instance given the function that should be called for `next_state()`.
         Args:
             func(state, outcome, *counts): This should take the same arguments
@@ -24,7 +30,7 @@ class WrapFuncEvaluator(OutcomeCountEvaluator):
         """
         self._func = func
 
-    def next_state(self, state: Hashable, outcome, *counts: int) -> Hashable:
+    def next_state(self, state: Hashable, outcome: T, *counts: int) -> U:
         return self._func(state, outcome, *counts)
 
 
@@ -122,13 +128,13 @@ class SumEvaluator(OutcomeCountEvaluator):
 sum_evaluator = SumEvaluator()
 
 
-class ExpandEvaluator(OutcomeCountEvaluator):
+class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple]):
     """Expands all results of a generator.
 
     This is expensive and not recommended unless there are few possibilities.
     """
 
-    def __init__(self, *, unique=False):
+    def __init__(self, *, unique: bool = False):
         """
         Args:
             unique: Iff `True`, duplicate outcomes count only as one.
@@ -158,7 +164,7 @@ class ExpandEvaluator(OutcomeCountEvaluator):
 expand_evaluator = ExpandEvaluator()
 
 
-class CountInEvaluator(OutcomeCountEvaluator):
+class CountInEvaluator(OutcomeCountEvaluator[Any, int]):
     """Counts how many of the given outcomes are produced by the generator."""
 
     def __init__(self, target: Container, /):
@@ -176,7 +182,7 @@ class CountInEvaluator(OutcomeCountEvaluator):
         return Order.Any
 
 
-class CountUniqueEvaluator(OutcomeCountEvaluator):
+class CountUniqueEvaluator(OutcomeCountEvaluator[Any, int]):
     """Counts how many outcomes appeared more than zero times."""
 
     def next_state(self, state, _, count):
@@ -192,14 +198,14 @@ class CountUniqueEvaluator(OutcomeCountEvaluator):
 count_unique_evaluator = CountUniqueEvaluator()
 
 
-class SubsetTargetEvaluator(OutcomeCountEvaluator):
+class SubsetTargetEvaluator(OutcomeCountEvaluator[T, U]):
     """Base class for evaluators that look for a subset (possibly with repeated elements)."""
 
     def __init__(self,
-                 targets: Collection | Mapping[Any, int],
+                 targets: Collection[T] | Mapping[T, int],
                  /,
                  *,
-                 wilds: Collection = ()):
+                 wilds: Collection[T] = ()):
         """
         Args:
             targets: Either a collection of outcomes, possibly with repeated elements.
@@ -234,14 +240,14 @@ class SubsetTargetEvaluator(OutcomeCountEvaluator):
         return set(self._targets.keys()) | self._wilds
 
 
-class ContainsSubsetEvaluator(SubsetTargetEvaluator):
+class ContainsSubsetEvaluator(SubsetTargetEvaluator[Any, bool]):
     """Whether the target is a subset of the generator."""
 
     def final_outcome(self, final_state, *_):
         return (final_state or 0) >= 0
 
 
-class IntersectionSizeEvaluator(SubsetTargetEvaluator):
+class IntersectionSizeEvaluator(SubsetTargetEvaluator[Any, int]):
     """How many elements overlap between the generator and the target."""
 
     def final_outcome(self, final_state, *_):
@@ -251,7 +257,10 @@ class IntersectionSizeEvaluator(SubsetTargetEvaluator):
 class BestMatchingSetEvaluator(OutcomeCountEvaluator):
     """The largest matching set of a generator."""
 
-    def __init__(self, *, include_outcome=False, wilds: Collection = ()):
+    def __init__(self,
+                 *,
+                 include_outcome: bool = False,
+                 wilds: Collection[T] = ()):
         """
         Args:
             include_outcome: If `True`, the final outcomes will be tuples
@@ -309,7 +318,7 @@ class BestStraightEvaluator(OutcomeCountEvaluator):
     This prioritizes run size, then the outcome.
     """
 
-    def __init__(self, *, include_outcome=False):
+    def __init__(self, *, include_outcome: bool = False):
         """
         Args:
             include_outcome: If `True`, the final outcomes will be tuples
