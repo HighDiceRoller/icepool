@@ -16,7 +16,7 @@ T_co = TypeVar('T_co', bound=Hashable, covariant=True)
 class Deal(OutcomeCountGenerator[T_co]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
-    _deck: 'icepool.Deck'
+    _deck: 'icepool.Deck[T_co]'
     _hand_sizes: tuple[int, ...]
 
     def __init__(self, deck: 'icepool.Deck[T_co]', *hand_sizes: int):

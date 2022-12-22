@@ -9,20 +9,20 @@ from collections import defaultdict
 from functools import cached_property
 from typing import Any, Callable, Collection, Container, Hashable, Mapping, MutableMapping, TypeVar
 
-T = TypeVar('T', bound=Hashable)
+T_contra = TypeVar('T_contra', bound=Hashable, contravariant=True)
 """Type variable representing the input outcome type."""
 
-U = TypeVar('U', bound=Hashable)
+U_co = TypeVar('U_co', bound=Hashable, covariant=True)
 """Type variable representing the final outcome type."""
 
 
-class WrapFuncEvaluator(OutcomeCountEvaluator[T, U]):
+class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
     """An `OutcomeCountEvaluator` created from a single provided function.
 
     `next_state()` simply calls that function.
     """
 
-    def __init__(self, func: Callable[..., U], /):
+    def __init__(self, func: Callable[..., U_co], /):
         """Constructs a new instance given the function that should be called for `next_state()`.
         Args:
             func(state, outcome, *counts): This should take the same arguments
@@ -30,16 +30,13 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T, U]):
         """
         self._func = func
 
-    def next_state(self, state: Hashable, outcome: T, *counts: int) -> U:
+    def next_state(self, state: Hashable, outcome: T_contra,
+                   *counts: int) -> U_co:
         return self._func(state, outcome, *counts)
 
 
 class JointEvaluator(OutcomeCountEvaluator):
-    """EXPERIMENTAL: An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator.
-
-    It may be more efficient to write the joint evaluation directly; this is
-    provided as a convenience.
-    """
+    """An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
 
     def __init__(self, *sub_evaluators: OutcomeCountEvaluator):
         self._sub_evaluators = sub_evaluators
@@ -164,10 +161,10 @@ class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple]):
 expand_evaluator = ExpandEvaluator()
 
 
-class CountInEvaluator(OutcomeCountEvaluator[Any, int]):
+class CountInEvaluator(OutcomeCountEvaluator[T_contra, int]):
     """Counts how many of the given outcomes are produced by the generator."""
 
-    def __init__(self, target: Container, /):
+    def __init__(self, target: Container[T_contra], /):
         self._target = target
 
     def next_state(self, state, outcome, count):
@@ -198,14 +195,14 @@ class CountUniqueEvaluator(OutcomeCountEvaluator[Any, int]):
 count_unique_evaluator = CountUniqueEvaluator()
 
 
-class SubsetTargetEvaluator(OutcomeCountEvaluator[T, U]):
+class SubsetTargetEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
     """Base class for evaluators that look for a subset (possibly with repeated elements)."""
 
     def __init__(self,
-                 targets: Collection[T] | Mapping[T, int],
+                 targets: Collection[T_contra] | Mapping[T_contra, int],
                  /,
                  *,
-                 wilds: Collection[T] = ()):
+                 wilds: Collection[T_contra] = ()):
         """
         Args:
             targets: Either a collection of outcomes, possibly with repeated elements.
@@ -260,7 +257,7 @@ class BestMatchingSetEvaluator(OutcomeCountEvaluator):
     def __init__(self,
                  *,
                  include_outcome: bool = False,
-                 wilds: Collection[T] = ()):
+                 wilds: Collection[T_contra] = ()):
         """
         Args:
             include_outcome: If `True`, the final outcomes will be tuples
