@@ -9,16 +9,17 @@ import bisect
 from functools import cached_property
 import itertools
 import math
+import numbers
 import operator
 import random
 
 from typing import Any, Callable, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-P = TypeVar('P', bound='Population')
-"""Type variable representing a subclass of `Population`."""
-
 T = TypeVar('T', bound=Hashable)
 """Type variable respresenting the outcome type."""
+
+P = TypeVar('P', bound='Population')
+"""Type variable representing a subclass of `Population`."""
 
 
 class Population(ABC, Mapping[T, int]):
@@ -36,7 +37,7 @@ class Population(ABC, Mapping[T, int]):
         """The type to use when constructing a new instance."""
 
     @abstractmethod
-    def keys(self) -> CountsKeysView:
+    def keys(self) -> CountsKeysView[T]:
         """The outcomes within the population in sorted order."""
 
     @abstractmethod
@@ -44,12 +45,12 @@ class Population(ABC, Mapping[T, int]):
         """The quantities within the population in outcome order."""
 
     @abstractmethod
-    def items(self) -> CountsItemsView:
+    def items(self) -> CountsItemsView[T]:
         """The (outcome, quantity)s of the population in sorted order."""
 
     # Outcomes.
 
-    def outcomes(self) -> CountsKeysView:
+    def outcomes(self) -> CountsKeysView[T]:
         """The sorted outcomes of the mapping.
 
         These are also the `keys` of the mapping.
@@ -294,14 +295,14 @@ class Population(ABC, Mapping[T, int]):
         """The highest quantity of any single outcome. """
         return max(self.quantities())
 
-    def kolmogorov_smirnov(self, other):
+    def kolmogorov_smirnov(self, other) -> float:
         """Kolmogorov–Smirnov statistic. The maximum absolute difference between CDFs. """
         a, b = icepool.align(self, other)
         return max(
             abs(a - b)
             for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
-    def cramer_von_mises(self, other):
+    def cramer_von_mises(self, other) -> float:
         """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
         a, b = icepool.align(self, other)
         return sum((a - b)**2
@@ -348,11 +349,11 @@ class Population(ABC, Mapping[T, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def mean(self):
+    def mean(self: 'Population[numbers.Real]') -> float:
         return sum(outcome * quantity
                    for outcome, quantity in self.items()) / self.denominator()
 
-    def variance(self):
+    def variance(self: 'Population[numbers.Real]') -> float:
         """This is the population variance, not the sample variance."""
         mean = self.mean()
         mean_of_squares = sum(
@@ -360,53 +361,43 @@ class Population(ABC, Mapping[T, int]):
             for outcome, quantity in self.items()) / self.denominator()
         return mean_of_squares - mean * mean
 
-    def standard_deviation(self):
+    def standard_deviation(self: 'Population[numbers.Real]') -> float:
         return math.sqrt(self.variance())
 
     sd = standard_deviation
 
-    def standardized_moment(self, k: int):
+    def standardized_moment(self: 'Population[numbers.Real]', k: int) -> float:
         sd = self.standard_deviation()
         mean = self.mean()
         ev = sum(p * (outcome - mean)**k
                  for outcome, p in zip(self.outcomes(), self.probabilities()))
         return ev / (sd**k)
 
-    def skewness(self):
-        return self.standardized_moment(3.0)
+    def skewness(self: 'Population[numbers.Real]') -> float:
+        return self.standardized_moment(3)
 
-    def excess_kurtosis(self):
-        return self.standardized_moment(4.0) - 3.0
+    def excess_kurtosis(self: 'Population[numbers.Real]') -> float:
+        return self.standardized_moment(4) - 3.0
 
     # Joint statistics.
 
-    class _Marginals(Sequence[P]):
+    class _Marginals(Sequence):
         """Helper class for implementing `marginals()`."""
 
-        _population: P
-
-        def __init__(self, population: P, /):
+        def __init__(self, population, /):
             self._population = population
 
         def __len__(self) -> int:
             """The minimum len() of all outcomes."""
             return min(len(x) for x in self._population.outcomes())
 
-        @overload
-        def __getitem__(self, dims: int, /) -> P:
-            ...
-
-        @overload
-        def __getitem__(self, dims: slice, /) -> Sequence[P]:
-            ...
-
-        def __getitem__(self, dims: int | slice, /) -> P | Sequence[P]:
+        def __getitem__(self, dims: int | slice, /):
             """Marginalizes the given dimensions."""
             return self._population.unary_op_non_elementwise(
                 operator.getitem, dims)
 
     @property
-    def marginals(self: P) -> Sequence[P]:
+    def marginals(self):
         """A property that applies the `[]` operator to outcomes.
 
         This is not performed elementwise on tuples, so that this can be used
@@ -426,13 +417,15 @@ class Population(ABC, Mapping[T, int]):
             data[new_outcome] += quantity
         return self._new_type()(data)
 
-    def covariance(self, i: int, j: int):
+    def covariance(self: 'Population[tuple[numbers.Real, ...]]', i: int,
+                   j: int) -> float:
         mean_i = self.marginals[i].mean()
         mean_j = self.marginals[j].mean()
         return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * quantity
                    for outcome, quantity in self.items()) / self.denominator()
 
-    def correlation(self, i: int, j: int):
+    def correlation(self: 'Population[tuple[numbers.Real, ...]]', i: int,
+                    j: int) -> float:
         sd_i = self.marginals[i].standard_deviation()
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
