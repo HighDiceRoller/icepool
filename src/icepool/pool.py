@@ -12,7 +12,10 @@ import math
 from collections import defaultdict
 from functools import cache, cached_property
 
-from typing import Any, Collection, Generator, Mapping, MutableMapping, Sequence
+from typing import Any, Collection, Generator, Hashable, Mapping, MutableMapping, Sequence, TypeVar
+
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the outcome type."""
 
 
 @cache
@@ -36,14 +39,14 @@ def clear_pool_cache():
     new_pool_cached.cache_clear()
 
 
-class Pool(OutcomeCountGenerator):
+class Pool(OutcomeCountGenerator[T]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.
     """
 
     _sorted_roll_counts: tuple[int, ...]
-    _dice: tuple[tuple['icepool.Die', int]]
+    _dice: tuple[tuple['icepool.Die[T]', int]]
 
     def __new__(cls,
                 dice: Mapping[Any, int] | Sequence,
@@ -96,8 +99,8 @@ class Pool(OutcomeCountGenerator):
         return cls._new_pool_from_mapping(dice_counts, sorted_roll_counts)
 
     @classmethod
-    def _new_pool_from_mapping(cls, dice_counts: Mapping['icepool.Die', int],
-                               sorted_roll_counts: Sequence[int]) -> 'Pool':
+    def _new_pool_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
+                               sorted_roll_counts: Sequence[int]) -> 'Pool[T]':
         """Creates a new pool.
 
         Args:
@@ -112,8 +115,8 @@ class Pool(OutcomeCountGenerator):
             sorted_roll_counts)
 
     @classmethod
-    def _new_pool_from_tuple(cls, dice: tuple[tuple['icepool.Die', int]],
-                             sorted_roll_counts: tuple[int, ...]) -> 'Pool':
+    def _new_pool_from_tuple(cls, dice: tuple[tuple['icepool.Die[T]', int]],
+                             sorted_roll_counts: tuple[int, ...]) -> 'Pool[T]':
         """Creates a new pool.
 
         Args:
@@ -144,25 +147,25 @@ class Pool(OutcomeCountGenerator):
         return self._denominator
 
     @cached_property
-    def _dice_tuple(self) -> tuple['icepool.Die', ...]:
+    def _dice_tuple(self) -> tuple['icepool.Die[T]', ...]:
         return sum(((die,) * count for die, count in self._dice), start=())
 
     @cached_property
-    def _unique_dice(self) -> Collection['icepool.Die']:
+    def _unique_dice(self) -> Collection['icepool.Die[T]']:
         return set(die for die, _ in self._dice)
 
-    def unique_dice(self) -> Collection['icepool.Die']:
+    def unique_dice(self) -> Collection['icepool.Die[T]']:
         """The collection of unique dice in this pool."""
         return self._unique_dice
 
     @cached_property
-    def _outcomes(self) -> Sequence:
+    def _outcomes(self) -> Sequence[T]:
         outcome_set = set(
             itertools.chain.from_iterable(
                 die.outcomes() for die in self.unique_dice()))
-        return tuple(sorted(outcome_set))
+        return tuple(sorted(outcome_set))  # type: ignore
 
-    def outcomes(self) -> Sequence:
+    def outcomes(self) -> Sequence[T]:
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
@@ -266,22 +269,24 @@ class Pool(OutcomeCountGenerator):
     __getitem__ = set_sorted_roll_counts
 
     @cached_property
-    def _min_outcome(self):
-        return min(die.min_outcome() for die in self.unique_dice())
+    def _min_outcome(self) -> T:
+        return min(
+            die.min_outcome() for die in self.unique_dice())  # type: ignore
 
-    def min_outcome(self):
+    def min_outcome(self) -> T:
         """The min outcome among all dice in this pool."""
         return self._min_outcome
 
     @cached_property
-    def _max_outcome(self):
-        return max(die.max_outcome() for die in self.unique_dice())
+    def _max_outcome(self) -> T:
+        return max(
+            die.max_outcome() for die in self.unique_dice())  # type: ignore
 
-    def max_outcome(self):
+    def max_outcome(self) -> T:
         """The max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome: T) -> NextOutcomeCountGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -327,7 +332,7 @@ class Pool(OutcomeCountGenerator):
         if skip_weight is not None:
             yield Pool([]), (sum(self.sorted_roll_counts()),), skip_weight
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome: T) -> NextOutcomeCountGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
@@ -508,7 +513,8 @@ def sorted_roll_counts_tuple(
                         sorted_roll_counts[split + 1:])
 
 
-def standard_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool':
+def standard_pool(
+        die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool[int]':
     """A `Pool` of standard dice (e.g. d6, d8...).
 
     Args:
@@ -525,8 +531,8 @@ def standard_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool':
 
 
 def iter_die_pop_min(
-        die: 'icepool.Die', rolls: int, min_outcome
-) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
+    die: 'icepool.Die[T]', rolls: int, min_outcome: T
+) -> Generator[tuple['icepool.Die[T]', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
@@ -564,8 +570,8 @@ def iter_die_pop_min(
 
 
 def iter_die_pop_max(
-        die: 'icepool.Die', rolls: int, max_outcome
-) -> Generator[tuple['icepool.Die', int, int, int], None, None]:
+    die: 'icepool.Die[T]', rolls: int, max_outcome: T
+) -> Generator[tuple['icepool.Die[T]', int, int, int], None, None]:
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:

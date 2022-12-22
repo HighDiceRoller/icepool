@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from typing import Hashable, TypeVar
 import icepool
 from icepool.counts import CountsKeysView
 from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
@@ -8,14 +9,17 @@ from icepool.math import iter_hypergeom
 from functools import cached_property
 import math
 
+T = TypeVar('T', bound=Hashable)
+"""Type variable representing the outcome type."""
 
-class Deal(OutcomeCountGenerator):
+
+class Deal(OutcomeCountGenerator[T]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck'
     _hand_sizes: tuple[int, ...]
 
-    def __init__(self, deck: 'icepool.Deck', *hand_sizes: int):
+    def __init__(self, deck: 'icepool.Deck[T]', *hand_sizes: int):
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -37,7 +41,7 @@ class Deal(OutcomeCountGenerator):
                 'The total number of cards dealt cannot exceed the size of the deck.'
             )
 
-    def deck(self) -> 'icepool.Deck':
+    def deck(self) -> 'icepool.Deck[T]':
         """The `Deck` the cards are dealt from."""
         return self._deck
 
@@ -49,7 +53,7 @@ class Deal(OutcomeCountGenerator):
         """The total number of cards dealt."""
         return sum(self.hand_sizes())
 
-    def outcomes(self) -> CountsKeysView:
+    def outcomes(self) -> CountsKeysView[T]:
         """The outcomes of the `Deck` in sorted order.
 
         These are also the `keys` of the `Deck` as a `Mapping`.
@@ -75,7 +79,7 @@ class Deal(OutcomeCountGenerator):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _generate_common(self, popped_deck: 'icepool.Deck',
+    def _generate_common(self, popped_deck: 'icepool.Deck[T]',
                          deck_count: int) -> NextOutcomeCountGenerator:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(
@@ -92,7 +96,7 @@ class Deal(OutcomeCountGenerator):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome: T) -> NextOutcomeCountGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
             return
@@ -101,7 +105,7 @@ class Deal(OutcomeCountGenerator):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome: T) -> NextOutcomeCountGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
             return

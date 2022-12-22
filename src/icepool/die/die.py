@@ -817,7 +817,7 @@ class Die(Population[T]):
         other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
-    def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool':
+    def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool[T]':
         """Creates a `Pool` from this `Die`.
 
         You might subscript the pool immediately afterwards, e.g.

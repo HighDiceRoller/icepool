@@ -133,7 +133,7 @@ class Deck(Population[T]):
         """A `Deck` with the max outcome removed."""
         return self._popped_max
 
-    def deal(self, *hand_sizes: int) -> 'icepool.Deal':
+    def deal(self, *hand_sizes: int) -> 'icepool.Deal[T]':
         """Creates a `Deal` object from this deck.
 
         See `Deal()` for details.
