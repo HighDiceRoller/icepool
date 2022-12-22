@@ -382,7 +382,8 @@ class Die(Population[T]):
         elif callable(outcomes):
             if star:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
@@ -444,7 +445,7 @@ class Die(Population[T]):
             if star:
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(*outcome)
+                    if not outcomes(*outcome)  # type: ignore
                 }
             else:
                 not_outcomes = {
@@ -701,7 +702,8 @@ class Die(Population[T]):
         elif callable(outcomes):
             if star:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if outcomes(*outcome)
+                    outcome for outcome in self.outcomes()
+                    if outcomes(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
