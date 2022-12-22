@@ -301,7 +301,7 @@ editor.setOptions({
 var resizer = new ResizeObserver(entries => {editor.resize();});
 resizer.observe(document.getElementById("main"));
 
-var initialCode = 'import icepool\n\noutput(3 @ icepool.d6)\n';
+var initialCode = 'from icepool import d\n\noutput(3 @ d(6))\n';
 var searchParams = new URLSearchParams(window.location.search);
 var url_code = searchParams.get('c');
 if (url_code) {
