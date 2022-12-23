@@ -64,11 +64,11 @@ def test_map_fixed_point_1_cycle():
     assert result.equals(icepool.Die([10]))
 
 
-def test_map_steps():
+def test_map_and_time():
     # How many coin flips until two heads?
-    result = icepool.Die([0]).map(lambda x: x if x >= 2 else x + coin(1, 2),
-                                  include_steps=True,
-                                  repeat=100)
+    result = icepool.Die([0]).map_and_time(lambda x: x
+                                           if x >= 2 else x + coin(1, 2),
+                                           repeat=100)
     assert result.marginals[1].mean() == pytest.approx(4.0)
 
 

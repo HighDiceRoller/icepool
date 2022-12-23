@@ -566,17 +566,16 @@ class Die(Population[T_co]):
 
     # Mixtures.
 
-    def map(self,
+    def map(
+            self,
             repl:
-            'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again]' |
-            'Mapping[T_co, U | Die[U]| icepool.RerollType | icepool.Again]',
+        'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.Again]',
             /,
             *,
             star: int = 0,
             repeat: int | None = 1,
-            include_steps: bool = False,
             again_depth: int = 1,
-            again_end=None) -> 'Die':
+            again_end=None) -> 'Die[U]':
         """Maps outcomes of the `Die` to other outcomes.
 
         This is also useful for representing processes.
@@ -596,32 +595,21 @@ class Die(Population[T_co]):
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
                 effect.
-            repeat: `map()` will be repeated with the same arguments on the
+            repeat: This will be repeated with the same arguments on the
                 result this many times.
 
-                EXPERIMENTAL: If set to `None`, the result will be as if `map()`
+                EXPERIMENTAL: If set to `None`, the result will be as if this
                     were repeated an infinite number of times. In this case, the
                     result will be in simplest form.
-            include_steps: If `True`, the outcomes of the result are
-                `(outcome, steps)`, where `steps` is the number of repeats
-                needed to reach an absorbing outcome (an outcome that only leads
-                to itself), or `repeat`, whichever is lesser.
-
-                `map()` will return early if it reaches a fixed point.
-                Therefore, you can set `repeat` equal to the maximum number of
-                steps you could possibly be interested in without worrying about
-                it causing extra computations after the fixed point.
-
-                Not compatible with `repeat=None`.
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
 
         Returns:
             The `Die` after the modification.
         """
-
         if repeat == 0:
-            return self
+            # In this case, U and T_co better be equal.
+            return self  # type: ignore
 
         # Convert to a single-argument function.
         if callable(repl):
@@ -642,42 +630,105 @@ class Die(Population[T_co]):
                     return outcome
 
         if repeat is not None:
-            if include_steps:
-                result_with_steps: 'Die[tuple[U, int]]' = Die([(self, 0)])
-
-                def transition_with_steps(outcome_and_steps):
-                    outcome, steps = outcome_and_steps
-                    next_outcome = transition_function(outcome)
-                    if icepool.markov_chain.is_absorbing(outcome, next_outcome):
-                        return outcome, steps
-                    else:
-                        return next_outcome, steps + 1
-
-                for _ in range(repeat):
-                    next_result: 'Die[tuple[U, int]]' = icepool.apply(
-                        transition_with_steps,
-                        result_with_steps,
-                        again_depth=again_depth,
-                        again_end=again_end)
-                    if result_with_steps == next_result:
-                        return next_result
-                    result_with_steps = next_result
-                return result_with_steps
-            else:
-                result: 'Die[U] | Die[T_co]' = self
-                for _ in range(repeat):
-                    result = icepool.apply(transition_function,
-                                           result,
-                                           again_depth=again_depth,
-                                           again_end=again_end)
-                return result
+            if repeat < 0:
+                raise ValueError('repeat cannot be negative.')
+            result: 'Die[U]' = self  # type: ignore
+            for _ in range(repeat):
+                result = icepool.apply(transition_function,
+                                       result,
+                                       again_depth=again_depth,
+                                       again_end=again_end)
+            return result
         else:
             # Infinite repeat.
-            if include_steps:
-                raise ValueError(
-                    'include_time cannot be used with repeat=None.')
             return icepool.markov_chain.absorbing_markov_chain(
                 self, transition_function)
+
+    def map_and_time(
+            self,
+            repl:
+        'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.Again]',
+            /,
+            *,
+            star: int = 0,
+            repeat: int = 1,
+            again_depth: int = 1,
+            again_end=None) -> 'Die[tuple[U, int]]':
+        """Maps outcomes of the `Die` to other outcomes, while also counting
+        timesteps.
+
+        This is useful for representing processes.
+
+        The outcomes of the result are  `(outcome, time)`, where `time` is the
+        number of repeats needed to reach an absorbing outcome (an outcome that
+        only leads to itself), or `repeat`, whichever is lesser.
+
+        This will return early if it reaches a fixed point.
+        Therefore, you can set `repeat` equal to the maximum number of
+        time you could possibly be interested in without worrying about
+        it causing extra computations after the fixed point.
+
+        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
+        `Die()` constructor. It is not advised to use these with `repeat` other
+        than 1.
+
+        Args:
+            repl: One of the following:
+                * A callable returning a new outcome for each old outcome.
+                * A mapping from old outcomes to new outcomes.
+                    Unmapped old outcomes stay the same.
+                The new outcomes may be dice rather than just single outcomes.
+                The special value `icepool.Reroll` will reroll that old outcome.
+            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+                `*outcome` before giving it to the `repl` function. `extra_dice`
+                are not unpacked. If `repl` is not a callable, this has no
+                effect.
+            repeat: This will be repeated with the same arguments on the result
+                this many times.
+            again_depth: Forwarded to the final die constructor.
+            again_end: Forwarded to the final die constructor.
+
+        Returns:
+            The `Die` after the modification.
+        """
+        # Convert to a single-argument function.
+        if callable(repl):
+            if star:
+
+                def transition_function(outcome):
+                    return repl(*outcome)
+            else:
+
+                def transition_function(outcome):
+                    return repl(outcome)
+        else:
+            # repl is a mapping.
+            def transition_function(outcome):
+                if outcome in repl:
+                    return repl[outcome]
+                else:
+                    return outcome
+
+        result: 'Die[tuple[U, int]]' = Die([(self, 0)])
+
+        def transition_with_steps(outcome_and_steps):
+            outcome, steps = outcome_and_steps
+            next_outcome = transition_function(outcome)
+            if icepool.markov_chain.is_absorbing(outcome, next_outcome):
+                return outcome, steps
+            else:
+                return next_outcome, steps + 1
+
+        for _ in range(repeat):
+            next_result: 'Die[tuple[U, int]]' = icepool.apply(
+                transition_with_steps,
+                result,
+                again_depth=again_depth,
+                again_end=again_end)
+            if result == next_result:
+                return next_result
+            result = next_result
+        return result
 
     def explode(self,
                 outcomes: Collection[T_co] | Callable[..., bool] | T_co |
