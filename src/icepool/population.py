@@ -18,7 +18,7 @@ from typing import Any, Callable, Hashable, Mapping, MutableMapping, Sequence, T
 T = TypeVar('T', bound=Hashable)
 """Type variable respresenting the outcome type."""
 
-P = TypeVar('P', bound='Population')
+C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
 
 
@@ -406,7 +406,7 @@ class Population(ABC, Mapping[T, int]):
         """
         return Population._Marginals(self)
 
-    def unary_op_non_elementwise(self: P, op: Callable, *args, **kwargs) -> P:
+    def unary_op_non_elementwise(self: C, op: Callable, *args, **kwargs) -> C:
         """As `unary_op()`, but not elementwise.
 
         This is used for `marginals()`.
