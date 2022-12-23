@@ -15,14 +15,14 @@ import random
 
 from typing import Any, Callable, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+T = TypeVar('T', bound=Hashable)
 """Type variable respresenting the outcome type."""
 
 P = TypeVar('P', bound='Population')
 """Type variable representing a subclass of `Population`."""
 
 
-class Population(ABC, Mapping[T_co, int]):
+class Population(ABC, Mapping[T, int]):
     """A mapping from outcomes to `int` quantities.
 
     Outcomes with each instance must be hashable and totally orderable.
@@ -37,7 +37,7 @@ class Population(ABC, Mapping[T_co, int]):
         """The type to use when constructing a new instance."""
 
     @abstractmethod
-    def keys(self) -> CountsKeysView[T_co]:
+    def keys(self) -> CountsKeysView[T]:
         """The outcomes within the population in sorted order."""
 
     @abstractmethod
@@ -45,12 +45,12 @@ class Population(ABC, Mapping[T_co, int]):
         """The quantities within the population in outcome order."""
 
     @abstractmethod
-    def items(self) -> CountsItemsView[T_co]:
+    def items(self) -> CountsItemsView[T]:
         """The (outcome, quantity)s of the population in sorted order."""
 
     # Outcomes.
 
-    def outcomes(self) -> CountsKeysView[T_co]:
+    def outcomes(self) -> CountsKeysView[T]:
         """The sorted outcomes of the mapping.
 
         These are also the `keys` of the mapping.
@@ -81,15 +81,15 @@ class Population(ABC, Mapping[T_co, int]):
         """`True` iff this mapping has no outcomes. """
         return len(self) == 0
 
-    def min_outcome(self) -> T_co:
+    def min_outcome(self) -> T:
         """The least outcome."""
         return self.outcomes()[0]
 
-    def max_outcome(self) -> T_co:
+    def max_outcome(self) -> T:
         """The greatest outcome."""
         return self.outcomes()[-1]
 
-    def nearest_le(self, outcome) -> T_co | None:
+    def nearest_le(self, outcome) -> T | None:
         """The nearest outcome that is <= the argument.
 
         Returns `None` if there is no such outcome.
@@ -99,7 +99,7 @@ class Population(ABC, Mapping[T_co, int]):
             return None
         return self.outcomes()[index]
 
-    def nearest_ge(self, outcome) -> T_co | None:
+    def nearest_ge(self, outcome) -> T | None:
         """The nearest outcome that is >= the argument.
 
         Returns `None` if there is no such outcome.
@@ -316,11 +316,11 @@ class Population(ABC, Mapping[T_co, int]):
         """
         return self.quantile(1, 2)
 
-    def median_left(self) -> T_co:
+    def median_left(self) -> T:
         """The median, taking the lesser in case of a tie."""
         return self.quantile_left(1, 2)
 
-    def median_right(self) -> T_co:
+    def median_right(self) -> T:
         """The median, taking the greater in case of a tie."""
         return self.quantile_right(1, 2)
 
@@ -333,7 +333,7 @@ class Population(ABC, Mapping[T_co, int]):
         return (self.quantile_left(n, d) +
                 self.quantile_right(n, d)) / 2  # type: ignore
 
-    def quantile_left(self, n: int, d: int = 100) -> T_co:
+    def quantile_left(self, n: int, d: int = 100) -> T:
         """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
         index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
@@ -341,7 +341,7 @@ class Population(ABC, Mapping[T_co, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def quantile_right(self, n: int, d: int = 100) -> T_co:
+    def quantile_right(self, n: int, d: int = 100) -> T:
         """The outcome `n / d` of the way through the CDF, taking the greater in case of a tie."""
         index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)
@@ -430,7 +430,7 @@ class Population(ABC, Mapping[T_co, int]):
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
 
-    def sample(self) -> T_co:
+    def sample(self) -> T:
         """A single random sample from this population.
 
         Note that this is always "with replacement" even for `Deck` since
