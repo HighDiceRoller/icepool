@@ -39,7 +39,7 @@ def is_bare_outcome(outcome) -> bool:
 
 
 def implicit_convert_to_die(
-        outcome: T | 'Die[T]' | Literal[icepool.RerollType.Reroll]) -> 'Die[T]':
+        outcome: T | 'Die[T]' | icepool.RerollType) -> 'Die[T]':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
     If the outcome is already a Die, it is returned as-is (even if it has

@@ -19,9 +19,11 @@ refer to dice in a pool.
 
 __docformat__ = 'google'
 
+from typing import Final
+
 from icepool.constant import RerollType
 
-Reroll = RerollType.Reroll
+Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
 
 This can be used in place of outcomes in many places. See individual function
@@ -65,7 +67,8 @@ from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
     ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
     SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
-    LargestMatchingSetEvaluator, LargestMatchingSetAndOutcomeEvaluator, LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator)
+    LargestMatchingSetEvaluator, LargestMatchingSetAndOutcomeEvaluator,
+    LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator)
 
 from icepool.deck import Deck
 from icepool.deal import Deal
