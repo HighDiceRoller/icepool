@@ -569,6 +569,7 @@ class Die(Population[T_co]):
     def map(self,
             repl: Callable[..., U] | Mapping[T_co, U],
             /,
+            *,
             star: int = 0,
             repeat: int | None = 1,
             include_steps: bool = False,
