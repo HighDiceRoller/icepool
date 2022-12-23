@@ -138,8 +138,10 @@ class Deck(Population[T]):
         """
         return icepool.Deal(self, *hand_sizes)
 
-    def map(self,
-            repl: Callable[..., U] | Mapping[T, U],
+    def map(
+            self,
+            repl:
+        'Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T, U | Deck[U] | icepool.RerollType]',
             /,
             star: bool = False) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
