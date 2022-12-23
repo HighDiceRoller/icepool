@@ -567,7 +567,9 @@ class Die(Population[T_co]):
     # Mixtures.
 
     def map(self,
-            repl: Callable[..., U] | Mapping[T_co, U],
+            repl:
+            'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again]' |
+            'Mapping[T_co, U | Die[U]| icepool.RerollType | icepool.Again]',
             /,
             *,
             star: int = 0,
@@ -641,7 +643,7 @@ class Die(Population[T_co]):
 
         if repeat is not None:
             if include_steps:
-                result_with_steps: 'Die[tuple[T_co, int]]' = Die([(self, 0)])
+                result_with_steps: 'Die[tuple[U, int]]' = Die([(self, 0)])
 
                 def transition_with_steps(outcome_and_steps):
                     outcome, steps = outcome_and_steps
@@ -652,16 +654,17 @@ class Die(Population[T_co]):
                         return next_outcome, steps + 1
 
                 for _ in range(repeat):
-                    next_result = icepool.apply(transition_with_steps,
-                                                result_with_steps,
-                                                again_depth=again_depth,
-                                                again_end=again_end)
+                    next_result: 'Die[tuple[U, int]]' = icepool.apply(
+                        transition_with_steps,
+                        result_with_steps,
+                        again_depth=again_depth,
+                        again_end=again_end)
                     if result_with_steps == next_result:
                         return next_result
                     result_with_steps = next_result
                 return result_with_steps
             else:
-                result: 'Die[T_co]' = self
+                result: 'Die[U] | Die[T_co]' = self
                 for _ in range(repeat):
                     result = icepool.apply(transition_function,
                                            result,
