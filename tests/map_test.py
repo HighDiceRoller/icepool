@@ -7,11 +7,6 @@ expected_d6x1 = icepool.Die(range(1, 13),
                             times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
 
 
-def test_map_array():
-    die = icepool.d6.map([5, 4, 1, 2, 3, icepool.d6 + 6])
-    assert die.probabilities() == pytest.approx(expected_d6x1.probabilities())
-
-
 def test_map_dict():
     die = icepool.d6.map({6: icepool.d6 + 6})
     assert die.probabilities() == pytest.approx(expected_d6x1.probabilities())
@@ -42,7 +37,7 @@ def test_map_star():
     assert b == c
 
 
-def collatz(x):
+def collatz(x: int) -> int:
     if x == 1:
         return 1
     elif x % 2:
