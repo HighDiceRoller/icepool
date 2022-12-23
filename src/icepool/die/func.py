@@ -278,10 +278,12 @@ def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
         yield outcomes, final_quantity
 
 
-def apply(func: Callable[..., T],
-          *dice,
-          again_depth: int = 1,
-          again_end=None) -> 'icepool.Die[T]':
+def apply(
+        func:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+        *dice,
+        again_depth: int = 1,
+        again_end=None) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
@@ -341,7 +343,8 @@ class apply_sorted():
 
     def __new__(  # type: ignore
             cls,
-            func: Callable[..., T],
+            func:
+        'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
             *dice,
             again_depth: int = 1,
             again_end=None) -> 'icepool.Die[T]':
@@ -384,34 +387,26 @@ class apply_sorted():
                           sorted_roll_counts: int | slice | tuple[int, ...],
                           /) -> Callable[..., 'icepool.Die']:
         """Implements `[]` syntax for `apply_sorted`."""
-        if isinstance(sorted_roll_counts, int):
 
-            def result(func: Callable[..., T],
-                       *dice,
-                       again_depth: int = 1,
-                       again_end=None) -> 'icepool.Die[T]':
-                if not callable(func):
-                    raise TypeError(
-                        'The first argument must be callable. Did you forget to provide a function?'
-                    )
-                die = icepool.Pool(dice)[sorted_roll_counts]
-                return die.map(func,
-                               again_depth=again_depth,
-                               again_end=again_end)
-        else:
-
-            def result(func: Callable[..., T],
-                       *dice,
-                       again_depth: int = 1,
-                       again_end=None) -> 'icepool.Die[T]':
-                if not callable(func):
-                    raise TypeError(
-                        'The first argument must be callable. Did you forget to provide a function?'
-                    )
-                pool = icepool.Pool(dice)[sorted_roll_counts]
-                return pool.expand().map(func,
-                                         star=1,
-                                         again_depth=again_depth,
-                                         again_end=again_end)
+        def result(
+                func:
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+                *dice,
+                again_depth: int = 1,
+                again_end=None) -> 'icepool.Die[T]':
+            if not callable(func):
+                raise TypeError(
+                    'The first argument must be callable. Did you forget to provide a function?'
+                )
+            pool_or_die = icepool.Pool(dice)[sorted_roll_counts]
+            if isinstance(sorted_roll_counts, int):
+                return pool_or_die.map(func,
+                                       again_depth=again_depth,
+                                       again_end=again_end)
+            else:
+                return pool_or_die.expand().map(func,
+                                                star=1,
+                                                again_depth=again_depth,
+                                                again_end=again_end)
 
         return result
