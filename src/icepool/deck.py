@@ -7,11 +7,9 @@ import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population import Population
 
-from collections import defaultdict
 from functools import cached_property
-import operator
 
-from typing import Any, Callable, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar, overload
+from typing import Callable, Hashable, Iterator, Mapping, Sequence, TypeVar
 
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
