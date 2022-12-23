@@ -198,17 +198,12 @@ count_unique_evaluator = CountUniqueEvaluator()
 class SubsetTargetEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
     """Base class for evaluators that look for a subset (possibly with repeated elements)."""
 
-    def __init__(self,
-                 targets: Collection[T_contra] | Mapping[T_contra, int],
-                 /,
-                 *,
-                 wilds: Collection[T_contra] = ()):
+    def __init__(self, targets: Collection[T_contra] | Mapping[T_contra, int],
+                 /):
         """
         Args:
             targets: Either a collection of outcomes, possibly with repeated elements.
                 Or a mapping from outcomes to counts.
-            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
-                This API is likely to change in the future.
         """
         if isinstance(targets, Mapping):
             self._targets = targets
@@ -216,135 +211,98 @@ class SubsetTargetEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
             self._targets = defaultdict(int)
             for outcome in targets:
                 self._targets[outcome] += 1
-        self._wilds = frozenset(wilds)
-
-    def next_state(self, state, outcome, count):
-        # The state is the number of extra wilds.
-        # If positive, all targets were hit and there were wilds left over.
-        # If zero, the number of wilds was exactly enough to hit the targets.
-        # If negative, that number of targets are left after wilds.
-        state = state or 0
-        if outcome in self._wilds:
-            state -= self._targets.get(outcome, 0) - count
-        else:
-            state -= max(self._targets.get(outcome, 0) - count, 0)
-        return state
 
     def order(self, *_):
         return Order.Any
 
     def alignment(self, *_) -> Collection:
-        return set(self._targets.keys()) | self._wilds
+        return set(self._targets.keys())
 
 
 class ContainsSubsetEvaluator(SubsetTargetEvaluator[Any, bool]):
     """Whether the target is a subset of the generator."""
 
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = True
+        return state and count >= self._targets.get(outcome, count)
+
     def final_outcome(self, final_state, *_):
-        return (final_state or 0) >= 0
+        if final_state is None:
+            return True
+        else:
+            return final_state
 
 
 class IntersectionSizeEvaluator(SubsetTargetEvaluator[Any, int]):
     """How many elements overlap between the generator and the target."""
 
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = 0
+        return state + min(count, self._targets.get(outcome, 0))
+
     def final_outcome(self, final_state, *_):
-        return sum(self._targets.values()) + min(final_state, 0)
+        if final_state is None:
+            return 0
+        return final_state
 
 
-class BestMatchingSetEvaluator(OutcomeCountEvaluator):
+class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int]):
     """The largest matching set of a generator."""
 
-    def __init__(self,
-                 *,
-                 include_outcome: bool = False,
-                 wilds: Collection[T_contra] = ()):
-        """
-        Args:
-            include_outcome: If `True`, the final outcomes will be tuples
-                `(set_size, outcome)`. Greater outcomes will be prioritized.
-                If `False` the final outcomes will just be `set_size`.
-        """
-        self._include_outcome = include_outcome
-        self._wilds = frozenset(wilds)
-
-    def next_state(self, state, outcome, count):
-        """Replace the last best set if this one is better.
-
-        Note the use of tuple comparison, which priortizes elements to the left.
-        """
-        if count < 0:
-            raise ValueError(
-                'BestMatchingSetEvaluator is not compatible with negative counts.'
-            )
-
-        best_count, best_outcome, wild_count = state or (0, outcome, 0)
-
-        if outcome in self._wilds:
-            wild_count += count
-            return best_count, best_outcome, wild_count
-
-        if not self._include_outcome:
-            best_outcome = None
-            outcome = None
-
-        best_count, best_outcome = max((best_count, best_outcome),
-                                       (count, outcome))
-
-        return best_count, best_outcome, wild_count
-
-    def final_outcome(self, final_state, gen):
-        best_count, best_outcome, wild_count = final_state
-
-        if best_count == 0:
-            best_outcome = gen.max_outcome()
-
-        if self._include_outcome:
-            return (best_count + wild_count), best_outcome
-        else:
-            return best_count + wild_count
+    def next_state(self, state, _, count):
+        return max(state or count, count)
 
     def order(self, *_):
         return Order.Any
 
 
-class BestStraightEvaluator(OutcomeCountEvaluator):
-    """The best straight in a generator.
-
-    Outcomes must be `int`s.
-
-    This prioritizes run size, then the outcome.
-    """
-
-    def __init__(self, *, include_outcome: bool = False):
-        """
-        Args:
-            include_outcome: If `True`, the final outcomes will be tuples
-                `(straight_size, outcome)`. Greater outcomes will be
-                prioritized, and the result is the greatest outcome in the
-                straight.
-                If `False`, the final outcomes will be just the straight size.
-        """
-        self._include_outcome = include_outcome
+# Unsure how to match input/output types here.
+class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
+                                                                  tuple[int,
+                                                                        Any]]):
 
     def next_state(self, state, outcome, count):
-        """Increments the current run if at least one `Die` rolled this outcome,
-        then saves the run to the state.
-        """
-        best_run, best_run_outcome, run = state or (0, outcome, 0)
+        return max(state or (count, outcome), (count, outcome))
+
+    def order(self, *_):
+        return Order.Any
+
+
+class LargestStraightEvaluator(OutcomeCountEvaluator[int, int]):
+
+    def next_state(self, state, _, count):
+        best_run, run = state or (0, 0)
         if count >= 1:
             run += 1
         else:
             run = 0
-        if not self._include_outcome:
-            best_run_outcome = None
-            outcome = None
-        return max((run, outcome), (best_run, best_run_outcome)) + (run,)
+        return max(best_run, run), run
 
     def final_outcome(self, final_state, *_):
-        if self._include_outcome:
-            return final_state[:2]
+        return final_state[0]
+
+    def order(self, *_):
+        return Order.Ascending
+
+    alignment = OutcomeCountEvaluator.range_alignment
+
+
+class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int,
+                                                               tuple[int,
+                                                                     int]]):
+
+    def next_state(self, state, outcome, count):
+        best_run_and_outcome, run = state or ((0, outcome), 0)
+        if count >= 1:
+            run += 1
         else:
-            return final_state[0]
+            run = 0
+        return max(best_run_and_outcome, (run, outcome)), run
+
+    def final_outcome(self, final_state, *_):
+        return final_state[0]
 
     def order(self, *_):
         return Order.Ascending

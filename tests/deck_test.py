@@ -1,10 +1,10 @@
 import icepool
 import pytest
 
-from icepool import BestStraightEvaluator
+from icepool import LargestStraightEvaluator
 
 # no wraparound
-best_run_evaluator = BestStraightEvaluator()
+best_run_evaluator = LargestStraightEvaluator()
 
 
 def trivial_next_state(state, outcome, *counts):

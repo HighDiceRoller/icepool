@@ -65,7 +65,7 @@ from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
     ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
     SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
-    BestMatchingSetEvaluator, BestStraightEvaluator)
+    LargestMatchingSetEvaluator, LargestMatchingSetAndOutcomeEvaluator, LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator)
 
 from icepool.deck import Deck
 from icepool.deal import Deal

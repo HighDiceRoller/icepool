@@ -175,11 +175,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """The number of outcomes with count greater than zero."""
         return icepool.count_unique_evaluator.evaluate(self)
 
-    def contains_subset(self,
-                        targets: Collection[T_co] | Mapping[T_co, int],
-                        /,
-                        *,
-                        wilds: Collection[T_co] = ()) -> 'icepool.Die[bool]':
+    def contains_subset(self, targets: Collection[T_co] | Mapping[T_co, int],
+                        /) -> 'icepool.Die[bool]':
         """Whether the outcomes contain all of the targets.
 
         The targets may contain duplicate elements.
@@ -187,18 +184,11 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         Args:
             targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
-            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
-                This API is likely to change in the future.
         """
-        return icepool.ContainsSubsetEvaluator(targets,
-                                               wilds=wilds).evaluate(self)
+        return icepool.ContainsSubsetEvaluator(targets).evaluate(self)
 
-    def intersection_size(
-        self,
-        targets: Collection[T_co] | Mapping[T_co, int],
-        /,
-        *,
-        wilds: Collection[T_co] = ()) -> 'icepool.Die[int]':
+    def intersection_size(self, targets: Collection[T_co] | Mapping[T_co, int],
+                          /) -> 'icepool.Die[int]':
         """The size of the intersection of the outcomes and the targets.
 
         The targets may contain duplicate elements.
@@ -208,55 +198,52 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         Args:
             targets: Either a collection of outcomes, counting once per appearance.
                 Or a mapping from outcomes to target counts.
-            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
-                This API is likely to change in the future.
         """
-        return icepool.IntersectionSizeEvaluator(targets,
-                                                 wilds=wilds).evaluate(self)
+        return icepool.IntersectionSizeEvaluator(targets).evaluate(self)
 
-    def best_matching_set(
-        self,
-        *,
-        include_outcome: bool = False,
-        wilds: Collection[T_co] = ()
-    ) -> 'icepool.Die':
-        """The best matching set among the outcomes.
+    def largest_matching_set(self) -> 'icepool.Die[int]':
+        """The largest matching set among the outcomes.
 
-        Args:
-            include_outcome: If `True`, the result outcomes will be tuples
-                `(set_size, outcome)`. Greater outcomes will be prioritized.
-            wilds: EXPERIMENTAL: A collection of outcomes to treat as wilds.
-                This API is likely to change in the future.
+        Returns:
+            A `Die` with outcomes set_size.
+            The greatest single such set is returned.
+        """
+        return icepool.LargestMatchingSetEvaluator().evaluate(self)
+
+    def largest_matching_set_and_outcome(
+            self) -> 'icepool.Die[tuple[int, T_co]]':
+        """The largest matching set among the outcomes.
 
         Returns:
             A `Die` with outcomes (set_size, outcome).
             The greatest single such set is returned.
         """
-        return icepool.BestMatchingSetEvaluator(include_outcome=include_outcome,
-                                                wilds=wilds).evaluate(self)
+        return icepool.LargestMatchingSetAndOutcomeEvaluator().evaluate(self)
 
-    def best_straight(
-        self,
-        *,
-        include_outcome: bool = False,
-    ) -> 'icepool.Die':
+    def largest_straight(
+            self: 'OutcomeCountGenerator[int]') -> 'icepool.Die[int]':
         """The best straight among the outcomes.
 
         Outcomes must be `int`s.
 
-        Args:
-            include_outcome: If `True`, the final outcomes will be tuples
-                `(straight_size, outcome)`. Greater outcomes will be
-                prioritized, and the result is the greatest outcome in the
-                straight.
-                If `False`, the final outcomes will be just the straight size.
-
         Returns:
-            A `Die` with outcomes (straight_length, outcome).
+            A `Die` with outcomes straight_size.
             The greatest single such straight is returned.
         """
-        return icepool.BestStraightEvaluator(
-            include_outcome=include_outcome).evaluate(self)
+        return icepool.LargestStraightEvaluator().evaluate(self)
+
+    def largest_straight_and_outcome(
+            self: 'OutcomeCountGenerator[int]'
+    ) -> 'icepool.Die[tuple[int, int]]':
+        """The best straight among the outcomes.
+
+        Outcomes must be `int`s.
+
+        Returns:
+            A `Die` with outcomes (straight_size, outcome).
+            The greatest single such straight is returned.
+        """
+        return icepool.LargestStraightAndOutcomeEvaluator().evaluate(self)
 
     # Sampling.
 
