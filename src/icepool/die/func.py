@@ -7,10 +7,11 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Generator, Hashable, Literal, Sequence, TypeVar, overload
+from typing import Any, Callable, Generator, Hashable, Iterable, Literal, Sequence, TypeAlias, TypeVar, overload
 
 T = TypeVar('T', bound=Hashable)
 """An outcome type."""
+
 U = TypeVar('U', bound=Hashable)
 """Another outcome type."""
 
@@ -144,19 +145,19 @@ def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
     return from_cumulative_quantities(outcomes, quantities_le)
 
 
-def min_outcome(*dice):
+def min_outcome(*dice: 'T | icepool.Die[T]') -> T:
     """The minimum outcome among the dice. """
-    dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return min(die.outcomes()[0] for die in dice)
+    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
+    return min(die.outcomes()[0] for die in converted_dice)
 
 
-def max_outcome(*dice):
+def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
     """The maximum outcome among the dice. """
-    dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return max(die.outcomes()[-1] for die in dice)
+    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
+    return max(die.outcomes()[-1] for die in converted_dice)
 
 
-def align(*dice) -> tuple['icepool.Die', ...]:
+def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """Pads dice with zero quantities so that all have the same set of outcomes.
 
     Args:
@@ -165,13 +166,14 @@ def align(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
-    outcomes = set(itertools.chain.from_iterable(
-        die.outcomes() for die in dice))
-    return tuple(die.set_outcomes(outcomes) for die in dice)
+    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
+    outcomes = set(
+        itertools.chain.from_iterable(die.outcomes() for die in converted_dice))
+    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
-def align_range(*dice) -> tuple['icepool.Die', ...]:
+def align_range(
+        *dice: 'int | icepool.Die[int]') -> tuple['icepool.Die[int]', ...]:
     """Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
 
     Args:
@@ -180,15 +182,15 @@ def align_range(*dice) -> tuple['icepool.Die', ...]:
     Returns:
         A tuple of aligned dice.
     """
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
-    outcomes = tuple(
-        range(icepool.min_outcome(*dice),
-              icepool.max_outcome(*dice) + 1))
-    return tuple(die.set_outcomes(outcomes) for die in dice)
+    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
+    outcomes = range(
+        icepool.min_outcome(*converted_dice),  # type: ignore
+        icepool.max_outcome(*converted_dice) + 1)  # type: ignore
+    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
 def reduce(func: Callable[[T, T], T],
-           dice,
+           dice: 'Iterable[T | icepool.Die[T]]',
            *,
            initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
     """Applies a function of two arguments cumulatively to a sequence of dice.
@@ -212,16 +214,18 @@ def reduce(func: Callable[[T, T], T],
     if initial is not None:
         result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
     else:
-        result = next(iter_dice)
+        result = next(iter_dice)  # type: ignore
     for die in iter_dice:
         result = apply(func, result, die)
     return result
 
 
-def accumulate(func: Callable[[T, T], T],
-               dice,
-               *,
-               initial=None) -> Generator['icepool.Die[T]', None, None]:
+def accumulate(
+    func: Callable[[T, T], T],
+    dice: 'Iterable[T | icepool.Die[T]]',
+    *,
+    initial: 'T | icepool.Die[T] | None' = None
+) -> Generator['icepool.Die[T]', None, None]:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -247,7 +251,7 @@ def accumulate(func: Callable[[T, T], T],
         result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
     else:
         try:
-            result = next(iter_dice)
+            result = next(iter_dice)  # type: ignore
         except StopIteration:
             return
     yield result
