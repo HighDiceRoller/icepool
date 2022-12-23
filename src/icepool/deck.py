@@ -143,7 +143,7 @@ class Deck(Population[T]):
     def map(self,
             repl: Callable[..., U] | Mapping[T, U],
             /,
-            star: int = 0) -> 'Deck[U]':
+            star: bool = False) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
 
         Args:
@@ -153,7 +153,7 @@ class Deck(Population[T]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be `Deck`s, in which case one card is
                 replaced with several. This is not recommended.
-            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+            star: If set to `True`, outcomes of `self` will be unpacked as
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
                 effect.

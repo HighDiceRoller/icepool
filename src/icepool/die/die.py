@@ -16,7 +16,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Callable, Collection, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
 
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
@@ -355,7 +355,7 @@ class Die(Population[T]):
     def reroll(self,
                outcomes: Callable[..., bool] | Collection[T] | T | None = None,
                *,
-               star: int = 0,
+               star: bool = False,
                depth: int | None = None) -> 'Die[T]':
         """Rerolls the given outcomes.
 
@@ -366,7 +366,7 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
                 * If not provided, the min outcome will be rerolled.
-            star: If set to `True` or 1, outcomes will be unpacked as
+            star: If set to `True`, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
             depth: The maximum number of times to reroll.
@@ -419,7 +419,7 @@ class Die(Population[T]):
     def filter(self,
                outcomes: Callable[..., bool] | Collection[T],
                *,
-               star: int = 0,
+               star: bool = False,
                depth: int | None = None) -> 'Die[T]':
         """Rerolls until getting one of the given outcomes.
 
@@ -430,7 +430,7 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A collection of outcomes to reroll until.
-            star: If set to `True` or 1, outcomes will be unpacked as
+            star: If set to `True`, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
             depth: The maximum number of times to reroll.
@@ -570,7 +570,7 @@ class Die(Population[T]):
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T, U | Die[U] | icepool.RerollType | icepool.Again]',
             /,
             *,
-            star: int = 0,
+            star: bool = False,
             repeat: int | None = 1,
             again_depth: int = 1,
             again_end=None) -> 'Die[U]':
@@ -589,7 +589,7 @@ class Die(Population[T]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+            star: If set to `True`, outcomes of `self` will be unpacked as
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
                 effect.
@@ -648,7 +648,7 @@ class Die(Population[T]):
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T, U | Die[U] | icepool.RerollType | icepool.Again]',
             /,
             *,
-            star: int = 0,
+            star: bool = False,
             repeat: int = 1,
             again_depth: int = 1,
             again_end=None) -> 'Die[tuple[U, int]]':
@@ -677,7 +677,7 @@ class Die(Population[T]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            star: If set to `True` or 1, outcomes of `self` will be unpacked as
+            star: If set to `True`, outcomes of `self` will be unpacked as
                 `*outcome` before giving it to the `repl` function. `extra_dice`
                 are not unpacked. If `repl` is not a callable, this has no
                 effect.
@@ -731,7 +731,7 @@ class Die(Population[T]):
     def explode(self,
                 outcomes: Collection[T] | Callable[..., bool] | T | None = None,
                 *,
-                star: int = 0,
+                star: bool = False,
                 depth: int = 9,
                 end=None) -> 'Die[T]':
         """Causes outcomes to be rolled again and added to the total.
@@ -743,7 +743,7 @@ class Die(Population[T]):
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
-            star: If set to `True` or 1, outcomes will be unpacked as
+            star: If set to `True`, outcomes will be unpacked as
                 `*outcome` before giving it to the `outcomes` function.
                 If `outcomes` is not a callable, this has no effect.
             depth: The maximum number of additional dice to roll.
