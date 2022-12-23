@@ -90,12 +90,14 @@ class Die(Population[T]):
     def _new_type(self) -> type:
         return Die
 
-    def __new__(cls,
-                outcomes,
-                times: Sequence[int] | int = 1,
-                *,
-                again_depth: int = 1,
-                again_end=None) -> 'Die':
+    def __new__(
+            cls,
+            outcomes,
+            times: Sequence[int] | int = 1,
+            *,
+            again_depth: int = 1,
+            again_end: 'T | Die[T] | icepool.RerollType | None' = None
+    ) -> 'Die[T]':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
@@ -573,7 +575,8 @@ class Die(Population[T]):
             star: bool = False,
             repeat: int | None = 1,
             again_depth: int = 1,
-            again_end=None) -> 'Die[U]':
+            again_end: 'U | Die[U] | icepool.RerollType | None' = None
+    ) -> 'Die[U]':
         """Maps outcomes of the `Die` to other outcomes.
 
         This is also useful for representing processes.
@@ -643,15 +646,16 @@ class Die(Population[T]):
                 self, transition_function)
 
     def map_and_time(
-            self,
-            repl:
+        self,
+        repl:
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T, U | Die[U] | icepool.RerollType | icepool.Again]',
-            /,
-            *,
-            star: bool = False,
-            repeat: int = 1,
-            again_depth: int = 1,
-            again_end=None) -> 'Die[tuple[U, int]]':
+        /,
+        *,
+        star: bool = False,
+        repeat: int = 1,
+        again_depth: int = 1,
+        again_end: 'U | Die[U] | icepool.RerollType | None' = None
+    ) -> 'Die[tuple[U, int]]':
         """Maps outcomes of the `Die` to other outcomes, while also counting
         timesteps.
 
@@ -784,12 +788,14 @@ class Die(Population[T]):
 
         return self.map(map_final, again_depth=depth, again_end=end)
 
-    def if_else(self,
-                outcome_if_true: U | 'Die[U]',
-                outcome_if_false: U | 'Die[U]',
-                *,
-                again_depth: int = 1,
-                again_end=None) -> 'Die[U]':
+    def if_else(
+            self,
+            outcome_if_true: U | 'Die[U]',
+            outcome_if_false: U | 'Die[U]',
+            *,
+            again_depth: int = 1,
+            again_end: 'U | Die[U] | icepool.RerollType | None' = None
+    ) -> 'Die[U]':
         """Ternary conditional operator.
 
         This replaces truthy outcomes with the first argument and falsy outcomes

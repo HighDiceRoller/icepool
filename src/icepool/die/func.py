@@ -279,11 +279,12 @@ def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
 
 
 def apply(
-        func:
+    func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
-        *dice,
-        again_depth: int = 1,
-        again_end=None) -> 'icepool.Die[T]':
+    *dice,
+    again_depth: int = 1,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
@@ -342,12 +343,13 @@ class apply_sorted():
     """
 
     def __new__(  # type: ignore
-            cls,
-            func:
+        cls,
+        func:
         'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
-            *dice,
-            again_depth: int = 1,
-            again_end=None) -> 'icepool.Die[T]':
+        *dice,
+        again_depth: int = 1,
+        again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+    ) -> 'icepool.Die[T]':
         """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
 
         Treat this as an ordinary function, not a constructor.
@@ -379,7 +381,7 @@ class apply_sorted():
             )
         pool = icepool.Pool(dice)
         return pool.expand().map(func,
-                                 star=1,
+                                 star=True,
                                  again_depth=again_depth,
                                  again_end=again_end)
 
@@ -389,11 +391,12 @@ class apply_sorted():
         """Implements `[]` syntax for `apply_sorted`."""
 
         def result(
-                func:
+            func:
             'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
-                *dice,
-                again_depth: int = 1,
-                again_end=None) -> 'icepool.Die[T]':
+            *dice,
+            again_depth: int = 1,
+            again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+        ) -> 'icepool.Die[T]':
             if not callable(func):
                 raise TypeError(
                     'The first argument must be callable. Did you forget to provide a function?'
