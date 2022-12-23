@@ -652,7 +652,7 @@ class Die(Population[T]):
             /,
             *,
             star: bool = False,
-            repeat: int = 1) -> 'Die[tuple[U, int]]':
+            repeat: int) -> 'Die[tuple[U, int]]':
         """Maps outcomes of the `Die` to other outcomes, while also counting
         timesteps.
 
