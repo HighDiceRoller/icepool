@@ -7,7 +7,7 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Generator, Hashable, Literal, Sequence, TypeVar
+from typing import Any, Callable, Generator, Hashable, Literal, Sequence, TypeVar, overload
 
 T = TypeVar('T', bound=Hashable)
 """An outcome type."""
@@ -109,8 +109,20 @@ def from_cumulative_quantities(outcomes: Sequence[T],
     return icepool.Die(d)
 
 
-def from_rv(rv, outcomes: Sequence[int | float], denominator: int,
-            **kwargs) -> 'icepool.Die[int | float]':
+@overload
+def from_rv(rv, outcomes: Sequence[int], denominator: int,
+            **kwargs) -> 'icepool.Die[int]':
+    ...
+
+
+@overload
+def from_rv(rv, outcomes: Sequence[float], denominator: int,
+            **kwargs) -> 'icepool.Die[float]':
+    ...
+
+
+def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
+            **kwargs) -> 'icepool.Die[int] | icepool.Die[float]':
     """Constructs a `Die` from a rv object (as `scipy.stats`).
     Args:
         rv: A rv object (as `scipy.stats`).
