@@ -916,7 +916,7 @@ class Die(Population[T_co]):
 
     __abs__ = abs
 
-    def round(self, ndigits: int = None) -> 'Die':
+    def round(self, ndigits: int | None = None) -> 'Die':
         return self.unary_op(round, ndigits)
 
     __round__ = round
