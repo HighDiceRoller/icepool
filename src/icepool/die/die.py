@@ -16,7 +16,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
+from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
 
 T = TypeVar('T', bound=Hashable)
 """Type variable representing the outcome type."""
@@ -524,7 +524,7 @@ class Die(Population[T]):
 
         return self.set_outcomes(range(min_outcome, max_outcome + 1))
 
-    def set_outcomes(self, outcomes) -> 'Die[T]':
+    def set_outcomes(self, outcomes: Iterable[T]) -> 'Die[T]':
         """Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
@@ -988,7 +988,7 @@ class Die(Population[T]):
     __ceil__ = ceil
 
     @staticmethod
-    def _zero(x):
+    def _zero(x: T) -> T:
         return type(x)()
 
     def zero(self) -> 'Die[T]':
@@ -1350,7 +1350,7 @@ class Die(Population[T]):
     def __hash__(self) -> int:
         return self._hash
 
-    def equals(self, other, *, simplify=False) -> bool:
+    def equals(self, other, *, simplify: bool = False) -> bool:
         """`True` iff both dice have the same outcomes and quantities.
 
         This is `False` if `other` is not a `Die`, even if it would convert
