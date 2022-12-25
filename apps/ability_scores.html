@@ -5,18 +5,18 @@
     <title>Ability score calculator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
-    
+
     <meta property="og:title" content="Ability score calculator" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/ability_scores.html" />
     <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/ability_scores_preview.png" />
-    
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Ability score calculator" />
     <meta name="twitter:site" content="@highdiceroller" />
     <meta name="twitter:creator" content="@highdiceroller" />
     <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/ability_scores_preview.png" />
-    
+
     <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -25,21 +25,32 @@
 
 <body>
     <h1>Ability score rolling method calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
-    
-    <form id="single_array_inputs" style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+
+
+    <form id="single_array_inputs" class="floating_controls">
         Generate each ability score by rolling
-        <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
-        rerolling <input name="reroll_dice" id="reroll_dice" type="number" min="0" max="19" value="0" required onwheel="" />s and below, 
-        keeping the <input name="num_keep" id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" /> highest dice, then adding
-        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.<br/>
-        Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1" max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br/>
-        Generate <input name="num_abilities" id="num_abilities" type="number" min="6" max="24" value="6" required onwheel="" /> ability scores, keeping the 6 highest.<br/>
-        Scores not between <input name="min_ability" id="min_ability" type="number" min="3" max="18" value="3" required onwheel="" /> and
-        <input name="max_ability" id="max_ability" type="number" min="3" max="18" value="18" required onwheel="" /> are set to the nearest value within that range.
+        <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input
+            name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+        rerolling <input name="reroll_dice" id="reroll_dice" type="number" min="0" max="19" value="0" required
+            onwheel="" />s and below,
+        keeping the <input name="num_keep" id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" />
+        highest dice, then adding
+        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.
+        <br />
+        Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1"
+            max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br />
+        Generate <input name="num_abilities" id="num_abilities" type="number" min="6" max="24" value="6" required
+            onwheel="" /> ability scores, keeping the 6 highest.<br />
+        Scores not between <input name="min_ability" id="min_ability" type="number" min="3" max="18" value="3" required
+            onwheel="" /> and
+        <input name="max_ability" id="max_ability" type="number" min="3" max="18" value="18" required onwheel="" />
+        are
+        set to the nearest value within that range.
+
     </form>
-        
+
     <h2>Probability distribution of the 6 highest ability scores</h2>
-    
+
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -72,23 +83,38 @@
             <th style="width: 4em;">17</th>
             <th style="width: 4em;">18</th>
         </tr>
-        <tr id="rankTableRow0"><td style="text-align: left;">Highest</td></tr>
-        <tr id="rankTableRow1"><td style="text-align: left;">2nd highest</td></tr>
-        <tr id="rankTableRow2"><td style="text-align: left;">3rd highest</td></tr>
-        <tr id="rankTableRow3"><td style="text-align: left;">4th highest</td></tr>
-        <tr id="rankTableRow4"><td style="text-align: left;">5th highest</td></tr>
-        <tr id="rankTableRow5"><td style="text-align: left;">6th highest</td></tr>
-        <tr id="rankTableRow6"><td style="text-align: left;">Mean</td></tr>
+        <tr id="rankTableRow0">
+            <td style="text-align: left;">Highest</td>
+        </tr>
+        <tr id="rankTableRow1">
+            <td style="text-align: left;">2nd highest</td>
+        </tr>
+        <tr id="rankTableRow2">
+            <td style="text-align: left;">3rd highest</td>
+        </tr>
+        <tr id="rankTableRow3">
+            <td style="text-align: left;">4th highest</td>
+        </tr>
+        <tr id="rankTableRow4">
+            <td style="text-align: left;">5th highest</td>
+        </tr>
+        <tr id="rankTableRow5">
+            <td style="text-align: left;">6th highest</td>
+        </tr>
+        <tr id="rankTableRow6">
+            <td style="text-align: left;">Mean</td>
+        </tr>
     </table>
-    
+
     <h2>Multiple arrays and total price</h2>
-    
+
     <p>(The preceding chart and table are for a single array.)</p>
-    
+
     <form id="multiple_array_inputs">
-        Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" /> array(s) and keep the best.
+        Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" />
+        array(s) and keep the best.
     </form>
-    
+
     <form id="pricing">
         Pricing:
         <select id="pricingPresetSelect">
@@ -109,22 +135,33 @@
                 <td>7: <input name="p7" id="p7" type="number" min="-25" max="50" value="7" required onwheel="" /></td>
                 <td>8: <input name="p8" id="p8" type="number" min="-25" max="50" value="8" required onwheel="" /></td>
                 <td>9: <input name="p9" id="p9" type="number" min="-25" max="50" value="9" required onwheel="" /></td>
-                <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" /></td>
+                <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" />
+                </td>
             </tr>
             <tr>
-                <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" /></td>
-                <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" /></td>
-                <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" /></td>
-                <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" /></td>
-                <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" /></td>
-                <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" /></td>
-                <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" /></td>
-                <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" /></td>
+                <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" />
+                </td>
+                <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" />
+                </td>
+                <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" />
+                </td>
+                <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" />
+                </td>
+                <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" />
+                </td>
+                <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" />
+                </td>
+                <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" />
+                </td>
+                <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" />
+                </td>
             </tr>
         </table>
-        <span name="monotonicityWarning" id="monotonicityWarning" style="display:none; color:red;">Warning: Prices are not in increasing order. The most expensive ability scores and arrays will be taken even if they are not the highest.</span>
+        <span name="monotonicityWarning" id="monotonicityWarning" style="display:none; color:red;">Warning: Prices are
+            not in increasing order. The most expensive ability scores and arrays will be taken even if they are not the
+            highest.</span>
     </form>
-    
+
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -134,7 +171,7 @@
             </select>
         </div>
         <canvas id="pricesChart"></canvas>
-        
+
         <table style="margin: auto;">
             <tr>
                 <th style="width: 4em;">Mean</th>
@@ -146,52 +183,69 @@
             </tr>
         </table>
     </div>
-    
-    
-    
+
+
+
     <div style="max-width:1280px;">
         <h2>Notes</h2>
-        
+
         <ul>
-            <li>The mean of the six kept scores (grey line) is equal to picking one of those six scores uniformly at random.</li>
-            <li>The six ranked dice are not independent; for example, if you roll a 14 as your highest score, you certainly can't have rolled a 15 as your second-highest score.</li>
-            <li><i>Pathfinder</i> point values are mostly equal to 2 less than <i>D&#38;D</i> 5e (per score); however, even beyond this, the references I used assign different values to scores below 8.</li>
-            <li>Spikes are normal in the <i>D&#38;D</i> 5e and <i>Pathfinder</i> total point values, especially at the high end;
-                this is because costs jump more than one point at a time, so some totals may have more or less possible/likely combinations of ability scores that add up to that total.
-                In particular, this calculator uses a direct calculation; the spikes are real and <i>not</i> due to any sort of sample size phenomenon.</li>
+            <li>The mean of the six kept scores (grey line) is equal to picking one of those six scores uniformly at
+                random.</li>
+            <li>The six ranked dice are not independent; for example, if you roll a 14 as your highest score, you
+                certainly can't have rolled a 15 as your second-highest score.</li>
+            <li><i>Pathfinder</i> point values are mostly equal to 2 less than <i>D&#38;D</i> 5e (per score); however,
+                even beyond this, the references I used assign different values to scores below 8.</li>
+            <li>Spikes are normal in the <i>D&#38;D</i> 5e and <i>Pathfinder</i> total point values, especially at the
+                high end;
+                this is because costs jump more than one point at a time, so some totals may have more or less
+                possible/likely combinations of ability scores that add up to that total.
+                In particular, this calculator uses a direct calculation; the spikes are real and <i>not</i> due to any
+                sort of sample size phenomenon.</li>
             <li>If you specify to keep more dice than were rolled, the excess kept dice don't count.</li>
-            <li>The highest possible number on a die will never be rerolled, since you can't hope for a better result.</li>
+            <li>The highest possible number on a die will never be rerolled, since you can't hope for a better result.
+            </li>
         </ul>
-        
+
         <h2>How does it work?</h2>
-        
+
         <p>
-            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a
+                href="https://www.chartjs.org/">Chart.js</a>,
             and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
-            <a href="https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf">A polynomial-time algorithm for keep-highest</a> 
-            allows this calculator to deliver precise results at an interactive rate. It runs in your own browser, not requiring a server once loaded.
+            <a href="https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf">A polynomial-time
+                algorithm for keep-highest</a>
+            allows this calculator to deliver precise results at an interactive rate. It runs in your own browser, not
+            requiring a server once loaded.
         </p>
-        
+
         <p>
-            Compare previous <a href="https://anydice.com/articles/4d6-drop-lowest">AnyDice</a> 
-            and <a href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">Monte Carlo</a> approaches.
+            Compare previous <a href="https://anydice.com/articles/4d6-drop-lowest">AnyDice</a>
+            and <a
+                href="https://www.reddit.com/r/Pathfinder_RPG/comments/5owftt/closest_equivalent_point_buy_value_for_several/">Monte
+                Carlo</a> approaches.
         </p>
-        
+
         <p>
-            If you want to play with Icepool more directly, <a href="https://highdiceroller.github.io/icepool/notebooks/lab?path=ability_scores%2Fadnd.ipynb">try this example JupyterLite notebook</a>,
-            which computes the distributions of the total ability scores generated by the four <i>Advanced Dungeons &#38; Dragons</i> 1st Edition methods.
+            If you want to play with Icepool more directly, <a
+                href="https://highdiceroller.github.io/icepool/notebooks/lab?path=ability_scores%2Fadnd.ipynb">try this
+                example JupyterLite notebook</a>,
+            which computes the distributions of the total ability scores generated by the four <i>Advanced Dungeons
+                &#38; Dragons</i> 1st Edition methods.
         </p>
-        
+
         <p>
-            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+            Questions, comments, or suggestions? Find me on <a
+                href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a
+                href="https://twitter.com/highdiceroller">Twitter</a>.
         </p>
     </div>
-    
+
     <script type="text/javascript">
         setInputsFromSearchQuery();
-        
+
         var maxProb = 1.0;
-        
+
         var rankChartContext = document.getElementById('rankChart').getContext('2d');
         var rankChart = new Chart(rankChartContext, {
             type: 'line',
@@ -222,7 +276,7 @@
                 plugins: {
                     title: {
                         fullSize: true,
-                        display : true,
+                        display: true,
                         font: {
                             size: 36,
                         },
@@ -230,7 +284,7 @@
                 },
             },
         });
-        
+
         let rankColors = [
             'rgba(220, 0, 240, 1.0)',
             'rgba(0, 0, 240, 1.0)',
@@ -240,7 +294,7 @@
             'rgba(220, 0, 0, 1.0)',
             'rgba(120, 120, 120, 1.0)',
         ];
-        
+
         var rankLabels = [
             'Highest',
             '2nd highest',
@@ -250,7 +304,7 @@
             '6th highest',
             'Mean',
         ];
-        
+
         for (let i = 0; i < 7; i++) {
             rankChart.data.datasets.push({
                 label: rankLabels[i],
@@ -258,7 +312,7 @@
                 data: rankChart.data.labels.map(x => 0.0),
             });
         }
-        
+
         var pricesChartContext = document.getElementById('pricesChart').getContext('2d');
         var pricesChart = new Chart(pricesChartContext, {
             type: 'line',
@@ -295,18 +349,18 @@
                 plugins: {
                     title: {
                         fullSize: true,
-                        display : true,
+                        display: true,
                         font: {
                             size: 36,
                         },
                     },
-                    legend : {
+                    legend: {
                         display: false,
                     },
                 },
             },
         });
-        
+
         function setLoadingText(text) {
             console.log(text);
             let loadingText = text.match(/Loading \w+/);
@@ -318,15 +372,15 @@
             rankChart.update();
             pricesChart.update();
         }
-        
-        async function initPyodide(){
+
+        async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
             });
-            
+
             await pyodide.loadPackage(["micropip"], setLoadingText);
-            
+
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
@@ -348,25 +402,25 @@
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
                     js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
             `);
-            
+
             rankChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
-                display : false,
+                display: false,
             };
-            
+
             pricesChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
-                display : false,
+                display: false,
             };
             return pyodide;
         }
         let pyodideReadyPromise = initPyodide();
-        
+
         async function updateRoll() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             num_dice = int(js.document.getElementById('num_dice').value);
             reroll_dice = int(js.document.getElementById('reroll_dice').value);
@@ -405,26 +459,26 @@
             js.maxProb = max_prob * 100.0
             `);
         }
-        
+
         async function updateRankChart() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
                 for i, rank_die in enumerate(ranks):
                     set_rank_data(i, rank_die)
                 `);
             rankChart.update();
         }
-        
+
         const PRICING_PRESETS = {
-            "raw" : [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-            "mod" : [-4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4],
-            "mod_dcc" : [-3, -2, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3],
-            "mod_swn" : [-2, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2],
-            "pb_5e" : [-9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19],
-            "pb_pf" : [-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17]
+            "raw": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            "mod": [-4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4],
+            "mod_dcc": [-3, -2, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3],
+            "mod_swn": [-2, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2],
+            "pb_5e": [-9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19],
+            "pb_pf": [-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17]
         };
-        
+
         async function setPricingPreset() {
             let pricingPresetSelect = document.getElementById('pricingPresetSelect');
             if (pricingPresetSelect.value === 'custom') {
@@ -433,19 +487,19 @@
             let prices = PRICING_PRESETS[pricingPresetSelect.value];
             for (let i = 3; i < 19; i++) {
                 let e = document.getElementById('p' + i);
-                e.value = prices[i-3];
+                e.value = prices[i - 3];
             }
         }
-        
+
         async function updatePrices() {
             let pricingPresetSelect = document.getElementById('pricingPresetSelect');
-            
+
             let prices = [];
             for (let i = 3; i < 19; i++) {
                 let e = document.getElementById('p' + i);
-                prices[i-3] = parseInt(e.value);
+                prices[i - 3] = parseInt(e.value);
             }
-            
+
             pricingPresetSelect.value = "custom";
             for (const [preset, presetPrices] of Object.entries(PRICING_PRESETS)) {
                 if (prices.every((price, i) => price == presetPrices[i])) {
@@ -453,19 +507,19 @@
                     break;
                 }
             }
-            
+
             let monotonicityWarning = document.getElementById('monotonicityWarning');
             monotonicityWarning.style.display = 'none';
             for (let i = 3; i < 18; i++) {
-                if (prices[i-3] > prices[i-2]) {
+                if (prices[i - 3] > prices[i - 2]) {
                     monotonicityWarning.style.display = 'inline';
                     break;
                 }
             }
-        
+
             let pyodide = await pyodideReadyPromise;
             let rollReady = await rollReadyPromise;
-            
+
             pyodide.runPython(`
                 prices = {}
                 for i in range(3, 19):
@@ -476,11 +530,11 @@
                 js.document.getElementById('price_sd').innerHTML = '%0.2f' % total_price.standard_deviation()
             `);
         }
-        
+
         async function updatePricesChart() {
             let pyodide = await pyodideReadyPromise;
             let pricesReady = await pricesReadyPromise;
-            
+
             pyodide.runPython(`
                 selected_dist = js.document.getElementById('pricesViewDistSelect').value
                 
@@ -492,7 +546,7 @@
             `);
             pricesChart.update();
         }
-        
+
         function updateAllIfValid() {
             if (inputsAreValid()) {
                 updateRoll();
@@ -502,7 +556,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function validateInputsAndUpdate() {
             if (validateInputs()) {
                 updateRoll();
@@ -512,7 +566,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function updatePricesIfValid() {
             if (inputsAreValid()) {
                 updatePrices();
@@ -520,7 +574,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function validateInputsAndUpdatePrices() {
             if (validateInputs()) {
                 updatePrices();
@@ -534,26 +588,26 @@
         let pricesReadyPromise = updatePrices();
         updatePricesChart();
         updateSearchQueryFromForms();
-        
+
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('change', validateInputsAndUpdate);
         single_array_inputs.addEventListener('input', updateAllIfValid);
-        
+
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('change', validateInputsAndUpdate);
         multiple_array_inputs.addEventListener('input', updateAllIfValid);
-        
+
         let rank_view_select = document.querySelector('#rankDistSelect');
         rank_view_select.addEventListener('input', updateRankChart);
-        
+
         let pricing_preset_select = document.querySelector('#pricingPresetSelect');
         pricing_preset_select.addEventListener('input', setPricingPreset);
         pricing_preset_select.addEventListener('input', updatePricesIfValid);
-        
+
         let pricing = document.querySelector('#pricing');
         pricing.addEventListener('change', validateInputsAndUpdatePrices);
         pricing.addEventListener('input', updatePricesIfValid);
-        
+
         let prices_view_dist_select = document.querySelector('#pricesViewDistSelect');
         prices_view_dist_select.addEventListener('input', updatePricesChart);
     </script>

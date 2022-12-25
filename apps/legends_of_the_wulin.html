@@ -13,8 +13,8 @@
 
 <body>
     <h1>Legends of the Wulin calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
-    
-    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+
+    <div class="floating_controls">
         <form id="inputs">
             <table>
                 <tr>
@@ -36,7 +36,8 @@
                 </tr>
                 <tr id="pinputs">
                     <th style="text-align:left;">Player</th>
-                    <td style="border-right: 2px solid #bfbfbf;"><input name="plake" id="plake" type="number" min="1" max="20" value="7" required onwheel="" /></td>
+                    <td style="border-right: 2px solid #bfbfbf;"><input name="plake" id="plake" type="number" min="1"
+                            max="20" value="7" required onwheel="" /></td>
                     <td><input name="p0" id="p0" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="p1" id="p1" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="p2" id="p2" type="number" min="0" max="20" value="0" required onwheel="" /></td>
@@ -50,7 +51,8 @@
                 </tr>
                 <tr id="oinputs">
                     <th style="text-align:left;">Opposition</th>
-                    <td style="border-right: 2px solid #bfbfbf;"><input name="olake" id="olake" type="number" min="1" max="20" value="7" required onwheel="" /></td>
+                    <td style="border-right: 2px solid #bfbfbf;"><input name="olake" id="olake" type="number" min="1"
+                            max="20" value="7" required onwheel="" /></td>
                     <td><input name="o0" id="o0" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="o1" id="o1" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="o2" id="o2" type="number" min="0" max="20" value="0" required onwheel="" /></td>
@@ -65,7 +67,7 @@
             </table>
         </form>
     </div>
-    
+
     <h2>Probability distribution of the total results</h2>
     <div style="width:80%; margin: auto;">
         <div style="font-size: 150%;">
@@ -79,14 +81,16 @@
         <div style="font-size: 200%;">
             <table style="width:90%;margin-left:auto;margin-right:auto;">
                 <tr>
-                    <td style="width:30%;text-align:left;">Player wins: <span id="successChance" style="color:blue;"></span></td>
+                    <td style="width:30%;text-align:left;">Player wins: <span id="successChance"
+                            style="color:blue;"></span></td>
                     <td style="width:20%;text-align:left;">Tie: <span id="tieChance"></span></td>
-                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChance" style="color:red;"></span></td>
+                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChance"
+                            style="color:red;"></span></td>
                 </tr>
             </table>
         </div>
     </div>
-    
+
     <script type="text/javascript">
         setInputsFromSearchQuery();
         var totalChartContext = document.getElementById('totalChart').getContext('2d');
@@ -130,7 +134,7 @@
                 plugins: {
                     title: {
                         fullSize: true,
-                        display : true,
+                        display: true,
                         font: {
                             size: 36,
                         },
@@ -138,7 +142,7 @@
                 },
             },
         });
-        
+
         function setLoadingText(text) {
             console.log(text);
             let loadingText = text.match(/Loading \w+/);
@@ -148,15 +152,15 @@
             totalChart.options.plugins.title.text = loadingText[0];
             totalChart.update();
         }
-        
-        async function initPyodide(){
+
+        async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
             });
-            
+
             await pyodide.loadPackage(["micropip"], setLoadingText);
-            
+
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
@@ -187,36 +191,36 @@
                     pool = icepool.Pool(lake + river)
                     return evaluator.evaluate(pool)
             `);
-            
+
             totalChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
-                display : false,
+                display: false,
             };
             return pyodide;
         }
         let pyodideReadyPromise = initPyodide();
-        
+
         async function updatePlayerRoll() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             die_player_unaligned = calc_pool('p')
             `);
         }
-        
+
         async function updateOppositionRoll() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             die_opposition_unaligned = calc_pool('o')
             
             `);
         }
-        
+
         async function updateTotalChart() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             
             die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
@@ -236,15 +240,15 @@
                 js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
                 js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
             `);
-            
+
             totalChart.update();
         }
-        
+
         function updateAll() {
             updateRoll();
             updateTotalChart();
         }
-        
+
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
@@ -252,7 +256,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function updatePlayerIfValid() {
             if (inputsAreValid()) {
                 updatePlayerRoll();
@@ -260,7 +264,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function validateOppositionInputsAndUpdate() {
             if (validateInputs()) {
                 updateOppositionRoll();
@@ -268,7 +272,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function updateOppositionIfValid() {
             if (inputsAreValid()) {
                 updateOppositionRoll();
@@ -276,37 +280,43 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         updatePlayerRoll();
         updateOppositionRoll();
         updateTotalChart();
         updateSearchQueryFromForms();
-        
+
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
         pinputs.addEventListener('input', updatePlayerIfValid);
-        
+
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
         oinputs.addEventListener('input', updateOppositionIfValid);
-        
+
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalChart);
     </script>
-    
+
     <div style="max-width:1280px;">
         <h2>Notes</h2>
-        
-        Brief explanation of the <i>Legends of the Wulin</i> dice system: Roll a pool of d10s with size equal to "Lake". Choose a matching set from the pool. The size of the matching set is the tens digit and the face of the matching pool is the ones digit; e.g. four 7s = 47. The "River" consists of stored dice with fixed faces that you can add to the pool.
-        
+
+        Brief explanation of the <i>Legends of the Wulin</i> dice system: Roll a pool of d10s with size equal to "Lake".
+        Choose a matching set from the pool. The size of the matching set is the tens digit and the face of the matching
+        pool is the ones digit; e.g. four 7s = 47. The "River" consists of stored dice with fixed faces that you can add
+        to the pool.
+
         <h3>How does it work?</h3>
         <p>
-            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a
+                href="https://www.chartjs.org/">Chart.js</a>,
             and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
         </p>
-        
+
         <p>
-            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+            Questions, comments, or suggestions? Find me on <a
+                href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a
+                href="https://twitter.com/highdiceroller">Twitter</a>.
         </p>
     </div>
 </body>
