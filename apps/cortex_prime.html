@@ -70,7 +70,7 @@
     </div>
 
     <h2>Probability distribution of the total</h2>
-    <div style="width: 80%; margin: auto;">
+    <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
             <select id="distSelect">
@@ -78,7 +78,7 @@
                 <option value="ccdf"><i>Chance of rolling greater than</option>
             </select>
         </div>
-        <div class="chart_container"> <canvas id="totalChart"></canvas></div>
+        <div class="chart_container"><canvas id="totalChart"></canvas></div>
         <div style="font-size: 150%;">
             Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br />
             Chance of player rolling greater than opposition: <span id="successChance"></span>
@@ -86,7 +86,7 @@
     </div>
 
     <h2>Probability distribution of hitches</h2>
-    <div style="width: 80%; margin: auto;">
+    <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
             <select id="hitchDistSelect">
@@ -94,7 +94,7 @@
                 <option value="ccdf" selected><i>Chance of rolling at least</option>
             </select>
         </div>
-        <canvas id="hitchChart"></canvas>
+        <div class="chart_container"><canvas id="hitchChart"></canvas></div>
     </div>
 
     <script type="text/javascript">
@@ -120,6 +120,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 interaction: {
                     intersect: false,
                 },
@@ -170,6 +171,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 interaction: {
                     intersect: false,
                 },

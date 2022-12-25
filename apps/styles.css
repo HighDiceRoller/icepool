@@ -61,5 +61,7 @@ td {
     position: relative;
     margin: auto;
     width: 80vw;
-    max-width: 100vh;
+    max-width: 150vh;
+    height: 60vh;
+    max-height: 80vw;
 }
