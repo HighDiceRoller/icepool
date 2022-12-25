@@ -221,12 +221,6 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
         max_outcome = max(generator.max_outcome() for generator in generators)
         return range(min_outcome, max_outcome + 1)
 
-    def final_kwargs(
-        self, *generators: icepool.OutcomeCountGenerator[T_contra]
-    ) -> Mapping[str, Any]:
-        """Optional method to specify any extra keyword arguments to the final die constructor."""
-        return {}
-
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
         """A cache of (order, generators) -> weight distribution over states. """
@@ -285,8 +279,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
                 final_outcomes.append(outcome)
                 final_weights.append(weight)
 
-        return icepool.Die(final_outcomes, final_weights,
-                           **self.final_kwargs(*converted_generators))
+        return icepool.Die(final_outcomes, final_weights)
 
     __call__ = evaluate
 

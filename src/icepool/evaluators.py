@@ -30,18 +30,17 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
         """
         self._func = func
 
-    def next_state(self, state: Hashable, outcome: T_contra,
-                   *counts: int) -> U_co:
+    def next_state(self, state: Hashable, outcome: T_contra, *counts: int):
         return self._func(state, outcome, *counts)
 
 
-class JointEvaluator(OutcomeCountEvaluator):
+class JointEvaluator(OutcomeCountEvaluator[T_contra, tuple]):
     """An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
 
     def __init__(self, *sub_evaluators: OutcomeCountEvaluator):
         self._sub_evaluators = sub_evaluators
 
-    def next_state(self, state, outcome, *counts: int) -> tuple[Hashable, ...]:
+    def next_state(self, state, outcome, *counts: int):
         """Runs `next_state` for all subevals.
 
         The state is a tuple of the substates.
@@ -65,7 +64,7 @@ class JointEvaluator(OutcomeCountEvaluator):
             evaluator.final_outcome(final_substate, *generators) for evaluator,
             final_substate in zip(self._sub_evaluators, final_state))
 
-    def order(self, *generators: icepool.OutcomeCountGenerator) -> Order:
+    def order(self, *generators: icepool.OutcomeCountGenerator):
         """Determines the common order of the subevals.
 
         Raises:

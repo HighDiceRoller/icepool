@@ -13,6 +13,9 @@ from typing import Any, Callable, Collection, Container, Generic, Hashable, Iter
 T_co = TypeVar('T_co', bound=Hashable, covariant=True)
 """Type variable representing the outcome type."""
 
+U = TypeVar('U', bound=Hashable)
+"""Type variable representing another outcome type."""
+
 NextOutcomeCountGenerator: TypeAlias = Iterator[tuple[
     'icepool.OutcomeCountGenerator', Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
@@ -101,8 +104,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """All `OutcomeCountGenerator`s must be hashable."""
 
     def evaluate(self,
-                 evaluator_or_func: 'icepool.OutcomeCountEvaluator' | Callable,
-                 /) -> 'icepool.Die':
+                 evaluator_or_func: 'icepool.OutcomeCountEvaluator[T_co, U]' |
+                 Callable[..., U], /) -> 'icepool.Die[U]':
         """Evaluates this generator using the given `OutcomeCountEvaluator` or function.
 
         Note that each `OutcomeCountEvaluator` instance carries its own cache;
@@ -122,10 +125,10 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             evaluator_or_func = icepool.WrapFuncEvaluator(evaluator_or_func)
         return evaluator_or_func.evaluate(self)
 
-    def min_outcome(self):
+    def min_outcome(self) -> T_co:
         return self.outcomes()[0]
 
-    def max_outcome(self):
+    def max_outcome(self) -> T_co:
         return self.outcomes()[-1]
 
     # Built-in evaluators.
