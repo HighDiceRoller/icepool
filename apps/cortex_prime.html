@@ -5,18 +5,18 @@
     <title>Cortex Prime calculator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
-    
+
     <meta property="og:title" content="Cortex Prime calculator" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/cortex_prime.html" />
     <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/cortex_prime_preview.png" />
-    
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Cortex Prime calculator" />
     <meta name="twitter:site" content="@highdiceroller" />
     <meta name="twitter:creator" content="@highdiceroller" />
     <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/cortex_prime_preview.png" />
-    
+
     <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -25,8 +25,8 @@
 
 <body>
     <h1>Cortex Prime calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
-    
-    <div style="border: 2px solid #dfdfdf; background-color: #efefefdf; position: -webkit-sticky; position: sticky; top: 0; z-index: 1">
+
+    <div class="floating_controls">
         <form id="inputs">
             <table>
                 <tr>
@@ -46,7 +46,8 @@
                     <td><input name="p8" id="p8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="p10" id="p10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                    <td style="border-left: 2px solid #bfbfbf;"><input name="pd" id="pd" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="pd" id="pd" type="number" min="0" max="20"
+                            value="0" required onwheel="" /></td>
                     <td><input name="pk" id="pk" type="number" min="0" max="20" value="2" required onwheel="" /></td>
                 </tr>
                 <tr id="oinputs">
@@ -56,16 +57,18 @@
                     <td><input name="o8" id="o8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="o10" id="o10" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="o12" id="o12" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                    <td style="border-left: 2px solid #bfbfbf;"><input name="od" id="od" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="od" id="od" type="number" min="0" max="20"
+                            value="0" required onwheel="" /></td>
                     <td><input name="ok" id="ok" type="number" min="0" max="20" value="2" required onwheel="" /></td>
                 </tr>
             </table>
         </form>
         <form id="options">
-            <input name="hitch1", id="hitch1", type="checkbox"> Hitches count as 1s (rather than 0s). If checked, the dice act as standard dice.
+            <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s). If checked, the
+            dice act as standard dice.
         </form>
     </div>
-    
+
     <h2>Probability distribution of the total</h2>
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
@@ -77,11 +80,11 @@
         </div>
         <canvas id="totalChart"></canvas>
         <div style="font-size: 200%;">
-            Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br/>
+            Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br />
             Chance of player rolling greater than opposition: <span id="successChance"></span>
         </div>
     </div>
-    
+
     <h2>Probability distribution of hitches</h2>
     <div style="width: 80%; margin: auto;">
         <div style="font-size: 150%;">
@@ -93,10 +96,10 @@
         </div>
         <canvas id="hitchChart"></canvas>
     </div>
-    
+
     <script type="text/javascript">
         setInputsFromSearchQuery();
-        
+
         var totalChartContext = document.getElementById('totalChart').getContext('2d');
         var totalChart = new Chart(totalChartContext, {
             type: 'line',
@@ -138,7 +141,7 @@
                 plugins: {
                     title: {
                         fullSize: true,
-                        display : true,
+                        display: true,
                         font: {
                             size: 36,
                         },
@@ -146,7 +149,7 @@
                 },
             },
         });
-        
+
         var hitchChartContext = document.getElementById('hitchChart').getContext('2d');
         var hitchChart = new Chart(hitchChartContext, {
             type: 'line',
@@ -188,7 +191,7 @@
                 plugins: {
                     title: {
                         fullSize: true,
-                        display : true,
+                        display: true,
                         font: {
                             size: 36,
                         },
@@ -196,7 +199,7 @@
                 },
             },
         });
-        
+
         function setLoadingText(text) {
             console.log(text);
             let loadingText = text.match(/Loading \w+/);
@@ -208,15 +211,15 @@
             hitchChart.options.plugins.title.text = loadingText[0];
             hitchChart.update();
         }
-        
-        async function initPyodide(){
+
+        async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL : "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
             });
-            
+
             await pyodide.loadPackage(["micropip"], setLoadingText);
-            
+
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
@@ -250,40 +253,40 @@
                         hitch += icepool.coin(1, n)
                     return total, hitch
             `);
-            
+
             totalChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
-                display : false,
+                display: false,
             };
             hitchChart.options.plugins.title = {
                 text: "",
                 fullSize: false,
-                display : false,
+                display: false,
             };
             return pyodide;
         }
         let pyodideReadyPromise = initPyodide();
-        
+
         async function updatePlayerRoll() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             die_player_unaligned, hitch_player_unaligned = calc_pool('p')
             `);
         }
-        
+
         async function updateOppositionRoll() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             die_opposition_unaligned, hitch_opposition_unaligned = calc_pool('o')
             `);
         }
-        
+
         async function updateTotalResults() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             
             die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
@@ -304,13 +307,13 @@
                 js.totalChart.data.datasets[1].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_opposition.probabilities_le()])
                 
             `);
-            
+
             totalChart.update();
         }
-                
+
         async function updateHitchResults() {
             let pyodide = await pyodideReadyPromise;
-            
+
             pyodide.runPython(`
             
             hitch_player, hitch_opposition = icepool.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
@@ -326,10 +329,10 @@
                 js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.probabilities_ge()])
                 js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities_ge()])
             `);
-            
+
             hitchChart.update();
         }
-        
+
         function validatePlayerInputsAndUpdate() {
             if (validateInputs()) {
                 updatePlayerRoll();
@@ -338,7 +341,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function updatePlayerIfValid() {
             if (inputsAreValid()) {
                 updatePlayerRoll();
@@ -347,7 +350,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function validateOppositionInputsAndUpdate() {
             if (validateInputs()) {
                 updateOppositionRoll();
@@ -356,7 +359,7 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         function updateOppositionIfValid() {
             if (inputsAreValid()) {
                 updateOppositionRoll();
@@ -365,21 +368,21 @@
                 updateSearchQueryFromForms();
             }
         }
-        
+
         updatePlayerRoll();
         updateOppositionRoll();
         updateTotalResults();
         updateHitchResults();
         updateSearchQueryFromForms();
-        
+
         let pinputs = document.querySelector('#pinputs');
         pinputs.addEventListener('change', validatePlayerInputsAndUpdate);
         pinputs.addEventListener('input', updatePlayerIfValid);
-        
+
         let oinputs = document.querySelector('#oinputs');
         oinputs.addEventListener('change', validateOppositionInputsAndUpdate);
         oinputs.addEventListener('input', updateOppositionIfValid);
-        
+
         let options = document.querySelector('#options');
         options.addEventListener('input', validateInputs);
         options.addEventListener('input', updatePlayerRoll);
@@ -387,38 +390,47 @@
         options.addEventListener('input', updateTotalResults);
         options.addEventListener('input', updateHitchResults);
         options.addEventListener('input', updateSearchQueryFromForms);
-        
+
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateTotalResults);
-        
+
         let hitch_dist_select = document.querySelector('#hitchDistSelect');
         hitch_dist_select.addEventListener('input', updateHitchResults);
     </script>
-    
+
     <div style="max-width:1280px;">
         <h2>Notes</h2>
-        
+
         <ul>
-            <li>Remember that players lose ties. This is why the chart for totals has an option for "chance of rolling greater than" while the chart for hitches has an option for "chance of rolling at least".</li>
-            <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
+            <li>Remember that players lose ties. This is why the chart for totals has an option for "chance of rolling
+                greater than" while the chart for hitches has an option for "chance of rolling at least".</li>
+            <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do
+                not contribute to the total.</li>
         </ul>
-        
+
         <h3>How does it work?</h3>
         <p>
-            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a href="https://www.chartjs.org/">Chart.js</a>, 
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a
+                href="https://www.chartjs.org/">Chart.js</a>,
             and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
         </p>
-        
+
         <h3>Prior work</h3>
         <p>
-        Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by Casey Link</a>, which uses exponential-time enumeration of all possible die results.
-        While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute larger pools at interactive speed due to a <a href="https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf">polynomial-time algorithm</a>.
+            Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by
+                Casey Link</a>, which uses exponential-time enumeration of all possible die results.
+            While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute
+            larger pools at interactive speed due to a <a
+                href="https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf">polynomial-time
+                algorithm</a>.
         </p>
-        
+
         <p>
-            Questions, comments, or suggestions? Find me on <a href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a href="https://twitter.com/highdiceroller">Twitter</a>.
+            Questions, comments, or suggestions? Find me on <a
+                href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a
+                href="https://twitter.com/highdiceroller">Twitter</a>.
         </p>
     </div>
-    
-    <br/>
+
+    <br />
 </body>

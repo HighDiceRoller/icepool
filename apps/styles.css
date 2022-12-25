@@ -27,7 +27,8 @@ canvas {
     background-color: #f7f7f7;
 }
 
-th, td {
+th,
+td {
     padding-left: 0.25em;
     padding-right: 0.25em;
 }
@@ -41,7 +42,17 @@ td {
 }
 
 .col {
-    
     margin: 0.25em;
     flex: 50%;
+}
+
+.floating_controls {
+    border: 2px solid #dfdfdf;
+    background-color: #efefefdf;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 30vh;
 }
