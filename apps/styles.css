@@ -56,3 +56,10 @@ td {
     overflow-y: auto;
     max-height: 30vh;
 }
+
+.chart_container {
+    position: relative;
+    margin: auto;
+    width: 80vw;
+    max-width: 100vh;
+}
