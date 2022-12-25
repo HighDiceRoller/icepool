@@ -8,13 +8,13 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, Collection, Container, Generator, Generic, Hashable, Mapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Container, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar
 
 T_co = TypeVar('T_co', bound=Hashable, covariant=True)
 """Type variable representing the outcome type."""
 
-NextOutcomeCountGenerator: TypeAlias = Generator[tuple[
-    'icepool.OutcomeCountGenerator', Sequence, int], None, None]
+NextOutcomeCountGenerator: TypeAlias = Iterator[tuple[
+    'icepool.OutcomeCountGenerator', Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 

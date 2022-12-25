@@ -7,7 +7,7 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Generator, Hashable, Iterable, Literal, Sequence, TypeAlias, TypeVar, overload
+from typing import Any, Callable, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
 
 T = TypeVar('T', bound=Hashable)
 """An outcome type."""
@@ -225,7 +225,7 @@ def accumulate(
     dice: 'Iterable[T | icepool.Die[T]]',
     *,
     initial: 'T | icepool.Die[T] | None' = None
-) -> Generator['icepool.Die[T]', None, None]:
+) -> Iterator['icepool.Die[T]']:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
     Analogous to
@@ -260,7 +260,7 @@ def accumulate(
         yield result
 
 
-def iter_product_args(*args) -> Generator[tuple[tuple, int], None, None]:
+def iter_product_args(*args) -> Iterator[tuple[tuple, int]]:
     """Yields the independent joint distribution of the arguments.
 
     Args:

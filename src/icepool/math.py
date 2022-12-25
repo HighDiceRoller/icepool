@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from typing import Generator, MutableMapping
+from typing import Iterator, MutableMapping
 
 # b -> list of rows
 comb_row_cache: MutableMapping[int, list[tuple[int, ...]]] = {}
@@ -29,7 +29,7 @@ def comb(n: int, k: int, b: int = 1) -> int:
 
 def iter_hypergeom(
         deck: tuple[int, ...],
-        draws: int) -> Generator[tuple[tuple[int, ...], int], None, None]:
+        draws: int) -> Iterator[tuple[tuple[int, ...], int]]:
     """Iterates over the (hand, weight)s in the given `Deck`.
 
     Args:

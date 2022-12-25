@@ -4,10 +4,10 @@ from icepool.outcome_count_generator import OutcomeCountGenerator
 
 from functools import cached_property
 
-from typing import Collection, Generator, Hashable, Sequence, TypeAlias, TypeVar
+from typing import Collection, Hashable, Iterator, Sequence, TypeAlias, TypeVar
 
-AlignmentGenerator: TypeAlias = Generator[tuple['Alignment', Sequence[int],
-                                                int], None, None]
+AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int],
+                                                int]]
 
 T_co = TypeVar('T_co', bound=Hashable, covariant=True)
 """Type variable representing the outcome type."""
