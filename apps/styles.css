@@ -60,7 +60,7 @@ td {
 .chart_container {
     position: relative;
     margin: auto;
-    width: 80vw;
+    width: 90vw;
     max-width: 180vh;
     height: 60vh;
     max-height: 60vw;
