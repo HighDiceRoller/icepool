@@ -8,6 +8,7 @@ import icepool.markov_chain
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.population import Population
+from icepool.typing import Outcome
 
 import bisect
 from collections import defaultdict
@@ -18,10 +19,10 @@ import operator
 
 from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """Type variable representing the outcome type."""
 
-U = TypeVar('U', bound=Hashable)
+U = TypeVar('U', bound=Outcome)
 """Type variable representing a secondary outcome type, e.g. the output of a function."""
 
 

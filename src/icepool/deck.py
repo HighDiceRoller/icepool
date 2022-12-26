@@ -6,15 +6,16 @@ import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population import Population
+from icepool.typing import Outcome
 
 from functools import cached_property
 
-from typing import Callable, Hashable, Iterator, Mapping, Sequence, TypeVar
+from typing import Callable, Iterator, Mapping, Sequence, TypeVar
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """Type variable representing the outcome type."""
 
-U = TypeVar('U', bound=Hashable)
+U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 

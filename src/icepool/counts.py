@@ -1,13 +1,14 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.typing import Outcome
 
 from functools import cached_property
 import math
 
-from typing import Any, Collection, Hashable, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, TypeVar, ValuesView
+from typing import Any, Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, TypeVar, ValuesView
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """Type variable representing the outcome type."""
 
 

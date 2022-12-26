@@ -4,15 +4,16 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.outcome_count_evaluator import Order, OutcomeCountEvaluator
+from icepool.typing import Outcome
 
 from collections import defaultdict
 from functools import cached_property
 from typing import Any, Callable, Collection, Container, Hashable, Mapping, MutableMapping, TypeVar
 
-T_contra = TypeVar('T_contra', bound=Hashable, contravariant=True)
+T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
 
-U_co = TypeVar('U_co', bound=Hashable, covariant=True)
+U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
 

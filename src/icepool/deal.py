@@ -1,6 +1,8 @@
 __docformat__ = 'google'
 
-from typing import Hashable, TypeVar
+from icepool.typing import Outcome
+
+from typing import TypeVar
 import icepool
 from icepool.counts import CountsKeysView
 from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
@@ -9,7 +11,7 @@ from icepool.math import iter_hypergeom
 from functools import cached_property
 import math
 
-T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 

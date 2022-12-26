@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
+from icepool.typing import Outcome
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -23,10 +24,10 @@ class Order(enum.IntEnum):
     Any = 0
 
 
-T_contra = TypeVar('T_contra', bound=Hashable, contravariant=True)
+T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
 
-U_co = TypeVar('U_co', bound=Hashable, covariant=True)
+U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
 

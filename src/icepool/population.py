@@ -3,6 +3,7 @@ __docformat__ = 'google'
 from collections import defaultdict
 import icepool
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.typing import Outcome
 
 from abc import ABC, abstractmethod
 import bisect
@@ -15,7 +16,7 @@ import random
 
 from typing import Any, Callable, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """Type variable respresenting the outcome type."""
 
 C = TypeVar('C', bound='Population')

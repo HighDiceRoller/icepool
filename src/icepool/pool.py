@@ -6,6 +6,7 @@ import icepool.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
 from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.typing import Outcome
 
 import itertools
 import math
@@ -14,7 +15,7 @@ from functools import cache, cached_property
 
 from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar
 
-T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
@@ -533,8 +534,8 @@ def standard_pool(
 
 
 def iter_die_pop_min(
-    die: 'icepool.Die[T_co]', rolls: int, min_outcome
-) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
+        die: 'icepool.Die[T_co]', rolls: int,
+        min_outcome) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
@@ -572,8 +573,8 @@ def iter_die_pop_min(
 
 
 def iter_die_pop_max(
-    die: 'icepool.Die[T_co]', rolls: int, max_outcome
-) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
+        die: 'icepool.Die[T_co]', rolls: int,
+        max_outcome) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:

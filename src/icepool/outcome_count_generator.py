@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.typing import Outcome
 
 import bisect
 import itertools
@@ -10,10 +11,10 @@ from abc import ABC, abstractmethod
 
 from typing import Any, Callable, Collection, Container, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar
 
-T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-U = TypeVar('U', bound=Hashable)
+U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 NextOutcomeCountGenerator = Iterator[tuple[
@@ -149,9 +150,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     def sum(
         self,
         *,
-        map: Callable[[Hashable], Hashable] | Mapping[Hashable, Hashable] |
-        None = None
-    ) -> 'icepool.Die':
+        map: Callable[[T_co], U] | Mapping[T_co, U] | None = None
+    ) -> 'icepool.Die[U]':
         """The sum of the outcomes.
 
         Args:

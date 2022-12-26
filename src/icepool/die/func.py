@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.typing import Outcome
 
 from collections import defaultdict
 from functools import cache
@@ -9,10 +10,10 @@ import math
 
 from typing import Any, Callable, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """An outcome type."""
 
-U = TypeVar('U', bound=Hashable)
+U = TypeVar('U', bound=Outcome)
 """Another outcome type."""
 
 
@@ -221,10 +222,10 @@ def reduce(func: Callable[[T, T], T],
 
 
 def accumulate(
-    func: Callable[[T, T], T],
-    dice: 'Iterable[T | icepool.Die[T]]',
-    *,
-    initial: 'T | icepool.Die[T] | None' = None
+        func: Callable[[T, T], T],
+        dice: 'Iterable[T | icepool.Die[T]]',
+        *,
+        initial: 'T | icepool.Die[T] | None' = None
 ) -> Iterator['icepool.Die[T]']:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 

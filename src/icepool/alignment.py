@@ -1,14 +1,15 @@
 __docformat__ = 'google'
 
 from icepool.outcome_count_generator import OutcomeCountGenerator
+from icepool.typing import Outcome
 
 from functools import cached_property
 
-from typing import Collection, Hashable, Iterator, Sequence, TypeAlias, TypeVar
+from typing import Collection, Iterator, Sequence, TypeAlias, TypeVar
 
 AlignmentGenerator = Iterator[tuple['Alignment[T_co]', Sequence[int], int]]
 
-T_co = TypeVar('T_co', bound=Hashable, covariant=True)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
@@ -16,7 +17,7 @@ class Alignment(OutcomeCountGenerator[T_co]):
     """A generator that only outputs 0 counts with weight 1."""
 
     def __init__(self, outcomes: Collection[T_co]):
-        self._outcomes = tuple(sorted(outcomes))  # type: ignore
+        self._outcomes = tuple(sorted(outcomes))
 
     def outcomes(self) -> Sequence[T_co]:
         return self._outcomes

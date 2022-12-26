@@ -3,13 +3,14 @@ __docformat__ = 'google'
 import icepool
 from icepool.counts import Counts
 from icepool.die.die import Die
+from icepool.typing import Outcome
 
 from functools import cached_property
 import warnings
 
 from typing import Callable, Hashable, TypeVar
 
-T = TypeVar('T', bound=Hashable)
+T = TypeVar('T', bound=Outcome)
 """Type variable representing the outcome type."""
 
 
