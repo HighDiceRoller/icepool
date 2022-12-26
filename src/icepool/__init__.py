@@ -22,6 +22,7 @@ __docformat__ = 'google'
 from typing import Final
 
 from icepool.constant import RerollType
+from icepool.typing import Outcome
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
@@ -76,11 +77,12 @@ from icepool.deal import Deal
 from icepool.generators import SuitGenerator
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'Die', 'Population',
-    'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
-    'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
-    'highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
-    'OutcomeCountEvaluator', 'Order', 'JointEvaluator', 'SumEvaluator',
-    'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
+    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'Outcome', 'Die',
+    'Population', 'Again', 'CountsKeysView', 'CountsValuesView',
+    'CountsItemsView', 'from_cumulative_quantities', 'from_rv', 'align',
+    'align_range', 'lowest', 'highest', 'min_outcome', 'max_outcome', 'reduce',
+    'accumulate', 'apply', 'apply_sorted', 'Reroll', 'OutcomeCountGenerator',
+    'Pool', 'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
+    'SumEvaluator', 'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator',
+    'clear_pool_cache'
 ]
