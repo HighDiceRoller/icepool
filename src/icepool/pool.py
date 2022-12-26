@@ -52,7 +52,7 @@ class Pool(OutcomeCountGenerator[T_co]):
     def __new__(
             cls,
             dice:
-        'Mapping[T_co | icepool.Die[T_co], int] | Sequence[icepool.Die[T_co] | T_co]',
+        'Sequence[icepool.Die[T_co] | T_co] | Mapping[icepool.Die[T_co], int] | Mapping[T_co, int] | Mapping[icepool.Die[T_co] | T_co, int]',
             times: Sequence[int] | int = 1) -> 'Pool':
         """Public constructor for a pool.
 
