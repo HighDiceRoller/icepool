@@ -5,28 +5,28 @@ from icepool import d6, d8
 
 
 def test_outer_product():
-    result = icepool.outer_product(d6, d6)
+    result = icepool.cartesian_product(d6, d6)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))
     assert result_sum.equals(2 @ icepool.d6)
 
 
 def test_outer_product_cast():
-    result = icepool.outer_product(d6, 2)
+    result = icepool.cartesian_product(d6, 2)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))
     assert result_sum.equals(icepool.d6 + 2)
 
 
 def test_vector_add():
-    result = icepool.outer_product(d8, 1) + icepool.outer_product(0, d6)
-    expected = icepool.outer_product(d8, d6 + 1)
+    result = icepool.cartesian_product(d8, 1) + icepool.cartesian_product(0, d6)
+    expected = icepool.cartesian_product(d8, d6 + 1)
     assert result.equals(expected)
 
 
 def test_vector_matmul():
-    result = 2 @ icepool.outer_product(d6, d8)
-    expected = icepool.outer_product(2 @ d6, 2 @ d8)
+    result = 2 @ icepool.cartesian_product(d6, d8)
+    expected = icepool.cartesian_product(2 @ d6, 2 @ d8)
     assert result.equals(expected)
 
 
@@ -45,22 +45,22 @@ def test_nested_binary_elementwise():
 
 def test_binary_op_mismatch_scalar_vector():
     with pytest.raises(ValueError):
-        result = icepool.d6 + icepool.outer_product(d6, d8)
+        result = icepool.d6 + icepool.cartesian_product(d6, d8)
 
 
 def test_binary_op_mismatch_outcome_len():
     with pytest.raises(ValueError):
-        result = icepool.outer_product(d6, d8) + (1, 2, 3)
+        result = icepool.cartesian_product(d6, d8) + (1, 2, 3)
 
 
 def test_map_star():
-    result = icepool.outer_product(d6, d6).map(lambda a, b: a + b, star=1)
+    result = icepool.cartesian_product(d6, d6).map(lambda a, b: a + b, star=1)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
 
 
 def test_reroll_star():
-    result = icepool.outer_product(d6, d6)
+    result = icepool.cartesian_product(d6, d6)
     result = result.reroll(lambda a, b: a == 6 and b == 6, star=1)
     result = result.map(lambda a, b: a + b, star=1)
     expected = (2 @ icepool.d6).reroll({12})
@@ -68,7 +68,7 @@ def test_reroll_star():
 
 
 def test_filter_star():
-    result = icepool.outer_product(d6, d6)
+    result = icepool.cartesian_product(d6, d6)
     result = result.filter(lambda a, b: a == 6 and b == 6, star=1)
     result = result.map(lambda a, b: a + b, star=1)
     expected = (2 @ icepool.d6).filter({12})
@@ -76,14 +76,14 @@ def test_filter_star():
 
 
 def test_explode_star():
-    base = icepool.outer_product(d6, d6)
+    base = icepool.cartesian_product(d6, d6)
     result = base.explode(lambda a, b: a == 6 and b == 6, star=1)
     expected = base.explode()
     assert result.equals(expected)
 
 
 def test_unpack_marginals():
-    base = icepool.outer_product(d6, d6)
+    base = icepool.cartesian_product(d6, d6)
     a, b = base.marginals
     assert a == b
     assert a.simplify() == icepool.d6

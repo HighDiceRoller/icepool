@@ -86,7 +86,7 @@ def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':
     return icepool.Die(data)
 
 
-def outer_product(*dice: 'icepool.Die | Outcome') -> 'icepool.Die[tuple]':
+def cartesian_product(*dice: 'icepool.Die | Outcome') -> 'icepool.Die[tuple]':
     """Produces a `Die` whose outcomes are tuples of the outcomes of each of the inputs.
 
     E.g. `outer_product(d6, d6)` would produce tuples

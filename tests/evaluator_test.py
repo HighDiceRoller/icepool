@@ -148,7 +148,8 @@ def test_joint_evaluate():
 
 def test_enumerate_pool_vs_outer_product():
     result = icepool.expand_evaluator(d6.pool(3))
-    expected = icepool.outer_product(d6, d6, d6).map(lambda x: tuple(sorted(x)))
+    expected = icepool.cartesian_product(d6, d6,
+                                         d6).map(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
 

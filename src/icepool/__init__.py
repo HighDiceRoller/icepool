@@ -48,7 +48,7 @@ Operation in specific cases:
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              one_hot, outer_product,
+                              one_hot, cartesian_product,
                               from_cumulative_quantities, from_rv, min_outcome,
                               max_outcome, align, align_range, reduce,
                               accumulate, apply, apply_sorted)
@@ -78,12 +78,12 @@ from icepool.deal import Deal
 from icepool.generators import SuitGenerator
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'outer_product', 'Outcome',
-    'Die', 'Population', 'Again', 'CountsKeysView', 'CountsValuesView',
-    'CountsItemsView', 'from_cumulative_quantities', 'from_rv', 'align',
-    'align_range', 'lowest', 'highest', 'min_outcome', 'max_outcome', 'reduce',
-    'accumulate', 'apply', 'apply_sorted', 'Reroll', 'OutcomeCountGenerator',
-    'Pool', 'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
-    'SumEvaluator', 'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator',
-    'clear_pool_cache'
+    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'cartesian_product',
+    'Outcome', 'Die', 'Population', 'Again', 'CountsKeysView',
+    'CountsValuesView', 'CountsItemsView', 'from_cumulative_quantities',
+    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
+    'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
+    'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
+    'Order', 'JointEvaluator', 'SumEvaluator', 'ExpandEvaluator', 'Deck',
+    'Deal', 'SuitGenerator', 'clear_pool_cache'
 ]
