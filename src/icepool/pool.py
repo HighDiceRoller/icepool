@@ -49,9 +49,11 @@ class Pool(OutcomeCountGenerator[T_co]):
     _sorted_roll_counts: tuple[int, ...]
     _dice: tuple[tuple['icepool.Die[T_co]', int]]
 
-    def __new__(cls,
-                dice: Mapping[Any, int] | Sequence,
-                times: Sequence[int] | int = 1) -> 'Pool':
+    def __new__(
+            cls,
+            dice:
+        'Mapping[T_co | icepool.Die[T_co], int] | Sequence[icepool.Die[T_co] | T_co]',
+            times: Sequence[int] | int = 1) -> 'Pool':
         """Public constructor for a pool.
 
         Evaulation is most efficient when the dice are the same or same-side
@@ -61,9 +63,9 @@ class Pool(OutcomeCountGenerator[T_co]):
         Args:
             dice: The dice to put in the `Pool`. This can be one of the following:
 
-                * A single die.
-                * A sequence of dice.
-                * A mapping of dice and how many of that `Die` to put in the `Pool`.
+                * A `Sequence` of `Die` or outcomes.
+                * A `Mapping` of `Die` or outcomes to how many of that `Die` or
+                    outcome to put in the `Pool`.
 
                 All outcomes within a `Pool` must be totally orderable.
             times: Multiplies the number of times each element of `dice` will
@@ -91,10 +93,10 @@ class Pool(OutcomeCountGenerator[T_co]):
             dice = [dice]
 
         dice, times = icepool.creation_args.itemize(dice, times)
-        dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
+        converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
 
-        dice_counts: MutableMapping['icepool.Die', int] = defaultdict(int)
-        for die, qty in zip(dice, times):
+        dice_counts: MutableMapping['icepool.Die[T_co]', int] = defaultdict(int)
+        for die, qty in zip(converted_dice, times):
             dice_counts[die] += qty
         sorted_roll_counts = (1,) * sum(times)
         return cls._new_pool_from_mapping(dice_counts, sorted_roll_counts)
