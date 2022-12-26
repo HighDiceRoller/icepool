@@ -159,12 +159,15 @@ class Die(Population[T]):
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
+                * A `Sequence` of outcomes. Duplicates will contribute quantity
+                    for each appearance.
                 * A `Mapping` from outcomes to quantities.
-                    The outcomes of the `Mapping` will be "flattened" into the
-                    result. This option will be taken in preference to treating
-                    the `Mapping` itself as an outcome even if the `Mapping`
-                    itself is hashable and totally orderable. This means that
-                    `Die` and `Deck` will never be outcomes.
+
+                Individual outcomes can each be one of the following:
+
+                * A simple single outcome, which must be hashable and totally
+                    orderable.
+                * `str` or `bytes` will be treated as a single outcome.
                 * A tuple. Operators on dice with tuple outcomes
                     are performed element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
@@ -178,16 +181,11 @@ class Die(Population[T]):
                     Otherwise, the tuple is a single outcome. For example,
                     `Die((1, 2, 3, 4))` is *not* a d4, but a die that always
                     rolls the tuple `(1, 2, 3, 4)`.
-                * `str` or `bytes`, which will be treated as a single outcome.
-                * Any other sequence, such as a `list`. Each element will be
-                    treated as a separate outcome, weighted once per occurrence
-                    (unless it is at the top level and `times` is provided).
+                * A `Die`, which will be flattened into the result.
+                    The relative quantity to a `Die` input is shared by the
+                    `Die` as a whole. The denominator of the resulting `Die`
+                    will be multiplied if necessary.
                 * `icepool.Reroll`, which will drop itself from consideration.
-                * Anything else will be treated as a single outcome.
-                    Each outcome must be hashable, and the set of outcomes must
-                    be totally orderable (after expansion). The same outcome can
-                    appear multiple times, in which case the corresponding
-                    quantities will be accumulated.
             times: Multiplies the quantity of each element of `outcomes`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of

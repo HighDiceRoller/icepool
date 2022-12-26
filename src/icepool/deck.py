@@ -37,7 +37,7 @@ class Deck(Population[T]):
         Args:
             outcomes: The cards of the `Deck`. This can be one of the following:
                 * A `Mapping` from outcomes to quantities.
-                * A sequence of outcomes.
+                * A `Sequence` of outcomes.
 
                 Note that `Die` and `Deck` both count as `Mapping`s.
 
