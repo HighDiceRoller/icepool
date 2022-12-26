@@ -20,7 +20,7 @@ def test_op_empty():
 
 
 def test_mix_empty():
-    result = icepool.Die([icepool.d6, {}])
+    result = icepool.Die([icepool.d6, icepool.Die({})])
     expected = icepool.d6
     assert result.equals(expected)
 

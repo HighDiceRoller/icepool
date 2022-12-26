@@ -159,7 +159,7 @@ class Die(Population[T]):
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
-                * A `Collection` of outcomes. Duplicates will contribute
+                * A `Sequence` of outcomes. Duplicates will contribute
                     quantity for each appearance.
                 * A `Mapping` from outcomes to quantities.
 
@@ -167,7 +167,9 @@ class Die(Population[T]):
 
                 * A simple single outcome, which must be hashable and totally
                     orderable.
-                * A tuple. The elements must be valid outcomes.
+                * A tuple. The elements must be valid outcomes. In particular,
+                    `Die`, `Reroll`, and `Again` are not valid inside tuple
+                    outcomes.
 
                     Operators on dice with tuple outcomes are performed
                     element-wise. See `Die.unary_op` and

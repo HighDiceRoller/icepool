@@ -66,23 +66,6 @@ def test_empty_tuple():
     assert result.equals(result + ())
 
 
-def test_reroll_tuple():
-    result = icepool.Die([(1, icepool.Reroll)])
-    assert result.equals(icepool.Die([]))
-
-
 def test_denominator():
     result = icepool.Die([icepool.d(3), icepool.d(4), icepool.d(6)])
     assert result.denominator() == 36
-
-
-def test_bare_outcome():
-    assert Die(6) == Die([6])
-
-
-def test_bare_tuple():
-    assert Die((1, 2, 3, 4)) == Die([(1, 2, 3, 4)])
-
-
-def test_bare_str():
-    assert len(Die("abc")) == 1

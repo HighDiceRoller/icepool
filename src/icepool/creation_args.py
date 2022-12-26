@@ -2,12 +2,16 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import Counts
+from icepool.typing import Outcome
 
 import itertools
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeAlias
+from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
+
+T = TypeVar('T', bound=Outcome)
+"""Type variable representing the outcome type."""
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,
@@ -48,68 +52,44 @@ def itemize(keys: Mapping[Any, int] | Sequence,
     return keys, times
 
 
-def expand_args_for_die(args: Sequence, times: Sequence[int]) -> Counts:
-    subdatas = [expand(arg, merge_weights_lcm) for arg in args]
+def expand_args_for_die(
+        args: 'Sequence[T | icepool.Die[T] | icepool.RerollType]',
+        times: Sequence[int]) -> Counts[T]:
+
+    def expand_arg(
+            arg: T | icepool.Die[T] | icepool.RerollType) -> Mapping[T, int]:
+        if isinstance(arg, icepool.Die):
+            return arg
+        elif arg is icepool.Reroll:
+            return {}
+        else:
+            return {arg: 1}
+
+    subdatas = [expand_arg(arg) for arg in args]
     data = merge_weights_lcm(subdatas, times)
     return Counts(data.items())
 
 
-def expand_args_for_deck(args: Sequence, times: Sequence[int]) -> Counts:
-    subdatas = [expand(arg, merge_duplicates) for arg in args]
+def expand_args_for_deck(
+        args: 'Sequence[T | icepool.Deck[T] | icepool.RerollType]',
+        times: Sequence[int]) -> Counts[T]:
+
+    def expand_arg(
+            arg: T | icepool.Deck[T] | icepool.RerollType) -> Mapping[T, int]:
+        if isinstance(arg, icepool.Deck):
+            return arg
+        elif arg is icepool.Reroll:
+            return {}
+        else:
+            return {arg: 1}
+
+    subdatas = [expand_arg(arg) for arg in args]
     data = merge_duplicates(subdatas, times)
     return Counts(data.items())
 
 
-MergeFunc: TypeAlias = Callable[[Sequence[Mapping[Any, int]], Sequence[int]],
-                                Mapping[Any, int]]
-
-
-def expand(arg, merge_func: MergeFunc):
-
-    if isinstance(arg, Mapping):
-        return expand_dict(arg, merge_func)
-    elif isinstance(arg, tuple):
-        return expand_tuple(arg, merge_func)
-    elif isinstance(arg, (str, bytes)):
-        return expand_scalar(arg)
-    elif isinstance(arg, Sequence):
-        return expand_sequence(arg, merge_func)
-    else:
-        return expand_scalar(arg)
-
-
-def expand_dict(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
-    subdatas = [expand(k, merge_func) for k in arg.keys()]
-    weights = [v for v in arg.values()]
-    return merge_func(subdatas, weights)
-
-
-def expand_tuple(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
-    if len(arg) == 0:
-        return {(): 1}
-    subdatas = [expand(x, merge_func) for x in arg]
-    data: MutableMapping[Any, int] = defaultdict(int)
-    for t in itertools.product(*(subdata.items() for subdata in subdatas)):
-        outcomes, duplicates = zip(*t)
-        data[outcomes] += math.prod(duplicates)
-    return data
-
-
-def expand_sequence(arg, merge_func: MergeFunc) -> Mapping[Any, int]:
-    subdatas = [expand(x, merge_func) for x in arg]
-    weights = [1] * len(subdatas)
-    return merge_func(subdatas, weights)
-
-
-def expand_scalar(arg) -> Mapping[Any, int]:
-    if arg is icepool.Reroll:
-        return {}
-    else:
-        return {arg: 1}
-
-
-def merge_weights_lcm(subdatas: Sequence[Mapping[Any, int]],
-                      weights: Sequence[int]) -> Mapping[Any, int]:
+def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],
+                      weights: Sequence[int]) -> Mapping[T, int]:
     """Merge for dice.
 
     Every subdata gets total weight proportional to the corresponding element of `weights`.
@@ -132,8 +112,8 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[Any, int]],
     return data
 
 
-def merge_duplicates(subdatas: Sequence[Mapping[Any, int]],
-                     duplicates: Sequence[int]) -> Mapping[Any, int]:
+def merge_duplicates(subdatas: Sequence[Mapping[T, int]],
+                     duplicates: Sequence[int]) -> Mapping[T, int]:
     """Merge for decks.
 
     Every subdata gets dups equal to the corresponding element of duplicates

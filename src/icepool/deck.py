@@ -36,14 +36,19 @@ class Deck(Population[T]):
 
         Args:
             outcomes: The cards of the `Deck`. This can be one of the following:
-                * A `Collection` of outcomes. Duplicates will contribute
+                * A `Sequence` of outcomes. Duplicates will contribute
                     quantity for each appearance.
                 * A `Mapping` from outcomes to quantities.
 
                 Each outcome may be one of the following:
                 * A simple single outcome, which must be hashable and totally
                     orderable.
-                * A tuple. The elements must be valid outcomes.
+                * A tuple. The elements must be valid outcomes.  In particular,
+                    `Deck`, `Reroll`, and `Again` are not valid inside tuple
+                    outcomes.
+                * A `Deck`, which will be flattened into the result. If a
+                    `times` is assigned to the `Deck`, the entire `Deck` will
+                    be duplicated that many times.
             times: Multiplies the number of times each element of `outcomes`
                 will be put into the `Deck`.
                 `times` can either be a sequence of the same length as
@@ -65,7 +70,8 @@ class Deck(Population[T]):
                 outcomes[0], Deck):
             return outcomes[0]
 
-        data = icepool.creation_args.expand_args_for_deck(outcomes, times)
+        data: Counts[T] = icepool.creation_args.expand_args_for_deck(
+            outcomes, times)
         return Deck._new_deck(data)
 
     @classmethod

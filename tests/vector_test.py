@@ -66,7 +66,7 @@ def test_reroll_star():
     assert result.equals(expected)
 
 
-def test_reroll_until_star():
+def test_filter_star():
     result = icepool.Die([(icepool.d6, icepool.d6)])
     result = result.filter(lambda a, b: a == 6 and b == 6, star=1)
     result = result.map(lambda a, b: a + b, star=1)
