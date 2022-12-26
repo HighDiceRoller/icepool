@@ -159,33 +159,26 @@ class Die(Population[T]):
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:
-                * A `Sequence` of outcomes. Duplicates will contribute quantity
-                    for each appearance.
+                * A `Collection` of outcomes. Duplicates will contribute
+                    quantity for each appearance.
                 * A `Mapping` from outcomes to quantities.
 
                 Individual outcomes can each be one of the following:
 
                 * A simple single outcome, which must be hashable and totally
                     orderable.
-                * `str` or `bytes` will be treated as a single outcome.
-                * A tuple. Operators on dice with tuple outcomes
-                    are performed element-wise. See `Die.unary_op` and
+                * A tuple. The elements must be valid outcomes.
+
+                    Operators on dice with tuple outcomes are performed
+                    element-wise. See `Die.unary_op` and
                     `Die.binary_op` for details.
-
-                    Any tuple elements that indicate multiple outcomes will
-                    expand the tuple according to their independent product
-                    distribution. For example, `(d6, d6)` will expand to 36
-                    ordered tuples with quantity 1 each. Use this carefully
-                    since it may create a large number of outcomes.
-
-                    Otherwise, the tuple is a single outcome. For example,
-                    `Die((1, 2, 3, 4))` is *not* a d4, but a die that always
-                    rolls the tuple `(1, 2, 3, 4)`.
                 * A `Die`, which will be flattened into the result.
                     The relative quantity to a `Die` input is shared by the
                     `Die` as a whole. The denominator of the resulting `Die`
                     will be multiplied if necessary.
                 * `icepool.Reroll`, which will drop itself from consideration.
+                * EXPERIMENTAL: `icepool.Again`. See the main text for
+                    explanation.
             times: Multiplies the quantity of each element of `outcomes`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
