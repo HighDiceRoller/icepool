@@ -32,7 +32,7 @@ def test_intersection_size():
 
 def test_largest_matching_set():
     result = Pool([1, 1, 2, 4, 4]).largest_matching_set().simplify()
-    expected = Die(2)
+    expected = Die([2])
     assert result == expected
 
 

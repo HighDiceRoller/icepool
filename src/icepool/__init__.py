@@ -48,9 +48,10 @@ Operation in specific cases:
 # Expose certain names at top-level.
 
 from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              one_hot, from_cumulative_quantities, from_rv,
-                              min_outcome, max_outcome, align, align_range,
-                              reduce, accumulate, apply, apply_sorted)
+                              one_hot, outer_product,
+                              from_cumulative_quantities, from_rv, min_outcome,
+                              max_outcome, align, align_range, reduce,
+                              accumulate, apply, apply_sorted)
 
 from icepool.population import Population
 from icepool.die.die import implicit_convert_to_die, Die
@@ -77,8 +78,8 @@ from icepool.deal import Deal
 from icepool.generators import SuitGenerator
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'Outcome', 'Die',
-    'Population', 'Again', 'CountsKeysView', 'CountsValuesView',
+    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'outer_product', 'Outcome',
+    'Die', 'Population', 'Again', 'CountsKeysView', 'CountsValuesView',
     'CountsItemsView', 'from_cumulative_quantities', 'from_rv', 'align',
     'align_range', 'lowest', 'highest', 'min_outcome', 'max_outcome', 'reduce',
     'accumulate', 'apply', 'apply_sorted', 'Reroll', 'OutcomeCountGenerator',
