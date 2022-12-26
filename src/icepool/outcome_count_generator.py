@@ -17,8 +17,8 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
-NextOutcomeCountGenerator = Iterator[tuple[
-    'icepool.OutcomeCountGenerator[T_co]', Sequence, int]]
+NextOutcomeCountGenerator: TypeAlias = Iterator[tuple[
+    'icepool.OutcomeCountGenerator', Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
@@ -50,7 +50,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """
 
     @abstractmethod
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator[T_co]:
+    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -67,7 +67,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """
 
     @abstractmethod
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator[T_co]:
+    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:

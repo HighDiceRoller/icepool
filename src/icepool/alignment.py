@@ -7,7 +7,8 @@ from functools import cached_property
 
 from typing import Collection, Iterator, Sequence, TypeAlias, TypeVar
 
-AlignmentGenerator = Iterator[tuple['Alignment[T_co]', Sequence[int], int]]
+AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int],
+                                                int]]
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -28,14 +29,14 @@ class Alignment(OutcomeCountGenerator[T_co]):
     def _is_resolvable(self) -> bool:
         return True
 
-    def _generate_min(self, min_outcome) -> AlignmentGenerator[T_co]:
+    def _generate_min(self, min_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
         else:
             yield Alignment(self.outcomes()[1:]), (), 1
 
-    def _generate_max(self, max_outcome) -> AlignmentGenerator[T_co]:
+    def _generate_max(self, max_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
