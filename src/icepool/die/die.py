@@ -202,8 +202,6 @@ class Die(Population[T]):
             else:
                 outcomes = outcomes._data
         else:
-            if is_bare_outcome(outcomes):
-                outcomes = [outcomes]
             # Check for Again.
             if icepool.again.contains_again(outcomes):
                 if again_end is None:
@@ -354,7 +352,7 @@ class Die(Population[T]):
     # Rerolls and other outcome management.
 
     def reroll(self,
-               outcomes: Callable[..., bool] | Collection[T] | T | None = None,
+               outcomes: Callable[..., bool] | Collection[T] | None = None,
                *,
                star: bool = False,
                depth: int | None = None) -> 'Die[T]':
@@ -390,8 +388,6 @@ class Die(Population[T]):
                 outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
-        elif is_bare_outcome(outcomes):
-            outcome_set = {outcomes}  # type: ignore
         else:
             # Collection.
             outcome_set = set(outcomes)  # type: ignore
@@ -726,7 +722,7 @@ class Die(Population[T]):
         return result
 
     def explode(self,
-                outcomes: Collection[T] | Callable[..., bool] | T | None = None,
+                outcomes: Collection[T] | Callable[..., bool] | None = None,
                 *,
                 star: bool = False,
                 depth: int = 9,
@@ -761,8 +757,6 @@ class Die(Population[T]):
                 outcome_set = {
                     outcome for outcome in self.outcomes() if outcomes(outcome)
                 }
-        elif is_bare_outcome(outcomes):
-            outcome_set = {outcomes}  # type: ignore
         else:
             if not outcomes:
                 return self
