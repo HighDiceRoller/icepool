@@ -707,7 +707,7 @@ class Die(Population[T]):
                 else:
                     return outcome
 
-        result: 'Die[tuple[U, int]]' = Die([(self, 0)])
+        result: 'Die[tuple[U, int]]' = self.map(lambda x: (x, 0))
 
         def transition_with_steps(outcome_and_steps):
             outcome, steps = outcome_and_steps
