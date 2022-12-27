@@ -13,7 +13,7 @@ import math
 from collections import defaultdict
 from functools import cache, cached_property
 
-from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar, overload
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -195,8 +195,25 @@ class Pool(OutcomeCountGenerator[T_co]):
         """
         return self._sorted_roll_counts
 
+    @overload
+    def set_sorted_roll_counts(
+            self, sorted_roll_counts: slice | Sequence[int]) -> 'Pool[T_co]':
+        ...
+
+    @overload
     def set_sorted_roll_counts(self,
-                               sorted_roll_counts: int | slice | Sequence[int]):
+                               sorted_roll_counts: int) -> 'icepool.Die[T_co]':
+        ...
+
+    @overload
+    def set_sorted_roll_counts(
+        self, sorted_roll_counts: int | slice | Sequence[int]
+    ) -> 'Pool[T_co] | icepool.Die[T_co]':
+        ...
+
+    def set_sorted_roll_counts(
+        self, sorted_roll_counts: int | slice | Sequence[int]
+    ) -> 'Pool[T_co] | icepool.Die[T_co]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[sorted_roll_counts]` for the same effect as this method.
