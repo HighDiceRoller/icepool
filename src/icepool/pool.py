@@ -232,34 +232,35 @@ class Pool(OutcomeCountGenerator[T_co]):
         * `pool[-1, 0, 0, 0, 1]`
         * `pool[-1, ..., 1]`
 
-        Args: One of the following:
-            * An `int`. This will count only the `Die` at the specified index
-                (once). In this case, the result will be a `Die`, not a `Pool`.
-            * A `slice`. The selected dice are counted once each.
-            * A sequence of one `int` for each `Die`.
-                Each `Die` is counted that many times, which could be multiple or
-                negative times.
+        The valid types of argument are:
 
-                Up to one `...` (`Ellipsis`) may be used.
-                `...` will be replaced with a number of zero
-                counts depending on the size of the pool.
-                This number may be "negative" if more `int`s are provided than
-                the size of the `Pool`. Specifically:
+        * An `int`. This will count only the `Die` at the specified index
+            (once). In this case, the result will be a `Die`, not a `Pool`.
+        * A `slice`. The selected dice are counted once each.
+        * A sequence of one `int` for each `Die`.
+            Each `Die` is counted that many times, which could be multiple or
+            negative times.
 
-                * If `sorted_roll_counts` is shorter than `size`, `...`
-                    acts as enough zero counts to make up the difference.
-                    E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
-                * If `sorted_roll_counts` has length equal to `size`, `...` has no effect.
-                    E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-                * If `sorted_roll_counts` is longer than `size` and `...` is on one side,
-                    elements will be dropped from `sorted_roll_counts` on the side with `...`.
-                    E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-                * If `sorted_roll_counts` is longer than `size` and `...`
-                    is in the middle, the counts will be as the sum of two
-                    one-sided `...`.
-                    E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                    On a `Pool` consisting of a single `Die` this would have
-                    the -1 and 1 cancel each other out.
+            Up to one `...` (`Ellipsis`) may be used.
+            `...` will be replaced with a number of zero
+            counts depending on the size of the pool.
+            This number may be "negative" if more `int`s are provided than
+            the size of the `Pool`. Specifically:
+
+            * If `sorted_roll_counts` is shorter than `size`, `...`
+                acts as enough zero counts to make up the difference.
+                E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
+            * If `sorted_roll_counts` has length equal to `size`, `...` has no effect.
+                E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
+            * If `sorted_roll_counts` is longer than `size` and `...` is on one side,
+                elements will be dropped from `sorted_roll_counts` on the side with `...`.
+                E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
+            * If `sorted_roll_counts` is longer than `size` and `...`
+                is in the middle, the counts will be as the sum of two
+                one-sided `...`.
+                E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
+                On a `Pool` consisting of a single `Die` this would have
+                the -1 and 1 cancel each other out.
 
         Raises:
             ValueError: If more than one `...` is used.
