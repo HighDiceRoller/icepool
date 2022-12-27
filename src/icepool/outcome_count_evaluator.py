@@ -189,8 +189,8 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
         return ()
 
     def range_alignment(
-        self, *generators: icepool.OutcomeCountGenerator[T_contra]
-    ) -> Collection[int]:
+            self,
+            *generators: icepool.OutcomeCountGenerator[int]) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
