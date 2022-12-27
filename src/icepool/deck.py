@@ -31,7 +31,10 @@ class Deck(Population[T]):
     def _new_type(self) -> type:
         return Deck
 
-    def __new__(cls, outcomes, times: Sequence[int] | int = 1) -> 'Deck':
+    def __new__(
+            cls,
+            outcomes: 'Sequence[T | Deck[T] | icepool.RerollType] | Mapping',
+            times: Sequence[int] | int = 1) -> 'Deck':
         """Constructor for a `Deck`.
 
         Args:

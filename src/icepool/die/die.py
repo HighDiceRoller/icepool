@@ -93,7 +93,8 @@ class Die(Population[T]):
 
     def __new__(
             cls,
-            outcomes,
+            outcomes:
+        'Sequence[T | Die[T] | icepool.RerollType | icepool.Again] | Mapping',
             times: Sequence[int] | int = 1,
             *,
             again_depth: int = 1,
@@ -236,8 +237,9 @@ class Die(Population[T]):
                 outcomes[0], Die):
             return outcomes[0]
 
+        # Agains have been replaced by here.
         data: Counts[T] = icepool.creation_args.expand_args_for_die(
-            outcomes, times)
+            outcomes, times)  # type: ignore
         return Die._new_raw(data)
 
     @classmethod
