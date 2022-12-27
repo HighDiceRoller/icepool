@@ -236,8 +236,19 @@ class Die(Population[T]):
                 outcomes[0], Die):
             return outcomes[0]
 
+        data: Counts[T] = icepool.creation_args.expand_args_for_die(
+            outcomes, times)
+        return Die._new_raw(data)
+
+    @classmethod
+    def _new_raw(cls, data: Counts[T]) -> 'Die[T]':
+        """Creates a new `Die` using already-processed arguments.
+
+        Args:
+            data: At this point, this is a Counts.
+        """
         self = super(Population, cls).__new__(cls)
-        self._data = icepool.creation_args.expand_args_for_die(outcomes, times)
+        self._data = data
         return self
 
     def unary_op(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
@@ -530,7 +541,7 @@ class Die(Population[T]):
 
     @cached_property
     def _popped_min(self) -> tuple['Die[T]', int]:
-        die: 'Die[T]' = icepool.Die(self._data.remove_min())
+        die = Die._new_raw(self._data.remove_min())
         return die, self.quantities()[0]
 
     def _pop_min(self) -> tuple['Die[T]', int]:
@@ -543,7 +554,7 @@ class Die(Population[T]):
 
     @cached_property
     def _popped_max(self) -> tuple['Die[T]', int]:
-        die: 'Die[T]' = icepool.Die(self._data.remove_max())
+        die = Die._new_raw(self._data.remove_max())
         return die, self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Die[T]', int]:

@@ -72,10 +72,10 @@ class Deck(Population[T]):
 
         data: Counts[T] = icepool.creation_args.expand_args_for_deck(
             outcomes, times)
-        return Deck._new_deck(data)
+        return Deck._new_raw(data)
 
     @classmethod
-    def _new_deck(cls, data: Counts[T]) -> 'Deck[T]':
+    def _new_raw(cls, data: Counts[T]) -> 'Deck[T]':
         """Creates a new `Deck` using already-processed arguments.
 
         Args:
@@ -107,7 +107,7 @@ class Deck(Population[T]):
 
     @cached_property
     def _popped_min(self) -> tuple['Deck[T]', int]:
-        return self._new_deck(self._data.remove_min()), self.quantities()[0]
+        return self._new_raw(self._data.remove_min()), self.quantities()[0]
 
     def _pop_min(self) -> tuple['Deck[T]', int]:
         """A `Deck` with the min outcome removed."""
@@ -115,7 +115,7 @@ class Deck(Population[T]):
 
     @cached_property
     def _popped_max(self) -> tuple['Deck[T]', int]:
-        return self._new_deck(self._data.remove_max()), self.quantities()[-1]
+        return self._new_raw(self._data.remove_max()), self.quantities()[-1]
 
     def _pop_max(self) -> tuple['Deck[T]', int]:
         """A `Deck` with the max outcome removed."""
