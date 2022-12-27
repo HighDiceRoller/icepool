@@ -331,6 +331,7 @@ class Population(ABC, Mapping[T, int]):
         This will fail if the outcomes do not support addition and division;
         in this case, use `quantile_left` or `quantile_right` instead.
         """
+        # Should support addition and division.
         return (self.quantile_left(n, d) +
                 self.quantile_right(n, d)) / 2  # type: ignore
 

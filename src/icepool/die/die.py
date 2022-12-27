@@ -388,6 +388,7 @@ class Die(Population[T]):
             outcome_set = {self.min_outcome()}
         elif callable(outcomes):
             if star:
+                # Need TypeVarTuple to check this.
                 outcome_set = {
                     outcome for outcome in self.outcomes()
                     if outcomes(*outcome)  # type: ignore
@@ -398,7 +399,7 @@ class Die(Population[T]):
                 }
         else:
             # Collection.
-            outcome_set = set(outcomes)  # type: ignore
+            outcome_set = set(outcomes)
 
         if depth is None:
             data = {
@@ -636,6 +637,7 @@ class Die(Population[T]):
         if repeat is not None:
             if repeat < 0:
                 raise ValueError('repeat cannot be negative.')
+            # T_co and U should be the same in this case.
             result: 'Die[U]' = self  # type: ignore
             for _ in range(repeat):
                 result = icepool.apply(transition_function,
@@ -757,6 +759,7 @@ class Die(Population[T]):
             outcome_set = {self.max_outcome()}
         elif callable(outcomes):
             if star:
+                # Need TypeVarTuple to check this.
                 outcome_set = {
                     outcome for outcome in self.outcomes()
                     if outcomes(*outcome)  # type: ignore
@@ -768,7 +771,7 @@ class Die(Population[T]):
         else:
             if not outcomes:
                 return self
-            outcome_set = set(outcomes)  # type: ignore
+            outcome_set = set(outcomes)
 
         if depth < 0:
             raise ValueError('depth cannot be negative.')
@@ -1261,6 +1264,7 @@ class Die(Population[T]):
                 else:
                     return Counts([(False, d - n), (True, n)])
 
+    # This returns a value with a truth value, but not a bool.
     def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
@@ -1272,6 +1276,7 @@ class Die(Population[T]):
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
+    # This returns a value with a truth value, but not a bool.
     def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 

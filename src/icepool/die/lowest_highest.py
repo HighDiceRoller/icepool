@@ -60,6 +60,7 @@ def _lowest_highest(*dice, start: int, stop: int) -> 'icepool.Die':
     if any(die.is_empty() for die in dice):
         return icepool.Die([])
 
+    # The inputs should support addition.
     if start == stop:
         return sum(die.zero() for die in dice)  # type: ignore
 

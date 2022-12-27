@@ -193,9 +193,8 @@ def align_range(
         A tuple of aligned dice.
     """
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    outcomes = range(
-        icepool.min_outcome(*converted_dice),  # type: ignore
-        icepool.max_outcome(*converted_dice) + 1)  # type: ignore
+    outcomes = range(icepool.min_outcome(*converted_dice),
+                     icepool.max_outcome(*converted_dice) + 1)
     return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
@@ -222,9 +221,9 @@ def reduce(func: Callable[[T, T], T],
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
+        result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
     else:
-        result = next(iter_dice)  # type: ignore
+        result = icepool.implicit_convert_to_die(next(iter_dice))
     for die in iter_dice:
         result = apply(func, result, die)
     return result
@@ -258,10 +257,10 @@ def accumulate(
     # Conversion to dice is not necessary since apply() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
-        result: 'icepool.Die' = icepool.implicit_convert_to_die(initial)
+        result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
     else:
         try:
-            result = next(iter_dice)  # type: ignore
+            result = icepool.implicit_convert_to_die(next(iter_dice))
         except StopIteration:
             return
     yield result
@@ -352,6 +351,7 @@ class apply_sorted():
     See the "constructor" for details.
     """
 
+    # Not a true constructor.
     def __new__(  # type: ignore
         cls,
         func:
@@ -411,15 +411,14 @@ class apply_sorted():
                 raise TypeError(
                     'The first argument must be callable. Did you forget to provide a function?'
                 )
-            pool_or_die = icepool.Pool(dice)[sorted_roll_counts]
             if isinstance(sorted_roll_counts, int):
-                return pool_or_die.map(func,
-                                       again_depth=again_depth,
-                                       again_end=again_end)
+                return icepool.Pool(dice)[sorted_roll_counts].map(
+                    func, again_depth=again_depth, again_end=again_end)
             else:
-                return pool_or_die.expand().map(func,
-                                                star=1,
-                                                again_depth=again_depth,
-                                                again_end=again_end)
+                return icepool.Pool(dice)[sorted_roll_counts].expand().map(
+                    func,
+                    star=True,
+                    again_depth=again_depth,
+                    again_end=again_end)
 
         return result

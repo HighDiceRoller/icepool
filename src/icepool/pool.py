@@ -113,10 +113,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         """
         dice = tuple(
             sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
-        return new_pool_cached(
-            cls,  # type: ignore
-            dice,
-            sorted_roll_counts)
+        return new_pool_cached(cls, dice, sorted_roll_counts)
 
     @classmethod
     def _new_pool_from_tuple(
@@ -128,10 +125,7 @@ class Pool(OutcomeCountGenerator[T_co]):
             dice: A sorted tuple of (dice, count).
             sorted_roll_counts: A tuple with length equal to the number of dice.
         """
-        return new_pool_cached(
-            cls,  # type: ignore
-            dice,
-            sorted_roll_counts)
+        return new_pool_cached(cls, dice, sorted_roll_counts)
 
     @cached_property
     def _size(self) -> int:
@@ -168,7 +162,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         outcome_set = set(
             itertools.chain.from_iterable(
                 die.outcomes() for die in self.unique_dice()))
-        return tuple(sorted(outcome_set))  # type: ignore
+        return tuple(sorted(outcome_set))
 
     def outcomes(self) -> Sequence[T_co]:
         """The union of outcomes among all dice in this pool."""
@@ -292,8 +286,7 @@ class Pool(OutcomeCountGenerator[T_co]):
 
     @cached_property
     def _min_outcome(self) -> T_co:
-        return min(
-            die.min_outcome() for die in self.unique_dice())  # type: ignore
+        return min(die.min_outcome() for die in self.unique_dice())
 
     def min_outcome(self) -> T_co:
         """The min outcome among all dice in this pool."""
@@ -301,8 +294,7 @@ class Pool(OutcomeCountGenerator[T_co]):
 
     @cached_property
     def _max_outcome(self) -> T_co:
-        return max(
-            die.max_outcome() for die in self.unique_dice())  # type: ignore
+        return max(die.max_outcome() for die in self.unique_dice())
 
     def max_outcome(self) -> T_co:
         """The max outcome among all dice in this pool."""
@@ -401,7 +393,7 @@ class Pool(OutcomeCountGenerator[T_co]):
             yield Pool([]), (sum(self.sorted_roll_counts()),), skip_weight
 
     def lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-        """The lowest outcome or sum of the lowest outcomes in the pool.
+        """The sum of the lowest outcomes in the pool.
 
         The args override any `sorted_roll_counts` of this pool.
 
@@ -417,10 +409,11 @@ class Pool(OutcomeCountGenerator[T_co]):
 
         start = min(drop, self.size())
         stop = min(keep + drop, self.size())
+        # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
     def highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-        """The highest outcome or sum of the highest outcomes in the pool.
+        """The sum of the highest outcomes in the pool.
 
         The args override any `sorted_roll_counts` of this pool.
 
@@ -436,6 +429,7 @@ class Pool(OutcomeCountGenerator[T_co]):
 
         start = self.size() - min(keep + drop, self.size())
         stop = self.size() - min(drop, self.size())
+        # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
     def __str__(self) -> str:
@@ -548,7 +542,7 @@ def standard_pool(
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable(
-                [k] * v for k, v in die_sizes.items()))  # type: ignore
+                [k] * v for k, v in die_sizes.items()))
     return Pool(list(icepool.d(x) for x in die_sizes))
 
 

@@ -37,10 +37,11 @@ class DieWithTruth(Die[T]):
         # Skip Die.__new__.
         self = super(Die, cls).__new__(cls)
         self._used_callback = False
-        self._data_callback = data_callback  # type: ignore
-        self._truth_value_callback = truth_value_callback  # type: ignore
+        self._data_callback = data_callback
+        self._truth_value_callback = truth_value_callback
         return self
 
+    # Overrides standard member type.
     @cached_property
     def _data(self) -> Counts[T]:  # type: ignore
         if self._used_callback:
@@ -49,7 +50,7 @@ class DieWithTruth(Die[T]):
                 category=RuntimeWarning,
                 stacklevel=3)
         self._used_callback = True
-        return self._data_callback()  # type: ignore
+        return self._data_callback()
 
     @cached_property
     def _truth_value(self) -> bool:
@@ -59,7 +60,7 @@ class DieWithTruth(Die[T]):
                 category=RuntimeWarning,
                 stacklevel=4)
         self._used_callback = True
-        return self._truth_value_callback()  # type: ignore
+        return self._truth_value_callback()
 
     def __bool__(self) -> bool:
         return self._truth_value

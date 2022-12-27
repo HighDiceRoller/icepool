@@ -139,6 +139,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
             A final outcome that will be used as part of constructing the result `Die`.
             As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
         """
+        # If not overriden, the final_state should have type U_co.
         return final_state  # type: ignore
 
     def order(self,

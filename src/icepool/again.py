@@ -249,10 +249,7 @@ def replace_agains(outcomes: Mapping[Any, int] | Sequence,
         # Dice should already have flattened out any Agains.
         return outcomes
     elif isinstance(outcomes, Mapping):
-        return {
-            _replace_agains_inner(k, die): v
-            for k, v in outcomes.items()  # type: ignore
-        }
+        return {_replace_agains_inner(k, die): v for k, v in outcomes.items()}
     else:
         return [_replace_agains_inner(k, die) for k in outcomes]
 
