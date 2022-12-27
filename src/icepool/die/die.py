@@ -706,7 +706,7 @@ class Die(Population[T]):
             if icepool.markov_chain.is_absorbing(outcome, next_outcome):
                 return outcome, steps
             else:
-                return next_outcome, steps + 1
+                return icepool.cartesian_product(next_outcome, steps + 1)
 
         for _ in range(repeat):
             next_result: 'Die[tuple[U, int]]' = icepool.apply(
