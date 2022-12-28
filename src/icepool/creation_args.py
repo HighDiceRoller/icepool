@@ -128,19 +128,3 @@ def merge_duplicates(subdatas: Sequence[Mapping[T, int]],
             data[outcome] += dup * subdup
 
     return data
-
-
-def check_tuples(args: Sequence):
-    for arg in args:
-        if not isinstance(arg, tuple):
-            continue
-        for element in arg:
-            if isinstance(element, icepool.Population):
-                raise TypeError(
-                    f'{type(element).__qualname__} is not valid inside tuple outcomes.'
-                )
-            if element is icepool.Reroll:
-                raise TypeError('Reroll is not valid inside tuple outcomes.')
-            if isinstance(element, icepool.Again):
-                raise TypeError('Again is not valid inside tuple outcomes.')
-            check_tuples(element)

@@ -269,7 +269,7 @@ def accumulate(
         yield result
 
 
-def iter_product_args(*args) -> Iterator[tuple[tuple, int]]:
+def iter_cartesian_product(*args) -> Iterator[tuple[tuple, int]]:
     """Yields the independent joint distribution of the arguments.
 
     Args:
@@ -333,7 +333,7 @@ def apply(
                            again_end=again_end)
     final_outcomes = []
     final_quantities = []
-    for outcomes, final_quantity in iter_product_args(*dice):
+    for outcomes, final_quantity in iter_cartesian_product(*dice):
         final_outcome = func(*outcomes)
         if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)
