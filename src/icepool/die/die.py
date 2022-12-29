@@ -17,7 +17,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
+from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, cast, overload
 
 T_co = TypeVar('T_co', bound=Outcome)
 """Type variable representing the outcome type."""
@@ -232,14 +232,16 @@ class Die(Population[T_co]):
                     return tail
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
+        # Agains have been replaced by this point.
+        outcomes = cast(Sequence[T_co | Die[T_co] | icepool.RerollType],
+                        outcomes)
 
         if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Die):
             return outcomes[0]
 
-        # Agains have been replaced by here.
         data: Counts[T_co] = icepool.creation_args.expand_args_for_die(
-            outcomes, times)  # type: ignore
+            outcomes, times)
         return Die._new_raw(data)
 
     @classmethod
@@ -614,7 +616,7 @@ class Die(Population[T_co]):
         """
         if repeat == 0:
             # In this case, U and T_co better be equal.
-            return self  # type: ignore
+            return cast(Die[U], self)
 
         # Convert to a single-argument function.
         if callable(repl):
@@ -638,7 +640,7 @@ class Die(Population[T_co]):
             if repeat < 0:
                 raise ValueError('repeat cannot be negative.')
             # T_co and U should be the same in this case.
-            result: 'Die[U]' = self  # type: ignore
+            result: 'Die[U]' = cast(Die[U], self)
             for _ in range(repeat):
                 result = icepool.apply(transition_function,
                                        result,
@@ -647,8 +649,9 @@ class Die(Population[T_co]):
             return result
         else:
             # Infinite repeat.
+            # T_co and U should be the same in this case.
             return icepool.markov_chain.absorbing_markov_chain(
-                self, transition_function)
+                cast(Die[U], self), transition_function)
 
     def map_and_time(
             self,
@@ -759,7 +762,7 @@ class Die(Population[T_co]):
             outcome_set = {self.max_outcome()}
         elif callable(outcomes):
             if star:
-                # Need TypeVarTuple to check this.
+                # Need TypeVarTuple to type-check this.
                 outcome_set = {
                     outcome for outcome in self.outcomes()
                     if outcomes(*outcome)  # type: ignore

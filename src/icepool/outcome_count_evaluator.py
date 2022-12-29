@@ -11,7 +11,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar, cast
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
@@ -140,7 +140,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
             As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
         """
         # If not overriden, the final_state should have type U_co.
-        return final_state  # type: ignore
+        return cast(U_co, final_state)
 
     def order(self,
               *generators: icepool.OutcomeCountGenerator[T_contra]) -> Order:

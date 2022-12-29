@@ -1,10 +1,13 @@
 import icepool
+from icepool.typing import Outcome
 
 import enum
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, MutableMapping
+from typing import Any, Callable, MutableMapping, TypeVar
+
+T = TypeVar('T', bound=Outcome)
 
 
 class SpecialValue(enum.Enum):
@@ -16,7 +19,7 @@ Visit = SpecialValue.Visit
 particular state."""
 
 
-class SparseVector(MutableMapping[Any, int]):
+class SparseVector(MutableMapping[T, int]):
     """Internal helper class for representing vectors as a sparse mapping.
 
     Unlike public objects, this class is mutable.
@@ -44,16 +47,16 @@ class SparseVector(MutableMapping[Any, int]):
     def __iter__(self):
         return iter(self._data)
 
-    def __mul__(self, n: int) -> 'SparseVector':
-        result = SparseVector()
+    def __mul__(self, n: int) -> 'SparseVector[T]':
+        result: SparseVector[T] = SparseVector()
         result._data = {k: v * n for k, v in self.items()}
         return result
 
     def __rmul__(self, n: int) -> 'SparseVector':
         return self.__mul__(n)
 
-    def __sub__(self, other: 'SparseVector') -> 'SparseVector':
-        result = SparseVector()
+    def __sub__(self, other: 'SparseVector') -> 'SparseVector[T]':
+        result: SparseVector[T] = SparseVector()
         result._data = self._data.copy()
         for k, v in other.items():
             result[k] -= v
@@ -78,7 +81,10 @@ def is_absorbing(outcome, next_outcome) -> bool:
     return False
 
 
-def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
+def absorbing_markov_chain(
+    die: 'icepool.Die[T]',
+    func: 'Callable[..., T | icepool.Die[T] | icepool.RerollType]'
+) -> 'icepool.Die[T]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
     Zero-weight outcomes will not be preserved.
@@ -95,12 +101,12 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     # Find all reachable states.
 
     # outcome -> Die representing the next distribution
-    transients: MutableMapping[Any, icepool.Die] = {}
+    transients: MutableMapping[T, icepool.Die] = {}
 
     frontier = list(die.outcomes())
     while frontier:
         outcome = frontier.pop()
-        next_outcome = icepool.Die([func(outcome)])
+        next_outcome: icepool.Die[T] = icepool.Die([func(outcome)])
         if is_absorbing(outcome, next_outcome):
             continue
         if outcome not in transients:
@@ -119,9 +125,13 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
     }
 
     # [dst_index][src]
-    fundamental_solve = [SparseVector() for _ in transients.keys()]
+    fundamental_solve: list[SparseVector[T]] = [
+        SparseVector() for _ in transients.keys()
+    ]
     # [src_index][absorbing state]
-    absorption_matrix = [SparseVector() for _ in transients.keys()]
+    absorption_matrix: list[SparseVector[T]] = [
+        SparseVector() for _ in transients.keys()
+    ]
     for src_index, (src, transition) in enumerate(transients.items()):
         fundamental_solve[src_index][src] += transition.denominator()
         for dst, quantity in transition.items():
@@ -180,12 +190,11 @@ def absorbing_markov_chain(die: 'icepool.Die', func: Callable) -> 'icepool.Die':
         if len(absorption_row) > 0:
             results[pivot] = (n * absorption_row, d)
 
-    # print(mean_absorption_time)
-
     results_denominator = math.lcm(*(d for _, d in results.values()))
-    normalized_results: MutableMapping[Any, int] = defaultdict(int)
+    normalized_results: MutableMapping[T, int] = defaultdict(int)
     for row, d in results.values():
         for outcome, quantity in row.items():
             normalized_results[outcome] += quantity * results_denominator // d
 
-    return icepool.Die(normalized_results).simplify()
+    # Inference to Die[T] seems to fail here.
+    return icepool.Die(normalized_results).simplify()  # type: ignore
