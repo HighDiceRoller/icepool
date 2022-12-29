@@ -517,6 +517,10 @@ class Die(Population[T_co]):
                   max_outcome: int | None = None) -> 'Die[int]':
         """Sets the outcomes of this `Die` to the given `int` range (inclusive).
 
+        This may remove outcomes (if they are not within the range)
+        and/or add zero-quantity outcomes (if they are in range but not present
+        in this `Die`).
+
         Args:
             min_outcome: The min outcome of the result.
                 If omitted, the min outcome of this `Die` will be used.
