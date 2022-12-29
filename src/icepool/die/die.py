@@ -19,7 +19,7 @@ import operator
 
 from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, overload
 
-T = TypeVar('T', bound=Outcome)
+T_co = TypeVar('T_co', bound=Outcome)
 """Type variable representing the outcome type."""
 
 U = TypeVar('U', bound=Outcome)
@@ -40,7 +40,7 @@ def is_bare_outcome(outcome) -> bool:
 
 
 def implicit_convert_to_die(
-        outcome: T | 'Die[T]' | icepool.RerollType) -> 'Die[T]':
+        outcome: T_co | 'Die[T_co]' | icepool.RerollType) -> 'Die[T_co]':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
     If the outcome is already a Die, it is returned as-is (even if it has
@@ -60,7 +60,7 @@ def implicit_convert_to_die(
     return Die([outcome])
 
 
-class Die(Population[T]):
+class Die(Population[T_co]):
     """Sampling with replacement. Quantities represent weights.
 
     Dice are immutable. Methods do not modify the `Die` in-place;
@@ -86,20 +86,20 @@ class Die(Population[T]):
     though these have little use other than being sentinel values.
     """
 
-    _data: Counts[T]
+    _data: Counts[T_co]
 
     def _new_type(self) -> type:
         return Die
 
     def __new__(
-            cls,
-            outcomes:
-        'Sequence[T | Die[T] | icepool.RerollType | icepool.Again] | Mapping',
-            times: Sequence[int] | int = 1,
-            *,
-            again_depth: int = 1,
-            again_end: 'T | Die[T] | icepool.RerollType | None' = None
-    ) -> 'Die[T]':
+        cls,
+        outcomes:
+        'Sequence[T_co | Die[T_co] | icepool.RerollType | icepool.Again] | Mapping',
+        times: Sequence[int] | int = 1,
+        *,
+        again_depth: int = 1,
+        again_end: 'T_co | Die[T_co] | icepool.RerollType | None' = None
+    ) -> 'Die[T_co]':
         """Constructor for a `Die`.
 
         Don't confuse this with `d()`:
@@ -203,9 +203,9 @@ class Die(Population[T]):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
-                    test: Die[T] = Die(outcomes,
-                                       again_depth=0,
-                                       again_end=icepool.Reroll)
+                    test: Die[T_co] = Die(outcomes,
+                                          again_depth=0,
+                                          again_end=icepool.Reroll)
                     if len(test) == 0:
                         raise ValueError(
                             'If all outcomes contain Again, an explicit again_end must be provided.'
@@ -220,10 +220,10 @@ class Die(Population[T]):
                     # Base case.
                     outcomes = icepool.again.replace_agains(outcomes, again_end)
                 else:
-                    tail: Die[T] = Die(outcomes,
-                                       times,
-                                       again_depth=0,
-                                       again_end=again_end)
+                    tail: Die[T_co] = Die(outcomes,
+                                          times,
+                                          again_depth=0,
+                                          again_end=again_end)
                     for _ in range(again_depth):
                         tail = Die(outcomes,
                                    times,
@@ -238,12 +238,12 @@ class Die(Population[T]):
             return outcomes[0]
 
         # Agains have been replaced by here.
-        data: Counts[T] = icepool.creation_args.expand_args_for_die(
+        data: Counts[T_co] = icepool.creation_args.expand_args_for_die(
             outcomes, times)  # type: ignore
         return Die._new_raw(data)
 
     @classmethod
-    def _new_raw(cls, data: Counts[T]) -> 'Die[T]':
+    def _new_raw(cls, data: Counts[T_co]) -> 'Die[T_co]':
         """Creates a new `Die` using already-processed arguments.
 
         Args:
@@ -329,19 +329,19 @@ class Die(Population[T]):
 
     # Basic access.
 
-    def keys(self) -> CountsKeysView[T]:
+    def keys(self) -> CountsKeysView[T_co]:
         return self._data.keys()
 
     def values(self) -> CountsValuesView:
         return self._data.values()
 
-    def items(self) -> CountsItemsView[T]:
+    def items(self) -> CountsItemsView[T_co]:
         return self._data.items()
 
     def __getitem__(self, outcome, /) -> int:
         return self._data[outcome]
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[T_co]:
         return iter(self.keys())
 
     def __len__(self) -> int:
@@ -353,17 +353,17 @@ class Die(Population[T]):
 
     # Quantity management.
 
-    def simplify(self) -> 'Die[T]':
+    def simplify(self) -> 'Die[T_co]':
         """Divides all quantities by their greatest common denominator. """
         return icepool.Die(self._data.simplify())
 
     # Rerolls and other outcome management.
 
     def reroll(self,
-               outcomes: Callable[..., bool] | Collection[T] | None = None,
+               outcomes: Callable[..., bool] | Collection[T_co] | None = None,
                *,
                star: bool = False,
-               depth: int | None = None) -> 'Die[T]':
+               depth: int | None = None) -> 'Die[T_co]':
         """Rerolls the given outcomes.
 
         Args:
@@ -423,10 +423,10 @@ class Die(Population[T]):
         return icepool.Die(data)
 
     def filter(self,
-               outcomes: Callable[..., bool] | Collection[T],
+               outcomes: Callable[..., bool] | Collection[T_co],
                *,
                star: bool = False,
-               depth: int | None = None) -> 'Die[T]':
+               depth: int | None = None) -> 'Die[T_co]':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -465,7 +465,7 @@ class Die(Population[T]):
             }
         return self.reroll(not_outcomes, depth=depth)
 
-    def truncate(self, min_outcome=None, max_outcome=None) -> 'Die[T]':
+    def truncate(self, min_outcome=None, max_outcome=None) -> 'Die[T_co]':
         """Truncates the outcomes of this `Die` to the given range.
 
         The endpoints are included in the result if applicable.
@@ -489,7 +489,7 @@ class Die(Population[T]):
         data = {k: v for k, v in self.items()[start:stop]}
         return icepool.Die(data)
 
-    def clip(self, min_outcome=None, max_outcome=None) -> 'Die[T]':
+    def clip(self, min_outcome=None, max_outcome=None) -> 'Die[T_co]':
         """Clips the outcomes of this `Die` to the given values.
 
         The endpoints are included in the result if applicable.
@@ -528,7 +528,7 @@ class Die(Population[T]):
 
         return self.set_outcomes(range(min_outcome, max_outcome + 1))
 
-    def set_outcomes(self, outcomes: Iterable[T]) -> 'Die[T]':
+    def set_outcomes(self, outcomes: Iterable[T_co]) -> 'Die[T_co]':
         """Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
@@ -537,17 +537,17 @@ class Die(Population[T]):
         data = {x: self.quantity(x) for x in outcomes}
         return icepool.Die(data)
 
-    def trim(self) -> 'Die[T]':
+    def trim(self) -> 'Die[T_co]':
         """Removes all zero-quantity outcomes. """
         data = {k: v for k, v in self.items() if v > 0}
         return icepool.Die(data)
 
     @cached_property
-    def _popped_min(self) -> tuple['Die[T]', int]:
+    def _popped_min(self) -> tuple['Die[T_co]', int]:
         die = Die._new_raw(self._data.remove_min())
         return die, self.quantities()[0]
 
-    def _pop_min(self) -> tuple['Die[T]', int]:
+    def _pop_min(self) -> tuple['Die[T_co]', int]:
         """A `Die` with the min outcome removed, and the quantity of the removed outcome.
 
         Raises:
@@ -556,11 +556,11 @@ class Die(Population[T]):
         return self._popped_min
 
     @cached_property
-    def _popped_max(self) -> tuple['Die[T]', int]:
+    def _popped_max(self) -> tuple['Die[T_co]', int]:
         die = Die._new_raw(self._data.remove_max())
         return die, self.quantities()[-1]
 
-    def _pop_max(self) -> tuple['Die[T]', int]:
+    def _pop_max(self) -> tuple['Die[T_co]', int]:
         """A `Die` with the max outcome removed, and the quantity of the removed outcome.
 
         Raises:
@@ -573,7 +573,7 @@ class Die(Population[T]):
     def map(
             self,
             repl:
-        'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T, U | Die[U] | icepool.RerollType | icepool.Again]',
+        'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.Again]',
             /,
             *,
             star: bool = False,
@@ -653,7 +653,7 @@ class Die(Population[T]):
     def map_and_time(
             self,
             repl:
-        'Callable[..., U | Die[U] | icepool.RerollType] | Mapping[T, U | Die[U] | icepool.RerollType]',
+        'Callable[..., U | Die[U] | icepool.RerollType] | Mapping[T_co, U | Die[U] | icepool.RerollType]',
             /,
             *,
             star: bool = False,
@@ -732,11 +732,11 @@ class Die(Population[T]):
         return result
 
     def explode(self,
-                outcomes: Collection[T] | Callable[..., bool] | None = None,
+                outcomes: Collection[T_co] | Callable[..., bool] | None = None,
                 *,
                 star: bool = False,
                 depth: int = 9,
-                end=None) -> 'Die[T]':
+                end=None) -> 'Die[T_co]':
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
@@ -807,7 +807,7 @@ class Die(Population[T]):
                         again_depth=again_depth,
                         again_end=again_end)
 
-    def is_in(self, target: Container[T], /) -> 'Die[bool]':
+    def is_in(self, target: Container[T_co], /) -> 'Die[bool]':
         """A die that returns True iff the roll of the die is contained in the target."""
         return self.map(lambda x: x in target)
 
@@ -815,7 +815,7 @@ class Die(Population[T]):
         """Roll this dice a number of times and count how many are == the target."""
         return rolls @ (self == target)
 
-    def count_in(self, rolls: int, target: Container[T], /) -> 'Die[int]':
+    def count_in(self, rolls: int, target: Container[T_co], /) -> 'Die[int]':
         """Roll this dice a number of times and count how many are in the target."""
         return rolls @ self.is_in(target)
 
@@ -876,7 +876,7 @@ class Die(Population[T]):
         other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
-    def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool[T]':
+    def pool(self, rolls: int | Sequence[int], /) -> 'icepool.Pool[T_co]':
         """Creates a `Pool` from this `Die`.
 
         You might subscript the pool immediately afterwards, e.g.
@@ -929,7 +929,7 @@ class Die(Population[T]):
                      rolls: int,
                      /,
                      keep: int = 1,
-                     drop: int = 0) -> 'Die[T]':
+                     drop: int = 0) -> 'Die[T_co]':
         """Roll several of this `Die` and sum the sorted results from the highest.
 
         Args:
@@ -948,7 +948,7 @@ class Die(Population[T]):
         sorted_roll_counts = slice(start, stop)
         return self.pool(rolls)[sorted_roll_counts].sum()
 
-    def _keep_highest_single(self, rolls: int, /) -> 'Die[T]':
+    def _keep_highest_single(self, rolls: int, /) -> 'Die[T_co]':
         """Faster algorithm for keeping just the single highest `Die`. """
         if rolls == 0:
             return self.zero()
@@ -957,16 +957,16 @@ class Die(Population[T]):
 
     # Unary operators.
 
-    def __neg__(self) -> 'Die[T]':
+    def __neg__(self) -> 'Die[T_co]':
         return self.unary_op(operator.neg)
 
-    def __pos__(self) -> 'Die[T]':
+    def __pos__(self) -> 'Die[T_co]':
         return self.unary_op(operator.pos)
 
-    def __invert__(self) -> 'Die[T]':
+    def __invert__(self) -> 'Die[T_co]':
         return self.unary_op(operator.invert)
 
-    def abs(self) -> 'Die[T]':
+    def abs(self) -> 'Die[T_co]':
         return self.unary_op(operator.abs)
 
     __abs__ = abs
@@ -992,10 +992,10 @@ class Die(Population[T]):
     __ceil__ = ceil
 
     @staticmethod
-    def _zero(x: T) -> T:
+    def _zero(x: T_co) -> T_co:
         return type(x)()
 
-    def zero(self) -> 'Die[T]':
+    def zero(self) -> 'Die[T_co]':
         """Zeros all outcomes of this die.
 
         This is done by calling the constructor for each outcome's type with no
@@ -1011,7 +1011,7 @@ class Die(Population[T]):
             raise ValueError('zero() did not resolve to a single outcome.')
         return result
 
-    def zero_outcome(self) -> T:
+    def zero_outcome(self) -> T_co:
         """A zero-outcome for this die.
 
         E.g. `0` for a `Die` whose outcomes are `int`s.

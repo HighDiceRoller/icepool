@@ -12,29 +12,29 @@ from functools import cached_property
 
 from typing import Callable, Iterator, Mapping, Sequence, TypeVar
 
-T = TypeVar('T', bound=Outcome)
+T_co = TypeVar('T_co', bound=Outcome)
 """Type variable representing the outcome type."""
 
 U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 
-class Deck(Population[T]):
+class Deck(Population[T_co]):
     """Sampling without replacement (within a single evaluation).
 
     Quantities represent duplicates.
     """
 
-    _data: Counts[T]
+    _data: Counts[T_co]
     _deal: int
 
     def _new_type(self) -> type:
         return Deck
 
-    def __new__(
-            cls,
-            outcomes: 'Sequence[T | Deck[T] | icepool.RerollType] | Mapping',
-            times: Sequence[int] | int = 1) -> 'Deck':
+    def __new__(cls,
+                outcomes:
+                'Sequence[T_co | Deck[T_co] | icepool.RerollType] | Mapping',
+                times: Sequence[int] | int = 1) -> 'Deck':
         """Constructor for a `Deck`.
 
         Args:
@@ -73,12 +73,12 @@ class Deck(Population[T]):
                 outcomes[0], Deck):
             return outcomes[0]
 
-        data: Counts[T] = icepool.creation_args.expand_args_for_deck(
+        data: Counts[T_co] = icepool.creation_args.expand_args_for_deck(
             outcomes, times)
         return Deck._new_raw(data)
 
     @classmethod
-    def _new_raw(cls, data: Counts[T]) -> 'Deck[T]':
+    def _new_raw(cls, data: Counts[T_co]) -> 'Deck[T_co]':
         """Creates a new `Deck` using already-processed arguments.
 
         Args:
@@ -88,19 +88,19 @@ class Deck(Population[T]):
         self._data = data
         return self
 
-    def keys(self) -> CountsKeysView[T]:
+    def keys(self) -> CountsKeysView[T_co]:
         return self._data.keys()
 
     def values(self) -> CountsValuesView:
         return self._data.values()
 
-    def items(self) -> CountsItemsView[T]:
+    def items(self) -> CountsItemsView[T_co]:
         return self._data.items()
 
     def __getitem__(self, outcome) -> int:
         return self._data[outcome]
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[T_co]:
         return iter(self.keys())
 
     def __len__(self) -> int:
@@ -109,22 +109,22 @@ class Deck(Population[T]):
     size = icepool.Population.denominator
 
     @cached_property
-    def _popped_min(self) -> tuple['Deck[T]', int]:
+    def _popped_min(self) -> tuple['Deck[T_co]', int]:
         return self._new_raw(self._data.remove_min()), self.quantities()[0]
 
-    def _pop_min(self) -> tuple['Deck[T]', int]:
+    def _pop_min(self) -> tuple['Deck[T_co]', int]:
         """A `Deck` with the min outcome removed."""
         return self._popped_min
 
     @cached_property
-    def _popped_max(self) -> tuple['Deck[T]', int]:
+    def _popped_max(self) -> tuple['Deck[T_co]', int]:
         return self._new_raw(self._data.remove_max()), self.quantities()[-1]
 
-    def _pop_max(self) -> tuple['Deck[T]', int]:
+    def _pop_max(self) -> tuple['Deck[T_co]', int]:
         """A `Deck` with the max outcome removed."""
         return self._popped_max
 
-    def deal(self, *hand_sizes: int) -> 'icepool.Deal[T]':
+    def deal(self, *hand_sizes: int) -> 'icepool.Deal[T_co]':
         """Creates a `Deal` object from this deck.
 
         See `Deal()` for details.
@@ -134,7 +134,7 @@ class Deck(Population[T]):
     def map(
             self,
             repl:
-        'Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T, U | Deck[U] | icepool.RerollType]',
+        'Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]',
             /,
             star: bool = False) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
