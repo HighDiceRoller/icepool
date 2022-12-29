@@ -46,7 +46,7 @@ class Counts(Mapping[T, int]):
         self._mapping = mapping
 
     @cached_property
-    def _has_zero_values(self):
+    def _has_zero_values(self) -> bool:
         return 0 in self.values()
 
     def has_zero_values(self) -> bool:
@@ -139,7 +139,7 @@ class CountsKeysView(KeysView[T], Sequence[T]):
     def __getitem__(self, index):
         return self._mapping._keys[index]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._mapping)
 
     def __eq__(self, other):

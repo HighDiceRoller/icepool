@@ -178,25 +178,33 @@ class Again():
 
     # Hashing and equality.
 
-    def __eq__(self, other):
+    # This returns a value with a truth value, but not a bool.
+    def __eq__(self, other) -> 'Again':  # type: ignore
         if not isinstance(other, Again):
-            return Again(operator.eq, self, other, truth_value=False)
+            return Again._new_internal(operator.eq,
+                                       self,
+                                       other,
+                                       truth_value=False)
         truth_value = self._key_tuple == other._key_tuple
         return Again._new_internal(operator.eq,
                                    self,
                                    other,
                                    truth_value=truth_value)
 
-    def __ne__(self, other):
+    # This returns a value with a truth value, but not a bool.
+    def __ne__(self, other) -> 'Again':  # type: ignore
         if not isinstance(other, Again):
-            return Again(operator.ne, self, other, truth_value=True)
+            return Again._new_internal(operator.ne,
+                                       self,
+                                       other,
+                                       truth_value=True)
         truth_value = self._key_tuple != other._key_tuple
         return Again._new_internal(operator.ne,
                                    self,
                                    other,
                                    truth_value=truth_value)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         if self._truth_value is None:
             raise ValueError(
                 'An `Again` only has a truth value if it is the result of == or !=.'
@@ -207,7 +215,7 @@ class Again():
     def _key_tuple(self) -> tuple:
         return (self._func, self._args)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self._key_tuple)
 
 
