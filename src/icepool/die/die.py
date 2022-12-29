@@ -19,7 +19,7 @@ import operator
 
 from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, cast, overload
 
-T_co = TypeVar('T_co', bound=Outcome)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 U = TypeVar('U', bound=Outcome)
@@ -999,7 +999,7 @@ class Die(Population[T_co]):
     __ceil__ = ceil
 
     @staticmethod
-    def _zero(x: T_co) -> T_co:
+    def _zero(x):
         return type(x)()
 
     def zero(self) -> 'Die[T_co]':

@@ -12,7 +12,7 @@ from functools import cached_property
 
 from typing import Any, Callable, Iterator, Mapping, Sequence, TypeVar
 
-T_co = TypeVar('T_co', bound=Outcome)
+T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 U = TypeVar('U', bound=Outcome)
