@@ -10,7 +10,7 @@ from icepool.typing import Outcome
 
 from functools import cached_property
 
-from typing import Callable, Iterator, Mapping, Sequence, TypeVar
+from typing import Any, Callable, Iterator, Mapping, Sequence, TypeVar
 
 T_co = TypeVar('T_co', bound=Outcome)
 """Type variable representing the outcome type."""
@@ -31,10 +31,11 @@ class Deck(Population[T_co]):
     def _new_type(self) -> type:
         return Deck
 
-    def __new__(cls,
-                outcomes:
-                'Sequence[T_co | Deck[T_co] | icepool.RerollType] | Mapping',
-                times: Sequence[int] | int = 1) -> 'Deck[T_co]':
+    def __new__(
+            cls,
+            outcomes:
+        'Sequence[T_co | Deck[T_co] | icepool.RerollType] | Mapping[Any, int]',
+            times: Sequence[int] | int = 1) -> 'Deck[T_co]':
         """Constructor for a `Deck`.
 
         Args:
