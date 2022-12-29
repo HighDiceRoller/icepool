@@ -198,7 +198,7 @@ def align_range(
     return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
-def reduce(func: Callable[[T, T], T],
+def reduce(func: 'Callable[[T, T], T | icepool.Die[T]]',
            dice: 'Iterable[T | icepool.Die[T]]',
            *,
            initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
@@ -230,7 +230,7 @@ def reduce(func: Callable[[T, T], T],
 
 
 def accumulate(
-        func: Callable[[T, T], T],
+        func: 'Callable[[T, T], T | icepool.Die[T]]',
         dice: 'Iterable[T | icepool.Die[T]]',
         *,
         initial: 'T | icepool.Die[T] | None' = None
