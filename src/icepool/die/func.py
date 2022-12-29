@@ -198,7 +198,7 @@ def align_range(
     return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
-def reduce(func: 'Callable[[T, T], T | icepool.Die[T]]',
+def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
            dice: 'Iterable[T | icepool.Die[T]]',
            *,
            initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
@@ -211,7 +211,9 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T]]',
 
     Args:
         func: The function to apply. The function should take two arguments,
-            which are an outcome from each of two dice.
+            which are an outcome from each of two dice, and produce an outcome
+            of the same type. It may also return `Reroll`, in which case the
+            entire sequence is effectively rerolled.
         dice: A sequence of dice to apply the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.

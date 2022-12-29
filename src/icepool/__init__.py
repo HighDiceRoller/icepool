@@ -83,7 +83,7 @@ __all__ = [
     'CountsValuesView', 'CountsItemsView', 'from_cumulative_quantities',
     'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
     'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
-    'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
-    'Order', 'JointEvaluator', 'SumEvaluator', 'ExpandEvaluator', 'Deck',
-    'Deal', 'SuitGenerator', 'clear_pool_cache'
+    'RerollType', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
+    'OutcomeCountEvaluator', 'Order', 'JointEvaluator', 'SumEvaluator',
+    'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
 ]
