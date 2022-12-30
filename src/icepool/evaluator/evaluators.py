@@ -271,7 +271,7 @@ class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
 
 
 class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
-    """Produces the size of all matching sets of at least the min count in size."""
+    """Produces the size of all matching sets of at least a given count."""
 
     def __init__(self, min_count=1):
         """

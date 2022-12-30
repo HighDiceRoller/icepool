@@ -229,7 +229,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             *,
             min_count: int = 1,
             order: Order = Order.Ascending) -> 'icepool.Die[tuple[int, ...]]':
-        """Produces the size of all matching sets of at least 1 count.
+        """Produces the size of all matching sets of at least a given count.
 
         Args:
             min_count: Outcomes with counts less than this will be ignored.
