@@ -919,15 +919,15 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._sum_lowest_single(rolls)
+            return self.lowest(rolls)
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
         sorted_roll_counts = slice(start, stop)
         return self.pool(rolls)[sorted_roll_counts].sum()
 
-    def _sum_lowest_single(self, rolls: int, /) -> 'Die':
-        """Faster algorithm for keeping just the single lowest `Die`. """
+    def lowest(self, rolls: int, /) -> 'Die':
+        """Roll this die several times and keep the lowest."""
         if rolls == 0:
             return self.zero()
         return icepool.from_cumulative_quantities(
@@ -951,14 +951,14 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._sum_highest_single(rolls)
+            return self.highest(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
         sorted_roll_counts = slice(start, stop)
         return self.pool(rolls)[sorted_roll_counts].sum()
 
-    def _sum_highest_single(self, rolls: int, /) -> 'Die[T_co]':
-        """Faster algorithm for keeping just the single highest `Die`. """
+    def highest(self, rolls: int, /) -> 'Die[T_co]':
+        """Roll this die several times and keep the highest."""
         if rolls == 0:
             return self.zero()
         return icepool.from_cumulative_quantities(

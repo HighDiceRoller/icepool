@@ -4,6 +4,12 @@ import icepool
 
 import math
 
+from icepool.typing import Outcome
+from typing import Sequence, TypeVar, cast
+
+T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
+"""An outcome type."""
+
 
 def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The sum of the lowest outcomes among the dice.
@@ -21,7 +27,7 @@ def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
 
     start = min(drop, len(dice))
     stop = min(keep + drop, len(dice))
-    return _lowest_highest(*dice, start=start, stop=stop)
+    return _sum_slice(*dice, start=start, stop=stop)
 
 
 def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
@@ -40,10 +46,10 @@ def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
 
     start = len(dice) - min(keep + drop, len(dice))
     stop = len(dice) - min(drop, len(dice))
-    return _lowest_highest(*dice, start=start, stop=stop)
+    return _sum_slice(*dice, start=start, stop=stop)
 
 
-def _lowest_highest(*dice, start: int, stop: int) -> 'icepool.Die':
+def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
     """Common code for `lowest` and `highest`.
 
     Args:
@@ -68,22 +74,23 @@ def _lowest_highest(*dice, start: int, stop: int) -> 'icepool.Die':
         return sum(dice)  # type: ignore
 
     if stop == 1:
-        return _lowest_single(*dice)
+        return lowest(*dice)
 
     if start == len(dice) - 1:
-        return _highest_single(*dice)
+        return highest(*dice)
 
     # Use pool.
     return icepool.Pool(dice)[start:stop].sum()
 
 
-def _lowest_single(*dice) -> 'icepool.Die':
-    """Roll all the dice and take the lowest single.
+def lowest(
+        *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
+    """Roll all the dice and take the lowest single one.
 
     The maximum outcome is equal to the least maximum outcome among all
     input dice.
     """
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
+    dice = tuple(icepool.implicit_convert_to_die(arg) for arg in args)
     max_outcome = min(die.max_outcome() for die in dice)
     dice = tuple(die.clip(max_outcome=max_outcome) for die in dice)
     dice = icepool.align(*dice)
@@ -94,13 +101,14 @@ def _lowest_single(*dice) -> 'icepool.Die':
                                               reverse=True)
 
 
-def _highest_single(*dice) -> 'icepool.Die':
-    """Roll all the dice and take the highest single.
+def highest(
+        *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
+    """Roll all the dice and take the highest single one.
 
     The minimum outcome is equal to the greatest minimum outcome among all
     input dice.
     """
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
+    dice = tuple(icepool.implicit_convert_to_die(arg) for arg in args)
     min_outcome = max(die.min_outcome() for die in dice)
     dice = tuple(die.clip(min_outcome=min_outcome) for die in dice)
     dice = icepool.align(*dice)
