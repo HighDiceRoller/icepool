@@ -2,13 +2,13 @@
   "packages": [
     {
       "name": "@babel/runtime",
-      "versionInfo": "7.19.0",
+      "versionInfo": "7.20.6",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (c) 2014-present Sebastian McKenzie and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
     {
       "name": "@blueprintjs/colors",
-      "versionInfo": "4.1.6",
+      "versionInfo": "4.1.10",
       "licenseId": "Apache-2.0",
       "extractedText": "                                 Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n"
     },
@@ -50,619 +50,619 @@
     },
     {
       "name": "@jupyterlab/application",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/application-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/attachments",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cell-toolbar",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cell-toolbar-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cells",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/celltags",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/celltags-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codeeditor",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/coreutils",
-      "versionInfo": "5.5.0",
+      "versionInfo": "5.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docprovider",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docregistry",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/documentsearch",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/documentsearch-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/help-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/javascript-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/json-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mathjax2",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mathjax2-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/nbformat",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/observables",
-      "versionInfo": "4.5.0",
+      "versionInfo": "4.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/outputarea",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/pdf-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/property-inspector",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-interfaces",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/services",
-      "versionInfo": "6.5.0",
+      "versionInfo": "6.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingregistry",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/shared-models",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/shortcuts-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statedb",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-dark-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-light-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc",
-      "versionInfo": "5.5.0",
+      "versionInfo": "5.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc-extension",
-      "versionInfo": "5.5.0",
+      "versionInfo": "5.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/vega5-extension",
-      "versionInfo": "3.5.0",
+      "versionInfo": "3.5.1",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-lab",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-repl",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-retro",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/contents",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/iframe-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/kernel",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/licenses",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/localforage",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/repl-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/retro-application-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server-extension",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/session",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/settings",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/translation",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/ui-components",
-      "versionInfo": "0.1.0-beta.15",
+      "versionInfo": "0.1.0-beta.16",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -674,7 +674,7 @@
     },
     {
       "name": "@lumino/application",
-      "versionInfo": "1.29.3",
+      "versionInfo": "1.31.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -686,7 +686,7 @@
     },
     {
       "name": "@lumino/commands",
-      "versionInfo": "1.20.1",
+      "versionInfo": "1.21.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -698,13 +698,13 @@
     },
     {
       "name": "@lumino/datagrid",
-      "versionInfo": "0.36.4",
+      "versionInfo": "0.36.6",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@lumino/disposable",
-      "versionInfo": "1.10.2",
+      "versionInfo": "1.10.3",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -716,7 +716,7 @@
     },
     {
       "name": "@lumino/dragdrop",
-      "versionInfo": "1.14.2",
+      "versionInfo": "1.14.3",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -734,7 +734,7 @@
     },
     {
       "name": "@lumino/polling",
-      "versionInfo": "1.11.1",
+      "versionInfo": "1.11.3",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -746,19 +746,19 @@
     },
     {
       "name": "@lumino/signaling",
-      "versionInfo": "1.10.2",
+      "versionInfo": "1.11.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@lumino/virtualdom",
-      "versionInfo": "1.14.2",
+      "versionInfo": "1.14.3",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@lumino/widgets",
-      "versionInfo": "1.34.1",
+      "versionInfo": "1.36.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -815,12 +815,6 @@
       "versionInfo": "6.12.6",
       "licenseId": "MIT",
       "extractedText": "The MIT License (MIT)\n\nCopyright (c) 2015-2017 Evgeny Poberezkin\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n"
-    },
-    {
-      "name": "array-flat-polyfill",
-      "versionInfo": "1.0.1",
-      "licenseId": "CC0-1.0",
-      "extractedText": "# CC0 1.0 Universal\n\n## Statement of Purpose\n\nThe laws of most jurisdictions throughout the world automatically confer\nexclusive Copyright and Related Rights (defined below) upon the creator and\nsubsequent owner(s) (each and all, an “owner”) of an original work of\nauthorship and/or a database (each, a “Work”).\n\nCertain owners wish to permanently relinquish those rights to a Work for the\npurpose of contributing to a commons of creative, cultural and scientific works\n(“Commons”) that the public can reliably and without fear of later claims of\ninfringement build upon, modify, incorporate in other works, reuse and\nredistribute as freely as possible in any form whatsoever and for any purposes,\nincluding without limitation commercial purposes. These owners may contribute\nto the Commons to promote the ideal of a free culture and the further\nproduction of creative, cultural and scientific works, or to gain reputation or\ngreater distribution for their Work in part through the use and efforts of\nothers.\n\nFor these and/or other purposes and motivations, and without any expectation of\nadditional consideration or compensation, the person associating CC0 with a\nWork (the “Affirmer”), to the extent that he or she is an owner of Copyright\nand Related Rights in the Work, voluntarily elects to apply CC0 to the Work and\npublicly distribute the Work under its terms, with knowledge of his or her\nCopyright and Related Rights in the Work and the meaning and intended legal\neffect of CC0 on those rights.\n\n1. Copyright and Related Rights. A Work made available under CC0 may be\n   protected by copyright and related or neighboring rights (“Copyright and\n   Related Rights”). Copyright and Related Rights include, but are not limited\n   to, the following:\n   1. the right to reproduce, adapt, distribute, perform, display, communicate,\n      and translate a Work;\n   2. moral rights retained by the original author(s) and/or performer(s);\n   3. publicity and privacy rights pertaining to a person’s image or likeness\n      depicted in a Work;\n   4. rights protecting against unfair competition in regards to a Work,\n      subject to the limitations in paragraph 4(i), below;\n   5. rights protecting the extraction, dissemination, use and reuse of data in\n      a Work;\n   6. database rights (such as those arising under Directive 96/9/EC of the\n      European Parliament and of the Council of 11 March 1996 on the legal\n      protection of databases, and under any national implementation thereof,\n      including any amended or successor version of such directive); and\n   7. other similar, equivalent or corresponding rights throughout the world\n      based on applicable law or treaty, and any national implementations\n      thereof.\n\n2. Waiver. To the greatest extent permitted by, but not in contravention of,\n   applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and\n   unconditionally waives, abandons, and surrenders all of Affirmer’s Copyright\n   and Related Rights and associated claims and causes of action, whether now\n   known or unknown (including existing as well as future claims and causes of\n   action), in the Work (i) in all territories worldwide, (ii) for the maximum\n   duration provided by applicable law or treaty (including future time\n   extensions), (iii) in any current or future medium and for any number of\n   copies, and (iv) for any purpose whatsoever, including without limitation\n   commercial, advertising or promotional purposes (the “Waiver”). Affirmer\n   makes the Waiver for the benefit of each member of the public at large and\n   to the detriment of Affirmer’s heirs and successors, fully intending that\n   such Waiver shall not be subject to revocation, rescission, cancellation,\n   termination, or any other legal or equitable action to disrupt the quiet\n   enjoyment of the Work by the public as contemplated by Affirmer’s express\n   Statement of Purpose.\n\n3. Public License Fallback. Should any part of the Waiver for any reason be\n   judged legally invalid or ineffective under applicable law, then the Waiver\n   shall be preserved to the maximum extent permitted taking into account\n   Affirmer’s express Statement of Purpose. In addition, to the extent the\n   Waiver is so judged Affirmer hereby grants to each affected person a\n   royalty-free, non transferable, non sublicensable, non exclusive,\n   irrevocable and unconditional license to exercise Affirmer’s Copyright and\n   Related Rights in the Work (i) in all territories worldwide, (ii) for the\n   maximum duration provided by applicable law or treaty (including future time\n   extensions), (iii) in any current or future medium and for any number of\n   copies, and (iv) for any purpose whatsoever, including without limitation\n   commercial, advertising or promotional purposes (the “License”). The License\n   shall be deemed effective as of the date CC0 was applied by Affirmer to the\n   Work. Should any part of the License for any reason be judged legally\n   invalid or ineffective under applicable law, such partial invalidity or\n   ineffectiveness shall not invalidate the remainder of the License, and in\n   such case Affirmer hereby affirms that he or she will not (i) exercise any\n   of his or her remaining Copyright and Related Rights in the Work or (ii)\n   assert any associated claims and causes of action with respect to the Work,\n   in either case contrary to Affirmer’s express Statement of Purpose.\n\n4. Limitations and Disclaimers.\n   1. No trademark or patent rights held by Affirmer are waived, abandoned,\n      surrendered, licensed or otherwise affected by this document.\n   2. Affirmer offers the Work as-is and makes no representations or warranties\n      of any kind concerning the Work, express, implied, statutory or\n      otherwise, including without limitation warranties of title,\n      merchantability, fitness for a particular purpose, non infringement, or\n      the absence of latent or other defects, accuracy, or the present or\n      absence of errors, whether or not discoverable, all to the greatest\n      extent permissible under applicable law.\n   3. Affirmer disclaims responsibility for clearing rights of other persons\n      that may apply to the Work or any use thereof, including without\n      limitation any person’s Copyright and Related Rights in the Work.\n      Further, Affirmer disclaims responsibility for obtaining any necessary\n      consents, permissions or other rights required for any use of the Work.\n   4. Affirmer understands and acknowledges that Creative Commons is not a\n      party to this document and has no duty or obligation with respect to this\n      CC0 or use of the Work.\n\nFor more information, please see\nhttp://creativecommons.org/publicdomain/zero/1.0/.\n"
     },
     {
       "name": "async-mutex",
@@ -908,7 +902,7 @@
     },
     {
       "name": "core-js-pure",
-      "versionInfo": "3.25.3",
+      "versionInfo": "3.26.1",
       "licenseId": "MIT",
       "extractedText": "Copyright (c) 2014-2022 Denis Pushkarev\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -920,7 +914,7 @@
     },
     {
       "name": "css-loader",
-      "versionInfo": "6.7.1",
+      "versionInfo": "6.7.2",
       "licenseId": "MIT",
       "extractedText": "Copyright JS Foundation and other contributors\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
@@ -1016,9 +1010,9 @@
     },
     {
       "name": "d3-time",
-      "versionInfo": "3.0.0",
+      "versionInfo": "3.1.0",
       "licenseId": "ISC",
-      "extractedText": "Copyright 2010-2021 Mike Bostock\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.\n"
+      "extractedText": "Copyright 2010-2022 Mike Bostock\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.\n"
     },
     {
       "name": "d3-time-format",
@@ -1262,7 +1256,7 @@
     },
     {
       "name": "lib0",
-      "versionInfo": "0.2.52",
+      "versionInfo": "0.2.58",
       "licenseId": "MIT",
       "extractedText": "The MIT License (MIT)\n\nCopyright (c) 2019 Kevin Jahns <kevin.jahns@protonmail.com>.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
     },
@@ -1298,7 +1292,7 @@
     },
     {
       "name": "marked",
-      "versionInfo": "4.1.0",
+      "versionInfo": "4.2.2",
       "licenseId": "MIT",
       "extractedText": "# License information\n\n## Contribution License Agreement\n\nIf you contribute code to this project, you are implicitly allowing your code\nto be distributed under the MIT license. You are also implicitly verifying that\nall code is your original work. `</legalese>`\n\n## Marked\n\nCopyright (c) 2018+, MarkedJS (https://github.com/markedjs/)\nCopyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n\n## Markdown\n\nCopyright © 2004, John Gruber\nhttp://daringfireball.net/\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n* Neither the name “Markdown” nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\nThis software is provided by the copyright holders and contributors “as is” and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright owner or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.\n"
     },
@@ -1376,7 +1370,7 @@
     },
     {
       "name": "postcss",
-      "versionInfo": "8.4.16",
+      "versionInfo": "8.4.19",
       "licenseId": "MIT",
       "extractedText": "The MIT License (MIT)\n\nCopyright 2013 Andrey Sitnik <andrey@sitnik.ru>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
@@ -1478,7 +1472,7 @@
     },
     {
       "name": "sanitize-html",
-      "versionInfo": "2.5.3",
+      "versionInfo": "2.7.3",
       "licenseId": "MIT",
       "extractedText": "Copyright (c) 2013, 2014, 2015 P'unk Avenue LLC\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
@@ -1652,7 +1646,7 @@
     },
     {
       "name": "vega-lite",
-      "versionInfo": "5.2.0",
+      "versionInfo": "5.5.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -1718,7 +1712,7 @@
     },
     {
       "name": "vega-themes",
-      "versionInfo": "2.10.0",
+      "versionInfo": "2.12.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": "Copyright (c) 2016, University of Washington Interactive Data Lab\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this\n   list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice,\n   this list of conditions and the following disclaimer in the documentation\n   and/or other materials provided with the distribution.\n\n3. Neither the name of the copyright holder nor the names of its contributors\n  may be used to endorse or promote products derived from this software\n  without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n"
     },
@@ -1796,7 +1790,7 @@
     },
     {
       "name": "yjs",
-      "versionInfo": "13.5.41",
+      "versionInfo": "13.5.43",
       "licenseId": "MIT",
       "extractedText": "The MIT License (MIT)\n\nCopyright (c) 2014\n  - Kevin Jahns <kevin.jahns@rwth-aachen.de>.\n  - Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
     }

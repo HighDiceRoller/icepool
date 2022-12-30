@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_JUPYTERLAB_CORE_OUTPUT=self.webpackChunk_JUPYTERLAB_CORE_OUTPUT||[]).push([[8981],{98981:(t,a,e)=>{e.r(a),e.d(a,{default:()=>T});var o=e(5997),r=e(99207),s=e(49718);const T={id:"@jupyterlab/celltags",autoStart:!0,requires:[o.INotebookTools,o.INotebookTracker,s.ITranslator],activate:(t,a,e,o)=>{const s=new r.TagTool(e,t,o);a.addItem({tool:s,rank:1.6})}}}}]);
+//# sourceMappingURL=8981.27ddcfa.js.map
