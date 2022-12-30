@@ -6,6 +6,8 @@ A Python package for computing dice probabilities.
 
 [PyPi page.](https://pypi.org/project/icepool/)
 
+[Tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fch00_introduction.ipynb)
+
 Try coding in your browser using [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing similar to AnyDice, SnakeEyes, and Troll.
 
 ## Features
