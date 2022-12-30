@@ -6,7 +6,7 @@ import icepool.population.format
 import icepool.creation_args
 import icepool.population.markov_chain
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.population.elementwise import unary_elementwise, binary_elementwise
+from icepool.population.elementwise import unary_elementwise, binary_elementwise, check_tuple_sortable
 from icepool.population.base import Population
 from icepool.typing import Outcome
 
@@ -240,6 +240,9 @@ class Die(Population[T_co]):
         if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Die):
             return outcomes[0]
+
+        if len(outcomes) == 1 and isinstance(outcomes[0], tuple):
+            check_tuple_sortable(outcomes[0])
 
         data: Counts[T_co] = icepool.creation_args.expand_args_for_die(
             outcomes, times)
@@ -1341,7 +1344,7 @@ class Die(Population[T_co]):
     # Equality and hashing.
 
     def __bool__(self) -> bool:
-        raise ValueError(
+        raise TypeError(
             'A `Die` only has a truth value if it is the result of == or !=. '
             'If this is in the conditional of an if-statement, you probably '
             'want to use die.if_else() instead.')

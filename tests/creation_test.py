@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import Die
+from icepool import Die, Deck, d6
 
 
 def test_d_syntax():
@@ -59,6 +59,16 @@ def test_negative_weight_error():
 def test_implicit_mapping_error():
     with pytest.raises(TypeError):
         icepool.d6 + {}
+
+
+def test_unsortable_error():
+    with pytest.raises(TypeError):
+        icepool.Die([(d6, d6)])
+
+
+def test_unsortable_error_deck():
+    with pytest.raises(TypeError):
+        icepool.Deck([(d6, d6)])
 
 
 def test_empty_tuple():

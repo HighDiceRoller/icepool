@@ -6,6 +6,7 @@ import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
+from icepool.population.elementwise import check_tuple_sortable
 from icepool.typing import Outcome
 
 from functools import cached_property
@@ -73,6 +74,9 @@ class Deck(Population[T_co]):
         if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Deck):
             return outcomes[0]
+
+        if len(outcomes) == 1 and isinstance(outcomes[0], tuple):
+            check_tuple_sortable(outcomes[0])
 
         data: Counts[T_co] = icepool.creation_args.expand_args_for_deck(
             outcomes, times)

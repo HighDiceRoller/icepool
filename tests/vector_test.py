@@ -38,9 +38,10 @@ def test_nested_unary_elementwise():
 
 
 def test_nested_binary_elementwise():
-    result = icepool.Die([(((icepool.d6,),),)])
+    result = icepool.Die([(((1,),),)])
     result = result + result
-    assert result.marginals[0].marginals[0].marginals[0].equals(2 @ icepool.d6)
+    assert result.marginals[0].marginals[0].marginals[0].equals(icepool.Die([2
+                                                                            ]))
 
 
 def test_binary_op_mismatch_scalar_vector():
