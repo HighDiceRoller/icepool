@@ -1218,7 +1218,7 @@ class Die(Population[T_co]):
                     break
             n += lo_cweight * hi_weight
 
-        # We don't use bernoulli because it trims zero-quantity outcomes.
+        # We don't use coin() because it trims zero-quantity outcomes.
         return icepool.Die({False: d - n, True: n})
 
     def __lt__(self, other) -> 'Die[bool]':

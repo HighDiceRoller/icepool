@@ -18,7 +18,7 @@ U = TypeVar('U', bound=Outcome)
 
 
 @cache
-def standard(sides: int, /) -> 'icepool.Die[int]':
+def d(sides: int, /) -> 'icepool.Die[int]':
     """A standard die.
 
     Specifically, the outcomes are `int`s from `1` to `sides` inclusive,
@@ -36,9 +36,6 @@ def standard(sides: int, /) -> 'icepool.Die[int]':
     return icepool.Die(range(1, sides + 1))
 
 
-d = standard
-
-
 def __getattr__(key: str) -> 'icepool.Die[int]':
     """Implements the `dX` syntax for standard die with no parentheses.
 
@@ -49,13 +46,13 @@ def __getattr__(key: str) -> 'icepool.Die[int]':
     """
     if key[0] == 'd':
         try:
-            return standard(int(key[1:]))
+            return d(int(key[1:]))
         except ValueError:
             pass
     raise AttributeError(key)
 
 
-def bernoulli(n: int, d: int, /) -> 'icepool.Die[bool]':
+def coin(n: int, d: int, /) -> 'icepool.Die[bool]':
     """A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.
 
     If `n == 0` or `n == d` the result will have only one outcome.
@@ -66,9 +63,6 @@ def bernoulli(n: int, d: int, /) -> 'icepool.Die[bool]':
     if n != 0:
         data[True] = n
     return icepool.Die(data)
-
-
-coin = bernoulli
 
 
 def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':

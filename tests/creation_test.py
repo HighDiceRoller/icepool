@@ -13,7 +13,7 @@ def test_d_syntax():
 
 
 def test_coin():
-    b = icepool.bernoulli(1, 2)
+    b = icepool.coin(1, 2)
     c = icepool.coin(1, 2)
 
     assert b.probabilities() == pytest.approx([0.5, 0.5])

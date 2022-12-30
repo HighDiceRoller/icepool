@@ -47,8 +47,8 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-from icepool.population.func import (standard, d, __getattr__, bernoulli, coin,
-                                     one_hot, cartesian_product,
+from icepool.population.func import (d, __getattr__, coin, one_hot,
+                                     cartesian_product,
                                      from_cumulative_quantities, from_rv,
                                      min_outcome, max_outcome, align,
                                      align_range, reduce, accumulate, apply,
@@ -80,13 +80,12 @@ from icepool.generator.deal import Deal
 from icepool.generator.generators import SuitGenerator
 
 __all__ = [
-    'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'cartesian_product',
-    'Outcome', 'Die', 'Population', 'Again', 'CountsKeysView',
-    'CountsValuesView', 'CountsItemsView', 'from_cumulative_quantities',
-    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'sum_lowest',
-    'sum_highest', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
-    'apply', 'apply_sorted', 'Reroll', 'RerollType', 'OutcomeCountGenerator',
-    'Pool', 'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
-    'SumEvaluator', 'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator',
-    'clear_pool_cache'
+    'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
+    'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
+    'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
+    'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
+    'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
+    'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
+    'Order', 'JointEvaluator', 'SumEvaluator', 'ExpandEvaluator', 'Deck',
+    'Deal', 'SuitGenerator', 'clear_pool_cache'
 ]

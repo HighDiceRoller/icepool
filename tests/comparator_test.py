@@ -6,7 +6,7 @@ from icepool import d4, d6
 
 def test_lt():
     result = icepool.d6 < icepool.d6
-    expected = icepool.bernoulli(15, 36)
+    expected = icepool.coin(15, 36)
     assert result.equals(expected)
 
 
@@ -22,7 +22,7 @@ def test_lt_len():
 
 def test_gt():
     result = icepool.d6 > icepool.d6
-    expected = icepool.bernoulli(15, 36)
+    expected = icepool.coin(15, 36)
     assert result.equals(expected)
 
 
@@ -38,7 +38,7 @@ def test_gt_len():
 
 def test_leq():
     result = icepool.d6 <= icepool.d6
-    expected = icepool.bernoulli(21, 36)
+    expected = icepool.coin(21, 36)
     assert result.equals(expected)
 
 
@@ -54,7 +54,7 @@ def test_leq_len():
 
 def test_geq():
     result = icepool.d6 >= icepool.d6
-    expected = icepool.bernoulli(21, 36)
+    expected = icepool.coin(21, 36)
     assert result.equals(expected)
 
 
@@ -70,7 +70,7 @@ def test_geq_len():
 
 def test_eq():
     result = icepool.d6 == icepool.d6
-    expected = icepool.bernoulli(6, 36)
+    expected = icepool.coin(6, 36)
     assert result.equals(expected)
 
 
@@ -81,7 +81,7 @@ def test_eq_fixed():
 
 def test_ne():
     result = icepool.d6 != icepool.d6
-    expected = icepool.bernoulli(30, 36)
+    expected = icepool.coin(30, 36)
     assert result.equals(expected)
 
 
