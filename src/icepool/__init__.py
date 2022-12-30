@@ -21,7 +21,7 @@ __docformat__ = 'google'
 
 from typing import Final
 
-from icepool.constant import RerollType
+from icepool.constant import Order, RerollType
 from icepool.typing import Outcome
 
 Reroll: Final = RerollType.Reroll
@@ -64,13 +64,14 @@ from icepool.die.lowest_highest import lowest, highest
 
 from icepool.pool import Pool, standard_pool, clear_pool_cache
 from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
-from icepool.outcome_count_evaluator import OutcomeCountEvaluator, Order
+from icepool.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
     ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
     SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
     LargestMatchingSetEvaluator, LargestMatchingSetAndOutcomeEvaluator,
-    LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator)
+    AllMatchingSetsEvaluator, LargestStraightEvaluator,
+    LargestStraightAndOutcomeEvaluator)
 
 from icepool.deck import Deck
 from icepool.deal import Deal

@@ -2,7 +2,7 @@ from typing import Collection
 import icepool
 import pytest
 
-from icepool import d, Die, Pool
+from icepool import d, Die, Order, Pool
 
 from collections import Counter
 
@@ -40,6 +40,20 @@ def test_largest_matching_set_and_outcome() -> None:
     pool: Pool[int] = Pool([1, 1, 2, 4, 4])
     result = pool.largest_matching_set_and_outcome().simplify()
     expected = Die([(2, 4)])
+    assert result == expected
+
+
+def test_all_matching_sets() -> None:
+    pool: Pool[int] = Pool([1, 1, 2, 4, 4])
+    result = pool.all_matching_sets().simplify()
+    expected = Die([(1, 2, 2)])
+    assert result == expected
+
+
+def test_all_matching_sets_descending() -> None:
+    pool: Pool[int] = Pool([1, 1, 2, 4, 4])
+    result = pool.all_matching_sets(Order.Descending).simplify()
+    expected = Die([(2, 2, 1)])
     assert result == expected
 
 

@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.constant import Order
 from icepool.typing import Outcome
 
 import bisect
@@ -222,6 +223,21 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             The greatest single such set is returned.
         """
         return icepool.LargestMatchingSetAndOutcomeEvaluator().evaluate(self)
+
+    def all_matching_sets(
+            self,
+            order: Order = Order.Ascending) -> 'icepool.Die[tuple[int, ...]]':
+        """Produces the size of all matching sets of at least 1 count.
+
+        Args:
+            order: The order in which the set sizes will be presented.
+        """
+        result = icepool.AllMatchingSetsEvaluator().evaluate(self)
+
+        if order < 0:
+            result = result.map(lambda x: tuple(reversed(x)))
+
+        return result
 
     def largest_straight(
             self: 'OutcomeCountGenerator[int]') -> 'icepool.Die[int]':

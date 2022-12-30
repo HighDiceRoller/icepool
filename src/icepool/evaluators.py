@@ -3,7 +3,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.outcome_count_evaluator import Order, OutcomeCountEvaluator
+from icepool.constant import Order
+from icepool.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.typing import Outcome
 
 from collections import defaultdict
@@ -258,7 +259,6 @@ class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int]):
         return Order.Any
 
 
-# Unsure how to match input/output types here.
 class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
                                                                   tuple[int,
                                                                         Any]]):
@@ -268,6 +268,23 @@ class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
 
     def order(self, *_):
         return Order.Any
+
+
+class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
+    """Produces the size of all matching sets of at least 1 count."""
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            state = ()
+        if count > 0:
+            state = state + (count,)
+        return state
+
+    def order(self, *_):
+        return Order.Any
+
+    def final_outcome(self, final_state, /, *_):
+        return tuple(sorted(final_state))
 
 
 class LargestStraightEvaluator(OutcomeCountEvaluator[int, int]):

@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.alignment import Alignment
+from icepool.constant import Order
 from icepool.typing import Outcome
 
 from abc import ABC, abstractmethod
@@ -15,14 +16,6 @@ from typing import Any, Callable, Collection, Generic, Hashable, Mapping, Mutabl
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
-
-
-class Order(enum.IntEnum):
-    """Can be used to define what order outcomes are seen in by OutcomeCountEvaluators."""
-    Ascending = 1
-    Descending = -1
-    Any = 0
-
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
