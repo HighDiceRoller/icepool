@@ -511,10 +511,10 @@
                                 <a class="function" href="#Pool.max_outcome">max_outcome</a>
                         </li>
                         <li>
-                                <a class="function" href="#Pool.lowest">lowest</a>
+                                <a class="function" href="#Pool.sum_lowest">sum_lowest</a>
                         </li>
                         <li>
-                                <a class="function" href="#Pool.highest">highest</a>
+                                <a class="function" href="#Pool.sum_highest">sum_highest</a>
                         </li>
                 </ul>
 
@@ -9012,7 +9012,7 @@ secure.</p>
 </span><span id="Pool-394"><a href="#Pool-394"><span class="linenos">394</span></a>        <span class="k">if</span> <span class="n">skip_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Pool-395"><a href="#Pool-395"><span class="linenos">395</span></a>            <span class="k">yield</span> <span class="n">Pool</span><span class="p">([]),</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sorted_roll_counts</span><span class="p">()),),</span> <span class="n">skip_weight</span>
 </span><span id="Pool-396"><a href="#Pool-396"><span class="linenos">396</span></a>
-</span><span id="Pool-397"><a href="#Pool-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool-397"><a href="#Pool-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">sum_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
 </span><span id="Pool-398"><a href="#Pool-398"><span class="linenos">398</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the lowest outcomes in the pool.</span>
 </span><span id="Pool-399"><a href="#Pool-399"><span class="linenos">399</span></a>
 </span><span id="Pool-400"><a href="#Pool-400"><span class="linenos">400</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
@@ -9032,7 +9032,7 @@ secure.</p>
 </span><span id="Pool-414"><a href="#Pool-414"><span class="linenos">414</span></a>        <span class="c1"># Should support sum.</span>
 </span><span id="Pool-415"><a href="#Pool-415"><span class="linenos">415</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span><span id="Pool-416"><a href="#Pool-416"><span class="linenos">416</span></a>
-</span><span id="Pool-417"><a href="#Pool-417"><span class="linenos">417</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool-417"><a href="#Pool-417"><span class="linenos">417</span></a>    <span class="k">def</span> <span class="nf">sum_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
 </span><span id="Pool-418"><a href="#Pool-418"><span class="linenos">418</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the highest outcomes in the pool.</span>
 </span><span id="Pool-419"><a href="#Pool-419"><span class="linenos">419</span></a>
 </span><span id="Pool-420"><a href="#Pool-420"><span class="linenos">420</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
@@ -9525,36 +9525,36 @@ the -1 and 1 cancel each other out.</li>
 
 
                             </div>
-                            <div id="Pool.lowest" class="classattr">
-                                        <input id="Pool.lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Pool.sum_lowest" class="classattr">
+                                        <input id="Pool.sum_lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">lowest</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>, </span><span class="param"><span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">sum_lowest</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>, </span><span class="param"><span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
-                <label class="view-source-button" for="Pool.lowest-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Pool.sum_lowest-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Pool.lowest"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.lowest-397"><a href="#Pool.lowest-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.lowest-398"><a href="#Pool.lowest-398"><span class="linenos">398</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the lowest outcomes in the pool.</span>
-</span><span id="Pool.lowest-399"><a href="#Pool.lowest-399"><span class="linenos">399</span></a>
-</span><span id="Pool.lowest-400"><a href="#Pool.lowest-400"><span class="linenos">400</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
-</span><span id="Pool.lowest-401"><a href="#Pool.lowest-401"><span class="linenos">401</span></a>
-</span><span id="Pool.lowest-402"><a href="#Pool.lowest-402"><span class="linenos">402</span></a><span class="sd">        Args:</span>
-</span><span id="Pool.lowest-403"><a href="#Pool.lowest-403"><span class="linenos">403</span></a><span class="sd">            keep: The number of lowest dice will be summed.</span>
-</span><span id="Pool.lowest-404"><a href="#Pool.lowest-404"><span class="linenos">404</span></a><span class="sd">            drop: This number of lowest dice will be dropped before keeping</span>
-</span><span id="Pool.lowest-405"><a href="#Pool.lowest-405"><span class="linenos">405</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool.lowest-406"><a href="#Pool.lowest-406"><span class="linenos">406</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.lowest-407"><a href="#Pool.lowest-407"><span class="linenos">407</span></a>        <span class="k">if</span> <span class="n">keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.lowest-408"><a href="#Pool.lowest-408"><span class="linenos">408</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;keep=</span><span class="si">{</span><span class="n">keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.lowest-409"><a href="#Pool.lowest-409"><span class="linenos">409</span></a>        <span class="k">if</span> <span class="n">drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.lowest-410"><a href="#Pool.lowest-410"><span class="linenos">410</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;drop=</span><span class="si">{</span><span class="n">drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.lowest-411"><a href="#Pool.lowest-411"><span class="linenos">411</span></a>
-</span><span id="Pool.lowest-412"><a href="#Pool.lowest-412"><span class="linenos">412</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-</span><span id="Pool.lowest-413"><a href="#Pool.lowest-413"><span class="linenos">413</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">keep</span> <span class="o">+</span> <span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-</span><span id="Pool.lowest-414"><a href="#Pool.lowest-414"><span class="linenos">414</span></a>        <span class="c1"># Should support sum.</span>
-</span><span id="Pool.lowest-415"><a href="#Pool.lowest-415"><span class="linenos">415</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+    <a class="headerlink" href="#Pool.sum_lowest"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.sum_lowest-397"><a href="#Pool.sum_lowest-397"><span class="linenos">397</span></a>    <span class="k">def</span> <span class="nf">sum_lowest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool.sum_lowest-398"><a href="#Pool.sum_lowest-398"><span class="linenos">398</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the lowest outcomes in the pool.</span>
+</span><span id="Pool.sum_lowest-399"><a href="#Pool.sum_lowest-399"><span class="linenos">399</span></a>
+</span><span id="Pool.sum_lowest-400"><a href="#Pool.sum_lowest-400"><span class="linenos">400</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
+</span><span id="Pool.sum_lowest-401"><a href="#Pool.sum_lowest-401"><span class="linenos">401</span></a>
+</span><span id="Pool.sum_lowest-402"><a href="#Pool.sum_lowest-402"><span class="linenos">402</span></a><span class="sd">        Args:</span>
+</span><span id="Pool.sum_lowest-403"><a href="#Pool.sum_lowest-403"><span class="linenos">403</span></a><span class="sd">            keep: The number of lowest dice will be summed.</span>
+</span><span id="Pool.sum_lowest-404"><a href="#Pool.sum_lowest-404"><span class="linenos">404</span></a><span class="sd">            drop: This number of lowest dice will be dropped before keeping</span>
+</span><span id="Pool.sum_lowest-405"><a href="#Pool.sum_lowest-405"><span class="linenos">405</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool.sum_lowest-406"><a href="#Pool.sum_lowest-406"><span class="linenos">406</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool.sum_lowest-407"><a href="#Pool.sum_lowest-407"><span class="linenos">407</span></a>        <span class="k">if</span> <span class="n">keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.sum_lowest-408"><a href="#Pool.sum_lowest-408"><span class="linenos">408</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;keep=</span><span class="si">{</span><span class="n">keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.sum_lowest-409"><a href="#Pool.sum_lowest-409"><span class="linenos">409</span></a>        <span class="k">if</span> <span class="n">drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.sum_lowest-410"><a href="#Pool.sum_lowest-410"><span class="linenos">410</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;drop=</span><span class="si">{</span><span class="n">drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.sum_lowest-411"><a href="#Pool.sum_lowest-411"><span class="linenos">411</span></a>
+</span><span id="Pool.sum_lowest-412"><a href="#Pool.sum_lowest-412"><span class="linenos">412</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+</span><span id="Pool.sum_lowest-413"><a href="#Pool.sum_lowest-413"><span class="linenos">413</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">keep</span> <span class="o">+</span> <span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+</span><span id="Pool.sum_lowest-414"><a href="#Pool.sum_lowest-414"><span class="linenos">414</span></a>        <span class="c1"># Should support sum.</span>
+</span><span id="Pool.sum_lowest-415"><a href="#Pool.sum_lowest-415"><span class="linenos">415</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
@@ -9573,36 +9573,36 @@ dice to be summed.</li>
 
 
                             </div>
-                            <div id="Pool.highest" class="classattr">
-                                        <input id="Pool.highest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Pool.sum_highest" class="classattr">
+                                        <input id="Pool.sum_highest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">highest</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>, </span><span class="param"><span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+        <span class="name">sum_highest</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>, </span><span class="param"><span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
 
-                <label class="view-source-button" for="Pool.highest-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Pool.sum_highest-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Pool.highest"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.highest-417"><a href="#Pool.highest-417"><span class="linenos">417</span></a>    <span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
-</span><span id="Pool.highest-418"><a href="#Pool.highest-418"><span class="linenos">418</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the highest outcomes in the pool.</span>
-</span><span id="Pool.highest-419"><a href="#Pool.highest-419"><span class="linenos">419</span></a>
-</span><span id="Pool.highest-420"><a href="#Pool.highest-420"><span class="linenos">420</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
-</span><span id="Pool.highest-421"><a href="#Pool.highest-421"><span class="linenos">421</span></a>
-</span><span id="Pool.highest-422"><a href="#Pool.highest-422"><span class="linenos">422</span></a><span class="sd">        Args:</span>
-</span><span id="Pool.highest-423"><a href="#Pool.highest-423"><span class="linenos">423</span></a><span class="sd">            keep: The number of highest dice will be summed.</span>
-</span><span id="Pool.highest-424"><a href="#Pool.highest-424"><span class="linenos">424</span></a><span class="sd">            drop: This number of highest dice will be dropped before keeping</span>
-</span><span id="Pool.highest-425"><a href="#Pool.highest-425"><span class="linenos">425</span></a><span class="sd">                dice to be summed.</span>
-</span><span id="Pool.highest-426"><a href="#Pool.highest-426"><span class="linenos">426</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.highest-427"><a href="#Pool.highest-427"><span class="linenos">427</span></a>        <span class="k">if</span> <span class="n">keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.highest-428"><a href="#Pool.highest-428"><span class="linenos">428</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;keep=</span><span class="si">{</span><span class="n">keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.highest-429"><a href="#Pool.highest-429"><span class="linenos">429</span></a>        <span class="k">if</span> <span class="n">drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Pool.highest-430"><a href="#Pool.highest-430"><span class="linenos">430</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;drop=</span><span class="si">{</span><span class="n">drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
-</span><span id="Pool.highest-431"><a href="#Pool.highest-431"><span class="linenos">431</span></a>
-</span><span id="Pool.highest-432"><a href="#Pool.highest-432"><span class="linenos">432</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">keep</span> <span class="o">+</span> <span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-</span><span id="Pool.highest-433"><a href="#Pool.highest-433"><span class="linenos">433</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-</span><span id="Pool.highest-434"><a href="#Pool.highest-434"><span class="linenos">434</span></a>        <span class="c1"># Should support sum.</span>
-</span><span id="Pool.highest-435"><a href="#Pool.highest-435"><span class="linenos">435</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+    <a class="headerlink" href="#Pool.sum_highest"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.sum_highest-417"><a href="#Pool.sum_highest-417"><span class="linenos">417</span></a>    <span class="k">def</span> <span class="nf">sum_highest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="Pool.sum_highest-418"><a href="#Pool.sum_highest-418"><span class="linenos">418</span></a>        <span class="sd">&quot;&quot;&quot;The sum of the highest outcomes in the pool.</span>
+</span><span id="Pool.sum_highest-419"><a href="#Pool.sum_highest-419"><span class="linenos">419</span></a>
+</span><span id="Pool.sum_highest-420"><a href="#Pool.sum_highest-420"><span class="linenos">420</span></a><span class="sd">        The args override any `sorted_roll_counts` of this pool.</span>
+</span><span id="Pool.sum_highest-421"><a href="#Pool.sum_highest-421"><span class="linenos">421</span></a>
+</span><span id="Pool.sum_highest-422"><a href="#Pool.sum_highest-422"><span class="linenos">422</span></a><span class="sd">        Args:</span>
+</span><span id="Pool.sum_highest-423"><a href="#Pool.sum_highest-423"><span class="linenos">423</span></a><span class="sd">            keep: The number of highest dice will be summed.</span>
+</span><span id="Pool.sum_highest-424"><a href="#Pool.sum_highest-424"><span class="linenos">424</span></a><span class="sd">            drop: This number of highest dice will be dropped before keeping</span>
+</span><span id="Pool.sum_highest-425"><a href="#Pool.sum_highest-425"><span class="linenos">425</span></a><span class="sd">                dice to be summed.</span>
+</span><span id="Pool.sum_highest-426"><a href="#Pool.sum_highest-426"><span class="linenos">426</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Pool.sum_highest-427"><a href="#Pool.sum_highest-427"><span class="linenos">427</span></a>        <span class="k">if</span> <span class="n">keep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.sum_highest-428"><a href="#Pool.sum_highest-428"><span class="linenos">428</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;keep=</span><span class="si">{</span><span class="n">keep</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.sum_highest-429"><a href="#Pool.sum_highest-429"><span class="linenos">429</span></a>        <span class="k">if</span> <span class="n">drop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Pool.sum_highest-430"><a href="#Pool.sum_highest-430"><span class="linenos">430</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;drop=</span><span class="si">{</span><span class="n">drop</span><span class="si">}</span><span class="s1"> cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Pool.sum_highest-431"><a href="#Pool.sum_highest-431"><span class="linenos">431</span></a>
+</span><span id="Pool.sum_highest-432"><a href="#Pool.sum_highest-432"><span class="linenos">432</span></a>        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">keep</span> <span class="o">+</span> <span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+</span><span id="Pool.sum_highest-433"><a href="#Pool.sum_highest-433"><span class="linenos">433</span></a>        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">drop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+</span><span id="Pool.sum_highest-434"><a href="#Pool.sum_highest-434"><span class="linenos">434</span></a>        <span class="c1"># Should support sum.</span>
+</span><span id="Pool.sum_highest-435"><a href="#Pool.sum_highest-435"><span class="linenos">435</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
