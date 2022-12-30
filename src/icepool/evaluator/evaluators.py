@@ -287,13 +287,10 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
             state = ()
         if count >= self._min_count:
             state = state + (count,)
-        return state
+        return tuple(sorted(state))
 
     def order(self, *_):
         return Order.Any
-
-    def final_outcome(self, final_state, /, *_):
-        return tuple(sorted(final_state))
 
 
 class LargestStraightEvaluator(OutcomeCountEvaluator[int, int]):
