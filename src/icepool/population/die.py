@@ -815,9 +815,13 @@ class Die(Population[T_co]):
             again_depth: Forwarded to the final die constructor.
             again_end: Forwarded to the final die constructor.
         """
-        return self.map(lambda x: outcome_if_true if x else outcome_if_false,
-                        again_depth=again_depth,
-                        again_end=again_end)
+        return self.map(lambda x: bool(x)).map(
+            {
+                True: outcome_if_true,
+                False: outcome_if_false
+            },
+            again_depth=again_depth,
+            again_end=again_end)
 
     def is_in(self, target: Container[T_co], /) -> 'Die[bool]':
         """A die that returns True iff the roll of the die is contained in the target."""
