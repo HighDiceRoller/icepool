@@ -226,13 +226,19 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def all_matching_sets(
             self,
+            *,
+            min_count: int = 1,
             order: Order = Order.Ascending) -> 'icepool.Die[tuple[int, ...]]':
         """Produces the size of all matching sets of at least 1 count.
 
         Args:
+            min_count: Outcomes with counts less than this will be ignored.
+                If set to zero, the length of the resulting outcomes is
+                constant.
             order: The order in which the set sizes will be presented.
         """
-        result = icepool.AllMatchingSetsEvaluator().evaluate(self)
+        result = icepool.AllMatchingSetsEvaluator(
+            min_count=min_count).evaluate(self)
 
         if order < 0:
             result = result.map(lambda x: tuple(reversed(x)))

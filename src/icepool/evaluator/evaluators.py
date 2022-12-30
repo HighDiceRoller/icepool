@@ -271,12 +271,21 @@ class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
 
 
 class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
-    """Produces the size of all matching sets of at least 1 count."""
+    """Produces the size of all matching sets of at least the min count in size."""
+
+    def __init__(self, min_count=1):
+        """
+        Args:
+            min_count: Outcomes with counts less than this will be ignored.
+                If set to zero, the length of the resulting outcomes is
+                constant.
+        """
+        self._min_count = min_count
 
     def next_state(self, state, outcome, count):
         if state is None:
             state = ()
-        if count > 0:
+        if count >= self._min_count:
             state = state + (count,)
         return state
 
