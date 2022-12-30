@@ -1,3 +1,17 @@
+## 0.23.0
+
+Expanded typing, particularly in terms of parameterizing types.
+
+* `Die` and `Deck` constructors now expect exactly one nesting level, e.g. a Sequence of outcomes.
+* Removed `Die.bool()`.
+* `**kwargs` replaced with explcit `again_depth`, `again_end`. Removed `OutcomeCountEvaluator.final_kwargs()`.
+* Split `include_steps` version of `Die.map()` into a `map_and_time` method.
+* Split `include_outcome` version of `best_matching_set` and `best_straight` into separate methods.
+* Rename `keep_highest` and `highest` to `sum_highest`; add just `highest` for taking the single highest.
+* Same for `lowest`.
+* Added `cartesian_product()`, took this functionality out of the `Die` constructor for now.
+* Added `OutcomeCountGenerator.all_matching_sets()`.
+
 ## 0.22.0
 
 * `Die.sub()` renamed to `Die.map()`.
