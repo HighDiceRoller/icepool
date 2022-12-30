@@ -56,17 +56,17 @@ from icepool.population.func import (standard, d, __getattr__, bernoulli, coin,
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
-from icepool.again import Again
+from icepool.population.again import Again
 from icepool.population.die_with_truth import DieWithTruth
 
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
 from icepool.population.lowest_highest import sum_lowest, sum_highest
 
-from icepool.pool import Pool, standard_pool, clear_pool_cache
-from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
-from icepool.outcome_count_evaluator import OutcomeCountEvaluator
-from icepool.evaluators import (
+from icepool.generator.pool import Pool, standard_pool, clear_pool_cache
+from icepool.generator.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
+from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.evaluators import (
     WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
     ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
     SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
@@ -75,9 +75,9 @@ from icepool.evaluators import (
     LargestStraightAndOutcomeEvaluator)
 
 from icepool.population.deck import Deck
-from icepool.deal import Deal
+from icepool.generator.deal import Deal
 
-from icepool.generators import SuitGenerator
+from icepool.generator.generators import SuitGenerator
 
 __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'cartesian_product',

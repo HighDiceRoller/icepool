@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 
 from collections import defaultdict
 from functools import cached_property

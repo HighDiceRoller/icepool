@@ -5,7 +5,7 @@ from icepool.typing import Outcome
 from typing import TypeVar
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property

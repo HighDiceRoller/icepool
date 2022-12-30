@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.constant import Order
-from icepool.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.typing import Outcome
 
 from collections import defaultdict

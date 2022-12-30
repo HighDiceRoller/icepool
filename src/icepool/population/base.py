@@ -477,9 +477,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         output_format, format_spec = format_spec.split(':')
         if output_format == 'md':
-            return icepool.format.markdown(self, format_spec)
+            return icepool.population.format.markdown(self, format_spec)
         elif output_format == 'csv':
-            return icepool.format.csv(self, format_spec, **kwargs)
+            return icepool.population.format.csv(self, format_spec, **kwargs)
         else:
             raise ValueError(f"Unsupported output format '{output_format}'")
 

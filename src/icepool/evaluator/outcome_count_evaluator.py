@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.alignment import Alignment
+from icepool.generator.alignment import Alignment
 from icepool.constant import Order
 from icepool.typing import Outcome
 

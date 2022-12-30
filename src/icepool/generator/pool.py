@@ -2,10 +2,10 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.math
-import icepool.pool_cost
+import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 from icepool.typing import Outcome
 
 import itertools
@@ -178,7 +178,7 @@ class Pool(OutcomeCountGenerator[T_co]):
             pop_min_cost
             pop_max_cost
         """
-        return icepool.pool_cost.estimate_costs(self)
+        return icepool.generator.pool_cost.estimate_costs(self)
 
     def sorted_roll_counts(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.

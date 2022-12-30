@@ -1,12 +1,12 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.again
-import icepool.format
+import icepool.population.again
+import icepool.population.format
 import icepool.creation_args
-import icepool.markov_chain
+import icepool.population.markov_chain
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.elementwise import unary_elementwise, binary_elementwise
+from icepool.population.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
 from icepool.typing import Outcome
 
@@ -199,7 +199,7 @@ class Die(Population[T_co]):
                 outcomes = outcomes._data
         else:
             # Check for Again.
-            if icepool.again.contains_again(outcomes):
+            if icepool.population.again.contains_again(outcomes):
                 if again_end is None:
                     # Create a test die with `Again`s removed,
                     # then find the zero.
@@ -213,12 +213,13 @@ class Die(Population[T_co]):
                     again_end = test.zero().simplify()
                 else:
                     again_end = implicit_convert_to_die(again_end)
-                    if icepool.again.contains_again(again_end):
+                    if icepool.population.again.contains_again(again_end):
                         raise ValueError(
                             'again_end cannot itself contain Again.')
                 if again_depth == 0:
                     # Base case.
-                    outcomes = icepool.again.replace_agains(outcomes, again_end)
+                    outcomes = icepool.population.again.replace_agains(
+                        outcomes, again_end)
                 else:
                     tail: Die[T_co] = Die(outcomes,
                                           times,
@@ -654,7 +655,7 @@ class Die(Population[T_co]):
         else:
             # Infinite repeat.
             # T_co and U should be the same in this case.
-            return icepool.markov_chain.absorbing_markov_chain(
+            return icepool.population.markov_chain.absorbing_markov_chain(
                 cast(Die[U], self), transition_function)
 
     def map_and_time(
@@ -725,7 +726,8 @@ class Die(Population[T_co]):
         def transition_with_steps(outcome_and_steps):
             outcome, steps = outcome_and_steps
             next_outcome = transition_function(outcome)
-            if icepool.markov_chain.is_absorbing(outcome, next_outcome):
+            if icepool.population.markov_chain.is_absorbing(
+                    outcome, next_outcome):
                 return outcome, steps
             else:
                 return icepool.cartesian_product(next_outcome, steps + 1)
