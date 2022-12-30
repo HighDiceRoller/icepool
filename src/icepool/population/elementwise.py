@@ -5,7 +5,7 @@ from typing import Any, Callable
 
 def tuple_len(a) -> int | None:
     """The length of a tuple, or `None` if the argument is not a tuple."""
-    if type(a) == tuple:
+    if isinstance(a, tuple):
         return len(a)
     else:
         return None
@@ -23,7 +23,7 @@ def unary_elementwise(a, op: Callable, *args, **kwargs):
         a: The argument to the operation.
         *args, **kwargs: Any extra arguments are forwarded to `op`.
     """
-    if type(a) == tuple:
+    if isinstance(a, tuple):
         return tuple(unary_elementwise(aa, op, *args, **kwargs) for aa in a)
     else:
         return op(a, *args, **kwargs)
