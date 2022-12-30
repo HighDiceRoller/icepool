@@ -79,6 +79,6 @@ def test_owod():
     expected = sub_expected
     expected = expected.map({1: 1 + sub_expected})
     expected = expected.map({2: 2 + sub_expected})
-    expected = expected.map({3: 3 + icepool.lowest(sub_expected, 0)})
+    expected = expected.map({3: 3 + icepool.sum_lowest(sub_expected, 0)})
     expected = expected + 1
     assert result == expected

@@ -5,8 +5,8 @@ import icepool
 import math
 
 
-def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-    """The lowest outcome or sum of the lowest outcomes among the dice.
+def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    """The sum of the lowest outcomes among the dice.
 
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.
@@ -24,8 +24,8 @@ def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     return _lowest_highest(*dice, start=start, stop=stop)
 
 
-def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-    """The highest outcome or sum of the highest outcomes among the dice.
+def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    """The sum of the highest outcomes among the dice.
 
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.

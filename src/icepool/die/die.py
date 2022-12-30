@@ -903,7 +903,7 @@ class Die(Population[T_co]):
             pool_size = len(rolls)
             return icepool.Pool({self: pool_size})[rolls]
 
-    def keep_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+    def sum_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
         """Roll several of this `Die` and sum the sorted results from the lowest.
 
         Args:
@@ -917,14 +917,14 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._keep_lowest_single(rolls)
+            return self._sum_lowest_single(rolls)
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
         sorted_roll_counts = slice(start, stop)
         return self.pool(rolls)[sorted_roll_counts].sum()
 
-    def _keep_lowest_single(self, rolls: int, /) -> 'Die':
+    def _sum_lowest_single(self, rolls: int, /) -> 'Die':
         """Faster algorithm for keeping just the single lowest `Die`. """
         if rolls == 0:
             return self.zero()
@@ -932,11 +932,11 @@ class Die(Population[T_co]):
             self.outcomes(), [x**rolls for x in self.quantities_ge()],
             reverse=True)
 
-    def keep_highest(self,
-                     rolls: int,
-                     /,
-                     keep: int = 1,
-                     drop: int = 0) -> 'Die[T_co]':
+    def sum_highest(self,
+                    rolls: int,
+                    /,
+                    keep: int = 1,
+                    drop: int = 0) -> 'Die[T_co]':
         """Roll several of this `Die` and sum the sorted results from the highest.
 
         Args:
@@ -949,13 +949,13 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self._keep_highest_single(rolls)
+            return self._sum_highest_single(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
         sorted_roll_counts = slice(start, stop)
         return self.pool(rolls)[sorted_roll_counts].sum()
 
-    def _keep_highest_single(self, rolls: int, /) -> 'Die[T_co]':
+    def _sum_highest_single(self, rolls: int, /) -> 'Die[T_co]':
         """Faster algorithm for keeping just the single highest `Die`. """
         if rolls == 0:
             return self.zero()

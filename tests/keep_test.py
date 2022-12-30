@@ -46,7 +46,7 @@ def bf_diff_highest_lowest(die, num_dice):
 @pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_highest(keep):
     die = icepool.d12
-    result = die.keep_highest(4, keep)
+    result = die.sum_highest(4, keep)
     expected = bf_keep_highest(die, 4, keep)
     assert result.equals(expected)
 
@@ -54,7 +54,7 @@ def test_keep_highest(keep):
 @pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_highest_zero_weights(keep):
     die = icepool.Die(range(6), times=[0, 0, 1, 1, 1, 1])
-    result = die.keep_highest(4, keep).trim()
+    result = die.sum_highest(4, keep).trim()
     expected = bf_keep_highest(icepool.d4 + 1, 4, keep)
     assert result.equals(expected)
 
@@ -62,7 +62,7 @@ def test_keep_highest_zero_weights(keep):
 @pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_highest_drop_highest(keep):
     die = icepool.d12
-    result = die.keep_highest(4, keep, drop=1)
+    result = die.sum_highest(4, keep, drop=1)
     expected = bf_keep_highest(die, 4, keep, drop=1)
     assert result.equals(expected)
 
@@ -70,7 +70,7 @@ def test_keep_highest_drop_highest(keep):
 @pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_lowest(keep):
     die = icepool.d12
-    result = die.keep_lowest(4, keep)
+    result = die.sum_lowest(4, keep)
     expected = bf_keep_lowest(die, 4, keep)
     assert result.equals(expected)
 
@@ -78,7 +78,7 @@ def test_keep_lowest(keep):
 @pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_lowest_drop_highest(keep):
     die = icepool.d12
-    result = die.keep_lowest(4, keep, drop=1)
+    result = die.sum_lowest(4, keep, drop=1)
     expected = bf_keep_lowest(die, 4, keep, drop=1)
     assert result.equals(expected)
 
@@ -97,14 +97,14 @@ def test_sum_from_pool():
 def test_pool_select_multi():
     pool = icepool.d6.pool(5)
     result = icepool.sum_evaluator.evaluate(pool[0, 0, 2, 0, 0])
-    expected = 2 * icepool.d6.keep_highest(5, 1, drop=2)
+    expected = 2 * icepool.d6.sum_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 
 def test_pool_select_negative():
     pool = icepool.d6.pool(5)
     result = icepool.sum_evaluator.evaluate(pool[0, 0, -2, 0, 0])
-    expected = -2 * icepool.d6.keep_highest(5, 1, drop=2)
+    expected = -2 * icepool.d6.sum_highest(5, 1, drop=2)
     assert result.equals(expected)
 
 
@@ -123,12 +123,12 @@ def test_pool_select_mixed_sign_split():
 
 
 def test_highest():
-    result = icepool.highest(icepool.d6, icepool.d6)
-    expected = icepool.d6.keep_highest(2, 1)
+    result = icepool.sum_highest(icepool.d6, icepool.d6)
+    expected = icepool.d6.sum_highest(2, 1)
     assert result.equals(expected)
 
 
 def test_lowest():
-    result = icepool.lowest(icepool.d6, icepool.d6)
-    expected = icepool.d6.keep_lowest(2, 1)
+    result = icepool.sum_lowest(icepool.d6, icepool.d6)
+    expected = icepool.d6.sum_lowest(2, 1)
     assert result.equals(expected)

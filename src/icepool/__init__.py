@@ -60,7 +60,7 @@ from icepool.die.die_with_truth import DieWithTruth
 
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
-from icepool.die.lowest_highest import lowest, highest
+from icepool.die.lowest_highest import sum_lowest, sum_highest
 
 from icepool.pool import Pool, standard_pool, clear_pool_cache
 from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
@@ -82,9 +82,10 @@ __all__ = [
     'standard', 'd', 'bernoulli', 'coin', 'one_hot', 'cartesian_product',
     'Outcome', 'Die', 'Population', 'Again', 'CountsKeysView',
     'CountsValuesView', 'CountsItemsView', 'from_cumulative_quantities',
-    'from_rv', 'align', 'align_range', 'lowest', 'highest', 'min_outcome',
-    'max_outcome', 'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll',
-    'RerollType', 'OutcomeCountGenerator', 'Pool', 'standard_pool',
-    'OutcomeCountEvaluator', 'Order', 'JointEvaluator', 'SumEvaluator',
-    'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
+    'from_rv', 'align', 'align_range', 'sum_lowest', 'sum_highest',
+    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
+    'apply_sorted', 'Reroll', 'RerollType', 'OutcomeCountGenerator', 'Pool',
+    'standard_pool', 'OutcomeCountEvaluator', 'Order', 'JointEvaluator',
+    'SumEvaluator', 'ExpandEvaluator', 'Deck', 'Deal', 'SuitGenerator',
+    'clear_pool_cache'
 ]
