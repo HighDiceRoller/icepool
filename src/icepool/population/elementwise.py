@@ -1,5 +1,7 @@
 __docformat__ = 'google'
 
+from icepool.typing import MaybeNamedTuple
+
 from typing import Any, Callable
 
 
@@ -24,7 +26,12 @@ def unary_elementwise(a, op: Callable, *args, **kwargs):
         *args, **kwargs: Any extra arguments are forwarded to `op`.
     """
     if isinstance(a, tuple):
-        return tuple(unary_elementwise(aa, op, *args, **kwargs) for aa in a)
+        if isinstance(a, MaybeNamedTuple):
+            return type(a)._make(
+                unary_elementwise(aa, op, *args, **kwargs) for aa in a)
+        else:
+            return type(a)(
+                unary_elementwise(aa, op, *args, **kwargs) for aa in a)
     else:
         return op(a, *args, **kwargs)
 
@@ -49,6 +56,7 @@ def binary_elementwise(a, b, op: Callable, *args, **kwargs):
     b_len = tuple_len(b)
     if a_len is None and b_len is None:
         return op(a, b, *args, **kwargs)
+
     if a_len != b_len:
         if a_len is None:
             raise ValueError(
@@ -62,8 +70,27 @@ def binary_elementwise(a, b, op: Callable, *args, **kwargs):
             raise ValueError(
                 f'Cannot apply operation elementwise between tuples of different lengths {a_len} and {b_len}.'
             )
-    return tuple(
-        binary_elementwise(aa, bb, op, *args, **kwargs) for aa, bb in zip(a, b))
+
+    a_is_named = isinstance(a, MaybeNamedTuple)
+    b_is_named = isinstance(b, MaybeNamedTuple)
+
+    if a_is_named or b_is_named:
+        if a_is_named and b_is_named:
+            if a._fields != b._fields:
+                raise TypeError(
+                    f'Cannot apply operation elementwise between named tuples with differing fields {a._fields} and {b._fields}.'
+                )
+            output_type = type(a)
+        elif a_is_named:
+            output_type = type(a)
+        elif b_is_named:
+            output_type = type(b)
+        return output_type._make(
+            binary_elementwise(aa, bb, op, *args, **kwargs)
+            for aa, bb in zip(a, b))
+    else:
+        return type(a)(binary_elementwise(aa, bb, op, *args, **kwargs)
+                       for aa, bb in zip(a, b))
 
 
 def check_tuple_sortable(t: tuple) -> None:
