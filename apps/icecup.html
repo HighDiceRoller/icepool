@@ -102,6 +102,7 @@ async function resetIcepool() {
 
 import icepool
 import pyodide
+import builtins
 import js
 
 class OutputManager():
@@ -124,8 +125,11 @@ class OutputManager():
 
     def reset(self):
         import random
+        # Not including prints.
+        self.die_count = 0
         self.dice = []
         self.die_labels = []
+        # None if this is a print rather than a full output.
         self.colors = []
         self.starting_random_state = random.getstate()
     
@@ -147,10 +151,9 @@ class OutputManager():
         else:
             return 'md:*o|q==|%=='
 
-    def append(self, die, die_label):
-        i = len(self.dice)
+    def append_output(self, die, die_label):
         if die_label is None:
-            die_label = f'Output #{i}'
+            die_label = f'Output #{self.die_count}'
         else:
             die_label = str(die_label)
             
@@ -161,8 +164,14 @@ class OutputManager():
         
         self.dice.append(die)
         self.die_labels.append(die_label)
-        color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
+        color = OutputManager.DEFAULT_COLORS[self.die_count % len(OutputManager.DEFAULT_COLORS)]
         self.colors.append(color)
+        self.die_count += 1
+        
+    def append_print(self, args, kwargs):
+        self.dice.append(icepool.Die([]))
+        self.die_labels.append((args, kwargs))
+        self.colors.append(None)
     
     def chart_data(self, probability_type):
         """
@@ -179,13 +188,17 @@ class OutputManager():
                 'data': self.probabilities(die, probability_type),
                 'label': die_label,
                 'borderColor': color,
-            } for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors)
+            } for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors) if color is not None
         ]
         
-        for die, die_label in zip(aligned_dice, self.die_labels):
-            print(die_label)
-            format_string = self.format_string(die, probability_type)
-            print(f'{die:{format_string}}')
+        for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors):
+            if color is not None:
+                builtins.print(die_label)
+                format_string = self.format_string(die, probability_type)
+                builtins.print(f'{die:{format_string}}')
+            else:
+                args, kwargs = die_label
+                builtins.print(*args, **kwargs)
         
         return pyodide.ffi.to_js({'labels': output_labels, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
     
@@ -197,7 +210,10 @@ _manager = OutputManager()
 
 def output(die, /, label=None):
     """Plots a die and also prints it."""
-    _manager.append(die, label)
+    _manager.append_output(die, label)
+
+def print(*args, **kwargs):
+    _manager.append_print(args, kwargs)
 
 `)
 }
