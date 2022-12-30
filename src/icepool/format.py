@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.population import Population
+from icepool.population.base import Population
 
 import csv as csv_lib
 import io

@@ -5,7 +5,7 @@ import icepool.again
 import icepool.math
 import icepool.creation_args
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.population import Population
+from icepool.population.base import Population
 from icepool.typing import Outcome
 
 from functools import cached_property

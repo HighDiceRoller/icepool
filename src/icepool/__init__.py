@@ -47,20 +47,21 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-from icepool.die.func import (standard, d, __getattr__, bernoulli, coin,
-                              one_hot, cartesian_product,
-                              from_cumulative_quantities, from_rv, min_outcome,
-                              max_outcome, align, align_range, reduce,
-                              accumulate, apply, apply_sorted)
+from icepool.population.func import (standard, d, __getattr__, bernoulli, coin,
+                                     one_hot, cartesian_product,
+                                     from_cumulative_quantities, from_rv,
+                                     min_outcome, max_outcome, align,
+                                     align_range, reduce, accumulate, apply,
+                                     apply_sorted)
 
-from icepool.population import Population
-from icepool.die.die import implicit_convert_to_die, Die
+from icepool.population.base import Population
+from icepool.population.die import implicit_convert_to_die, Die
 from icepool.again import Again
-from icepool.die.die_with_truth import DieWithTruth
+from icepool.population.die_with_truth import DieWithTruth
 
 from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
-from icepool.die.lowest_highest import sum_lowest, sum_highest
+from icepool.population.lowest_highest import sum_lowest, sum_highest
 
 from icepool.pool import Pool, standard_pool, clear_pool_cache
 from icepool.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
@@ -73,7 +74,7 @@ from icepool.evaluators import (
     AllMatchingSetsEvaluator, LargestStraightEvaluator,
     LargestStraightAndOutcomeEvaluator)
 
-from icepool.deck import Deck
+from icepool.population.deck import Deck
 from icepool.deal import Deal
 
 from icepool.generators import SuitGenerator
