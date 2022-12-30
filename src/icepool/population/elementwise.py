@@ -80,4 +80,5 @@ def check_tuple_sortable(t: tuple) -> None:
                 bool(element < element)
             except TypeError:
                 raise TypeError(
-                    f'Tuple element {str(element)} is not sortable.')
+                    f'Tuple element {str(element)} does not appear to be of a sortable type.'
+                )
