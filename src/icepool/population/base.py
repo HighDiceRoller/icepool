@@ -384,6 +384,31 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Joint statistics.
 
+    class _Marginals(Sequence):
+        """Helper class for implementing `marginals()`."""
+
+        def __init__(self, population, /):
+            self._population = population
+
+        def __len__(self) -> int:
+            """The minimum len() of all outcomes."""
+            return min(len(x) for x in self._population.outcomes())
+
+        def __getitem__(self, dims: int | slice, /):
+            """Marginalizes the given dimensions."""
+            return self._population.unary_op_non_elementwise(
+                operator.getitem, dims)
+
+    @property
+    def marginals(self):
+        """A property that applies the `[]` operator to outcomes.
+
+        This is not performed elementwise on tuples, so that this can be used
+        to slice tuple outcomes. For example, `population.marginals[:2]` will
+        marginalize the first two elements of tuples.
+        """
+        return Population._Marginals(self)
+
     def unary_op_non_elementwise(self: C, op: Callable, *args, **kwargs) -> C:
         """As `unary_op()`, but not elementwise.
 
@@ -394,41 +419,6 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             new_outcome = op(outcome, *args, **kwargs)
             data[new_outcome] += quantity
         return self._new_type()(data)
-
-    class _Marginals():
-        """Helper class for implementing `marginals()`."""
-
-        def __init__(self, population: 'Population[tuple]', /) -> None:
-            self._population = population
-
-        def __len__(self) -> int:
-            """The minimum len() of all outcomes."""
-            return min(len(x) for x in self._population.outcomes())
-
-        def __getitem__(self, dims: int | slice, /) -> 'Population':
-            """Marginalizes the given dimensions."""
-            return self._population.unary_op_non_elementwise(
-                operator.getitem, dims)
-
-        def __getattr__(self, name: str) -> 'Population':
-
-            def get(outcome):
-                return getattr(outcome, name)
-
-            return self._population.unary_op_non_elementwise(get)
-
-    @property
-    def marginals(self: 'Population[tuple]') -> _Marginals:
-        """A property that applies the `[]` operator to outcomes.
-
-        This is not performed elementwise on tuples, so that this can be used
-        to slice tuple outcomes. For example, `population.marginals[:2]` will
-        marginalize the first two elements of tuples.
-
-        EXPERIMENTAL: If the outcomes are `NamedTuples`, the population can be
-        marginalized by attribute name, e.g. `population.marginals.x`.
-        """
-        return Population._Marginals(self)
 
     def covariance(self: 'Population[tuple[numbers.Real, ...]]', i: int,
                    j: int) -> float:

@@ -3,8 +3,6 @@ __docformat__ = 'google'
 import icepool
 from icepool.population.base import Population
 
-from icepool.typing import MaybeNamedTuple
-
 import csv as csv_lib
 import io
 import re
@@ -40,13 +38,8 @@ def make_headers(mapping: Population,
             if r is None:
                 result.append('Outcome')
             else:
-                outcome = mapping.outcomes()[0]
-                if isinstance(outcome, MaybeNamedTuple):
-                    for i in range(r):
-                        result.append(outcome._fields[i])
-                else:
-                    for i in range(r):
-                        result.append(f'Outcome[{i}]')
+                for i in range(r):
+                    result.append(f'Outcome[{i}]')
         else:
             heading = ''
 

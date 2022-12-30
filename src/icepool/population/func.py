@@ -3,12 +3,12 @@ __docformat__ = 'google'
 import icepool
 from icepool.typing import Outcome
 
-from collections import namedtuple
+from collections import defaultdict
 from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Hashable, Iterable, Iterator, Literal, NamedTuple, Sequence, Type, TypeAlias, TypeVar, overload
+from typing import Any, Callable, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
 
 T = TypeVar('T', bound=Outcome)
 """An outcome type."""
@@ -71,36 +71,18 @@ def bernoulli(n: int, d: int, /) -> 'icepool.Die[bool]':
 coin = bernoulli
 
 
-def one_hot(sides: int | Sequence[str], /) -> 'icepool.Die[tuple[bool, ...]]':
+def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':
     """A `Die` with tuple outcomes with one element set to `True` uniformly at random and the rest `False`.
 
     This is an easy (if expensive) way of representing how many dice in a pool
     rolled each number. For example, the outcomes of `10 @ one_hot(6)` are
     the `(ones, twos, threes, fours, fives, sixes)` rolled in 10d6.
-
-    Args:
-        sides: The number of sides.
-            EXPERIMENTAL: A `Sequence` of `str` may be provided instead.
-                In this case, the outcomes are named tuples. The strings must be
-                valid Python identifiers that don't start with an underscore.
     """
     data = []
-    if isinstance(sides, int):
-        for i in range(sides):
-            outcome = [False] * sides
-            outcome[i] = True
-            data.append(tuple(outcome))
-    else:
-        # Named tuple.
-        defaults = [False] * len(sides)
-        NamedTupleFromOneHot = namedtuple(  # type: ignore
-            'NamedTupleFromOneHot',
-            list(sides),
-            defaults=defaults)  # type: ignore
-        for i in range(len(sides)):
-            outcome = [False] * len(sides)
-            outcome[i] = True
-            data.append(NamedTupleFromOneHot._make(outcome))
+    for i in range(sides):
+        outcome = [False] * sides
+        outcome[i] = True
+        data.append(tuple(outcome))
     return icepool.Die(data)
 
 
