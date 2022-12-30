@@ -1,3 +1,7 @@
+## 0.23.1
+
+Prepend `sum_` to OutcomeCountGenerator versions of `highest` and `lowest`.
+
 ## 0.23.0
 
 Expanded typing, particularly in terms of parameterizing types.
