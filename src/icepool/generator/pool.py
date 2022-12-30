@@ -393,7 +393,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         if skip_weight is not None:
             yield Pool([]), (sum(self.sorted_roll_counts()),), skip_weight
 
-    def lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the lowest outcomes in the pool.
 
         The args override any `sorted_roll_counts` of this pool.
@@ -413,7 +413,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
-    def highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    def sum_highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the highest outcomes in the pool.
 
         The args override any `sorted_roll_counts` of this pool.
