@@ -373,6 +373,12 @@
                     <a class="function" href="#align_range">align_range</a>
             </li>
             <li>
+                    <a class="function" href="#lowest">lowest</a>
+            </li>
+            <li>
+                    <a class="function" href="#highest">highest</a>
+            </li>
+            <li>
                     <a class="function" href="#sum_lowest">sum_lowest</a>
             </li>
             <li>
@@ -797,7 +803,7 @@ refer to dice in a pool.</li>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="kn">from</span> <span class="nn">icepool.counts</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="kn">from</span> <span class="nn">icepool.population.lowest_highest</span> <span class="kn">import</span> <span class="n">sum_lowest</span><span class="p">,</span> <span class="n">sum_highest</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="kn">from</span> <span class="nn">icepool.population.lowest_highest</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">sum_lowest</span><span class="p">,</span> <span class="n">sum_highest</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>
 </span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span><span class="p">,</span> <span class="n">clear_pool_cache</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="kn">from</span> <span class="nn">icepool.generator.outcome_count_generator</span> <span class="kn">import</span> <span class="n">OutcomeCountGenerator</span><span class="p">,</span> <span class="n">NextOutcomeCountGenerator</span>
@@ -819,10 +825,10 @@ refer to dice in a pool.</li>
 </span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="s1">&#39;standard&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;bernoulli&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cartesian_product&#39;</span><span class="p">,</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;Again&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span>
 </span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cumulative_quantities&#39;</span><span class="p">,</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_highest&#39;</span><span class="p">,</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_lowest&#39;</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;sum_highest&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountGenerator&#39;</span><span class="p">,</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>    <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;OutcomeCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
 </span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>    <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;SuitGenerator&#39;</span><span class="p">,</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a>    <span class="s1">&#39;clear_pool_cache&#39;</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a><span class="p">]</span>
@@ -7024,6 +7030,80 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 <blockquote>
   <p>A tuple of aligned dice.</p>
 </blockquote>
+</div>
+
+
+                </section>
+                <section id="lowest">
+                            <input id="lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">lowest</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="lowest-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#lowest"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="lowest-87"><a href="#lowest-87"><span class="linenos"> 87</span></a><span class="k">def</span> <span class="nf">lowest</span><span class="p">(</span>
+</span><span id="lowest-88"><a href="#lowest-88"><span class="linenos"> 88</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T_contra | icepool.Die[T_contra]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T_contra]&#39;</span><span class="p">:</span>
+</span><span id="lowest-89"><a href="#lowest-89"><span class="linenos"> 89</span></a>    <span class="sd">&quot;&quot;&quot;Roll all the dice and take the lowest single one.</span>
+</span><span id="lowest-90"><a href="#lowest-90"><span class="linenos"> 90</span></a>
+</span><span id="lowest-91"><a href="#lowest-91"><span class="linenos"> 91</span></a><span class="sd">    The maximum outcome is equal to the least maximum outcome among all</span>
+</span><span id="lowest-92"><a href="#lowest-92"><span class="linenos"> 92</span></a><span class="sd">    input dice.</span>
+</span><span id="lowest-93"><a href="#lowest-93"><span class="linenos"> 93</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="lowest-94"><a href="#lowest-94"><span class="linenos"> 94</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+</span><span id="lowest-95"><a href="#lowest-95"><span class="linenos"> 95</span></a>    <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
+</span><span id="lowest-96"><a href="#lowest-96"><span class="linenos"> 96</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">max_outcome</span><span class="o">=</span><span class="n">max_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
+</span><span id="lowest-97"><a href="#lowest-97"><span class="linenos"> 97</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="lowest-98"><a href="#lowest-98"><span class="linenos"> 98</span></a>    <span class="n">quantities_ge</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="lowest-99"><a href="#lowest-99"><span class="linenos"> 99</span></a>        <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">quantities_ge</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)))</span>
+</span><span id="lowest-100"><a href="#lowest-100"><span class="linenos">100</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cumulative_quantities</span><span class="p">(</span><span class="n">dice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span>
+</span><span id="lowest-101"><a href="#lowest-101"><span class="linenos">101</span></a>                                              <span class="n">quantities_ge</span><span class="p">,</span>
+</span><span id="lowest-102"><a href="#lowest-102"><span class="linenos">102</span></a>                                              <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Roll all the dice and take the lowest single one.</p>
+
+<p>The maximum outcome is equal to the least maximum outcome among all
+input dice.</p>
+</div>
+
+
+                </section>
+                <section id="highest">
+                            <input id="highest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">highest</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="highest-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#highest"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="highest-105"><a href="#highest-105"><span class="linenos">105</span></a><span class="k">def</span> <span class="nf">highest</span><span class="p">(</span>
+</span><span id="highest-106"><a href="#highest-106"><span class="linenos">106</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T_contra | icepool.Die[T_contra]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T_contra]&#39;</span><span class="p">:</span>
+</span><span id="highest-107"><a href="#highest-107"><span class="linenos">107</span></a>    <span class="sd">&quot;&quot;&quot;Roll all the dice and take the highest single one.</span>
+</span><span id="highest-108"><a href="#highest-108"><span class="linenos">108</span></a>
+</span><span id="highest-109"><a href="#highest-109"><span class="linenos">109</span></a><span class="sd">    The minimum outcome is equal to the greatest minimum outcome among all</span>
+</span><span id="highest-110"><a href="#highest-110"><span class="linenos">110</span></a><span class="sd">    input dice.</span>
+</span><span id="highest-111"><a href="#highest-111"><span class="linenos">111</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="highest-112"><a href="#highest-112"><span class="linenos">112</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+</span><span id="highest-113"><a href="#highest-113"><span class="linenos">113</span></a>    <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
+</span><span id="highest-114"><a href="#highest-114"><span class="linenos">114</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">min_outcome</span><span class="o">=</span><span class="n">min_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
+</span><span id="highest-115"><a href="#highest-115"><span class="linenos">115</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
+</span><span id="highest-116"><a href="#highest-116"><span class="linenos">116</span></a>    <span class="n">quantities_le</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="highest-117"><a href="#highest-117"><span class="linenos">117</span></a>        <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)))</span>
+</span><span id="highest-118"><a href="#highest-118"><span class="linenos">118</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cumulative_quantities</span><span class="p">(</span><span class="n">dice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">quantities_le</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Roll all the dice and take the highest single one.</p>
+
+<p>The minimum outcome is equal to the greatest minimum outcome among all
+input dice.</p>
 </div>
 
 
