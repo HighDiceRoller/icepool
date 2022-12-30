@@ -1,3 +1,9 @@
+## 0.23.2
+
+* Incremental sorting for `all_matching_sets` to reduce state space.
+* `lowest()` and `highest()` now actually visible.
+* Improved checking for tuple outcome sortability and types.
+
 ## 0.23.1
 
 Prepend `sum_` to OutcomeCountGenerator versions of `highest` and `lowest`.
