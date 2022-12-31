@@ -225,7 +225,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.20.1')
+                await micropip.install('icepool==0.23.3')
                 
                 import js
                 import pyodide
@@ -241,7 +241,7 @@
                         if js.document.getElementById('hitch1').checked:
                             return icepool.d(die_size)
                         else:
-                            return icepool.d(die_size).sub({1: 0})
+                            return icepool.d(die_size).map({1: 0})
                             
                     die_sizes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in possible_die_sizes), [])
                     dice = [c(die_size) for die_size in die_sizes]
