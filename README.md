@@ -6,8 +6,6 @@ A Python package for computing dice probabilities.
 
 [PyPi page.](https://pypi.org/project/icepool/)
 
-[Tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fch00_introduction.ipynb)
-
 Try coding in your browser using [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing similar to AnyDice, SnakeEyes, and Troll.
 
 ## Features
@@ -39,6 +37,10 @@ Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discu
 See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples. These include mechanics from published games, StackExchange, Reddit, and academic papers. 
 
 [JupyterLite REPL.](https://highdiceroller.github.io/icepool/notebooks/repl/index.html?kernel=python&toolbar=1&code=import%20piplite%0Aawait%20piplite.install(%22icepool%22)%0Aimport%20icepool)
+
+### Tutorial notebooks
+
+In particular, here are a series of [tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fch00_introduction.ipynb)
 
 ## Web applications
 
