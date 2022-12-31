@@ -322,7 +322,7 @@ def apply(
             Allowed arg types are:
             * Single outcome.
             * `Die`. All outcomes will be sent to `func`.
-            * `Pool`. All tuples of outcomes will be sent to `func`,
+            * `Pool`. All sorted tuples of outcomes will be sent to `func`,
                 as `pool.expand()`.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.

@@ -136,7 +136,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     # Built-in evaluators.
 
     def expand(self, unique: bool = False) -> 'icepool.Die[tuple[T_co, ...]]':
-        """All possible (unordered) tuples of outcomes.
+        """All possible sorted tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
 
