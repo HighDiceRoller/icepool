@@ -17,7 +17,7 @@
     <meta name="twitter:creator" content="@highdiceroller" />
     <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/ability_scores_preview.png" />
 
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="common.js"></script>
@@ -382,7 +382,7 @@
         async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.21.3/full/",
             });
 
             await pyodide.loadPackage(["micropip"], setLoadingText);
@@ -390,7 +390,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.20.1')
+                await micropip.install('icepool==0.23.3')
                 
                 import js
                 import pyodide
@@ -403,7 +403,7 @@
                         data = [100.0 * x for x in die.probabilities()]
                     else:
                         data = [100.0 * x for x in die.probabilities_ge()]
-                    js.rankChart.data.datasets[rank].data = pyodide.to_js([float(x) for x in data])
+                    js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
                     js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
@@ -446,9 +446,9 @@
                 reroll_dice = die_size - 1
             
             single_die = icepool.d(die_size).reroll(outcomes=range(1, reroll_dice+1))
-            single_ability = single_die.keep_highest(num_dice, num_keep) + modifier
+            single_ability = single_die.sum_highest(num_dice, num_keep) + modifier
             single_ability = single_ability.clip(min_ability, max_ability)
-            single_ability = single_ability.keep_highest(num_ability_repeat)
+            single_ability = single_ability.sum_highest(num_ability_repeat)
             
             max_prob = 0.0
             ranks = []
@@ -530,8 +530,8 @@
                 prices = {}
                 for i in range(3, 19):
                     prices[i] = int(js.document.getElementById('p%d' % i).value)
-                single_ability_price = single_ability.sub(lambda outcome: prices[outcome])
-                total_price = single_ability_price.keep_highest(num_abilities, 6).keep_highest(num_arrays)
+                single_ability_price = single_ability.map(lambda outcome: prices[outcome])
+                total_price = single_ability_price.sum_highest(num_abilities, 6).sum_highest(num_arrays)
                 js.document.getElementById('price_mean').innerHTML = '%0.2f' % total_price.mean()
                 js.document.getElementById('price_sd').innerHTML = '%0.2f' % total_price.standard_deviation()
             `);
@@ -544,11 +544,11 @@
             pyodide.runPython(`
                 selected_dist = js.document.getElementById('pricesViewDistSelect').value
                 
-                js.pricesChart.data.labels = pyodide.to_js([float(x) for x in total_price.outcomes()])
+                js.pricesChart.data.labels = pyodide.ffi.to_js([float(x) for x in total_price.outcomes()])
                 if selected_dist == 'pmf':
-                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.probabilities()])
+                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities()])
                 else:
-                    js.pricesChart.data.datasets[0].data = pyodide.to_js([float(x * 100.0) for x in total_price.probabilities_ge()])
+                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities_ge()])
             `);
             pricesChart.update();
         }

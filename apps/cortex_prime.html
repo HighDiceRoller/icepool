@@ -17,7 +17,7 @@
     <meta name="twitter:creator" content="@highdiceroller" />
     <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/cortex_prime_preview.png" />
 
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="common.js"></script>
@@ -217,7 +217,7 @@
         async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.21.3/full/",
             });
 
             await pyodide.loadPackage(["micropip"], setLoadingText);
@@ -225,7 +225,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.20.1')
+                await micropip.install('icepool==0.23.3')
                 
                 import js
                 import pyodide
@@ -241,7 +241,7 @@
                         if js.document.getElementById('hitch1').checked:
                             return icepool.d(die_size)
                         else:
-                            return icepool.d(die_size).sub({1: 0})
+                            return icepool.d(die_size).map({1: 0})
                             
                     die_sizes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in possible_die_sizes), [])
                     dice = [c(die_size) for die_size in die_sizes]
@@ -297,16 +297,16 @@
             js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
             
-            js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
+            js.totalChart.data.labels = pyodide.ffi.to_js([float(x) for x in die_player.outcomes()])
             
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_player.probabilities_le()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(1.0 - x) * 100.0 for x in die_opposition.probabilities_le()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(1.0 - x) * 100.0 for x in die_player.probabilities_le()])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(1.0 - x) * 100.0 for x in die_opposition.probabilities_le()])
                 
             `);
 
@@ -320,16 +320,16 @@
             
             hitch_player, hitch_opposition = icepool.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
             
-            js.hitchChart.data.labels = pyodide.to_js([float(x) for x in hitch_player.outcomes()])
+            js.hitchChart.data.labels = pyodide.ffi.to_js([float(x) for x in hitch_player.outcomes()])
             
             selected_dist = js.document.getElementById('hitchDistSelect').value
             
             if selected_dist == 'pmf':
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.probabilities()])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities()])
+                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities()])
+                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities()])
             else:
-                js.hitchChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in hitch_player.probabilities_ge()])
-                js.hitchChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities_ge()])
+                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities_ge()])
+                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities_ge()])
             `);
 
             hitchChart.update();
