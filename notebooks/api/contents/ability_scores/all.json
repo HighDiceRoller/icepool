@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-31T01:19:19.593835Z",
+      "created": "2022-12-31T20:32:09.985393Z",
       "format": null,
-      "last_modified": "2022-12-31T01:18:55.049417Z",
+      "last_modified": "2022-12-31T20:31:40.940385Z",
       "mimetype": null,
       "name": "rolling_for_stats_in_groups.ipynb",
       "path": "ability_scores/rolling_for_stats_in_groups.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-31T01:19:19.593835Z",
+      "created": "2022-12-31T20:32:09.981393Z",
       "format": null,
-      "last_modified": "2022-12-31T01:18:55.049417Z",
+      "last_modified": "2022-12-31T20:31:40.940385Z",
       "mimetype": null,
       "name": "completely_unfair.ipynb",
       "path": "ability_scores/completely_unfair.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-31T01:19:19.593835Z",
+      "created": "2022-12-31T20:32:09.981393Z",
       "format": null,
-      "last_modified": "2022-12-31T01:18:55.049417Z",
+      "last_modified": "2022-12-31T20:31:40.940385Z",
       "mimetype": null,
       "name": "adnd.ipynb",
       "path": "ability_scores/adnd.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-31T01:19:19.593835Z",
+      "created": "2022-12-31T20:32:09.985393Z",
       "format": null,
-      "last_modified": "2022-12-31T01:18:55.049417Z",
+      "last_modified": "2022-12-31T20:31:40.940385Z",
       "mimetype": null,
       "name": "snake_draft.ipynb",
       "path": "ability_scores/snake_draft.ipynb",
@@ -50,9 +50,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-31T01:19:19.593835Z",
+      "created": "2022-12-31T20:32:09.985393Z",
       "format": null,
-      "last_modified": "2022-12-31T01:18:55.049417Z",
+      "last_modified": "2022-12-31T20:31:40.940385Z",
       "mimetype": null,
       "name": "one_set_strictly_better.ipynb",
       "path": "ability_scores/one_set_strictly_better.ipynb",
@@ -61,9 +61,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-31T01:19:19.593835Z",
+  "created": "2022-12-31T20:32:09.985393Z",
   "format": "json",
-  "last_modified": "2022-12-31T01:19:19.593835Z",
+  "last_modified": "2022-12-31T20:32:09.985393Z",
   "mimetype": null,
   "name": "ability_scores",
   "path": "ability_scores",
