@@ -93,8 +93,7 @@ class Die(Population[T_co]):
 
     def __new__(
         cls,
-        outcomes:
-        'Sequence[T_co | Die[T_co] | icepool.RerollType | icepool.Again] | Mapping[Any, int]',
+        outcomes: Sequence | Mapping[Any, int],
         times: Sequence[int] | int = 1,
         *,
         again_depth: int = 1,
