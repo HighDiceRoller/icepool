@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import d6
+
 test_dice = [icepool.d6, icepool.d8, icepool.d10.explode(depth=2)]
 
 
@@ -143,8 +145,14 @@ def test_matmul_int_die():
 
 
 def test_matmul_die_die():
-    result = icepool.Die([2]) @ icepool.d6
-    expected = icepool.d6 + icepool.d6
+    result = icepool.d6 @ icepool.d6
+    expected = icepool.d6.map(lambda x: x @ icepool.d6)
+    assert result.equals(expected)
+
+
+def test_matmul_coin_die():
+    result = icepool.coin(1, 2) @ d6
+    expected = icepool.coin(1, 2).map(lambda x: x @ d6)
     assert result.equals(expected)
 
 

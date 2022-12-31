@@ -169,7 +169,7 @@ class Die(Population[T_co]):
                 * A simple single outcome, which must be hashable and totally
                     orderable.
                 * A tuple. The elements must be valid outcomes. In particular,
-                    `Reroll`, and `Again` are not valid inside tuple outcomes.
+                    `Reroll` and `Again` are not valid inside tuple outcomes.
 
                     Tuple elements may be `Die`, in which case the Cartesian
                     product is taken.
@@ -855,7 +855,7 @@ class Die(Population[T_co]):
         if rolls < 0:
             result = -self._sum_all(-rolls)
         elif rolls == 0:
-            result = self.zero()
+            result = self.zero().simplify()
         elif rolls == 1:
             result = self
         else:
@@ -867,8 +867,6 @@ class Die(Population[T_co]):
 
     def __matmul__(self: 'Die[int]', other) -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
-        if isinstance(other, icepool.Again):
-            return NotImplemented
         other = implicit_convert_to_die(other)
 
         data: MutableMapping[int, Any] = defaultdict(int)
@@ -878,6 +876,7 @@ class Die(Population[T_co]):
         for die_count, die_count_quantity in self.items():
             factor = other.denominator()**(max_abs_die_count - abs(die_count))
             subresult = other._sum_all(die_count)
+            print(die_count_quantity * factor * subresult.denominator())
             for outcome, subresult_quantity in subresult.items():
                 data[
                     outcome] += subresult_quantity * die_count_quantity * factor
@@ -886,8 +885,6 @@ class Die(Population[T_co]):
 
     def __rmatmul__(self, other: 'int | Die[int]') -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
-        if isinstance(other, icepool.Again):
-            return NotImplemented
         other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
@@ -935,7 +932,7 @@ class Die(Population[T_co]):
     def lowest(self, rolls: int, /) -> 'Die':
         """Roll this die several times and keep the lowest."""
         if rolls == 0:
-            return self.zero()
+            return self.zero().simplify()
         return icepool.from_cumulative_quantities(
             self.outcomes(), [x**rolls for x in self.quantities_ge()],
             reverse=True)
@@ -966,7 +963,7 @@ class Die(Population[T_co]):
     def highest(self, rolls: int, /) -> 'Die[T_co]':
         """Roll this die several times and keep the highest."""
         if rolls == 0:
-            return self.zero()
+            return self.zero().simplify()
         return icepool.from_cumulative_quantities(
             self.outcomes(), [x**rolls for x in self.quantities_le()])
 
