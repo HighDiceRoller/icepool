@@ -876,7 +876,6 @@ class Die(Population[T_co]):
         for die_count, die_count_quantity in self.items():
             factor = other.denominator()**(max_abs_die_count - abs(die_count))
             subresult = other._sum_all(die_count)
-            print(die_count_quantity * factor * subresult.denominator())
             for outcome, subresult_quantity in subresult.items():
                 data[
                     outcome] += subresult_quantity * die_count_quantity * factor
