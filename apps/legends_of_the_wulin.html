@@ -5,7 +5,7 @@
     <title>Legends of the Wulin calculator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="common.js"></script>
@@ -157,7 +157,7 @@
         async function initPyodide() {
             setLoadingText('Loading pyodide')
             let pyodide = await loadPyodide({
-                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.20.0/full/",
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.21.3/full/",
             });
 
             await pyodide.loadPackage(["micropip"], setLoadingText);
@@ -230,16 +230,16 @@
             js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
             js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((die_player < die_opposition).mean() * 100.0)
             
-            js.totalChart.data.labels = pyodide.to_js([float(x) for x in die_player.outcomes()])
+            js.totalChart.data.labels = pyodide.ffi.to_js([float(x) for x in die_player.outcomes()])
             
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
-                js.totalChart.data.datasets[1].data = pyodide.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
             `);
 
             totalChart.update();
