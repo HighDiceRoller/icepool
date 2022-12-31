@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-30T22:51:21.062412Z",
+      "created": "2022-12-31T01:19:19.597835Z",
       "format": null,
-      "last_modified": "2022-12-30T22:51:00.826321Z",
+      "last_modified": "2022-12-31T01:18:55.057417Z",
       "mimetype": null,
       "name": "limited_wildcard.ipynb",
       "path": "decks/limited_wildcard.ipynb",
@@ -13,9 +13,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-30T22:51:21.062412Z",
+  "created": "2022-12-31T01:19:19.597835Z",
   "format": "json",
-  "last_modified": "2022-12-30T22:51:21.062412Z",
+  "last_modified": "2022-12-31T01:19:19.597835Z",
   "mimetype": null,
   "name": "decks",
   "path": "decks",
