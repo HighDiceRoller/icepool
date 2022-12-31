@@ -191,7 +191,7 @@ class OutputManager():
             } for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors) if color is not None
         ]
         
-        for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors):
+        for die, die_label, color in zip(self.dice, self.die_labels, self.colors):
             if color is not None:
                 builtins.print(die_label)
                 format_string = self.format_string(die, probability_type)
