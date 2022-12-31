@@ -1,3 +1,11 @@
+## 0.23.3
+
+* Fixed weighting bug in `__matmul__` when the left die has an outcome of 0.
+* Retired the names `standard` and `bernoulli`. These will be just `d` and `coin` respectively.
+* `apply` now accepts `Pool` arguments, which will have `expand()` called on them.
+* Reinstate automatic Cartesian product in `Population` construction.
+* `if_else` now runs in two stages.
+
 ## 0.23.2
 
 * Incremental sorting for `all_matching_sets` to reduce state space.
