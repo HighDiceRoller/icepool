@@ -4,14 +4,20 @@ import pytest
 from icepool import d6, d8
 
 
-def test_outer_product():
+def test_cartesian_product():
     result = icepool.cartesian_product(d6, d6)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))
     assert result_sum.equals(2 @ icepool.d6)
 
 
-def test_outer_product_cast():
+def test_cartesian_product_constructor():
+    result = icepool.Die([(d6, d6)])
+    expected = icepool.cartesian_product(d6, d6)
+    assert result == expected
+
+
+def test_cartesian_product_cast():
     result = icepool.cartesian_product(d6, 2)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))

@@ -61,16 +61,6 @@ def test_implicit_mapping_error():
         icepool.d6 + {}
 
 
-def test_unsortable_error():
-    with pytest.raises(TypeError):
-        icepool.Die([(d6, d6)])
-
-
-def test_unsortable_error_deck():
-    with pytest.raises(TypeError):
-        icepool.Deck([(d6, d6)])
-
-
 def test_empty_tuple():
     result = icepool.Die([()])
     assert result.equals(result + ())

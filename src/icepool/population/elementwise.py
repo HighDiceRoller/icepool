@@ -64,21 +64,3 @@ def binary_elementwise(a, b, op: Callable, *args, **kwargs):
             )
     return tuple(
         binary_elementwise(aa, bb, op, *args, **kwargs) for aa, bb in zip(a, b))
-
-
-def check_tuple_sortable(t: tuple) -> None:
-    """Attempts to check whether the tuple is of a sortable type.
-
-    Raises:
-        TypeError if the tuple is not sortable.
-    """
-    for element in t:
-        if isinstance(element, tuple):
-            check_tuple_sortable(element)
-        else:
-            try:
-                bool(element < element)
-            except TypeError:
-                raise TypeError(
-                    f'Tuple element {str(element)} does not appear to be of a sortable type.'
-                )

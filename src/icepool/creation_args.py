@@ -8,7 +8,7 @@ import itertools
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Iterable, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
 """Type variable representing the outcome type."""
@@ -56,15 +56,6 @@ def expand_args_for_die(
         args: 'Sequence[T | icepool.Die[T] | icepool.RerollType]',
         times: Sequence[int]) -> Counts[T]:
 
-    def expand_arg(
-            arg: T | icepool.Die[T] | icepool.RerollType) -> Mapping[T, int]:
-        if isinstance(arg, icepool.Die):
-            return arg
-        elif arg is icepool.Reroll:
-            return {}
-        else:
-            return {arg: 1}
-
     subdatas = [expand_arg(arg) for arg in args]
     data = merge_weights_lcm(subdatas, times)
     return Counts(data.items())
@@ -74,18 +65,40 @@ def expand_args_for_deck(
         args: 'Sequence[T | icepool.Deck[T] | icepool.RerollType]',
         times: Sequence[int]) -> Counts[T]:
 
-    def expand_arg(
-            arg: T | icepool.Deck[T] | icepool.RerollType) -> Mapping[T, int]:
-        if isinstance(arg, icepool.Deck):
-            return arg
-        elif arg is icepool.Reroll:
-            return {}
-        else:
-            return {arg: 1}
-
     subdatas = [expand_arg(arg) for arg in args]
     data = merge_duplicates(subdatas, times)
     return Counts(data.items())
+
+
+def expand_arg(
+        arg: T | icepool.Population[T] | icepool.RerollType) -> Mapping[T, int]:
+    if isinstance(arg, icepool.Population):
+        return arg
+    elif arg is icepool.Reroll:
+        return {}
+    elif isinstance(arg, tuple):
+        if len(arg) == 0:
+            return {(): 1}  # type: ignore
+        sub_args: Iterable[Mapping[T, int]] = (
+            expand_arg_inside_tuple(sub_arg) for sub_arg in arg)
+        result: MutableMapping = defaultdict(int)
+        for t in itertools.product(*(sub_arg.items() for sub_arg in sub_args)):
+            outcomes, quantities = zip(*t)
+            final_quantity = math.prod(quantities)
+            result[outcomes] += final_quantity
+        return result
+    else:
+        return {arg: 1}
+
+
+def expand_arg_inside_tuple(
+        arg: T | icepool.Population[T] | icepool.RerollType) -> Mapping[T, int]:
+    if isinstance(arg, icepool.Again):
+        raise TypeError('Again is not allowed inside tuples.')
+    elif arg is icepool.Reroll:
+        raise TypeError('Reroll is not allowed inside tuples.')
+    else:
+        return expand_arg(arg)
 
 
 def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],

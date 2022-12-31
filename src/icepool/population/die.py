@@ -6,7 +6,7 @@ import icepool.population.format
 import icepool.creation_args
 import icepool.population.markov_chain
 from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.population.elementwise import unary_elementwise, binary_elementwise, check_tuple_sortable
+from icepool.population.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
 from icepool.typing import Outcome
 
@@ -169,8 +169,10 @@ class Die(Population[T_co]):
                 * A simple single outcome, which must be hashable and totally
                     orderable.
                 * A tuple. The elements must be valid outcomes. In particular,
-                    `Die`, `Reroll`, and `Again` are not valid inside tuple
-                    outcomes.
+                    `Reroll`, and `Again` are not valid inside tuple outcomes.
+
+                    Tuple elements may be `Die`, in which case the Cartesian
+                    product is taken.
 
                     Operators on dice with tuple outcomes are performed
                     element-wise. See `Die.unary_op` and
@@ -240,9 +242,6 @@ class Die(Population[T_co]):
         if len(outcomes) == 1 and times[0] == 1 and isinstance(
                 outcomes[0], Die):
             return outcomes[0]
-
-        if len(outcomes) == 1 and isinstance(outcomes[0], tuple):
-            check_tuple_sortable(outcomes[0])
 
         data: Counts[T_co] = icepool.creation_args.expand_args_for_die(
             outcomes, times)
