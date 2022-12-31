@@ -265,7 +265,9 @@ def accumulate(
         yield result
 
 
-def iter_cartesian_product(*args) -> Iterator[tuple[tuple, int]]:
+def iter_cartesian_product(
+    *args: 'Outcome | icepool.Die | icepool.Pool'
+) -> Iterator[tuple[tuple, int]]:
     """Yields the independent joint distribution of the arguments.
 
     Args:
@@ -275,9 +277,16 @@ def iter_cartesian_product(*args) -> Iterator[tuple[tuple, int]]:
     Yields:
         Tuples containing one outcome per arg and the joint quantity.
     """
-    for t in itertools.product(
-            *((arg.items() if isinstance(arg, icepool.Die) else [(arg, 1)])
-              for arg in args)):
+
+    def arg_items(arg) -> Sequence[tuple[Any, int]]:
+        if isinstance(arg, icepool.Die):
+            return arg.items()
+        elif isinstance(arg, icepool.Pool):
+            return arg.expand().items()
+        else:
+            return [(arg, 1)]
+
+    for t in itertools.product(*(arg_items(arg) for arg in args)):
         outcomes, quantities = zip(*t)
         final_quantity = math.prod(quantities)
         yield outcomes, final_quantity
@@ -286,7 +295,7 @@ def iter_cartesian_product(*args) -> Iterator[tuple[tuple, int]]:
 def apply(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
-    *dice,
+    *args: 'Outcome | icepool.Die | icepool.Pool',
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
@@ -309,9 +318,12 @@ def apply(
     Args:
         func: A function that takes one argument per input `Die` and returns an
             argument to `Die()`.
-        *dice: Any number of dice. `func` will be called with all joint outcomes
-            of `dice`, with one argument per `Die`.
-            Non-dice will be left as-is.
+        *args: `func` will be called with all joint outcomes of these.
+            Allowed arg types are:
+            * Single outcome.
+            * `Die`. All outcomes will be sent to `func`.
+            * `Pool`. All tuples of outcomes will be sent to `func`,
+                as `pool.expand()`.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
 
@@ -323,13 +335,13 @@ def apply(
         raise TypeError(
             'The first argument must be callable. Did you forget to provide a function?'
         )
-    if len(dice) == 0:
+    if len(args) == 0:
         return icepool.Die([func()],
                            again_depth=again_depth,
                            again_end=again_end)
     final_outcomes = []
     final_quantities = []
-    for outcomes, final_quantity in iter_cartesian_product(*dice):
+    for outcomes, final_quantity in iter_cartesian_product(*args):
         final_outcome = func(*outcomes)
         if final_outcome is not icepool.Reroll:
             final_outcomes.append(final_outcome)

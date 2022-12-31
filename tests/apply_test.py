@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6
+from icepool import d6, Pool
 
 
 def test_apply_reroll():
@@ -19,6 +19,12 @@ def test_apply_die():
 def test_apply_sorted_max():
     result = icepool.apply_sorted(lambda x, y: y, icepool.d6, icepool.d6)
     expected = icepool.d6.sum_highest(2)
+    assert result.equals(expected)
+
+
+def test_apply_pool():
+    result = icepool.apply(lambda x: sum(x[-2:]), Pool([d6, d6, d6]))
+    expected = icepool.d6.sum_highest(3, 2)
     assert result.equals(expected)
 
 
