@@ -314,29 +314,29 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The median, taking the mean in case of a tie.
 
         This will fail if the outcomes do not support division;
-        in this case, use `median_left` or `median_right` instead.
+        in this case, use `median_low` or `median_high` instead.
         """
         return self.quantile(1, 2)
 
-    def median_left(self) -> T_co:
-        """The median, taking the lesser in case of a tie."""
-        return self.quantile_left(1, 2)
+    def median_low(self) -> T_co:
+        """The median, taking the lower in case of a tie."""
+        return self.quantile_low(1, 2)
 
-    def median_right(self) -> T_co:
-        """The median, taking the greater in case of a tie."""
-        return self.quantile_right(1, 2)
+    def median_high(self) -> T_co:
+        """The median, taking the higher in case of a tie."""
+        return self.quantile_high(1, 2)
 
     def quantile(self, n: int, d: int = 100):
         """The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.
 
         This will fail if the outcomes do not support addition and division;
-        in this case, use `quantile_left` or `quantile_right` instead.
+        in this case, use `quantile_low` or `quantile_high` instead.
         """
         # Should support addition and division.
-        return (self.quantile_left(n, d) +
-                self.quantile_right(n, d)) / 2  # type: ignore
+        return (self.quantile_low(n, d) +
+                self.quantile_high(n, d)) / 2  # type: ignore
 
-    def quantile_left(self, n: int, d: int = 100) -> T_co:
+    def quantile_low(self, n: int, d: int = 100) -> T_co:
         """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
         index = bisect.bisect_left(self.quantities_le(),
                                    (n * self.denominator() + d - 1) // d)
@@ -344,7 +344,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def quantile_right(self, n: int, d: int = 100) -> T_co:
+    def quantile_high(self, n: int, d: int = 100) -> T_co:
         """The outcome `n / d` of the way through the CDF, taking the greater in case of a tie."""
         index = bisect.bisect_right(self.quantities_le(),
                                     n * self.denominator() // d)

@@ -20,22 +20,22 @@ def test_kolmogorov_smirnov_flat_number():
 
 
 def test_d6_median():
-    assert icepool.d6.median_left() == 3
-    assert icepool.d6.median_right() == 4
+    assert icepool.d6.median_low() == 3
+    assert icepool.d6.median_high() == 4
     assert icepool.d6.median() == 3.5
 
 
 def test_d7_median():
-    assert icepool.d7.median_left() == 4
-    assert icepool.d7.median_right() == 4
+    assert icepool.d7.median_low() == 4
+    assert icepool.d7.median_high() == 4
     assert icepool.d7.median() == 4
 
 
 def test_min_quantile():
-    assert icepool.d6.quantile_left(0) == 1
-    assert icepool.d6.quantile_right(0) == 1
+    assert icepool.d6.quantile_low(0) == 1
+    assert icepool.d6.quantile_high(0) == 1
 
 
 def test_max_quantile():
-    assert icepool.d6.quantile_left(100) == 6
-    assert icepool.d6.quantile_right(100) == 6
+    assert icepool.d6.quantile_low(100) == 6
+    assert icepool.d6.quantile_high(100) == 6
