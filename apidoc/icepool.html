@@ -262,19 +262,19 @@
                                 <a class="function" href="#Population.median">median</a>
                         </li>
                         <li>
-                                <a class="function" href="#Population.median_left">median_left</a>
+                                <a class="function" href="#Population.median_low">median_low</a>
                         </li>
                         <li>
-                                <a class="function" href="#Population.median_right">median_right</a>
+                                <a class="function" href="#Population.median_high">median_high</a>
                         </li>
                         <li>
                                 <a class="function" href="#Population.quantile">quantile</a>
                         </li>
                         <li>
-                                <a class="function" href="#Population.quantile_left">quantile_left</a>
+                                <a class="function" href="#Population.quantile_low">quantile_low</a>
                         </li>
                         <li>
-                                <a class="function" href="#Population.quantile_right">quantile_right</a>
+                                <a class="function" href="#Population.quantile_high">quantile_high</a>
                         </li>
                         <li>
                                 <a class="function" href="#Population.mean">mean</a>
@@ -4437,11 +4437,11 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
                 <dd id="Die.kolmogorov_smirnov" class="function"><a href="#Population.kolmogorov_smirnov">kolmogorov_smirnov</a></dd>
                 <dd id="Die.cramer_von_mises" class="function"><a href="#Population.cramer_von_mises">cramer_von_mises</a></dd>
                 <dd id="Die.median" class="function"><a href="#Population.median">median</a></dd>
-                <dd id="Die.median_left" class="function"><a href="#Population.median_left">median_left</a></dd>
-                <dd id="Die.median_right" class="function"><a href="#Population.median_right">median_right</a></dd>
+                <dd id="Die.median_low" class="function"><a href="#Population.median_low">median_low</a></dd>
+                <dd id="Die.median_high" class="function"><a href="#Population.median_high">median_high</a></dd>
                 <dd id="Die.quantile" class="function"><a href="#Population.quantile">quantile</a></dd>
-                <dd id="Die.quantile_left" class="function"><a href="#Population.quantile_left">quantile_left</a></dd>
-                <dd id="Die.quantile_right" class="function"><a href="#Population.quantile_right">quantile_right</a></dd>
+                <dd id="Die.quantile_low" class="function"><a href="#Population.quantile_low">quantile_low</a></dd>
+                <dd id="Die.quantile_high" class="function"><a href="#Population.quantile_high">quantile_high</a></dd>
                 <dd id="Die.mean" class="function"><a href="#Population.mean">mean</a></dd>
                 <dd id="Die.variance" class="function"><a href="#Population.variance">variance</a></dd>
                 <dd id="Die.standard_deviation" class="function"><a href="#Population.standard_deviation">standard_deviation</a></dd>
@@ -4765,29 +4765,29 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 </span><span id="Population-315"><a href="#Population-315"><span class="linenos">315</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the mean in case of a tie.</span>
 </span><span id="Population-316"><a href="#Population-316"><span class="linenos">316</span></a>
 </span><span id="Population-317"><a href="#Population-317"><span class="linenos">317</span></a><span class="sd">        This will fail if the outcomes do not support division;</span>
-</span><span id="Population-318"><a href="#Population-318"><span class="linenos">318</span></a><span class="sd">        in this case, use `median_left` or `median_right` instead.</span>
+</span><span id="Population-318"><a href="#Population-318"><span class="linenos">318</span></a><span class="sd">        in this case, use `median_low` or `median_high` instead.</span>
 </span><span id="Population-319"><a href="#Population-319"><span class="linenos">319</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Population-320"><a href="#Population-320"><span class="linenos">320</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span><span id="Population-321"><a href="#Population-321"><span class="linenos">321</span></a>
-</span><span id="Population-322"><a href="#Population-322"><span class="linenos">322</span></a>    <span class="k">def</span> <span class="nf">median_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population-323"><a href="#Population-323"><span class="linenos">323</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the lesser in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population-324"><a href="#Population-324"><span class="linenos">324</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_left</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="Population-322"><a href="#Population-322"><span class="linenos">322</span></a>    <span class="k">def</span> <span class="nf">median_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population-323"><a href="#Population-323"><span class="linenos">323</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the lower in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population-324"><a href="#Population-324"><span class="linenos">324</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_low</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span><span id="Population-325"><a href="#Population-325"><span class="linenos">325</span></a>
-</span><span id="Population-326"><a href="#Population-326"><span class="linenos">326</span></a>    <span class="k">def</span> <span class="nf">median_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population-327"><a href="#Population-327"><span class="linenos">327</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the greater in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population-328"><a href="#Population-328"><span class="linenos">328</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_right</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="Population-326"><a href="#Population-326"><span class="linenos">326</span></a>    <span class="k">def</span> <span class="nf">median_high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population-327"><a href="#Population-327"><span class="linenos">327</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the higher in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population-328"><a href="#Population-328"><span class="linenos">328</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_high</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span><span id="Population-329"><a href="#Population-329"><span class="linenos">329</span></a>
 </span><span id="Population-330"><a href="#Population-330"><span class="linenos">330</span></a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
 </span><span id="Population-331"><a href="#Population-331"><span class="linenos">331</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.</span>
 </span><span id="Population-332"><a href="#Population-332"><span class="linenos">332</span></a>
 </span><span id="Population-333"><a href="#Population-333"><span class="linenos">333</span></a><span class="sd">        This will fail if the outcomes do not support addition and division;</span>
-</span><span id="Population-334"><a href="#Population-334"><span class="linenos">334</span></a><span class="sd">        in this case, use `quantile_left` or `quantile_right` instead.</span>
+</span><span id="Population-334"><a href="#Population-334"><span class="linenos">334</span></a><span class="sd">        in this case, use `quantile_low` or `quantile_high` instead.</span>
 </span><span id="Population-335"><a href="#Population-335"><span class="linenos">335</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Population-336"><a href="#Population-336"><span class="linenos">336</span></a>        <span class="c1"># Should support addition and division.</span>
-</span><span id="Population-337"><a href="#Population-337"><span class="linenos">337</span></a>        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantile_left</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span>
-</span><span id="Population-338"><a href="#Population-338"><span class="linenos">338</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">quantile_right</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
+</span><span id="Population-337"><a href="#Population-337"><span class="linenos">337</span></a>        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantile_low</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span>
+</span><span id="Population-338"><a href="#Population-338"><span class="linenos">338</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">quantile_high</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
 </span><span id="Population-339"><a href="#Population-339"><span class="linenos">339</span></a>
-</span><span id="Population-340"><a href="#Population-340"><span class="linenos">340</span></a>    <span class="k">def</span> <span class="nf">quantile_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population-340"><a href="#Population-340"><span class="linenos">340</span></a>    <span class="k">def</span> <span class="nf">quantile_low</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
 </span><span id="Population-341"><a href="#Population-341"><span class="linenos">341</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie.&quot;&quot;&quot;</span>
 </span><span id="Population-342"><a href="#Population-342"><span class="linenos">342</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
 </span><span id="Population-343"><a href="#Population-343"><span class="linenos">343</span></a>                                   <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">+</span> <span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
@@ -4795,7 +4795,7 @@ Otherwise, e.g. a 2:2 coin is not <code><a href="#Die.equals">equals()</a></code
 </span><span id="Population-345"><a href="#Population-345"><span class="linenos">345</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
 </span><span id="Population-346"><a href="#Population-346"><span class="linenos">346</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
 </span><span id="Population-347"><a href="#Population-347"><span class="linenos">347</span></a>
-</span><span id="Population-348"><a href="#Population-348"><span class="linenos">348</span></a>    <span class="k">def</span> <span class="nf">quantile_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population-348"><a href="#Population-348"><span class="linenos">348</span></a>    <span class="k">def</span> <span class="nf">quantile_high</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
 </span><span id="Population-349"><a href="#Population-349"><span class="linenos">349</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the greater in case of a tie.&quot;&quot;&quot;</span>
 </span><span id="Population-350"><a href="#Population-350"><span class="linenos">350</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
 </span><span id="Population-351"><a href="#Population-351"><span class="linenos">351</span></a>                                    <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
@@ -5810,7 +5810,7 @@ Otherwise, the total will be 1.0.</li>
 </span><span id="Population.median-315"><a href="#Population.median-315"><span class="linenos">315</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the mean in case of a tie.</span>
 </span><span id="Population.median-316"><a href="#Population.median-316"><span class="linenos">316</span></a>
 </span><span id="Population.median-317"><a href="#Population.median-317"><span class="linenos">317</span></a><span class="sd">        This will fail if the outcomes do not support division;</span>
-</span><span id="Population.median-318"><a href="#Population.median-318"><span class="linenos">318</span></a><span class="sd">        in this case, use `median_left` or `median_right` instead.</span>
+</span><span id="Population.median-318"><a href="#Population.median-318"><span class="linenos">318</span></a><span class="sd">        in this case, use `median_low` or `median_high` instead.</span>
 </span><span id="Population.median-319"><a href="#Population.median-319"><span class="linenos">319</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Population.median-320"><a href="#Population.median-320"><span class="linenos">320</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span></pre></div>
@@ -5819,51 +5819,51 @@ Otherwise, the total will be 1.0.</li>
             <div class="docstring"><p>The median, taking the mean in case of a tie.</p>
 
 <p>This will fail if the outcomes do not support division;
-in this case, use <code><a href="#Population.median_left">median_left</a></code> or <code><a href="#Population.median_right">median_right</a></code> instead.</p>
+in this case, use <code><a href="#Population.median_low">median_low</a></code> or <code><a href="#Population.median_high">median_high</a></code> instead.</p>
 </div>
 
 
                             </div>
-                            <div id="Population.median_left" class="classattr">
-                                        <input id="Population.median_left-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Population.median_low" class="classattr">
+                                        <input id="Population.median_low-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">median_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
+        <span class="name">median_low</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
 
-                <label class="view-source-button" for="Population.median_left-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Population.median_low-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Population.median_left"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.median_left-322"><a href="#Population.median_left-322"><span class="linenos">322</span></a>    <span class="k">def</span> <span class="nf">median_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population.median_left-323"><a href="#Population.median_left-323"><span class="linenos">323</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the lesser in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population.median_left-324"><a href="#Population.median_left-324"><span class="linenos">324</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_left</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <a class="headerlink" href="#Population.median_low"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.median_low-322"><a href="#Population.median_low-322"><span class="linenos">322</span></a>    <span class="k">def</span> <span class="nf">median_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population.median_low-323"><a href="#Population.median_low-323"><span class="linenos">323</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the lower in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population.median_low-324"><a href="#Population.median_low-324"><span class="linenos">324</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_low</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>The median, taking the lesser in case of a tie.</p>
+            <div class="docstring"><p>The median, taking the lower in case of a tie.</p>
 </div>
 
 
                             </div>
-                            <div id="Population.median_right" class="classattr">
-                                        <input id="Population.median_right-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Population.median_high" class="classattr">
+                                        <input id="Population.median_high-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">median_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
+        <span class="name">median_high</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
 
-                <label class="view-source-button" for="Population.median_right-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Population.median_high-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Population.median_right"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.median_right-326"><a href="#Population.median_right-326"><span class="linenos">326</span></a>    <span class="k">def</span> <span class="nf">median_right</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population.median_right-327"><a href="#Population.median_right-327"><span class="linenos">327</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the greater in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population.median_right-328"><a href="#Population.median_right-328"><span class="linenos">328</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_right</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <a class="headerlink" href="#Population.median_high"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.median_high-326"><a href="#Population.median_high-326"><span class="linenos">326</span></a>    <span class="k">def</span> <span class="nf">median_high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population.median_high-327"><a href="#Population.median_high-327"><span class="linenos">327</span></a>        <span class="sd">&quot;&quot;&quot;The median, taking the higher in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population.median_high-328"><a href="#Population.median_high-328"><span class="linenos">328</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile_high</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>The median, taking the greater in case of a tie.</p>
+            <div class="docstring"><p>The median, taking the higher in case of a tie.</p>
 </div>
 
 
@@ -5883,40 +5883,40 @@ in this case, use <code><a href="#Population.median_left">median_left</a></code>
 </span><span id="Population.quantile-331"><a href="#Population.quantile-331"><span class="linenos">331</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the mean in case of a tie.</span>
 </span><span id="Population.quantile-332"><a href="#Population.quantile-332"><span class="linenos">332</span></a>
 </span><span id="Population.quantile-333"><a href="#Population.quantile-333"><span class="linenos">333</span></a><span class="sd">        This will fail if the outcomes do not support addition and division;</span>
-</span><span id="Population.quantile-334"><a href="#Population.quantile-334"><span class="linenos">334</span></a><span class="sd">        in this case, use `quantile_left` or `quantile_right` instead.</span>
+</span><span id="Population.quantile-334"><a href="#Population.quantile-334"><span class="linenos">334</span></a><span class="sd">        in this case, use `quantile_low` or `quantile_high` instead.</span>
 </span><span id="Population.quantile-335"><a href="#Population.quantile-335"><span class="linenos">335</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Population.quantile-336"><a href="#Population.quantile-336"><span class="linenos">336</span></a>        <span class="c1"># Should support addition and division.</span>
-</span><span id="Population.quantile-337"><a href="#Population.quantile-337"><span class="linenos">337</span></a>        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantile_left</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span>
-</span><span id="Population.quantile-338"><a href="#Population.quantile-338"><span class="linenos">338</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">quantile_right</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
+</span><span id="Population.quantile-337"><a href="#Population.quantile-337"><span class="linenos">337</span></a>        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantile_low</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">+</span>
+</span><span id="Population.quantile-338"><a href="#Population.quantile-338"><span class="linenos">338</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">quantile_high</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>The outcome <code>n / d</code> of the way through the CDF, taking the mean in case of a tie.</p>
 
 <p>This will fail if the outcomes do not support addition and division;
-in this case, use <code><a href="#Population.quantile_left">quantile_left</a></code> or <code><a href="#Population.quantile_right">quantile_right</a></code> instead.</p>
+in this case, use <code><a href="#Population.quantile_low">quantile_low</a></code> or <code><a href="#Population.quantile_high">quantile_high</a></code> instead.</p>
 </div>
 
 
                             </div>
-                            <div id="Population.quantile_left" class="classattr">
-                                        <input id="Population.quantile_left-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Population.quantile_low" class="classattr">
+                                        <input id="Population.quantile_low-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile_left</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
+        <span class="name">quantile_low</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
 
-                <label class="view-source-button" for="Population.quantile_left-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Population.quantile_low-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Population.quantile_left"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.quantile_left-340"><a href="#Population.quantile_left-340"><span class="linenos">340</span></a>    <span class="k">def</span> <span class="nf">quantile_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population.quantile_left-341"><a href="#Population.quantile_left-341"><span class="linenos">341</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population.quantile_left-342"><a href="#Population.quantile_left-342"><span class="linenos">342</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
-</span><span id="Population.quantile_left-343"><a href="#Population.quantile_left-343"><span class="linenos">343</span></a>                                   <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">+</span> <span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
-</span><span id="Population.quantile_left-344"><a href="#Population.quantile_left-344"><span class="linenos">344</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Population.quantile_left-345"><a href="#Population.quantile_left-345"><span class="linenos">345</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
-</span><span id="Population.quantile_left-346"><a href="#Population.quantile_left-346"><span class="linenos">346</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
+    <a class="headerlink" href="#Population.quantile_low"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.quantile_low-340"><a href="#Population.quantile_low-340"><span class="linenos">340</span></a>    <span class="k">def</span> <span class="nf">quantile_low</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population.quantile_low-341"><a href="#Population.quantile_low-341"><span class="linenos">341</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population.quantile_low-342"><a href="#Population.quantile_low-342"><span class="linenos">342</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
+</span><span id="Population.quantile_low-343"><a href="#Population.quantile_low-343"><span class="linenos">343</span></a>                                   <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">+</span> <span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
+</span><span id="Population.quantile_low-344"><a href="#Population.quantile_low-344"><span class="linenos">344</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Population.quantile_low-345"><a href="#Population.quantile_low-345"><span class="linenos">345</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+</span><span id="Population.quantile_low-346"><a href="#Population.quantile_low-346"><span class="linenos">346</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -5925,24 +5925,24 @@ in this case, use <code><a href="#Population.quantile_left">quantile_left</a></c
 
 
                             </div>
-                            <div id="Population.quantile_right" class="classattr">
-                                        <input id="Population.quantile_right-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Population.quantile_high" class="classattr">
+                                        <input id="Population.quantile_high-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile_right</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
+        <span class="name">quantile_high</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">n</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></span><span class="return-annotation">) -> <span class="o">+</span><span class="n">T_co</span>:</span></span>
 
-                <label class="view-source-button" for="Population.quantile_right-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Population.quantile_high-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Population.quantile_right"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.quantile_right-348"><a href="#Population.quantile_right-348"><span class="linenos">348</span></a>    <span class="k">def</span> <span class="nf">quantile_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
-</span><span id="Population.quantile_right-349"><a href="#Population.quantile_right-349"><span class="linenos">349</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the greater in case of a tie.&quot;&quot;&quot;</span>
-</span><span id="Population.quantile_right-350"><a href="#Population.quantile_right-350"><span class="linenos">350</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
-</span><span id="Population.quantile_right-351"><a href="#Population.quantile_right-351"><span class="linenos">351</span></a>                                    <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
-</span><span id="Population.quantile_right-352"><a href="#Population.quantile_right-352"><span class="linenos">352</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Population.quantile_right-353"><a href="#Population.quantile_right-353"><span class="linenos">353</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
-</span><span id="Population.quantile_right-354"><a href="#Population.quantile_right-354"><span class="linenos">354</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
+    <a class="headerlink" href="#Population.quantile_high"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Population.quantile_high-348"><a href="#Population.quantile_high-348"><span class="linenos">348</span></a>    <span class="k">def</span> <span class="nf">quantile_high</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_co</span><span class="p">:</span>
+</span><span id="Population.quantile_high-349"><a href="#Population.quantile_high-349"><span class="linenos">349</span></a>        <span class="sd">&quot;&quot;&quot;The outcome `n / d` of the way through the CDF, taking the greater in case of a tie.&quot;&quot;&quot;</span>
+</span><span id="Population.quantile_high-350"><a href="#Population.quantile_high-350"><span class="linenos">350</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">(),</span>
+</span><span id="Population.quantile_high-351"><a href="#Population.quantile_high-351"><span class="linenos">351</span></a>                                    <span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">//</span> <span class="n">d</span><span class="p">)</span>
+</span><span id="Population.quantile_high-352"><a href="#Population.quantile_high-352"><span class="linenos">352</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Population.quantile_high-353"><a href="#Population.quantile_high-353"><span class="linenos">353</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span>
+</span><span id="Population.quantile_high-354"><a href="#Population.quantile_high-354"><span class="linenos">354</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -11998,11 +11998,11 @@ effect.</li>
                 <dd id="Deck.kolmogorov_smirnov" class="function"><a href="#Population.kolmogorov_smirnov">kolmogorov_smirnov</a></dd>
                 <dd id="Deck.cramer_von_mises" class="function"><a href="#Population.cramer_von_mises">cramer_von_mises</a></dd>
                 <dd id="Deck.median" class="function"><a href="#Population.median">median</a></dd>
-                <dd id="Deck.median_left" class="function"><a href="#Population.median_left">median_left</a></dd>
-                <dd id="Deck.median_right" class="function"><a href="#Population.median_right">median_right</a></dd>
+                <dd id="Deck.median_low" class="function"><a href="#Population.median_low">median_low</a></dd>
+                <dd id="Deck.median_high" class="function"><a href="#Population.median_high">median_high</a></dd>
                 <dd id="Deck.quantile" class="function"><a href="#Population.quantile">quantile</a></dd>
-                <dd id="Deck.quantile_left" class="function"><a href="#Population.quantile_left">quantile_left</a></dd>
-                <dd id="Deck.quantile_right" class="function"><a href="#Population.quantile_right">quantile_right</a></dd>
+                <dd id="Deck.quantile_low" class="function"><a href="#Population.quantile_low">quantile_low</a></dd>
+                <dd id="Deck.quantile_high" class="function"><a href="#Population.quantile_high">quantile_high</a></dd>
                 <dd id="Deck.mean" class="function"><a href="#Population.mean">mean</a></dd>
                 <dd id="Deck.variance" class="function"><a href="#Population.variance">variance</a></dd>
                 <dd id="Deck.standard_deviation" class="function"><a href="#Population.standard_deviation">standard_deviation</a></dd>
