@@ -17,8 +17,11 @@ T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
+Q_contra = TypeVar('Q_contra', contravariant=True)
+"""Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
-class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
+
+class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
     """An `OutcomeCountEvaluator` created from a single provided function.
 
     `next_state()` simply calls that function.
@@ -32,17 +35,17 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
         """
         self._func = func
 
-    def next_state(self, state: Hashable, outcome: T_contra, *counts: int):
+    def next_state(self, state: Hashable, outcome: T_contra, *counts: Q_contra):
         return self._func(state, outcome, *counts)
 
 
-class JointEvaluator(OutcomeCountEvaluator[T_contra, tuple]):
+class JointEvaluator(OutcomeCountEvaluator[T_contra, tuple, Q_contra]):
     """An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
 
     def __init__(self, *sub_evaluators: OutcomeCountEvaluator):
         self._sub_evaluators = sub_evaluators
 
-    def next_state(self, state, outcome, *counts: int):
+    def next_state(self, state, outcome, *counts):
         """Runs `next_state` for all subevals.
 
         The state is a tuple of the substates.
@@ -126,7 +129,7 @@ class SumEvaluator(OutcomeCountEvaluator):
 sum_evaluator = SumEvaluator()
 
 
-class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple]):
+class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
     """Expands all results of a generator.
 
     This is expensive and not recommended unless there are few possibilities.
@@ -162,7 +165,7 @@ class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple]):
 expand_evaluator = ExpandEvaluator()
 
 
-class CountInEvaluator(OutcomeCountEvaluator[T_contra, int]):
+class CountInEvaluator(OutcomeCountEvaluator[T_contra, int, int]):
     """Counts how many of the given outcomes are produced by the generator."""
 
     def __init__(self, target: Container[T_contra], /):
@@ -180,7 +183,7 @@ class CountInEvaluator(OutcomeCountEvaluator[T_contra, int]):
         return Order.Any
 
 
-class CountUniqueEvaluator(OutcomeCountEvaluator[Any, int]):
+class CountUniqueEvaluator(OutcomeCountEvaluator[Any, int, int]):
     """Counts how many outcomes appeared more than zero times."""
 
     def next_state(self, state, _, count):
@@ -196,7 +199,7 @@ class CountUniqueEvaluator(OutcomeCountEvaluator[Any, int]):
 count_unique_evaluator = CountUniqueEvaluator()
 
 
-class SubsetTargetEvaluator(OutcomeCountEvaluator[T_contra, U_co]):
+class SubsetTargetEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
     """Base class for evaluators that look for a subset (possibly with repeated elements)."""
 
     def __init__(self, targets: Collection[T_contra] | Mapping[T_contra, int],
@@ -249,7 +252,7 @@ class IntersectionSizeEvaluator(SubsetTargetEvaluator[Any, int]):
         return final_state
 
 
-class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int]):
+class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
     """The largest matching set of a generator."""
 
     def next_state(self, state, _, count):
@@ -261,7 +264,8 @@ class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int]):
 
 class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
                                                                   tuple[int,
-                                                                        Any]]):
+                                                                        Any],
+                                                                  int]):
 
     def next_state(self, state, outcome, count):
         return max(state or (count, outcome), (count, outcome))
@@ -270,7 +274,8 @@ class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
         return Order.Any
 
 
-class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
+class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
+                                                     int]):
     """Produces the size of all matching sets of at least a given count."""
 
     def __init__(self, min_count=1):
@@ -293,7 +298,7 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...]]):
         return Order.Any
 
 
-class LargestStraightEvaluator(OutcomeCountEvaluator[int, int]):
+class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
 
     def next_state(self, state, _, count):
         best_run, run = state or (0, 0)
@@ -312,9 +317,9 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int]):
     alignment = OutcomeCountEvaluator.range_alignment
 
 
-class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int,
-                                                               tuple[int,
-                                                                     int]]):
+class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, tuple[int,
+                                                                          int],
+                                                               int]):
 
     def next_state(self, state, outcome, count):
         best_run_and_outcome, run = state or ((0, outcome), 0)

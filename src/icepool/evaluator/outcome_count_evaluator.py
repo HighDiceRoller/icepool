@@ -23,8 +23,11 @@ T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
+Q_contra = TypeVar('Q_contra', contravariant=True)
+"""Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
-class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
+
+class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co, Q_contra]):
     """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerator`s.
 
     There is one abstract method to implement: `next_state()`.
@@ -58,7 +61,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co]):
 
     @abstractmethod
     def next_state(self, state: Hashable, outcome: T_contra, /,
-                   *counts) -> Hashable:
+                   *counts: Q_contra) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
