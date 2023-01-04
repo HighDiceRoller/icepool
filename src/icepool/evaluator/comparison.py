@@ -81,6 +81,7 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
         self._any_all = any_all
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         has_any, has_all = state or (False, True)
         this_any, this_all = self._any_all(outcome, count)
         has_all = has_all and this_all
@@ -88,13 +89,16 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
         return has_any, has_all
 
     def final_outcome(self, final_state, *_):
+        """Implementation."""
         if final_state is None:
             return self._default_outcome
         has_any, has_all = final_state
         return has_any and has_all
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
     def alignment(self, *_):
+        """Implementation."""
         return self._target.keys()

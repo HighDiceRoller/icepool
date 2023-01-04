@@ -13,9 +13,11 @@ class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
     """The largest matching set of a generator."""
 
     def next_state(self, state, _, count):
+        """Implementation."""
         return max(state or count, count)
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
 
@@ -25,9 +27,11 @@ class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
                                                                   int]):
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         return max(state or (count, outcome), (count, outcome))
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
 
@@ -44,10 +48,12 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
         self._positive_only = positive_only
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         state = (state or ()) + (count,)
         return tuple(sorted(state))
 
     def final_outcome(self, final_state, *_):
+        """Implementation."""
         if final_state is None:
             return ()
         if self._positive_only:
@@ -56,12 +62,14 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
             return final_state
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
 
 class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
 
     def next_state(self, state, _, count):
+        """Implementation."""
         best_run, run = state or (0, 0)
         if count >= 1:
             run += 1
@@ -70,9 +78,11 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
         return max(best_run, run), run
 
     def final_outcome(self, final_state, *_):
+        """Implementation."""
         return final_state[0]
 
     def order(self, *_):
+        """Ascending order."""
         return Order.Ascending
 
     alignment = OutcomeCountEvaluator.range_alignment
@@ -83,6 +93,7 @@ class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, tuple[int,
                                                                int]):
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         best_run_and_outcome, run = state or ((0, outcome), 0)
         if count >= 1:
             run += 1
@@ -91,9 +102,11 @@ class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, tuple[int,
         return max(best_run_and_outcome, (run, outcome)), run
 
     def final_outcome(self, final_state, *_):
+        """Implementation."""
         return final_state[0]
 
     def order(self, *_):
+        """Ascending order."""
         return Order.Ascending
 
     alignment = OutcomeCountEvaluator.range_alignment

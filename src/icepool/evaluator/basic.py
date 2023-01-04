@@ -30,6 +30,7 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
         self._func = func
 
     def next_state(self, state: Hashable, outcome: T_contra, *counts: Q_contra):
+        """Calls the wrapped function."""
         return self._func(state, outcome, *counts)
 
 
@@ -42,12 +43,15 @@ class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
     """
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         return (state or ()) + (outcome,) * count
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
     def final_outcome(self, final_state, *_):
+        """Implementation."""
         if final_state is None:
             return ()
         return tuple(sorted(final_state))
@@ -57,13 +61,14 @@ class SumEvaluator(OutcomeCountEvaluator[Any, Any, int]):
     """Sums all outcomes."""
 
     def next_state(self, state, outcome, count):
-        """Add the outcomes to the running total. """
+        """Implementation."""
         if state is None:
             return outcome * count
         else:
             return state + outcome * count
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
 
@@ -79,9 +84,11 @@ class CountEvaluator(OutcomeCountEvaluator[Any, int, int]):
     """
 
     def next_state(self, state, outcome, count):
+        """Implementation."""
         return (state or 0) + count
 
     def order(self, *_):
+        """Allows any order."""
         return Order.Any
 
 

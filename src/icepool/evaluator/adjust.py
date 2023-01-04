@@ -113,16 +113,20 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
         return self
 
     def next_state(self, state, outcome, count):
+        """Adjust the count, then forwards to inner."""
         count = self._adjust_count(outcome, count)
         return self._inner.next_state(state, outcome, count)
 
     def final_outcome(self, final_state, *generators):
+        """Forwards to inner."""
         return self._inner.final_outcome(final_state, *generators)
 
     def order(self, *generators):
+        """Forwards to inner."""
         return self._inner.order(*generators)
 
     def alignment(self, *generators):
+        """Forwards to inner."""
         return self._inner.alignment(*generators)
 
 
@@ -174,14 +178,18 @@ class FinalOutcomeMapEvaluator(Generic[T_contra, U_co, Q_contra, V],
         return self
 
     def next_state(self, state, outcome, count):
+        """Adjusts the outcome, then forwards to inner."""
         outcome = self._map(outcome)
         return self._inner.next_state(state, outcome, count)
 
     def final_outcome(self, final_state, *generators):
+        """Forwards to inner."""
         return self._inner.final_outcome(final_state, *generators)
 
     def order(self, *generators):
+        """Forwards to inner."""
         return self._inner.order(*generators)
 
     def alignment(self, *generators):
+        """Forwards to inner."""
         return self._inner.alignment(*generators)
