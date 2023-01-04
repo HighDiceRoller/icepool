@@ -1,3 +1,7 @@
+"""Submodule containing evaluators."""
+
+__docformat__ = 'google'
+
 from icepool.evaluator.basic import WrapFuncEvaluator, ExpandEvaluator, SumEvaluator, sum_evaluator, CountEvaluator, count_evaluator
 from icepool.evaluator.poker import (LargestMatchingSetEvaluator,
                                      LargestMatchingSetAndOutcomeEvaluator,
@@ -5,5 +9,14 @@ from icepool.evaluator.poker import (LargestMatchingSetEvaluator,
                                      LargestStraightEvaluator,
                                      LargestStraightAndOutcomeEvaluator)
 from icepool.evaluator.comparison import ComparisonEvaluator
-from icepool.evaluator.adjust import AdjustIntCountEvaluator, FinalOutcomeMapEvaluator
 from icepool.evaluator.joint import JointEvaluator
+from icepool.evaluator.adjust import AdjustIntCountEvaluator, FinalOutcomeMapEvaluator
+
+__all__ = [
+    'WrapFuncEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
+    'CountEvaluator', 'count_evaluator', 'LargestMatchingSetEvaluator',
+    'LargestMatchingSetAndOutcomeEvaluator', 'AllMatchingSetsEvaluator',
+    'LargestStraightEvaluator', 'LargestStraightAndOutcomeEvaluator',
+    'ComparisonEvaluator', 'JointEvaluator', 'AdjustIntCountEvaluator',
+    'FinalOutcomeMapEvaluator'
+]
