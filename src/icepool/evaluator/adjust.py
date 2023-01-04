@@ -1,3 +1,5 @@
+"""Meta-evaluators that adjust counts or outcomes before sending them to an inner evaluator."""
+
 __docformat__ = 'google'
 
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
@@ -26,7 +28,6 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
 
     def __init__(self,
                  inner: OutcomeCountEvaluator[T_contra, U_co, int],
-                 /,
                  target: Mapping[Outcome, int] | Set[Outcome] |
                  Collection[Outcome] | None = None,
                  *,
@@ -163,12 +164,13 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
         return adjust_count
 
 
-class MapOutcomeEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
+class FinalOutcomeMapEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
     """Maps outcomes to other outcomes before sending them to an inner evaluator.
 
     Note that the outcomes will be seen in their original order, and outcomes
     that map to the same value will still be considered in separate calls to
-    `next_state`.
+    `next_state`. For this reason it's best to nest it inside
+    `AdjustIntCountEvaluator`, and the `map` argument should be presented last.
     """
 
     def __init__(self, inner: OutcomeCountEvaluator[V, U_co, Q_contra],
