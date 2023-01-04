@@ -1,4 +1,4 @@
-"""Basic evaluators. These all take a single generator with `int` count."""
+"""Basic evaluators."""
 
 __docformat__ = 'google'
 
@@ -6,10 +6,31 @@ from icepool.constant import Order
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.typing import Outcome
 
-from typing import Any, TypeVar
+from typing import Any, Callable, Final, Hashable, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
+
+U_co = TypeVar('U_co', bound=Outcome, covariant=True)
+"""Type variable representing the final outcome type."""
+
+Q_contra = TypeVar('Q_contra', contravariant=True)
+"""Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
+
+
+class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
+    """Evaluates the provided function."""
+
+    def __init__(self, func: Callable[..., U_co], /):
+        """Constructs a new instance given the function that should be called for `next_state()`.
+        Args:
+            func(state, outcome, *counts): This should take the same arguments
+                as `next_state()`, minus `self`, and return the next state.
+        """
+        self._func = func
+
+    def next_state(self, state: Hashable, outcome: T_contra, *counts: Q_contra):
+        return self._func(state, outcome, *counts)
 
 
 class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
@@ -32,7 +53,7 @@ class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
         return tuple(sorted(final_state))
 
 
-class SumEvaluator(OutcomeCountEvaluator[T_contra, Any, int]):
+class SumEvaluator(OutcomeCountEvaluator[Any, Any, int]):
     """Sums all outcomes."""
 
     def next_state(self, state, outcome, count):
@@ -46,11 +67,15 @@ class SumEvaluator(OutcomeCountEvaluator[T_contra, Any, int]):
         return Order.Any
 
 
-class CountEvaluator(OutcomeCountEvaluator[T_contra, int, int]):
+sum_evaluator: Final = SumEvaluator()
+"""Shared instance for caching."""
+
+
+class CountEvaluator(OutcomeCountEvaluator[Any, int, int]):
     """Returns the total count of outcomes.
 
     Usually not very interesting unless the counts are adjusted by
-    `AdjustIntCountEvaluator` or other operation.
+    `AdjustIntCountEvaluator`.
     """
 
     def next_state(self, state, outcome, count):
@@ -58,3 +83,7 @@ class CountEvaluator(OutcomeCountEvaluator[T_contra, int, int]):
 
     def order(self, *_):
         return Order.Any
+
+
+count_evaluator: Final = CountEvaluator()
+"""Shared instance for caching."""

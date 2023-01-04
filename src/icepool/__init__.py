@@ -64,18 +64,13 @@ from icepool.population.lowest_highest import lowest, highest, sum_lowest, sum_h
 from icepool.generator.pool import Pool, standard_pool, clear_pool_cache
 from icepool.generator.outcome_count_generator import OutcomeCountGenerator, NextOutcomeCountGenerator
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
-from icepool.evaluator.evaluators import (
-    WrapFuncEvaluator, JointEvaluator, SumEvaluator, sum_evaluator,
-    ExpandEvaluator, expand_evaluator, CountInEvaluator, count_unique_evaluator,
-    SubsetTargetEvaluator, ContainsSubsetEvaluator, IntersectionSizeEvaluator,
-    LargestMatchingSetEvaluator, LargestMatchingSetAndOutcomeEvaluator,
-    AllMatchingSetsEvaluator, LargestStraightEvaluator,
-    LargestStraightAndOutcomeEvaluator)
 
 from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 
 from icepool.generator.generators import SuitGenerator
+
+import icepool.evaluator as evaluator
 
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
@@ -84,6 +79,5 @@ __all__ = [
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
     'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
-    'Order', 'JointEvaluator', 'SumEvaluator', 'ExpandEvaluator', 'Deck',
-    'Deal', 'SuitGenerator', 'clear_pool_cache'
+    'Order', 'evaluator', 'Deck', 'Deal', 'SuitGenerator', 'clear_pool_cache'
 ]

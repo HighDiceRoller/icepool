@@ -24,7 +24,7 @@ def test_reroll():
     assert result.equals(expected)
 
 
-class SumPoolDescending(icepool.SumEvaluator):
+class SumPoolDescending(icepool.evaluator.SumEvaluator):
 
     def order(self, _):
         return -1
@@ -79,8 +79,8 @@ def test_standard_pool_zero_dice():
 
 
 def test_runs():
-    result = icepool.LargestStraightAndOutcomeEvaluator()(icepool.standard_pool(
-        [12, 10, 8]))
+    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
+        icepool.standard_pool([12, 10, 8]))
 
     def func(*outcomes):
         outcomes = sorted(outcomes)
@@ -139,15 +139,15 @@ def test_sum_order(pool):
 
 
 def test_joint_evaluate():
-    test_evaluator = icepool.JointEvaluator(icepool.sum_evaluator,
-                                            icepool.sum_evaluator)
+    test_evaluator = icepool.evaluator.JointEvaluator(icepool.sum_evaluator,
+                                                      icepool.sum_evaluator)
     result = test_evaluator(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).map(lambda x: (x, x))
     assert result.equals(expected)
 
 
 def test_enumerate_pool_vs_outer_product():
-    result = icepool.expand_evaluator(d6.pool(3))
+    result = icepool.evaluator.ExpandEvaluator()(d6.pool(3))
     expected = icepool.cartesian_product(d6, d6,
                                          d6).map(lambda x: tuple(sorted(x)))
     assert result.equals(expected)

@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import LargestStraightEvaluator
+from icepool.evaluator import LargestStraightEvaluator
 
 # no wraparound
 best_run_evaluator = LargestStraightEvaluator()
