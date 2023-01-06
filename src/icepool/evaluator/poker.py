@@ -9,32 +9,6 @@ from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 from typing import Any
 
 
-class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
-    """The largest matching set of a generator."""
-
-    def next_state(self, state, _, count):
-        """Implementation."""
-        return max(state or count, count)
-
-    def order(self, *_):
-        """Allows any order."""
-        return Order.Any
-
-
-class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
-                                                                  tuple[int,
-                                                                        Any],
-                                                                  int]):
-
-    def next_state(self, state, outcome, count):
-        """Implementation."""
-        return max(state or (count, outcome), (count, outcome))
-
-    def order(self, *_):
-        """Allows any order."""
-        return Order.Any
-
-
 class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
                                                      int]):
     """All counts in ascending order."""
@@ -60,6 +34,32 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
             return tuple(x for x in final_state if x > 0)
         else:
             return final_state
+
+    def order(self, *_):
+        """Allows any order."""
+        return Order.Any
+
+
+class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
+    """The largest matching set of a generator."""
+
+    def next_state(self, state, _, count):
+        """Implementation."""
+        return max(state or count, count)
+
+    def order(self, *_):
+        """Allows any order."""
+        return Order.Any
+
+
+class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
+                                                                  tuple[int,
+                                                                        Any],
+                                                                  int]):
+
+    def next_state(self, state, outcome, count):
+        """Implementation."""
+        return max(state or (count, outcome), (count, outcome))
 
     def order(self, *_):
         """Allows any order."""

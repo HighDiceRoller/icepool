@@ -202,27 +202,6 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
                                        div_count=div_count,
                                        max_count=max_count).evaluate(self)
 
-    def largest_matching_set(self) -> 'icepool.Die[int]':
-        """The largest matching set among the outcomes.
-
-        Returns:
-            A `Die` with outcomes set_size.
-            The greatest single such set is returned.
-        """
-        from icepool.evaluator import LargestMatchingSetEvaluator
-        return LargestMatchingSetEvaluator().evaluate(self)
-
-    def largest_matching_set_and_outcome(
-            self) -> 'icepool.Die[tuple[int, T_co]]':
-        """The largest matching set among the outcomes.
-
-        Returns:
-            A `Die` with outcomes (set_size, outcome).
-            The greatest single such set is returned.
-        """
-        from icepool.evaluator import LargestMatchingSetAndOutcomeEvaluator
-        return LargestMatchingSetAndOutcomeEvaluator().evaluate(self)
-
     def all_matching_sets(
             self,
             target: Mapping[Outcome, int] | Set[Outcome] | Collection[Outcome] |
@@ -255,6 +234,27 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             result = result.map(lambda x: tuple(reversed(x)))
 
         return result
+
+    def largest_matching_set(self) -> 'icepool.Die[int]':
+        """The largest matching set among the outcomes.
+
+        Returns:
+            A `Die` with outcomes set_size.
+            The greatest single such set is returned.
+        """
+        from icepool.evaluator import LargestMatchingSetEvaluator
+        return LargestMatchingSetEvaluator().evaluate(self)
+
+    def largest_matching_set_and_outcome(
+            self) -> 'icepool.Die[tuple[int, T_co]]':
+        """The largest matching set among the outcomes.
+
+        Returns:
+            A `Die` with outcomes (set_size, outcome).
+            The greatest single such set is returned.
+        """
+        from icepool.evaluator import LargestMatchingSetAndOutcomeEvaluator
+        return LargestMatchingSetAndOutcomeEvaluator().evaluate(self)
 
     def largest_straight(
             self: 'OutcomeCountGenerator[int]') -> 'icepool.Die[int]':
