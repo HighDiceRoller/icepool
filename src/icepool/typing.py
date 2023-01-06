@@ -1,4 +1,4 @@
-from typing import Hashable, Protocol, TypeVar
+from typing import Hashable, Literal, Protocol, TypeVar
 
 T_contra = TypeVar('T_contra', contravariant=True)
 
@@ -11,3 +11,7 @@ class Outcome(Hashable, Protocol[T_contra]):
 
     def __eq__(self, other):
         ...
+
+
+ComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
+                        '==', 'isdisjoint']

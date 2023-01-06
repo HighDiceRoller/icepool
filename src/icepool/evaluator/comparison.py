@@ -8,8 +8,8 @@ from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 
 from collections import defaultdict
 
-from icepool.typing import Outcome
-from typing import Collection, Mapping, TypeVar
+from icepool.typing import Outcome, ComparatorStr
+from typing import Collection, Literal, Mapping, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -22,7 +22,7 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     _default_outcome: bool
     """Outcome to be used if both self and target are empty."""
 
-    def __init__(self, op: str,
+    def __init__(self, op: ComparatorStr,
                  target: Mapping[T_contra, int] | Collection[T_contra]):
         if isinstance(target, Mapping):
             self._target = {k: v for k, v in target.items()}

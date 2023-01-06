@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.constant import Order
-from icepool.typing import Outcome
+from icepool.typing import Outcome, ComparatorStr
 
 import bisect
 import itertools
@@ -284,24 +284,29 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         return LargestStraightAndOutcomeEvaluator().evaluate(self)
 
     def compare(
-            self, op: str, target: Mapping[T_co, int] | Collection[T_co]
+            self, op: ComparatorStr,
+            target: Mapping[T_co, int] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
+        """Compares the outcome multiset to the target multiset."""
         from icepool.evaluator import ComparisonEvaluator
         return ComparisonEvaluator(op, target).evaluate(self)
 
     def issubset(
             self, target: Mapping[T_co, int] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a subset of the target multiset."""
         return self.compare('<=', target)
 
     def issuperset(
             self, target: Mapping[T_co, int] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a superset of the target multiset."""
         return self.compare('>=', target)
 
     def isdisjoint(
             self, target: Mapping[T_co, int] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is disjoint from the target multiset."""
         return self.compare('isdisjoint', target)
 
     # Sampling.
