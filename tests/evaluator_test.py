@@ -101,7 +101,8 @@ def test_runs():
 
 def test_runs_skip():
     die = icepool.Die([0, 10])
-    result = icepool.LargestStraightAndOutcomeEvaluator()(die.pool(10))
+    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
+        die.pool(10))
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
@@ -139,8 +140,8 @@ def test_sum_order(pool):
 
 
 def test_joint_evaluate():
-    test_evaluator = icepool.evaluator.JointEvaluator(icepool.sum_evaluator,
-                                                      icepool.sum_evaluator)
+    test_evaluator = icepool.evaluator.JointEvaluator(
+        icepool.evaluator.sum_evaluator, icepool.evaluator.sum_evaluator)
     result = test_evaluator(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).map(lambda x: (x, x))
     assert result.equals(expected)
@@ -156,22 +157,21 @@ def test_enumerate_pool_vs_outer_product():
 @pytest.mark.parametrize('pool', test_pools)
 def test_expand_vs_sum(pool):
     if any(x < 0 for x in pool.sorted_roll_counts()):
-        with pytest.raises(ValueError):
-            icepool.expand_evaluator(pool)
+        pytest.skip()
     else:
-        result = icepool.expand_evaluator(pool).map(sum)
+        result = icepool.evaluator.ExpandEvaluator()(pool).map(sum)
         expected = pool.sum()
         assert result.equals(expected)
 
 
 def test_count_in_evaluator():
-    result = icepool.d6.pool(10).count_in({-1, 4, 6})
+    result = icepool.d6.pool(10).count({-1, 4, 6})
     expected = icepool.d6.count_in(10, {4, 6})
     assert result.equals(expected)
 
 
 def test_contains_subset_vs_intersection_size():
     pool = icepool.d6.pool(10)
-    result_a = pool.contains_subset([1, 2, 3, 3])
-    result_b = pool.intersection_size([1, 2, 3, 3]) == 4
+    result_a = pool.issuperset([1, 2, 3, 3])
+    result_b = pool.count([1, 2, 3, 3]) == 4
     assert result_a == result_b

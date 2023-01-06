@@ -22,12 +22,12 @@ targets_to_test = [
 
 def test_contains_subset():
     assert Pool([1, 1, 2, 4, 4]).issuperset([1, 2, 4]) == Die([True])
-    assert Pool([1, 1, 2, 4, 4]).contains_subset([1, 2, 2, 4]) == Die([False])
+    assert Pool([1, 1, 2, 4, 4]).issuperset([1, 2, 2, 4]) == Die([False])
 
 
 def test_intersection_size():
-    assert Pool([1, 1, 2, 4, 4]).intersection_size([1, 2, 4]) == Die([3])
-    assert Pool([1, 1, 2, 4, 4]).intersection_size([1, 2, 2, 4]) == Die([3])
+    assert Pool([1, 1, 2, 4, 4]).count([1, 2, 4]) == Die([3])
+    assert Pool([1, 1, 2, 4, 4]).count([1, 2, 2, 4]) == Die([3])
 
 
 def test_largest_matching_set():
