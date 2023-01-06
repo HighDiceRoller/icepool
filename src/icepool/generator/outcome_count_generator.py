@@ -283,6 +283,27 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         from icepool.evaluator import LargestStraightAndOutcomeEvaluator
         return LargestStraightAndOutcomeEvaluator().evaluate(self)
 
+    def compare(
+            self, op: str, target: Mapping[T_co, int] | Collection[T_co]
+    ) -> 'icepool.Die[bool]':
+        from icepool.evaluator import ComparisonEvaluator
+        return ComparisonEvaluator(op, target).evaluate(self)
+
+    def issubset(
+            self, target: Mapping[T_co, int] | Collection[T_co]
+    ) -> 'icepool.Die[bool]':
+        return self.compare('<=', target)
+
+    def issuperset(
+            self, target: Mapping[T_co, int] | Collection[T_co]
+    ) -> 'icepool.Die[bool]':
+        return self.compare('>=', target)
+
+    def isdisjoint(
+            self, target: Mapping[T_co, int] | Collection[T_co]
+    ) -> 'icepool.Die[bool]':
+        return self.compare('isdisjoint', target)
+
     # Sampling.
 
     def sample(self) -> tuple[tuple, ...]:
