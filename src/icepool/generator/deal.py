@@ -28,7 +28,7 @@ class Deal(OutcomeCountGenerator[T_co]):
         deal for each hand.
 
         Args:
-            deck: The `Deck` to deal from.
+            deck: The `Deck` to deal from. Cannot be empty.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
                 provided, `OutcomeCountEvaluator.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
@@ -36,12 +36,22 @@ class Deal(OutcomeCountGenerator[T_co]):
         """
         if any(hand < 0 for hand in hand_sizes):
             raise ValueError('hand_sizes cannot be negative.')
+        if deck.is_empty():
+            raise ValueError('Cannot deal from an empty deck.')
         self._deck = deck
         self._hand_sizes = hand_sizes
         if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
                 'The total number of cards dealt cannot exceed the size of the deck.'
             )
+
+    @classmethod
+    def _new_raw(cls, deck: 'icepool.Deck[T_co]',
+                 hand_sizes: tuple[int, ...]) -> 'Deal[T_co]':
+        self = super(Deal, cls).__new__(cls)
+        self._deck = deck
+        self._hand_sizes = hand_sizes
+        return self
 
     def deck(self) -> 'icepool.Deck[T_co]':
         """The `Deck` the cards are dealt from."""
@@ -92,9 +102,9 @@ class Deal(OutcomeCountGenerator[T_co]):
             # The "deck" is the hand sizes.
             for counts, weight_split in iter_hypergeom(self.hand_sizes(),
                                                        count_total):
-                popped_deal = Deal(
+                popped_deal = Deal._new_raw(
                     popped_deck,
-                    *(h - c for h, c in zip(self.hand_sizes(), counts)))
+                    tuple(h - c for h, c in zip(self.hand_sizes(), counts)))
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 

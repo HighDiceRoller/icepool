@@ -21,7 +21,7 @@ targets_to_test = [
 
 
 def test_contains_subset():
-    assert Pool([1, 1, 2, 4, 4]).contains_subset([1, 2, 4]) == Die([True])
+    assert Pool([1, 1, 2, 4, 4]).issuperset([1, 2, 4]) == Die([True])
     assert Pool([1, 1, 2, 4, 4]).contains_subset([1, 2, 2, 4]) == Die([False])
 
 

@@ -19,27 +19,6 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-@cache
-def new_pool_cached(cls, dice: tuple[tuple['icepool.Die', int]],
-                    sorted_roll_counts: tuple[int, ...], /) -> 'Pool':
-    """Creates a new `Pool`. This function is cached.
-
-    Args:
-        cls: The `Pool` class.
-        dice: A sorted sequence of (die, rolls) pairs.
-        sorted_roll_counts: A tuple of length equal to the number of dice.
-    """
-    self = super(Pool, cls).__new__(cls)
-    self._dice = dice
-    self._sorted_roll_counts = sorted_roll_counts
-    return self
-
-
-def clear_pool_cache():
-    """Clears the global pool cache."""
-    new_pool_cached.cache_clear()
-
-
 class Pool(OutcomeCountGenerator[T_co]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
@@ -82,29 +61,54 @@ class Pool(OutcomeCountGenerator[T_co]):
             if times == 1:
                 return dice
             else:
-                dice = dice._dice
+                dice = {die: quantity for die, quantity in dice._dice}
 
-        if isinstance(dice, (icepool.Deck, icepool.Deal)):
+        if isinstance(dice, (icepool.Die, icepool.Deck, icepool.Deal)):
             raise ValueError(
                 f'A Pool cannot be constructed with a {type(dice).__name__} argument.'
             )
 
-        if isinstance(dice, icepool.Die):
-            dice = [dice]
-
         dice, times = icepool.creation_args.itemize(dice, times)
         converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
+
+        if all(die.is_empty() for die in converted_dice):
+            raise ValueError(
+                'At least one non-empty Die must be provided when creating a Pool.'
+            )
 
         dice_counts: MutableMapping['icepool.Die[T_co]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
             dice_counts[die] += qty
         sorted_roll_counts = (1,) * sum(times)
-        return cls._new_pool_from_mapping(dice_counts, sorted_roll_counts)
+        return cls._new_from_mapping(dice_counts, sorted_roll_counts)
 
     @classmethod
-    def _new_pool_from_mapping(
-            cls, dice_counts: Mapping['icepool.Die[T_co]', int],
-            sorted_roll_counts: Sequence[int]) -> 'Pool[T_co]':
+    @cache
+    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T_co]', int]],
+                 sorted_roll_counts: tuple[int, ...]) -> 'Pool[T_co]':
+        """All pool creation ends up here. This method is cached.
+        
+        Args:
+            dice: A tuple of (die, count) pairs.
+            sorted_roll_counts: A tuple of how many times to count each die.
+        """
+        self = super(Pool, cls).__new__(cls)
+        self._dice = dice
+        self._sorted_roll_counts = sorted_roll_counts
+        return self
+
+    @classmethod
+    def _new_empty(cls) -> 'Pool':
+        return cls._new_raw((), ())
+
+    @classmethod
+    def clear_cache(cls):
+        """Clears the global pool cache."""
+        Pool._new_raw.cache_clear()
+
+    @classmethod
+    def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T_co]', int],
+                          sorted_roll_counts: Sequence[int]) -> 'Pool[T_co]':
         """Creates a new pool.
 
         Args:
@@ -113,19 +117,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         """
         dice = tuple(
             sorted(dice_counts.items(), key=lambda kv: kv[0].key_tuple()))
-        return new_pool_cached(cls, dice, sorted_roll_counts)
-
-    @classmethod
-    def _new_pool_from_tuple(
-            cls, dice: tuple[tuple['icepool.Die[T_co]', int]],
-            sorted_roll_counts: tuple[int, ...]) -> 'Pool[T_co]':
-        """Creates a new pool.
-
-        Args:
-            dice: A sorted tuple of (dice, count).
-            sorted_roll_counts: A tuple with length equal to the number of dice.
-        """
-        return new_pool_cached(cls, dice, sorted_roll_counts)
+        return Pool._new_raw(dice, sorted_roll_counts)
 
     @cached_property
     def _size(self) -> int:
@@ -274,9 +266,9 @@ class Pool(OutcomeCountGenerator[T_co]):
                     'Cannot change the size of a pool unless it has exactly one type of die.'
                 )
             dice = Counts([(self._dice[0][0], len(sorted_roll_counts))])
-            result = Pool._new_pool_from_mapping(dice, sorted_roll_counts)
+            result = Pool._new_from_mapping(dice, sorted_roll_counts)
         else:
-            result = Pool._new_pool_from_tuple(self._dice, sorted_roll_counts)
+            result = Pool._new_raw(self._dice, sorted_roll_counts)
         if convert_to_die:
             return result.evaluate(lambda state, outcome, count: outcome
                                    if count else state)
@@ -334,8 +326,8 @@ class Pool(OutcomeCountGenerator[T_co]):
                 result_count = sum(self.sorted_roll_counts()[:total_hits])
                 popped_sorted_roll_counts = self.sorted_roll_counts(
                 )[total_hits:]
-            popped_pool = Pool._new_pool_from_mapping(
-                next_dice_counts, popped_sorted_roll_counts)
+            popped_pool = Pool._new_from_mapping(next_dice_counts,
+                                                 popped_sorted_roll_counts)
             if not any(popped_sorted_roll_counts):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -345,7 +337,8 @@ class Pool(OutcomeCountGenerator[T_co]):
             yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
-            yield Pool([]), (sum(self.sorted_roll_counts()),), skip_weight
+            yield Pool._new_empty(), (sum(
+                self.sorted_roll_counts()),), skip_weight
 
     def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
@@ -380,8 +373,8 @@ class Pool(OutcomeCountGenerator[T_co]):
                 result_count = sum(self.sorted_roll_counts()[-total_hits:])
                 popped_sorted_roll_counts = self.sorted_roll_counts(
                 )[:-total_hits]
-            popped_pool = Pool._new_pool_from_mapping(
-                next_dice_counts, popped_sorted_roll_counts)
+            popped_pool = Pool._new_from_mapping(next_dice_counts,
+                                                 popped_sorted_roll_counts)
             if not any(popped_sorted_roll_counts):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
@@ -391,7 +384,8 @@ class Pool(OutcomeCountGenerator[T_co]):
             yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
-            yield Pool([]), (sum(self.sorted_roll_counts()),), skip_weight
+            yield Pool._new_empty(), (sum(
+                self.sorted_roll_counts()),), skip_weight
 
     def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the lowest outcomes in the pool.
@@ -540,6 +534,8 @@ def standard_pool(
             Or, a mapping of die sizes to how many dice of that size to put
             into the pool.
     """
+    if not die_sizes:
+        return Pool([0])
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable(

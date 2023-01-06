@@ -80,7 +80,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         return self._tuple_len
 
     def is_empty(self) -> bool:
-        """`True` iff this mapping has no outcomes. """
+        """`True` iff this population has no outcomes. """
         return len(self) == 0
 
     def min_outcome(self) -> T_co:

@@ -53,7 +53,6 @@ def test_highest(dice, keep, drop):
 
 
 test_dice = [
-    (),
     (d6,),
     (icepool.Die([]), d6, d6),
     (d6, d6, icepool.Die([])),
