@@ -284,29 +284,49 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         return LargestStraightAndOutcomeEvaluator().evaluate(self)
 
     def compare(
-            self, op: ComparatorStr,
-            target: Mapping[T_co, int] | Collection[T_co]
+        self, op: ComparatorStr,
+        target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
-        """Compares the outcome multiset to the target multiset."""
+        """Compares the outcome multiset to the target multiset.
+        
+        Args:
+            op: The comparator to apply. Valid options are 
+                <, <=, issubset, >, >=, issuperset, !=, ==, isdisjoint.
+            target: The multiset to compare against. Possible types:
+                * A `Mapping` from outcomes to `int`s, representing a multiset
+                    with counts as the values.
+                * A `Set` of outcomes. All outcomes in the target effectively
+                    have unlimited multiplicity.
+                * Any other `Collection`, which will be treated as a multiset.
+        """
         from icepool.evaluator import ComparisonEvaluator
         return ComparisonEvaluator(op, target).evaluate(self)
 
     def issubset(
-            self, target: Mapping[T_co, int] | Collection[T_co]
+        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a subset of the target multiset."""
+        """Whether the outcome multiset is a subset of the target multiset.
+        
+        As `self.compare('<=', target)`.
+        """
         return self.compare('<=', target)
 
     def issuperset(
-            self, target: Mapping[T_co, int] | Collection[T_co]
+        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a superset of the target multiset."""
+        """Whether the outcome multiset is a superset of the target multiset.
+        
+        As `self.compare('>=', target)`.
+        """
         return self.compare('>=', target)
 
     def isdisjoint(
-            self, target: Mapping[T_co, int] | Collection[T_co]
+        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
     ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is disjoint from the target multiset."""
+        """Whether the outcome multiset is disjoint from the target multiset.
+        
+        As `self.compare('isdisjoint', target)`.
+        """
         return self.compare('isdisjoint', target)
 
     # Sampling.

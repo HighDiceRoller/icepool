@@ -2,14 +2,14 @@
 
 __docformat__ = 'google'
 
-
 from icepool.constant import Order
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 
 from collections import defaultdict
 
+import math
 from icepool.typing import Outcome, ComparatorStr
-from typing import Collection, Literal, Mapping, TypeVar
+from typing import Collection, Mapping, Set, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -17,15 +17,29 @@ T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     """Compares a generator to a target multiset."""
 
-    _target: Mapping[T_contra, int]
+    _target: Mapping[T_contra, int | float]
     """The target multiset."""
     _default_outcome: bool
     """Outcome to be used if both self and target are empty."""
 
     def __init__(self, op: ComparatorStr,
                  target: Mapping[T_contra, int] | Collection[T_contra]):
+        """Constructor.
+        
+        Args:
+            op: The comparator to apply. Valid options are 
+                <, <=, issubset, >, >=, issuperset, !=, ==, isdisjoint.
+            target: The multiset to compare against. Possible types:
+                * A `Mapping` from outcomes to `int`s, representing a multiset
+                    with counts as the values.
+                * A `Set` of outcomes. All outcomes in the target effectively
+                    have unlimited multiplicity.
+                * Any other `Collection`, which will be treated as a multiset.
+        """
         if isinstance(target, Mapping):
             self._target = {k: v for k, v in target.items()}
+        elif isinstance(target, Set):
+            self._target = {k: math.inf for k in target}
         else:
             self._target = defaultdict(int)
             for outcome in target:
