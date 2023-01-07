@@ -21,12 +21,6 @@ class RerollType(enum.Enum):
     """Indicates an outcome should be rerolled (with unlimited depth)."""
 
 
-class InfType(float, enum.Enum):
-    """The type of positive infinity as an enum."""
-    Inf = math.inf
-    """Positive infinity."""
-
-
 class Outcome(Hashable, Protocol[T_contra]):
     """Protocol to verify that outcomes are hashable and sortable."""
 
