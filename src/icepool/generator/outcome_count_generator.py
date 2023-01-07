@@ -1,8 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.constant import Order
-from icepool.typing import Outcome, ComparatorStr
+from icepool.typing import Outcome, Order, ComparatorStr
 
 import bisect
 import itertools

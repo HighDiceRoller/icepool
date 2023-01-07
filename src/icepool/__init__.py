@@ -19,8 +19,7 @@ __docformat__ = 'google'
 
 from typing import Final
 
-from icepool.constant import Order, RerollType
-from icepool.typing import Outcome
+from icepool.typing import Outcome, Order, RerollType
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).

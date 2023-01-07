@@ -2,13 +2,12 @@
 
 __docformat__ = 'google'
 
-from icepool.constant import Order
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 
 from collections import defaultdict
 
 import math
-from icepool.typing import Outcome, ComparatorStr
+from icepool.typing import Outcome, Order, ComparatorStr
 from typing import Collection, Mapping, Set, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)

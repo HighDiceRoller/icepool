@@ -2,8 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.generator.alignment import Alignment
-from icepool.constant import Order
-from icepool.typing import Outcome
+from icepool.typing import Outcome, Order
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
