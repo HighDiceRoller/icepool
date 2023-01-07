@@ -79,6 +79,8 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
 
     def final_outcome(self, final_state, *_):
         """Implementation."""
+        if final_state is None:
+            return 0
         return final_state[0]
 
     def order(self, *_):

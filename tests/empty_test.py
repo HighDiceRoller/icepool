@@ -30,17 +30,6 @@ def test_apply_empty():
     expected = icepool.Die({})
     assert result.equals(expected)
 
-def test_pool_no_dice():
-    with pytest.raises(ValueError):
-        icepool.Pool([])
-
-def test_pool_empty_dice():
-    with pytest.raises(ValueError):
-        icepool.Pool([icepool.Die([]), icepool.Die([])])
-
-def test_empty_deck_deal():
-    with pytest.raises(ValueError):
-        icepool.Deck([]).deal(0)
 
 def test_zero_die_standard_pool():
     assert icepool.standard_pool([]).sum() == icepool.Die([0])

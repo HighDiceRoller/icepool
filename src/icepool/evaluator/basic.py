@@ -87,6 +87,10 @@ class CountEvaluator(OutcomeCountEvaluator[Any, int, int]):
         """Implementation."""
         return (state or 0) + count
 
+    def final_outcome(self, final_state, *_):
+        """Implementation."""
+        return final_state or 0
+
     def order(self, *_):
         """Allows any order."""
         return Order.Any

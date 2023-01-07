@@ -39,6 +39,11 @@ class Pool(OutcomeCountGenerator[T_co]):
         truncations of each other. For example, d4, d6, d8, d10, d12 are all
         same-side truncations of d12.
 
+        It is permissible to create a `Pool` without providing dice, but not all 
+        evaluators will handle this case, especially if they depend on the
+        outcome type. In this case you may want to provide a die with zero
+        quantity.
+
         Args:
             dice: The dice to put in the `Pool`. This can be one of the following:
 
@@ -70,11 +75,6 @@ class Pool(OutcomeCountGenerator[T_co]):
 
         dice, times = icepool.creation_args.itemize(dice, times)
         converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-
-        if all(die.is_empty() for die in converted_dice):
-            raise ValueError(
-                'At least one non-empty Die must be provided when creating a Pool.'
-            )
 
         dice_counts: MutableMapping['icepool.Die[T_co]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
@@ -533,9 +533,10 @@ def standard_pool(
             sizes in the pool for each element.
             Or, a mapping of die sizes to how many dice of that size to put
             into the pool.
+            If empty, the pool will be considered to consist of 0d1.
     """
     if not die_sizes:
-        return Pool([0])
+        return Pool({1: 0})
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable(

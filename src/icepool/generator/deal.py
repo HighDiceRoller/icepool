@@ -27,8 +27,13 @@ class Deal(OutcomeCountGenerator[T_co]):
         For algorithmic reasons, you must pre-commit to the number of cards to
         deal for each hand.
 
+        It is permissible to `Deal` zero cards from an empty deck, but not all 
+        evaluators will handle this case, especially if they depend on the
+        outcome type. Dealing zero cards from a non-empty deck does not have
+        this issue.
+
         Args:
-            deck: The `Deck` to deal from. Cannot be empty.
+            deck: The `Deck` to deal from.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
                 provided, `OutcomeCountEvaluator.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
@@ -36,8 +41,6 @@ class Deal(OutcomeCountGenerator[T_co]):
         """
         if any(hand < 0 for hand in hand_sizes):
             raise ValueError('hand_sizes cannot be negative.')
-        if deck.is_empty():
-            raise ValueError('Cannot deal from an empty deck.')
         self._deck = deck
         self._hand_sizes = hand_sizes
         if self.total_cards_dealt() > self.deck().size():

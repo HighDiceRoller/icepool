@@ -270,8 +270,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co, Q_contra]):
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
-                    "This may have resulted from supplying an empty generator to OutcomeCountEvaluator. "
-                    "If so, refrain from using empty generators, or override OutcomeCountEvaluator.final_outcome() to handle this case."
+                    "This may have been a result of not supplying any generator with an outcome."
                 )
             if outcome is not icepool.Reroll:
                 final_outcomes.append(outcome)
