@@ -6,10 +6,11 @@ import icepool
 from icepool.constant import Order
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 
+from icepool.typing import Outcome
 from typing import Any
 
 
-class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
+class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Outcome, tuple[int, ...],
                                                      int]):
     """All counts in ascending order."""
 
@@ -40,7 +41,7 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Any, tuple[int, ...],
         return Order.Any
 
 
-class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
+class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
     """The largest matching set of a generator."""
 
     def next_state(self, state, _, count):
@@ -52,7 +53,7 @@ class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Any, int, int]):
         return Order.Any
 
 
-class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Any,
+class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome,
                                                                   tuple[int,
                                                                         Any],
                                                                   int]):

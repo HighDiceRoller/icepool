@@ -34,7 +34,7 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
         return self._func(state, outcome, *counts)
 
 
-class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
+class ExpandEvaluator(OutcomeCountEvaluator[Outcome, tuple, int]):
     """Expands all results of a generator.
 
     This is expensive and not recommended unless there are few possibilities.
@@ -57,7 +57,7 @@ class ExpandEvaluator(OutcomeCountEvaluator[Any, tuple, int]):
         return tuple(sorted(final_state))
 
 
-class SumEvaluator(OutcomeCountEvaluator[Any, Any, int]):
+class SumEvaluator(OutcomeCountEvaluator[Outcome, Any, int]):
     """Sums all outcomes."""
 
     def next_state(self, state, outcome, count):
@@ -76,7 +76,7 @@ sum_evaluator: Final = SumEvaluator()
 """Shared instance for caching."""
 
 
-class CountEvaluator(OutcomeCountEvaluator[Any, int, int]):
+class CountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
     """Returns the total count of outcomes.
 
     Usually not very interesting unless the counts are adjusted by

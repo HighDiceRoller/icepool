@@ -120,7 +120,8 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co, Q_contra]):
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a `Die`,
-        and if there are no outcomes, the final state will be `None`.
+        and if there are no outcomes, `final_outcome` will be immediately
+        be callled with `final_state=None`.
         Subclasses that want to handle this case should explicitly define what
         happens.
 
