@@ -67,7 +67,7 @@ from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 
-from icepool.generator.generators import SuitGenerator
+from icepool.generator.suit import SuitGenerator
 
 import icepool.evaluator as evaluator
 
