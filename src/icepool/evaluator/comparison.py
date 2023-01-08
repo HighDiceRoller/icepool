@@ -2,7 +2,6 @@
 
 __docformat__ = 'google'
 
-
 from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 
 from abc import abstractmethod
@@ -14,6 +13,7 @@ from typing import Collection, Mapping, Set, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
+
 
 class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     """Compares a generator to a target multiset."""
@@ -44,78 +44,6 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     def default_outcome() -> bool:
         """The final outcome if both self and target have no outcomes."""
 
-    def temp(self, op: ComparatorStr,
-                 target: Mapping[T_contra, int] | Collection[T_contra]):
-        """Constructor.
-        
-        Args:
-            op: The comparator to apply. Valid options are 
-                <, <=, issubset, >, >=, issuperset, !=, ==, isdisjoint.
-            target: The multiset to compare against. Possible types:
-                * A `Mapping` from outcomes to `int`s, representing a multiset
-                    with counts as the values.
-                * A `Set` of outcomes. All outcomes in the target effectively
-                    have unlimited multiplicity.
-                * Any other `Collection`, which will be treated as a multiset.
-        """
-        if isinstance(target, Mapping):
-            self._target = {k: v for k, v in target.items()}
-        elif isinstance(target, Set):
-            self._target = {k: math.inf for k in target}
-        else:
-            self._target = defaultdict(int)
-            for outcome in target:
-                self._target[outcome] += 1
-
-        match op:
-            case '<':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return count < target_count, count <= target_count
-
-                self._default_outcome = False
-            case '<=' | 'issubset':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return True, count <= target_count
-
-                self._default_outcome = True
-            case '>':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return count > target_count, count >= target_count
-
-                self._default_outcome = False
-            case '>=' | 'issuperset':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return True, count >= target_count
-
-                self._default_outcome = True
-            case '!=':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return count != target_count, True
-
-                self._default_outcome = False
-            case '==':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    return True, count == target_count
-
-                self._default_outcome = True
-            case 'isdisjoint':
-                def any_all(outcome: T_contra, count: int) -> tuple[bool, bool]:
-                    target_count = self._target.get(outcome, 0)
-                    both_positive = (target_count > 0) == (count > 0)
-                    return True, not both_positive
-
-                self._default_outcome = True
-            case _:
-                raise ValueError(f'Invalid comparator {op}.')
-
-        self._any_all = any_all
-
     def next_state(self, state, outcome, count):
         """Implementation."""
         has_any, has_all = state or (False, True)
@@ -139,65 +67,79 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
         """Implementation."""
         return self._target.keys()
 
+
 class IsProperSubsetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return count < target_count, count <= target_count
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return False
 
+
 class IsSubsetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return True, count <= target_count
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return True
 
+
 class IsProperSupersetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return count > target_count, count >= target_count
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return False
 
+
 class IsSupersetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return True, count >= target_count
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return True
 
+
 class IsEqualSetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return True, count == target_count
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return True
 
+
 class IsNotEqualSetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return count != target_count, True
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return False
 
+
 class IsDisjointSetEvaluator(ComparisonEvaluator[T_contra]):
+
     def any_all(self, outcome: T_contra, count: int) -> tuple[bool, bool]:
         target_count = self._target.get(outcome, 0)
         return True, not ((count > 0) and target_count > 0)
-    
+
     @staticmethod
     def default_outcome() -> bool:
         return True
