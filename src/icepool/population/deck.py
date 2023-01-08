@@ -129,6 +129,8 @@ class Deck(Population[T_co]):
         """Creates a `Deal` object from this deck.
 
         See `Deal()` for details.
+
+        This API is likely to change in the future.
         """
         return icepool.Deal(self, *hand_sizes)
 
