@@ -39,7 +39,7 @@ class Pool(OutcomeCountGenerator[T_co]):
         truncations of each other. For example, d4, d6, d8, d10, d12 are all
         same-side truncations of d12.
 
-        It is permissible to create a `Pool` without providing dice, but not all 
+        It is permissible to create a `Pool` without providing dice, but not all
         evaluators will handle this case, especially if they depend on the
         outcome type. In this case you may want to provide a die with zero
         quantity.
@@ -87,7 +87,7 @@ class Pool(OutcomeCountGenerator[T_co]):
     def _new_raw(cls, dice: tuple[tuple['icepool.Die[T_co]', int]],
                  sorted_roll_counts: tuple[int, ...]) -> 'Pool[T_co]':
         """All pool creation ends up here. This method is cached.
-        
+
         Args:
             dice: A tuple of (die, count) pairs.
             sorted_roll_counts: A tuple of how many times to count each die.
@@ -436,7 +436,7 @@ class Pool(OutcomeCountGenerator[T_co]):
     def _key_tuple(self) -> tuple:
         return Pool, self._dice, self._sorted_roll_counts
 
-    def __eq__(self, other) -> bool:
+    def equals(self, other) -> bool:
         if not isinstance(other, Pool):
             return False
         return self._key_tuple == other._key_tuple

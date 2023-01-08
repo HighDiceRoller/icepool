@@ -49,7 +49,7 @@ class Alignment(OutcomeCountGenerator[T_co]):
     def denominator(self) -> int:
         return 0
 
-    def __eq__(self, other) -> bool:
+    def equals(self, other) -> bool:
         if not isinstance(other, Alignment):
             return False
         return self._outcomes == other._outcomes

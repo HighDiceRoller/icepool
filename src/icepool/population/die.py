@@ -1274,7 +1274,7 @@ class Die(Population[T_co]):
                 else:
                     return Counts([(False, d - n), (True, n)])
 
-    # This returns a value with a truth value, but not a bool.
+    # The result has a truth value, but is not a bool.
     def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
@@ -1286,7 +1286,7 @@ class Die(Population[T_co]):
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
-    # This returns a value with a truth value, but not a bool.
+    # The result has a truth value, but is not a bool.
     def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 

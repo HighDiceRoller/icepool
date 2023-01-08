@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.counts import Counts
 from icepool.typing import Outcome, Order, SetComparatorStr
 
 import bisect
@@ -97,8 +98,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """The total weight of all paths through this generator."""
 
     @abstractmethod
-    def __eq__(self, other) -> bool:
-        """All `OutcomeCountGenerator`s must implement equality."""
+    def equals(self, other) -> bool:
+        """Whether this generator is logically equal to another object."""
 
     @abstractmethod
     def __hash__(self) -> int:
@@ -301,29 +302,71 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         else:
             return NotImplemented
 
-    def issubset(
-            self, right:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int]| Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a subset of the target multiset."""
-        result = self.compare('<=', right)
-        if result is NotImplemented:
-            raise TypeError(
-                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
-            )
-        return result
-
-    def issuperset(
-            self, right:
+    def __lt__(
+            self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a superset of the target multiset."""
-        result = self.compare('>=', right)
-        if result is NotImplemented:
-            raise TypeError(
-                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
-            )
-        return result
+        return self.compare('<', other)
+
+    def __le__(
+            self, other:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('<=', other)
+
+    def issubset(
+            self, other:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a subset of the other multiset.
+
+        Same as `self <= other`.
+        """
+        return self <= other
+
+    def __gt__(
+            self, other:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('>', other)
+
+    def __ge__(
+            self, other:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('>=', other)
+
+    def issuperset(
+            self, other:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a superset of the target multiset.
+
+        Same as `self >= other`.
+        """
+        return self >= other
+
+    # The result has a truth value, but is not a bool.
+    def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+
+        def data_callback() -> 'Counts[bool]':
+            return self.compare('==', other)._data
+
+        def truth_value_callback() -> bool:
+            return self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
+
+    # The result has a truth value, but is not a bool.
+    def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+
+        def data_callback() -> 'Counts[bool]':
+            return self.compare('!=', other)._data
+
+        def truth_value_callback() -> bool:
+            return not self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def isdisjoint(
             self, right:

@@ -27,7 +27,7 @@ class Deal(OutcomeCountGenerator[T_co]):
         For algorithmic reasons, you must pre-commit to the number of cards to
         deal for each hand.
 
-        It is permissible to `Deal` zero cards from an empty deck, but not all 
+        It is permissible to `Deal` zero cards from an empty deck, but not all
         evaluators will handle this case, especially if they depend on the
         outcome type. Dealing zero cards from a non-empty deck does not have
         this issue.
@@ -137,7 +137,7 @@ class Deal(OutcomeCountGenerator[T_co]):
     def _key_tuple(self) -> tuple:
         return Deal, self.deck(), self.hand_sizes()
 
-    def __eq__(self, other) -> bool:
+    def equals(self, other) -> bool:
         if not isinstance(other, Deal):
             return False
         return self._key_tuple == other._key_tuple

@@ -59,7 +59,7 @@ class SuitGenerator(OutcomeCountGenerator):
     def _key_tuple(self) -> tuple:
         return SuitGenerator, self._src
 
-    def __eq__(self, other) -> bool:
+    def equals(self, other) -> bool:
         if not isinstance(other, SuitGenerator):
             return False
         return self._key_tuple == other._key_tuple
