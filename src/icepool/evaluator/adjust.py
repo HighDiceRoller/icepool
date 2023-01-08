@@ -50,7 +50,8 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
         Args:
             inner: The evaluator to call after adjustment.
             target: If provided, an intersection or difference will be taken
-                with this. Possible types:
+                with this, with negative resulting counts treated as zero.
+                Possible types:
                 * A `Mapping` from outcomes to `int`s, representing a multiset
                     with counts as the values.
                 * A `Set` of outcomes. All outcomes in the target effectively
@@ -94,12 +95,14 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
 
         def adjust_count(outcome: T_contra, count: int) -> int:
             """Adjusts the count based on arguments to a constructed TargetSetEvaluator."""
-            if invert:
-                # Set difference.
-                count = max(count - target_dict.get(outcome, 0), 0)
-            else:
-                # Set intersection.
-                count = min(count, target_dict.get(outcome, 0))
+            if target is not None:
+                if invert:
+                    # Set difference.
+                    count = count - target_dict.get(outcome, 0)
+                else:
+                    # Set intersection.
+                    count = min(count, target_dict.get(outcome, 0))
+                count = max(count, 0)
             if min_count is not None and count < min_count:
                 return 0
             if div_count is not None:
