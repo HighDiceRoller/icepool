@@ -8,7 +8,7 @@ import math
 from collections import defaultdict
 
 from icepool.typing import Outcome
-from typing import Callable, Collection, Generic, Mapping, Set, TypeVar
+from typing import Callable, Collection, Generic, Mapping, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -33,8 +33,7 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
     def __new__(  # type: ignore
         cls,
         inner: OutcomeCountEvaluator[T_contra, U_co, int],
-        target: Mapping[Outcome, int] | Set[Outcome] | Collection[Outcome] |
-        None = None,
+        target: Mapping[Outcome, int] | Collection[Outcome] | None = None,
         *,
         invert: bool = False,
         min_count: int | None = None,
@@ -54,8 +53,6 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
                 Possible types:
                 * A `Mapping` from outcomes to `int`s, representing a multiset
                     with counts as the values.
-                * A `Set` of outcomes. All outcomes in the target effectively
-                    have unlimited multiplicity.
                 * Any other `Collection`, which will be treated as a multiset.
             invert: If `False` (default), the intersection will be taken with
                 `target`. Otherwise, the difference will be taken. If `target`
@@ -86,8 +83,6 @@ class AdjustIntCountEvaluator(OutcomeCountEvaluator[T_contra, U_co, int]):
             target_dict = {}
         elif isinstance(target, Mapping):
             target_dict = {k: v for k, v in target.items()}
-        elif isinstance(target, Set):
-            target_dict = {k: math.inf for k in target}
         else:
             target_dict = defaultdict(int)
             for outcome in target:

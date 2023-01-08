@@ -22,10 +22,10 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     """The right-hand multiset, if fixed."""
 
     def __init__(self,
-                 right: Mapping[T_contra, int] | Set[T_contra] |
+                 right: Mapping[T_contra, int] |
                  Collection[T_contra] | None = None):
         """Constructor.
-        
+
         Args:
             right: If not provided, the evaulator will take left and right
                 generators as arguments to `evaluate()`.
@@ -36,8 +36,6 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
             self._right = None
         elif isinstance(right, Mapping):
             self._right = {k: v for k, v in right.items()}
-        elif isinstance(right, Set):
-            self._right = {k: math.inf for k in right}
         else:
             self._right = defaultdict(int)
             for outcome in right:
@@ -45,7 +43,7 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
 
 
     @classmethod
-    def new_by_op(cls, op_name: ComparatorStr, right: Mapping[T_contra, int] | Set[T_contra] |
+    def new_by_op(cls, op_name: ComparatorStr, right: Mapping[T_contra, int] |
                  Collection[T_contra] | None = None) -> 'ComparisonEvaluator[T_contra]':
         """Creates a new instance by the operation name."""
         match op_name:
@@ -57,13 +55,13 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
             case '!=': return IsNotEqualSetEvaluator(right)
             case 'isdisjoint': return IsDisjointSetEvaluator(right)
             case _: raise ValueError(f'Invalid comparator {op_name}.')
-        
+
 
     @abstractmethod
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         """Called for each outcome and produces a pair of bools.
-        
-        The final outcome is true iff any of the first and all of the second 
+
+        The final outcome is true iff any of the first and all of the second
         bool are `True`.
         """
 

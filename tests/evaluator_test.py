@@ -164,12 +164,6 @@ def test_expand_vs_sum(pool):
         assert result.equals(expected)
 
 
-def test_count_in_evaluator():
-    result = icepool.d6.pool(10).count({-1, 4, 6})
-    expected = icepool.d6.count_in(10, {4, 6})
-    assert result.equals(expected)
-
-
 def test_contains_subset_vs_intersection_size():
     pool = icepool.d6.pool(10)
     result_a = pool.issuperset([1, 2, 3, 3])
