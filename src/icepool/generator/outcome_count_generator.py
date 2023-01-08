@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.typing import Outcome, Order, ComparatorStr
+from icepool.typing import Outcome, Order, SetComparatorStr
 
 import bisect
 import itertools
@@ -282,7 +282,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     # Comparators.
 
     def compare(
-            self, op_name: ComparatorStr, right:
+            self, op_name: SetComparatorStr, right:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int]  | Collection[T_co]',
             /):
         """Compares the outcome multiset to another multiset.

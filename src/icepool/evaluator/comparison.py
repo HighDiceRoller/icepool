@@ -8,8 +8,8 @@ from abc import abstractmethod
 from collections import defaultdict
 
 import math
-from icepool.typing import Outcome, Order, ComparatorStr
-from typing import Collection, Mapping, Set, TypeVar
+from icepool.typing import Outcome, Order, SetComparatorStr
+from typing import Collection, Mapping, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -43,7 +43,7 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
 
 
     @classmethod
-    def new_by_op(cls, op_name: ComparatorStr, right: Mapping[T_contra, int] |
+    def new_by_op(cls, op_name: SetComparatorStr, right: Mapping[T_contra, int] |
                  Collection[T_contra] | None = None) -> 'ComparisonEvaluator[T_contra]':
         """Creates a new instance by the operation name."""
         match op_name:

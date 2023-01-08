@@ -22,7 +22,10 @@ class RerollType(enum.Enum):
 
 
 class Outcome(Hashable, Protocol[T_contra]):
-    """Protocol to verify that outcomes are hashable and sortable."""
+    """Protocol to attempt to verify that outcomes are hashable and sortable.
+
+    Far from foolproof, e.g. it cannot enforce total ordering.
+    """
 
     def __lt__(self, other: T_contra) -> bool:
         ...
@@ -31,5 +34,5 @@ class Outcome(Hashable, Protocol[T_contra]):
         ...
 
 
-ComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
-                        '==', 'isdisjoint']
+SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
+                           '==', 'isdisjoint']
