@@ -9,7 +9,7 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, Collection, Container, Generic, Hashable, Iterator, Mapping, Sequence, Set, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Container, Generic, Hashable, Iterator, Mapping, Sequence, Set, Type, TypeAlias, TypeVar
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -282,35 +282,65 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         from icepool.evaluator import LargestStraightAndOutcomeEvaluator
         return LargestStraightAndOutcomeEvaluator().evaluate(self)
 
-    def issubset(
-        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
-    ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a subset of the target multiset.
+    # Comparators.
+
+    def compare(
+            self, op_name: ComparatorStr, right:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Set[T_co] | Collection[T_co]',
+            /):
+        """Compares the outcome multiset to another multiset.
         
-        As `self.compare('<=', target)`.
+        Args:
+            op_name: One of the following: 
+                `<, <=, issubset, >, >=, issuperset, ==, !=, isdisjoint`.
+            right: The right-side generator or multiset to compare with.
+                A `Set` will be treated as having infinite multiplicity for
+                all of its outcomes.
         """
-        from icepool.evaluator import IsSubsetEvaluator
-        return IsSubsetEvaluator(target).evaluate(self)
+        if isinstance(right, OutcomeCountGenerator):
+            return icepool.evaluator.ComparisonEvaluator.new_by_op(
+                op_name).evaluate(self, right)  # type: ignore
+        elif isinstance(right, Collection):
+            return icepool.evaluator.ComparisonEvaluator.new_by_op(
+                op_name, right).evaluate(self)
+        else:
+            return NotImplemented
+
+    def issubset(
+            self, right:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Set[T_co] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a subset of the target multiset."""
+        result = self.compare('<=', right)
+        if result is NotImplemented:
+            raise TypeError(
+                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
+            )
+        return result
 
     def issuperset(
-        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
-    ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a superset of the target multiset.
-        
-        As `self.compare('>=', target)`.
-        """
-        from icepool.evaluator import IsSupersetEvaluator
-        return IsSupersetEvaluator(target).evaluate(self)
+            self, right:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Set[T_co] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a superset of the target multiset."""
+        result = self.compare('>=', right)
+        if result is NotImplemented:
+            raise TypeError(
+                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
+            )
+        return result
 
     def isdisjoint(
-        self, target: Mapping[T_co, int] | Set[T_co] | Collection[T_co]
-    ) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is disjoint from the target multiset.
-        
-        As `self.compare('isdisjoint', target)`.
-        """
-        from icepool.evaluator import IsDisjointSetEvaluator
-        return IsDisjointSetEvaluator(target).evaluate(self)
+            self, right:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Set[T_co] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is disjoint from the target multiset."""
+        result = self.compare('isdisjoint', right)
+        if result is NotImplemented:
+            raise TypeError(
+                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
+            )
+        return result
 
     # Sampling.
 

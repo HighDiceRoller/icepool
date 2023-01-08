@@ -22,8 +22,8 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
     """The right-hand multiset, if fixed."""
 
     def __init__(self,
-                 right: Mapping[T_contra, int] | Collection[T_contra] |
-                 None = None):
+                 right: Mapping[T_contra, int] | Set[T_contra] |
+                 Collection[T_contra] | None = None):
         """Constructor.
         
         Args:
@@ -42,6 +42,22 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
             self._right = defaultdict(int)
             for outcome in right:
                 self._right[outcome] += 1
+
+
+    @classmethod
+    def new_by_op(cls, op_name: ComparatorStr, right: Mapping[T_contra, int] | Set[T_contra] |
+                 Collection[T_contra] | None = None) -> 'ComparisonEvaluator[T_contra]':
+        """Creates a new instance by the operation name."""
+        match op_name:
+            case '<': return IsProperSubsetEvaluator(right)
+            case '<=' | 'issubset': return IsSubsetEvaluator(right)
+            case '>': return IsProperSubsetEvaluator(right)
+            case '>=' | 'issuperset': return IsSupersetEvaluator(right)
+            case '==': return IsEqualSetEvaluator(right)
+            case '!=': return IsNotEqualSetEvaluator(right)
+            case 'isdisjoint': return IsDisjointSetEvaluator(right)
+            case _: raise ValueError(f'Invalid comparator {op_name}.')
+        
 
     @abstractmethod
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
