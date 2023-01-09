@@ -246,10 +246,9 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co, Q_contra]):
             A `Die` representing the distribution of the final score.
         """
 
-        # Convert non-`Pool` arguments to `Pool`.
+        # Convert arguments to generators.
         converted_generators = tuple(
-            generator if isinstance(generator, icepool.OutcomeCountGenerator
-                                   ) else icepool.Pool(generator)
+            icepool.implicit_convert_to_generator(generator)
             for generator in generators)
 
         if not all(generator._is_resolvable()

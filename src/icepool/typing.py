@@ -36,3 +36,5 @@ class Outcome(Hashable, Protocol[T_contra]):
 
 SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
                            '==', 'isdisjoint']
+
+MultisetBinaryOperationStr = Literal['+', '-', '|', '&', '^']
