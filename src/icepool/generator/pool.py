@@ -19,7 +19,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-class Pool(OutcomeCountGenerator[T_co]):
+class Pool(OutcomeCountGenerator[T_co, tuple[int]]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.

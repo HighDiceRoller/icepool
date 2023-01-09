@@ -15,7 +15,7 @@ T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
 
 
-class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
+class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, int, bool]):
     """Compares the multisets produced by two generators, or a left generator and a fixed right side."""
 
     _right: Mapping[T_contra, int | float] | None

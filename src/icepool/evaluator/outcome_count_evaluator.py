@@ -23,7 +23,9 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
 Q_contra = TypeVar('Q_contra', contravariant=True)
-"""Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
+"""Type variable representing the type of individual counts.
+
+This may be replaced with a `TypeVarTuple` in the future."""
 
 
 class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
@@ -109,7 +111,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
     def final_outcome(
             self, final_state: Hashable, /,
-            *generators: icepool.OutcomeCountGenerator[T_contra]) -> U_co:
+            *generators: icepool.OutcomeCountGenerator[T_contra, Any]) -> U_co:
         """Optional function to generate a final outcome from a final state.
 
         Tthere is no expectation that a subclass be able to handle
@@ -138,8 +140,9 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         # If not overriden, the final_state should have type U_co.
         return cast(U_co, final_state)
 
-    def order(self,
-              *generators: icepool.OutcomeCountGenerator[T_contra]) -> Order:
+    def order(
+            self, *generators: icepool.OutcomeCountGenerator[T_contra,
+                                                             Any]) -> Order:
         """Optional function to determine the order in which `next_state()` will see outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -167,7 +170,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         return Order.Ascending
 
     def alignment(
-        self, *generators: icepool.OutcomeCountGenerator[T_contra]
+        self, *generators: icepool.OutcomeCountGenerator[T_contra, Any]
     ) -> Collection[T_contra]:
         """Optional method to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
 
@@ -186,8 +189,9 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         return ()
 
     def range_alignment(
-            self,
-            *generators: icepool.OutcomeCountGenerator[int]) -> Collection[int]:
+        self,
+        *generators: icepool.OutcomeCountGenerator[int,
+                                                   Any]) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -225,7 +229,8 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         return {}
 
     def evaluate(
-        self, *generators: icepool.OutcomeCountGenerator[T_contra] |
+        self, *generators: icepool.OutcomeCountGenerator[T_contra,
+                                                         tuple[Q_contra, ...]] |
         Mapping[T_contra, int] | Sequence
     ) -> 'icepool.Die[U_co]':
         """Evaluates generator(s).
@@ -280,7 +285,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     __call__ = evaluate
 
     def _select_algorithm(
-        self, *generators: icepool.OutcomeCountGenerator[T_contra]
+        self, *generators: icepool.OutcomeCountGenerator[T_contra, Any]
     ) -> tuple[Callable, Order]:
         """Selects an algorithm and iteration order.
 
@@ -324,7 +329,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
     def _eval_internal(
         self, order: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator[T_contra], ...]
+        generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order,
         i.e. giving outcomes to `next_state()` from wide to narrow.
@@ -370,7 +375,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
     def _eval_internal_iterative(
         self, order: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator[T_contra], ...]
+        generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order,
         i.e. giving outcomes to `next_state()` from narrow to wide.
@@ -408,7 +413,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     @staticmethod
     def _pop_generators(
         side: int, alignment: Alignment,
-        generators: tuple[icepool.OutcomeCountGenerator[T_contra], ...]
+        generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
     ) -> tuple[Any, Alignment, tuple['icepool.NextOutcomeCountGenerator', ...]]:
         """Pops a single outcome from the generators.
 
@@ -437,7 +442,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             return outcome, next_alignment, tuple(
                 generator._generate_min(outcome) for generator in generators)
 
-    def sample(self, *generators: icepool.OutcomeCountGenerator[T_contra] |
+    def sample(self, *generators: icepool.OutcomeCountGenerator[T_contra, Any] |
                Mapping[T_contra, int] | Sequence[T_contra]):
         """EXPERIMENTAL: Samples one result from the generator(s) and evaluates the result."""
         # Convert non-`Pool` arguments to `Pool`.

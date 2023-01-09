@@ -14,8 +14,11 @@ import math
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
+Q = TypeVar('Q', bound=tuple[int, ...])
+"""Type variable representing the count types. In this future this may be replaced with a TypeVarTuple."""
 
-class Deal(OutcomeCountGenerator[T_co]):
+
+class Deal(OutcomeCountGenerator[T_co, Q]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck[T_co]'
@@ -50,7 +53,7 @@ class Deal(OutcomeCountGenerator[T_co]):
 
     @classmethod
     def _new_raw(cls, deck: 'icepool.Deck[T_co]',
-                 hand_sizes: tuple[int, ...]) -> 'Deal[T_co]':
+                 hand_sizes: Q) -> 'Deal[T_co, Q]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes

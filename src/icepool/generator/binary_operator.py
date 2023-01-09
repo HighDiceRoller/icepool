@@ -9,21 +9,24 @@ import itertools
 from abc import abstractmethod
 from functools import cached_property
 
-from typing import Literal, Sequence, TypeVar
+from typing import Sequence, TypeVar
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-class BinaryOperatorGenerator(OutcomeCountGenerator[T_co]):
+class BinaryOperatorGenerator(OutcomeCountGenerator[T_co, tuple[int]]):
 
-    def __init__(self, left: OutcomeCountGenerator[T_co],
-                 right: OutcomeCountGenerator[T_co]):
+    def __init__(self,
+                 left: OutcomeCountGenerator[T_co, tuple[int]],
+                 right: OutcomeCountGenerator[T_co, tuple[int]]) -> None:
         self._left = left
         self._right = right
 
     @classmethod
-    def new_by_name(self, name: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
-                 right: OutcomeCountGenerator[T_co]) -> 'BinaryOperatorGenerator[T_co]':
+    def new_by_name(self,
+                    name: MultisetBinaryOperationStr,
+                    left: OutcomeCountGenerator[T_co, tuple[int]],
+                    right: OutcomeCountGenerator[T_co, tuple[int]]) -> 'BinaryOperatorGenerator[T_co]':
         match name:
             case '+' | 'disjoint_sum': return DisjointUnionGenerator(left, right)
             case '-' | 'difference': return DifferenceGenerator(left, right)

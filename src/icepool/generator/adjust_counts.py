@@ -5,7 +5,6 @@ __docformat__ = 'google'
 from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
 from icepool.typing import Outcome, MultisetBinaryIntOperationStr
 
-import itertools
 from abc import abstractmethod
 from functools import cached_property
 
@@ -14,16 +13,20 @@ from typing import Sequence, TypeVar
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
+Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
+"""Type variable representing the counts type, which is a tuple of `int`s.
 
-class AdjustCountsGenerator(OutcomeCountGenerator[T_co]):
+In this future this may be replaced with a TypeVarTuple."""
 
-    def __init__(self, inner: OutcomeCountGenerator[T_co], constant: int):
+class AdjustCountsGenerator(OutcomeCountGenerator[T_co, Qints_co]):
+
+    def __init__(self, inner: OutcomeCountGenerator[T_co, Qints_co], constant: int):
         self._inner = inner
         self._constant = constant
 
     @classmethod
-    def new_by_name(self, name: MultisetBinaryIntOperationStr, inner: OutcomeCountGenerator[T_co],
-                 constant: int) -> 'AdjustCountsGenerator[T_co]':
+    def new_by_name(self, name: MultisetBinaryIntOperationStr, inner: OutcomeCountGenerator[T_co, Qints_co],
+                 constant: int) -> 'AdjustCountsGenerator[T_co, Qints_co]':
         match name:
             case '*': return MultiplyCountsGenerator(inner, constant)
             case '//': return FloorDivCountsGenerator(inner, constant)
@@ -77,21 +80,21 @@ class AdjustCountsGenerator(OutcomeCountGenerator[T_co]):
     def __hash__(self) -> int:
         return self._hash
 
-class MultiplyCountsGenerator(AdjustCountsGenerator[T_co]):
+class MultiplyCountsGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     """Multiplies all counts by the constant."""
 
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return count * constant
 
-class FloorDivCountsGenerator(AdjustCountsGenerator[T_co]):
+class FloorDivCountsGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     """Divides all counts by the constant, rounding down."""
 
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return count // constant
 
-class IgnoreCountsSmallerThanGenerator(AdjustCountsGenerator[T_co]):
+class IgnoreCountsSmallerThanGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     """Counts below a certain value are treated as zero."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
@@ -100,7 +103,7 @@ class IgnoreCountsSmallerThanGenerator(AdjustCountsGenerator[T_co]):
         else:
             return count
 
-class UniqueGenerator(AdjustCountsGenerator[T_co]):
+class UniqueGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     """Limits the count produced by each outcome."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:

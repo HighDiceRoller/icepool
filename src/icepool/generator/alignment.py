@@ -13,7 +13,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-class Alignment(OutcomeCountGenerator[T_co]):
+class Alignment(OutcomeCountGenerator[T_co, tuple[()]]):
     """A generator that only outputs 0 counts with weight 1."""
 
     def __init__(self, outcomes: Collection[T_co]):
