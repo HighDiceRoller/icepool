@@ -26,7 +26,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class OutcomeCountEvaluator(ABC, Generic[T_contra, U_co, Q_contra]):
+class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerator`s.
 
     There is one abstract method to implement: `next_state()`.

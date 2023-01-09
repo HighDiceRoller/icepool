@@ -9,9 +9,8 @@ from icepool.typing import Outcome, Order
 from typing import Any
 
 
-class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, tuple[Any,
-                                                                           int],
-                                                            int]):
+class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, int,
+                                                            tuple[Any, int]]):
     """The highest outcome that has positive count, along with that count.
 
     If no outcomes have positive count, an arbitrary outcome will be produced
@@ -36,7 +35,7 @@ class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, tuple[Any,
         return Order.Any
 
 
-class AllCountsEvaluator(OutcomeCountEvaluator[Outcome, tuple[int, ...], int]):
+class AllCountsEvaluator(OutcomeCountEvaluator[Outcome, int, tuple[int, ...]]):
     """All counts in ascending order.
 
     In other words, this produces tuples of the sizes of all matching sets.
@@ -81,9 +80,8 @@ class LargestCountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
         return Order.Any
 
 
-class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, tuple[int,
-                                                                           Any],
-                                                            int]):
+class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, int,
+                                                            tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
     def next_state(self, state, outcome, count):
@@ -120,9 +118,9 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
     alignment = OutcomeCountEvaluator.range_alignment
 
 
-class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, tuple[int,
-                                                                          int],
-                                                               int]):
+class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, int,
+                                                               tuple[int,
+                                                                     int]]):
     """The size of the largest straight, along with the greatest outcome in that straight."""
 
     def next_state(self, state, outcome, count):

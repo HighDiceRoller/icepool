@@ -20,8 +20,8 @@ V = TypeVar('V', bound=Outcome)
 """Invariant intermediate outcome type."""
 
 
-class FinalOutcomeMapEvaluator(Generic[T_contra, U_co, Q_contra, V],
-                               OutcomeCountEvaluator[T_contra, U_co, Q_contra]):
+class FinalOutcomeMapEvaluator(Generic[T_contra, V, Q_contra, U_co],
+                               OutcomeCountEvaluator[T_contra, Q_contra, U_co]):
     """Maps outcomes to other outcomes before sending them to an inner evaluator.
 
     Note that the outcomes will be seen in their original order, and outcomes
@@ -30,15 +30,15 @@ class FinalOutcomeMapEvaluator(Generic[T_contra, U_co, Q_contra, V],
     `AdjustIntCountEvaluator`, and the `map` argument should be presented last.
     """
 
-    _inner: OutcomeCountEvaluator[V, U_co, Q_contra]
+    _inner: OutcomeCountEvaluator[V, Q_contra, U_co]
     _map: Callable[[T_contra], V]
 
     # May return inner unmodified.
     def __new__(  # type: ignore
         cls,
-        inner: OutcomeCountEvaluator[V, U_co, Q_contra],
+        inner: OutcomeCountEvaluator[V, Q_contra, U_co],
         map: Callable[[T_contra], V] | Mapping[T_contra, V] | None = None
-    ) -> OutcomeCountEvaluator[T_contra, U_co, Q_contra]:
+    ) -> OutcomeCountEvaluator[T_contra, Q_contra, U_co]:
         """Constructor. This wraps an inner evaluator.
 
         May return inner unmodified.

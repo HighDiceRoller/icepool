@@ -18,7 +18,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class JointEvaluator(OutcomeCountEvaluator[T_contra, tuple, Q_contra]):
+class JointEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, tuple]):
     """An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
 
     def __init__(self, *inners: OutcomeCountEvaluator):

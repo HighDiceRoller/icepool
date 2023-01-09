@@ -123,7 +123,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """All `OutcomeCountGenerator`s must be hashable."""
 
     def evaluate(self,
-                 evaluator_or_func: 'icepool.OutcomeCountEvaluator[Any, U, Any]'
+                 evaluator_or_func: 'icepool.OutcomeCountEvaluator[Any, Any, U]'
                  | Callable[..., U], /) -> 'icepool.Die[U]':
         """Evaluates this generator using the given `OutcomeCountEvaluator` or function.
 
