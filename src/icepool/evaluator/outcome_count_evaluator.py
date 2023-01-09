@@ -328,7 +328,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             return self._eval_internal_iterative, eval_order
 
     def _eval_internal(
-        self, order: int, alignment: Alignment,
+        self, order: int, alignment: Alignment[T_contra],
         generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order,
@@ -374,7 +374,7 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         return result
 
     def _eval_internal_iterative(
-        self, order: int, alignment: Alignment,
+        self, order: int, alignment: Alignment[T_contra],
         generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order,
@@ -412,9 +412,10 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
     @staticmethod
     def _pop_generators(
-        side: int, alignment: Alignment,
+        side: int, alignment: Alignment[T_contra],
         generators: tuple[icepool.OutcomeCountGenerator[T_contra, Any], ...]
-    ) -> tuple[Any, Alignment, tuple['icepool.NextOutcomeCountGenerator', ...]]:
+    ) -> tuple[Any, Alignment[T_contra], tuple[
+            'icepool.NextOutcomeCountGenerator', ...]]:
         """Pops a single outcome from the generators.
 
         Returns:
