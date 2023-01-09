@@ -19,10 +19,11 @@ from icepool.evaluator.adjust import FinalOutcomeMapEvaluator
 __all__ = [
     'WrapFuncEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
     'CountEvaluator', 'count_evaluator', 'HighestOutcomeAndCountEvaluator',
-    'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator', 'AllCounts',
-    'LargestStraightEvaluator', 'LargestStraightAndOutcomeEvaluator',
-    'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
-    'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
+    'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator',
+    'AllCountsEvaluator', 'LargestStraightEvaluator',
+    'LargestStraightAndOutcomeEvaluator', 'ComparisonEvaluator',
+    'IsSubsetEvaluator', 'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
+    'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'JointEvaluator',
     'FinalOutcomeMapEvaluator'
 ]
