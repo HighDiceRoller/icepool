@@ -101,52 +101,52 @@
                     <a class="variable" href="#count_evaluator">count_evaluator</a>
             </li>
             <li>
-                    <a class="class" href="#LargestMatchingSetEvaluator">LargestMatchingSetEvaluator</a>
+                    <a class="class" href="#HighestOutcomeAndCountEvaluator">HighestOutcomeAndCountEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#LargestMatchingSetEvaluator.__init__">LargestMatchingSetEvaluator</a>
+                                <a class="function" href="#HighestOutcomeAndCountEvaluator.__init__">HighestOutcomeAndCountEvaluator</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestMatchingSetEvaluator.next_state">next_state</a>
+                                <a class="function" href="#HighestOutcomeAndCountEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestMatchingSetEvaluator.order">order</a>
+                                <a class="function" href="#HighestOutcomeAndCountEvaluator.order">order</a>
                         </li>
                 </ul>
 
             </li>
             <li>
-                    <a class="class" href="#LargestMatchingSetAndOutcomeEvaluator">LargestMatchingSetAndOutcomeEvaluator</a>
+                    <a class="class" href="#LargestCountEvaluator">LargestCountEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#LargestMatchingSetAndOutcomeEvaluator.__init__">LargestMatchingSetAndOutcomeEvaluator</a>
+                                <a class="function" href="#LargestCountEvaluator.__init__">LargestCountEvaluator</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestMatchingSetAndOutcomeEvaluator.next_state">next_state</a>
+                                <a class="function" href="#LargestCountEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestMatchingSetAndOutcomeEvaluator.order">order</a>
+                                <a class="function" href="#LargestCountEvaluator.order">order</a>
                         </li>
                 </ul>
 
             </li>
             <li>
-                    <a class="class" href="#AllMatchingSetsEvaluator">AllMatchingSetsEvaluator</a>
+                    <a class="class" href="#LargestCountAndOutcomeEvaluator">LargestCountAndOutcomeEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#AllMatchingSetsEvaluator.__init__">AllMatchingSetsEvaluator</a>
+                                <a class="function" href="#LargestCountAndOutcomeEvaluator.__init__">LargestCountAndOutcomeEvaluator</a>
                         </li>
                         <li>
-                                <a class="function" href="#AllMatchingSetsEvaluator.next_state">next_state</a>
+                                <a class="function" href="#LargestCountAndOutcomeEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#AllMatchingSetsEvaluator.final_outcome">final_outcome</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#AllMatchingSetsEvaluator.order">order</a>
+                                <a class="function" href="#LargestCountAndOutcomeEvaluator.order">order</a>
                         </li>
                 </ul>
 
+            </li>
+            <li>
+                    <a class="variable" href="#AllCounts">AllCounts</a>
             </li>
             <li>
                     <a class="class" href="#LargestStraightEvaluator">LargestStraightEvaluator</a>
@@ -371,28 +371,29 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.basic</span> <span class="kn">import</span> <span class="n">WrapFuncEvaluator</span><span class="p">,</span> <span class="n">ExpandEvaluator</span><span class="p">,</span> <span class="n">SumEvaluator</span><span class="p">,</span> <span class="n">sum_evaluator</span><span class="p">,</span> <span class="n">CountEvaluator</span><span class="p">,</span> <span class="n">count_evaluator</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.poker</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LargestMatchingSetEvaluator</span><span class="p">,</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>                                     <span class="n">LargestMatchingSetAndOutcomeEvaluator</span><span class="p">,</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>                                     <span class="n">AllMatchingSetsEvaluator</span><span class="p">,</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>                                     <span class="n">LargestStraightEvaluator</span><span class="p">,</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>                                     <span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">)</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.comparison</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.adjust</span> <span class="kn">import</span> <span class="n">FinalOutcomeMapEvaluator</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="s1">&#39;WrapFuncEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s1">&#39;CountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;count_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestMatchingSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s1">&#39;LargestMatchingSetAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllMatchingSetsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="p">]</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.poker</span> <span class="kn">import</span> <span class="p">(</span><span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">,</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>                                     <span class="n">LargestCountEvaluator</span><span class="p">,</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>                                     <span class="n">LargestCountAndOutcomeEvaluator</span><span class="p">,</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>                                     <span class="n">AllCountsEvaluator</span><span class="p">,</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>                                     <span class="n">LargestStraightEvaluator</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>                                     <span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">)</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.comparison</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.adjust</span> <span class="kn">import</span> <span class="n">FinalOutcomeMapEvaluator</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s1">&#39;WrapFuncEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s1">&#39;CountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;count_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCounts&#39;</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -890,60 +891,185 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
     
 
                 </section>
-                <section id="LargestMatchingSetEvaluator">
-                            <input id="LargestMatchingSetEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="HighestOutcomeAndCountEvaluator">
+                            <input id="HighestOutcomeAndCountEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestMatchingSetEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, int]</span>):
+    <span class="name">HighestOutcomeAndCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, tuple[typing.Any, int], int]</span>):
 
-                <label class="view-source-button" for="LargestMatchingSetEvaluator-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetEvaluator-44"><a href="#LargestMatchingSetEvaluator-44"><span class="linenos">44</span></a><span class="k">class</span> <span class="nc">LargestMatchingSetEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
-</span><span id="LargestMatchingSetEvaluator-45"><a href="#LargestMatchingSetEvaluator-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The largest matching set of a generator.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetEvaluator-46"><a href="#LargestMatchingSetEvaluator-46"><span class="linenos">46</span></a>
-</span><span id="LargestMatchingSetEvaluator-47"><a href="#LargestMatchingSetEvaluator-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestMatchingSetEvaluator-48"><a href="#LargestMatchingSetEvaluator-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetEvaluator-49"><a href="#LargestMatchingSetEvaluator-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-</span><span id="LargestMatchingSetEvaluator-50"><a href="#LargestMatchingSetEvaluator-50"><span class="linenos">50</span></a>
-</span><span id="LargestMatchingSetEvaluator-51"><a href="#LargestMatchingSetEvaluator-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestMatchingSetEvaluator-52"><a href="#LargestMatchingSetEvaluator-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetEvaluator-53"><a href="#LargestMatchingSetEvaluator-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator-13"><a href="#HighestOutcomeAndCountEvaluator-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">HighestOutcomeAndCountEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span>
+</span><span id="HighestOutcomeAndCountEvaluator-14"><a href="#HighestOutcomeAndCountEvaluator-14"><span class="linenos">14</span></a>                                                                           <span class="nb">int</span><span class="p">],</span>
+</span><span id="HighestOutcomeAndCountEvaluator-15"><a href="#HighestOutcomeAndCountEvaluator-15"><span class="linenos">15</span></a>                                                            <span class="nb">int</span><span class="p">]):</span>
+</span><span id="HighestOutcomeAndCountEvaluator-16"><a href="#HighestOutcomeAndCountEvaluator-16"><span class="linenos">16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The highest outcome that has positive count, along with that count.</span>
+</span><span id="HighestOutcomeAndCountEvaluator-17"><a href="#HighestOutcomeAndCountEvaluator-17"><span class="linenos">17</span></a>
+</span><span id="HighestOutcomeAndCountEvaluator-18"><a href="#HighestOutcomeAndCountEvaluator-18"><span class="linenos">18</span></a><span class="sd">    If no outcomes have positive count, an arbitrary outcome will be produced</span>
+</span><span id="HighestOutcomeAndCountEvaluator-19"><a href="#HighestOutcomeAndCountEvaluator-19"><span class="linenos">19</span></a><span class="sd">    with a 0 count.</span>
+</span><span id="HighestOutcomeAndCountEvaluator-20"><a href="#HighestOutcomeAndCountEvaluator-20"><span class="linenos">20</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator-21"><a href="#HighestOutcomeAndCountEvaluator-21"><span class="linenos">21</span></a>
+</span><span id="HighestOutcomeAndCountEvaluator-22"><a href="#HighestOutcomeAndCountEvaluator-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator-23"><a href="#HighestOutcomeAndCountEvaluator-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator-24"><a href="#HighestOutcomeAndCountEvaluator-24"><span class="linenos">24</span></a>        <span class="n">count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="HighestOutcomeAndCountEvaluator-25"><a href="#HighestOutcomeAndCountEvaluator-25"><span class="linenos">25</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-26"><a href="#HighestOutcomeAndCountEvaluator-26"><span class="linenos">26</span></a>            <span class="k">return</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span>
+</span><span id="HighestOutcomeAndCountEvaluator-27"><a href="#HighestOutcomeAndCountEvaluator-27"><span class="linenos">27</span></a>        <span class="k">elif</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-28"><a href="#HighestOutcomeAndCountEvaluator-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-29"><a href="#HighestOutcomeAndCountEvaluator-29"><span class="linenos">29</span></a>                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+</span><span id="HighestOutcomeAndCountEvaluator-30"><a href="#HighestOutcomeAndCountEvaluator-30"><span class="linenos">30</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-31"><a href="#HighestOutcomeAndCountEvaluator-31"><span class="linenos">31</span></a>                <span class="k">return</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span>
+</span><span id="HighestOutcomeAndCountEvaluator-32"><a href="#HighestOutcomeAndCountEvaluator-32"><span class="linenos">32</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-33"><a href="#HighestOutcomeAndCountEvaluator-33"><span class="linenos">33</span></a>            <span class="k">return</span> <span class="n">state</span>
+</span><span id="HighestOutcomeAndCountEvaluator-34"><a href="#HighestOutcomeAndCountEvaluator-34"><span class="linenos">34</span></a>
+</span><span id="HighestOutcomeAndCountEvaluator-35"><a href="#HighestOutcomeAndCountEvaluator-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator-36"><a href="#HighestOutcomeAndCountEvaluator-36"><span class="linenos">36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator-37"><a href="#HighestOutcomeAndCountEvaluator-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>The largest matching set of a generator.</p>
+            <div class="docstring"><p>The highest outcome that has positive count, along with that count.</p>
+
+<p>If no outcomes have positive count, an arbitrary outcome will be produced
+with a 0 count.</p>
 </div>
 
 
-                            <div id="LargestMatchingSetEvaluator.__init__" class="classattr">
+                            <div id="HighestOutcomeAndCountEvaluator.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">LargestMatchingSetEvaluator</span><span class="signature pdoc-code condensed">()</span>
+        <span class="name">HighestOutcomeAndCountEvaluator</span><span class="signature pdoc-code condensed">()</span>
 
         
     </div>
-    <a class="headerlink" href="#LargestMatchingSetEvaluator.__init__"></a>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.__init__"></a>
     
     
 
                             </div>
-                            <div id="LargestMatchingSetEvaluator.next_state" class="classattr">
-                                        <input id="LargestMatchingSetEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HighestOutcomeAndCountEvaluator.next_state" class="classattr">
+                                        <input id="HighestOutcomeAndCountEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.next_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.next_state-22"><a href="#HighestOutcomeAndCountEvaluator.next_state-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-23"><a href="#HighestOutcomeAndCountEvaluator.next_state-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-24"><a href="#HighestOutcomeAndCountEvaluator.next_state-24"><span class="linenos">24</span></a>        <span class="n">count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-25"><a href="#HighestOutcomeAndCountEvaluator.next_state-25"><span class="linenos">25</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-26"><a href="#HighestOutcomeAndCountEvaluator.next_state-26"><span class="linenos">26</span></a>            <span class="k">return</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-27"><a href="#HighestOutcomeAndCountEvaluator.next_state-27"><span class="linenos">27</span></a>        <span class="k">elif</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-28"><a href="#HighestOutcomeAndCountEvaluator.next_state-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-29"><a href="#HighestOutcomeAndCountEvaluator.next_state-29"><span class="linenos">29</span></a>                <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-30"><a href="#HighestOutcomeAndCountEvaluator.next_state-30"><span class="linenos">30</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-31"><a href="#HighestOutcomeAndCountEvaluator.next_state-31"><span class="linenos">31</span></a>                <span class="k">return</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-32"><a href="#HighestOutcomeAndCountEvaluator.next_state-32"><span class="linenos">32</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state-33"><a href="#HighestOutcomeAndCountEvaluator.next_state-33"><span class="linenos">33</span></a>            <span class="k">return</span> <span class="n">state</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="HighestOutcomeAndCountEvaluator.order" class="classattr">
+                                        <input id="HighestOutcomeAndCountEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.order-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.order-35"><a href="#HighestOutcomeAndCountEvaluator.order-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator.order-36"><a href="#HighestOutcomeAndCountEvaluator.order-36"><span class="linenos">36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator.order-37"><a href="#HighestOutcomeAndCountEvaluator.order-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Allows any order.</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                <dd id="HighestOutcomeAndCountEvaluator.final_outcome" class="function">final_outcome</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.alignment" class="function">alignment</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.sample" class="function">sample</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="LargestCountEvaluator">
+                            <input id="LargestCountEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">LargestCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, int]</span>):
+
+                <label class="view-source-button" for="LargestCountEvaluator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LargestCountEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator-73"><a href="#LargestCountEvaluator-73"><span class="linenos">73</span></a><span class="k">class</span> <span class="nc">LargestCountEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LargestCountEvaluator-74"><a href="#LargestCountEvaluator-74"><span class="linenos">74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The largest count of any outcome.&quot;&quot;&quot;</span>
+</span><span id="LargestCountEvaluator-75"><a href="#LargestCountEvaluator-75"><span class="linenos">75</span></a>
+</span><span id="LargestCountEvaluator-76"><a href="#LargestCountEvaluator-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator-77"><a href="#LargestCountEvaluator-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestCountEvaluator-78"><a href="#LargestCountEvaluator-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="LargestCountEvaluator-79"><a href="#LargestCountEvaluator-79"><span class="linenos">79</span></a>
+</span><span id="LargestCountEvaluator-80"><a href="#LargestCountEvaluator-80"><span class="linenos">80</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator-81"><a href="#LargestCountEvaluator-81"><span class="linenos">81</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="LargestCountEvaluator-82"><a href="#LargestCountEvaluator-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The largest count of any outcome.</p>
+</div>
+
+
+                            <div id="LargestCountEvaluator.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">LargestCountEvaluator</span><span class="signature pdoc-code condensed">()</span>
+
+        
+    </div>
+    <a class="headerlink" href="#LargestCountEvaluator.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="LargestCountEvaluator.next_state" class="classattr">
+                                        <input id="LargestCountEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">_</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="LargestMatchingSetEvaluator.next_state-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountEvaluator.next_state-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetEvaluator.next_state-47"><a href="#LargestMatchingSetEvaluator.next_state-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestMatchingSetEvaluator.next_state-48"><a href="#LargestMatchingSetEvaluator.next_state-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetEvaluator.next_state-49"><a href="#LargestMatchingSetEvaluator.next_state-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+    <a class="headerlink" href="#LargestCountEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator.next_state-76"><a href="#LargestCountEvaluator.next_state-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator.next_state-77"><a href="#LargestCountEvaluator.next_state-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestCountEvaluator.next_state-78"><a href="#LargestCountEvaluator.next_state-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -952,20 +1078,20 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
 
 
                             </div>
-                            <div id="LargestMatchingSetEvaluator.order" class="classattr">
-                                        <input id="LargestMatchingSetEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestCountEvaluator.order" class="classattr">
+                                        <input id="LargestCountEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="LargestMatchingSetEvaluator.order-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountEvaluator.order-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetEvaluator.order-51"><a href="#LargestMatchingSetEvaluator.order-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestMatchingSetEvaluator.order-52"><a href="#LargestMatchingSetEvaluator.order-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetEvaluator.order-53"><a href="#LargestMatchingSetEvaluator.order-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+    <a class="headerlink" href="#LargestCountEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator.order-80"><a href="#LargestCountEvaluator.order-80"><span class="linenos">80</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator.order-81"><a href="#LargestCountEvaluator.order-81"><span class="linenos">81</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="LargestCountEvaluator.order-82"><a href="#LargestCountEvaluator.order-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
@@ -978,102 +1104,72 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
-                                <dd id="LargestMatchingSetEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="LargestMatchingSetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="LargestMatchingSetEvaluator.range_alignment" class="function">range_alignment</dd>
-                <dd id="LargestMatchingSetEvaluator.evaluate" class="function">evaluate</dd>
-                <dd id="LargestMatchingSetEvaluator.sample" class="function">sample</dd>
+                                <dd id="LargestCountEvaluator.final_outcome" class="function">final_outcome</dd>
+                <dd id="LargestCountEvaluator.alignment" class="function">alignment</dd>
+                <dd id="LargestCountEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="LargestCountEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="LargestCountEvaluator.sample" class="function">sample</dd>
 
             </div>
                                 </dl>
                             </div>
                 </section>
-                <section id="LargestMatchingSetAndOutcomeEvaluator">
-                            <input id="LargestMatchingSetAndOutcomeEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="LargestCountAndOutcomeEvaluator">
+                            <input id="LargestCountAndOutcomeEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestMatchingSetAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, tuple[int, typing.Any], int]</span>):
+    <span class="name">LargestCountAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, tuple[int, typing.Any], int]</span>):
 
-                <label class="view-source-button" for="LargestMatchingSetAndOutcomeEvaluator-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountAndOutcomeEvaluator-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetAndOutcomeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetAndOutcomeEvaluator-56"><a href="#LargestMatchingSetAndOutcomeEvaluator-56"><span class="linenos">56</span></a><span class="k">class</span> <span class="nc">LargestMatchingSetAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-57"><a href="#LargestMatchingSetAndOutcomeEvaluator-57"><span class="linenos">57</span></a>                                                                  <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-58"><a href="#LargestMatchingSetAndOutcomeEvaluator-58"><span class="linenos">58</span></a>                                                                        <span class="n">Any</span><span class="p">],</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-59"><a href="#LargestMatchingSetAndOutcomeEvaluator-59"><span class="linenos">59</span></a>                                                                  <span class="nb">int</span><span class="p">]):</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-60"><a href="#LargestMatchingSetAndOutcomeEvaluator-60"><span class="linenos">60</span></a>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-61"><a href="#LargestMatchingSetAndOutcomeEvaluator-61"><span class="linenos">61</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-62"><a href="#LargestMatchingSetAndOutcomeEvaluator-62"><span class="linenos">62</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-63"><a href="#LargestMatchingSetAndOutcomeEvaluator-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-64"><a href="#LargestMatchingSetAndOutcomeEvaluator-64"><span class="linenos">64</span></a>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-65"><a href="#LargestMatchingSetAndOutcomeEvaluator-65"><span class="linenos">65</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-66"><a href="#LargestMatchingSetAndOutcomeEvaluator-66"><span class="linenos">66</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator-67"><a href="#LargestMatchingSetAndOutcomeEvaluator-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator-85"><a href="#LargestCountAndOutcomeEvaluator-85"><span class="linenos">85</span></a><span class="k">class</span> <span class="nc">LargestCountAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestCountAndOutcomeEvaluator-86"><a href="#LargestCountAndOutcomeEvaluator-86"><span class="linenos">86</span></a>                                                                           <span class="n">Any</span><span class="p">],</span>
+</span><span id="LargestCountAndOutcomeEvaluator-87"><a href="#LargestCountAndOutcomeEvaluator-87"><span class="linenos">87</span></a>                                                            <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LargestCountAndOutcomeEvaluator-88"><a href="#LargestCountAndOutcomeEvaluator-88"><span class="linenos">88</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The largest count of any outcome, along with that outcome.&quot;&quot;&quot;</span>
+</span><span id="LargestCountAndOutcomeEvaluator-89"><a href="#LargestCountAndOutcomeEvaluator-89"><span class="linenos">89</span></a>
+</span><span id="LargestCountAndOutcomeEvaluator-90"><a href="#LargestCountAndOutcomeEvaluator-90"><span class="linenos">90</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator-91"><a href="#LargestCountAndOutcomeEvaluator-91"><span class="linenos">91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestCountAndOutcomeEvaluator-92"><a href="#LargestCountAndOutcomeEvaluator-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+</span><span id="LargestCountAndOutcomeEvaluator-93"><a href="#LargestCountAndOutcomeEvaluator-93"><span class="linenos">93</span></a>
+</span><span id="LargestCountAndOutcomeEvaluator-94"><a href="#LargestCountAndOutcomeEvaluator-94"><span class="linenos">94</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator-95"><a href="#LargestCountAndOutcomeEvaluator-95"><span class="linenos">95</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="LargestCountAndOutcomeEvaluator-96"><a href="#LargestCountAndOutcomeEvaluator-96"><span class="linenos">96</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>An abstract, immutable, callable class for evaulating one or more <code>OutcomeCountGenerator</code>s.</p>
-
-<p>There is one abstract method to implement: <code><a href="#LargestMatchingSetAndOutcomeEvaluator.next_state">next_state()</a></code>.
-This should incrementally calculate the result given one outcome at a time
-along with how many of that outcome were produced.</p>
-
-<p>An example sequence of calls, as far as <code><a href="#LargestMatchingSetAndOutcomeEvaluator.next_state">next_state()</a></code> is concerned, is:</p>
-
-<ol>
-<li><code>state = next_state(state=None, outcome=1, count_of_1s)</code></li>
-<li><code>state = next_state(state, 2, count_of_2s)</code></li>
-<li><code>state = next_state(state, 3, count_of_3s)</code></li>
-<li><code>state = next_state(state, 4, count_of_4s)</code></li>
-<li><code>state = next_state(state, 5, count_of_5s)</code></li>
-<li><code>state = next_state(state, 6, count_of_6s)</code></li>
-<li><code>outcome = final_outcome(state, *generators)</code></li>
-</ol>
-
-<p>A few other methods can optionally be overridden to further customize behavior.</p>
-
-<p>It is not expected that subclasses of <code>OutcomeCountEvaluator</code>
-be able to handle arbitrary types or numbers of generators.
-Indeed, most are expected to handle only a fixed number of generators,
-and often even only generators with a particular type of <code>Die</code>.</p>
-
-<p>Instances cache all intermediate state distributions.
-You should therefore reuse instances when possible.</p>
-
-<p>Instances should not be modified after construction
-in any way that affects the return values of these methods.
-Otherwise, values in the cache may be incorrect.</p>
+            <div class="docstring"><p>The largest count of any outcome, along with that outcome.</p>
 </div>
 
 
-                            <div id="LargestMatchingSetAndOutcomeEvaluator.__init__" class="classattr">
+                            <div id="LargestCountAndOutcomeEvaluator.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">LargestMatchingSetAndOutcomeEvaluator</span><span class="signature pdoc-code condensed">()</span>
+        <span class="name">LargestCountAndOutcomeEvaluator</span><span class="signature pdoc-code condensed">()</span>
 
         
     </div>
-    <a class="headerlink" href="#LargestMatchingSetAndOutcomeEvaluator.__init__"></a>
+    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator.__init__"></a>
     
     
 
                             </div>
-                            <div id="LargestMatchingSetAndOutcomeEvaluator.next_state" class="classattr">
-                                        <input id="LargestMatchingSetAndOutcomeEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestCountAndOutcomeEvaluator.next_state" class="classattr">
+                                        <input id="LargestCountAndOutcomeEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="LargestMatchingSetAndOutcomeEvaluator.next_state-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountAndOutcomeEvaluator.next_state-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetAndOutcomeEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetAndOutcomeEvaluator.next_state-61"><a href="#LargestMatchingSetAndOutcomeEvaluator.next_state-61"><span class="linenos">61</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator.next_state-62"><a href="#LargestMatchingSetAndOutcomeEvaluator.next_state-62"><span class="linenos">62</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator.next_state-63"><a href="#LargestMatchingSetAndOutcomeEvaluator.next_state-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
+    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator.next_state-90"><a href="#LargestCountAndOutcomeEvaluator.next_state-90"><span class="linenos">90</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator.next_state-91"><a href="#LargestCountAndOutcomeEvaluator.next_state-91"><span class="linenos">91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestCountAndOutcomeEvaluator.next_state-92"><a href="#LargestCountAndOutcomeEvaluator.next_state-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -1082,20 +1178,20 @@ Otherwise, values in the cache may be incorrect.</p>
 
 
                             </div>
-                            <div id="LargestMatchingSetAndOutcomeEvaluator.order" class="classattr">
-                                        <input id="LargestMatchingSetAndOutcomeEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestCountAndOutcomeEvaluator.order" class="classattr">
+                                        <input id="LargestCountAndOutcomeEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="LargestMatchingSetAndOutcomeEvaluator.order-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountAndOutcomeEvaluator.order-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestMatchingSetAndOutcomeEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestMatchingSetAndOutcomeEvaluator.order-65"><a href="#LargestMatchingSetAndOutcomeEvaluator.order-65"><span class="linenos">65</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator.order-66"><a href="#LargestMatchingSetAndOutcomeEvaluator.order-66"><span class="linenos">66</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="LargestMatchingSetAndOutcomeEvaluator.order-67"><a href="#LargestMatchingSetAndOutcomeEvaluator.order-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator.order-94"><a href="#LargestCountAndOutcomeEvaluator.order-94"><span class="linenos">94</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator.order-95"><a href="#LargestCountAndOutcomeEvaluator.order-95"><span class="linenos">95</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="LargestCountAndOutcomeEvaluator.order-96"><a href="#LargestCountAndOutcomeEvaluator.order-96"><span class="linenos">96</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
@@ -1108,177 +1204,26 @@ Otherwise, values in the cache may be incorrect.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
-                                <dd id="LargestMatchingSetAndOutcomeEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="LargestMatchingSetAndOutcomeEvaluator.alignment" class="function">alignment</dd>
-                <dd id="LargestMatchingSetAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
-                <dd id="LargestMatchingSetAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
-                <dd id="LargestMatchingSetAndOutcomeEvaluator.sample" class="function">sample</dd>
+                                <dd id="LargestCountAndOutcomeEvaluator.final_outcome" class="function">final_outcome</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.alignment" class="function">alignment</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.sample" class="function">sample</dd>
 
             </div>
                                 </dl>
                             </div>
                 </section>
-                <section id="AllMatchingSetsEvaluator">
-                            <input id="AllMatchingSetsEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">AllMatchingSetsEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, tuple[int, ...], int]</span>):
+                <section id="AllCounts">
+                    <div class="attr variable">
+            <span class="name">AllCounts</span>
 
-                <label class="view-source-button" for="AllMatchingSetsEvaluator-view-source"><span>View Source</span></label>
-
+        
     </div>
-    <a class="headerlink" href="#AllMatchingSetsEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllMatchingSetsEvaluator-13"><a href="#AllMatchingSetsEvaluator-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">AllMatchingSetsEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-</span><span id="AllMatchingSetsEvaluator-14"><a href="#AllMatchingSetsEvaluator-14"><span class="linenos">14</span></a>                                                     <span class="nb">int</span><span class="p">]):</span>
-</span><span id="AllMatchingSetsEvaluator-15"><a href="#AllMatchingSetsEvaluator-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All counts in ascending order.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-16"><a href="#AllMatchingSetsEvaluator-16"><span class="linenos">16</span></a>
-</span><span id="AllMatchingSetsEvaluator-17"><a href="#AllMatchingSetsEvaluator-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator-18"><a href="#AllMatchingSetsEvaluator-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-19"><a href="#AllMatchingSetsEvaluator-19"><span class="linenos">19</span></a><span class="sd">        Args:</span>
-</span><span id="AllMatchingSetsEvaluator-20"><a href="#AllMatchingSetsEvaluator-20"><span class="linenos">20</span></a><span class="sd">            positive_only: If `True` (default), any zero and negative values</span>
-</span><span id="AllMatchingSetsEvaluator-21"><a href="#AllMatchingSetsEvaluator-21"><span class="linenos">21</span></a><span class="sd">                in the result are removed.</span>
-</span><span id="AllMatchingSetsEvaluator-22"><a href="#AllMatchingSetsEvaluator-22"><span class="linenos">22</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-23"><a href="#AllMatchingSetsEvaluator-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span> <span class="o">=</span> <span class="n">positive_only</span>
-</span><span id="AllMatchingSetsEvaluator-24"><a href="#AllMatchingSetsEvaluator-24"><span class="linenos">24</span></a>
-</span><span id="AllMatchingSetsEvaluator-25"><a href="#AllMatchingSetsEvaluator-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator-26"><a href="#AllMatchingSetsEvaluator-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-27"><a href="#AllMatchingSetsEvaluator-27"><span class="linenos">27</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="n">count</span><span class="p">,)</span>
-</span><span id="AllMatchingSetsEvaluator-28"><a href="#AllMatchingSetsEvaluator-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
-</span><span id="AllMatchingSetsEvaluator-29"><a href="#AllMatchingSetsEvaluator-29"><span class="linenos">29</span></a>
-</span><span id="AllMatchingSetsEvaluator-30"><a href="#AllMatchingSetsEvaluator-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator-31"><a href="#AllMatchingSetsEvaluator-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-32"><a href="#AllMatchingSetsEvaluator-32"><span class="linenos">32</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator-33"><a href="#AllMatchingSetsEvaluator-33"><span class="linenos">33</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllMatchingSetsEvaluator-34"><a href="#AllMatchingSetsEvaluator-34"><span class="linenos">34</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator-35"><a href="#AllMatchingSetsEvaluator-35"><span class="linenos">35</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">final_state</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AllMatchingSetsEvaluator-36"><a href="#AllMatchingSetsEvaluator-36"><span class="linenos">36</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator-37"><a href="#AllMatchingSetsEvaluator-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="n">final_state</span>
-</span><span id="AllMatchingSetsEvaluator-38"><a href="#AllMatchingSetsEvaluator-38"><span class="linenos">38</span></a>
-</span><span id="AllMatchingSetsEvaluator-39"><a href="#AllMatchingSetsEvaluator-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator-40"><a href="#AllMatchingSetsEvaluator-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator-41"><a href="#AllMatchingSetsEvaluator-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
-</span></pre></div>
+    <a class="headerlink" href="#AllCounts"></a>
+    
+    
 
-
-            <div class="docstring"><p>All counts in ascending order.</p>
-</div>
-
-
-                            <div id="AllMatchingSetsEvaluator.__init__" class="classattr">
-                                        <input id="AllMatchingSetsEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">AllMatchingSetsEvaluator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span>)</span>
-
-                <label class="view-source-button" for="AllMatchingSetsEvaluator.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#AllMatchingSetsEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllMatchingSetsEvaluator.__init__-17"><a href="#AllMatchingSetsEvaluator.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-18"><a href="#AllMatchingSetsEvaluator.__init__-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-19"><a href="#AllMatchingSetsEvaluator.__init__-19"><span class="linenos">19</span></a><span class="sd">        Args:</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-20"><a href="#AllMatchingSetsEvaluator.__init__-20"><span class="linenos">20</span></a><span class="sd">            positive_only: If `True` (default), any zero and negative values</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-21"><a href="#AllMatchingSetsEvaluator.__init__-21"><span class="linenos">21</span></a><span class="sd">                in the result are removed.</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-22"><a href="#AllMatchingSetsEvaluator.__init__-22"><span class="linenos">22</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator.__init__-23"><a href="#AllMatchingSetsEvaluator.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span> <span class="o">=</span> <span class="n">positive_only</span>
-</span></pre></div>
-
-
-            <div class="docstring"><h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>positive_only:</strong>  If <code>True</code> (default), any zero and negative values
-in the result are removed.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="AllMatchingSetsEvaluator.next_state" class="classattr">
-                                        <input id="AllMatchingSetsEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="AllMatchingSetsEvaluator.next_state-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#AllMatchingSetsEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllMatchingSetsEvaluator.next_state-25"><a href="#AllMatchingSetsEvaluator.next_state-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator.next_state-26"><a href="#AllMatchingSetsEvaluator.next_state-26"><span class="linenos">26</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator.next_state-27"><a href="#AllMatchingSetsEvaluator.next_state-27"><span class="linenos">27</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="n">count</span><span class="p">,)</span>
-</span><span id="AllMatchingSetsEvaluator.next_state-28"><a href="#AllMatchingSetsEvaluator.next_state-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Implementation.</p>
-</div>
-
-
-                            </div>
-                            <div id="AllMatchingSetsEvaluator.final_outcome" class="classattr">
-                                        <input id="AllMatchingSetsEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="AllMatchingSetsEvaluator.final_outcome-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#AllMatchingSetsEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllMatchingSetsEvaluator.final_outcome-30"><a href="#AllMatchingSetsEvaluator.final_outcome-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-31"><a href="#AllMatchingSetsEvaluator.final_outcome-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-32"><a href="#AllMatchingSetsEvaluator.final_outcome-32"><span class="linenos">32</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-33"><a href="#AllMatchingSetsEvaluator.final_outcome-33"><span class="linenos">33</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-34"><a href="#AllMatchingSetsEvaluator.final_outcome-34"><span class="linenos">34</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-35"><a href="#AllMatchingSetsEvaluator.final_outcome-35"><span class="linenos">35</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">final_state</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-36"><a href="#AllMatchingSetsEvaluator.final_outcome-36"><span class="linenos">36</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="AllMatchingSetsEvaluator.final_outcome-37"><a href="#AllMatchingSetsEvaluator.final_outcome-37"><span class="linenos">37</span></a>            <span class="k">return</span> <span class="n">final_state</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Implementation.</p>
-</div>
-
-
-                            </div>
-                            <div id="AllMatchingSetsEvaluator.order" class="classattr">
-                                        <input id="AllMatchingSetsEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="AllMatchingSetsEvaluator.order-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#AllMatchingSetsEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllMatchingSetsEvaluator.order-39"><a href="#AllMatchingSetsEvaluator.order-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="AllMatchingSetsEvaluator.order-40"><a href="#AllMatchingSetsEvaluator.order-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="AllMatchingSetsEvaluator.order-41"><a href="#AllMatchingSetsEvaluator.order-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Allows any order.</p>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
-                                <dd id="AllMatchingSetsEvaluator.alignment" class="function">alignment</dd>
-                <dd id="AllMatchingSetsEvaluator.range_alignment" class="function">range_alignment</dd>
-                <dd id="AllMatchingSetsEvaluator.evaluate" class="function">evaluate</dd>
-                <dd id="AllMatchingSetsEvaluator.sample" class="function">sample</dd>
-
-            </div>
-                                </dl>
-                            </div>
                 </section>
                 <section id="LargestStraightEvaluator">
                             <input id="LargestStraightEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -1291,28 +1236,28 @@ in the result are removed.</li>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator-70"><a href="#LargestStraightEvaluator-70"><span class="linenos">70</span></a><span class="k">class</span> <span class="nc">LargestStraightEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
-</span><span id="LargestStraightEvaluator-71"><a href="#LargestStraightEvaluator-71"><span class="linenos">71</span></a>
-</span><span id="LargestStraightEvaluator-72"><a href="#LargestStraightEvaluator-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator-73"><a href="#LargestStraightEvaluator-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator-74"><a href="#LargestStraightEvaluator-74"><span class="linenos">74</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightEvaluator-75"><a href="#LargestStraightEvaluator-75"><span class="linenos">75</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator-76"><a href="#LargestStraightEvaluator-76"><span class="linenos">76</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightEvaluator-77"><a href="#LargestStraightEvaluator-77"><span class="linenos">77</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator-78"><a href="#LargestStraightEvaluator-78"><span class="linenos">78</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightEvaluator-79"><a href="#LargestStraightEvaluator-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">run</span><span class="p">),</span> <span class="n">run</span>
-</span><span id="LargestStraightEvaluator-80"><a href="#LargestStraightEvaluator-80"><span class="linenos">80</span></a>
-</span><span id="LargestStraightEvaluator-81"><a href="#LargestStraightEvaluator-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator-82"><a href="#LargestStraightEvaluator-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator-83"><a href="#LargestStraightEvaluator-83"><span class="linenos">83</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator-84"><a href="#LargestStraightEvaluator-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="mi">0</span>
-</span><span id="LargestStraightEvaluator-85"><a href="#LargestStraightEvaluator-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="LargestStraightEvaluator-86"><a href="#LargestStraightEvaluator-86"><span class="linenos">86</span></a>
-</span><span id="LargestStraightEvaluator-87"><a href="#LargestStraightEvaluator-87"><span class="linenos">87</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator-88"><a href="#LargestStraightEvaluator-88"><span class="linenos">88</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator-89"><a href="#LargestStraightEvaluator-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
-</span><span id="LargestStraightEvaluator-90"><a href="#LargestStraightEvaluator-90"><span class="linenos">90</span></a>
-</span><span id="LargestStraightEvaluator-91"><a href="#LargestStraightEvaluator-91"><span class="linenos">91</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator-99"><a href="#LargestStraightEvaluator-99"><span class="linenos"> 99</span></a><span class="k">class</span> <span class="nc">LargestStraightEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LargestStraightEvaluator-100"><a href="#LargestStraightEvaluator-100"><span class="linenos">100</span></a>
+</span><span id="LargestStraightEvaluator-101"><a href="#LargestStraightEvaluator-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator-102"><a href="#LargestStraightEvaluator-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator-103"><a href="#LargestStraightEvaluator-103"><span class="linenos">103</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator-104"><a href="#LargestStraightEvaluator-104"><span class="linenos">104</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator-105"><a href="#LargestStraightEvaluator-105"><span class="linenos">105</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightEvaluator-106"><a href="#LargestStraightEvaluator-106"><span class="linenos">106</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator-107"><a href="#LargestStraightEvaluator-107"><span class="linenos">107</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightEvaluator-108"><a href="#LargestStraightEvaluator-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">run</span><span class="p">),</span> <span class="n">run</span>
+</span><span id="LargestStraightEvaluator-109"><a href="#LargestStraightEvaluator-109"><span class="linenos">109</span></a>
+</span><span id="LargestStraightEvaluator-110"><a href="#LargestStraightEvaluator-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator-111"><a href="#LargestStraightEvaluator-111"><span class="linenos">111</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator-112"><a href="#LargestStraightEvaluator-112"><span class="linenos">112</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator-113"><a href="#LargestStraightEvaluator-113"><span class="linenos">113</span></a>            <span class="k">return</span> <span class="mi">0</span>
+</span><span id="LargestStraightEvaluator-114"><a href="#LargestStraightEvaluator-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="LargestStraightEvaluator-115"><a href="#LargestStraightEvaluator-115"><span class="linenos">115</span></a>
+</span><span id="LargestStraightEvaluator-116"><a href="#LargestStraightEvaluator-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator-117"><a href="#LargestStraightEvaluator-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator-118"><a href="#LargestStraightEvaluator-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="LargestStraightEvaluator-119"><a href="#LargestStraightEvaluator-119"><span class="linenos">119</span></a>
+</span><span id="LargestStraightEvaluator-120"><a href="#LargestStraightEvaluator-120"><span class="linenos">120</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
 </span></pre></div>
 
 
@@ -1373,14 +1318,14 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.next_state-72"><a href="#LargestStraightEvaluator.next_state-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.next_state-73"><a href="#LargestStraightEvaluator.next_state-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.next_state-74"><a href="#LargestStraightEvaluator.next_state-74"><span class="linenos">74</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightEvaluator.next_state-75"><a href="#LargestStraightEvaluator.next_state-75"><span class="linenos">75</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.next_state-76"><a href="#LargestStraightEvaluator.next_state-76"><span class="linenos">76</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightEvaluator.next_state-77"><a href="#LargestStraightEvaluator.next_state-77"><span class="linenos">77</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.next_state-78"><a href="#LargestStraightEvaluator.next_state-78"><span class="linenos">78</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightEvaluator.next_state-79"><a href="#LargestStraightEvaluator.next_state-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">run</span><span class="p">),</span> <span class="n">run</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.next_state-101"><a href="#LargestStraightEvaluator.next_state-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.next_state-102"><a href="#LargestStraightEvaluator.next_state-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.next_state-103"><a href="#LargestStraightEvaluator.next_state-103"><span class="linenos">103</span></a>        <span class="n">best_run</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator.next_state-104"><a href="#LargestStraightEvaluator.next_state-104"><span class="linenos">104</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.next_state-105"><a href="#LargestStraightEvaluator.next_state-105"><span class="linenos">105</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightEvaluator.next_state-106"><a href="#LargestStraightEvaluator.next_state-106"><span class="linenos">106</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.next_state-107"><a href="#LargestStraightEvaluator.next_state-107"><span class="linenos">107</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightEvaluator.next_state-108"><a href="#LargestStraightEvaluator.next_state-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run</span><span class="p">,</span> <span class="n">run</span><span class="p">),</span> <span class="n">run</span>
 </span></pre></div>
 
 
@@ -1400,11 +1345,11 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.final_outcome-81"><a href="#LargestStraightEvaluator.final_outcome-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.final_outcome-82"><a href="#LargestStraightEvaluator.final_outcome-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.final_outcome-83"><a href="#LargestStraightEvaluator.final_outcome-83"><span class="linenos">83</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.final_outcome-84"><a href="#LargestStraightEvaluator.final_outcome-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="mi">0</span>
-</span><span id="LargestStraightEvaluator.final_outcome-85"><a href="#LargestStraightEvaluator.final_outcome-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.final_outcome-110"><a href="#LargestStraightEvaluator.final_outcome-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.final_outcome-111"><a href="#LargestStraightEvaluator.final_outcome-111"><span class="linenos">111</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.final_outcome-112"><a href="#LargestStraightEvaluator.final_outcome-112"><span class="linenos">112</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.final_outcome-113"><a href="#LargestStraightEvaluator.final_outcome-113"><span class="linenos">113</span></a>            <span class="k">return</span> <span class="mi">0</span>
+</span><span id="LargestStraightEvaluator.final_outcome-114"><a href="#LargestStraightEvaluator.final_outcome-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1424,9 +1369,9 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.order-87"><a href="#LargestStraightEvaluator.order-87"><span class="linenos">87</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.order-88"><a href="#LargestStraightEvaluator.order-88"><span class="linenos">88</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.order-89"><a href="#LargestStraightEvaluator.order-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.order-116"><a href="#LargestStraightEvaluator.order-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.order-117"><a href="#LargestStraightEvaluator.order-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.order-118"><a href="#LargestStraightEvaluator.order-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span></pre></div>
 
 
@@ -1522,28 +1467,28 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator-94"><a href="#LargestStraightAndOutcomeEvaluator-94"><span class="linenos"> 94</span></a><span class="k">class</span> <span class="nc">LargestStraightAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-95"><a href="#LargestStraightAndOutcomeEvaluator-95"><span class="linenos"> 95</span></a>                                                                          <span class="nb">int</span><span class="p">],</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-96"><a href="#LargestStraightAndOutcomeEvaluator-96"><span class="linenos"> 96</span></a>                                                               <span class="nb">int</span><span class="p">]):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-97"><a href="#LargestStraightAndOutcomeEvaluator-97"><span class="linenos"> 97</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-98"><a href="#LargestStraightAndOutcomeEvaluator-98"><span class="linenos"> 98</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-99"><a href="#LargestStraightAndOutcomeEvaluator-99"><span class="linenos"> 99</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-100"><a href="#LargestStraightAndOutcomeEvaluator-100"><span class="linenos">100</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-101"><a href="#LargestStraightAndOutcomeEvaluator-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-102"><a href="#LargestStraightAndOutcomeEvaluator-102"><span class="linenos">102</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-103"><a href="#LargestStraightAndOutcomeEvaluator-103"><span class="linenos">103</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-104"><a href="#LargestStraightAndOutcomeEvaluator-104"><span class="linenos">104</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-105"><a href="#LargestStraightAndOutcomeEvaluator-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-106"><a href="#LargestStraightAndOutcomeEvaluator-106"><span class="linenos">106</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-107"><a href="#LargestStraightAndOutcomeEvaluator-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-108"><a href="#LargestStraightAndOutcomeEvaluator-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-109"><a href="#LargestStraightAndOutcomeEvaluator-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-110"><a href="#LargestStraightAndOutcomeEvaluator-110"><span class="linenos">110</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-111"><a href="#LargestStraightAndOutcomeEvaluator-111"><span class="linenos">111</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-112"><a href="#LargestStraightAndOutcomeEvaluator-112"><span class="linenos">112</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-113"><a href="#LargestStraightAndOutcomeEvaluator-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-114"><a href="#LargestStraightAndOutcomeEvaluator-114"><span class="linenos">114</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-115"><a href="#LargestStraightAndOutcomeEvaluator-115"><span class="linenos">115</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator-123"><a href="#LargestStraightAndOutcomeEvaluator-123"><span class="linenos">123</span></a><span class="k">class</span> <span class="nc">LargestStraightAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-124"><a href="#LargestStraightAndOutcomeEvaluator-124"><span class="linenos">124</span></a>                                                                          <span class="nb">int</span><span class="p">],</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-125"><a href="#LargestStraightAndOutcomeEvaluator-125"><span class="linenos">125</span></a>                                                               <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-126"><a href="#LargestStraightAndOutcomeEvaluator-126"><span class="linenos">126</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-127"><a href="#LargestStraightAndOutcomeEvaluator-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-128"><a href="#LargestStraightAndOutcomeEvaluator-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-129"><a href="#LargestStraightAndOutcomeEvaluator-129"><span class="linenos">129</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-130"><a href="#LargestStraightAndOutcomeEvaluator-130"><span class="linenos">130</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-131"><a href="#LargestStraightAndOutcomeEvaluator-131"><span class="linenos">131</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-132"><a href="#LargestStraightAndOutcomeEvaluator-132"><span class="linenos">132</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-133"><a href="#LargestStraightAndOutcomeEvaluator-133"><span class="linenos">133</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-134"><a href="#LargestStraightAndOutcomeEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-135"><a href="#LargestStraightAndOutcomeEvaluator-135"><span class="linenos">135</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-136"><a href="#LargestStraightAndOutcomeEvaluator-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-137"><a href="#LargestStraightAndOutcomeEvaluator-137"><span class="linenos">137</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-138"><a href="#LargestStraightAndOutcomeEvaluator-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-139"><a href="#LargestStraightAndOutcomeEvaluator-139"><span class="linenos">139</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-140"><a href="#LargestStraightAndOutcomeEvaluator-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-141"><a href="#LargestStraightAndOutcomeEvaluator-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-142"><a href="#LargestStraightAndOutcomeEvaluator-142"><span class="linenos">142</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-143"><a href="#LargestStraightAndOutcomeEvaluator-143"><span class="linenos">143</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-144"><a href="#LargestStraightAndOutcomeEvaluator-144"><span class="linenos">144</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
 </span></pre></div>
 
 
@@ -1604,14 +1549,14 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.next_state-98"><a href="#LargestStraightAndOutcomeEvaluator.next_state-98"><span class="linenos"> 98</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-99"><a href="#LargestStraightAndOutcomeEvaluator.next_state-99"><span class="linenos"> 99</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-100"><a href="#LargestStraightAndOutcomeEvaluator.next_state-100"><span class="linenos">100</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-101"><a href="#LargestStraightAndOutcomeEvaluator.next_state-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-102"><a href="#LargestStraightAndOutcomeEvaluator.next_state-102"><span class="linenos">102</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-103"><a href="#LargestStraightAndOutcomeEvaluator.next_state-103"><span class="linenos">103</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-104"><a href="#LargestStraightAndOutcomeEvaluator.next_state-104"><span class="linenos">104</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-105"><a href="#LargestStraightAndOutcomeEvaluator.next_state-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.next_state-127"><a href="#LargestStraightAndOutcomeEvaluator.next_state-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-128"><a href="#LargestStraightAndOutcomeEvaluator.next_state-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-129"><a href="#LargestStraightAndOutcomeEvaluator.next_state-129"><span class="linenos">129</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-130"><a href="#LargestStraightAndOutcomeEvaluator.next_state-130"><span class="linenos">130</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-131"><a href="#LargestStraightAndOutcomeEvaluator.next_state-131"><span class="linenos">131</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-132"><a href="#LargestStraightAndOutcomeEvaluator.next_state-132"><span class="linenos">132</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-133"><a href="#LargestStraightAndOutcomeEvaluator.next_state-133"><span class="linenos">133</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-134"><a href="#LargestStraightAndOutcomeEvaluator.next_state-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
 </span></pre></div>
 
 
@@ -1631,9 +1576,9 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-107"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-108"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-109"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-136"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-137"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-137"><span class="linenos">137</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-138"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1653,9 +1598,9 @@ Otherwise, values in the cache may be incorrect.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.order-111"><a href="#LargestStraightAndOutcomeEvaluator.order-111"><span class="linenos">111</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.order-112"><a href="#LargestStraightAndOutcomeEvaluator.order-112"><span class="linenos">112</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.order-113"><a href="#LargestStraightAndOutcomeEvaluator.order-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.order-140"><a href="#LargestStraightAndOutcomeEvaluator.order-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.order-141"><a href="#LargestStraightAndOutcomeEvaluator.order-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.order-142"><a href="#LargestStraightAndOutcomeEvaluator.order-142"><span class="linenos">142</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span></pre></div>
 
 
