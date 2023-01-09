@@ -11,7 +11,7 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, Generic, Iterator, Mapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Generic, Iterator, Mapping, Sequence, TypeAlias, TypeVar
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -258,7 +258,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def compare(
             self, op_name: SetComparatorStr, right:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int]  | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Compares the outcome multiset to another multiset.
 
@@ -273,7 +273,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         if isinstance(right, OutcomeCountGenerator):
             return icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name).evaluate(self, right)  # type: ignore
-        elif isinstance(right, (Mapping, Sequence)):
+        elif isinstance(right, (Mapping, Collection)):
             return icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name, right).evaluate(self)
         else:
@@ -281,19 +281,19 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def __lt__(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('<', other)
 
     def __le__(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('<=', other)
 
     def issubset(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is a subset of the other multiset.
 
@@ -303,19 +303,19 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def __gt__(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('>', other)
 
     def __ge__(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('>=', other)
 
     def issuperset(
             self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is a superset of the target multiset.
 
@@ -347,7 +347,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def isdisjoint(
             self, right:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int]  | Sequence[T_co]',
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is disjoint from the target multiset."""
         result = self.compare('isdisjoint', right)
