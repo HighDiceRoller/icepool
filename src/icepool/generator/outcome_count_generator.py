@@ -196,7 +196,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """Produces a tuple of all counts, i.e. the sizes of all matching sets.
 
         Args:
-            positive_only: If `True` (default),negative and zero counts
+            positive_only: If `True` (default), negative and zero counts
                 will be omitted.
             reversed: If `False` (default), the counts will be in ascending
                 order. If `True`, they will be in descending order.

@@ -37,10 +37,13 @@ class BinaryOperatorGenerator(OutcomeCountGenerator[T_co]):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right generator."""
 
-    def outcomes(self) -> Sequence[T_co]:
-        # TODO: merge function
+    @cached_property
+    def _outcomes(self) -> Sequence[T_co]:
         all_outcomes = set(self._left.outcomes()) | set(self._right.outcomes())
         return tuple(sorted(all_outcomes))
+
+    def outcomes(self) -> Sequence[T_co]:
+        return self._outcomes
 
     def counts_len(self) -> int:
         """The number of counts generated. Must be constant."""
