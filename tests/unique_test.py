@@ -23,7 +23,7 @@ def test_unique_vs_expand(pool):
     def unique(x):
         return tuple(sorted(set(x)))
 
-    result = pool.expand(max_count=1)
+    result = pool.unique().expand()
     expected = pool.expand().map(unique)
     assert result.equals(expected)
 
@@ -33,6 +33,6 @@ def test_unique_count(pool):
     if any(x < 0 for x in pool.sorted_roll_counts()):
         pytest.skip()
 
-    a = pool.expand(max_count=1).map(len)
-    b = pool.count(max_count=1)
+    a = pool.unique().expand().map(len)
+    b = pool.unique().count()
     assert a.equals(b)

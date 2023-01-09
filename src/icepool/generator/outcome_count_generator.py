@@ -148,33 +148,15 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     # Built-in evaluators.
 
-    def expand(self,
-               target: Mapping[Outcome, int] | Sequence[Outcome] | None = None,
-               *,
-               invert: bool = False,
-               min_count: int | None = None,
-               div_count: int | None = None,
-               max_count: int | None = None) -> 'icepool.Die[tuple[T_co, ...]]':
+    def expand(self) -> 'icepool.Die[tuple[T_co, ...]]':
         """All possible sorted tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
         """
-        from icepool.evaluator import AdjustIntCountEvaluator, ExpandEvaluator
-        return AdjustIntCountEvaluator(ExpandEvaluator(),
-                                       target=target,
-                                       invert=invert,
-                                       min_count=min_count,
-                                       div_count=div_count,
-                                       max_count=max_count).evaluate(self)
+        return icepool.evaluator.ExpandEvaluator().evaluate(self)
 
     def sum(
         self,
-        target: Mapping[Outcome, int] | Sequence[Outcome] | None = None,
-        *,
-        invert: bool = False,
-        min_count: int | None = None,
-        div_count: int | None = None,
-        max_count: int | None = None,
         map: Callable[[T_co], U] | Mapping[T_co, U] | None = None
     ) -> 'icepool.Die[U]':
         """The sum of the outcomes.
@@ -183,60 +165,35 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             map: If provided, the outcomes will be mapped according to this
                 before summing.
         """
-        from icepool.evaluator import AdjustIntCountEvaluator, FinalOutcomeMapEvaluator, sum_evaluator
-        return AdjustIntCountEvaluator(FinalOutcomeMapEvaluator(
-            sum_evaluator, map),
-                                       target=target,
-                                       invert=invert,
-                                       min_count=min_count,
-                                       div_count=div_count,
-                                       max_count=max_count).evaluate(self)
+        return icepool.evaluator.FinalOutcomeMapEvaluator(
+            icepool.evaluator.sum_evaluator, map).evaluate(self)
 
-    def count(self,
-              target: Mapping[Outcome, int] | Sequence[Outcome] | None = None,
-              *,
-              invert: bool = False,
-              min_count: int | None = None,
-              div_count: int | None = None,
-              max_count: int | None = None) -> 'icepool.Die[int]':
-        """The number of outcomes that are == the target.
+    def count(self) -> 'icepool.Die[int]':
+        """The total count over all outcomes.
 
-        If no target is provided, all outcomes will be counted.
+        This is usually not very interesting unless some other operation is
+        performed first. Examples:
+
+        `generator.unique().count()` will count the number of unique outcomes.
+
+        `(generator & [4, 5, 6]).count()` will count up to one each of
+        4, 5, and 6.
         """
-        from icepool.evaluator import AdjustIntCountEvaluator, count_evaluator
-        return AdjustIntCountEvaluator(count_evaluator,
-                                       target=target,
-                                       invert=invert,
-                                       min_count=min_count,
-                                       div_count=div_count,
-                                       max_count=max_count).evaluate(self)
+        return icepool.evaluator.count_evaluator.evaluate(self)
 
     def all_matching_sets(
             self,
-            target: Mapping[Outcome, int] | Sequence[Outcome] | None = None,
-            *,
-            invert: bool = False,
-            min_count: int | None = None,
-            div_count: int | None = None,
-            max_count: int | None = None,
             positive_only: bool = True,
             order: Order = Order.Ascending) -> 'icepool.Die[tuple[int, ...]]':
         """Produces the size of all matching sets of at least a given count.
 
         Args:
-            min_count: Outcomes with counts less than this will be ignored.
-                If set to zero, the length of the resulting outcomes is
-                constant.
+            positive_only: If `True` (default), sets of negative and zero count
+                will be omitted.
             order: The order in which the set sizes will be presented.
         """
-        from icepool.evaluator import AdjustIntCountEvaluator, AllMatchingSetsEvaluator
-        result = AdjustIntCountEvaluator(
-            AllMatchingSetsEvaluator(positive_only=positive_only),
-            target=target,
-            invert=invert,
-            min_count=min_count,
-            div_count=div_count,
-            max_count=max_count).evaluate(self)
+        result = icepool.evaluator.AllMatchingSetsEvaluator(
+            positive_only=positive_only).evaluate(self)
 
         if order < 0:
             result = result.map(lambda x: tuple(reversed(x)))
@@ -250,8 +207,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             A `Die` with outcomes set_size.
             The greatest single such set is returned.
         """
-        from icepool.evaluator import LargestMatchingSetEvaluator
-        return LargestMatchingSetEvaluator().evaluate(self)
+        return icepool.evaluator.LargestMatchingSetEvaluator().evaluate(self)
 
     def largest_matching_set_and_outcome(
             self) -> 'icepool.Die[tuple[int, T_co]]':
@@ -261,8 +217,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             A `Die` with outcomes (set_size, outcome).
             The greatest single such set is returned.
         """
-        from icepool.evaluator import LargestMatchingSetAndOutcomeEvaluator
-        return LargestMatchingSetAndOutcomeEvaluator().evaluate(self)
+        return icepool.evaluator.LargestMatchingSetAndOutcomeEvaluator(
+        ).evaluate(self)
 
     def largest_straight(
             self: 'OutcomeCountGenerator[int]') -> 'icepool.Die[int]':
@@ -274,8 +230,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             A `Die` with outcomes straight_size.
             The greatest single such straight is returned.
         """
-        from icepool.evaluator import LargestStraightEvaluator
-        return LargestStraightEvaluator().evaluate(self)
+        return icepool.evaluator.LargestStraightEvaluator().evaluate(self)
 
     def largest_straight_and_outcome(
             self: 'OutcomeCountGenerator[int]'
@@ -288,8 +243,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             A `Die` with outcomes (straight_size, outcome).
             The greatest single such straight is returned.
         """
-        from icepool.evaluator import LargestStraightAndOutcomeEvaluator
-        return LargestStraightAndOutcomeEvaluator().evaluate(self)
+        return icepool.evaluator.LargestStraightAndOutcomeEvaluator().evaluate(
+            self)
 
     # Comparators.
 
@@ -487,7 +442,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     def binary_int_operator(self, op_name: MultisetBinaryIntOperationStr,
                             constant: int) -> 'OutcomeCountGenerator[T_co]':
-        """Binary operation with another generator.
+        """Binary operation with an integer. These adjust counts.
 
         Args:
             op_name: One of the following strings:

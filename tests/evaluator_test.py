@@ -167,5 +167,5 @@ def test_expand_vs_sum(pool):
 def test_contains_subset_vs_intersection_size():
     pool = icepool.d6.pool(10)
     result_a = pool.issuperset([1, 2, 3, 3])
-    result_b = pool.count([1, 2, 3, 3]) == 4
+    result_b = (pool & [1, 2, 3, 3]).count() == 4
     assert result_a == result_b

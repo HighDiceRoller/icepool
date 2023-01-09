@@ -13,7 +13,7 @@ from icepool.evaluator.comparison import (
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
 from icepool.evaluator.joint import JointEvaluator
-from icepool.evaluator.adjust import AdjustIntCountEvaluator, FinalOutcomeMapEvaluator
+from icepool.evaluator.adjust import FinalOutcomeMapEvaluator
 
 __all__ = [
     'WrapFuncEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
@@ -23,5 +23,5 @@ __all__ = [
     'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
     'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'JointEvaluator',
-    'AdjustIntCountEvaluator', 'FinalOutcomeMapEvaluator'
+    'FinalOutcomeMapEvaluator'
 ]
