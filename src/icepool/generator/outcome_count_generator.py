@@ -495,7 +495,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             constant: An `int`.
         """
         if isinstance(constant, int):
-            return icepool.generator.AdjustCountGenerator.new_by_name(
+            return icepool.generator.AdjustCountsGenerator.new_by_name(
                 op_name, self, constant)
         else:
             return NotImplemented

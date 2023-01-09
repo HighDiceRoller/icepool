@@ -15,7 +15,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-class AdjustCountGenerator(OutcomeCountGenerator[T_co]):
+class AdjustCountsGenerator(OutcomeCountGenerator[T_co]):
 
     def __init__(self, inner: OutcomeCountGenerator[T_co], constant: int):
         self._inner = inner
@@ -23,10 +23,10 @@ class AdjustCountGenerator(OutcomeCountGenerator[T_co]):
 
     @classmethod
     def new_by_name(self, name: MultisetBinaryIntOperationStr, inner: OutcomeCountGenerator[T_co],
-                 constant: int) -> 'AdjustCountGenerator[T_co]':
+                 constant: int) -> 'AdjustCountsGenerator[T_co]':
         match name:
-            case '*': return MultiplyCountGenerator(inner, constant)
-            case '//': return FloorDivCountGenerator(inner, constant)
+            case '*': return MultiplyCountsGenerator(inner, constant)
+            case '//': return FloorDivCountsGenerator(inner, constant)
             case _: raise ValueError(f'Invalid operator {name}.')
 
     @staticmethod
@@ -77,21 +77,21 @@ class AdjustCountGenerator(OutcomeCountGenerator[T_co]):
     def __hash__(self) -> int:
         return self._hash
 
-class MultiplyCountGenerator(AdjustCountGenerator[T_co]):
+class MultiplyCountsGenerator(AdjustCountsGenerator[T_co]):
     """Multiplies all counts by the constant."""
 
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return count * constant
 
-class FloorDivCountGenerator(AdjustCountGenerator[T_co]):
+class FloorDivCountsGenerator(AdjustCountsGenerator[T_co]):
     """Divides all counts by the constant, rounding down."""
 
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return count // constant
 
-class IgnoreCountsLessThanGenerator(AdjustCountGenerator[T_co]):
+class IgnoreCountsLessThanGenerator(AdjustCountsGenerator[T_co]):
     """Counts below a certain value are treated as zero."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
@@ -100,7 +100,7 @@ class IgnoreCountsLessThanGenerator(AdjustCountGenerator[T_co]):
         else:
             return count
 
-class UniqueGenerator(AdjustCountGenerator[T_co]):
+class UniqueGenerator(AdjustCountsGenerator[T_co]):
     """Limits the count produced by each outcome."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
