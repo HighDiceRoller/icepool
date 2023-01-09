@@ -20,3 +20,15 @@ def test_mul():
     result = (d6.pool(3) * 2).sum()
     expected = (3 @ d6) * 2
     assert result == expected
+
+
+def test_multiple_union():
+    result = d6.pool(1).union([6], [7]).sum()
+    expected = d6 + 12
+    assert result == expected
+
+
+def test_multiple_intersection():
+    result = d6.pool(1).intersection([d6], [d6]).sum()
+    expected = (2 @ d6 == 12) * d6
+    assert result == expected

@@ -1,11 +1,13 @@
 __docformat__ = 'google'
 
+import operator
 import icepool
 import icepool.generator
 from icepool.counts import Counts
 from icepool.typing import MultisetBinaryIntOperationStr, Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
 
 import bisect
+import functools
 import itertools
 import random
 
@@ -264,6 +266,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
         You can also use the symbolic operators directly, e.g.
         `generator <= [1, 2, 2]`.
+        In this case, if the other argument is a `Mapping` or `Collection`, it
+        will be converted into a generator automatically.
 
         Args:
             op_name: One of the following strings:
@@ -365,6 +369,11 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     ) -> 'OutcomeCountGenerator[T_co]':
         """Binary operation with another generator.
 
+        You can also use the symbolic operators directly, e.g.
+        `generator & [1, 2, 2]`.
+        In this case, if the other argument is a `Mapping` or `Sequence`, it
+        will be converted into a generator automatically.
+
         Args:
             op_name: One of the following strings:
                 `+, -, |, &, ^`.
@@ -390,6 +399,16 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('+', self)
 
+    def disjoint_sum(
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """The multiset disjoint sum with another generator.
+
+        Same as `self + other`.
+        """
+        return self + other
+
     def __sub__(
         self,
         other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
@@ -403,6 +422,16 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('-', self)
+
+    def difference(
+        self, *others:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """The multiset difference with another generator(s).
+
+        Same as `self - other - ...`.
+        """
+        return functools.reduce(operator.sub, others, self)  # type: ignore
 
     def __or__(
         self,
@@ -418,6 +447,16 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('|', self)
 
+    def union(
+        self, *others:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """The multiset union with another generator.
+
+        Same as `self | other | ...`.
+        """
+        return functools.reduce(operator.or_, others, self)  # type: ignore
+
     def __and__(
         self,
         other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
@@ -432,6 +471,16 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('&', self)
 
+    def intersection(
+        self, *others:
+        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """The multiset intersection with another generator.
+
+        Same as `self & other & ...`.
+        """
+        return functools.reduce(operator.and_, others, self)  # type: ignore
+
     def __xor__(
         self,
         other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
@@ -445,6 +494,16 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('^', self)
+
+    def symmetric_difference(
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """The multiset symmetric difference with another generator.
+
+        Same as `self ^ other`.
+        """
+        return self ^ other
 
     # Count adjustment.
 
