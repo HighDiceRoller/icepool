@@ -31,28 +31,28 @@ def test_intersection_size():
 
 
 def test_largest_matching_set():
-    result = Pool([1, 1, 2, 4, 4]).largest_matching_set().simplify()
+    result = Pool([1, 1, 2, 4, 4]).largest_count().simplify()
     expected = Die([2])
     assert result == expected
 
 
 def test_largest_matching_set_and_outcome() -> None:
     pool: Pool[int] = Pool([1, 1, 2, 4, 4])
-    result = pool.largest_matching_set_and_outcome().simplify()
+    result = pool.largest_count_and_outcome().simplify()
     expected = Die([(2, 4)])
     assert result == expected
 
 
 def test_all_matching_sets() -> None:
     pool: Pool[int] = Pool([1, 1, 2, 4, 4])
-    result = pool.all_matching_sets().simplify()
+    result = pool.all_counts().simplify()
     expected = Die([(1, 2, 2)])
     assert result == expected
 
 
 def test_all_matching_sets_descending() -> None:
     pool: Pool[int] = Pool([1, 1, 2, 4, 4])
-    result = pool.all_matching_sets(order=Order.Descending).simplify()
+    result = pool.all_counts(order=Order.Descending).simplify()
     expected = Die([(2, 2, 1)])
     assert result == expected
 

@@ -181,44 +181,52 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         """
         return icepool.evaluator.count_evaluator.evaluate(self)
 
-    def all_matching_sets(
-            self,
-            positive_only: bool = True,
-            order: Order = Order.Ascending) -> 'icepool.Die[tuple[int, ...]]':
-        """Produces the size of all matching sets of at least a given count.
+    def highest_outcome_and_count(self) -> 'icepool.Die[tuple[T_co, int]]':
+        """The highest outcome with positive count, along with that count.
+
+        If no outcomes have positive count, an arbitrary outcome will be
+        produced with a 0 count.
+        """
+        return icepool.evaluator.HighestOutcomeAndCountEvaluator().evaluate(
+            self)
+
+    def all_counts(self,
+                   positive_only: bool = True,
+                   reverse=False) -> 'icepool.Die[tuple[int, ...]]':
+        """Produces a tuple of all counts, i.e. the sizes of all matching sets.
 
         Args:
-            positive_only: If `True` (default), sets of negative and zero count
+            positive_only: If `True` (default),negative and zero counts
                 will be omitted.
-            order: The order in which the set sizes will be presented.
+            reversed: If `False` (default), the counts will be in ascending
+                order. If `True`, they will be in descending order.
         """
-        result = icepool.evaluator.AllMatchingSetsEvaluator(
+        result = icepool.evaluator.AllCountsEvaluator(
             positive_only=positive_only).evaluate(self)
 
-        if order < 0:
+        if reverse:
             result = result.map(lambda x: tuple(reversed(x)))
 
         return result
 
-    def largest_matching_set(self) -> 'icepool.Die[int]':
+    def largest_count(self) -> 'icepool.Die[int]':
         """The largest matching set among the outcomes.
 
         Returns:
             A `Die` with outcomes set_size.
             The greatest single such set is returned.
         """
-        return icepool.evaluator.LargestMatchingSetEvaluator().evaluate(self)
+        return icepool.evaluator.LargestCountEvaluator().evaluate(self)
 
-    def largest_matching_set_and_outcome(
-            self) -> 'icepool.Die[tuple[int, T_co]]':
+    def largest_count_and_outcome(self) -> 'icepool.Die[tuple[int, T_co]]':
         """The largest matching set among the outcomes.
 
         Returns:
             A `Die` with outcomes (set_size, outcome).
             The greatest single such set is returned.
         """
-        return icepool.evaluator.LargestMatchingSetAndOutcomeEvaluator(
-        ).evaluate(self)
+        return icepool.evaluator.LargestCountAndOutcomeEvaluator().evaluate(
+            self)
 
     def largest_straight(
             self: 'OutcomeCountGenerator[int]') -> 'icepool.Die[int]':
@@ -465,14 +473,15 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     def __floordiv__(self, constant: int) -> 'OutcomeCountGenerator[T_co]':
         return self.binary_int_operator('//', constant)
 
-    def ignore_counts_less_than(self,
-                                min_count) -> 'OutcomeCountGenerator[T_co]':
-        """Counts below `min_count` are treated as zero.
+    def ignore_counts_smaller_than(self,
+                                   min_count) -> 'OutcomeCountGenerator[T_co]':
+        """Counts smaller than `min_count` are treated as zero.
 
         For example, `generator.ignore_counts_less_than(2)` would only produce
         pairs and better.
         """
-        return icepool.generator.IgnoreCountsLessThanGenerator(self, min_count)
+        return icepool.generator.IgnoreCountsSmallerThanGenerator(
+            self, min_count)
 
     def unique(self, max_count: int = 1) -> 'OutcomeCountGenerator[T_co]':
         """Counts each outcome at most `max_count` times.

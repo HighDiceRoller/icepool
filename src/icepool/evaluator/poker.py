@@ -9,9 +9,38 @@ from icepool.typing import Outcome, Order
 from typing import Any
 
 
-class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Outcome, tuple[int, ...],
-                                                     int]):
-    """All counts in ascending order."""
+class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, tuple[Any,
+                                                                           int],
+                                                            int]):
+    """The highest outcome that has positive count, along with that count.
+
+    If no outcomes have positive count, an arbitrary outcome will be produced
+    with a 0 count.
+    """
+
+    def next_state(self, state, outcome, count):
+        """Implementation."""
+        count = max(count, 0)
+        if state is None:
+            return outcome, count
+        elif count > 0:
+            if state[1] > 0:
+                return max(state, (outcome, count))
+            else:
+                return outcome, count
+        else:
+            return state
+
+    def order(self, *_):
+        """Allows any order."""
+        return Order.Any
+
+
+class AllCountsEvaluator(OutcomeCountEvaluator[Outcome, tuple[int, ...], int]):
+    """All counts in ascending order.
+
+    In other words, this produces tuples of the sizes of all matching sets.
+    """
 
     def __init__(self, *, positive_only: bool = True):
         """
@@ -40,8 +69,8 @@ class AllMatchingSetsEvaluator(OutcomeCountEvaluator[Outcome, tuple[int, ...],
         return Order.Any
 
 
-class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
-    """The largest matching set of a generator."""
+class LargestCountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
+    """The largest count of any outcome."""
 
     def next_state(self, state, _, count):
         """Implementation."""
@@ -52,10 +81,10 @@ class LargestMatchingSetEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
         return Order.Any
 
 
-class LargestMatchingSetAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome,
-                                                                  tuple[int,
-                                                                        Any],
-                                                                  int]):
+class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, tuple[int,
+                                                                           Any],
+                                                            int]):
+    """The largest count of any outcome, along with that outcome."""
 
     def next_state(self, state, outcome, count):
         """Implementation."""

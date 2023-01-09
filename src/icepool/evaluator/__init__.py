@@ -3,9 +3,10 @@
 __docformat__ = 'google'
 
 from icepool.evaluator.basic import WrapFuncEvaluator, ExpandEvaluator, SumEvaluator, sum_evaluator, CountEvaluator, count_evaluator
-from icepool.evaluator.poker import (LargestMatchingSetEvaluator,
-                                     LargestMatchingSetAndOutcomeEvaluator,
-                                     AllMatchingSetsEvaluator,
+from icepool.evaluator.poker import (HighestOutcomeAndCountEvaluator,
+                                     LargestCountEvaluator,
+                                     LargestCountAndOutcomeEvaluator,
+                                     AllCountsEvaluator,
                                      LargestStraightEvaluator,
                                      LargestStraightAndOutcomeEvaluator)
 from icepool.evaluator.comparison import (
@@ -17,8 +18,8 @@ from icepool.evaluator.adjust import FinalOutcomeMapEvaluator
 
 __all__ = [
     'WrapFuncEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
-    'CountEvaluator', 'count_evaluator', 'LargestMatchingSetEvaluator',
-    'LargestMatchingSetAndOutcomeEvaluator', 'AllMatchingSetsEvaluator',
+    'CountEvaluator', 'count_evaluator', 'HighestOutcomeAndCountEvaluator',
+    'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator', 'AllCounts',
     'LargestStraightEvaluator', 'LargestStraightAndOutcomeEvaluator',
     'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
     'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
