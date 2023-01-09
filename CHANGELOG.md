@@ -1,3 +1,15 @@
+## 0.24.0
+
+Reworked built-in generators and evaluators.
+
+* Generators now support multiset operations. These include:
+  * Multiset comparisons (`<, <=, >, >=, ==, !=, isdisjoint`), which produce `Die[bool]`.
+  * Multiset operators (`+`, `-`, `|`, `&`, `^`) which produce wrapped generators.
+  * A suite of chainable count adjustments, including `multiply_counts`, `divide_counts`, `filter_counts`, and `unique`.
+* Rename `median_left` to `median_low` etc.
+* Generators and evaluators are now paramterized by count type as well.
+* Move concrete evaluators to a submodule.
+
 ## 0.23.3
 
 * Fixed weighting bug in `__matmul__` when the left die has an outcome of 0.
