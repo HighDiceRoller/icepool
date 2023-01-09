@@ -510,13 +510,14 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     def __floordiv__(self, constant: int) -> 'OutcomeCountGenerator[T_co]':
         return self.binary_int_operator('//', constant)
 
-    def ignore_counts_below(self, min_count) -> 'OutcomeCountGenerator[T_co]':
+    def ignore_counts_less_than(self,
+                                min_count) -> 'OutcomeCountGenerator[T_co]':
         """Counts below `min_count` are treated as zero.
 
-        For example, `generator.ignore_counts_below(2)` would only produce
+        For example, `generator.ignore_counts_less_than(2)` would only produce
         pairs and better.
         """
-        return icepool.generator.IgnoreBelowGenerator(self, min_count)
+        return icepool.generator.IgnoreCountsLessThanGenerator(self, min_count)
 
     def unique(self, max_count: int = 1) -> 'OutcomeCountGenerator[T_co]':
         """Counts each outcome at most `max_count` times.

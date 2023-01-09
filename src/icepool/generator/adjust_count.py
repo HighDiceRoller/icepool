@@ -91,7 +91,7 @@ class FloorDivCountGenerator(AdjustCountGenerator[T_co]):
     def adjust_count(count: int, constant: int) -> int:
         return count // constant
 
-class IgnoreBelowGenerator(AdjustCountGenerator[T_co]):
+class IgnoreCountsLessThanGenerator(AdjustCountGenerator[T_co]):
     """Counts below a certain value are treated as zero."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
