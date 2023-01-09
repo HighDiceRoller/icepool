@@ -146,7 +146,22 @@
 
             </li>
             <li>
-                    <a class="variable" href="#AllCounts">AllCounts</a>
+                    <a class="class" href="#AllCountsEvaluator">AllCountsEvaluator</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AllCountsEvaluator.__init__">AllCountsEvaluator</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllCountsEvaluator.next_state">next_state</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllCountsEvaluator.final_outcome">final_outcome</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllCountsEvaluator.order">order</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
                     <a class="class" href="#LargestStraightEvaluator">LargestStraightEvaluator</a>
@@ -387,13 +402,14 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s1">&#39;WrapFuncEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s1">&#39;CountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;count_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCounts&#39;</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="p">]</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1214,16 +1230,171 @@ with a 0 count.</p>
                                 </dl>
                             </div>
                 </section>
-                <section id="AllCounts">
-                    <div class="attr variable">
-            <span class="name">AllCounts</span>
+                <section id="AllCountsEvaluator">
+                            <input id="AllCountsEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">AllCountsEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, tuple[int, ...], int]</span>):
 
-        
+                <label class="view-source-button" for="AllCountsEvaluator-view-source"><span>View Source</span></label>
+
     </div>
-    <a class="headerlink" href="#AllCounts"></a>
-    
-    
+    <a class="headerlink" href="#AllCountsEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator-40"><a href="#AllCountsEvaluator-40"><span class="linenos">40</span></a><span class="k">class</span> <span class="nc">AllCountsEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="AllCountsEvaluator-41"><a href="#AllCountsEvaluator-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All counts in ascending order.</span>
+</span><span id="AllCountsEvaluator-42"><a href="#AllCountsEvaluator-42"><span class="linenos">42</span></a>
+</span><span id="AllCountsEvaluator-43"><a href="#AllCountsEvaluator-43"><span class="linenos">43</span></a><span class="sd">    In other words, this produces tuples of the sizes of all matching sets.</span>
+</span><span id="AllCountsEvaluator-44"><a href="#AllCountsEvaluator-44"><span class="linenos">44</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-45"><a href="#AllCountsEvaluator-45"><span class="linenos">45</span></a>
+</span><span id="AllCountsEvaluator-46"><a href="#AllCountsEvaluator-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator-47"><a href="#AllCountsEvaluator-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-48"><a href="#AllCountsEvaluator-48"><span class="linenos">48</span></a><span class="sd">        Args:</span>
+</span><span id="AllCountsEvaluator-49"><a href="#AllCountsEvaluator-49"><span class="linenos">49</span></a><span class="sd">            positive_only: If `True` (default), any zero and negative values</span>
+</span><span id="AllCountsEvaluator-50"><a href="#AllCountsEvaluator-50"><span class="linenos">50</span></a><span class="sd">                in the result are removed.</span>
+</span><span id="AllCountsEvaluator-51"><a href="#AllCountsEvaluator-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-52"><a href="#AllCountsEvaluator-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span> <span class="o">=</span> <span class="n">positive_only</span>
+</span><span id="AllCountsEvaluator-53"><a href="#AllCountsEvaluator-53"><span class="linenos">53</span></a>
+</span><span id="AllCountsEvaluator-54"><a href="#AllCountsEvaluator-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator-55"><a href="#AllCountsEvaluator-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-56"><a href="#AllCountsEvaluator-56"><span class="linenos">56</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="n">count</span><span class="p">,)</span>
+</span><span id="AllCountsEvaluator-57"><a href="#AllCountsEvaluator-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+</span><span id="AllCountsEvaluator-58"><a href="#AllCountsEvaluator-58"><span class="linenos">58</span></a>
+</span><span id="AllCountsEvaluator-59"><a href="#AllCountsEvaluator-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator-60"><a href="#AllCountsEvaluator-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-61"><a href="#AllCountsEvaluator-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator-62"><a href="#AllCountsEvaluator-62"><span class="linenos">62</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllCountsEvaluator-63"><a href="#AllCountsEvaluator-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator-64"><a href="#AllCountsEvaluator-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">final_state</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="AllCountsEvaluator-65"><a href="#AllCountsEvaluator-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator-66"><a href="#AllCountsEvaluator-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">final_state</span>
+</span><span id="AllCountsEvaluator-67"><a href="#AllCountsEvaluator-67"><span class="linenos">67</span></a>
+</span><span id="AllCountsEvaluator-68"><a href="#AllCountsEvaluator-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator-69"><a href="#AllCountsEvaluator-69"><span class="linenos">69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator-70"><a href="#AllCountsEvaluator-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span></pre></div>
 
+
+            <div class="docstring"><p>All counts in ascending order.</p>
+
+<p>In other words, this produces tuples of the sizes of all matching sets.</p>
+</div>
+
+
+                            <div id="AllCountsEvaluator.__init__" class="classattr">
+                                        <input id="AllCountsEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">AllCountsEvaluator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span>)</span>
+
+                <label class="view-source-button" for="AllCountsEvaluator.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllCountsEvaluator.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.__init__-46"><a href="#AllCountsEvaluator.__init__-46"><span class="linenos">46</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">positive_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator.__init__-47"><a href="#AllCountsEvaluator.__init__-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.__init__-48"><a href="#AllCountsEvaluator.__init__-48"><span class="linenos">48</span></a><span class="sd">        Args:</span>
+</span><span id="AllCountsEvaluator.__init__-49"><a href="#AllCountsEvaluator.__init__-49"><span class="linenos">49</span></a><span class="sd">            positive_only: If `True` (default), any zero and negative values</span>
+</span><span id="AllCountsEvaluator.__init__-50"><a href="#AllCountsEvaluator.__init__-50"><span class="linenos">50</span></a><span class="sd">                in the result are removed.</span>
+</span><span id="AllCountsEvaluator.__init__-51"><a href="#AllCountsEvaluator.__init__-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.__init__-52"><a href="#AllCountsEvaluator.__init__-52"><span class="linenos">52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span> <span class="o">=</span> <span class="n">positive_only</span>
+</span></pre></div>
+
+
+            <div class="docstring"><h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>positive_only:</strong>  If <code>True</code> (default), any zero and negative values
+in the result are removed.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="AllCountsEvaluator.next_state" class="classattr">
+                                        <input id="AllCountsEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="AllCountsEvaluator.next_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllCountsEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.next_state-54"><a href="#AllCountsEvaluator.next_state-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator.next_state-55"><a href="#AllCountsEvaluator.next_state-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.next_state-56"><a href="#AllCountsEvaluator.next_state-56"><span class="linenos">56</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">())</span> <span class="o">+</span> <span class="p">(</span><span class="n">count</span><span class="p">,)</span>
+</span><span id="AllCountsEvaluator.next_state-57"><a href="#AllCountsEvaluator.next_state-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="AllCountsEvaluator.final_outcome" class="classattr">
+                                        <input id="AllCountsEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="AllCountsEvaluator.final_outcome-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllCountsEvaluator.final_outcome"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.final_outcome-59"><a href="#AllCountsEvaluator.final_outcome-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator.final_outcome-60"><a href="#AllCountsEvaluator.final_outcome-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.final_outcome-61"><a href="#AllCountsEvaluator.final_outcome-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator.final_outcome-62"><a href="#AllCountsEvaluator.final_outcome-62"><span class="linenos">62</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllCountsEvaluator.final_outcome-63"><a href="#AllCountsEvaluator.final_outcome-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positive_only</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator.final_outcome-64"><a href="#AllCountsEvaluator.final_outcome-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">final_state</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="AllCountsEvaluator.final_outcome-65"><a href="#AllCountsEvaluator.final_outcome-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator.final_outcome-66"><a href="#AllCountsEvaluator.final_outcome-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">final_state</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="AllCountsEvaluator.order" class="classattr">
+                                        <input id="AllCountsEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">_</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="AllCountsEvaluator.order-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllCountsEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.order-68"><a href="#AllCountsEvaluator.order-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator.order-69"><a href="#AllCountsEvaluator.order-69"><span class="linenos">69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.order-70"><a href="#AllCountsEvaluator.order-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Allows any order.</p>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                <dd id="AllCountsEvaluator.alignment" class="function">alignment</dd>
+                <dd id="AllCountsEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="AllCountsEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="AllCountsEvaluator.sample" class="function">sample</dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
                 <section id="LargestStraightEvaluator">
                             <input id="LargestStraightEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
