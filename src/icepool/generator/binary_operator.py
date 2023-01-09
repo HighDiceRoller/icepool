@@ -22,7 +22,7 @@ class BinaryOperatorGenerator(OutcomeCountGenerator[T_co]):
         self._right = right
 
     @classmethod
-    def new_by_op(self, op: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
+    def new_by_name(self, op: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
                  right: OutcomeCountGenerator[T_co]) -> 'BinaryOperatorGenerator[T_co]':
         match op:
             case '+': return DisjointUnionGenerator(left, right)

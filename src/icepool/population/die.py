@@ -174,8 +174,8 @@ class Die(Population[T_co]):
                     product is taken.
 
                     Operators on dice with tuple outcomes are performed
-                    element-wise. See `Die.unary_op` and
-                    `Die.binary_op` for details.
+                    element-wise. See `Die.unary_operator` and
+                    `Die.binary_operator` for details.
                 * A `Die`, which will be flattened into the result.
                     The relative quantity to a `Die` input is shared by the
                     `Die` as a whole. The denominator of the resulting `Die`
@@ -257,7 +257,7 @@ class Die(Population[T_co]):
         self._data = data
         return self
 
-    def unary_op(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
+    def unary_operator(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
         """Performs the unary operation on the outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -286,8 +286,8 @@ class Die(Population[T_co]):
             data[new_outcome] += quantity
         return icepool.Die(data)
 
-    def binary_op(self, other: 'Die', op: Callable[..., U], *args,
-                  **kwargs) -> 'Die[U]':
+    def binary_operator(self, other: 'Die', op: Callable[..., U], *args,
+                        **kwargs) -> 'Die[U]':
         """Performs the operation on pairs of outcomes.
 
         Operations on tuples are performed elementwise recursively. If you need
@@ -968,36 +968,36 @@ class Die(Population[T_co]):
     # Unary operators.
 
     def __neg__(self) -> 'Die[T_co]':
-        return self.unary_op(operator.neg)
+        return self.unary_operator(operator.neg)
 
     def __pos__(self) -> 'Die[T_co]':
-        return self.unary_op(operator.pos)
+        return self.unary_operator(operator.pos)
 
     def __invert__(self) -> 'Die[T_co]':
-        return self.unary_op(operator.invert)
+        return self.unary_operator(operator.invert)
 
     def abs(self) -> 'Die[T_co]':
-        return self.unary_op(operator.abs)
+        return self.unary_operator(operator.abs)
 
     __abs__ = abs
 
     def round(self, ndigits: int | None = None) -> 'Die':
-        return self.unary_op(round, ndigits)
+        return self.unary_operator(round, ndigits)
 
     __round__ = round
 
     def trunc(self) -> 'Die':
-        return self.unary_op(math.trunc)
+        return self.unary_operator(math.trunc)
 
     __trunc__ = trunc
 
     def floor(self) -> 'Die':
-        return self.unary_op(math.floor)
+        return self.unary_operator(math.floor)
 
     __floor__ = floor
 
     def ceil(self) -> 'Die':
-        return self.unary_op(math.ceil)
+        return self.unary_operator(math.ceil)
 
     __ceil__ = ceil
 
@@ -1016,7 +1016,7 @@ class Die(Population[T_co]):
         Raises:
             ValueError: If the zeros did not resolve to a single outcome.
         """
-        result = self.unary_op(Die._zero)
+        result = self.unary_operator(Die._zero)
         if len(result) != 1:
             raise ValueError('zero() did not resolve to a single outcome.')
         return result
@@ -1034,145 +1034,145 @@ class Die(Population[T_co]):
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.add)
+        return self.binary_operator(other, operator.add)
 
     def __radd__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.add)
+        return other.binary_operator(self, operator.add)
 
     def __sub__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.sub)
+        return self.binary_operator(other, operator.sub)
 
     def __rsub__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.sub)
+        return other.binary_operator(self, operator.sub)
 
     def __mul__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.mul)
+        return self.binary_operator(other, operator.mul)
 
     def __rmul__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.mul)
+        return other.binary_operator(self, operator.mul)
 
     def __truediv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.truediv)
+        return self.binary_operator(other, operator.truediv)
 
     def __rtruediv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.truediv)
+        return other.binary_operator(self, operator.truediv)
 
     def __floordiv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.floordiv)
+        return self.binary_operator(other, operator.floordiv)
 
     def __rfloordiv__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.floordiv)
+        return other.binary_operator(self, operator.floordiv)
 
     def __pow__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.pow)
+        return self.binary_operator(other, operator.pow)
 
     def __rpow__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.pow)
+        return other.binary_operator(self, operator.pow)
 
     def __mod__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.mod)
+        return self.binary_operator(other, operator.mod)
 
     def __rmod__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.mod)
+        return other.binary_operator(self, operator.mod)
 
     def __lshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.lshift)
+        return self.binary_operator(other, operator.lshift)
 
     def __rlshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.lshift)
+        return other.binary_operator(self, operator.lshift)
 
     def __rshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.rshift)
+        return self.binary_operator(other, operator.rshift)
 
     def __rrshift__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.rshift)
+        return other.binary_operator(self, operator.rshift)
 
     def __and__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.and_)
+        return self.binary_operator(other, operator.and_)
 
     def __rand__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.and_)
+        return other.binary_operator(self, operator.and_)
 
     def __or__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.or_)
+        return self.binary_operator(other, operator.or_)
 
     def __ror__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.or_)
+        return other.binary_operator(self, operator.or_)
 
     def __xor__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return self.binary_op(other, operator.xor)
+        return self.binary_operator(other, operator.xor)
 
     def __rxor__(self, other) -> 'Die':
         if isinstance(other, icepool.Again):
             return NotImplemented
         other = implicit_convert_to_die(other)
-        return other.binary_op(self, operator.xor)
+        return other.binary_operator(self, operator.xor)
 
     # Comparators.
 
@@ -1337,7 +1337,7 @@ class Die(Population[T_co]):
 
         Note that for `float`s, +0.0, -0.0, and nan all become 0.
         """
-        return self.unary_op(Die._sign)
+        return self.unary_operator(Die._sign)
 
     # Equality and hashing.
 

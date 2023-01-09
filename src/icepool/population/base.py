@@ -396,7 +396,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         def __getitem__(self, dims: int | slice, /):
             """Marginalizes the given dimensions."""
-            return self._population.unary_op_non_elementwise(
+            return self._population.unary_operator_non_elementwise(
                 operator.getitem, dims)
 
     @property
@@ -409,8 +409,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         return Population._Marginals(self)
 
-    def unary_op_non_elementwise(self: C, op: Callable, *args, **kwargs) -> C:
-        """As `unary_op()`, but not elementwise.
+    def unary_operator_non_elementwise(self: C, op: Callable, *args,
+                                       **kwargs) -> C:
+        """As `unary_operator()`, but not elementwise.
 
         This is used for `marginals()`.
         """

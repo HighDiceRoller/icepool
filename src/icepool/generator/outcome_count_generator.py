@@ -304,10 +304,10 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             right: The right-side generator or multiset to compare with.
         """
         if isinstance(right, OutcomeCountGenerator):
-            return icepool.evaluator.ComparisonEvaluator.new_by_op(
+            return icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name).evaluate(self, right)  # type: ignore
         elif isinstance(right, (Mapping, Sequence)):
-            return icepool.evaluator.ComparisonEvaluator.new_by_op(
+            return icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name, right).evaluate(self)
         else:
             return NotImplemented
@@ -392,10 +392,10 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
 
     # Binary operations.
 
-    def binary_op(self, op_name: MultisetBinaryOperationStr,
-                  right: 'OutcomeCountGenerator[T_co]'):
+    def binary_operator(self, op_name: MultisetBinaryOperationStr,
+                        right: 'OutcomeCountGenerator[T_co]'):
         if isinstance(right, OutcomeCountGenerator):
-            return icepool.generator.BinaryOperatorGenerator.new_by_op(
+            return icepool.generator.BinaryOperatorGenerator.new_by_name(
                 op_name, self, right)
         else:
             return NotImplemented
@@ -404,61 +404,61 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_op('+', other_generator)
+        return self.binary_operator('+', other_generator)
 
     def __radd__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_op('+', self)
+        return other_generator.binary_operator('+', self)
 
     def __sub__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_op('-', other_generator)
+        return self.binary_operator('-', other_generator)
 
     def __rsub__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_op('-', self)
+        return other_generator.binary_operator('-', self)
 
     def __or__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_op('|', other_generator)
+        return self.binary_operator('|', other_generator)
 
     def __ror__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_op('|', self)
+        return other_generator.binary_operator('|', self)
 
     def __and__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_op('&', other_generator)
+        return self.binary_operator('&', other_generator)
 
     def __rand__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_op('&', self)
+        return other_generator.binary_operator('&', self)
 
     def __xor__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_op('^', other_generator)
+        return self.binary_operator('^', other_generator)
 
     def __rxor__(
         self, other:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_op('^', self)
+        return other_generator.binary_operator('^', self)
 
     # Sampling.
 
