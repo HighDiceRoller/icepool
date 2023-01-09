@@ -2,7 +2,7 @@
   "jupyter-config-data": {
     "appName": "Icepool Examples",
     "appUrl": "./lab",
-    "appVersion": "0.1.0-beta.16",
+    "appVersion": "0.1.0-beta.17",
     "baseUrl": "./",
     "collaborative": true,
     "defaultKernelName": "python",
@@ -298,13 +298,6 @@
     "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
     "fullStaticUrl": "./build",
     "licensesUrl": "./lab/api/licenses",
-    "litePluginSettings": {
-      "@jupyterlite/pyolite-kernel-extension:kernel": {
-        "pipliteUrls": [
-          "./pypi/all.json?sha256=ed53cf6ef0c7fc0bf2d15788b5649e0159e88fe67622410092ceb287a2ba69df"
-        ]
-      }
-    },
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe"
   },
   "jupyter-lite-schema-version": 0
