@@ -1,4 +1,4 @@
-"""Operators on generators."""
+"""Binary operators between two generators."""
 
 __docformat__ = 'google'
 

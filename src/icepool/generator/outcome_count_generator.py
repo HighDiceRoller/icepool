@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.counts import Counts
-from icepool.typing import Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
+from icepool.typing import MultisetBinaryIntOperationStr, Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
 
 import bisect
 import itertools
@@ -295,8 +295,11 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     def compare(
             self, op_name: SetComparatorStr, right:
         'OutcomeCountGenerator[T_co] | Mapping[T_co, int]  | Sequence[T_co]',
-            /):
+            /) -> 'icepool.Die[bool]':
         """Compares the outcome multiset to another multiset.
+
+        You can also use the symbolic operators directly, e.g.
+        `generator <= [1, 2, 2]`.
 
         Args:
             op_name: One of the following strings:
@@ -390,10 +393,19 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             )
         return result
 
-    # Binary operations.
+    # Binary operations with other generators.
 
-    def binary_operator(self, op_name: MultisetBinaryOperationStr,
-                        right: 'OutcomeCountGenerator[T_co]'):
+    def binary_operator(
+            self, op_name: MultisetBinaryOperationStr,
+            right: 'OutcomeCountGenerator[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
+        """Binary operation with another generator.
+
+        Args:
+            op_name: One of the following strings:
+                `+, -, |, &, ^`.
+            right: The other `OutcomeCountGenerator`.
+        """
         if isinstance(right, OutcomeCountGenerator):
             return icepool.generator.BinaryOperatorGenerator.new_by_name(
                 op_name, self, right)
@@ -401,64 +413,101 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
             return NotImplemented
 
     def __add__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('+', other_generator)
 
     def __radd__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('+', self)
 
     def __sub__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('-', other_generator)
 
     def __rsub__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('-', self)
 
     def __or__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('|', other_generator)
 
     def __ror__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('|', self)
 
     def __and__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('&', other_generator)
 
     def __rand__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('&', self)
 
     def __xor__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('^', other_generator)
 
     def __rxor__(
-        self, other:
-        'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'):
+        self,
+        other: 'OutcomeCountGenerator[T_co] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'OutcomeCountGenerator[T_co]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('^', self)
+
+    # Binary operators with ints.
+
+    def binary_int_operator(self, op_name: MultisetBinaryIntOperationStr,
+                            other: int) -> 'OutcomeCountGenerator[T_co]':
+        """Binary operation with another generator.
+
+        Args:
+            op_name: One of the following strings:
+                `*, //`.
+            other: An `int`.
+        """
+        if isinstance(other, int):
+            return icepool.generator.BinaryIntOperatorGenerator.new_by_name(
+                op_name, self, other)
+        else:
+            return NotImplemented
+
+    def __mul__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('*', other)
+
+    # Commutable in this case.
+    def __rmul__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('*', other)
+
+    def __floordiv__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('//', other)
 
     # Sampling.
 

@@ -14,3 +14,9 @@ def test_intersection():
     result = (d6.pool(10) & {6: 5}).count()
     expected = icepool.lowest(10 @ (d6 == 6), 5)
     assert result == expected
+
+
+def test_mul():
+    result = (d6.pool(3) * 2).sum()
+    expected = (3 @ d6) * 2
+    assert result == expected

@@ -38,3 +38,5 @@ SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
                            '==', 'isdisjoint']
 
 MultisetBinaryOperationStr = Literal['+', '-', '|', '&', '^']
+
+MultisetBinaryIntOperationStr = Literal['*', '//']
