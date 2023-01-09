@@ -286,7 +286,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
 
         Args:
             op_name: One of the following strings:
-                `<, <=, issubset, >, >=, issuperset, ==, !=, isdisjoint`.
+                `<, <=, >, >=, ==, !=`.
             right: The right-side generator or multiset to compare with.
         """
         if isinstance(right, OutcomeCountGenerator):
@@ -551,20 +551,36 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
                  constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
         return self.binary_int_operator('*', constant)
 
+    def multiply_counts(
+            self: 'OutcomeCountGenerator[T_co, Qints_co]',
+            constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+        """Multiplies all counts by a constant.
+
+        Same as `self * constant`.
+        """
+        return self * constant
+
     def __floordiv__(self: 'OutcomeCountGenerator[T_co, Qints_co]',
                      constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
         return self.binary_int_operator('//', constant)
 
-    def ignore_counts_smaller_than(
-            self: 'OutcomeCountGenerator[T_co, Qints_co]',
-            min_count) -> 'OutcomeCountGenerator[T_co, Qints_co]':
-        """Counts smaller than `min_count` are treated as zero.
+    def divide_counts(self: 'OutcomeCountGenerator[T_co, Qints_co]',
+                      constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+        """Divides all counts (rounding down).
 
-        For example, `generator.ignore_counts_less_than(2)` would only produce
+        Same as `self // constant`.
+        """
+        return self // constant
+
+    def filter_counts(
+            self: 'OutcomeCountGenerator[T_co, Qints_co]',
+            min_count: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+        """Counts less than `min_count` are treated as zero.
+
+        For example, `generator.filter_counts(2)` would only produce
         pairs and better.
         """
-        return icepool.generator.IgnoreCountsSmallerThanGenerator(
-            self, min_count)
+        return icepool.generator.FilterCountsGenerator(self, min_count)
 
     def unique(self: 'OutcomeCountGenerator[T_co, Qints_co]',
                max_count: int = 1) -> 'OutcomeCountGenerator[T_co, Qints_co]':

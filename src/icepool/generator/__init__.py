@@ -5,5 +5,5 @@ from icepool.generator.binary_operator import (
 from icepool.generator.adjust_counts import (AdjustCountsGenerator,
                                              MultiplyCountsGenerator,
                                              FloorDivCountsGenerator,
-                                             IgnoreCountsSmallerThanGenerator,
+                                             FilterCountsGenerator,
                                              UniqueGenerator)

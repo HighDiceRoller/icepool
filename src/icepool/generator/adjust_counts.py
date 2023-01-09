@@ -19,6 +19,11 @@ Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
 In this future this may be replaced with a TypeVarTuple."""
 
 class AdjustCountsGenerator(OutcomeCountGenerator[T_co, Qints_co]):
+    """Adjusts counts of a generator.
+
+    If the generator produces multiple counts, each count will be affected
+    individually.
+    """
 
     def __init__(self, inner: OutcomeCountGenerator[T_co, Qints_co], constant: int):
         self._inner = inner
@@ -94,7 +99,7 @@ class FloorDivCountsGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     def adjust_count(count: int, constant: int) -> int:
         return count // constant
 
-class IgnoreCountsSmallerThanGenerator(AdjustCountsGenerator[T_co, Qints_co]):
+class FilterCountsGenerator(AdjustCountsGenerator[T_co, Qints_co]):
     """Counts below a certain value are treated as zero."""
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
