@@ -69,7 +69,6 @@ from icepool.generator.deal import Deal
 
 from icepool.generator.suit import SuitGenerator
 
-import icepool.generator as generator
 import icepool.evaluator as evaluator
 
 __all__ = [
@@ -79,5 +78,5 @@ __all__ = [
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
     'OutcomeCountGenerator', 'Pool', 'standard_pool', 'OutcomeCountEvaluator',
-    'Order', 'generator', 'evaluator', 'Deck', 'Deal', 'SuitGenerator'
+    'Order', 'evaluator', 'Deck', 'Deal', 'SuitGenerator'
 ]

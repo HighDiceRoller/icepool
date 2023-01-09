@@ -22,15 +22,15 @@ class BinaryOperatorGenerator(OutcomeCountGenerator[T_co]):
         self._right = right
 
     @classmethod
-    def new_by_name(self, op: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
+    def new_by_name(self, name: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
                  right: OutcomeCountGenerator[T_co]) -> 'BinaryOperatorGenerator[T_co]':
-        match op:
+        match name:
             case '+': return DisjointUnionGenerator(left, right)
             case '-': return DifferenceGenerator(left, right)
             case '|': return UnionGenerator(left, right)
             case '&': return IntersectionGenerator(left, right)
             case '^': return SymmetricDifferenceGenerator(left, right)
-            case _: raise ValueError(f'Invalid operator {op}.')
+            case _: raise ValueError(f'Invalid operator {name}.')
 
     @staticmethod
     @abstractmethod

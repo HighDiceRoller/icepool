@@ -43,10 +43,10 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
 
 
     @classmethod
-    def new_by_name(cls, op_name: SetComparatorStr, right: Mapping[T_contra, int] |
+    def new_by_name(cls, name: SetComparatorStr, right: Mapping[T_contra, int] |
                  Collection[T_contra] | None = None) -> 'ComparisonEvaluator[T_contra]':
         """Creates a new instance by the operation name."""
-        match op_name:
+        match name:
             case '<': return IsProperSubsetEvaluator(right)
             case '<=' | 'issubset': return IsSubsetEvaluator(right)
             case '>': return IsProperSubsetEvaluator(right)
@@ -54,7 +54,7 @@ class ComparisonEvaluator(OutcomeCountEvaluator[T_contra, bool, bool]):
             case '==': return IsEqualSetEvaluator(right)
             case '!=': return IsNotEqualSetEvaluator(right)
             case 'isdisjoint': return IsDisjointSetEvaluator(right)
-            case _: raise ValueError(f'Invalid comparator {op_name}.')
+            case _: raise ValueError(f'Invalid comparator {name}.')
 
 
     @abstractmethod

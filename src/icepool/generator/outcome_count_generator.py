@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.generator
 from icepool.counts import Counts
 from icepool.typing import MultisetBinaryIntOperationStr, Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
 
@@ -482,32 +483,48 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('^', self)
 
-    # Binary operators with ints.
+    # Count adjustment.
 
     def binary_int_operator(self, op_name: MultisetBinaryIntOperationStr,
-                            other: int) -> 'OutcomeCountGenerator[T_co]':
+                            constant: int) -> 'OutcomeCountGenerator[T_co]':
         """Binary operation with another generator.
 
         Args:
             op_name: One of the following strings:
                 `*, //`.
-            other: An `int`.
+            constant: An `int`.
         """
-        if isinstance(other, int):
-            return icepool.generator.BinaryIntOperatorGenerator.new_by_name(
-                op_name, self, other)
+        if isinstance(constant, int):
+            return icepool.generator.AdjustCountGenerator.new_by_name(
+                op_name, self, constant)
         else:
             return NotImplemented
 
-    def __mul__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
-        return self.binary_int_operator('*', other)
+    def __mul__(self, constant: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('*', constant)
 
     # Commutable in this case.
-    def __rmul__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
-        return self.binary_int_operator('*', other)
+    def __rmul__(self, constant: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('*', constant)
 
-    def __floordiv__(self, other: int) -> 'OutcomeCountGenerator[T_co]':
-        return self.binary_int_operator('//', other)
+    def __floordiv__(self, constant: int) -> 'OutcomeCountGenerator[T_co]':
+        return self.binary_int_operator('//', constant)
+
+    def ignore_counts_below(self, min_count) -> 'OutcomeCountGenerator[T_co]':
+        """Counts below `min_count` are treated as zero.
+
+        For example, `generator.ignore_counts_below(2)` would only produce
+        pairs and better.
+        """
+        return icepool.generator.IgnoreBelowGenerator(self, min_count)
+
+    def unique(self, max_count: int = 1) -> 'OutcomeCountGenerator[T_co]':
+        """Counts each outcome at most `max_count` times.
+
+        For example, `generator.unique(2)` would count each outcome at most
+        twice.
+        """
+        return icepool.generator.UniqueGenerator(self, max_count)
 
     # Sampling.
 
