@@ -96,6 +96,7 @@ class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, tuple[int,
 
 
 class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
+    """The size of the largest straight."""
 
     def next_state(self, state, _, count):
         """Implementation."""
@@ -122,6 +123,7 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
 class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, tuple[int,
                                                                           int],
                                                                int]):
+    """The size of the largest straight, along with the greatest outcome in that straight."""
 
     def next_state(self, state, outcome, count):
         """Implementation."""
