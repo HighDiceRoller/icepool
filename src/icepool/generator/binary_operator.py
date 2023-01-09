@@ -25,11 +25,11 @@ class BinaryOperatorGenerator(OutcomeCountGenerator[T_co]):
     def new_by_name(self, name: MultisetBinaryOperationStr, left: OutcomeCountGenerator[T_co],
                  right: OutcomeCountGenerator[T_co]) -> 'BinaryOperatorGenerator[T_co]':
         match name:
-            case '+': return DisjointUnionGenerator(left, right)
-            case '-': return DifferenceGenerator(left, right)
-            case '|': return UnionGenerator(left, right)
-            case '&': return IntersectionGenerator(left, right)
-            case '^': return SymmetricDifferenceGenerator(left, right)
+            case '+' | 'disjoint_sum': return DisjointUnionGenerator(left, right)
+            case '-' | 'difference': return DifferenceGenerator(left, right)
+            case '|' | 'union': return UnionGenerator(left, right)
+            case '&' | 'intersection': return IntersectionGenerator(left, right)
+            case '^' | 'symmetric_difference': return SymmetricDifferenceGenerator(left, right)
             case _: raise ValueError(f'Invalid operator {name}.')
 
     @staticmethod

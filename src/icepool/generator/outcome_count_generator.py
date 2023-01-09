@@ -44,8 +44,11 @@ class OutcomeCountGenerator(ABC, Generic[T_co]):
     will be using one of these two rather than writing your own subclass of
     `OutcomeCountGenerator`.
 
-    These generators can be evaluated by an `OutcomeCountEvaluator`, which you
-    *are* likely to write your own concrete subclass of.
+    You can perform simple evaluations using built-in operators and methods in
+    this class.
+    For more complex evaluations and better performance, particularly when
+    multiple generators are involved, you will want to write your own subclass
+    of `OutcomeCountEvaluator`.
     """
 
     @abstractmethod
