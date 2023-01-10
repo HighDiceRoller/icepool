@@ -465,5 +465,5 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         else:
             return result
 
-    def __bool__(self) -> NoReturn:
+    def __bool__(self) -> bool:
         raise TypeError('MultisetEvaluator does not have a truth value.')

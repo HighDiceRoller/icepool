@@ -26,7 +26,7 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
     """
 
     def __init__(self, *generators: MultisetGenerator[T_co, tuple[int, ...]],
-                 expression: icepool.expression.MultisetExpression) -> None:
+                 expression: 'icepool.expression.MultisetExpression') -> None:
         self._generators = generators
         self._expression = expression
 

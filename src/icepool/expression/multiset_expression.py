@@ -258,9 +258,13 @@ class MultisetExpression(Hashable, ABC):
 
     # Comparators.
 
-    def compare(self, op_name: SetComparatorStr,
-                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-                /) -> 'icepool.MultisetEvaluator[T, int, bool]':
+    def compare(
+        self,
+        op_name: SetComparatorStr,
+        other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+        /,
+        truth_value: bool | None = None
+    ) -> 'icepool.MultisetEvaluator[T, int, bool]':
         """Compares the outcome multiset to another multiset.
 
         You can also use the symbolic operators directly, e.g.
@@ -278,15 +282,12 @@ class MultisetExpression(Hashable, ABC):
             evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name)  # type: ignore
             return icepool.expression.ExpressionEvaluator(
-                self,
-                other,
-                evaluator=evaluator,
-            )
+                self, other, evaluator=evaluator, truth_value=truth_value)
         elif isinstance(other, (Mapping, Collection)):
             evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name, other)
-            return icepool.expression.ExpressionEvaluator(self,
-                                                          evaluator=evaluator)
+            return icepool.expression.ExpressionEvaluator(
+                self, evaluator=evaluator, truth_value=truth_value)
         else:
             return NotImplemented
 

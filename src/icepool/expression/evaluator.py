@@ -15,12 +15,15 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 
 
 class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
-    """Wraps an evaluator by evaluating expressions before sending the counts to it."""
+    """Wraps an evaluator with expressions to be evaluated first."""
 
-    def __init__(self, *expressions: 'icepool.expression.MultisetExpression',
-                 evaluator: MultisetEvaluator[T_contra, int, U_co]) -> None:
+    def __init__(self,
+                 *expressions: 'icepool.expression.MultisetExpression',
+                 evaluator: MultisetEvaluator[T_contra, int, U_co],
+                 truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
         self._expressions = expressions
+        self._truth_value = truth_value
 
     def next_state(self, state, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
@@ -39,3 +42,10 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
     def alignment(self, *generators):
         """Forwards to inner."""
         return self._evaluator.alignment(*generators)
+
+    def __bool__(self) -> bool:
+        if self._truth_value is None:
+            raise TypeError(
+                'MultisetExpression only has a truth value if it is the result of the == or != operator.'
+            )
+        return self._truth_value
