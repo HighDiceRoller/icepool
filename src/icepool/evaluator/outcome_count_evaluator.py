@@ -29,7 +29,7 @@ This may be replaced with a `TypeVarTuple` in the future."""
 
 
 class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
-    """An abstract, immutable, callable class for evaulating one or more `OutcomeCountGenerator`s.
+    """An abstract, immutable, callable class for evaulating one or more `MultisetGenerator`s.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result given one outcome at a time
@@ -47,7 +47,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
     A few other methods can optionally be overridden to further customize behavior.
 
-    It is not expected that subclasses of `OutcomeCountEvaluator`
+    It is not expected that subclasses of `MultisetEvaluator`
     be able to handle arbitrary types or numbers of generators.
     Indeed, most are expected to handle only a fixed number of generators,
     and often even only generators with a particular type of `Die`.
@@ -128,7 +128,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *generators: One or more `OutcomeCountGenerator`s being evaluated.
+            *generators: One or more `MultisetGenerator`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -153,7 +153,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         and other dice that differ only by right-truncation.
 
         Args:
-            *generators: One or more `OutcomeCountGenerator`s being evaluated.
+            *generators: One or more `MultisetGenerator`s being evaluated.
                 Most subclasses will expect a fixed number of generators and
                 can replace this variadic parameter with a fixed number of named
                 parameters.
@@ -182,7 +182,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         count may or may not be seen by `next_state`.
 
         If you want the outcomes seen by `next_state` to be consecutive
-        `int`s, you can set `alignment = icepool.OutcomeCountEvaluator.range_alignment`.
+        `int`s, you can set `alignment = icepool.MultisetEvaluator.range_alignment`.
         See `range_alignment()` below.
         """
         return ()
@@ -198,7 +198,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         the parameters in a subclass, or to replace `*generators` with a fixed
         set of parameters.
 
-        Set `alignment = icepool.OutcomeCountEvaluator.range_alignment` to use this.
+        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.
 
         Returns:
             All `int`s from the min outcome to the max outcome among the generators,
@@ -234,7 +234,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     ) -> 'icepool.Die[U_co]':
         """Evaluates generator(s).
 
-        You can call the `OutcomeCountEvaluator` object directly for the same effect,
+        You can call the `MultisetEvaluator` object directly for the same effect,
         e.g. `sum_evaluator(generator)` is an alias for `sum_evaluator.evaluate(generator)`.
 
         Most evaluators will expect a fixed number of generators.
@@ -242,7 +242,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
         Args:
             *generators: Each element may be one of the following:
-                * A `OutcomeCountGenerator`.
+                * A `MultisetGenerator`.
                 * A mappable mapping dice to the number of those dice.
                 * A sequence of arguments to create a `Pool`.
 
@@ -339,7 +339,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             order: The order in which to send outcomes to `next_state()`.
             alignment: As `alignment()`. Elements will be popped off this
                 during recursion.
-            generators: One or more `OutcomeCountGenerators`s to evaluate. Elements
+            generators: One or more `MultisetGenerators`s to evaluate. Elements
                 will be popped off this during recursion.
 
         Returns:
@@ -413,8 +413,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     def _pop_generators(
         side: int, alignment: Alignment[T_contra],
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
-    ) -> tuple[Any, Alignment[T_contra], tuple[
-            'icepool.NextOutcomeCountGenerator', ...]]:
+    ) -> tuple[Any, Alignment[T_contra], tuple['icepool.NextMultisetGenerator',
+                                               ...]]:
         """Pops a single outcome from the generators.
 
         Returns:
@@ -460,4 +460,4 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             return result
 
     def __bool__(self) -> NoReturn:
-        raise TypeError('OutcomeCountEvaluator does not have a truth value.')
+        raise TypeError('MultisetEvaluator does not have a truth value.')

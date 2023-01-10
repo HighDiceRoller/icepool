@@ -5,7 +5,7 @@ from icepool.typing import Outcome
 from typing import TypeVar
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
+from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
@@ -38,7 +38,7 @@ class Deal(MultisetGenerator[T_co, Q]):
         Args:
             deck: The `Deck` to deal from.
             *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
-                provided, `OutcomeCountEvaluator.next_state` will recieve one count
+                provided, `MultisetEvaluator.next_state` will recieve one count
                 per hand in order. Try to keep the number of hands to a minimum
                 as this can be computationally intensive.
         """
@@ -98,7 +98,7 @@ class Deal(MultisetGenerator[T_co, Q]):
         return self._denomiator
 
     def _generate_common(self, popped_deck: 'icepool.Deck[T_co]',
-                         deck_count: int) -> NextOutcomeCountGenerator:
+                         deck_count: int) -> NextMultisetGenerator:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().size())
@@ -114,7 +114,7 @@ class Deal(MultisetGenerator[T_co, Q]):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0,), 1
             return
@@ -123,7 +123,7 @@ class Deal(MultisetGenerator[T_co, Q]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0,), 1
             return

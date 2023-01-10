@@ -5,7 +5,7 @@ import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
+from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome
 
 import itertools
@@ -22,7 +22,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 class Pool(MultisetGenerator[T_co, tuple[int]]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
-    This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.
+    This should be used in conjunction with `MultisetEvaluator` to generate a result.
     """
 
     _sorted_roll_counts: tuple[int, ...]
@@ -293,7 +293,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         """The max outcome among all dice in this pool."""
         return self._max_outcome
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -340,7 +340,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
             yield Pool._new_empty(), (sum(
                 self.sorted_roll_counts()),), skip_weight
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:

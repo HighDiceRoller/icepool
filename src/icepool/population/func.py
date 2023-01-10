@@ -308,7 +308,7 @@ def apply(
 
     * If the problem is easy to solve by considering how many dice rolled each
         outcome, one outcome at a time, try using
-        `icepool.Pool` and `icepool.OutcomeCountEvaluator`.
+        `icepool.Pool` and `icepool.MultisetEvaluator`.
     * If the problem is easy to solve by considering one additional `Die` at a
         time, try using `reduce()` instead.
     * If the order in which the dice are rolled is not important, you can use
@@ -373,7 +373,7 @@ class apply_sorted():
         Treat this as an ordinary function, not a constructor.
 
         `apply_sorted()` is more efficient than `apply()` but still not very
-        efficient. Use `OutcomeCountEvaluator` instead if at all possible.
+        efficient. Use `MultisetEvaluator` instead if at all possible.
 
         You can use `apply_sorted[]` to only see outcomes at particular sorted indexes.
         For example, `apply_sorted[-2:](func, *dice)` would give the two highest

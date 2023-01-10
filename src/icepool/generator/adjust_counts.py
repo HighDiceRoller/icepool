@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
+from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome, MultisetBinaryIntOperationStr
 
 from abc import abstractmethod
@@ -51,13 +51,13 @@ class AdjustCountsGenerator(MultisetGenerator[T_co, Qints_co]):
     def _is_resolvable(self) -> bool:
         return self._inner._is_resolvable()
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         for gen, counts, weight in self._inner._generate_min(min_outcome):
             next_counts = tuple(self.adjust_count(count, self._constant) for count in counts)
             next_generator = self.__class__(gen, self._constant)
             yield next_generator, next_counts, weight
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         for gen, counts, weight in self._inner._generate_max(max_outcome):
             next_counts = tuple(self.adjust_count(count, self._constant) for count in counts)
             next_generator = self.__class__(gen, self._constant)

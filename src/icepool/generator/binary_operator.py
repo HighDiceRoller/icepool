@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
+from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome, MultisetBinaryOperationStr
 
 import itertools
@@ -55,7 +55,7 @@ class BinaryOperatorGenerator(MultisetGenerator[T_co, tuple[int]]):
     def _is_resolvable(self) -> bool:
         return self._left._is_resolvable() and self._right._is_resolvable()
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         for (left_generator, left_counts,
              left_weight), (right_generator, right_counts,
                             right_weight) in itertools.product(
@@ -67,7 +67,7 @@ class BinaryOperatorGenerator(MultisetGenerator[T_co, tuple[int]]):
             next_weight = left_weight * right_weight
             yield next_generator, (next_counts,), next_weight
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         for (left_generator, left_counts,
              left_weight), (right_generator, right_counts,
                             right_weight) in itertools.product(

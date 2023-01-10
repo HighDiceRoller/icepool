@@ -9,7 +9,7 @@ T_contra = TypeVar('T_contra', contravariant=True)
 
 
 class Order(enum.IntEnum):
-    """Can be used to define what order outcomes are seen in by OutcomeCountEvaluators."""
+    """Can be used to define what order outcomes are seen in by MultisetEvaluators."""
     Ascending = 1
     Descending = -1
     Any = 0

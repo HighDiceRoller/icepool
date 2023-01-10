@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
+from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
 
 from collections import defaultdict
 from functools import cached_property
@@ -32,7 +32,7 @@ class SuitGenerator(MultisetGenerator):
     def _is_resolvable(self) -> bool:
         return self._src._is_resolvable()
 
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
             defaultdict(int) for _ in range(self.counts_len())
         ]
@@ -40,7 +40,7 @@ class SuitGenerator(MultisetGenerator):
                 min_outcome, self._src, blank_counts, 1):
             yield SuitGenerator(popped_src), counts, weights
 
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
             defaultdict(int) for _ in range(self.counts_len())
         ]

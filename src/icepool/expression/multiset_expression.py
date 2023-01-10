@@ -144,9 +144,9 @@ class MultisetExpression(ABC):
         *expressions: 'MultisetExpression',
         evaluator: 'icepool.MultisetEvaluator[T, int, U]'
     ) -> 'icepool.MultisetEvaluator[T, int, U]':
-        """Attaches a final `OutcomeCountEvaluator` to this expression.
+        """Attaches a final `MultisetEvaluator` to this expression.
 
-        The result is an `OutcomeCountEvaluator` that runs the expression
+        The result is an `MultisetEvaluator` that runs the expression
         before sending the result to the provided evaluator.
         """
         return icepool.expression.ExpressionEvaluator(*expressions,

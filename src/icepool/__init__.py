@@ -39,7 +39,7 @@ Operation in specific cases:
     tree.
 * To reroll with limited depth, use `Die.reroll()`, or `Again()` with no
     modification.
-* When used with `OutcomeCountEvaluator`, the entire evaluation is rerolled.
+* When used with `MultisetEvaluator`, the entire evaluation is rerolled.
 """
 
 # Expose certain names at top-level.
@@ -61,7 +61,7 @@ from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.lowest_highest import lowest, highest, sum_lowest, sum_highest
 
 from icepool.generator.pool import Pool, standard_pool
-from icepool.generator.outcome_count_generator import MultisetGenerator, NextOutcomeCountGenerator, implicit_convert_to_generator
+from icepool.generator.outcome_count_generator import MultisetGenerator, NextMultisetGenerator, implicit_convert_to_generator
 from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 
 from icepool.population.deck import Deck

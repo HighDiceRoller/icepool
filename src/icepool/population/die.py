@@ -69,9 +69,9 @@ class Die(Population[T_co]):
     It *is* (mostly) well-defined to have a `Die` with zero-quantity outcomes.
     These can be useful in a few cases, such as:
 
-    * `OutcomeCountEvaluator` will iterate through zero-quantity outcomes,
+    * `MultisetEvaluator` will iterate through zero-quantity outcomes,
         rather than possibly skipping that outcome. (Though in most cases it's
-        better to use `OutcomeCountEvaluator.alignment()`.)
+        better to use `MultisetEvaluator.alignment()`.)
     * `icepool.align()` and the like are convenient for making dice share the
         same set of outcomes.
 

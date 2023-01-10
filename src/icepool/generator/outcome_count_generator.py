@@ -31,8 +31,8 @@ In this future this may be replaced with a TypeVarTuple."""
 U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
-NextOutcomeCountGenerator: TypeAlias = Iterator[tuple[
-    'icepool.MultisetGenerator', Sequence, int]]
+NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
+                                                  Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
@@ -43,7 +43,7 @@ def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
         return icepool.Pool(arg)
     else:
         raise TypeError(
-            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to an OutcomeCountGenerator.'
+            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to an MultisetGenerator.'
         )
 
 
@@ -52,13 +52,13 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
     will be using one of these two rather than writing your own subclass of
-    `OutcomeCountGenerator`.
+    `MultisetGenerator`.
 
     You can perform simple evaluations using built-in operators and methods in
     this class.
     For more complex evaluations and better performance, particularly when
     multiple generators are involved, you will want to write your own subclass
-    of `OutcomeCountEvaluator`.
+    of `MultisetEvaluator`.
     """
 
     @abstractmethod
@@ -78,7 +78,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         """
 
     @abstractmethod
-    def _generate_min(self, min_outcome) -> NextOutcomeCountGenerator:
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         """Pops the min outcome from this generator if it matches the argument.
 
         Yields:
@@ -95,7 +95,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         """
 
     @abstractmethod
-    def _generate_max(self, max_outcome) -> NextOutcomeCountGenerator:
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         """Pops the max outcome from this generator if it matches the argument.
 
         Yields:
@@ -130,22 +130,22 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
 
     @abstractmethod
     def __hash__(self) -> int:
-        """All `OutcomeCountGenerator`s must be hashable."""
+        """All `MultisetGenerator`s must be hashable."""
 
     def evaluate(self,
                  evaluator_or_func: 'icepool.MultisetEvaluator[Any, Any, U]' |
                  Callable[..., U], /) -> 'icepool.Die[U]':
-        """Evaluates this generator using the given `OutcomeCountEvaluator` or function.
+        """Evaluates this generator using the given `MultisetEvaluator` or function.
 
-        Note that each `OutcomeCountEvaluator` instance carries its own cache;
+        Note that each `MultisetEvaluator` instance carries its own cache;
         if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `OutcomeCountEvaluator` instance
+        you may want to explicitly create an `MultisetEvaluator` instance
         rather than passing a function to this method directly.
 
         Args:
-            func: This can be an `OutcomeCountEvaluator`, in which case it evaluates
+            func: This can be an `MultisetEvaluator`, in which case it evaluates
                 the generator directly.
-                Or it can be a `OutcomeCountEvaluator.next_state()`-like
+                Or it can be a `MultisetEvaluator.next_state()`-like
                 function, taking in `state, outcome, *counts` and returning the
                 next state. In this case a temporary `WrapFuncEvaluator`
                 is constructed and used to evaluate this generator.
@@ -394,7 +394,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         Args:
             op_name: One of the following strings:
                 `+, -, |, &, ^`.
-            right: The other `OutcomeCountGenerator`.
+            right: The other `MultisetGenerator`.
         """
         if isinstance(right, MultisetGenerator):
             return icepool.generator.BinaryOperatorGenerator.new_by_name(
