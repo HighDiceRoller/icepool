@@ -419,13 +419,13 @@
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">WrapFuncEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[-T_contra, -Q_contra, +U_co]</span>):
+    <span class="name">WrapFuncEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[-T_contra, -Q_contra, +U_co]</span>):
 
                 <label class="view-source-button" for="WrapFuncEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#WrapFuncEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEvaluator-21"><a href="#WrapFuncEvaluator-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">WrapFuncEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WrapFuncEvaluator-21"><a href="#WrapFuncEvaluator-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">WrapFuncEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
 </span><span id="WrapFuncEvaluator-22"><a href="#WrapFuncEvaluator-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates the provided function.&quot;&quot;&quot;</span>
 </span><span id="WrapFuncEvaluator-23"><a href="#WrapFuncEvaluator-23"><span class="linenos">23</span></a>
 </span><span id="WrapFuncEvaluator-24"><a href="#WrapFuncEvaluator-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
@@ -503,7 +503,7 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="WrapFuncEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="WrapFuncEvaluator.order" class="function">order</dd>
                 <dd id="WrapFuncEvaluator.alignment" class="function">alignment</dd>
@@ -520,13 +520,13 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">ExpandEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, tuple]</span>):
+    <span class="name">ExpandEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, tuple]</span>):
 
                 <label class="view-source-button" for="ExpandEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ExpandEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ExpandEvaluator-37"><a href="#ExpandEvaluator-37"><span class="linenos">37</span></a><span class="k">class</span> <span class="nc">ExpandEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ExpandEvaluator-37"><a href="#ExpandEvaluator-37"><span class="linenos">37</span></a><span class="k">class</span> <span class="nc">ExpandEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
 </span><span id="ExpandEvaluator-38"><a href="#ExpandEvaluator-38"><span class="linenos">38</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Expands all results of a generator.</span>
 </span><span id="ExpandEvaluator-39"><a href="#ExpandEvaluator-39"><span class="linenos">39</span></a>
 </span><span id="ExpandEvaluator-40"><a href="#ExpandEvaluator-40"><span class="linenos">40</span></a><span class="sd">    This is expensive and not recommended unless there are few possibilities.</span>
@@ -641,7 +641,7 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ExpandEvaluator.alignment" class="function">alignment</dd>
                 <dd id="ExpandEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="ExpandEvaluator.evaluate" class="function">evaluate</dd>
@@ -656,13 +656,13 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">SumEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, typing.Any]</span>):
+    <span class="name">SumEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, typing.Any]</span>):
 
                 <label class="view-source-button" for="SumEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#SumEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a><span class="k">class</span> <span class="nc">SumEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a><span class="k">class</span> <span class="nc">SumEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 </span><span id="SumEvaluator-61"><a href="#SumEvaluator-61"><span class="linenos">61</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sums all outcomes.&quot;&quot;&quot;</span>
 </span><span id="SumEvaluator-62"><a href="#SumEvaluator-62"><span class="linenos">62</span></a>
 </span><span id="SumEvaluator-63"><a href="#SumEvaluator-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
@@ -744,7 +744,7 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="SumEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="SumEvaluator.alignment" class="function">alignment</dd>
                 <dd id="SumEvaluator.range_alignment" class="function">range_alignment</dd>
@@ -771,13 +771,13 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">CountEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, int]</span>):
+    <span class="name">CountEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, int]</span>):
 
                 <label class="view-source-button" for="CountEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#CountEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountEvaluator-79"><a href="#CountEvaluator-79"><span class="linenos">79</span></a><span class="k">class</span> <span class="nc">CountEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountEvaluator-79"><a href="#CountEvaluator-79"><span class="linenos">79</span></a><span class="k">class</span> <span class="nc">CountEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
 </span><span id="CountEvaluator-80"><a href="#CountEvaluator-80"><span class="linenos">80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the total count of outcomes.</span>
 </span><span id="CountEvaluator-81"><a href="#CountEvaluator-81"><span class="linenos">81</span></a>
 </span><span id="CountEvaluator-82"><a href="#CountEvaluator-82"><span class="linenos">82</span></a><span class="sd">    Usually not very interesting unless the counts are adjusted by</span>
@@ -886,7 +886,7 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="CountEvaluator.alignment" class="function">alignment</dd>
                 <dd id="CountEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="CountEvaluator.evaluate" class="function">evaluate</dd>
@@ -912,14 +912,14 @@ as <code><a href="#WrapFuncEvaluator.next_state">next_state()</a></code>, minus 
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">HighestOutcomeAndCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, tuple[typing.Any, int]]</span>):
+    <span class="name">HighestOutcomeAndCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, tuple[typing.Any, int]]</span>):
 
                 <label class="view-source-button" for="HighestOutcomeAndCountEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#HighestOutcomeAndCountEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator-13"><a href="#HighestOutcomeAndCountEvaluator-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">HighestOutcomeAndCountEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="HighestOutcomeAndCountEvaluator-14"><a href="#HighestOutcomeAndCountEvaluator-14"><span class="linenos">14</span></a>                                                            <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator-13"><a href="#HighestOutcomeAndCountEvaluator-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">HighestOutcomeAndCountEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="HighestOutcomeAndCountEvaluator-14"><a href="#HighestOutcomeAndCountEvaluator-14"><span class="linenos">14</span></a>                                                        <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
 </span><span id="HighestOutcomeAndCountEvaluator-15"><a href="#HighestOutcomeAndCountEvaluator-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The highest outcome that has positive count, along with that count.</span>
 </span><span id="HighestOutcomeAndCountEvaluator-16"><a href="#HighestOutcomeAndCountEvaluator-16"><span class="linenos">16</span></a>
 </span><span id="HighestOutcomeAndCountEvaluator-17"><a href="#HighestOutcomeAndCountEvaluator-17"><span class="linenos">17</span></a><span class="sd">    If no outcomes have positive count, an arbitrary outcome will be produced</span>
@@ -1020,7 +1020,7 @@ with a 0 count.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="HighestOutcomeAndCountEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.alignment" class="function">alignment</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.range_alignment" class="function">range_alignment</dd>
@@ -1036,13 +1036,13 @@ with a 0 count.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, int]</span>):
+    <span class="name">LargestCountEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, int]</span>):
 
                 <label class="view-source-button" for="LargestCountEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestCountEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator-72"><a href="#LargestCountEvaluator-72"><span class="linenos">72</span></a><span class="k">class</span> <span class="nc">LargestCountEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator-72"><a href="#LargestCountEvaluator-72"><span class="linenos">72</span></a><span class="k">class</span> <span class="nc">LargestCountEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
 </span><span id="LargestCountEvaluator-73"><a href="#LargestCountEvaluator-73"><span class="linenos">73</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The largest count of any outcome.&quot;&quot;&quot;</span>
 </span><span id="LargestCountEvaluator-74"><a href="#LargestCountEvaluator-74"><span class="linenos">74</span></a>
 </span><span id="LargestCountEvaluator-75"><a href="#LargestCountEvaluator-75"><span class="linenos">75</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
@@ -1118,7 +1118,7 @@ with a 0 count.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="LargestCountEvaluator.alignment" class="function">alignment</dd>
                 <dd id="LargestCountEvaluator.range_alignment" class="function">range_alignment</dd>
@@ -1134,14 +1134,14 @@ with a 0 count.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestCountAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, tuple[int, typing.Any]]</span>):
+    <span class="name">LargestCountAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, tuple[int, typing.Any]]</span>):
 
                 <label class="view-source-button" for="LargestCountAndOutcomeEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestCountAndOutcomeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator-84"><a href="#LargestCountAndOutcomeEvaluator-84"><span class="linenos">84</span></a><span class="k">class</span> <span class="nc">LargestCountAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestCountAndOutcomeEvaluator-85"><a href="#LargestCountAndOutcomeEvaluator-85"><span class="linenos">85</span></a>                                                            <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator-84"><a href="#LargestCountAndOutcomeEvaluator-84"><span class="linenos">84</span></a><span class="k">class</span> <span class="nc">LargestCountAndOutcomeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestCountAndOutcomeEvaluator-85"><a href="#LargestCountAndOutcomeEvaluator-85"><span class="linenos">85</span></a>                                                        <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
 </span><span id="LargestCountAndOutcomeEvaluator-86"><a href="#LargestCountAndOutcomeEvaluator-86"><span class="linenos">86</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The largest count of any outcome, along with that outcome.&quot;&quot;&quot;</span>
 </span><span id="LargestCountAndOutcomeEvaluator-87"><a href="#LargestCountAndOutcomeEvaluator-87"><span class="linenos">87</span></a>
 </span><span id="LargestCountAndOutcomeEvaluator-88"><a href="#LargestCountAndOutcomeEvaluator-88"><span class="linenos">88</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
@@ -1217,7 +1217,7 @@ with a 0 count.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountAndOutcomeEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.alignment" class="function">alignment</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
@@ -1233,13 +1233,13 @@ with a 0 count.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">AllCountsEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[icepool.typing.Outcome, int, tuple[int, ...]]</span>):
+    <span class="name">AllCountsEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[icepool.typing.Outcome, int, tuple[int, ...]]</span>):
 
                 <label class="view-source-button" for="AllCountsEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#AllCountsEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator-39"><a href="#AllCountsEvaluator-39"><span class="linenos">39</span></a><span class="k">class</span> <span class="nc">AllCountsEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator-39"><a href="#AllCountsEvaluator-39"><span class="linenos">39</span></a><span class="k">class</span> <span class="nc">AllCountsEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Outcome</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]):</span>
 </span><span id="AllCountsEvaluator-40"><a href="#AllCountsEvaluator-40"><span class="linenos">40</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;All counts in ascending order.</span>
 </span><span id="AllCountsEvaluator-41"><a href="#AllCountsEvaluator-41"><span class="linenos">41</span></a>
 </span><span id="AllCountsEvaluator-42"><a href="#AllCountsEvaluator-42"><span class="linenos">42</span></a><span class="sd">    In other words, this produces tuples of the sizes of all matching sets.</span>
@@ -1384,7 +1384,7 @@ in the result are removed.</li>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="AllCountsEvaluator.alignment" class="function">alignment</dd>
                 <dd id="AllCountsEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="AllCountsEvaluator.evaluate" class="function">evaluate</dd>
@@ -1399,13 +1399,13 @@ in the result are removed.</li>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestStraightEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[int, int, int]</span>):
+    <span class="name">LargestStraightEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[int, int, int]</span>):
 
                 <label class="view-source-button" for="LargestStraightEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator-97"><a href="#LargestStraightEvaluator-97"><span class="linenos"> 97</span></a><span class="k">class</span> <span class="nc">LargestStraightEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator-97"><a href="#LargestStraightEvaluator-97"><span class="linenos"> 97</span></a><span class="k">class</span> <span class="nc">LargestStraightEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
 </span><span id="LargestStraightEvaluator-98"><a href="#LargestStraightEvaluator-98"><span class="linenos"> 98</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The size of the largest straight.&quot;&quot;&quot;</span>
 </span><span id="LargestStraightEvaluator-99"><a href="#LargestStraightEvaluator-99"><span class="linenos"> 99</span></a>
 </span><span id="LargestStraightEvaluator-100"><a href="#LargestStraightEvaluator-100"><span class="linenos">100</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
@@ -1427,7 +1427,7 @@ in the result are removed.</li>
 </span><span id="LargestStraightEvaluator-116"><a href="#LargestStraightEvaluator-116"><span class="linenos">116</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
 </span><span id="LargestStraightEvaluator-117"><a href="#LargestStraightEvaluator-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span><span id="LargestStraightEvaluator-118"><a href="#LargestStraightEvaluator-118"><span class="linenos">118</span></a>
-</span><span id="LargestStraightEvaluator-119"><a href="#LargestStraightEvaluator-119"><span class="linenos">119</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span><span id="LargestStraightEvaluator-119"><a href="#LargestStraightEvaluator-119"><span class="linenos">119</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
 </span></pre></div>
 
 
@@ -1525,46 +1525,46 @@ in the result are removed.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">outcome_count_generator</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">multiset_generator</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="LargestStraightEvaluator.alignment-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.alignment-192"><a href="#LargestStraightEvaluator.alignment-192"><span class="linenos">192</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.alignment-193"><a href="#LargestStraightEvaluator.alignment-193"><span class="linenos">193</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="LargestStraightEvaluator.alignment-194"><a href="#LargestStraightEvaluator.alignment-194"><span class="linenos">194</span></a>        <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestStraightEvaluator.alignment-195"><a href="#LargestStraightEvaluator.alignment-195"><span class="linenos">195</span></a>                                                   <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightEvaluator.alignment-196"><a href="#LargestStraightEvaluator.alignment-196"><span class="linenos">196</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightEvaluator.alignment-197"><a href="#LargestStraightEvaluator.alignment-197"><span class="linenos">197</span></a>
-</span><span id="LargestStraightEvaluator.alignment-198"><a href="#LargestStraightEvaluator.alignment-198"><span class="linenos">198</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightEvaluator.alignment-199"><a href="#LargestStraightEvaluator.alignment-199"><span class="linenos">199</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightEvaluator.alignment-200"><a href="#LargestStraightEvaluator.alignment-200"><span class="linenos">200</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightEvaluator.alignment-201"><a href="#LargestStraightEvaluator.alignment-201"><span class="linenos">201</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightEvaluator.alignment-202"><a href="#LargestStraightEvaluator.alignment-202"><span class="linenos">202</span></a>
-</span><span id="LargestStraightEvaluator.alignment-203"><a href="#LargestStraightEvaluator.alignment-203"><span class="linenos">203</span></a><span class="sd">        Set `alignment = icepool.OutcomeCountEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightEvaluator.alignment-204"><a href="#LargestStraightEvaluator.alignment-204"><span class="linenos">204</span></a>
-</span><span id="LargestStraightEvaluator.alignment-205"><a href="#LargestStraightEvaluator.alignment-205"><span class="linenos">205</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightEvaluator.alignment-206"><a href="#LargestStraightEvaluator.alignment-206"><span class="linenos">206</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightEvaluator.alignment-207"><a href="#LargestStraightEvaluator.alignment-207"><span class="linenos">207</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightEvaluator.alignment-208"><a href="#LargestStraightEvaluator.alignment-208"><span class="linenos">208</span></a>
-</span><span id="LargestStraightEvaluator.alignment-209"><a href="#LargestStraightEvaluator.alignment-209"><span class="linenos">209</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightEvaluator.alignment-210"><a href="#LargestStraightEvaluator.alignment-210"><span class="linenos">210</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightEvaluator.alignment-211"><a href="#LargestStraightEvaluator.alignment-211"><span class="linenos">211</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-212"><a href="#LargestStraightEvaluator.alignment-212"><span class="linenos">212</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.alignment-213"><a href="#LargestStraightEvaluator.alignment-213"><span class="linenos">213</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightEvaluator.alignment-214"><a href="#LargestStraightEvaluator.alignment-214"><span class="linenos">214</span></a>
-</span><span id="LargestStraightEvaluator.alignment-215"><a href="#LargestStraightEvaluator.alignment-215"><span class="linenos">215</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.alignment-216"><a href="#LargestStraightEvaluator.alignment-216"><span class="linenos">216</span></a>                <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-217"><a href="#LargestStraightEvaluator.alignment-217"><span class="linenos">217</span></a>                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
-</span><span id="LargestStraightEvaluator.alignment-218"><a href="#LargestStraightEvaluator.alignment-218"><span class="linenos">218</span></a>                <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.alignment-219"><a href="#LargestStraightEvaluator.alignment-219"><span class="linenos">219</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.alignment-220"><a href="#LargestStraightEvaluator.alignment-220"><span class="linenos">220</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-221"><a href="#LargestStraightEvaluator.alignment-221"><span class="linenos">221</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-222"><a href="#LargestStraightEvaluator.alignment-222"><span class="linenos">222</span></a>
-</span><span id="LargestStraightEvaluator.alignment-223"><a href="#LargestStraightEvaluator.alignment-223"><span class="linenos">223</span></a>        <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-224"><a href="#LargestStraightEvaluator.alignment-224"><span class="linenos">224</span></a>        <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-225"><a href="#LargestStraightEvaluator.alignment-225"><span class="linenos">225</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.alignment-191"><a href="#LargestStraightEvaluator.alignment-191"><span class="linenos">191</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.alignment-192"><a href="#LargestStraightEvaluator.alignment-192"><span class="linenos">192</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="LargestStraightEvaluator.alignment-193"><a href="#LargestStraightEvaluator.alignment-193"><span class="linenos">193</span></a>            <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestStraightEvaluator.alignment-194"><a href="#LargestStraightEvaluator.alignment-194"><span class="linenos">194</span></a>                                                   <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightEvaluator.alignment-195"><a href="#LargestStraightEvaluator.alignment-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightEvaluator.alignment-196"><a href="#LargestStraightEvaluator.alignment-196"><span class="linenos">196</span></a>
+</span><span id="LargestStraightEvaluator.alignment-197"><a href="#LargestStraightEvaluator.alignment-197"><span class="linenos">197</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightEvaluator.alignment-198"><a href="#LargestStraightEvaluator.alignment-198"><span class="linenos">198</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightEvaluator.alignment-199"><a href="#LargestStraightEvaluator.alignment-199"><span class="linenos">199</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightEvaluator.alignment-200"><a href="#LargestStraightEvaluator.alignment-200"><span class="linenos">200</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightEvaluator.alignment-201"><a href="#LargestStraightEvaluator.alignment-201"><span class="linenos">201</span></a>
+</span><span id="LargestStraightEvaluator.alignment-202"><a href="#LargestStraightEvaluator.alignment-202"><span class="linenos">202</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="LargestStraightEvaluator.alignment-203"><a href="#LargestStraightEvaluator.alignment-203"><span class="linenos">203</span></a>
+</span><span id="LargestStraightEvaluator.alignment-204"><a href="#LargestStraightEvaluator.alignment-204"><span class="linenos">204</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightEvaluator.alignment-205"><a href="#LargestStraightEvaluator.alignment-205"><span class="linenos">205</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightEvaluator.alignment-206"><a href="#LargestStraightEvaluator.alignment-206"><span class="linenos">206</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightEvaluator.alignment-207"><a href="#LargestStraightEvaluator.alignment-207"><span class="linenos">207</span></a>
+</span><span id="LargestStraightEvaluator.alignment-208"><a href="#LargestStraightEvaluator.alignment-208"><span class="linenos">208</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightEvaluator.alignment-209"><a href="#LargestStraightEvaluator.alignment-209"><span class="linenos">209</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightEvaluator.alignment-210"><a href="#LargestStraightEvaluator.alignment-210"><span class="linenos">210</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.alignment-211"><a href="#LargestStraightEvaluator.alignment-211"><span class="linenos">211</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.alignment-212"><a href="#LargestStraightEvaluator.alignment-212"><span class="linenos">212</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightEvaluator.alignment-213"><a href="#LargestStraightEvaluator.alignment-213"><span class="linenos">213</span></a>
+</span><span id="LargestStraightEvaluator.alignment-214"><a href="#LargestStraightEvaluator.alignment-214"><span class="linenos">214</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.alignment-215"><a href="#LargestStraightEvaluator.alignment-215"><span class="linenos">215</span></a>                <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator.alignment-216"><a href="#LargestStraightEvaluator.alignment-216"><span class="linenos">216</span></a>                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
+</span><span id="LargestStraightEvaluator.alignment-217"><a href="#LargestStraightEvaluator.alignment-217"><span class="linenos">217</span></a>                <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.alignment-218"><a href="#LargestStraightEvaluator.alignment-218"><span class="linenos">218</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.alignment-219"><a href="#LargestStraightEvaluator.alignment-219"><span class="linenos">219</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightEvaluator.alignment-220"><a href="#LargestStraightEvaluator.alignment-220"><span class="linenos">220</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightEvaluator.alignment-221"><a href="#LargestStraightEvaluator.alignment-221"><span class="linenos">221</span></a>
+</span><span id="LargestStraightEvaluator.alignment-222"><a href="#LargestStraightEvaluator.alignment-222"><span class="linenos">222</span></a>        <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator.alignment-223"><a href="#LargestStraightEvaluator.alignment-223"><span class="linenos">223</span></a>        <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator.alignment-224"><a href="#LargestStraightEvaluator.alignment-224"><span class="linenos">224</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1579,7 +1579,7 @@ set of parameters.</p>
 count may or may not be seen by <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code>.</p>
 
 <p>If you want the outcomes seen by <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code> to be consecutive
-<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#OutcomeCountEvaluator.range_alignment">icepool.OutcomeCountEvaluator.range_alignment</a></code>.
+<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
 See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()</a></code> below.</p>
 </div>
 
@@ -1588,7 +1588,7 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestStraightEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="LargestStraightEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="LargestStraightEvaluator.sample" class="function">sample</dd>
@@ -1602,35 +1602,34 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">LargestStraightAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[int, int, tuple[int, int]]</span>):
+    <span class="name">LargestStraightAndOutcomeEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[int, int, tuple[int, int]]</span>):
 
                 <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator-122"><a href="#LargestStraightAndOutcomeEvaluator-122"><span class="linenos">122</span></a><span class="k">class</span> <span class="nc">LargestStraightAndOutcomeEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-123"><a href="#LargestStraightAndOutcomeEvaluator-123"><span class="linenos">123</span></a>                                                               <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-124"><a href="#LargestStraightAndOutcomeEvaluator-124"><span class="linenos">124</span></a>                                                                     <span class="nb">int</span><span class="p">]]):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-125"><a href="#LargestStraightAndOutcomeEvaluator-125"><span class="linenos">125</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The size of the largest straight, along with the greatest outcome in that straight.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-126"><a href="#LargestStraightAndOutcomeEvaluator-126"><span class="linenos">126</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-127"><a href="#LargestStraightAndOutcomeEvaluator-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-128"><a href="#LargestStraightAndOutcomeEvaluator-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-129"><a href="#LargestStraightAndOutcomeEvaluator-129"><span class="linenos">129</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-130"><a href="#LargestStraightAndOutcomeEvaluator-130"><span class="linenos">130</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-131"><a href="#LargestStraightAndOutcomeEvaluator-131"><span class="linenos">131</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-132"><a href="#LargestStraightAndOutcomeEvaluator-132"><span class="linenos">132</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-133"><a href="#LargestStraightAndOutcomeEvaluator-133"><span class="linenos">133</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-134"><a href="#LargestStraightAndOutcomeEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-135"><a href="#LargestStraightAndOutcomeEvaluator-135"><span class="linenos">135</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-136"><a href="#LargestStraightAndOutcomeEvaluator-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-137"><a href="#LargestStraightAndOutcomeEvaluator-137"><span class="linenos">137</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-138"><a href="#LargestStraightAndOutcomeEvaluator-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-139"><a href="#LargestStraightAndOutcomeEvaluator-139"><span class="linenos">139</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-140"><a href="#LargestStraightAndOutcomeEvaluator-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-141"><a href="#LargestStraightAndOutcomeEvaluator-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-142"><a href="#LargestStraightAndOutcomeEvaluator-142"><span class="linenos">142</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-143"><a href="#LargestStraightAndOutcomeEvaluator-143"><span class="linenos">143</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-144"><a href="#LargestStraightAndOutcomeEvaluator-144"><span class="linenos">144</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">OutcomeCountEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator-122"><a href="#LargestStraightAndOutcomeEvaluator-122"><span class="linenos">122</span></a><span class="k">class</span> <span class="nc">LargestStraightAndOutcomeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-123"><a href="#LargestStraightAndOutcomeEvaluator-123"><span class="linenos">123</span></a>                                                           <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-124"><a href="#LargestStraightAndOutcomeEvaluator-124"><span class="linenos">124</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The size of the largest straight, along with the greatest outcome in that straight.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-125"><a href="#LargestStraightAndOutcomeEvaluator-125"><span class="linenos">125</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-126"><a href="#LargestStraightAndOutcomeEvaluator-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-127"><a href="#LargestStraightAndOutcomeEvaluator-127"><span class="linenos">127</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-128"><a href="#LargestStraightAndOutcomeEvaluator-128"><span class="linenos">128</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-129"><a href="#LargestStraightAndOutcomeEvaluator-129"><span class="linenos">129</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-130"><a href="#LargestStraightAndOutcomeEvaluator-130"><span class="linenos">130</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-131"><a href="#LargestStraightAndOutcomeEvaluator-131"><span class="linenos">131</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-132"><a href="#LargestStraightAndOutcomeEvaluator-132"><span class="linenos">132</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-133"><a href="#LargestStraightAndOutcomeEvaluator-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-134"><a href="#LargestStraightAndOutcomeEvaluator-134"><span class="linenos">134</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-135"><a href="#LargestStraightAndOutcomeEvaluator-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-136"><a href="#LargestStraightAndOutcomeEvaluator-136"><span class="linenos">136</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-137"><a href="#LargestStraightAndOutcomeEvaluator-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-138"><a href="#LargestStraightAndOutcomeEvaluator-138"><span class="linenos">138</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-139"><a href="#LargestStraightAndOutcomeEvaluator-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-140"><a href="#LargestStraightAndOutcomeEvaluator-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-141"><a href="#LargestStraightAndOutcomeEvaluator-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-142"><a href="#LargestStraightAndOutcomeEvaluator-142"><span class="linenos">142</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator-143"><a href="#LargestStraightAndOutcomeEvaluator-143"><span class="linenos">143</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
 </span></pre></div>
 
 
@@ -1661,14 +1660,14 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.next_state-127"><a href="#LargestStraightAndOutcomeEvaluator.next_state-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-128"><a href="#LargestStraightAndOutcomeEvaluator.next_state-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-129"><a href="#LargestStraightAndOutcomeEvaluator.next_state-129"><span class="linenos">129</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-130"><a href="#LargestStraightAndOutcomeEvaluator.next_state-130"><span class="linenos">130</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-131"><a href="#LargestStraightAndOutcomeEvaluator.next_state-131"><span class="linenos">131</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-132"><a href="#LargestStraightAndOutcomeEvaluator.next_state-132"><span class="linenos">132</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-133"><a href="#LargestStraightAndOutcomeEvaluator.next_state-133"><span class="linenos">133</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.next_state-134"><a href="#LargestStraightAndOutcomeEvaluator.next_state-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.next_state-126"><a href="#LargestStraightAndOutcomeEvaluator.next_state-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-127"><a href="#LargestStraightAndOutcomeEvaluator.next_state-127"><span class="linenos">127</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-128"><a href="#LargestStraightAndOutcomeEvaluator.next_state-128"><span class="linenos">128</span></a>        <span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-129"><a href="#LargestStraightAndOutcomeEvaluator.next_state-129"><span class="linenos">129</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-130"><a href="#LargestStraightAndOutcomeEvaluator.next_state-130"><span class="linenos">130</span></a>            <span class="n">run</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-131"><a href="#LargestStraightAndOutcomeEvaluator.next_state-131"><span class="linenos">131</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-132"><a href="#LargestStraightAndOutcomeEvaluator.next_state-132"><span class="linenos">132</span></a>            <span class="n">run</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state-133"><a href="#LargestStraightAndOutcomeEvaluator.next_state-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_run_and_outcome</span><span class="p">,</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)),</span> <span class="n">run</span>
 </span></pre></div>
 
 
@@ -1688,9 +1687,9 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-136"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-137"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-137"><span class="linenos">137</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-138"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-135"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-136"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-136"><span class="linenos">136</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.final_outcome-137"><a href="#LargestStraightAndOutcomeEvaluator.final_outcome-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1710,9 +1709,9 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.order-140"><a href="#LargestStraightAndOutcomeEvaluator.order-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.order-141"><a href="#LargestStraightAndOutcomeEvaluator.order-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.order-142"><a href="#LargestStraightAndOutcomeEvaluator.order-142"><span class="linenos">142</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.order-139"><a href="#LargestStraightAndOutcomeEvaluator.order-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.order-140"><a href="#LargestStraightAndOutcomeEvaluator.order-140"><span class="linenos">140</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.order-141"><a href="#LargestStraightAndOutcomeEvaluator.order-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span></pre></div>
 
 
@@ -1726,46 +1725,46 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">outcome_count_generator</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">multiset_generator</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator.alignment-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.alignment-192"><a href="#LargestStraightAndOutcomeEvaluator.alignment-192"><span class="linenos">192</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-193"><a href="#LargestStraightAndOutcomeEvaluator.alignment-193"><span class="linenos">193</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-194"><a href="#LargestStraightAndOutcomeEvaluator.alignment-194"><span class="linenos">194</span></a>        <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-195"><a href="#LargestStraightAndOutcomeEvaluator.alignment-195"><span class="linenos">195</span></a>                                                   <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-196"><a href="#LargestStraightAndOutcomeEvaluator.alignment-196"><span class="linenos">196</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-197"><a href="#LargestStraightAndOutcomeEvaluator.alignment-197"><span class="linenos">197</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-198"><a href="#LargestStraightAndOutcomeEvaluator.alignment-198"><span class="linenos">198</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-199"><a href="#LargestStraightAndOutcomeEvaluator.alignment-199"><span class="linenos">199</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-200"><a href="#LargestStraightAndOutcomeEvaluator.alignment-200"><span class="linenos">200</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-201"><a href="#LargestStraightAndOutcomeEvaluator.alignment-201"><span class="linenos">201</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-202"><a href="#LargestStraightAndOutcomeEvaluator.alignment-202"><span class="linenos">202</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-203"><a href="#LargestStraightAndOutcomeEvaluator.alignment-203"><span class="linenos">203</span></a><span class="sd">        Set `alignment = icepool.OutcomeCountEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-204"><a href="#LargestStraightAndOutcomeEvaluator.alignment-204"><span class="linenos">204</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-205"><a href="#LargestStraightAndOutcomeEvaluator.alignment-205"><span class="linenos">205</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-206"><a href="#LargestStraightAndOutcomeEvaluator.alignment-206"><span class="linenos">206</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-207"><a href="#LargestStraightAndOutcomeEvaluator.alignment-207"><span class="linenos">207</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-208"><a href="#LargestStraightAndOutcomeEvaluator.alignment-208"><span class="linenos">208</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-209"><a href="#LargestStraightAndOutcomeEvaluator.alignment-209"><span class="linenos">209</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-210"><a href="#LargestStraightAndOutcomeEvaluator.alignment-210"><span class="linenos">210</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-211"><a href="#LargestStraightAndOutcomeEvaluator.alignment-211"><span class="linenos">211</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-212"><a href="#LargestStraightAndOutcomeEvaluator.alignment-212"><span class="linenos">212</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-213"><a href="#LargestStraightAndOutcomeEvaluator.alignment-213"><span class="linenos">213</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-214"><a href="#LargestStraightAndOutcomeEvaluator.alignment-214"><span class="linenos">214</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-215"><a href="#LargestStraightAndOutcomeEvaluator.alignment-215"><span class="linenos">215</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-216"><a href="#LargestStraightAndOutcomeEvaluator.alignment-216"><span class="linenos">216</span></a>                <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-217"><a href="#LargestStraightAndOutcomeEvaluator.alignment-217"><span class="linenos">217</span></a>                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-218"><a href="#LargestStraightAndOutcomeEvaluator.alignment-218"><span class="linenos">218</span></a>                <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-219"><a href="#LargestStraightAndOutcomeEvaluator.alignment-219"><span class="linenos">219</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-220"><a href="#LargestStraightAndOutcomeEvaluator.alignment-220"><span class="linenos">220</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-221"><a href="#LargestStraightAndOutcomeEvaluator.alignment-221"><span class="linenos">221</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-222"><a href="#LargestStraightAndOutcomeEvaluator.alignment-222"><span class="linenos">222</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-223"><a href="#LargestStraightAndOutcomeEvaluator.alignment-223"><span class="linenos">223</span></a>        <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-224"><a href="#LargestStraightAndOutcomeEvaluator.alignment-224"><span class="linenos">224</span></a>        <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-225"><a href="#LargestStraightAndOutcomeEvaluator.alignment-225"><span class="linenos">225</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.alignment-191"><a href="#LargestStraightAndOutcomeEvaluator.alignment-191"><span class="linenos">191</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-192"><a href="#LargestStraightAndOutcomeEvaluator.alignment-192"><span class="linenos">192</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-193"><a href="#LargestStraightAndOutcomeEvaluator.alignment-193"><span class="linenos">193</span></a>            <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-194"><a href="#LargestStraightAndOutcomeEvaluator.alignment-194"><span class="linenos">194</span></a>                                                   <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-195"><a href="#LargestStraightAndOutcomeEvaluator.alignment-195"><span class="linenos">195</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-196"><a href="#LargestStraightAndOutcomeEvaluator.alignment-196"><span class="linenos">196</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-197"><a href="#LargestStraightAndOutcomeEvaluator.alignment-197"><span class="linenos">197</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-198"><a href="#LargestStraightAndOutcomeEvaluator.alignment-198"><span class="linenos">198</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-199"><a href="#LargestStraightAndOutcomeEvaluator.alignment-199"><span class="linenos">199</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-200"><a href="#LargestStraightAndOutcomeEvaluator.alignment-200"><span class="linenos">200</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-201"><a href="#LargestStraightAndOutcomeEvaluator.alignment-201"><span class="linenos">201</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-202"><a href="#LargestStraightAndOutcomeEvaluator.alignment-202"><span class="linenos">202</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-203"><a href="#LargestStraightAndOutcomeEvaluator.alignment-203"><span class="linenos">203</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-204"><a href="#LargestStraightAndOutcomeEvaluator.alignment-204"><span class="linenos">204</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-205"><a href="#LargestStraightAndOutcomeEvaluator.alignment-205"><span class="linenos">205</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-206"><a href="#LargestStraightAndOutcomeEvaluator.alignment-206"><span class="linenos">206</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-207"><a href="#LargestStraightAndOutcomeEvaluator.alignment-207"><span class="linenos">207</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-208"><a href="#LargestStraightAndOutcomeEvaluator.alignment-208"><span class="linenos">208</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-209"><a href="#LargestStraightAndOutcomeEvaluator.alignment-209"><span class="linenos">209</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-210"><a href="#LargestStraightAndOutcomeEvaluator.alignment-210"><span class="linenos">210</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-211"><a href="#LargestStraightAndOutcomeEvaluator.alignment-211"><span class="linenos">211</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-212"><a href="#LargestStraightAndOutcomeEvaluator.alignment-212"><span class="linenos">212</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-213"><a href="#LargestStraightAndOutcomeEvaluator.alignment-213"><span class="linenos">213</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-214"><a href="#LargestStraightAndOutcomeEvaluator.alignment-214"><span class="linenos">214</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-215"><a href="#LargestStraightAndOutcomeEvaluator.alignment-215"><span class="linenos">215</span></a>                <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-216"><a href="#LargestStraightAndOutcomeEvaluator.alignment-216"><span class="linenos">216</span></a>                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">generator</span><span class="o">.</span><span class="n">outcomes</span><span class="p">())</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-217"><a href="#LargestStraightAndOutcomeEvaluator.alignment-217"><span class="linenos">217</span></a>                <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-218"><a href="#LargestStraightAndOutcomeEvaluator.alignment-218"><span class="linenos">218</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-219"><a href="#LargestStraightAndOutcomeEvaluator.alignment-219"><span class="linenos">219</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-220"><a href="#LargestStraightAndOutcomeEvaluator.alignment-220"><span class="linenos">220</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-221"><a href="#LargestStraightAndOutcomeEvaluator.alignment-221"><span class="linenos">221</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-222"><a href="#LargestStraightAndOutcomeEvaluator.alignment-222"><span class="linenos">222</span></a>        <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-223"><a href="#LargestStraightAndOutcomeEvaluator.alignment-223"><span class="linenos">223</span></a>        <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">generator</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-224"><a href="#LargestStraightAndOutcomeEvaluator.alignment-224"><span class="linenos">224</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1780,7 +1779,7 @@ set of parameters.</p>
 count may or may not be seen by <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code>.</p>
 
 <p>If you want the outcomes seen by <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code> to be consecutive
-<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#OutcomeCountEvaluator.range_alignment">icepool.OutcomeCountEvaluator.range_alignment</a></code>.
+<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
 See <code><a href="#LargestStraightAndOutcomeEvaluator.range_alignment">range_alignment()</a></code> below.</p>
 </div>
 
@@ -1789,7 +1788,7 @@ See <code><a href="#LargestStraightAndOutcomeEvaluator.range_alignment">range_al
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestStraightAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.sample" class="function">sample</dd>
@@ -1803,13 +1802,13 @@ See <code><a href="#LargestStraightAndOutcomeEvaluator.range_alignment">range_al
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">ComparisonEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[-T_contra, int, bool]</span>):
+    <span class="name">ComparisonEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[-T_contra, int, bool]</span>):
 
                 <label class="view-source-button" for="ComparisonEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ComparisonEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ComparisonEvaluator-19"><a href="#ComparisonEvaluator-19"><span class="linenos"> 19</span></a><span class="k">class</span> <span class="nc">ComparisonEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ComparisonEvaluator-19"><a href="#ComparisonEvaluator-19"><span class="linenos"> 19</span></a><span class="k">class</span> <span class="nc">ComparisonEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
 </span><span id="ComparisonEvaluator-20"><a href="#ComparisonEvaluator-20"><span class="linenos"> 20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Compares the multisets produced by two generators, or a left generator and a fixed right side.&quot;&quot;&quot;</span>
 </span><span id="ComparisonEvaluator-21"><a href="#ComparisonEvaluator-21"><span class="linenos"> 21</span></a>
 </span><span id="ComparisonEvaluator-22"><a href="#ComparisonEvaluator-22"><span class="linenos"> 22</span></a>    <span class="n">_right</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
@@ -2135,7 +2134,7 @@ bool are <code>True</code>.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ComparisonEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="ComparisonEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="ComparisonEvaluator.sample" class="function">sample</dd>
@@ -2229,7 +2228,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsSubsetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsSubsetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsSubsetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsSubsetEvaluator.sample" class="function">sample</dd>
@@ -2323,7 +2322,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsProperSubsetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsProperSubsetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsProperSubsetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsProperSubsetEvaluator.sample" class="function">sample</dd>
@@ -2417,7 +2416,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsSupersetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsSupersetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsSupersetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsSupersetEvaluator.sample" class="function">sample</dd>
@@ -2511,7 +2510,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsProperSupersetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsProperSupersetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsProperSupersetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsProperSupersetEvaluator.sample" class="function">sample</dd>
@@ -2605,7 +2604,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsEqualSetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsEqualSetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsEqualSetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsEqualSetEvaluator.sample" class="function">sample</dd>
@@ -2699,7 +2698,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsNotEqualSetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsNotEqualSetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsNotEqualSetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsNotEqualSetEvaluator.sample" class="function">sample</dd>
@@ -2793,7 +2792,7 @@ bool are <code>True</code>.</p>
                 <dd id="IsDisjointSetEvaluator.alignment" class="function"><a href="#ComparisonEvaluator.alignment">alignment</a></dd>
 
             </div>
-            <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+            <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsDisjointSetEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="IsDisjointSetEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="IsDisjointSetEvaluator.sample" class="function">sample</dd>
@@ -2807,16 +2806,16 @@ bool are <code>True</code>.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">JointEvaluator</span><wbr>(<span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[-T_contra, -Q_contra, tuple]</span>):
+    <span class="name">JointEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[-T_contra, -Q_contra, tuple]</span>):
 
                 <label class="view-source-button" for="JointEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JointEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator-22"><a href="#JointEvaluator-22"><span class="linenos">22</span></a><span class="k">class</span> <span class="nc">JointEvaluator</span><span class="p">(</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
-</span><span id="JointEvaluator-23"><a href="#JointEvaluator-23"><span class="linenos">23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator-22"><a href="#JointEvaluator-22"><span class="linenos">22</span></a><span class="k">class</span> <span class="nc">JointEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
+</span><span id="JointEvaluator-23"><a href="#JointEvaluator-23"><span class="linenos">23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An `MultisetEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator.&quot;&quot;&quot;</span>
 </span><span id="JointEvaluator-24"><a href="#JointEvaluator-24"><span class="linenos">24</span></a>
-</span><span id="JointEvaluator-25"><a href="#JointEvaluator-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">OutcomeCountEvaluator</span><span class="p">):</span>
+</span><span id="JointEvaluator-25"><a href="#JointEvaluator-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
 </span><span id="JointEvaluator-26"><a href="#JointEvaluator-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
 </span><span id="JointEvaluator-27"><a href="#JointEvaluator-27"><span class="linenos">27</span></a>
 </span><span id="JointEvaluator-28"><a href="#JointEvaluator-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
@@ -2834,7 +2833,7 @@ bool are <code>True</code>.</p>
 </span><span id="JointEvaluator-40"><a href="#JointEvaluator-40"><span class="linenos">40</span></a>                <span class="k">for</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
 </span><span id="JointEvaluator-41"><a href="#JointEvaluator-41"><span class="linenos">41</span></a>
 </span><span id="JointEvaluator-42"><a href="#JointEvaluator-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span>
-</span><span id="JointEvaluator-43"><a href="#JointEvaluator-43"><span class="linenos">43</span></a>                      <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
+</span><span id="JointEvaluator-43"><a href="#JointEvaluator-43"><span class="linenos">43</span></a>                      <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
 </span><span id="JointEvaluator-44"><a href="#JointEvaluator-44"><span class="linenos">44</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
 </span><span id="JointEvaluator-45"><a href="#JointEvaluator-45"><span class="linenos">45</span></a>
 </span><span id="JointEvaluator-46"><a href="#JointEvaluator-46"><span class="linenos">46</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
@@ -2845,7 +2844,7 @@ bool are <code>True</code>.</p>
 </span><span id="JointEvaluator-51"><a href="#JointEvaluator-51"><span class="linenos">51</span></a>            <span class="n">inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_substate</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span>
 </span><span id="JointEvaluator-52"><a href="#JointEvaluator-52"><span class="linenos">52</span></a>            <span class="k">for</span> <span class="n">inner</span><span class="p">,</span> <span class="n">final_substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">final_state</span><span class="p">))</span>
 </span><span id="JointEvaluator-53"><a href="#JointEvaluator-53"><span class="linenos">53</span></a>
-</span><span id="JointEvaluator-54"><a href="#JointEvaluator-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
+</span><span id="JointEvaluator-54"><a href="#JointEvaluator-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
 </span><span id="JointEvaluator-55"><a href="#JointEvaluator-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
 </span><span id="JointEvaluator-56"><a href="#JointEvaluator-56"><span class="linenos">56</span></a>
 </span><span id="JointEvaluator-57"><a href="#JointEvaluator-57"><span class="linenos">57</span></a><span class="sd">        Raises:</span>
@@ -2866,7 +2865,7 @@ bool are <code>True</code>.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>An <code>OutcomeCountEvaluator</code> that jointly evaluates sub-evaluators on the same roll(s) of a generator.</p>
+            <div class="docstring"><p>An <code>MultisetEvaluator</code> that jointly evaluates sub-evaluators on the same roll(s) of a generator.</p>
 </div>
 
 
@@ -2874,13 +2873,13 @@ bool are <code>True</code>.</p>
                                         <input id="JointEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">JointEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">outcome_count_evaluator</span><span class="o">.</span><span class="n">OutcomeCountEvaluator</span></span>)</span>
+        <span class="name">JointEvaluator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">multiset_evaluator</span><span class="o">.</span><span class="n">MultisetEvaluator</span></span>)</span>
 
                 <label class="view-source-button" for="JointEvaluator.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.__init__-25"><a href="#JointEvaluator.__init__-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">OutcomeCountEvaluator</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.__init__-25"><a href="#JointEvaluator.__init__-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
 </span><span id="JointEvaluator.__init__-26"><a href="#JointEvaluator.__init__-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
 </span></pre></div>
 
@@ -2927,14 +2926,14 @@ bool are <code>True</code>.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">outcome_count_generator</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span></span><span class="return-annotation">):</span></span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">multiset_generator</span><span class="o">.</span><span class="n">MultisetGenerator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JointEvaluator.final_outcome-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.final_outcome"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.final_outcome-42"><a href="#JointEvaluator.final_outcome-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span>
-</span><span id="JointEvaluator.final_outcome-43"><a href="#JointEvaluator.final_outcome-43"><span class="linenos">43</span></a>                      <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
+</span><span id="JointEvaluator.final_outcome-43"><a href="#JointEvaluator.final_outcome-43"><span class="linenos">43</span></a>                      <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
 </span><span id="JointEvaluator.final_outcome-44"><a href="#JointEvaluator.final_outcome-44"><span class="linenos">44</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
 </span><span id="JointEvaluator.final_outcome-45"><a href="#JointEvaluator.final_outcome-45"><span class="linenos">45</span></a>
 </span><span id="JointEvaluator.final_outcome-46"><a href="#JointEvaluator.final_outcome-46"><span class="linenos">46</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
@@ -2959,13 +2958,13 @@ bool are <code>True</code>.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">order</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">outcome_count_generator</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span></span><span class="return-annotation">):</span></span>
+        <span class="name">order</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">multiset_generator</span><span class="o">.</span><span class="n">MultisetGenerator</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JointEvaluator.order-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.order-54"><a href="#JointEvaluator.order-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">OutcomeCountGenerator</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.order-54"><a href="#JointEvaluator.order-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
 </span><span id="JointEvaluator.order-55"><a href="#JointEvaluator.order-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
 </span><span id="JointEvaluator.order-56"><a href="#JointEvaluator.order-56"><span class="linenos">56</span></a>
 </span><span id="JointEvaluator.order-57"><a href="#JointEvaluator.order-57"><span class="linenos">57</span></a><span class="sd">        Raises:</span>
@@ -3001,7 +3000,7 @@ ascending and others are descending.</li>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="JointEvaluator.alignment" class="function">alignment</dd>
                 <dd id="JointEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="JointEvaluator.evaluate" class="function">evaluate</dd>
@@ -3016,14 +3015,14 @@ ascending and others are descending.</li>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">FinalOutcomeMapEvaluator</span><wbr>(<span class="base">typing.Generic[-T_contra, ~V, -Q_contra, +U_co]</span>, <span class="base">icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator[-T_contra, -Q_contra, +U_co]</span>):
+    <span class="name">FinalOutcomeMapEvaluator</span><wbr>(<span class="base">typing.Generic[-T_contra, ~V, -Q_contra, +U_co]</span>, <span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[-T_contra, -Q_contra, +U_co]</span>):
 
                 <label class="view-source-button" for="FinalOutcomeMapEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#FinalOutcomeMapEvaluator"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FinalOutcomeMapEvaluator-24"><a href="#FinalOutcomeMapEvaluator-24"><span class="linenos">24</span></a><span class="k">class</span> <span class="nc">FinalOutcomeMapEvaluator</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span>
-</span><span id="FinalOutcomeMapEvaluator-25"><a href="#FinalOutcomeMapEvaluator-25"><span class="linenos">25</span></a>                               <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
+</span><span id="FinalOutcomeMapEvaluator-25"><a href="#FinalOutcomeMapEvaluator-25"><span class="linenos">25</span></a>                               <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
 </span><span id="FinalOutcomeMapEvaluator-26"><a href="#FinalOutcomeMapEvaluator-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps outcomes to other outcomes before sending them to an inner evaluator.</span>
 </span><span id="FinalOutcomeMapEvaluator-27"><a href="#FinalOutcomeMapEvaluator-27"><span class="linenos">27</span></a>
 </span><span id="FinalOutcomeMapEvaluator-28"><a href="#FinalOutcomeMapEvaluator-28"><span class="linenos">28</span></a><span class="sd">    Note that the outcomes will be seen in their original order, and outcomes</span>
@@ -3032,15 +3031,15 @@ ascending and others are descending.</li>
 </span><span id="FinalOutcomeMapEvaluator-31"><a href="#FinalOutcomeMapEvaluator-31"><span class="linenos">31</span></a><span class="sd">    `AdjustIntCountEvaluator`, and the `map` argument should be presented last.</span>
 </span><span id="FinalOutcomeMapEvaluator-32"><a href="#FinalOutcomeMapEvaluator-32"><span class="linenos">32</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="FinalOutcomeMapEvaluator-33"><a href="#FinalOutcomeMapEvaluator-33"><span class="linenos">33</span></a>
-</span><span id="FinalOutcomeMapEvaluator-34"><a href="#FinalOutcomeMapEvaluator-34"><span class="linenos">34</span></a>    <span class="n">_inner</span><span class="p">:</span> <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]</span>
+</span><span id="FinalOutcomeMapEvaluator-34"><a href="#FinalOutcomeMapEvaluator-34"><span class="linenos">34</span></a>    <span class="n">_inner</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]</span>
 </span><span id="FinalOutcomeMapEvaluator-35"><a href="#FinalOutcomeMapEvaluator-35"><span class="linenos">35</span></a>    <span class="n">_map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_contra</span><span class="p">],</span> <span class="n">V</span><span class="p">]</span>
 </span><span id="FinalOutcomeMapEvaluator-36"><a href="#FinalOutcomeMapEvaluator-36"><span class="linenos">36</span></a>
 </span><span id="FinalOutcomeMapEvaluator-37"><a href="#FinalOutcomeMapEvaluator-37"><span class="linenos">37</span></a>    <span class="c1"># May return inner unmodified.</span>
 </span><span id="FinalOutcomeMapEvaluator-38"><a href="#FinalOutcomeMapEvaluator-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
 </span><span id="FinalOutcomeMapEvaluator-39"><a href="#FinalOutcomeMapEvaluator-39"><span class="linenos">39</span></a>        <span class="bp">cls</span><span class="p">,</span>
-</span><span id="FinalOutcomeMapEvaluator-40"><a href="#FinalOutcomeMapEvaluator-40"><span class="linenos">40</span></a>        <span class="n">inner</span><span class="p">:</span> <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span>
+</span><span id="FinalOutcomeMapEvaluator-40"><a href="#FinalOutcomeMapEvaluator-40"><span class="linenos">40</span></a>        <span class="n">inner</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span>
 </span><span id="FinalOutcomeMapEvaluator-41"><a href="#FinalOutcomeMapEvaluator-41"><span class="linenos">41</span></a>        <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_contra</span><span class="p">],</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="FinalOutcomeMapEvaluator-42"><a href="#FinalOutcomeMapEvaluator-42"><span class="linenos">42</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]:</span>
+</span><span id="FinalOutcomeMapEvaluator-42"><a href="#FinalOutcomeMapEvaluator-42"><span class="linenos">42</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]:</span>
 </span><span id="FinalOutcomeMapEvaluator-43"><a href="#FinalOutcomeMapEvaluator-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor. This wraps an inner evaluator.</span>
 </span><span id="FinalOutcomeMapEvaluator-44"><a href="#FinalOutcomeMapEvaluator-44"><span class="linenos">44</span></a>
 </span><span id="FinalOutcomeMapEvaluator-45"><a href="#FinalOutcomeMapEvaluator-45"><span class="linenos">45</span></a><span class="sd">        May return inner unmodified.</span>
@@ -3101,7 +3100,7 @@ that map to the same value will still be considered in separate calls to
                                         <input id="FinalOutcomeMapEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">FinalOutcomeMapEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">inner</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">outcome_count_evaluator</span><span class="o">.</span><span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="o">~</span><span class="n">V</span><span class="p">,</span> <span class="o">-</span><span class="n">Q_contra</span><span class="p">,</span> <span class="o">+</span><span class="n">U_co</span><span class="p">]</span>,</span><span class="param">	<span class="nb">map</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">],</span> <span class="o">~</span><span class="n">V</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="o">~</span><span class="n">V</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">FinalOutcomeMapEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">inner</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">multiset_evaluator</span><span class="o">.</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="o">~</span><span class="n">V</span><span class="p">,</span> <span class="o">-</span><span class="n">Q_contra</span><span class="p">,</span> <span class="o">+</span><span class="n">U_co</span><span class="p">]</span>,</span><span class="param">	<span class="nb">map</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">],</span> <span class="o">~</span><span class="n">V</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="o">~</span><span class="n">V</span><span class="p">],</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
                 <label class="view-source-button" for="FinalOutcomeMapEvaluator.__init__-view-source"><span>View Source</span></label>
 
@@ -3109,9 +3108,9 @@ that map to the same value will still be considered in separate calls to
     <a class="headerlink" href="#FinalOutcomeMapEvaluator.__init__"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FinalOutcomeMapEvaluator.__init__-38"><a href="#FinalOutcomeMapEvaluator.__init__-38"><span class="linenos">38</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
 </span><span id="FinalOutcomeMapEvaluator.__init__-39"><a href="#FinalOutcomeMapEvaluator.__init__-39"><span class="linenos">39</span></a>        <span class="bp">cls</span><span class="p">,</span>
-</span><span id="FinalOutcomeMapEvaluator.__init__-40"><a href="#FinalOutcomeMapEvaluator.__init__-40"><span class="linenos">40</span></a>        <span class="n">inner</span><span class="p">:</span> <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span>
+</span><span id="FinalOutcomeMapEvaluator.__init__-40"><a href="#FinalOutcomeMapEvaluator.__init__-40"><span class="linenos">40</span></a>        <span class="n">inner</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">V</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">],</span>
 </span><span id="FinalOutcomeMapEvaluator.__init__-41"><a href="#FinalOutcomeMapEvaluator.__init__-41"><span class="linenos">41</span></a>        <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">T_contra</span><span class="p">],</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">V</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="FinalOutcomeMapEvaluator.__init__-42"><a href="#FinalOutcomeMapEvaluator.__init__-42"><span class="linenos">42</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutcomeCountEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]:</span>
+</span><span id="FinalOutcomeMapEvaluator.__init__-42"><a href="#FinalOutcomeMapEvaluator.__init__-42"><span class="linenos">42</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]:</span>
 </span><span id="FinalOutcomeMapEvaluator.__init__-43"><a href="#FinalOutcomeMapEvaluator.__init__-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor. This wraps an inner evaluator.</span>
 </span><span id="FinalOutcomeMapEvaluator.__init__-44"><a href="#FinalOutcomeMapEvaluator.__init__-44"><span class="linenos">44</span></a>
 </span><span id="FinalOutcomeMapEvaluator.__init__-45"><a href="#FinalOutcomeMapEvaluator.__init__-45"><span class="linenos">45</span></a><span class="sd">        May return inner unmodified.</span>
@@ -3249,7 +3248,7 @@ produces the outcome that should be sent to the inner evaluator.</li>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>icepool.evaluator.outcome_count_evaluator.OutcomeCountEvaluator</dt>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="FinalOutcomeMapEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="FinalOutcomeMapEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="FinalOutcomeMapEvaluator.sample" class="function">sample</dd>
