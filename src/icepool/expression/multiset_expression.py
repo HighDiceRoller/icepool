@@ -1,11 +1,20 @@
 __docformat__ = 'google'
 
+import icepool
 import icepool.expression
+import icepool.evaluator
 
+from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
 from icepool.typing import Outcome
 
 from abc import ABC, abstractmethod
-from typing import Hashable
+from typing import Callable, Hashable, Mapping, TypeVar
+
+T = TypeVar('T', bound=Outcome)
+"""Type variable representing an outcome type."""
+
+U = TypeVar('U', bound=Outcome)
+"""Type variable representing another outcome type."""
 
 
 class MultisetExpression(Hashable, ABC):
@@ -120,3 +129,96 @@ class MultisetExpression(Hashable, ABC):
         twice.
         """
         return icepool.expression.UniqueExpression(self, max_count)
+
+    # Evaluations.
+
+    def expand(
+        self
+    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[T, ...]]':
+        """All possible sorted tuples of outcomes.
+
+        This is expensive and not recommended unless there are few possibilities.
+        """
+        evaluator = icepool.evaluator.ExpandEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def sum(
+        self,
+        map: Callable[[T], U] | Mapping[T, U] | None = None
+    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], U]':
+        evaluator = icepool.evaluator.FinalOutcomeMapEvaluator(
+            icepool.evaluator.sum_evaluator, map)
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def count(
+            self
+    ) -> 'icepool.OutcomeCountEvaluator[Outcome, tuple[int, ...], int]':
+        """The total count over all outcomes.
+
+        This is usually not very interesting unless some other operation is
+        performed first. Examples:
+
+        `generator.unique().count()` will count the number of unique outcomes.
+
+        `(generator & [4, 5, 6]).count()` will count up to one each of
+        4, 5, and 6.
+        """
+        evaluator = icepool.evaluator.count_evaluator
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def highest_outcome_and_count(
+        self
+    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[T, int]]':
+        """The highest outcome with positive count, along with that count.
+
+        If no outcomes have positive count, an arbitrary outcome will be
+        produced with a 0 count.
+        """
+        evaluator = icepool.evaluator.HighestOutcomeAndCountEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def all_counts(
+        self,
+        positive_only: bool = True
+    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[int, ...]]':
+        """Produces a tuple of all counts, i.e. the sizes of all matching sets.
+
+        Args:
+            positive_only: If `True` (default), negative and zero counts
+                will be omitted.
+        """
+        evaluator = icepool.evaluator.AllCountsEvaluator(
+            positive_only=positive_only)
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def largest_count(
+            self) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], int]':
+        """The size of the largest matching set among the outcomes."""
+        evaluator = icepool.evaluator.LargestCountEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def largest_count_and_outcome(
+        self
+    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[int, T]]':
+        """The largest matching set among the outcomes and its outcome."""
+        evaluator = icepool.evaluator.LargestCountAndOutcomeEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def largest_straight(
+            self) -> 'icepool.OutcomeCountEvaluator[int, tuple[int, ...], int]':
+        """The best straight among the outcomes.
+
+        Outcomes must be `int`s.
+        """
+        evaluator = icepool.evaluator.LargestStraightEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
+
+    def largest_straight_and_outcome(
+        self
+    ) -> 'icepool.OutcomeCountEvaluator[int, tuple[int, ...], tuple[int, int]]':
+        """The best straight among the outcomes and the highest outcome in that straight.
+
+        Outcomes must be `int`s.
+        """
+        evaluator = icepool.evaluator.LargestStraightAndOutcomeEvaluator()
+        return icepool.expression.ExpressionEvaluator(self, evaluator)
