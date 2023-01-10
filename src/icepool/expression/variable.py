@@ -1,8 +1,10 @@
 __docformat__ = 'google'
 
-from icepool.expression.base import MultisetExpression
+from icepool.expression.multiset_expression import MultisetExpression
+from icepool.typing import Outcome
 
-from typing import overload
+from functools import cached_property
+from typing import Literal, overload
 
 
 class MultisetVariable(MultisetExpression):
@@ -15,13 +17,20 @@ class MultisetVariable(MultisetExpression):
         """
         self._index = index
 
-    def __eq__(self, other) -> bool:
-        if type(other) != MultisetVariable:
-            return False
-        return self._index == other._index
+    def evaluate(self, outcome: Outcome, *counts: int) -> int:
+        return counts[self._index]
 
-    def __hash__(self):
-        return hash(self._index)
+    def __eq__(self, other) -> bool:
+        if type(self) != type(other):
+            return False
+        return self._key_tuple == other._key_tuple
+
+    @cached_property
+    def _key_tuple(self) -> tuple:
+        return MultisetVariable, self._index
+
+    def __hash__(self) -> int:
+        return hash(self._key_tuple)
 
     @overload
     def __class_getitem__(cls, index: int) -> 'MultisetVariable':
