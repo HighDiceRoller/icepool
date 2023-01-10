@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
+from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
 
 from collections import defaultdict
 from functools import cached_property

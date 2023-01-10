@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import MultisetGenerator
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.typing import Outcome
 
 from functools import cached_property

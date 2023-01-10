@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import NextMultisetGenerator, MultisetGenerator
+from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome, MultisetBinaryIntOperationStr
 
 from abc import abstractmethod

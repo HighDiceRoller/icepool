@@ -61,8 +61,8 @@ from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.lowest_highest import lowest, highest, sum_lowest, sum_highest
 
 from icepool.generator.pool import Pool, standard_pool
-from icepool.generator.outcome_count_generator import MultisetGenerator, NextMultisetGenerator, implicit_convert_to_generator
-from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
+from icepool.generator.multiset_generator import MultisetGenerator, NextMultisetGenerator, implicit_convert_to_generator
+from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.population.deck import Deck
 from icepool.generator.deal import Deal

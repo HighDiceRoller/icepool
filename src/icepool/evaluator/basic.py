@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
+from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
 from typing import Any, Callable, Final, Hashable, TypeVar
