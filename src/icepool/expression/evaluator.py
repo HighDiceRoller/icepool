@@ -17,24 +17,28 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 class ExpressionEvaluator(OutcomeCountEvaluator[T_contra, tuple[int, ...],
                                                 U_co]):
 
-    def __init__(self, expression: 'icepool.expression.MultisetExpression',
-                 evaluator: OutcomeCountEvaluator[T_contra, int, U_co]) -> None:
-        self._expression = expression
+    def __init__(
+        self,
+        evaluator: OutcomeCountEvaluator[T_contra, int, U_co],
+        *expressions: 'icepool.expression.MultisetExpression',
+    ) -> None:
         self._evaluator = evaluator
+        self._expressions = expressions
 
     def next_state(self, state, outcome, *counts):
-        """Adjusts the count, then forwards to inner."""
-        count = self._expression.evaluate(outcome, *counts)
-        return self._evaluator.next_state(state, outcome, count)
+        """Adjusts the counts, then forwards to inner."""
+        counts = (expression.evaluate(outcome, counts)
+                  for expression in self._expressions)
+        return self._evaluator.next_state(state, outcome, *counts)
 
     def final_outcome(self, final_state, *generators):
         """Forwards to inner."""
-        return self._inner.final_outcome(final_state, *generators)
+        return self._evaluator.final_outcome(final_state, *generators)
 
     def order(self, *generators):
         """Forwards to inner."""
-        return self._inner.order(*generators)
+        return self._evaluator.order(*generators)
 
     def alignment(self, *generators):
         """Forwards to inner."""
-        return self._inner.alignment(*generators)
+        return self._evaluator.alignment(*generators)

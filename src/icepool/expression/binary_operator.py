@@ -14,18 +14,6 @@ class BinaryOperatorExpression(MultisetExpression):
         self._left = left
         self._right = right
 
-    def __eq__(self, other) -> bool:
-        if type(self) == type(other):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _key_tuple(self) -> tuple:
-        return type(self), self._left, self._right
-
-    def __hash__(self) -> int:
-        return hash(self._key_tuple)
-
     @staticmethod
     @abstractmethod
     def merge_counts(left: int, right: int) -> int:

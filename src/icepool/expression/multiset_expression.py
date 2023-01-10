@@ -4,11 +4,10 @@ import icepool
 import icepool.expression
 import icepool.evaluator
 
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
-from icepool.typing import Outcome
+from icepool.typing import Outcome, SetComparatorStr
 
 from abc import ABC, abstractmethod
-from typing import Callable, Hashable, Mapping, TypeVar
+from typing import Callable, Collection, Mapping, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
 """Type variable representing an outcome type."""
@@ -17,7 +16,7 @@ U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 
-class MultisetExpression(Hashable, ABC):
+class MultisetExpression(ABC):
 
     @abstractmethod
     def evaluate(self, outcome: Outcome, *counts: int) -> int:
@@ -140,7 +139,7 @@ class MultisetExpression(Hashable, ABC):
         This is expensive and not recommended unless there are few possibilities.
         """
         evaluator = icepool.evaluator.ExpandEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def sum(
         self,
@@ -148,7 +147,7 @@ class MultisetExpression(Hashable, ABC):
     ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], U]':
         evaluator = icepool.evaluator.FinalOutcomeMapEvaluator(
             icepool.evaluator.sum_evaluator, map)
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def count(
             self
@@ -164,7 +163,7 @@ class MultisetExpression(Hashable, ABC):
         4, 5, and 6.
         """
         evaluator = icepool.evaluator.count_evaluator
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def highest_outcome_and_count(
         self
@@ -175,7 +174,7 @@ class MultisetExpression(Hashable, ABC):
         produced with a 0 count.
         """
         evaluator = icepool.evaluator.HighestOutcomeAndCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def all_counts(
         self,
@@ -189,20 +188,20 @@ class MultisetExpression(Hashable, ABC):
         """
         evaluator = icepool.evaluator.AllCountsEvaluator(
             positive_only=positive_only)
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def largest_count(
             self) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], int]':
         """The size of the largest matching set among the outcomes."""
         evaluator = icepool.evaluator.LargestCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def largest_count_and_outcome(
         self
     ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[int, T]]':
         """The largest matching set among the outcomes and its outcome."""
         evaluator = icepool.evaluator.LargestCountAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def largest_straight(
             self) -> 'icepool.OutcomeCountEvaluator[int, tuple[int, ...], int]':
@@ -211,7 +210,7 @@ class MultisetExpression(Hashable, ABC):
         Outcomes must be `int`s.
         """
         evaluator = icepool.evaluator.LargestStraightEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
 
     def largest_straight_and_outcome(
         self
@@ -221,4 +220,90 @@ class MultisetExpression(Hashable, ABC):
         Outcomes must be `int`s.
         """
         evaluator = icepool.evaluator.LargestStraightAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator)
+        return icepool.expression.ExpressionEvaluator(evaluator, self)
+
+    # Comparators.
+
+    def compare(self, op_name: SetComparatorStr,
+                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+                /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        """Compares the outcome multiset to another multiset.
+
+        You can also use the symbolic operators directly, e.g.
+        `generator <= [1, 2, 2]`.
+
+        If the other argument is a `Mapping` or `Collection`, it
+        will be treated as a fixed target.
+
+        Args:
+            op_name: One of the following strings:
+                `<, <=, >, >=, ==, !=`.
+            other: The right-side generator or multiset to compare with.
+        """
+        if isinstance(other, MultisetExpression):
+            evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
+                op_name)  # type: ignore
+            return icepool.expression.ExpressionEvaluator(
+                evaluator, self, other)
+        elif isinstance(other, (Mapping, Collection)):
+            evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
+                op_name, other)
+            return icepool.expression.ExpressionEvaluator(evaluator, self)
+        else:
+            return NotImplemented
+
+    def __lt__(self,
+               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('<', other)
+
+    def __le__(self,
+               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('<=', other)
+
+    def issubset(
+            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        """Whether the outcome multiset is a subset of the other multiset.
+
+        Same as `self <= other`.
+        """
+        return self <= other
+
+    def __gt__(self,
+               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('>', other)
+
+    def __ge__(self,
+               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('>=', other)
+
+    def issuperset(
+            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        """Whether the outcome multiset is a superset of the target multiset.
+
+        Same as `self >= other`.
+        """
+        return self >= other
+
+    # This does not produce a truth value.
+    def __eq__(  # type: ignore
+            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('==', other)
+
+    # This does not produce a truth value.
+    def __ne__(  # type: ignore
+            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        return self.compare('!=', other)
+
+    def isdisjoint(
+            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+        """Whether the outcome multiset is disjoint from the target multiset."""
+        return self.compare('isdisjoint', other)

@@ -13,18 +13,6 @@ class AdjustCountsExpression(MultisetExpression):
         self._inner = inner
         self._constant = constant
 
-    def __eq__(self, other) -> bool:
-        if type(self) == type(other):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _key_tuple(self) -> tuple:
-        return type(self), self._inner, self._constant
-
-    def __hash__(self) -> int:
-        return hash(self._key_tuple)
-
     @staticmethod
     @abstractmethod
     def adjust_count(count: int, constant: int) -> int:

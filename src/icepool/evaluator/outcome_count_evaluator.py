@@ -11,7 +11,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar, cast
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, NoReturn, Sequence, TypeVar, cast
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
@@ -459,3 +459,6 @@ class OutcomeCountEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             return result.outcomes()[0]
         else:
             return result
+
+    def __bool__(self) -> NoReturn:
+        raise TypeError('OutcomeCountEvaluator does not have a truth value.')

@@ -20,18 +20,6 @@ class MultisetVariable(MultisetExpression):
     def evaluate(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
 
-    def __eq__(self, other) -> bool:
-        if type(self) != type(other):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _key_tuple(self) -> tuple:
-        return MultisetVariable, self._index
-
-    def __hash__(self) -> int:
-        return hash(self._key_tuple)
-
     @overload
     def __class_getitem__(cls, index: int) -> 'MultisetVariable':
         """Generates a `MultisetVariable`."""
