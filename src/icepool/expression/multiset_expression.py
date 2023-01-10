@@ -37,7 +37,8 @@ class MultisetExpression(Hashable, ABC):
             *counts: The original sequence of counts.
         """
 
-    __call__ = evaluate_counts
+    def __call__(self, outcome: Outcome, *counts: int) -> int:
+        return self.evaluate_counts(outcome, *counts)
 
     @property
     @abstractmethod

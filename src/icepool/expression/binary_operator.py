@@ -23,7 +23,8 @@ class BinaryOperatorExpression(MultisetExpression):
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         left = self._left.evaluate_counts(outcome, *counts)
         right = self._right.evaluate_counts(outcome, *counts)
-        return self.merge_counts(left, right)
+        result = self.merge_counts(left, right)
+        return max(result, 0)
 
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:
