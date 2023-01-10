@@ -1,15 +1,15 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, OutcomeCountEvaluator, Pool
+from icepool import d4, d6, d8, d10, d12, MultisetEvaluator, Pool
 
 
-class CallPathLength(OutcomeCountEvaluator):
+class CallPathLength(MultisetEvaluator):
 
     def next_state(self, state, outcome, *pools):
         return (state or 0) + 1
 
-    alignment = OutcomeCountEvaluator.range_alignment
+    alignment = MultisetEvaluator.range_alignment
 
 
 call_path_length = CallPathLength()

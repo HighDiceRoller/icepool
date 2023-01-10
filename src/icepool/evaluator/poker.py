@@ -3,14 +3,14 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 
 from icepool.typing import Outcome, Order
 from typing import Any
 
 
-class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, int,
-                                                            tuple[Any, int]]):
+class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Outcome, int,
+                                                        tuple[Any, int]]):
     """The highest outcome that has positive count, along with that count.
 
     If no outcomes have positive count, an arbitrary outcome will be produced
@@ -35,7 +35,7 @@ class HighestOutcomeAndCountEvaluator(OutcomeCountEvaluator[Outcome, int,
         return Order.Any
 
 
-class AllCountsEvaluator(OutcomeCountEvaluator[Outcome, int, tuple[int, ...]]):
+class AllCountsEvaluator(MultisetEvaluator[Outcome, int, tuple[int, ...]]):
     """All counts in ascending order.
 
     In other words, this produces tuples of the sizes of all matching sets.
@@ -68,7 +68,7 @@ class AllCountsEvaluator(OutcomeCountEvaluator[Outcome, int, tuple[int, ...]]):
         return Order.Any
 
 
-class LargestCountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
+class LargestCountEvaluator(MultisetEvaluator[Outcome, int, int]):
     """The largest count of any outcome."""
 
     def next_state(self, state, _, count):
@@ -80,8 +80,8 @@ class LargestCountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
         return Order.Any
 
 
-class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, int,
-                                                            tuple[int, Any]]):
+class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Outcome, int,
+                                                        tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
     def next_state(self, state, outcome, count):
@@ -93,7 +93,7 @@ class LargestCountAndOutcomeEvaluator(OutcomeCountEvaluator[Outcome, int,
         return Order.Any
 
 
-class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
+class LargestStraightEvaluator(MultisetEvaluator[int, int, int]):
     """The size of the largest straight."""
 
     def next_state(self, state, _, count):
@@ -115,12 +115,11 @@ class LargestStraightEvaluator(OutcomeCountEvaluator[int, int, int]):
         """Ascending order."""
         return Order.Ascending
 
-    alignment = OutcomeCountEvaluator.range_alignment
+    alignment = MultisetEvaluator.range_alignment
 
 
-class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, int,
-                                                               tuple[int,
-                                                                     int]]):
+class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, int,
+                                                           tuple[int, int]]):
     """The size of the largest straight, along with the greatest outcome in that straight."""
 
     def next_state(self, state, outcome, count):
@@ -140,4 +139,4 @@ class LargestStraightAndOutcomeEvaluator(OutcomeCountEvaluator[int, int,
         """Ascending order."""
         return Order.Ascending
 
-    alignment = OutcomeCountEvaluator.range_alignment
+    alignment = MultisetEvaluator.range_alignment

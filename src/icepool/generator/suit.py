@@ -1,14 +1,14 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
 
 from collections import defaultdict
 from functools import cached_property
 from typing import Any, Callable, Sequence
 
 
-class SuitGenerator(OutcomeCountGenerator):
+class SuitGenerator(MultisetGenerator):
     """EXPERIMENTAL: A meta-generator that groups 2-tuple outcomes from a source generator.
 
     This wraps a generator whose outcomes are of the form `(face, suit)`,
@@ -16,7 +16,7 @@ class SuitGenerator(OutcomeCountGenerator):
     from `suit` to the count of that face and suit.
     """
 
-    def __init__(self, src: OutcomeCountGenerator, /):
+    def __init__(self, src: MultisetGenerator, /):
         self._src = src
 
     @cached_property
@@ -72,7 +72,7 @@ class SuitGenerator(OutcomeCountGenerator):
         return self._hash
 
     @staticmethod
-    def _generate_min_internal(min_outcome, src: OutcomeCountGenerator,
+    def _generate_min_internal(min_outcome, src: MultisetGenerator,
                                counts: Sequence[defaultdict[Any,
                                                             int]], weight: int):
         if not src.outcomes() or src.min_outcome()[0] != min_outcome:
@@ -89,7 +89,7 @@ class SuitGenerator(OutcomeCountGenerator):
                     min_outcome, sub_src, next_counts, weight * sub_weight)
 
     @staticmethod
-    def _generate_max_internal(max_outcome, src: OutcomeCountGenerator,
+    def _generate_max_internal(max_outcome, src: MultisetGenerator,
                                counts: Sequence[defaultdict[Any,
                                                             int]], weight: int):
         if not src.outcomes() or src.max_outcome()[0] != max_outcome:

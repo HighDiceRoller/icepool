@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
 from icepool.typing import Outcome, MultisetBinaryIntOperationStr
 
 from abc import abstractmethod
@@ -18,19 +18,19 @@ Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
 
 In this future this may be replaced with a TypeVarTuple."""
 
-class AdjustCountsGenerator(OutcomeCountGenerator[T_co, Qints_co]):
+class AdjustCountsGenerator(MultisetGenerator[T_co, Qints_co]):
     """Adjusts counts of a generator.
 
     If the generator produces multiple counts, each count will be affected
     individually.
     """
 
-    def __init__(self, inner: OutcomeCountGenerator[T_co, Qints_co], constant: int):
+    def __init__(self, inner: MultisetGenerator[T_co, Qints_co], constant: int):
         self._inner = inner
         self._constant = constant
 
     @classmethod
-    def new_by_name(self, name: MultisetBinaryIntOperationStr, inner: OutcomeCountGenerator[T_co, Qints_co],
+    def new_by_name(self, name: MultisetBinaryIntOperationStr, inner: MultisetGenerator[T_co, Qints_co],
                  constant: int) -> 'AdjustCountsGenerator[T_co, Qints_co]':
         match name:
             case '*': return MultiplyCountsGenerator(inner, constant)

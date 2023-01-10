@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
 from typing import Any, Callable, Final, Hashable, TypeVar
@@ -17,7 +17,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, U_co]):
+class WrapFuncEvaluator(MultisetEvaluator[T_contra, Q_contra, U_co]):
     """Evaluates the provided function."""
 
     def __init__(self, func: Callable[..., U_co], /):
@@ -33,7 +33,7 @@ class WrapFuncEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, U_co]):
         return self._func(state, outcome, *counts)
 
 
-class ExpandEvaluator(OutcomeCountEvaluator[Outcome, int, tuple]):
+class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
     """Expands all results of a generator.
 
     This is expensive and not recommended unless there are few possibilities.
@@ -56,7 +56,7 @@ class ExpandEvaluator(OutcomeCountEvaluator[Outcome, int, tuple]):
         return tuple(sorted(final_state))
 
 
-class SumEvaluator(OutcomeCountEvaluator[Outcome, int, Any]):
+class SumEvaluator(MultisetEvaluator[Outcome, int, Any]):
     """Sums all outcomes."""
 
     def next_state(self, state, outcome, count):
@@ -75,7 +75,7 @@ sum_evaluator: Final = SumEvaluator()
 """Shared instance for caching."""
 
 
-class CountEvaluator(OutcomeCountEvaluator[Outcome, int, int]):
+class CountEvaluator(MultisetEvaluator[Outcome, int, int]):
     """Returns the total count of outcomes.
 
     Usually not very interesting unless the counts are adjusted by

@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
 from icepool.typing import Outcome, MultisetBinaryOperationStr
 
 import itertools
@@ -14,19 +14,19 @@ from typing import Sequence, TypeVar
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-class BinaryOperatorGenerator(OutcomeCountGenerator[T_co, tuple[int]]):
+class BinaryOperatorGenerator(MultisetGenerator[T_co, tuple[int]]):
 
     def __init__(self,
-                 left: OutcomeCountGenerator[T_co, tuple[int]],
-                 right: OutcomeCountGenerator[T_co, tuple[int]]) -> None:
+                 left: MultisetGenerator[T_co, tuple[int]],
+                 right: MultisetGenerator[T_co, tuple[int]]) -> None:
         self._left = left
         self._right = right
 
     @classmethod
     def new_by_name(self,
                     name: MultisetBinaryOperationStr,
-                    left: OutcomeCountGenerator[T_co, tuple[int]],
-                    right: OutcomeCountGenerator[T_co, tuple[int]]) -> 'BinaryOperatorGenerator[T_co]':
+                    left: MultisetGenerator[T_co, tuple[int]],
+                    right: MultisetGenerator[T_co, tuple[int]]) -> 'BinaryOperatorGenerator[T_co]':
         match name:
             case '+' | 'disjoint_sum': return DisjointUnionGenerator(left, right)
             case '-' | 'difference': return DifferenceGenerator(left, right)

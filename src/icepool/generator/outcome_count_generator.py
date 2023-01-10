@@ -32,12 +32,12 @@ U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 NextOutcomeCountGenerator: TypeAlias = Iterator[tuple[
-    'icepool.OutcomeCountGenerator', Sequence, int]]
+    'icepool.MultisetGenerator', Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
-def implicit_convert_to_generator(arg) -> 'OutcomeCountGenerator':
-    if isinstance(arg, OutcomeCountGenerator):
+def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
+    if isinstance(arg, MultisetGenerator):
         return arg
     elif isinstance(arg, (Mapping, Sequence)):
         return icepool.Pool(arg)
@@ -47,7 +47,7 @@ def implicit_convert_to_generator(arg) -> 'OutcomeCountGenerator':
         )
 
 
-class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
+class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
@@ -133,8 +133,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         """All `OutcomeCountGenerator`s must be hashable."""
 
     def evaluate(self,
-                 evaluator_or_func: 'icepool.OutcomeCountEvaluator[Any, Any, U]'
-                 | Callable[..., U], /) -> 'icepool.Die[U]':
+                 evaluator_or_func: 'icepool.MultisetEvaluator[Any, Any, U]' |
+                 Callable[..., U], /) -> 'icepool.Die[U]':
         """Evaluates this generator using the given `OutcomeCountEvaluator` or function.
 
         Note that each `OutcomeCountEvaluator` instance carries its own cache;
@@ -151,7 +151,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
                 is constructed and used to evaluate this generator.
         """
         from icepool.evaluator import WrapFuncEvaluator
-        if not isinstance(evaluator_or_func, icepool.OutcomeCountEvaluator):
+        if not isinstance(evaluator_or_func, icepool.MultisetEvaluator):
             evaluator_or_func = WrapFuncEvaluator(evaluator_or_func)
         return evaluator_or_func.evaluate(self)
 
@@ -244,8 +244,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
             self)
 
     def largest_straight(
-            self: 'OutcomeCountGenerator[int, tuple[int]]'
-    ) -> 'icepool.Die[int]':
+            self: 'MultisetGenerator[int, tuple[int]]') -> 'icepool.Die[int]':
         """The best straight among the outcomes.
 
         Outcomes must be `int`s.
@@ -257,7 +256,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return icepool.evaluator.LargestStraightEvaluator().evaluate(self)
 
     def largest_straight_and_outcome(
-        self: 'OutcomeCountGenerator[int, tuple[int]]'
+        self: 'MultisetGenerator[int, tuple[int]]'
     ) -> 'icepool.Die[tuple[int, int]]':
         """The best straight among the outcomes.
 
@@ -273,9 +272,9 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
     # Comparators.
 
     def compare(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]',
+            self: 'MultisetGenerator[T_co, tuple[int]]',
             op_name: SetComparatorStr, right:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Compares the outcome multiset to another multiset.
 
@@ -289,7 +288,7 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
                 `<, <=, >, >=, ==, !=`.
             right: The right-side generator or multiset to compare with.
         """
-        if isinstance(right, OutcomeCountGenerator):
+        if isinstance(right, MultisetGenerator):
             return icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name).evaluate(self, right)  # type: ignore
         elif isinstance(right, (Mapping, Collection)):
@@ -299,20 +298,20 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
             return NotImplemented
 
     def __lt__(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('<', other)
 
     def __le__(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('<=', other)
 
     def issubset(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is a subset of the other multiset.
 
@@ -321,20 +320,20 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return self <= other
 
     def __gt__(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('>', other)
 
     def __ge__(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         return self.compare('>=', other)
 
     def issuperset(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is a superset of the target multiset.
 
@@ -367,8 +366,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def isdisjoint(
-            self: 'OutcomeCountGenerator[T_co, tuple[int]]', right:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            self: 'MultisetGenerator[T_co, tuple[int]]', right:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
             /) -> 'icepool.Die[bool]':
         """Whether the outcome multiset is disjoint from the target multiset."""
         result = self.compare('isdisjoint', right)
@@ -381,10 +380,10 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
     # Binary operations with other generators.
 
     def binary_operator(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]',
+        self: 'MultisetGenerator[T_co, tuple[int]]',
         op_name: MultisetBinaryOperationStr,
-        right: 'OutcomeCountGenerator[T_co, tuple[int]]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        right: 'MultisetGenerator[T_co, tuple[int]]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """Binary operation with another generator.
 
         You can also use the symbolic operators directly, e.g.
@@ -397,30 +396,30 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
                 `+, -, |, &, ^`.
             right: The other `OutcomeCountGenerator`.
         """
-        if isinstance(right, OutcomeCountGenerator):
+        if isinstance(right, MultisetGenerator):
             return icepool.generator.BinaryOperatorGenerator.new_by_name(
                 op_name, self, right)
         else:
             return NotImplemented
 
     def __add__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('+', other_generator)
 
     def __radd__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('+', self)
 
     def disjoint_sum(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """The multiset disjoint sum with another generator.
 
         Same as `self + other`.
@@ -428,23 +427,23 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return self + other
 
     def __sub__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('-', other_generator)
 
     def __rsub__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('-', self)
 
     def difference(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', *others:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', *others:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """The multiset difference with another generator(s).
 
         Same as `self - other - ...`.
@@ -452,23 +451,23 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return functools.reduce(operator.sub, others, self)  # type: ignore
 
     def __or__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('|', other_generator)
 
     def __ror__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('|', self)
 
     def union(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', *others:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', *others:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """The multiset union with another generator.
 
         Same as `self | other | ...`.
@@ -476,23 +475,23 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return functools.reduce(operator.or_, others, self)  # type: ignore
 
     def __and__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('&', other_generator)
 
     def __rand__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('&', self)
 
     def intersection(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', *others:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', *others:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """The multiset intersection with another generator.
 
         Same as `self & other & ...`.
@@ -500,23 +499,23 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         return functools.reduce(operator.and_, others, self)  # type: ignore
 
     def __xor__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return self.binary_operator('^', other_generator)
 
     def __rxor__(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator('^', self)
 
     def symmetric_difference(
-        self: 'OutcomeCountGenerator[T_co, tuple[int]]', other:
-        'OutcomeCountGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
-    ) -> 'OutcomeCountGenerator[T_co, tuple[int]]':
+        self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
+    ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """The multiset symmetric difference with another generator.
 
         Same as `self ^ other`.
@@ -526,9 +525,9 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
     # Count adjustment.
 
     def binary_int_operator(
-            self: 'OutcomeCountGenerator[T_co, Qints_co]',
+            self: 'MultisetGenerator[T_co, Qints_co]',
             op_name: MultisetBinaryIntOperationStr,
-            constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+            constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         """Binary operation with an integer. These adjust counts.
 
         Args:
@@ -542,39 +541,37 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         else:
             return NotImplemented
 
-    def __mul__(self: 'OutcomeCountGenerator[T_co, Qints_co]',
-                constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def __mul__(self: 'MultisetGenerator[T_co, Qints_co]',
+                constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         return self.binary_int_operator('*', constant)
 
     # Commutable in this case.
-    def __rmul__(self: 'OutcomeCountGenerator[T_co, Qints_co]',
-                 constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def __rmul__(self: 'MultisetGenerator[T_co, Qints_co]',
+                 constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         return self.binary_int_operator('*', constant)
 
-    def multiply_counts(
-            self: 'OutcomeCountGenerator[T_co, Qints_co]',
-            constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def multiply_counts(self: 'MultisetGenerator[T_co, Qints_co]',
+                        constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         """Multiplies all counts by a constant.
 
         Same as `self * constant`.
         """
         return self * constant
 
-    def __floordiv__(self: 'OutcomeCountGenerator[T_co, Qints_co]',
-                     constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def __floordiv__(self: 'MultisetGenerator[T_co, Qints_co]',
+                     constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         return self.binary_int_operator('//', constant)
 
-    def divide_counts(self: 'OutcomeCountGenerator[T_co, Qints_co]',
-                      constant: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def divide_counts(self: 'MultisetGenerator[T_co, Qints_co]',
+                      constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         """Divides all counts (rounding down).
 
         Same as `self // constant`.
         """
         return self // constant
 
-    def filter_counts(
-            self: 'OutcomeCountGenerator[T_co, Qints_co]',
-            min_count: int) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def filter_counts(self: 'MultisetGenerator[T_co, Qints_co]',
+                      min_count: int) -> 'MultisetGenerator[T_co, Qints_co]':
         """Counts less than `min_count` are treated as zero.
 
         For example, `generator.filter_counts(2)` would only produce
@@ -582,8 +579,8 @@ class OutcomeCountGenerator(ABC, Generic[T_co, Q_co]):
         """
         return icepool.generator.FilterCountsGenerator(self, min_count)
 
-    def unique(self: 'OutcomeCountGenerator[T_co, Qints_co]',
-               max_count: int = 1) -> 'OutcomeCountGenerator[T_co, Qints_co]':
+    def unique(self: 'MultisetGenerator[T_co, Qints_co]',
+               max_count: int = 1) -> 'MultisetGenerator[T_co, Qints_co]':
         """Counts each outcome at most `max_count` times.
 
         For example, `generator.unique(2)` would count each outcome at most

@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.generator.outcome_count_generator import OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import MultisetGenerator
 from icepool.typing import Outcome
 
 from functools import cached_property
@@ -13,7 +13,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-class Alignment(OutcomeCountGenerator[T_co, tuple[()]]):
+class Alignment(MultisetGenerator[T_co, tuple[()]]):
     """A generator that only outputs 0 counts with weight 1."""
 
     def __init__(self, outcomes: Collection[T_co]):

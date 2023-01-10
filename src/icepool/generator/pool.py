@@ -5,7 +5,7 @@ import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.counts import Counts
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
 from icepool.typing import Outcome
 
 import itertools
@@ -19,7 +19,7 @@ T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
 
-class Pool(OutcomeCountGenerator[T_co, tuple[int]]):
+class Pool(MultisetGenerator[T_co, tuple[int]]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `OutcomeCountEvaluator` to generate a result.

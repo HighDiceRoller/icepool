@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 
 from icepool.typing import Outcome
 from typing import Callable, Generic, Mapping, TypeVar
@@ -21,7 +21,7 @@ V = TypeVar('V', bound=Outcome)
 
 
 class FinalOutcomeMapEvaluator(Generic[T_contra, V, Q_contra, U_co],
-                               OutcomeCountEvaluator[T_contra, Q_contra, U_co]):
+                               MultisetEvaluator[T_contra, Q_contra, U_co]):
     """Maps outcomes to other outcomes before sending them to an inner evaluator.
 
     Note that the outcomes will be seen in their original order, and outcomes
@@ -30,15 +30,15 @@ class FinalOutcomeMapEvaluator(Generic[T_contra, V, Q_contra, U_co],
     `AdjustIntCountEvaluator`, and the `map` argument should be presented last.
     """
 
-    _inner: OutcomeCountEvaluator[V, Q_contra, U_co]
+    _inner: MultisetEvaluator[V, Q_contra, U_co]
     _map: Callable[[T_contra], V]
 
     # May return inner unmodified.
     def __new__(  # type: ignore
         cls,
-        inner: OutcomeCountEvaluator[V, Q_contra, U_co],
+        inner: MultisetEvaluator[V, Q_contra, U_co],
         map: Callable[[T_contra], V] | Mapping[T_contra, V] | None = None
-    ) -> OutcomeCountEvaluator[T_contra, Q_contra, U_co]:
+    ) -> MultisetEvaluator[T_contra, Q_contra, U_co]:
         """Constructor. This wraps an inner evaluator.
 
         May return inner unmodified.

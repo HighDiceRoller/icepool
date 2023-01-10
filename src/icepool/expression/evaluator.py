@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool.expression
 
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 from icepool.typing import Outcome
 
 from typing import TypeVar
@@ -14,10 +14,10 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
 
-class ExpressionEvaluator(OutcomeCountEvaluator[T_contra, int, U_co]):
+class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
 
     def __init__(self, *expressions: 'icepool.expression.MultisetExpression',
-                 evaluator: OutcomeCountEvaluator[T_contra, int, U_co]) -> None:
+                 evaluator: MultisetEvaluator[T_contra, int, U_co]) -> None:
         self._evaluator = evaluator
         self._expressions = expressions
 

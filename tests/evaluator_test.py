@@ -4,7 +4,7 @@ import pytest
 from icepool import d4, d6, d8, d10, d12
 
 
-class SumRerollIfAnyOnes(icepool.OutcomeCountEvaluator):
+class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
 
     def next_state(self, state, outcome, count):
         if outcome == 1 and count > 0:
@@ -106,7 +106,7 @@ def test_runs_skip():
     assert result.outcomes() == ((1, 0), (1, 10))
 
 
-class SumFixedOrder(icepool.OutcomeCountEvaluator):
+class SumFixedOrder(icepool.MultisetEvaluator):
 
     def __init__(self, order):
         self._order = order

@@ -3,7 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.outcome_count_evaluator import OutcomeCountEvaluator
+from icepool.evaluator.outcome_count_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
 from typing import TypeVar
@@ -18,10 +18,10 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class JointEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, tuple]):
+class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
     """An `OutcomeCountEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
 
-    def __init__(self, *inners: OutcomeCountEvaluator):
+    def __init__(self, *inners: MultisetEvaluator):
         self._inners = inners
 
     def next_state(self, state, outcome, *counts):
@@ -39,7 +39,7 @@ class JointEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, tuple]):
                 for evaluator, substate in zip(self._inners, state))
 
     def final_outcome(self, final_state,
-                      *generators: icepool.OutcomeCountGenerator):
+                      *generators: icepool.MultisetGenerator):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
@@ -50,7 +50,7 @@ class JointEvaluator(OutcomeCountEvaluator[T_contra, Q_contra, tuple]):
             inner.final_outcome(final_substate, *generators)
             for inner, final_substate in zip(self._inners, final_state))
 
-    def order(self, *generators: icepool.OutcomeCountGenerator):
+    def order(self, *generators: icepool.MultisetGenerator):
         """Determines the common order of the subevals.
 
         Raises:

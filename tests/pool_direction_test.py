@@ -5,7 +5,7 @@ import pytest
 from icepool import d4, d6, d8, d10, d12, Pool
 
 
-class VerifyOrder(icepool.OutcomeCountEvaluator):
+class VerifyOrder(icepool.MultisetEvaluator):
 
     def __init__(self, order):
         self._order = order

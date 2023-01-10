@@ -98,7 +98,7 @@ def test_unpack_marginals():
 
 def test_one_hot():
 
-    class OneHotEvaluator(icepool.OutcomeCountEvaluator):
+    class OneHotEvaluator(icepool.MultisetEvaluator):
 
         def next_state(self, state, _, count):
             if state is None:

@@ -5,7 +5,7 @@ from icepool.typing import Outcome
 from typing import TypeVar
 import icepool
 from icepool.counts import CountsKeysView
-from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, OutcomeCountGenerator
+from icepool.generator.outcome_count_generator import NextOutcomeCountGenerator, MultisetGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
@@ -18,7 +18,7 @@ Q = TypeVar('Q', bound=tuple[int, ...])
 """Type variable representing the count types. In this future this may be replaced with a TypeVarTuple."""
 
 
-class Deal(OutcomeCountGenerator[T_co, Q]):
+class Deal(MultisetGenerator[T_co, Q]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck[T_co]'
