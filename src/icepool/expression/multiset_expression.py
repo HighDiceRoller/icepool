@@ -348,17 +348,25 @@ class MultisetExpression(Hashable, ABC):
         """
         return self >= other
 
-    # This does not produce a truth value.
+    # The result has a truth value, but is not a bool.
     def __eq__(  # type: ignore
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
             /) -> 'icepool.MultisetEvaluator[T, int, bool]':
-        return self.compare('==', other)
+        if isinstance(other, MultisetExpression):
+            truth_value = self._key_tuple == other._key_tuple
+        else:
+            truth_value = False
+        return self.compare('==', other, truth_value)
 
-    # This does not produce a truth value.
+    # The result has a truth value, but is not a bool.
     def __ne__(  # type: ignore
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
             /) -> 'icepool.MultisetEvaluator[T, int, bool]':
-        return self.compare('!=', other)
+        if isinstance(other, MultisetExpression):
+            truth_value = self._key_tuple != other._key_tuple
+        else:
+            truth_value = True
+        return self.compare('!=', other, truth_value)
 
     def isdisjoint(
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
