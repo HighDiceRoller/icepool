@@ -15,6 +15,7 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 
 
 class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
+    """Wraps an evaluator by evaluating expressions before sending the counts to it."""
 
     def __init__(self, *expressions: 'icepool.expression.MultisetExpression',
                  evaluator: MultisetEvaluator[T_contra, int, U_co]) -> None:

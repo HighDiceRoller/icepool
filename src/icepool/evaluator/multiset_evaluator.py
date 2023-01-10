@@ -281,7 +281,13 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
         return icepool.Die(final_outcomes, final_weights)
 
-    __call__ = evaluate
+    def __call__(
+        self,
+        *generators: icepool.MultisetGenerator[T_contra, tuple[Q_contra, ...]] |
+        Mapping[T_contra, int] | Sequence
+    ) -> 'icepool.Die[U_co]':
+        """Same as `self.evaluate()`."""
+        return self.evaluate(*generators)
 
     def _select_algorithm(
         self, *generators: icepool.MultisetGenerator[T_contra, Any]
