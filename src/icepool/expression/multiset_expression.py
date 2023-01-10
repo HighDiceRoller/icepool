@@ -7,7 +7,8 @@ import icepool.evaluator
 from icepool.typing import Outcome, SetComparatorStr
 
 from abc import ABC, abstractmethod
-from typing import Callable, Collection, Mapping, TypeAlias, TypeVar
+from functools import cached_property
+from typing import Callable, Collection, Hashable, Mapping, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
 """Type variable representing an outcome type."""
@@ -16,7 +17,7 @@ U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 
-class MultisetExpression(ABC):
+class MultisetExpression(Hashable, ABC):
     """Abstract base class representing an expression that operates on multisets.
 
     Use `MultisetVariable` to start an expression.
@@ -37,6 +38,27 @@ class MultisetExpression(ABC):
         """
 
     __call__ = evaluate_counts
+
+    @property
+    @abstractmethod
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        """A tuple that logically identifies this object among `MultisetExpression`s.
+
+        Used to implement `equals()` and `__hash__()`
+        """
+
+    def equals(self, other) -> bool:
+        """Whether this generator is logically equal to another object."""
+        if not isinstance(other, MultisetExpression):
+            return False
+        return self._key_tuple == other._key_tuple
+
+    @cached_property
+    def _hash(self) -> int:
+        return hash(self._key_tuple)
+
+    def __hash__(self) -> int:
+        return self._hash
 
     # Binary operators.
 

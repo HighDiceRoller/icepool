@@ -5,7 +5,7 @@ from icepool.typing import Outcome
 
 from functools import cached_property
 
-from typing import Collection, Iterator, Sequence, TypeAlias, TypeVar
+from typing import Collection, Hashable, Iterator, Sequence, TypeAlias, TypeVar
 
 AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int], int]]
 
@@ -49,14 +49,6 @@ class Alignment(MultisetGenerator[T_co, tuple[()]]):
     def denominator(self) -> int:
         return 0
 
-    def equals(self, other) -> bool:
-        if not isinstance(other, Alignment):
-            return False
-        return self._outcomes == other._outcomes
-
     @cached_property
-    def _hash(self) -> int:
-        return hash(self._outcomes)
-
-    def __hash__(self) -> int:
-        return self._hash
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        return Alignment, self._outcomes

@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from typing import Hashable
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Outcome
 
@@ -23,6 +24,10 @@ class BinaryOperatorExpression(MultisetExpression):
         left = self._left.evaluate_counts(outcome, *counts)
         right = self._right.evaluate_counts(outcome, *counts)
         return self.merge_counts(left, right)
+
+    @cached_property
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        return type(self), self._left, self._right
 
 
 class IntersectionExpression(BinaryOperatorExpression):

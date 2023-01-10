@@ -4,7 +4,7 @@ from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Outcome
 
 from functools import cached_property
-from typing import Literal, overload
+from typing import Hashable, Literal, overload
 
 
 class MultisetVariable(MultisetExpression):
@@ -19,6 +19,10 @@ class MultisetVariable(MultisetExpression):
 
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
+
+    @cached_property
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        return type(self), self._index
 
     @overload
     def __class_getitem__(cls, index: int) -> 'MultisetVariable':

@@ -13,7 +13,7 @@ import random
 
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, Collection, Generic, Iterator, Mapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -124,13 +124,26 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     def denominator(self) -> int:
         """The total weight of all paths through this generator."""
 
+    @property
     @abstractmethod
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        """A tuple that logically identifies this object among MultisetGenerators.
+
+        Used to implement `equals()` and `__hash__()`
+        """
+
     def equals(self, other) -> bool:
         """Whether this generator is logically equal to another object."""
+        if not isinstance(other, MultisetGenerator):
+            return False
+        return self._key_tuple == other._key_tuple
 
-    @abstractmethod
+    @functools.cached_property
+    def _hash(self) -> int:
+        return hash(self._key_tuple)
+
     def __hash__(self) -> int:
-        """All `MultisetGenerator`s must be hashable."""
+        return self._hash
 
     def evaluate(self,
                  evaluator_or_func: 'icepool.MultisetEvaluator[Any, Any, U]' |

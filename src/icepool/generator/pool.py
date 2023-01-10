@@ -436,18 +436,6 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
     def _key_tuple(self) -> tuple:
         return Pool, self._dice, self._sorted_roll_counts
 
-    def equals(self, other) -> bool:
-        if not isinstance(other, Pool):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._key_tuple)
-
-    def __hash__(self) -> int:
-        return self._hash
-
 
 def sorted_roll_counts_tuple(
         pool_size: int,

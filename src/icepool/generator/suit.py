@@ -5,7 +5,7 @@ from icepool.generator.multiset_generator import NextMultisetGenerator, Multiset
 
 from collections import defaultdict
 from functools import cached_property
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Hashable, Sequence
 
 
 class SuitGenerator(MultisetGenerator):
@@ -56,20 +56,8 @@ class SuitGenerator(MultisetGenerator):
         return self._src.denominator()
 
     @cached_property
-    def _key_tuple(self) -> tuple:
+    def _key_tuple(self) -> tuple[Hashable, ...]:
         return SuitGenerator, self._src
-
-    def equals(self, other) -> bool:
-        if not isinstance(other, SuitGenerator):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._key_tuple)
-
-    def __hash__(self) -> int:
-        return self._hash
 
     @staticmethod
     def _generate_min_internal(min_outcome, src: MultisetGenerator,

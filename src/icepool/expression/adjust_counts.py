@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from typing import Hashable
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Outcome
 
@@ -21,6 +22,10 @@ class AdjustCountsExpression(MultisetExpression):
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         inner = self._inner.evaluate_counts(outcome, *counts)
         return self.adjust_count(inner, self._constant)
+
+    @cached_property
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        return type(self), self._inner, self._constant
 
 
 class MultiplyCountsExpression(AdjustCountsExpression):

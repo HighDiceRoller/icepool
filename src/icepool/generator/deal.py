@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from icepool.typing import Outcome
 
-from typing import TypeVar
+from typing import Hashable, TypeVar
 import icepool
 from icepool.counts import CountsKeysView
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
@@ -137,20 +137,8 @@ class Deal(MultisetGenerator[T_co, Q]):
         return result, result
 
     @cached_property
-    def _key_tuple(self) -> tuple:
+    def _key_tuple(self) -> tuple[Hashable, ...]:
         return Deal, self.deck(), self.hand_sizes()
-
-    def equals(self, other) -> bool:
-        if not isinstance(other, Deal):
-            return False
-        return self._key_tuple == other._key_tuple
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._key_tuple)
-
-    def __hash__(self) -> int:
-        return self._hash
 
     def __repr__(self) -> str:
         return type(
