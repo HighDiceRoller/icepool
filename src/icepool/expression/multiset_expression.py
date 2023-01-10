@@ -7,7 +7,7 @@ import icepool.evaluator
 from icepool.typing import Outcome, SetComparatorStr
 
 from abc import ABC, abstractmethod
-from functools import cached_property
+from functools import cached_property, reduce
 from typing import Callable, Collection, Hashable, Mapping, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
@@ -72,6 +72,10 @@ class MultisetExpression(Hashable, ABC):
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(other, self)
 
+    def disjoint_sum(self,
+                     *others: 'MultisetExpression') -> 'MultisetExpression':
+        return reduce(operator.add, others, self)  # type: ignore
+
     def __sub__(self, other: 'MultisetExpression') -> 'MultisetExpression':
         if not isinstance(other, MultisetExpression):
             return NotImplemented
@@ -81,6 +85,9 @@ class MultisetExpression(Hashable, ABC):
         if not isinstance(other, MultisetExpression):
             return NotImplemented
         return icepool.expression.DifferenceExpression(other, self)
+
+    def difference(self, *others: 'MultisetExpression') -> 'MultisetExpression':
+        return reduce(operator.sub, others, self)  # type: ignore
 
     def __and__(self, other: 'MultisetExpression') -> 'MultisetExpression':
         if not isinstance(other, MultisetExpression):
@@ -92,6 +99,10 @@ class MultisetExpression(Hashable, ABC):
             return NotImplemented
         return icepool.expression.IntersectionExpression(other, self)
 
+    def intersection(self,
+                     *others: 'MultisetExpression') -> 'MultisetExpression':
+        return reduce(operator.and_, others, self)  # type: ignore
+
     def __or__(self, other: 'MultisetExpression') -> 'MultisetExpression':
         if not isinstance(other, MultisetExpression):
             return NotImplemented
@@ -102,6 +113,9 @@ class MultisetExpression(Hashable, ABC):
             return NotImplemented
         return icepool.expression.UnionExpression(other, self)
 
+    def union(self, *others: 'MultisetExpression') -> 'MultisetExpression':
+        return reduce(operator.or_, others, self)  # type: ignore
+
     def __xor__(self, other: 'MultisetExpression') -> 'MultisetExpression':
         if not isinstance(other, MultisetExpression):
             return NotImplemented
@@ -111,6 +125,10 @@ class MultisetExpression(Hashable, ABC):
         if not isinstance(other, MultisetExpression):
             return NotImplemented
         return icepool.expression.SymmetricDifferenceExpression(other, self)
+
+    def symmetric_difference(
+            self, other: 'MultisetExpression') -> 'MultisetExpression':
+        return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     # Adjust counts.
 

@@ -4,7 +4,7 @@ from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Outcome
 
 from functools import cached_property
-from typing import Hashable, Literal, overload
+from typing import Final, Hashable, Literal, overload
 
 
 class MultisetVariable(MultisetExpression):
@@ -24,21 +24,24 @@ class MultisetVariable(MultisetExpression):
     def _key_tuple(self) -> tuple[Hashable, ...]:
         return type(self), self._index
 
+
+class MultisetVariableFactory():
+
     @overload
-    def __class_getitem__(cls, index: int) -> 'MultisetVariable':
+    def __getitem__(cls, index: int) -> 'MultisetVariable':
         """Generates a `MultisetVariable`."""
 
     @overload
-    def __class_getitem__(cls, index: slice) -> 'tuple[MultisetVariable, ...]':
+    def __getitem__(cls, index: slice) -> 'tuple[MultisetVariable, ...]':
         """Generates a tuple of `MultisetVariable`s."""
 
     @overload
-    def __class_getitem__(
+    def __getitem__(
         cls, index: int | slice
     ) -> 'MultisetVariable | tuple[MultisetVariable, ...]':
         """Generates a `MultisetVariable` or a tuple thereof."""
 
-    def __class_getitem__(
+    def __getitem__(
         cls, index: int | slice
     ) -> 'MultisetVariable | tuple[MultisetVariable, ...]':
         """Generates a `MultisetVariable` or a tuple thereof."""
@@ -74,3 +77,7 @@ class MultisetVariable(MultisetExpression):
             return tuple(
                 MultisetVariable(i)
                 for i in range(index.start, index.stop, index.step))
+
+
+multiset_variables: Final = MultisetVariableFactory()
+"""Indexable object to get `MultisetVariable`s."""
