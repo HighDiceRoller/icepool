@@ -19,9 +19,9 @@ class BinaryOperatorExpression(MultisetExpression):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
-    def evaluate(self, outcome: Outcome, *counts: int) -> int:
-        left = self._left.evaluate(outcome, *counts)
-        right = self._right.evaluate(outcome, *counts)
+    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
+        left = self._left.evaluate_counts(outcome, *counts)
+        right = self._right.evaluate_counts(outcome, *counts)
         return self.merge_counts(left, right)
 
 

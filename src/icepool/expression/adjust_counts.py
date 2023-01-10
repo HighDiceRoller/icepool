@@ -18,8 +18,8 @@ class AdjustCountsExpression(MultisetExpression):
     def adjust_count(count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def evaluate(self, outcome: Outcome, *counts: int) -> int:
-        inner = self._inner.evaluate(outcome, *counts)
+    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
+        inner = self._inner.evaluate_counts(outcome, *counts)
         return self.adjust_count(inner, self._constant)
 
 

@@ -17,17 +17,26 @@ U = TypeVar('U', bound=Outcome)
 
 
 class MultisetExpression(ABC):
+    """Abstract base class representing an expression that operates on multisets.
+
+    Use `MultisetVariable` to start an expression.
+
+    Use the provided operators and methods to build up more complicated
+    expressions, or to attach a final evaluator.
+    """
 
     @abstractmethod
-    def evaluate(self, outcome: Outcome, *counts: int) -> int:
-        """Evaluate this expression, producing a single final count.
+    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
+        """Evaluate this expression, producing a single output count.
+
+        You probably won't need to call this yourself.
 
         Args:
             outcome: The current outcome.
             *counts: The original sequence of counts.
         """
 
-    __call__ = evaluate
+    __call__ = evaluate_counts
 
     # Binary operators.
 
@@ -131,27 +140,35 @@ class MultisetExpression(ABC):
 
     # Evaluations.
 
-    def expand(
-        self
-    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[T, ...]]':
+    def evaluator(
+        *expressions: 'MultisetExpression',
+        evaluator: 'icepool.OutcomeCountEvaluator[T, int, U]'
+    ) -> 'icepool.OutcomeCountEvaluator[T, int, U]':
+        """Attaches a final `OutcomeCountEvaluator` to this expression.
+
+        The result is an `OutcomeCountEvaluator` that runs the expression
+        before sending the result to the provided evaluator.
+        """
+        return icepool.expression.ExpressionEvaluator(*expressions,
+                                                      evaluator=evaluator)
+
+    def expand(self) -> 'icepool.OutcomeCountEvaluator[T, int, tuple[T, ...]]':
         """All possible sorted tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
         """
         evaluator = icepool.evaluator.ExpandEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def sum(
         self,
         map: Callable[[T], U] | Mapping[T, U] | None = None
-    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], U]':
+    ) -> 'icepool.OutcomeCountEvaluator[T, int, U]':
         evaluator = icepool.evaluator.FinalOutcomeMapEvaluator(
             icepool.evaluator.sum_evaluator, map)
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
-    def count(
-            self
-    ) -> 'icepool.OutcomeCountEvaluator[Outcome, tuple[int, ...], int]':
+    def count(self) -> 'icepool.OutcomeCountEvaluator[Outcome, int, int]':
         """The total count over all outcomes.
 
         This is usually not very interesting unless some other operation is
@@ -163,23 +180,22 @@ class MultisetExpression(ABC):
         4, 5, and 6.
         """
         evaluator = icepool.evaluator.count_evaluator
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def highest_outcome_and_count(
-        self
-    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[T, int]]':
+            self) -> 'icepool.OutcomeCountEvaluator[T, int, tuple[T, int]]':
         """The highest outcome with positive count, along with that count.
 
         If no outcomes have positive count, an arbitrary outcome will be
         produced with a 0 count.
         """
         evaluator = icepool.evaluator.HighestOutcomeAndCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def all_counts(
         self,
         positive_only: bool = True
-    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[int, ...]]':
+    ) -> 'icepool.OutcomeCountEvaluator[T, int, tuple[int, ...]]':
         """Produces a tuple of all counts, i.e. the sizes of all matching sets.
 
         Args:
@@ -188,45 +204,42 @@ class MultisetExpression(ABC):
         """
         evaluator = icepool.evaluator.AllCountsEvaluator(
             positive_only=positive_only)
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
-    def largest_count(
-            self) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], int]':
+    def largest_count(self) -> 'icepool.OutcomeCountEvaluator[T, int, int]':
         """The size of the largest matching set among the outcomes."""
         evaluator = icepool.evaluator.LargestCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def largest_count_and_outcome(
-        self
-    ) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], tuple[int, T]]':
+            self) -> 'icepool.OutcomeCountEvaluator[T, int, tuple[int, T]]':
         """The largest matching set among the outcomes and its outcome."""
         evaluator = icepool.evaluator.LargestCountAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def largest_straight(
-            self) -> 'icepool.OutcomeCountEvaluator[int, tuple[int, ...], int]':
-        """The best straight among the outcomes.
+            self) -> 'icepool.OutcomeCountEvaluator[int, int, int]':
+        """The size of the largest straight among the outcomes.
 
         Outcomes must be `int`s.
         """
         evaluator = icepool.evaluator.LargestStraightEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def largest_straight_and_outcome(
-        self
-    ) -> 'icepool.OutcomeCountEvaluator[int, tuple[int, ...], tuple[int, int]]':
-        """The best straight among the outcomes and the highest outcome in that straight.
+            self) -> 'icepool.OutcomeCountEvaluator[int, int, tuple[int, int]]':
+        """The size of the largest straight among the outcomes and the highest outcome in that straight.
 
         Outcomes must be `int`s.
         """
         evaluator = icepool.evaluator.LargestStraightAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(evaluator, self)
+        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     # Comparators.
 
     def compare(self, op_name: SetComparatorStr,
                 other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-                /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+                /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         """Compares the outcome multiset to another multiset.
 
         You can also use the symbolic operators directly, e.g.
@@ -244,27 +257,31 @@ class MultisetExpression(ABC):
             evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name)  # type: ignore
             return icepool.expression.ExpressionEvaluator(
-                evaluator, self, other)
+                self,
+                other,
+                evaluator=evaluator,
+            )
         elif isinstance(other, (Mapping, Collection)):
             evaluator = icepool.evaluator.ComparisonEvaluator.new_by_name(
                 op_name, other)
-            return icepool.expression.ExpressionEvaluator(evaluator, self)
+            return icepool.expression.ExpressionEvaluator(self,
+                                                          evaluator=evaluator)
         else:
             return NotImplemented
 
     def __lt__(self,
                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+               /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('<', other)
 
     def __le__(self,
                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+               /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('<=', other)
 
-    def issubset(
-            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+    def issubset(self,
+                 other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+                 /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         """Whether the outcome multiset is a subset of the other multiset.
 
         Same as `self <= other`.
@@ -273,17 +290,17 @@ class MultisetExpression(ABC):
 
     def __gt__(self,
                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+               /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('>', other)
 
     def __ge__(self,
                other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+               /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('>=', other)
 
     def issuperset(
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+            /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         """Whether the outcome multiset is a superset of the target multiset.
 
         Same as `self >= other`.
@@ -293,17 +310,17 @@ class MultisetExpression(ABC):
     # This does not produce a truth value.
     def __eq__(  # type: ignore
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+            /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('==', other)
 
     # This does not produce a truth value.
     def __ne__(  # type: ignore
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+            /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         return self.compare('!=', other)
 
     def isdisjoint(
             self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.OutcomeCountEvaluator[T, tuple[int, ...], bool]':
+            /) -> 'icepool.OutcomeCountEvaluator[T, int, bool]':
         """Whether the outcome multiset is disjoint from the target multiset."""
         return self.compare('isdisjoint', other)

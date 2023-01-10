@@ -14,20 +14,16 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 """Type variable representing the final outcome type."""
 
 
-class ExpressionEvaluator(OutcomeCountEvaluator[T_contra, tuple[int, ...],
-                                                U_co]):
+class ExpressionEvaluator(OutcomeCountEvaluator[T_contra, int, U_co]):
 
-    def __init__(
-        self,
-        evaluator: OutcomeCountEvaluator[T_contra, int, U_co],
-        *expressions: 'icepool.expression.MultisetExpression',
-    ) -> None:
+    def __init__(self, *expressions: 'icepool.expression.MultisetExpression',
+                 evaluator: OutcomeCountEvaluator[T_contra, int, U_co]) -> None:
         self._evaluator = evaluator
         self._expressions = expressions
 
     def next_state(self, state, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
-        counts = (expression.evaluate(outcome, counts)
+        counts = (expression.evaluate_counts(outcome, counts)
                   for expression in self._expressions)
         return self._evaluator.next_state(state, outcome, *counts)
 

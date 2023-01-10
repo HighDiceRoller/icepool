@@ -17,7 +17,7 @@ class MultisetVariable(MultisetExpression):
         """
         self._index = index
 
-    def evaluate(self, outcome: Outcome, *counts: int) -> int:
+    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
 
     @overload
