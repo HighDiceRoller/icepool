@@ -48,31 +48,10 @@ class MultisetVariableFactory():
         if isinstance(index, int):
             return MultisetVariable(index)
         elif isinstance(index, slice):
-            if index.start is not None:
-                if index.stop is not None:
-                    # both start and stop
-                    if (index.start < 0) != (index.stop < 0):
-                        raise ValueError(
-                            'If both provided, start and stop of the slice must both be positive or non-positive.'
-                        )
-                else:
-                    # start only
-                    if index.start >= 0:
-                        raise ValueError(
-                            'If stop of the slice is not provided, start must be positive.'
-                        )
-            else:
-                if index.stop is not None:
-                    # stop only
-                    if index.stop < 0:
-                        raise ValueError(
-                            'If start of the slice is not provided, stop must be non-positive.'
-                        )
-                else:
-                    # neither start nor stop
-                    raise ValueError(
-                        'At least one of start or stop of the slice must be provided.'
-                    )
+            if index.stop is None:
+                raise ValueError('A stop index must be provided.')
+            if index.stop < 0 or (index.start is not None and index.start < 0):
+                raise ValueError('Variable indexes cannot be negative.')
 
             return tuple(
                 MultisetVariable(i)
