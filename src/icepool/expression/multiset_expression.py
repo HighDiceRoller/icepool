@@ -40,6 +40,7 @@ class MultisetExpression(Hashable, ABC):
     def __call__(self, outcome: Outcome, *counts: int) -> int:
         return self.evaluate_counts(outcome, *counts)
 
+    @property
     @abstractmethod
     def arity(self) -> int:
         """The minimum number of multisets/counts that must be provided to this expression.

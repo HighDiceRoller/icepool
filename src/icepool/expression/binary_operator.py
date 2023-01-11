@@ -26,8 +26,9 @@ class BinaryOperatorExpression(MultisetExpression):
         result = self.merge_counts(left, right)
         return max(result, 0)
 
+    @property
     def arity(self) -> int:
-        return max(self._left.arity(), self._right.arity())
+        return max(self._left.arity, self._right.arity)
 
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:

@@ -20,6 +20,7 @@ class MultisetVariable(MultisetExpression):
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
 
+    @property
     def arity(self) -> int:
         return self._index + 1
 
