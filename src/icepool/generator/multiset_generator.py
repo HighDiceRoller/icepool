@@ -393,8 +393,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     # Binary operations with other generators.
 
     def binary_operator(
-        self: 'MultisetGenerator[T_co, tuple[int]]',
-        op_name: MultisetBinaryOperationStr,
+        self: 'MultisetGenerator[T_co, tuple[int]]', op: Callable,
         right: 'MultisetGenerator[T_co, tuple[int]]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         """Binary operation with another generator.
@@ -409,25 +408,23 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
                 `+, -, |, &, ^`.
             right: The other `MultisetGenerator`.
         """
-        if isinstance(right, MultisetGenerator):
-            return icepool.generator.BinaryOperatorGenerator.new_by_name(
-                op_name, self, right)
-        else:
-            return NotImplemented
+        from icepool.expression import multiset_variables, ExpressionGenerator
+        expression = op(multiset_variables[0], multiset_variables[1])
+        return ExpressionGenerator(self, right, expression=expression)
 
     def __add__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_operator('+', other_generator)
+        return self.binary_operator(operator.add, other_generator)
 
     def __radd__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_operator('+', self)
+        return other_generator.binary_operator(operator.add, self)
 
     def disjoint_sum(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
@@ -444,14 +441,14 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_operator('-', other_generator)
+        return self.binary_operator(operator.sub, other_generator)
 
     def __rsub__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_operator('-', self)
+        return other_generator.binary_operator(operator.sub, self)
 
     def difference(
         self: 'MultisetGenerator[T_co, tuple[int]]', *others:
@@ -468,14 +465,14 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_operator('|', other_generator)
+        return self.binary_operator(operator.or_, other_generator)
 
     def __ror__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_operator('|', self)
+        return other_generator.binary_operator(operator.or_, self)
 
     def union(
         self: 'MultisetGenerator[T_co, tuple[int]]', *others:
@@ -492,14 +489,14 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_operator('&', other_generator)
+        return self.binary_operator(operator.and_, other_generator)
 
     def __rand__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_operator('&', self)
+        return other_generator.binary_operator(operator.and_, self)
 
     def intersection(
         self: 'MultisetGenerator[T_co, tuple[int]]', *others:
@@ -516,14 +513,14 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return self.binary_operator('^', other_generator)
+        return self.binary_operator(operator.xor, other_generator)
 
     def __rxor__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':
         other_generator = implicit_convert_to_generator(other)
-        return other_generator.binary_operator('^', self)
+        return other_generator.binary_operator(operator.xor, self)
 
     def symmetric_difference(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
