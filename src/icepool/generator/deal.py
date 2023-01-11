@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from icepool.typing import Outcome
 
-from typing import Hashable, TypeVar
+from typing import Any, Hashable, TypeVar
 import icepool
 from icepool.counts import CountsKeysView
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
@@ -14,17 +14,17 @@ import math
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-Q = TypeVar('Q', bound=tuple[int, ...])
+Q_co = TypeVar('Q_co', bound=tuple[int, ...], covariant=True)
 """Type variable representing the count types. In this future this may be replaced with a TypeVarTuple."""
 
 
-class Deal(MultisetGenerator[T_co, Q]):
+class Deal(MultisetGenerator[T_co, Q_co]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck[T_co]'
     _hand_sizes: tuple[int, ...]
 
-    def __init__(self, deck: 'icepool.Deck[T_co]', *hand_sizes: int):
+    def __init__(self, deck: 'icepool.Deck[T_co]', *hand_sizes: int) -> None:
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -53,7 +53,7 @@ class Deal(MultisetGenerator[T_co, Q]):
 
     @classmethod
     def _new_raw(cls, deck: 'icepool.Deck[T_co]',
-                 hand_sizes: Q) -> 'Deal[T_co, Q]':
+                 hand_sizes: tuple[int, ...]) -> 'Deal[T_co, Any]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes

@@ -15,9 +15,6 @@ from typing import Callable, Collection, Hashable, Mapping, Sequence, TypeAlias,
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
-"""Type variable representing the counts type, which is a tuple of `int`s."""
-
 
 class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
     """Wraps MultisetGenerator(s) so that an expression is applied to the multisets before sending the single resulting multiset forwards.
