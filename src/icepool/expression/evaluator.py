@@ -51,6 +51,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
         return self._truth_value
 
 
+# TODO: should this map the evaluator as well?
 class MapExpressionEvaluator(MultisetEvaluator[T_contra, tuple[int, ...],
                                                U_co]):
     """Wraps an evaluator with a single expression to apply to each input multiset."""
