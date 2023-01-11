@@ -9,16 +9,19 @@ from typing import Final, Hashable, Literal, overload
 
 class MultisetVariable(MultisetExpression):
 
-    def __init__(self, index: int = 0):
+    def __init__(self, index: int = 0) -> None:
         """
         Args:
-            index: This corresponds to the index of the `*generators` passed
-                to an evaluation. May be negative.
+            index: This corresponds to the index of the `*counts` passed
+                to an evaluation. Must be non-negative.
         """
         self._index = index
 
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
+
+    def min_arity(self) -> int:
+        return self._index
 
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:
