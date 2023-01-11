@@ -41,8 +41,11 @@ class MultisetExpression(Hashable, ABC):
         return self.evaluate_counts(outcome, *counts)
 
     @abstractmethod
-    def min_arity(self) -> int:
-        """The minimum number of multisets/counts that must be provided to this expression."""
+    def arity(self) -> int:
+        """The minimum number of multisets/counts that must be provided to this expression.
+
+        Any excess multisets/counts that are provided will be ignored.
+        """
 
     @property
     @abstractmethod

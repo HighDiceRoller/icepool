@@ -20,8 +20,8 @@ class MultisetVariable(MultisetExpression):
     def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
         return counts[self._index]
 
-    def min_arity(self) -> int:
-        return self._index
+    def arity(self) -> int:
+        return self._index + 1
 
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:

@@ -7,6 +7,7 @@ from icepool.typing import Outcome
 
 import itertools
 import math
+import warnings
 from functools import cached_property
 
 from typing import Callable, Collection, Hashable, Mapping, Sequence, TypeAlias, TypeVar
@@ -27,6 +28,17 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
 
     def __init__(self, *generators: MultisetGenerator[T_co, tuple[int, ...]],
                  expression: 'icepool.expression.MultisetExpression') -> None:
+        total_multiset_count = sum(
+            generator.counts_len() for generator in generators)
+        if total_multiset_count < expression.arity():
+            raise ValueError(
+                f'Total number of multisets {total_multiset_count} is less than the arity {expression.arity()} of the expression.'
+            )
+        if total_multiset_count > expression.arity():
+            warnings.warn(
+                f'Total number of multisets {total_multiset_count} exceeds the arity {expression.arity()} of the expression. This may cause unnecssary inefficiency.',
+                category=RuntimeWarning,
+                stacklevel=2)
         self._generators = generators
         self._expression = expression
 
@@ -101,6 +113,10 @@ class MapExpressionGenerator(MultisetGenerator[T_co, tuple[int, ...]]):
             expression: The expression to evaluate on each multiset.
                 This should take in a single multiset.
         """
+        if expression.arity() != 1:
+            raise ValueError(
+                f'Expression must have arity of 1, got arity {expression.arity()}.'
+            )
         self._generator = generator
         self._expression = expression
 

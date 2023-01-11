@@ -23,8 +23,8 @@ class AdjustCountsExpression(MultisetExpression):
         inner = self._inner.evaluate_counts(outcome, *counts)
         return self.adjust_count(inner, self._constant)
 
-    def min_arity(self) -> int:
-        return self._inner.min_arity()
+    def arity(self) -> int:
+        return self._inner.arity()
 
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:

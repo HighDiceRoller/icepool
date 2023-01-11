@@ -63,10 +63,14 @@ class MapExpressionEvaluator(MultisetEvaluator[T_contra, tuple[int, ...],
         """Constructor.
 
         Args:
-            expression: The expression to apply. This should take in a single int.
+            expression: The expression to apply. This should have arity of 1.
             evaluator: The evaluator to use. Note that methods that are called
                 with `*generators` will be provided with all generators.
         """
+        if expression.arity() != 1:
+            raise ValueError(
+                f'Expression must have arity of 1, got arity {expression.arity()}.'
+            )
         self._evaluator = evaluator
         self._expression = expression
 
