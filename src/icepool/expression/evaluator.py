@@ -51,31 +51,43 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
         return self._truth_value
 
 
-# TODO: should this map the evaluator as well?
 class MapExpressionEvaluator(MultisetEvaluator[T_contra, tuple[int, ...],
                                                U_co]):
-    """Wraps an evaluator with a single expression to apply to each input multiset."""
+    """An evaluator that jointly applies the given expression and evaluator to each input multiset.
+
+    The resulting outcomes are tuples with length equal to the number of input multisets.
+    """
 
     def __init__(self, expression: 'icepool.expression.MultisetExpression',
                  evaluator: MultisetEvaluator[T_contra, int, U_co]) -> None:
-        """
+        """Constructor.
 
         Args:
             expression: The expression to apply. This should take in a single int.
-            evaluator: The evaluator to use.
+            evaluator: The evaluator to use. Note that methods that are called
+                with `*generators` will be provided with all generators.
         """
         self._evaluator = evaluator
         self._expression = expression
 
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, states, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
         counts = (self._expression.evaluate_counts(outcome, (count,))
                   for count in counts)
-        return self._evaluator.next_state(state, outcome, *counts)
+        if states is None:
+            return tuple(
+                self._evaluator.next_state(None, outcome, count)
+                for count in counts)
+        else:
+            return tuple(
+                self._evaluator.next_state(state, outcome, count)
+                for state, count in zip(states, counts))
 
-    def final_outcome(self, final_state, *generators):
+    def final_outcome(self, final_states, *generators):
         """Forwards to inner."""
-        return self._evaluator.final_outcome(final_state, *generators)
+        return tuple(
+            self._evaluator.final_outcome(final_state, *generators)
+            for final_state in final_states)
 
     def order(self, *generators):
         """Forwards to inner."""

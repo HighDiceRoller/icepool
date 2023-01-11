@@ -44,8 +44,6 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
 
         The final outcome is a tuple of the final suboutcomes.
         """
-        if final_state is None:
-            final_state = (None,) * len(generators)
         return tuple(
             inner.final_outcome(final_substate, *generators)
             for inner, final_substate in zip(self._inners, final_state))

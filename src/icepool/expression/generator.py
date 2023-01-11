@@ -19,9 +19,9 @@ Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
 
 
 class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
-    """Wraps MultisetGenerator(s) so that an evaluation is performed on them before sending to an evaluator.
+    """Wraps MultisetGenerator(s) so that an expression is applied to the multisets before sending the single resulting multiset forwards.
 
-    This only supports a single output count, since it is only intended to
+    This only supports a single output multiset, since it is only intended to
     implement shortcuts for evaluating generators.
     """
 
@@ -87,3 +87,54 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
     @cached_property
     def _key_tuple(self) -> tuple[Hashable, ...]:
         return ExpressionGenerator, self._generators, self._expression
+
+
+class MapExpressionGenerator(MultisetGenerator[T_co, tuple[int, ...]]):
+    """Wraps a MultisetGenerator so that an expression is performed on each of its multisets before sending the results forward."""
+
+    def __init__(self, generator: MultisetGenerator[T_co, tuple[int, ...]],
+                 expression: 'icepool.expression.MultisetExpression') -> None:
+        """Constructor.
+
+        Args:
+            generator: The generator to wrap.
+            expression: The expression to evaluate on each multiset.
+                This should take in a single multiset.
+        """
+        self._generator = generator
+        self._expression = expression
+
+    def outcomes(self) -> Sequence:
+        return self._generator.outcomes()
+
+    def counts_len(self) -> int:
+        return self._generator.counts_len()
+
+    def _is_resolvable(self) -> bool:
+        return self._generator._is_resolvable()
+
+    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+        for gen, counts, weight in self._generator._generate_min(min_outcome):
+            next_counts = tuple(
+                self._expression.evaluate_counts(min_outcome, count)
+                for count in counts)
+            next_generator = MapExpressionGenerator(gen, self._expression)
+            yield next_generator, next_counts, weight
+
+    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+        for gen, counts, weight in self._generator._generate_max(max_outcome):
+            next_counts = tuple(
+                self._expression.evaluate_counts(max_outcome, count)
+                for count in counts)
+            next_generator = MapExpressionGenerator(gen, self._expression)
+            yield next_generator, next_counts, weight
+
+    def _estimate_order_costs(self) -> tuple[int, int]:
+        return self._generator._estimate_order_costs()
+
+    def denominator(self) -> int:
+        return self._generator.denominator()
+
+    @cached_property
+    def _key_tuple(self) -> tuple[Hashable, ...]:
+        return MapExpressionGenerator, self._generator, self._expression
