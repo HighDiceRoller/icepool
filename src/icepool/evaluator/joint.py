@@ -19,7 +19,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 
 
 class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
-    """An `MultisetEvaluator` that jointly evaluates sub-evaluators on the same roll(s) of a generator."""
+    """An `MultisetEvaluator` that jointly evaluates sub-evaluators."""
 
     def __init__(self, *inners: MultisetEvaluator):
         self._inners = inners

@@ -189,14 +189,14 @@ class MultisetExpression(Hashable, ABC):
 
     # Evaluations.
 
-    def evaluator(
+    def evaluate(
         *expressions: 'MultisetExpression',
         evaluator: 'icepool.MultisetEvaluator[T, int, U]'
     ) -> 'icepool.MultisetEvaluator[T, int, U]':
-        """Attaches a final `MultisetEvaluator` to this expression.
+        """Attaches a final `MultisetEvaluator` to expressions.
 
-        The result is an `MultisetEvaluator` that runs the expression
-        before sending the result to the provided evaluator.
+        The result is an `MultisetEvaluator` that runs the expressions
+        before sending the results to the provided evaluator.
         """
         return icepool.expression.ExpressionEvaluator(*expressions,
                                                       evaluator=evaluator)
