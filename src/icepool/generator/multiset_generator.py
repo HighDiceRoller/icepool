@@ -535,8 +535,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     # Count adjustment.
 
     def binary_int_operator(
-            self: 'MultisetGenerator[T_co, Qints_co]',
-            op_name: MultisetBinaryIntOperationStr,
+            self: 'MultisetGenerator[T_co, Qints_co]', op: Callable,
             constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
         """Binary operation with an integer. These adjust counts.
 
@@ -546,19 +545,20 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
             constant: An `int`.
         """
         if isinstance(constant, int):
-            return icepool.generator.AdjustCountsGenerator.new_by_name(
-                op_name, self, constant)
+            from icepool.expression import multiset_variables, MapExpressionGenerator
+            expression = op(multiset_variables[0], constant)
+            return MapExpressionGenerator(self, expression)  # type: ignore
         else:
             return NotImplemented
 
     def __mul__(self: 'MultisetGenerator[T_co, Qints_co]',
                 constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
-        return self.binary_int_operator('*', constant)
+        return self.binary_int_operator(operator.mul, constant)
 
     # Commutable in this case.
     def __rmul__(self: 'MultisetGenerator[T_co, Qints_co]',
                  constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
-        return self.binary_int_operator('*', constant)
+        return self.binary_int_operator(operator.mul, constant)
 
     def multiply_counts(self: 'MultisetGenerator[T_co, Qints_co]',
                         constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
@@ -570,7 +570,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
 
     def __floordiv__(self: 'MultisetGenerator[T_co, Qints_co]',
                      constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
-        return self.binary_int_operator('//', constant)
+        return self.binary_int_operator(operator.floordiv, constant)
 
     def divide_counts(self: 'MultisetGenerator[T_co, Qints_co]',
                       constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
@@ -587,7 +587,9 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         For example, `generator.filter_counts(2)` would only produce
         pairs and better.
         """
-        return icepool.generator.FilterCountsGenerator(self, min_count)
+        from icepool.expression import multiset_variables, MapExpressionGenerator, FilterCountsExpression
+        expression = FilterCountsExpression(multiset_variables[0], min_count)
+        return MapExpressionGenerator(self, expression)  # type: ignore
 
     def unique(self: 'MultisetGenerator[T_co, Qints_co]',
                max_count: int = 1) -> 'MultisetGenerator[T_co, Qints_co]':
@@ -596,7 +598,9 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         For example, `generator.unique(2)` would count each outcome at most
         twice.
         """
-        return icepool.generator.UniqueGenerator(self, max_count)
+        from icepool.expression import multiset_variables, MapExpressionGenerator, UniqueExpression
+        expression = UniqueExpression(multiset_variables[0], max_count)
+        return MapExpressionGenerator(self, expression)  # type: ignore
 
     # Sampling.
 
