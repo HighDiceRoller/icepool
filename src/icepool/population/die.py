@@ -1348,20 +1348,17 @@ class Die(Population[T_co]):
             'want to use die.if_else() instead.')
 
     @cached_property
-    def _key_tuple(self) -> tuple:
-        return tuple(self.items())
-
     def key_tuple(self) -> tuple:
         """A tuple that uniquely (as `equals()`) identifies this die.
 
         Apart from being hashable and totally orderable, this is not guaranteed
         to be in any particular format or have any other properties.
         """
-        return self._key_tuple
+        return tuple(self.items())
 
     @cached_property
     def _hash(self) -> int:
-        return hash(self.key_tuple())
+        return hash(self.key_tuple)
 
     def __hash__(self) -> int:
         return self._hash
@@ -1391,9 +1388,9 @@ class Die(Population[T_co]):
             return False
 
         if simplify:
-            return self.simplify().key_tuple() == other.simplify().key_tuple()
+            return self.simplify().key_tuple == other.simplify().key_tuple
         else:
-            return self.key_tuple() == other.key_tuple()
+            return self.key_tuple == other.key_tuple
 
     # Strings.
 
