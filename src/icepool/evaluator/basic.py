@@ -49,7 +49,7 @@ class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
         """Allows any order."""
         return Order.Any
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         if final_state is None:
             return ()
@@ -86,7 +86,7 @@ class CountEvaluator(MultisetEvaluator[Outcome, int, int]):
         """Implementation."""
         return (state or 0) + count
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         return final_state or 0
 

@@ -80,7 +80,7 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, int, bool]):
         has_any = has_all and (has_any or this_any)
         return has_any, has_all
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         if final_state is None:
             return self.default_outcome()

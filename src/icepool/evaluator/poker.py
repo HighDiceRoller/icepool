@@ -54,7 +54,7 @@ class AllCountsEvaluator(MultisetEvaluator[Outcome, int, tuple[int, ...]]):
         state = (state or ()) + (count,)
         return tuple(sorted(state))
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         if final_state is None:
             return ()
@@ -105,7 +105,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int, int]):
             run = 0
         return max(best_run, run), run
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         if final_state is None:
             return 0
@@ -131,7 +131,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, int,
             run = 0
         return max(best_run_and_outcome, (run, outcome)), run
 
-    def final_outcome(self, final_state, *_):
+    def final_outcome(self, final_state):
         """Implementation."""
         return final_state[0]
 

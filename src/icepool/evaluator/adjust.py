@@ -72,9 +72,9 @@ class FinalOutcomeMapEvaluator(Generic[T_contra, V, Q_contra, U_co],
         outcome = self._map(outcome)
         return self._inner.next_state(state, outcome, count)
 
-    def final_outcome(self, final_state, *generators):
+    def final_outcome(self, final_state):
         """Forwards to inner."""
-        return self._inner.final_outcome(final_state, *generators)
+        return self._inner.final_outcome(final_state)
 
     def order(self, *generators):
         """Forwards to inner."""

@@ -38,14 +38,13 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
                 evaluator.next_state(substate, outcome, *counts)
                 for evaluator, substate in zip(self._inners, state))
 
-    def final_outcome(self, final_state,
-                      *generators: icepool.MultisetGenerator):
+    def final_outcome(self, final_state):
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
         """
         return tuple(
-            inner.final_outcome(final_substate, *generators)
+            inner.final_outcome(final_substate)
             for inner, final_substate in zip(self._inners, final_state))
 
     def order(self, *generators: icepool.MultisetGenerator):

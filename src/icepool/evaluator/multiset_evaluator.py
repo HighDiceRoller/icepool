@@ -43,7 +43,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     4. `state = next_state(state, 4, count_of_4s)`
     5. `state = next_state(state, 5, count_of_5s)`
     6. `state = next_state(state, 6, count_of_6s)`
-    7. `outcome = final_outcome(state, *generators)`
+    7. `outcome = final_outcome(state)`
 
     A few other methods can optionally be overridden to further customize behavior.
 
@@ -109,15 +109,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             the state from consideration, effectively performing a full reroll.
         """
 
-    def final_outcome(
-            self, final_state: Hashable, /,
-            *generators: icepool.MultisetGenerator[T_contra, Any]) -> U_co:
+    def final_outcome(self, final_state: Hashable) -> U_co:
         """Optional function to generate a final outcome from a final state.
-
-        Tthere is no expectation that a subclass be able to handle
-        an arbitrary number of generators. Thus, you are free to rename any of
-        the parameters in a subclass, or to replace `*generators` with a fixed
-        set of parameters.
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a `Die`,
@@ -128,10 +121,6 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
 
         Args:
             final_state: A state after all outcomes have been processed.
-            *generators: One or more `MultisetGenerator`s being evaluated.
-                Most subclasses will expect a fixed number of generators and
-                can replace this variadic parameter with a fixed number of named
-                parameters.
 
         Returns:
             A final outcome that will be used as part of constructing the result `Die`.
@@ -269,7 +258,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         final_outcomes = []
         final_weights = []
         for state, weight in dist.items():
-            outcome = self.final_outcome(state, *converted_generators)
+            outcome = self.final_outcome(state)
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome. "
