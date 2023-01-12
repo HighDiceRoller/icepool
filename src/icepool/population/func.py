@@ -8,7 +8,7 @@ from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
 
 T = TypeVar('T', bound=Outcome)
 """An outcome type."""
@@ -353,46 +353,17 @@ def apply(
                        again_end=again_end)
 
 
-class apply_sorted():
-    """This is really a function implemented as a class.
+class ApplySorted():
+    """Class producing `apply_sorted` functions."""
 
-    See the "constructor" for details.
-    """
-
-    # Not a true constructor.
-    def __new__(  # type: ignore
-        cls,
+    def __call__(
+        self,
         func:
         'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
         *dice,
         again_depth: int = 1,
         again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
     ) -> 'icepool.Die[T]':
-        """Applies `func(lowest_outcome, next_lowest_outcome...)` for all sorted joint outcomes of the dice.
-
-        Treat this as an ordinary function, not a constructor.
-
-        `apply_sorted()` is more efficient than `apply()` but still not very
-        efficient. Use `MultisetEvaluator` instead if at all possible.
-
-        You can use `apply_sorted[]` to only see outcomes at particular sorted indexes.
-        For example, `apply_sorted[-2:](func, *dice)` would give the two highest
-        outcomes to `func()`. This is more efficient than selecting outcomes inside
-        `func`.
-
-        Args:
-            func: A function that takes one argument per input `Die` and returns an
-                argument to `Die()`.
-            *dice: Any number of dice (or objects convertible to dice).
-                `func` will be called with all sorted joint outcomes of `dice`,
-                with one argument per die. All outcomes must be totally orderable.
-            again_depth: Forwarded to the final die constructor.
-            again_end: Forwarded to the final die constructor.
-
-        Returns:
-            A `Die` constructed from the outputs of `func` and the weight of rolling
-            the corresponding sorted outcomes.
-        """
         if not callable(func):
             raise TypeError(
                 'The first argument must be callable. Did you forget to provide a function?'
@@ -403,10 +374,9 @@ class apply_sorted():
                                  again_depth=again_depth,
                                  again_end=again_end)
 
-    def __class_getitem__(cls,
-                          sorted_roll_counts: int | slice | tuple[int, ...],
-                          /) -> Callable[..., 'icepool.Die']:
-        """Implements `[]` syntax for `apply_sorted`."""
+    def __getitem__(
+        self, sorted_roll_counts: int | slice | tuple[int, ...]
+    ) -> 'Callable[..., icepool.Die[T]]':
 
         def result(
             func:
@@ -430,3 +400,6 @@ class apply_sorted():
                     again_end=again_end)
 
         return result
+
+
+apply_sorted: Final = ApplySorted()
