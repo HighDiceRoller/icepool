@@ -27,8 +27,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
 
     def next_state(self, state, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
-        counts = (expression.evaluate_counts(outcome, counts)
-                  for expression in self._expressions)
+        counts = tuple(
+            expression.evaluate_counts(outcome, *counts)
+            for expression in self._expressions)
         return self._evaluator.next_state(state, outcome, *counts)
 
     def final_outcome(self, final_state):
