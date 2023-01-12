@@ -4,7 +4,7 @@ import icepool
 import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
-from icepool.counts import Counts
+from icepool.collections import Counts
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome
 

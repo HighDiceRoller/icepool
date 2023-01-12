@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import operator
 import icepool
 import icepool.generator
-from icepool.counts import Counts
+from icepool.collections import Counts
 from icepool.typing import MultisetBinaryIntOperationStr, Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
 
 import bisect

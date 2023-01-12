@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.collections import union_sorted_sets
 from icepool.generator.alignment import Alignment
 from icepool.typing import Outcome, Order
 
@@ -145,15 +146,11 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         """
         return Order.Ascending
 
-    def alignment(
-        self, *generators: icepool.MultisetGenerator[T_contra, Any]
-    ) -> Collection[T_contra]:
-        """Optional method to specify an collection of outcomes that should always be given to `next_state()` even if they have zero count.
+    def alignment(self, outcomes: Sequence[T_contra]) -> Collection[T_contra]:
+        """Optional method to specify additional outcomes that should be seen by `next_state()`.
 
-        There is no expectation that a subclass be able to handle
-        an arbitrary number of generators. Thus, you are free to rename any of
-        the parameters in a subclass, or to replace `*generators` with a fixed
-        set of parameters.
+        These will be seen by `next_state` even if they have zero count or do
+        not appear in the generator(s) at all.
 
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
@@ -161,13 +158,14 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         If you want the outcomes seen by `next_state` to be consecutive
         `int`s, you can set `alignment = icepool.MultisetEvaluator.range_alignment`.
         See `range_alignment()` below.
+
+        Args:
+            outcomes: The outcomes that could be produced by the generators, in
+            ascending order.
         """
         return ()
 
-    def range_alignment(
-            self,
-            *generators: icepool.MultisetGenerator[int,
-                                                   Any]) -> Collection[int]:
+    def range_alignment(self, outcomes: Sequence[int]) -> Collection[int]:
         """Example implementation of `alignment()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -184,20 +182,15 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         Raises:
             TypeError: if any generator has any non-`int` outcome.
         """
-        if len(generators) == 0:
+        if not outcomes:
             return ()
 
-        if any(
-                any(not isinstance(x, int)
-                    for x in generator.outcomes())
-                for generator in generators):
+        if any(not isinstance(x, int) for x in outcomes):
             raise TypeError(
                 "range_alignment cannot be used with outcomes of type other than 'int'."
             )
 
-        min_outcome = min(generator.min_outcome() for generator in generators)
-        max_outcome = max(generator.max_outcome() for generator in generators)
-        return range(min_outcome, max_outcome + 1)
+        return range(outcomes[0], outcomes[-1] + 1)
 
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
@@ -239,7 +232,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         algorithm, order = self._select_algorithm(*converted_generators)
 
         # We use a separate class to guarantee all outcomes are visited.
-        alignment = Alignment(self.alignment(*converted_generators))
+        outcomes = union_sorted_sets(
+            *(generator.outcomes() for generator in converted_generators))
+        alignment = Alignment(self.alignment(outcomes))
 
         dist = algorithm(order, alignment, tuple(converted_generators))
 

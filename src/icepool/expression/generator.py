@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool.expression
 
+from icepool.collections import union_sorted_sets
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome
 
@@ -41,9 +42,8 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
 
     @cached_property
     def _outcomes(self) -> Sequence:
-        all_outcomes = set.union(
-            *(set(generator.outcomes()) for generator in self._generators))
-        return tuple(sorted(all_outcomes))
+        return union_sorted_sets(
+            *(generator.outcomes() for generator in self._generators))
 
     def outcomes(self) -> Sequence:
         return self._outcomes

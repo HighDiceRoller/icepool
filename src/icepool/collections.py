@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.typing import Outcome
 
 from functools import cached_property
 import math
@@ -8,7 +9,9 @@ import math
 from typing import Any, Collection, Hashable, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, TypeVar, ValuesView
 
 T = TypeVar('T', bound=Hashable)
-"""Type variable representing the outcome type."""
+"""Type variable."""
+
+U = TypeVar('U', bound=Outcome)
 
 
 class Counts(Mapping[T, int]):
@@ -173,3 +176,8 @@ class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
 
     def __eq__(self, other):
         return self._mapping._items == other
+
+
+def union_sorted_sets(*args: Sequence[U]) -> Sequence[U]:
+    """Merge sorted sets into another sorted set."""
+    return tuple(sorted(set.union(*(set(arg) for arg in args))))

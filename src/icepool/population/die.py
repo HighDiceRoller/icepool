@@ -5,7 +5,7 @@ import icepool.population.again
 import icepool.population.format
 import icepool.creation_args
 import icepool.population.markov_chain
-from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collections import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
 from icepool.typing import Outcome

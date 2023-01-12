@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.counts import Counts
+from icepool.collections import Counts
 from icepool.typing import Outcome
 
 import itertools
