@@ -334,6 +334,30 @@
                         <li>
                                 <a class="function" href="#JointEvaluator.order">order</a>
                         </li>
+                        <li>
+                                <a class="function" href="#JointEvaluator.alignment">alignment</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MapEvaluator">MapEvaluator</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MapEvaluator.__init__">MapEvaluator</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MapEvaluator.next_state">next_state</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MapEvaluator.final_outcome">final_outcome</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MapEvaluator.order">order</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MapEvaluator.alignment">alignment</a>
+                        </li>
                 </ul>
 
             </li>
@@ -396,7 +420,7 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span><span class="p">,</span> <span class="n">MapEvaluator</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.adjust</span> <span class="kn">import</span> <span class="n">FinalOutcomeMapEvaluator</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -408,7 +432,7 @@
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;MapEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;FinalOutcomeMapEvaluator&#39;</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="p">]</span>
 </span></pre></div>
 
@@ -2806,57 +2830,61 @@ bool are <code>True</code>.</p>
 
     </div>
     <a class="headerlink" href="#JointEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator-22"><a href="#JointEvaluator-22"><span class="linenos">22</span></a><span class="k">class</span> <span class="nc">JointEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
-</span><span id="JointEvaluator-23"><a href="#JointEvaluator-23"><span class="linenos">23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An `MultisetEvaluator` that jointly evaluates sub-evaluators.&quot;&quot;&quot;</span>
-</span><span id="JointEvaluator-24"><a href="#JointEvaluator-24"><span class="linenos">24</span></a>
-</span><span id="JointEvaluator-25"><a href="#JointEvaluator-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
-</span><span id="JointEvaluator-26"><a href="#JointEvaluator-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
-</span><span id="JointEvaluator-27"><a href="#JointEvaluator-27"><span class="linenos">27</span></a>
-</span><span id="JointEvaluator-28"><a href="#JointEvaluator-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="JointEvaluator-29"><a href="#JointEvaluator-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` for all subevals.</span>
-</span><span id="JointEvaluator-30"><a href="#JointEvaluator-30"><span class="linenos">30</span></a>
-</span><span id="JointEvaluator-31"><a href="#JointEvaluator-31"><span class="linenos">31</span></a><span class="sd">        The state is a tuple of the substates.</span>
-</span><span id="JointEvaluator-32"><a href="#JointEvaluator-32"><span class="linenos">32</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator-33"><a href="#JointEvaluator-33"><span class="linenos">33</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="JointEvaluator-34"><a href="#JointEvaluator-34"><span class="linenos">34</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator-35"><a href="#JointEvaluator-35"><span class="linenos">35</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="JointEvaluator-36"><a href="#JointEvaluator-36"><span class="linenos">36</span></a>                <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
-</span><span id="JointEvaluator-37"><a href="#JointEvaluator-37"><span class="linenos">37</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="JointEvaluator-38"><a href="#JointEvaluator-38"><span class="linenos">38</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator-39"><a href="#JointEvaluator-39"><span class="linenos">39</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">substate</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="JointEvaluator-40"><a href="#JointEvaluator-40"><span class="linenos">40</span></a>                <span class="k">for</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
-</span><span id="JointEvaluator-41"><a href="#JointEvaluator-41"><span class="linenos">41</span></a>
-</span><span id="JointEvaluator-42"><a href="#JointEvaluator-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">):</span>
-</span><span id="JointEvaluator-43"><a href="#JointEvaluator-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
-</span><span id="JointEvaluator-44"><a href="#JointEvaluator-44"><span class="linenos">44</span></a>
-</span><span id="JointEvaluator-45"><a href="#JointEvaluator-45"><span class="linenos">45</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
-</span><span id="JointEvaluator-46"><a href="#JointEvaluator-46"><span class="linenos">46</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator-47"><a href="#JointEvaluator-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator-48"><a href="#JointEvaluator-48"><span class="linenos">48</span></a>            <span class="n">inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_substate</span><span class="p">)</span>
-</span><span id="JointEvaluator-49"><a href="#JointEvaluator-49"><span class="linenos">49</span></a>            <span class="k">for</span> <span class="n">inner</span><span class="p">,</span> <span class="n">final_substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">final_state</span><span class="p">))</span>
-</span><span id="JointEvaluator-50"><a href="#JointEvaluator-50"><span class="linenos">50</span></a>
-</span><span id="JointEvaluator-51"><a href="#JointEvaluator-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
-</span><span id="JointEvaluator-52"><a href="#JointEvaluator-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
-</span><span id="JointEvaluator-53"><a href="#JointEvaluator-53"><span class="linenos">53</span></a>
-</span><span id="JointEvaluator-54"><a href="#JointEvaluator-54"><span class="linenos">54</span></a><span class="sd">        Raises:</span>
-</span><span id="JointEvaluator-55"><a href="#JointEvaluator-55"><span class="linenos">55</span></a><span class="sd">            ValueError: If subevals have conflicting orders, i.e. some are</span>
-</span><span id="JointEvaluator-56"><a href="#JointEvaluator-56"><span class="linenos">56</span></a><span class="sd">                ascending and others are descending.</span>
-</span><span id="JointEvaluator-57"><a href="#JointEvaluator-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator-58"><a href="#JointEvaluator-58"><span class="linenos">58</span></a>        <span class="n">suborders</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
-</span><span id="JointEvaluator-59"><a href="#JointEvaluator-59"><span class="linenos">59</span></a>        <span class="n">ascending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
-</span><span id="JointEvaluator-60"><a href="#JointEvaluator-60"><span class="linenos">60</span></a>        <span class="n">descending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
-</span><span id="JointEvaluator-61"><a href="#JointEvaluator-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">ascending</span> <span class="ow">and</span> <span class="n">descending</span><span class="p">:</span>
-</span><span id="JointEvaluator-62"><a href="#JointEvaluator-62"><span class="linenos">62</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sub-evals have conflicting orders.&#39;</span><span class="p">)</span>
-</span><span id="JointEvaluator-63"><a href="#JointEvaluator-63"><span class="linenos">63</span></a>        <span class="k">elif</span> <span class="n">ascending</span><span class="p">:</span>
-</span><span id="JointEvaluator-64"><a href="#JointEvaluator-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
-</span><span id="JointEvaluator-65"><a href="#JointEvaluator-65"><span class="linenos">65</span></a>        <span class="k">elif</span> <span class="n">descending</span><span class="p">:</span>
-</span><span id="JointEvaluator-66"><a href="#JointEvaluator-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span>
-</span><span id="JointEvaluator-67"><a href="#JointEvaluator-67"><span class="linenos">67</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="JointEvaluator-68"><a href="#JointEvaluator-68"><span class="linenos">68</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator-23"><a href="#JointEvaluator-23"><span class="linenos">23</span></a><span class="k">class</span> <span class="nc">JointEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">Q_contra</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
+</span><span id="JointEvaluator-24"><a href="#JointEvaluator-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators.&quot;&quot;&quot;</span>
+</span><span id="JointEvaluator-25"><a href="#JointEvaluator-25"><span class="linenos">25</span></a>
+</span><span id="JointEvaluator-26"><a href="#JointEvaluator-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
+</span><span id="JointEvaluator-27"><a href="#JointEvaluator-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
+</span><span id="JointEvaluator-28"><a href="#JointEvaluator-28"><span class="linenos">28</span></a>
+</span><span id="JointEvaluator-29"><a href="#JointEvaluator-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="JointEvaluator-30"><a href="#JointEvaluator-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` for all subevals.</span>
+</span><span id="JointEvaluator-31"><a href="#JointEvaluator-31"><span class="linenos">31</span></a>
+</span><span id="JointEvaluator-32"><a href="#JointEvaluator-32"><span class="linenos">32</span></a><span class="sd">        The state is a tuple of the substates.</span>
+</span><span id="JointEvaluator-33"><a href="#JointEvaluator-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator-34"><a href="#JointEvaluator-34"><span class="linenos">34</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="JointEvaluator-35"><a href="#JointEvaluator-35"><span class="linenos">35</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator-36"><a href="#JointEvaluator-36"><span class="linenos">36</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="JointEvaluator-37"><a href="#JointEvaluator-37"><span class="linenos">37</span></a>                <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
+</span><span id="JointEvaluator-38"><a href="#JointEvaluator-38"><span class="linenos">38</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="JointEvaluator-39"><a href="#JointEvaluator-39"><span class="linenos">39</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator-40"><a href="#JointEvaluator-40"><span class="linenos">40</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">substate</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="JointEvaluator-41"><a href="#JointEvaluator-41"><span class="linenos">41</span></a>                <span class="k">for</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
+</span><span id="JointEvaluator-42"><a href="#JointEvaluator-42"><span class="linenos">42</span></a>
+</span><span id="JointEvaluator-43"><a href="#JointEvaluator-43"><span class="linenos">43</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">):</span>
+</span><span id="JointEvaluator-44"><a href="#JointEvaluator-44"><span class="linenos">44</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
+</span><span id="JointEvaluator-45"><a href="#JointEvaluator-45"><span class="linenos">45</span></a>
+</span><span id="JointEvaluator-46"><a href="#JointEvaluator-46"><span class="linenos">46</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
+</span><span id="JointEvaluator-47"><a href="#JointEvaluator-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator-48"><a href="#JointEvaluator-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator-49"><a href="#JointEvaluator-49"><span class="linenos">49</span></a>            <span class="n">inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_substate</span><span class="p">)</span>
+</span><span id="JointEvaluator-50"><a href="#JointEvaluator-50"><span class="linenos">50</span></a>            <span class="k">for</span> <span class="n">inner</span><span class="p">,</span> <span class="n">final_substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">final_state</span><span class="p">))</span>
+</span><span id="JointEvaluator-51"><a href="#JointEvaluator-51"><span class="linenos">51</span></a>
+</span><span id="JointEvaluator-52"><a href="#JointEvaluator-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="JointEvaluator-53"><a href="#JointEvaluator-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
+</span><span id="JointEvaluator-54"><a href="#JointEvaluator-54"><span class="linenos">54</span></a>
+</span><span id="JointEvaluator-55"><a href="#JointEvaluator-55"><span class="linenos">55</span></a><span class="sd">        Raises:</span>
+</span><span id="JointEvaluator-56"><a href="#JointEvaluator-56"><span class="linenos">56</span></a><span class="sd">            ValueError: If subevals have conflicting orders, i.e. some are</span>
+</span><span id="JointEvaluator-57"><a href="#JointEvaluator-57"><span class="linenos">57</span></a><span class="sd">                ascending and others are descending.</span>
+</span><span id="JointEvaluator-58"><a href="#JointEvaluator-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator-59"><a href="#JointEvaluator-59"><span class="linenos">59</span></a>        <span class="n">suborders</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="o">.</span><span class="n">order</span><span class="p">()</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
+</span><span id="JointEvaluator-60"><a href="#JointEvaluator-60"><span class="linenos">60</span></a>        <span class="n">ascending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
+</span><span id="JointEvaluator-61"><a href="#JointEvaluator-61"><span class="linenos">61</span></a>        <span class="n">descending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
+</span><span id="JointEvaluator-62"><a href="#JointEvaluator-62"><span class="linenos">62</span></a>        <span class="k">if</span> <span class="n">ascending</span> <span class="ow">and</span> <span class="n">descending</span><span class="p">:</span>
+</span><span id="JointEvaluator-63"><a href="#JointEvaluator-63"><span class="linenos">63</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sub-evals have conflicting orders.&#39;</span><span class="p">)</span>
+</span><span id="JointEvaluator-64"><a href="#JointEvaluator-64"><span class="linenos">64</span></a>        <span class="k">elif</span> <span class="n">ascending</span><span class="p">:</span>
+</span><span id="JointEvaluator-65"><a href="#JointEvaluator-65"><span class="linenos">65</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="JointEvaluator-66"><a href="#JointEvaluator-66"><span class="linenos">66</span></a>        <span class="k">elif</span> <span class="n">descending</span><span class="p">:</span>
+</span><span id="JointEvaluator-67"><a href="#JointEvaluator-67"><span class="linenos">67</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span>
+</span><span id="JointEvaluator-68"><a href="#JointEvaluator-68"><span class="linenos">68</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="JointEvaluator-69"><a href="#JointEvaluator-69"><span class="linenos">69</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span><span id="JointEvaluator-70"><a href="#JointEvaluator-70"><span class="linenos">70</span></a>
+</span><span id="JointEvaluator-71"><a href="#JointEvaluator-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="JointEvaluator-72"><a href="#JointEvaluator-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">union_sorted_sets</span><span class="p">(</span>
+</span><span id="JointEvaluator-73"><a href="#JointEvaluator-73"><span class="linenos">73</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>An <code>MultisetEvaluator</code> that jointly evaluates sub-evaluators.</p>
+            <div class="docstring"><p>A <code>MultisetEvaluator</code> that jointly evaluates sub-evaluators on the same set of input generators.</p>
 </div>
 
 
@@ -2870,8 +2898,8 @@ bool are <code>True</code>.</p>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.__init__-25"><a href="#JointEvaluator.__init__-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
-</span><span id="JointEvaluator.__init__-26"><a href="#JointEvaluator.__init__-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.__init__-26"><a href="#JointEvaluator.__init__-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inners</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">):</span>
+</span><span id="JointEvaluator.__init__-27"><a href="#JointEvaluator.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span> <span class="o">=</span> <span class="n">inners</span>
 </span></pre></div>
 
 
@@ -2889,19 +2917,19 @@ bool are <code>True</code>.</p>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.next_state-28"><a href="#JointEvaluator.next_state-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="JointEvaluator.next_state-29"><a href="#JointEvaluator.next_state-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` for all subevals.</span>
-</span><span id="JointEvaluator.next_state-30"><a href="#JointEvaluator.next_state-30"><span class="linenos">30</span></a>
-</span><span id="JointEvaluator.next_state-31"><a href="#JointEvaluator.next_state-31"><span class="linenos">31</span></a><span class="sd">        The state is a tuple of the substates.</span>
-</span><span id="JointEvaluator.next_state-32"><a href="#JointEvaluator.next_state-32"><span class="linenos">32</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator.next_state-33"><a href="#JointEvaluator.next_state-33"><span class="linenos">33</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="JointEvaluator.next_state-34"><a href="#JointEvaluator.next_state-34"><span class="linenos">34</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator.next_state-35"><a href="#JointEvaluator.next_state-35"><span class="linenos">35</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="JointEvaluator.next_state-36"><a href="#JointEvaluator.next_state-36"><span class="linenos">36</span></a>                <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
-</span><span id="JointEvaluator.next_state-37"><a href="#JointEvaluator.next_state-37"><span class="linenos">37</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="JointEvaluator.next_state-38"><a href="#JointEvaluator.next_state-38"><span class="linenos">38</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator.next_state-39"><a href="#JointEvaluator.next_state-39"><span class="linenos">39</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">substate</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="JointEvaluator.next_state-40"><a href="#JointEvaluator.next_state-40"><span class="linenos">40</span></a>                <span class="k">for</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.next_state-29"><a href="#JointEvaluator.next_state-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="JointEvaluator.next_state-30"><a href="#JointEvaluator.next_state-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` for all subevals.</span>
+</span><span id="JointEvaluator.next_state-31"><a href="#JointEvaluator.next_state-31"><span class="linenos">31</span></a>
+</span><span id="JointEvaluator.next_state-32"><a href="#JointEvaluator.next_state-32"><span class="linenos">32</span></a><span class="sd">        The state is a tuple of the substates.</span>
+</span><span id="JointEvaluator.next_state-33"><a href="#JointEvaluator.next_state-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator.next_state-34"><a href="#JointEvaluator.next_state-34"><span class="linenos">34</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="JointEvaluator.next_state-35"><a href="#JointEvaluator.next_state-35"><span class="linenos">35</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator.next_state-36"><a href="#JointEvaluator.next_state-36"><span class="linenos">36</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="JointEvaluator.next_state-37"><a href="#JointEvaluator.next_state-37"><span class="linenos">37</span></a>                <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
+</span><span id="JointEvaluator.next_state-38"><a href="#JointEvaluator.next_state-38"><span class="linenos">38</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="JointEvaluator.next_state-39"><a href="#JointEvaluator.next_state-39"><span class="linenos">39</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator.next_state-40"><a href="#JointEvaluator.next_state-40"><span class="linenos">40</span></a>                <span class="n">evaluator</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">substate</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="JointEvaluator.next_state-41"><a href="#JointEvaluator.next_state-41"><span class="linenos">41</span></a>                <span class="k">for</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">state</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -2923,14 +2951,14 @@ bool are <code>True</code>.</p>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.final_outcome-42"><a href="#JointEvaluator.final_outcome-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">):</span>
-</span><span id="JointEvaluator.final_outcome-43"><a href="#JointEvaluator.final_outcome-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
-</span><span id="JointEvaluator.final_outcome-44"><a href="#JointEvaluator.final_outcome-44"><span class="linenos">44</span></a>
-</span><span id="JointEvaluator.final_outcome-45"><a href="#JointEvaluator.final_outcome-45"><span class="linenos">45</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
-</span><span id="JointEvaluator.final_outcome-46"><a href="#JointEvaluator.final_outcome-46"><span class="linenos">46</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator.final_outcome-47"><a href="#JointEvaluator.final_outcome-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="JointEvaluator.final_outcome-48"><a href="#JointEvaluator.final_outcome-48"><span class="linenos">48</span></a>            <span class="n">inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_substate</span><span class="p">)</span>
-</span><span id="JointEvaluator.final_outcome-49"><a href="#JointEvaluator.final_outcome-49"><span class="linenos">49</span></a>            <span class="k">for</span> <span class="n">inner</span><span class="p">,</span> <span class="n">final_substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">final_state</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.final_outcome-43"><a href="#JointEvaluator.final_outcome-43"><span class="linenos">43</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">):</span>
+</span><span id="JointEvaluator.final_outcome-44"><a href="#JointEvaluator.final_outcome-44"><span class="linenos">44</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_state` for all subevals.</span>
+</span><span id="JointEvaluator.final_outcome-45"><a href="#JointEvaluator.final_outcome-45"><span class="linenos">45</span></a>
+</span><span id="JointEvaluator.final_outcome-46"><a href="#JointEvaluator.final_outcome-46"><span class="linenos">46</span></a><span class="sd">        The final outcome is a tuple of the final suboutcomes.</span>
+</span><span id="JointEvaluator.final_outcome-47"><a href="#JointEvaluator.final_outcome-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator.final_outcome-48"><a href="#JointEvaluator.final_outcome-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="JointEvaluator.final_outcome-49"><a href="#JointEvaluator.final_outcome-49"><span class="linenos">49</span></a>            <span class="n">inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_substate</span><span class="p">)</span>
+</span><span id="JointEvaluator.final_outcome-50"><a href="#JointEvaluator.final_outcome-50"><span class="linenos">50</span></a>            <span class="k">for</span> <span class="n">inner</span><span class="p">,</span> <span class="n">final_substate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">,</span> <span class="n">final_state</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -2946,30 +2974,30 @@ bool are <code>True</code>.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">order</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">multiset_generator</span><span class="o">.</span><span class="n">MultisetGenerator</span></span><span class="return-annotation">):</span></span>
+        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JointEvaluator.order-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JointEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.order-51"><a href="#JointEvaluator.order-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
-</span><span id="JointEvaluator.order-52"><a href="#JointEvaluator.order-52"><span class="linenos">52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
-</span><span id="JointEvaluator.order-53"><a href="#JointEvaluator.order-53"><span class="linenos">53</span></a>
-</span><span id="JointEvaluator.order-54"><a href="#JointEvaluator.order-54"><span class="linenos">54</span></a><span class="sd">        Raises:</span>
-</span><span id="JointEvaluator.order-55"><a href="#JointEvaluator.order-55"><span class="linenos">55</span></a><span class="sd">            ValueError: If subevals have conflicting orders, i.e. some are</span>
-</span><span id="JointEvaluator.order-56"><a href="#JointEvaluator.order-56"><span class="linenos">56</span></a><span class="sd">                ascending and others are descending.</span>
-</span><span id="JointEvaluator.order-57"><a href="#JointEvaluator.order-57"><span class="linenos">57</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="JointEvaluator.order-58"><a href="#JointEvaluator.order-58"><span class="linenos">58</span></a>        <span class="n">suborders</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
-</span><span id="JointEvaluator.order-59"><a href="#JointEvaluator.order-59"><span class="linenos">59</span></a>        <span class="n">ascending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
-</span><span id="JointEvaluator.order-60"><a href="#JointEvaluator.order-60"><span class="linenos">60</span></a>        <span class="n">descending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
-</span><span id="JointEvaluator.order-61"><a href="#JointEvaluator.order-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">ascending</span> <span class="ow">and</span> <span class="n">descending</span><span class="p">:</span>
-</span><span id="JointEvaluator.order-62"><a href="#JointEvaluator.order-62"><span class="linenos">62</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sub-evals have conflicting orders.&#39;</span><span class="p">)</span>
-</span><span id="JointEvaluator.order-63"><a href="#JointEvaluator.order-63"><span class="linenos">63</span></a>        <span class="k">elif</span> <span class="n">ascending</span><span class="p">:</span>
-</span><span id="JointEvaluator.order-64"><a href="#JointEvaluator.order-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
-</span><span id="JointEvaluator.order-65"><a href="#JointEvaluator.order-65"><span class="linenos">65</span></a>        <span class="k">elif</span> <span class="n">descending</span><span class="p">:</span>
-</span><span id="JointEvaluator.order-66"><a href="#JointEvaluator.order-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span>
-</span><span id="JointEvaluator.order-67"><a href="#JointEvaluator.order-67"><span class="linenos">67</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="JointEvaluator.order-68"><a href="#JointEvaluator.order-68"><span class="linenos">68</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.order-52"><a href="#JointEvaluator.order-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="JointEvaluator.order-53"><a href="#JointEvaluator.order-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines the common order of the subevals.</span>
+</span><span id="JointEvaluator.order-54"><a href="#JointEvaluator.order-54"><span class="linenos">54</span></a>
+</span><span id="JointEvaluator.order-55"><a href="#JointEvaluator.order-55"><span class="linenos">55</span></a><span class="sd">        Raises:</span>
+</span><span id="JointEvaluator.order-56"><a href="#JointEvaluator.order-56"><span class="linenos">56</span></a><span class="sd">            ValueError: If subevals have conflicting orders, i.e. some are</span>
+</span><span id="JointEvaluator.order-57"><a href="#JointEvaluator.order-57"><span class="linenos">57</span></a><span class="sd">                ascending and others are descending.</span>
+</span><span id="JointEvaluator.order-58"><a href="#JointEvaluator.order-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="JointEvaluator.order-59"><a href="#JointEvaluator.order-59"><span class="linenos">59</span></a>        <span class="n">suborders</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="o">.</span><span class="n">order</span><span class="p">()</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">)</span>
+</span><span id="JointEvaluator.order-60"><a href="#JointEvaluator.order-60"><span class="linenos">60</span></a>        <span class="n">ascending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
+</span><span id="JointEvaluator.order-61"><a href="#JointEvaluator.order-61"><span class="linenos">61</span></a>        <span class="n">descending</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suborders</span><span class="p">)</span>
+</span><span id="JointEvaluator.order-62"><a href="#JointEvaluator.order-62"><span class="linenos">62</span></a>        <span class="k">if</span> <span class="n">ascending</span> <span class="ow">and</span> <span class="n">descending</span><span class="p">:</span>
+</span><span id="JointEvaluator.order-63"><a href="#JointEvaluator.order-63"><span class="linenos">63</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Sub-evals have conflicting orders.&#39;</span><span class="p">)</span>
+</span><span id="JointEvaluator.order-64"><a href="#JointEvaluator.order-64"><span class="linenos">64</span></a>        <span class="k">elif</span> <span class="n">ascending</span><span class="p">:</span>
+</span><span id="JointEvaluator.order-65"><a href="#JointEvaluator.order-65"><span class="linenos">65</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="JointEvaluator.order-66"><a href="#JointEvaluator.order-66"><span class="linenos">66</span></a>        <span class="k">elif</span> <span class="n">descending</span><span class="p">:</span>
+</span><span id="JointEvaluator.order-67"><a href="#JointEvaluator.order-67"><span class="linenos">67</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span>
+</span><span id="JointEvaluator.order-68"><a href="#JointEvaluator.order-68"><span class="linenos">68</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="JointEvaluator.order-69"><a href="#JointEvaluator.order-69"><span class="linenos">69</span></a>            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
@@ -2985,14 +3013,258 @@ ascending and others are descending.</li>
 
 
                             </div>
+                            <div id="JointEvaluator.alignment" class="classattr">
+                                        <input id="JointEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="JointEvaluator.alignment-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#JointEvaluator.alignment"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.alignment-71"><a href="#JointEvaluator.alignment-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="JointEvaluator.alignment-72"><a href="#JointEvaluator.alignment-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">union_sorted_sets</span><span class="p">(</span>
+</span><span id="JointEvaluator.alignment-73"><a href="#JointEvaluator.alignment-73"><span class="linenos">73</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
+
+<p>These will be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> even if they have zero count or do
+not appear in the generator(s) at all.</p>
+
+<p>The default implementation returns <code>()</code>; this means outcomes with zero
+count may or may not be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code>.</p>
+
+<p>If you want the outcomes seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> to be consecutive
+<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
+See <code><a href="#JointEvaluator.range_alignment">range_alignment()</a></code> below.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>outcomes:</strong>  The outcomes that could be produced by the generators, in</li>
+<li>ascending order.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="JointEvaluator.alignment" class="function">alignment</dd>
-                <dd id="JointEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="JointEvaluator.range_alignment" class="function">range_alignment</dd>
                 <dd id="JointEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="JointEvaluator.sample" class="function">sample</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="MapEvaluator">
+                            <input id="MapEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">MapEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[-T_contra, int, tuple[+U_co, ...]]</span>):
+
+                <label class="view-source-button" for="MapEvaluator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator-76"><a href="#MapEvaluator-76"><span class="linenos"> 76</span></a><span class="k">class</span> <span class="nc">MapEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">U_co</span><span class="p">,</span> <span class="o">...</span><span class="p">]]):</span>
+</span><span id="MapEvaluator-77"><a href="#MapEvaluator-77"><span class="linenos"> 77</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `MultisetEvaluator` that jointly evaluates a single evaluator on each input multiset.&quot;&quot;&quot;</span>
+</span><span id="MapEvaluator-78"><a href="#MapEvaluator-78"><span class="linenos"> 78</span></a>
+</span><span id="MapEvaluator-79"><a href="#MapEvaluator-79"><span class="linenos"> 79</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">U_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MapEvaluator-80"><a href="#MapEvaluator-80"><span class="linenos"> 80</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">inner</span>
+</span><span id="MapEvaluator-81"><a href="#MapEvaluator-81"><span class="linenos"> 81</span></a>
+</span><span id="MapEvaluator-82"><a href="#MapEvaluator-82"><span class="linenos"> 82</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="MapEvaluator-83"><a href="#MapEvaluator-83"><span class="linenos"> 83</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` on each count.</span>
+</span><span id="MapEvaluator-84"><a href="#MapEvaluator-84"><span class="linenos"> 84</span></a>
+</span><span id="MapEvaluator-85"><a href="#MapEvaluator-85"><span class="linenos"> 85</span></a><span class="sd">        The state is a tuple of the substates.</span>
+</span><span id="MapEvaluator-86"><a href="#MapEvaluator-86"><span class="linenos"> 86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MapEvaluator-87"><a href="#MapEvaluator-87"><span class="linenos"> 87</span></a>        <span class="k">if</span> <span class="n">states</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MapEvaluator-88"><a href="#MapEvaluator-88"><span class="linenos"> 88</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator-89"><a href="#MapEvaluator-89"><span class="linenos"> 89</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="MapEvaluator-90"><a href="#MapEvaluator-90"><span class="linenos"> 90</span></a>                <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
+</span><span id="MapEvaluator-91"><a href="#MapEvaluator-91"><span class="linenos"> 91</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MapEvaluator-92"><a href="#MapEvaluator-92"><span class="linenos"> 92</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator-93"><a href="#MapEvaluator-93"><span class="linenos"> 93</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="MapEvaluator-94"><a href="#MapEvaluator-94"><span class="linenos"> 94</span></a>                <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">counts</span><span class="p">))</span>
+</span><span id="MapEvaluator-95"><a href="#MapEvaluator-95"><span class="linenos"> 95</span></a>
+</span><span id="MapEvaluator-96"><a href="#MapEvaluator-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_states</span><span class="p">):</span>
+</span><span id="MapEvaluator-97"><a href="#MapEvaluator-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_outcome` on all final states.</span>
+</span><span id="MapEvaluator-98"><a href="#MapEvaluator-98"><span class="linenos"> 98</span></a>
+</span><span id="MapEvaluator-99"><a href="#MapEvaluator-99"><span class="linenos"> 99</span></a><span class="sd">        The final outcome is a tuple of the results.</span>
+</span><span id="MapEvaluator-100"><a href="#MapEvaluator-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MapEvaluator-101"><a href="#MapEvaluator-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator-102"><a href="#MapEvaluator-102"><span class="linenos">102</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_state</span><span class="p">)</span>
+</span><span id="MapEvaluator-103"><a href="#MapEvaluator-103"><span class="linenos">103</span></a>            <span class="k">for</span> <span class="n">final_state</span> <span class="ow">in</span> <span class="n">final_states</span><span class="p">)</span>
+</span><span id="MapEvaluator-104"><a href="#MapEvaluator-104"><span class="linenos">104</span></a>
+</span><span id="MapEvaluator-105"><a href="#MapEvaluator-105"><span class="linenos">105</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MapEvaluator-106"><a href="#MapEvaluator-106"><span class="linenos">106</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Forwards to inner.&quot;&quot;&quot;</span>
+</span><span id="MapEvaluator-107"><a href="#MapEvaluator-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+</span><span id="MapEvaluator-108"><a href="#MapEvaluator-108"><span class="linenos">108</span></a>
+</span><span id="MapEvaluator-109"><a href="#MapEvaluator-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="MapEvaluator-110"><a href="#MapEvaluator-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>A <code>MultisetEvaluator</code> that jointly evaluates a single evaluator on each input multiset.</p>
+</div>
+
+
+                            <div id="MapEvaluator.__init__" class="classattr">
+                                        <input id="MapEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">MapEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">inner</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">multiset_evaluator</span><span class="o">.</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="o">+</span><span class="n">U_co</span><span class="p">]</span></span>)</span>
+
+                <label class="view-source-button" for="MapEvaluator.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator.__init__-79"><a href="#MapEvaluator.__init__-79"><span class="linenos">79</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">U_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MapEvaluator.__init__-80"><a href="#MapEvaluator.__init__-80"><span class="linenos">80</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">inner</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="MapEvaluator.next_state" class="classattr">
+                                        <input id="MapEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">states</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="o">*</span><span class="n">counts</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="MapEvaluator.next_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator.next_state-82"><a href="#MapEvaluator.next_state-82"><span class="linenos">82</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="MapEvaluator.next_state-83"><a href="#MapEvaluator.next_state-83"><span class="linenos">83</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `next_state` on each count.</span>
+</span><span id="MapEvaluator.next_state-84"><a href="#MapEvaluator.next_state-84"><span class="linenos">84</span></a>
+</span><span id="MapEvaluator.next_state-85"><a href="#MapEvaluator.next_state-85"><span class="linenos">85</span></a><span class="sd">        The state is a tuple of the substates.</span>
+</span><span id="MapEvaluator.next_state-86"><a href="#MapEvaluator.next_state-86"><span class="linenos">86</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MapEvaluator.next_state-87"><a href="#MapEvaluator.next_state-87"><span class="linenos">87</span></a>        <span class="k">if</span> <span class="n">states</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MapEvaluator.next_state-88"><a href="#MapEvaluator.next_state-88"><span class="linenos">88</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator.next_state-89"><a href="#MapEvaluator.next_state-89"><span class="linenos">89</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="MapEvaluator.next_state-90"><a href="#MapEvaluator.next_state-90"><span class="linenos">90</span></a>                <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">)</span>
+</span><span id="MapEvaluator.next_state-91"><a href="#MapEvaluator.next_state-91"><span class="linenos">91</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MapEvaluator.next_state-92"><a href="#MapEvaluator.next_state-92"><span class="linenos">92</span></a>            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator.next_state-93"><a href="#MapEvaluator.next_state-93"><span class="linenos">93</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">next_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="MapEvaluator.next_state-94"><a href="#MapEvaluator.next_state-94"><span class="linenos">94</span></a>                <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">counts</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Runs <code><a href="#MapEvaluator.next_state">next_state</a></code> on each count.</p>
+
+<p>The state is a tuple of the substates.</p>
+</div>
+
+
+                            </div>
+                            <div id="MapEvaluator.final_outcome" class="classattr">
+                                        <input id="MapEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_states</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="MapEvaluator.final_outcome-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator.final_outcome"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator.final_outcome-96"><a href="#MapEvaluator.final_outcome-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_states</span><span class="p">):</span>
+</span><span id="MapEvaluator.final_outcome-97"><a href="#MapEvaluator.final_outcome-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Runs `final_outcome` on all final states.</span>
+</span><span id="MapEvaluator.final_outcome-98"><a href="#MapEvaluator.final_outcome-98"><span class="linenos"> 98</span></a>
+</span><span id="MapEvaluator.final_outcome-99"><a href="#MapEvaluator.final_outcome-99"><span class="linenos"> 99</span></a><span class="sd">        The final outcome is a tuple of the results.</span>
+</span><span id="MapEvaluator.final_outcome-100"><a href="#MapEvaluator.final_outcome-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MapEvaluator.final_outcome-101"><a href="#MapEvaluator.final_outcome-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="MapEvaluator.final_outcome-102"><a href="#MapEvaluator.final_outcome-102"><span class="linenos">102</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">final_state</span><span class="p">)</span>
+</span><span id="MapEvaluator.final_outcome-103"><a href="#MapEvaluator.final_outcome-103"><span class="linenos">103</span></a>            <span class="k">for</span> <span class="n">final_state</span> <span class="ow">in</span> <span class="n">final_states</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Runs <code><a href="#MapEvaluator.final_outcome">final_outcome</a></code> on all final states.</p>
+
+<p>The final outcome is a tuple of the results.</p>
+</div>
+
+
+                            </div>
+                            <div id="MapEvaluator.order" class="classattr">
+                                        <input id="MapEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="MapEvaluator.order-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator.order-105"><a href="#MapEvaluator.order-105"><span class="linenos">105</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MapEvaluator.order-106"><a href="#MapEvaluator.order-106"><span class="linenos">106</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Forwards to inner.&quot;&quot;&quot;</span>
+</span><span id="MapEvaluator.order-107"><a href="#MapEvaluator.order-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">order</span><span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Forwards to inner.</p>
+</div>
+
+
+                            </div>
+                            <div id="MapEvaluator.alignment" class="classattr">
+                                        <input id="MapEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="MapEvaluator.alignment-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MapEvaluator.alignment"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MapEvaluator.alignment-109"><a href="#MapEvaluator.alignment-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="MapEvaluator.alignment-110"><a href="#MapEvaluator.alignment-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#MapEvaluator.next_state">next_state()</a></code>.</p>
+
+<p>These will be seen by <code><a href="#MapEvaluator.next_state">next_state</a></code> even if they have zero count or do
+not appear in the generator(s) at all.</p>
+
+<p>The default implementation returns <code>()</code>; this means outcomes with zero
+count may or may not be seen by <code><a href="#MapEvaluator.next_state">next_state</a></code>.</p>
+
+<p>If you want the outcomes seen by <code><a href="#MapEvaluator.next_state">next_state</a></code> to be consecutive
+<code>int</code>s, you can set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
+See <code><a href="#MapEvaluator.range_alignment">range_alignment()</a></code> below.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>outcomes:</strong>  The outcomes that could be produced by the generators, in</li>
+<li>ascending order.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
+                                <dd id="MapEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="MapEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="MapEvaluator.sample" class="function">sample</dd>
 
             </div>
                                 </dl>
