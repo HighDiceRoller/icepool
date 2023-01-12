@@ -3,6 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.collections import union_sorted_sets
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
@@ -19,7 +20,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 
 
 class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
-    """An `MultisetEvaluator` that jointly evaluates sub-evaluators."""
+    """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
     def __init__(self, *inners: MultisetEvaluator):
         self._inners = inners
@@ -47,14 +48,14 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
             inner.final_outcome(final_substate)
             for inner, final_substate in zip(self._inners, final_state))
 
-    def order(self, *generators: icepool.MultisetGenerator):
+    def order(self):
         """Determines the common order of the subevals.
 
         Raises:
             ValueError: If subevals have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
-        suborders = tuple(inner.order(*generators) for inner in self._inners)
+        suborders = tuple(inner.order() for inner in self._inners)
         ascending = any(x > 0 for x in suborders)
         descending = any(x < 0 for x in suborders)
         if ascending and descending:
@@ -65,3 +66,44 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
             return Order.Descending
         else:
             return Order.Any
+
+    def alignment(self, outcomes):
+        return union_sorted_sets(
+            *(evaluator.alignment(outcomes) for evaluator in self._inners))
+
+
+class MapEvaluator(MultisetEvaluator[T_contra, int, tuple[U_co, ...]]):
+    """A `MultisetEvaluator` that jointly evaluates a single evaluator on each input multiset."""
+
+    def __init__(self, inner: MultisetEvaluator[T_contra, int, U_co]) -> None:
+        self._inner = inner
+
+    def next_state(self, states, outcome, *counts):
+        """Runs `next_state` on each count.
+
+        The state is a tuple of the substates.
+        """
+        if states is None:
+            return tuple(
+                self._inner.next_state(None, outcome, count)
+                for count in counts)
+        else:
+            return tuple(
+                self._inner.next_state(state, outcome, count)
+                for state, count in zip(states, counts))
+
+    def final_outcome(self, final_states):
+        """Runs `final_outcome` on all final states.
+
+        The final outcome is a tuple of the results.
+        """
+        return tuple(
+            self._inner.final_outcome(final_state)
+            for final_state in final_states)
+
+    def order(self):
+        """Forwards to inner."""
+        return self._inner.order()
+
+    def alignment(self, outcomes):
+        return self._inner.alignment(outcomes)
