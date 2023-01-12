@@ -13,10 +13,12 @@ from icepool.expression.adjust_counts import (AdjustCountsExpression,
                                               FilterCountsExpression,
                                               UniqueExpression)
 
+from icepool.expression.from_callable import evaluator_from_callable
+
 __all__ = [
-    'MultisetExpression', 'MultisetVariable', 'multiset_variables',
-    'ExpressionGenerator', 'MapExpressionGenerator', 'ExpressionEvaluator',
-    'BinaryOperatorExpression', 'IntersectionExpression',
+    'evaluator_from_callable', 'MultisetExpression', 'MultisetVariable',
+    'multiset_variables', 'ExpressionGenerator', 'MapExpressionGenerator',
+    'ExpressionEvaluator', 'BinaryOperatorExpression', 'IntersectionExpression',
     'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
     'SymmetricDifferenceExpression', 'AdjustCountsExpression',
     'MultiplyCountsExpression', 'FloorDivCountsExpression',

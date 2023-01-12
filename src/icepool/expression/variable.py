@@ -56,10 +56,12 @@ class MultisetVariableFactory():
                 raise ValueError('A stop index must be provided.')
             if index.stop < 0 or (index.start is not None and index.start < 0):
                 raise ValueError('Variable indexes cannot be negative.')
+            if index.step is not None and index.step <= 0:
+                raise ValueError('step cannot be non-positive.')
 
             return tuple(
                 MultisetVariable(i)
-                for i in range(index.start, index.stop, index.step))
+                for i in range(index.start or 0, index.stop, index.step or 1))
 
 
 multiset_variables: Final = MultisetVariableFactory()
