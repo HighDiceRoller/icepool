@@ -76,9 +76,9 @@ class FinalOutcomeMapEvaluator(Generic[T_contra, V, Q_contra, U_co],
         """Forwards to inner."""
         return self._inner.final_outcome(final_state)
 
-    def order(self, *generators):
+    def order(self):
         """Forwards to inner."""
-        return self._inner.order(*generators)
+        return self._inner.order()
 
     def alignment(self, *generators):
         """Forwards to inner."""

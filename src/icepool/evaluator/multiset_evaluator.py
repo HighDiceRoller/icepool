@@ -129,23 +129,11 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
         # If not overriden, the final_state should have type U_co.
         return cast(U_co, final_state)
 
-    def order(self, *generators: icepool.MultisetGenerator[T_contra,
-                                                           Any]) -> Order:
+    def order(self) -> Order:
         """Optional function to determine the order in which `next_state()` will see outcomes.
-
-        There is no expectation that a subclass be able to handle
-        an arbitrary number of generators. Thus, you are free to rename any of
-        the parameters in a subclass, or to replace `*generators` with a fixed
-        set of parameters.
 
         The default is ascending order. This works well with mixed standard dice,
         and other dice that differ only by right-truncation.
-
-        Args:
-            *generators: One or more `MultisetGenerator`s being evaluated.
-                Most subclasses will expect a fixed number of generators and
-                can replace this variadic parameter with a fixed number of named
-                parameters.
 
         Returns:
             * Order.Ascending (= 1)
@@ -288,7 +276,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
             * The order in which `next_state()` sees outcomes.
                 1 for ascending and -1 for descending.
         """
-        eval_order = self.order(*generators)
+        eval_order = self.order()
 
         pop_min_costs, pop_max_costs = zip(
             *(generator._estimate_order_costs() for generator in generators))

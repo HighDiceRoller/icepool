@@ -30,7 +30,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Outcome, int,
         else:
             return state
 
-    def order(self, *_):
+    def order(self):
         """Allows any order."""
         return Order.Any
 
@@ -63,7 +63,7 @@ class AllCountsEvaluator(MultisetEvaluator[Outcome, int, tuple[int, ...]]):
         else:
             return final_state
 
-    def order(self, *_):
+    def order(self):
         """Allows any order."""
         return Order.Any
 
@@ -75,7 +75,7 @@ class LargestCountEvaluator(MultisetEvaluator[Outcome, int, int]):
         """Implementation."""
         return max(state or count, count)
 
-    def order(self, *_):
+    def order(self):
         """Allows any order."""
         return Order.Any
 
@@ -88,7 +88,7 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Outcome, int,
         """Implementation."""
         return max(state or (count, outcome), (count, outcome))
 
-    def order(self, *_):
+    def order(self):
         """Allows any order."""
         return Order.Any
 
@@ -111,7 +111,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int, int]):
             return 0
         return final_state[0]
 
-    def order(self, *_):
+    def order(self):
         """Ascending order."""
         return Order.Ascending
 
@@ -135,7 +135,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, int,
         """Implementation."""
         return final_state[0]
 
-    def order(self, *_):
+    def order(self):
         """Ascending order."""
         return Order.Ascending
 

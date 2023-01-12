@@ -87,7 +87,7 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, int, bool]):
         has_any, has_all = final_state
         return has_any and has_all
 
-    def order(self, *_):
+    def order(self):
         """Allows any order."""
         return Order.Any
 

@@ -35,9 +35,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
         """Forwards to inner."""
         return self._evaluator.final_outcome(final_state)
 
-    def order(self, *generators):
+    def order(self):
         """Forwards to inner."""
-        return self._evaluator.order(*generators)
+        return self._evaluator.order()
 
     def alignment(self, *generators):
         """Forwards to inner."""
@@ -93,9 +93,9 @@ class MapExpressionEvaluator(MultisetEvaluator[T_contra, tuple[int, ...],
             self._evaluator.final_outcome(final_state)
             for final_state in final_states)
 
-    def order(self, *generators):
+    def order(self):
         """Forwards to inner."""
-        return self._evaluator.order(*generators)
+        return self._evaluator.order()
 
     def alignment(self, *generators):
         """Forwards to inner."""

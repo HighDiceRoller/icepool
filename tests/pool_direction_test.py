@@ -16,7 +16,7 @@ class VerifyOrder(icepool.MultisetEvaluator):
                 raise ValueError('Saw outcomes in wrong order.')
         return outcome
 
-    def order(self, *pools):
+    def order(self):
         return self._order
 
 

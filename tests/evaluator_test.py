@@ -14,7 +14,7 @@ class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
         else:
             return state + outcome * count
 
-    def order(self, *_):
+    def order(self):
         return 0
 
 
@@ -26,7 +26,7 @@ def test_reroll():
 
 class SumPoolDescending(icepool.evaluator.SumEvaluator):
 
-    def order(self, _):
+    def order(self):
         return -1
 
 
@@ -114,7 +114,7 @@ class SumFixedOrder(icepool.MultisetEvaluator):
     def next_state(self, state, outcome, count):
         return (state or 0) + outcome * count
 
-    def order(self, *pools):
+    def order(self):
         return self._order
 
 
