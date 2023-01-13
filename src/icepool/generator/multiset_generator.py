@@ -48,11 +48,15 @@ def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
 
 
 class MultisetGenerator(ABC, Generic[T_co, Q_co]):
-    """Abstract base class for incrementally generating `(outcome, counts, weight)`s.
+    """Abstract base class for generating one or more multisets.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
     will be using one of these two rather than writing your own subclass of
     `MultisetGenerator`.
+
+    The multisets are incrementally generated one outcome at a time.
+    For each outcome, a `count` and `weight` are generated, along with a
+    smaller generator to produce the rest of the multiset.
 
     You can perform simple evaluations using built-in operators and methods in
     this class.
