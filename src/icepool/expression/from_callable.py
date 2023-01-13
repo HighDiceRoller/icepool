@@ -64,8 +64,10 @@ def evaluator_from_callable(func: Callable[..., NestedTupleOrEvaluator],
         if parameter.kind not in [
                 inspect.Parameter.POSITIONAL_ONLY or
                 inspect.Parameter.POSITIONAL_OR_KEYWORD
-        ]:
-            raise ValueError('Callable must take only positional arguments.')
+        ] or parameter.default != inspect.Parameter.empty:
+            raise ValueError(
+                'Callable must take only a fixed number of positional arguments.'
+            )
     tuple_or_evaluator = func(
         *icepool.expression.multiset_variables[:len(parameters)])
     return replace_tuples_with_joint_evaluator(tuple_or_evaluator)
