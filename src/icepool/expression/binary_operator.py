@@ -41,12 +41,18 @@ class IntersectionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return min(left, right)
 
+    def __str__(self) -> str:
+        return f'({self._left} & {self._right})'
+
 
 class DifferenceExpression(BinaryOperatorExpression):
 
     @staticmethod
     def merge_counts(left: int, right: int) -> int:
         return left - right
+
+    def __str__(self) -> str:
+        return f'({self._left} - {self._right})'
 
 
 class UnionExpression(BinaryOperatorExpression):
@@ -55,6 +61,9 @@ class UnionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return max(left, right)
 
+    def __str__(self) -> str:
+        return f'({self._left} | {self._right})'
+
 
 class DisjointUnionExpression(BinaryOperatorExpression):
 
@@ -62,9 +71,15 @@ class DisjointUnionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return left + right
 
+    def __str__(self) -> str:
+        return f'({self._left} + {self._right})'
+
 
 class SymmetricDifferenceExpression(BinaryOperatorExpression):
 
     @staticmethod
     def merge_counts(left: int, right: int) -> int:
         return abs(max(left, 0) - max(right, 0))
+
+    def __str__(self) -> str:
+        return f'({self._left} ^ {self._right})'

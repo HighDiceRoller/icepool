@@ -28,6 +28,9 @@ class MultisetVariable(MultisetExpression):
     def _key_tuple(self) -> tuple[Hashable, ...]:
         return type(self), self._index
 
+    def __str__(self) -> str:
+        return f'mv[{self._index}]'
+
 
 class MultisetVariableFactory():
 

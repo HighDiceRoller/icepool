@@ -39,6 +39,9 @@ class MultiplyCountsExpression(AdjustCountsExpression):
     def adjust_count(count: int, constant: int) -> int:
         return count * constant
 
+    def __str__(self) -> str:
+        return f'({self._inner} * {self._constant})'
+
 
 class FloorDivCountsExpression(AdjustCountsExpression):
     """Divides all counts by the constant, rounding down."""
@@ -46,6 +49,9 @@ class FloorDivCountsExpression(AdjustCountsExpression):
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return count // constant
+
+    def __str__(self) -> str:
+        return f'({self._inner} // {self._constant})'
 
 
 class FilterCountsExpression(AdjustCountsExpression):
@@ -58,6 +64,9 @@ class FilterCountsExpression(AdjustCountsExpression):
         else:
             return count
 
+    def __str__(self) -> str:
+        return f'{self._inner}.filter_counts({self._constant})'
+
 
 class UniqueExpression(AdjustCountsExpression):
     """Limits the count produced by each outcome."""
@@ -65,3 +74,9 @@ class UniqueExpression(AdjustCountsExpression):
     @staticmethod
     def adjust_count(count: int, constant: int) -> int:
         return min(count, constant)
+
+    def __str__(self) -> str:
+        if self._constant == 1:
+            return f'{self._inner}.unique()'
+        else:
+            return f'{self._inner}.unique({self._constant})'

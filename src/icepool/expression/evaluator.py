@@ -50,3 +50,12 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
                 'MultisetExpression only has a truth value if it is the result of the == or != operator.'
             )
         return self._truth_value
+
+    def __str__(self) -> str:
+        if len(self._expressions) == 1:
+            return f'{self._expressions[0]} -> {self._evaluator}'
+        else:
+            return '(' + ', '.join(
+                str(expression)
+                for expression in self._expressions) + ') -> ' + str(
+                    self._evaluator)

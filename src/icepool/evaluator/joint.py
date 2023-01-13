@@ -71,6 +71,10 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
         return union_sorted_sets(
             *(evaluator.alignment(outcomes) for evaluator in self._inners))
 
+    def __str__(self) -> str:
+        return 'JointEvaluator(\n' + ''.join(
+            f'    {evaluator},\n' for evaluator in self._inners) + ')'
+
 
 class MapEvaluator(MultisetEvaluator[T_contra, int, tuple[U_co, ...]]):
     """A `MultisetEvaluator` that jointly evaluates a single evaluator on each input multiset."""
