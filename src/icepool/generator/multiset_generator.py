@@ -198,8 +198,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
             map: If provided, the outcomes will be mapped according to this
                 before summing.
         """
-        return icepool.evaluator.FinalOutcomeMapEvaluator(
-            icepool.evaluator.sum_evaluator, map).evaluate(self)
+        return icepool.evaluator.SumEvaluator(map).evaluate(self)
 
     def count(self) -> 'icepool.Die[int]':
         """The total count over all outcomes.

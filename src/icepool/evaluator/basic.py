@@ -5,7 +5,7 @@ __docformat__ = 'google'
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
-from typing import Any, Callable, Final, Hashable, TypeVar
+from typing import Any, Callable, Final, Hashable, Mapping, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -59,8 +59,31 @@ class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
 class SumEvaluator(MultisetEvaluator[Outcome, int, Any]):
     """Sums all outcomes."""
 
+    def __init__(self, map: Callable | Mapping | None = None) -> None:
+        """Constructor.
+
+        map: If provided, outcomes will be mapped according to this just
+            before summing.
+        """
+        if map is None:
+
+            def map_func(outcome):
+                return outcome
+
+            self._map = map_func
+        elif callable(map):
+            self._map = map
+        else:
+            map_dict = {k: v for k, v in map.items()}
+
+            def map_func(outcome):
+                return map_dict[outcome]
+
+            self._map = map_func
+
     def next_state(self, state, outcome, count):
         """Implementation."""
+        outcome = self._map(outcome)
         if state is None:
             return outcome * count
         else:

@@ -210,8 +210,7 @@ class MultisetExpression(Hashable, ABC):
         self,
         map: Callable[[T], U] | Mapping[T, U] | None = None
     ) -> 'icepool.MultisetEvaluator[T, int, U]':
-        evaluator = icepool.evaluator.FinalOutcomeMapEvaluator(
-            icepool.evaluator.sum_evaluator, map)
+        evaluator = icepool.evaluator.SumEvaluator(map)
         return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
 
     def count(self) -> 'icepool.MultisetEvaluator[Outcome, int, int]':
