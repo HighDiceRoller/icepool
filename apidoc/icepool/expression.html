@@ -383,11 +383,13 @@
 </span><span id="evaluator_from_callable-65"><a href="#evaluator_from_callable-65"><span class="linenos">65</span></a>        <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
 </span><span id="evaluator_from_callable-66"><a href="#evaluator_from_callable-66"><span class="linenos">66</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="ow">or</span>
 </span><span id="evaluator_from_callable-67"><a href="#evaluator_from_callable-67"><span class="linenos">67</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span>
-</span><span id="evaluator_from_callable-68"><a href="#evaluator_from_callable-68"><span class="linenos">68</span></a>        <span class="p">]:</span>
-</span><span id="evaluator_from_callable-69"><a href="#evaluator_from_callable-69"><span class="linenos">69</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Callable must take only positional arguments.&#39;</span><span class="p">)</span>
-</span><span id="evaluator_from_callable-70"><a href="#evaluator_from_callable-70"><span class="linenos">70</span></a>    <span class="n">tuple_or_evaluator</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span>
-</span><span id="evaluator_from_callable-71"><a href="#evaluator_from_callable-71"><span class="linenos">71</span></a>        <span class="o">*</span><span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">multiset_variables</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)])</span>
-</span><span id="evaluator_from_callable-72"><a href="#evaluator_from_callable-72"><span class="linenos">72</span></a>    <span class="k">return</span> <span class="n">replace_tuples_with_joint_evaluator</span><span class="p">(</span><span class="n">tuple_or_evaluator</span><span class="p">)</span>
+</span><span id="evaluator_from_callable-68"><a href="#evaluator_from_callable-68"><span class="linenos">68</span></a>        <span class="p">]</span> <span class="ow">or</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="evaluator_from_callable-69"><a href="#evaluator_from_callable-69"><span class="linenos">69</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="evaluator_from_callable-70"><a href="#evaluator_from_callable-70"><span class="linenos">70</span></a>                <span class="s1">&#39;Callable must take only a fixed number of positional arguments.&#39;</span>
+</span><span id="evaluator_from_callable-71"><a href="#evaluator_from_callable-71"><span class="linenos">71</span></a>            <span class="p">)</span>
+</span><span id="evaluator_from_callable-72"><a href="#evaluator_from_callable-72"><span class="linenos">72</span></a>    <span class="n">tuple_or_evaluator</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span>
+</span><span id="evaluator_from_callable-73"><a href="#evaluator_from_callable-73"><span class="linenos">73</span></a>        <span class="o">*</span><span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">multiset_variables</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)])</span>
+</span><span id="evaluator_from_callable-74"><a href="#evaluator_from_callable-74"><span class="linenos">74</span></a>    <span class="k">return</span> <span class="n">replace_tuples_with_joint_evaluator</span><span class="p">(</span><span class="n">tuple_or_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1553,6 +1555,9 @@ will be treated as a fixed target.</p>
 </span><span id="MultisetVariable-28"><a href="#MultisetVariable-28"><span class="linenos">28</span></a>    <span class="nd">@cached_property</span>
 </span><span id="MultisetVariable-29"><a href="#MultisetVariable-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="MultisetVariable-30"><a href="#MultisetVariable-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span>
+</span><span id="MultisetVariable-31"><a href="#MultisetVariable-31"><span class="linenos">31</span></a>
+</span><span id="MultisetVariable-32"><a href="#MultisetVariable-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="MultisetVariable-33"><a href="#MultisetVariable-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="si">}</span><span class="s1">]&#39;</span>
 </span></pre></div>
 
 
@@ -2177,6 +2182,15 @@ This should take in a single multiset.</li>
 </span><span id="ExpressionEvaluator-51"><a href="#ExpressionEvaluator-51"><span class="linenos">51</span></a>                <span class="s1">&#39;MultisetExpression only has a truth value if it is the result of the == or != operator.&#39;</span>
 </span><span id="ExpressionEvaluator-52"><a href="#ExpressionEvaluator-52"><span class="linenos">52</span></a>            <span class="p">)</span>
 </span><span id="ExpressionEvaluator-53"><a href="#ExpressionEvaluator-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truth_value</span>
+</span><span id="ExpressionEvaluator-54"><a href="#ExpressionEvaluator-54"><span class="linenos">54</span></a>
+</span><span id="ExpressionEvaluator-55"><a href="#ExpressionEvaluator-55"><span class="linenos">55</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="ExpressionEvaluator-56"><a href="#ExpressionEvaluator-56"><span class="linenos">56</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="ExpressionEvaluator-57"><a href="#ExpressionEvaluator-57"><span class="linenos">57</span></a>            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="ExpressionEvaluator-58"><a href="#ExpressionEvaluator-58"><span class="linenos">58</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="ExpressionEvaluator-59"><a href="#ExpressionEvaluator-59"><span class="linenos">59</span></a>            <span class="k">return</span> <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="ExpressionEvaluator-60"><a href="#ExpressionEvaluator-60"><span class="linenos">60</span></a>                <span class="nb">str</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+</span><span id="ExpressionEvaluator-61"><a href="#ExpressionEvaluator-61"><span class="linenos">61</span></a>                <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;) -&gt; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+</span><span id="ExpressionEvaluator-62"><a href="#ExpressionEvaluator-62"><span class="linenos">62</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2480,6 +2494,9 @@ expressions, or to attach a final evaluator.</p>
 </span><span id="IntersectionExpression-41"><a href="#IntersectionExpression-41"><span class="linenos">41</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="IntersectionExpression-42"><a href="#IntersectionExpression-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="IntersectionExpression-43"><a href="#IntersectionExpression-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+</span><span id="IntersectionExpression-44"><a href="#IntersectionExpression-44"><span class="linenos">44</span></a>
+</span><span id="IntersectionExpression-45"><a href="#IntersectionExpression-45"><span class="linenos">45</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="IntersectionExpression-46"><a href="#IntersectionExpression-46"><span class="linenos">46</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_left</span><span class="si">}</span><span class="s1"> &amp; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_right</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -2565,11 +2582,14 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#DifferenceExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DifferenceExpression-46"><a href="#DifferenceExpression-46"><span class="linenos">46</span></a><span class="k">class</span> <span class="nc">DifferenceExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
-</span><span id="DifferenceExpression-47"><a href="#DifferenceExpression-47"><span class="linenos">47</span></a>
-</span><span id="DifferenceExpression-48"><a href="#DifferenceExpression-48"><span class="linenos">48</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="DifferenceExpression-49"><a href="#DifferenceExpression-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="DifferenceExpression-50"><a href="#DifferenceExpression-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DifferenceExpression-49"><a href="#DifferenceExpression-49"><span class="linenos">49</span></a><span class="k">class</span> <span class="nc">DifferenceExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
+</span><span id="DifferenceExpression-50"><a href="#DifferenceExpression-50"><span class="linenos">50</span></a>
+</span><span id="DifferenceExpression-51"><a href="#DifferenceExpression-51"><span class="linenos">51</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="DifferenceExpression-52"><a href="#DifferenceExpression-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="DifferenceExpression-53"><a href="#DifferenceExpression-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span>
+</span><span id="DifferenceExpression-54"><a href="#DifferenceExpression-54"><span class="linenos">54</span></a>
+</span><span id="DifferenceExpression-55"><a href="#DifferenceExpression-55"><span class="linenos">55</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="DifferenceExpression-56"><a href="#DifferenceExpression-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_left</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_right</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -2594,9 +2614,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#DifferenceExpression.merge_counts"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DifferenceExpression.merge_counts-48"><a href="#DifferenceExpression.merge_counts-48"><span class="linenos">48</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="DifferenceExpression.merge_counts-49"><a href="#DifferenceExpression.merge_counts-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="DifferenceExpression.merge_counts-50"><a href="#DifferenceExpression.merge_counts-50"><span class="linenos">50</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DifferenceExpression.merge_counts-51"><a href="#DifferenceExpression.merge_counts-51"><span class="linenos">51</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="DifferenceExpression.merge_counts-52"><a href="#DifferenceExpression.merge_counts-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="DifferenceExpression.merge_counts-53"><a href="#DifferenceExpression.merge_counts-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span>
 </span></pre></div>
 
 
@@ -2655,11 +2675,14 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#UnionExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UnionExpression-53"><a href="#UnionExpression-53"><span class="linenos">53</span></a><span class="k">class</span> <span class="nc">UnionExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
-</span><span id="UnionExpression-54"><a href="#UnionExpression-54"><span class="linenos">54</span></a>
-</span><span id="UnionExpression-55"><a href="#UnionExpression-55"><span class="linenos">55</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="UnionExpression-56"><a href="#UnionExpression-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="UnionExpression-57"><a href="#UnionExpression-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UnionExpression-59"><a href="#UnionExpression-59"><span class="linenos">59</span></a><span class="k">class</span> <span class="nc">UnionExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
+</span><span id="UnionExpression-60"><a href="#UnionExpression-60"><span class="linenos">60</span></a>
+</span><span id="UnionExpression-61"><a href="#UnionExpression-61"><span class="linenos">61</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="UnionExpression-62"><a href="#UnionExpression-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="UnionExpression-63"><a href="#UnionExpression-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+</span><span id="UnionExpression-64"><a href="#UnionExpression-64"><span class="linenos">64</span></a>
+</span><span id="UnionExpression-65"><a href="#UnionExpression-65"><span class="linenos">65</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="UnionExpression-66"><a href="#UnionExpression-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_left</span><span class="si">}</span><span class="s1"> | </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_right</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -2684,9 +2707,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#UnionExpression.merge_counts"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UnionExpression.merge_counts-55"><a href="#UnionExpression.merge_counts-55"><span class="linenos">55</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="UnionExpression.merge_counts-56"><a href="#UnionExpression.merge_counts-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="UnionExpression.merge_counts-57"><a href="#UnionExpression.merge_counts-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UnionExpression.merge_counts-61"><a href="#UnionExpression.merge_counts-61"><span class="linenos">61</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="UnionExpression.merge_counts-62"><a href="#UnionExpression.merge_counts-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="UnionExpression.merge_counts-63"><a href="#UnionExpression.merge_counts-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2745,11 +2768,14 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#DisjointUnionExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DisjointUnionExpression-60"><a href="#DisjointUnionExpression-60"><span class="linenos">60</span></a><span class="k">class</span> <span class="nc">DisjointUnionExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
-</span><span id="DisjointUnionExpression-61"><a href="#DisjointUnionExpression-61"><span class="linenos">61</span></a>
-</span><span id="DisjointUnionExpression-62"><a href="#DisjointUnionExpression-62"><span class="linenos">62</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="DisjointUnionExpression-63"><a href="#DisjointUnionExpression-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="DisjointUnionExpression-64"><a href="#DisjointUnionExpression-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DisjointUnionExpression-69"><a href="#DisjointUnionExpression-69"><span class="linenos">69</span></a><span class="k">class</span> <span class="nc">DisjointUnionExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
+</span><span id="DisjointUnionExpression-70"><a href="#DisjointUnionExpression-70"><span class="linenos">70</span></a>
+</span><span id="DisjointUnionExpression-71"><a href="#DisjointUnionExpression-71"><span class="linenos">71</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="DisjointUnionExpression-72"><a href="#DisjointUnionExpression-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="DisjointUnionExpression-73"><a href="#DisjointUnionExpression-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
+</span><span id="DisjointUnionExpression-74"><a href="#DisjointUnionExpression-74"><span class="linenos">74</span></a>
+</span><span id="DisjointUnionExpression-75"><a href="#DisjointUnionExpression-75"><span class="linenos">75</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="DisjointUnionExpression-76"><a href="#DisjointUnionExpression-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_left</span><span class="si">}</span><span class="s1"> + </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_right</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -2774,9 +2800,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#DisjointUnionExpression.merge_counts"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DisjointUnionExpression.merge_counts-62"><a href="#DisjointUnionExpression.merge_counts-62"><span class="linenos">62</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="DisjointUnionExpression.merge_counts-63"><a href="#DisjointUnionExpression.merge_counts-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="DisjointUnionExpression.merge_counts-64"><a href="#DisjointUnionExpression.merge_counts-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DisjointUnionExpression.merge_counts-71"><a href="#DisjointUnionExpression.merge_counts-71"><span class="linenos">71</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="DisjointUnionExpression.merge_counts-72"><a href="#DisjointUnionExpression.merge_counts-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="DisjointUnionExpression.merge_counts-73"><a href="#DisjointUnionExpression.merge_counts-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">left</span> <span class="o">+</span> <span class="n">right</span>
 </span></pre></div>
 
 
@@ -2835,11 +2861,14 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#SymmetricDifferenceExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SymmetricDifferenceExpression-67"><a href="#SymmetricDifferenceExpression-67"><span class="linenos">67</span></a><span class="k">class</span> <span class="nc">SymmetricDifferenceExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
-</span><span id="SymmetricDifferenceExpression-68"><a href="#SymmetricDifferenceExpression-68"><span class="linenos">68</span></a>
-</span><span id="SymmetricDifferenceExpression-69"><a href="#SymmetricDifferenceExpression-69"><span class="linenos">69</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="SymmetricDifferenceExpression-70"><a href="#SymmetricDifferenceExpression-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SymmetricDifferenceExpression-71"><a href="#SymmetricDifferenceExpression-71"><span class="linenos">71</span></a>        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SymmetricDifferenceExpression-79"><a href="#SymmetricDifferenceExpression-79"><span class="linenos">79</span></a><span class="k">class</span> <span class="nc">SymmetricDifferenceExpression</span><span class="p">(</span><span class="n">BinaryOperatorExpression</span><span class="p">):</span>
+</span><span id="SymmetricDifferenceExpression-80"><a href="#SymmetricDifferenceExpression-80"><span class="linenos">80</span></a>
+</span><span id="SymmetricDifferenceExpression-81"><a href="#SymmetricDifferenceExpression-81"><span class="linenos">81</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="SymmetricDifferenceExpression-82"><a href="#SymmetricDifferenceExpression-82"><span class="linenos">82</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SymmetricDifferenceExpression-83"><a href="#SymmetricDifferenceExpression-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="SymmetricDifferenceExpression-84"><a href="#SymmetricDifferenceExpression-84"><span class="linenos">84</span></a>
+</span><span id="SymmetricDifferenceExpression-85"><a href="#SymmetricDifferenceExpression-85"><span class="linenos">85</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="SymmetricDifferenceExpression-86"><a href="#SymmetricDifferenceExpression-86"><span class="linenos">86</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_left</span><span class="si">}</span><span class="s1"> ^ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_right</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -2864,9 +2893,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#SymmetricDifferenceExpression.merge_counts"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SymmetricDifferenceExpression.merge_counts-69"><a href="#SymmetricDifferenceExpression.merge_counts-69"><span class="linenos">69</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="SymmetricDifferenceExpression.merge_counts-70"><a href="#SymmetricDifferenceExpression.merge_counts-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SymmetricDifferenceExpression.merge_counts-71"><a href="#SymmetricDifferenceExpression.merge_counts-71"><span class="linenos">71</span></a>        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SymmetricDifferenceExpression.merge_counts-81"><a href="#SymmetricDifferenceExpression.merge_counts-81"><span class="linenos">81</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="SymmetricDifferenceExpression.merge_counts-82"><a href="#SymmetricDifferenceExpression.merge_counts-82"><span class="linenos">82</span></a>    <span class="k">def</span> <span class="nf">merge_counts</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SymmetricDifferenceExpression.merge_counts-83"><a href="#SymmetricDifferenceExpression.merge_counts-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -3080,6 +3109,9 @@ expressions, or to attach a final evaluator.</p>
 </span><span id="MultiplyCountsExpression-39"><a href="#MultiplyCountsExpression-39"><span class="linenos">39</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="MultiplyCountsExpression-40"><a href="#MultiplyCountsExpression-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="MultiplyCountsExpression-41"><a href="#MultiplyCountsExpression-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">count</span> <span class="o">*</span> <span class="n">constant</span>
+</span><span id="MultiplyCountsExpression-42"><a href="#MultiplyCountsExpression-42"><span class="linenos">42</span></a>
+</span><span id="MultiplyCountsExpression-43"><a href="#MultiplyCountsExpression-43"><span class="linenos">43</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="MultiplyCountsExpression-44"><a href="#MultiplyCountsExpression-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="si">}</span><span class="s1"> * </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_constant</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -3160,12 +3192,15 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#FloorDivCountsExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FloorDivCountsExpression-44"><a href="#FloorDivCountsExpression-44"><span class="linenos">44</span></a><span class="k">class</span> <span class="nc">FloorDivCountsExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
-</span><span id="FloorDivCountsExpression-45"><a href="#FloorDivCountsExpression-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Divides all counts by the constant, rounding down.&quot;&quot;&quot;</span>
-</span><span id="FloorDivCountsExpression-46"><a href="#FloorDivCountsExpression-46"><span class="linenos">46</span></a>
-</span><span id="FloorDivCountsExpression-47"><a href="#FloorDivCountsExpression-47"><span class="linenos">47</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FloorDivCountsExpression-48"><a href="#FloorDivCountsExpression-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="FloorDivCountsExpression-49"><a href="#FloorDivCountsExpression-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">count</span> <span class="o">//</span> <span class="n">constant</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FloorDivCountsExpression-47"><a href="#FloorDivCountsExpression-47"><span class="linenos">47</span></a><span class="k">class</span> <span class="nc">FloorDivCountsExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
+</span><span id="FloorDivCountsExpression-48"><a href="#FloorDivCountsExpression-48"><span class="linenos">48</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Divides all counts by the constant, rounding down.&quot;&quot;&quot;</span>
+</span><span id="FloorDivCountsExpression-49"><a href="#FloorDivCountsExpression-49"><span class="linenos">49</span></a>
+</span><span id="FloorDivCountsExpression-50"><a href="#FloorDivCountsExpression-50"><span class="linenos">50</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FloorDivCountsExpression-51"><a href="#FloorDivCountsExpression-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="FloorDivCountsExpression-52"><a href="#FloorDivCountsExpression-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="n">count</span> <span class="o">//</span> <span class="n">constant</span>
+</span><span id="FloorDivCountsExpression-53"><a href="#FloorDivCountsExpression-53"><span class="linenos">53</span></a>
+</span><span id="FloorDivCountsExpression-54"><a href="#FloorDivCountsExpression-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="FloorDivCountsExpression-55"><a href="#FloorDivCountsExpression-55"><span class="linenos">55</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="si">}</span><span class="s1"> // </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_constant</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -3185,9 +3220,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#FloorDivCountsExpression.adjust_count"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FloorDivCountsExpression.adjust_count-47"><a href="#FloorDivCountsExpression.adjust_count-47"><span class="linenos">47</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FloorDivCountsExpression.adjust_count-48"><a href="#FloorDivCountsExpression.adjust_count-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="FloorDivCountsExpression.adjust_count-49"><a href="#FloorDivCountsExpression.adjust_count-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">count</span> <span class="o">//</span> <span class="n">constant</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FloorDivCountsExpression.adjust_count-50"><a href="#FloorDivCountsExpression.adjust_count-50"><span class="linenos">50</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FloorDivCountsExpression.adjust_count-51"><a href="#FloorDivCountsExpression.adjust_count-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="FloorDivCountsExpression.adjust_count-52"><a href="#FloorDivCountsExpression.adjust_count-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="n">count</span> <span class="o">//</span> <span class="n">constant</span>
 </span></pre></div>
 
 
@@ -3246,15 +3281,18 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#FilterCountsExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FilterCountsExpression-52"><a href="#FilterCountsExpression-52"><span class="linenos">52</span></a><span class="k">class</span> <span class="nc">FilterCountsExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
-</span><span id="FilterCountsExpression-53"><a href="#FilterCountsExpression-53"><span class="linenos">53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts below a certain value are treated as zero.&quot;&quot;&quot;</span>
-</span><span id="FilterCountsExpression-54"><a href="#FilterCountsExpression-54"><span class="linenos">54</span></a>
-</span><span id="FilterCountsExpression-55"><a href="#FilterCountsExpression-55"><span class="linenos">55</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FilterCountsExpression-56"><a href="#FilterCountsExpression-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="FilterCountsExpression-57"><a href="#FilterCountsExpression-57"><span class="linenos">57</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">constant</span><span class="p">:</span>
-</span><span id="FilterCountsExpression-58"><a href="#FilterCountsExpression-58"><span class="linenos">58</span></a>            <span class="k">return</span> <span class="mi">0</span>
-</span><span id="FilterCountsExpression-59"><a href="#FilterCountsExpression-59"><span class="linenos">59</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FilterCountsExpression-60"><a href="#FilterCountsExpression-60"><span class="linenos">60</span></a>            <span class="k">return</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FilterCountsExpression-58"><a href="#FilterCountsExpression-58"><span class="linenos">58</span></a><span class="k">class</span> <span class="nc">FilterCountsExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
+</span><span id="FilterCountsExpression-59"><a href="#FilterCountsExpression-59"><span class="linenos">59</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts below a certain value are treated as zero.&quot;&quot;&quot;</span>
+</span><span id="FilterCountsExpression-60"><a href="#FilterCountsExpression-60"><span class="linenos">60</span></a>
+</span><span id="FilterCountsExpression-61"><a href="#FilterCountsExpression-61"><span class="linenos">61</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FilterCountsExpression-62"><a href="#FilterCountsExpression-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="FilterCountsExpression-63"><a href="#FilterCountsExpression-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">constant</span><span class="p">:</span>
+</span><span id="FilterCountsExpression-64"><a href="#FilterCountsExpression-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="mi">0</span>
+</span><span id="FilterCountsExpression-65"><a href="#FilterCountsExpression-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FilterCountsExpression-66"><a href="#FilterCountsExpression-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">count</span>
+</span><span id="FilterCountsExpression-67"><a href="#FilterCountsExpression-67"><span class="linenos">67</span></a>
+</span><span id="FilterCountsExpression-68"><a href="#FilterCountsExpression-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="FilterCountsExpression-69"><a href="#FilterCountsExpression-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="si">}</span><span class="s1">.filter_counts(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_constant</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -3274,12 +3312,12 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#FilterCountsExpression.adjust_count"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FilterCountsExpression.adjust_count-55"><a href="#FilterCountsExpression.adjust_count-55"><span class="linenos">55</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FilterCountsExpression.adjust_count-56"><a href="#FilterCountsExpression.adjust_count-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="FilterCountsExpression.adjust_count-57"><a href="#FilterCountsExpression.adjust_count-57"><span class="linenos">57</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">constant</span><span class="p">:</span>
-</span><span id="FilterCountsExpression.adjust_count-58"><a href="#FilterCountsExpression.adjust_count-58"><span class="linenos">58</span></a>            <span class="k">return</span> <span class="mi">0</span>
-</span><span id="FilterCountsExpression.adjust_count-59"><a href="#FilterCountsExpression.adjust_count-59"><span class="linenos">59</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="FilterCountsExpression.adjust_count-60"><a href="#FilterCountsExpression.adjust_count-60"><span class="linenos">60</span></a>            <span class="k">return</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FilterCountsExpression.adjust_count-61"><a href="#FilterCountsExpression.adjust_count-61"><span class="linenos">61</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FilterCountsExpression.adjust_count-62"><a href="#FilterCountsExpression.adjust_count-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="FilterCountsExpression.adjust_count-63"><a href="#FilterCountsExpression.adjust_count-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">constant</span><span class="p">:</span>
+</span><span id="FilterCountsExpression.adjust_count-64"><a href="#FilterCountsExpression.adjust_count-64"><span class="linenos">64</span></a>            <span class="k">return</span> <span class="mi">0</span>
+</span><span id="FilterCountsExpression.adjust_count-65"><a href="#FilterCountsExpression.adjust_count-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="FilterCountsExpression.adjust_count-66"><a href="#FilterCountsExpression.adjust_count-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="n">count</span>
 </span></pre></div>
 
 
@@ -3338,12 +3376,18 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#UniqueExpression"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UniqueExpression-63"><a href="#UniqueExpression-63"><span class="linenos">63</span></a><span class="k">class</span> <span class="nc">UniqueExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
-</span><span id="UniqueExpression-64"><a href="#UniqueExpression-64"><span class="linenos">64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Limits the count produced by each outcome.&quot;&quot;&quot;</span>
-</span><span id="UniqueExpression-65"><a href="#UniqueExpression-65"><span class="linenos">65</span></a>
-</span><span id="UniqueExpression-66"><a href="#UniqueExpression-66"><span class="linenos">66</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="UniqueExpression-67"><a href="#UniqueExpression-67"><span class="linenos">67</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="UniqueExpression-68"><a href="#UniqueExpression-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">constant</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UniqueExpression-72"><a href="#UniqueExpression-72"><span class="linenos">72</span></a><span class="k">class</span> <span class="nc">UniqueExpression</span><span class="p">(</span><span class="n">AdjustCountsExpression</span><span class="p">):</span>
+</span><span id="UniqueExpression-73"><a href="#UniqueExpression-73"><span class="linenos">73</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Limits the count produced by each outcome.&quot;&quot;&quot;</span>
+</span><span id="UniqueExpression-74"><a href="#UniqueExpression-74"><span class="linenos">74</span></a>
+</span><span id="UniqueExpression-75"><a href="#UniqueExpression-75"><span class="linenos">75</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="UniqueExpression-76"><a href="#UniqueExpression-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="UniqueExpression-77"><a href="#UniqueExpression-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">constant</span><span class="p">)</span>
+</span><span id="UniqueExpression-78"><a href="#UniqueExpression-78"><span class="linenos">78</span></a>
+</span><span id="UniqueExpression-79"><a href="#UniqueExpression-79"><span class="linenos">79</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="UniqueExpression-80"><a href="#UniqueExpression-80"><span class="linenos">80</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constant</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="UniqueExpression-81"><a href="#UniqueExpression-81"><span class="linenos">81</span></a>            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="si">}</span><span class="s1">.unique()&#39;</span>
+</span><span id="UniqueExpression-82"><a href="#UniqueExpression-82"><span class="linenos">82</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="UniqueExpression-83"><a href="#UniqueExpression-83"><span class="linenos">83</span></a>            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="si">}</span><span class="s1">.unique(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_constant</span><span class="si">}</span><span class="s1">)&#39;</span>
 </span></pre></div>
 
 
@@ -3363,9 +3407,9 @@ expressions, or to attach a final evaluator.</p>
 
     </div>
     <a class="headerlink" href="#UniqueExpression.adjust_count"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UniqueExpression.adjust_count-66"><a href="#UniqueExpression.adjust_count-66"><span class="linenos">66</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="UniqueExpression.adjust_count-67"><a href="#UniqueExpression.adjust_count-67"><span class="linenos">67</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="UniqueExpression.adjust_count-68"><a href="#UniqueExpression.adjust_count-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">constant</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UniqueExpression.adjust_count-75"><a href="#UniqueExpression.adjust_count-75"><span class="linenos">75</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="UniqueExpression.adjust_count-76"><a href="#UniqueExpression.adjust_count-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">adjust_count</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="UniqueExpression.adjust_count-77"><a href="#UniqueExpression.adjust_count-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">constant</span><span class="p">)</span>
 </span></pre></div>
 
 
