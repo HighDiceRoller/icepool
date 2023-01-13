@@ -271,8 +271,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         else:
             result = Pool._new_raw(self._dice, sorted_roll_counts)
         if convert_to_die:
-            return result.evaluate(lambda state, outcome, count: outcome
-                                   if count else state)
+            return result.sum()
         else:
             return result
 

@@ -2,7 +2,7 @@
 
 __docformat__ = 'google'
 
-from icepool.evaluator.basic import WrapFuncEvaluator, ExpandEvaluator, SumEvaluator, sum_evaluator, CountEvaluator, count_evaluator
+from icepool.evaluator.basic import ExpandEvaluator, SumEvaluator, sum_evaluator, CountEvaluator, count_evaluator
 from icepool.evaluator.poker import (HighestOutcomeAndCountEvaluator,
                                      LargestCountEvaluator,
                                      LargestCountAndOutcomeEvaluator,
@@ -16,8 +16,8 @@ from icepool.evaluator.comparison import (
 from icepool.evaluator.joint import JointEvaluator, MapEvaluator
 
 __all__ = [
-    'WrapFuncEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
-    'CountEvaluator', 'count_evaluator', 'HighestOutcomeAndCountEvaluator',
+    'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator', 'CountEvaluator',
+    'count_evaluator', 'HighestOutcomeAndCountEvaluator',
     'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator',
     'AllCountsEvaluator', 'LargestStraightEvaluator',
     'LargestStraightAndOutcomeEvaluator', 'ComparisonEvaluator',

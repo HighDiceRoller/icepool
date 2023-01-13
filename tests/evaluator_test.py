@@ -57,12 +57,6 @@ def sum_dice_func(state, outcome, count):
     return (state or 0) + outcome * count
 
 
-def test_wrap_func_evaluate():
-    result = icepool.d6.pool([0, 0, 1, 1, 1]).evaluate(sum_dice_func)
-    expected = icepool.d6.sum_highest(5, 3)
-    assert result.equals(expected)
-
-
 def test_standard_pool():
     result = icepool.standard_pool([8, 8, 6, 6, 6]).sum()
     expected = 3 @ icepool.d6 + 2 @ icepool.d8

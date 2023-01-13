@@ -17,22 +17,6 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class WrapFuncEvaluator(MultisetEvaluator[T_contra, Q_contra, U_co]):
-    """Evaluates the provided function."""
-
-    def __init__(self, func: Callable[..., U_co], /):
-        """Constructs a new instance given the function that should be called for `next_state()`.
-        Args:
-            func(state, outcome, *counts): This should take the same arguments
-                as `next_state()`, minus `self`, and return the next state.
-        """
-        self._func = func
-
-    def next_state(self, state: Hashable, outcome: T_contra, *counts: Q_contra):
-        """Calls the wrapped function."""
-        return self._func(state, outcome, *counts)
-
-
 class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
     """Expands all results of a generator.
 

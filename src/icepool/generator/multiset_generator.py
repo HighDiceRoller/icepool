@@ -150,28 +150,10 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     def __hash__(self) -> int:
         return self._hash
 
-    def evaluate(self,
-                 evaluator_or_func: 'icepool.MultisetEvaluator[Any, Any, U]' |
-                 Callable[..., U], /) -> 'icepool.Die[U]':
-        """Evaluates this generator using the given `MultisetEvaluator` or function.
-
-        Note that each `MultisetEvaluator` instance carries its own cache;
-        if you plan to use an evaluation multiple times,
-        you may want to explicitly create an `MultisetEvaluator` instance
-        rather than passing a function to this method directly.
-
-        Args:
-            func: This can be an `MultisetEvaluator`, in which case it evaluates
-                the generator directly.
-                Or it can be a `MultisetEvaluator.next_state()`-like
-                function, taking in `state, outcome, *counts` and returning the
-                next state. In this case a temporary `WrapFuncEvaluator`
-                is constructed and used to evaluate this generator.
-        """
-        from icepool.evaluator import WrapFuncEvaluator
-        if not isinstance(evaluator_or_func, icepool.MultisetEvaluator):
-            evaluator_or_func = WrapFuncEvaluator(evaluator_or_func)
-        return evaluator_or_func.evaluate(self)
+    def evaluate(self, evaluator: 'icepool.MultisetEvaluator[T_co, Any, U]',
+                 /) -> 'icepool.Die[U]':
+        """Evaluates this generator using the given `MultisetEvaluator`."""
+        return evaluator.evaluate(self)
 
     def min_outcome(self) -> T_co:
         return self.outcomes()[0]
