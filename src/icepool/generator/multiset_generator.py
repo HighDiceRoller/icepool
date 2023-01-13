@@ -4,7 +4,7 @@ import operator
 import icepool
 import icepool.generator
 from icepool.collections import Counts
-from icepool.typing import MultisetBinaryIntOperationStr, Outcome, Order, SetComparatorStr, MultisetBinaryOperationStr
+from icepool.typing import Outcome, SetComparatorStr
 
 import bisect
 import functools
