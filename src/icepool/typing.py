@@ -1,11 +1,13 @@
 __docformat__ = 'google'
 
 import enum
-import math
 
 from typing import Hashable, Literal, Protocol, TypeVar
 
 T_contra = TypeVar('T_contra', contravariant=True)
+
+SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
+                           '==', 'isdisjoint']
 
 
 class Order(enum.IntEnum):
@@ -32,9 +34,3 @@ class Outcome(Hashable, Protocol[T_contra]):
 
     def __eq__(self, other):
         ...
-
-
-SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
-                           '==', 'isdisjoint']
-
-MultisetBinaryIntOperationStr = Literal['*', '//']
