@@ -26,15 +26,15 @@ class SuitGenerator(MultisetGenerator):
     def outcomes(self) -> Sequence:
         return self._outcomes
 
-    def counts_len(self) -> int:
-        return self._src.counts_len()
+    def arity(self) -> int:
+        return self._src.arity()
 
     def _is_resolvable(self) -> bool:
         return self._src._is_resolvable()
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
-            defaultdict(int) for _ in range(self.counts_len())
+            defaultdict(int) for _ in range(self.arity())
         ]
         for popped_src, counts, weights in SuitGenerator._generate_min_internal(
                 min_outcome, self._src, blank_counts, 1):
@@ -42,7 +42,7 @@ class SuitGenerator(MultisetGenerator):
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         blank_counts: Sequence[defaultdict[Any, int]] = [
-            defaultdict(int) for _ in range(self.counts_len())
+            defaultdict(int) for _ in range(self.arity())
         ]
         for popped_src, counts, weights in SuitGenerator._generate_max_internal(
                 max_outcome, self._src, blank_counts, 1):

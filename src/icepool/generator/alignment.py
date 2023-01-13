@@ -22,7 +22,7 @@ class Alignment(MultisetGenerator[T_co, tuple[()]]):
     def outcomes(self) -> Sequence[T_co]:
         return self._outcomes
 
-    def counts_len(self) -> int:
+    def arity(self) -> int:
         return 0
 
     def _is_resolvable(self) -> bool:

@@ -160,7 +160,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
-    def counts_len(self) -> int:
+    def arity(self) -> int:
         return 1
 
     def _estimate_order_costs(self) -> tuple[int, int]:

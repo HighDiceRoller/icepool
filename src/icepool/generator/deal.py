@@ -79,7 +79,7 @@ class Deal(MultisetGenerator[T_co, Q_co]):
         """
         return self.deck().outcomes()
 
-    def counts_len(self) -> int:
+    def arity(self) -> int:
         return len(self._hand_sizes)
 
     def _is_resolvable(self) -> bool:
