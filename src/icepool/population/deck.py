@@ -28,6 +28,7 @@ class Deck(Population[T_co]):
     _data: Counts[T_co]
     _deal: int
 
+    @property
     def _new_type(self) -> type:
         return Deck
 

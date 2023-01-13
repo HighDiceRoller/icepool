@@ -34,6 +34,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Abstract methods.
 
+    @property
     @abstractmethod
     def _new_type(self) -> type:
         """The type to use when constructing a new instance."""
@@ -419,7 +420,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         for outcome, quantity in self.items():
             new_outcome = op(outcome, *args, **kwargs)
             data[new_outcome] += quantity
-        return self._new_type()(data)
+        return self._new_type(data)
 
     def covariance(self: 'Population[tuple[numbers.Real, ...]]', i: int,
                    j: int) -> float:
