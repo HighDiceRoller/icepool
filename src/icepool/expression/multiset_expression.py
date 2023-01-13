@@ -298,7 +298,7 @@ class MultisetExpression(Hashable, ABC):
 
         Args:
             op_name: One of the following strings:
-                `<, <=, >, >=, ==, !=`.
+                `<, <=, >, >=, ==, !=, isdisjoint`.
             other: The right-side generator or multiset to compare with.
         """
         if isinstance(other, MultisetExpression):

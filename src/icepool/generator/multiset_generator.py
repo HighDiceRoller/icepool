@@ -284,7 +284,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
 
         Args:
             op_name: One of the following strings:
-                `<, <=, >, >=, ==, !=`.
+                `<, <=, >, >=, ==, !=, isdisjoint`.
             right: The right-side generator or multiset to compare with.
         """
         if isinstance(right, MultisetGenerator):
