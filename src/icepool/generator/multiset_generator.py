@@ -69,6 +69,7 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     def outcomes(self) -> Sequence[T_co]:
         """The set of outcomes, in sorted order."""
 
+    @property
     @abstractmethod
     def arity(self) -> int:
         """The number of counts generated. Must be constant."""

@@ -22,6 +22,7 @@ class Alignment(MultisetGenerator[T_co, tuple[()]]):
     def outcomes(self) -> Sequence[T_co]:
         return self._outcomes
 
+    @property
     def arity(self) -> int:
         return 0
 

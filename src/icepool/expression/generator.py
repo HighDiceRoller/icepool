@@ -26,8 +26,7 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
 
     def __init__(self, *generators: MultisetGenerator[T_co, tuple[int, ...]],
                  expression: 'icepool.expression.MultisetExpression') -> None:
-        total_multiset_count = sum(
-            generator.arity() for generator in generators)
+        total_multiset_count = sum(generator.arity for generator in generators)
         if total_multiset_count < expression.arity:
             raise ValueError(
                 f'Total number of multisets {total_multiset_count} is less than the arity {expression.arity} of the expression.'
@@ -48,6 +47,7 @@ class ExpressionGenerator(MultisetGenerator[T_co, tuple[int]]):
     def outcomes(self) -> Sequence:
         return self._outcomes
 
+    @property
     def arity(self) -> int:
         return 1
 
@@ -120,8 +120,9 @@ class MapExpressionGenerator(MultisetGenerator[T_co, tuple[int, ...]]):
     def outcomes(self) -> Sequence:
         return self._generator.outcomes()
 
+    @property
     def arity(self) -> int:
-        return self._generator.arity()
+        return self._generator.arity
 
     def _is_resolvable(self) -> bool:
         return self._generator._is_resolvable()
