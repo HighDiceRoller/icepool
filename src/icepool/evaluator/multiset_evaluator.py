@@ -391,8 +391,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, Q_contra, U_co]):
     def _pop_generators(
         side: int, alignment: Alignment[T_contra],
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
-    ) -> tuple[Any, Alignment[T_contra], tuple['icepool.NextMultisetGenerator',
-                                               ...]]:
+    ) -> tuple[T_contra, Alignment[T_contra], tuple[
+            'icepool.NextMultisetGenerator', ...]]:
         """Pops a single outcome from the generators.
 
         Returns:
