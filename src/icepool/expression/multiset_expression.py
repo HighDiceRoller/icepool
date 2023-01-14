@@ -4,7 +4,7 @@ import icepool
 import icepool.expression
 import icepool.evaluator
 
-from icepool.typing import Outcome, SetComparatorStr
+from icepool.typing import Order, Outcome, SetComparatorStr
 
 from abc import ABC, abstractmethod
 from functools import cached_property, reduce
@@ -27,14 +27,32 @@ class MultisetExpression(Hashable, ABC):
     """
 
     @abstractmethod
-    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
-        """Evaluate this expression, producing a single output count.
+    def next_state(self, state, outcome: Outcome,
+                   *counts: int) -> tuple[Hashable, int]:
+        """
 
-        You probably won't need to call this yourself.
+        Returns:
+            The modified state.
+            The modified count.
+        """
 
-        Args:
-            outcome: The current outcome.
-            *counts: The original sequence of counts.
+    def final_outcome(self, final_state: Hashable) -> Hashable:
+        """Modifies the final state, if necessary.
+
+        Returns:
+            The modified final_state.
+        """
+        return final_state
+
+    @abstractmethod
+    def order(self) -> Order:
+        """Any ordering that is required by this expression.
+
+        This should check any previous expressions for their order, and
+        raise a ValueError for any incompatibilities.
+
+        Returns:
+            The required order.
         """
 
     @property

@@ -55,17 +55,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
             ValueError: If subevals have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
-        suborders = tuple(inner.order() for inner in self._inners)
-        ascending = any(x > 0 for x in suborders)
-        descending = any(x < 0 for x in suborders)
-        if ascending and descending:
-            raise ValueError('Sub-evals have conflicting orders.')
-        elif ascending:
-            return Order.Ascending
-        elif descending:
-            return Order.Descending
-        else:
-            return Order.Any
+        return Order.merge(*(inner.order() for inner in self._inners))
 
     def alignment(self, outcomes):
         return union_sorted_sets(

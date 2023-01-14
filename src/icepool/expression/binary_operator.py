@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from typing import Hashable
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Outcome
+from icepool.typing import Order, Outcome
 
 from abc import abstractmethod
 from functools import cached_property
@@ -20,11 +20,18 @@ class BinaryOperatorExpression(MultisetExpression):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
-    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
-        left = self._left.evaluate_counts(outcome, *counts)
-        right = self._right.evaluate_counts(outcome, *counts)
-        result = self.merge_counts(left, right)
-        return max(result, 0)
+    def next_state(self, state, outcome: Outcome,
+                   *counts: int) -> tuple[Hashable, int]:
+        left_state, right_state = state or (None, None)
+        left_state, left_count = self._left.next_state(left_state, outcome,
+                                                       *counts)
+        right_state, right_count = self._right.next_state(
+            right_state, outcome, *counts)
+        count = self.merge_counts(left_count, right_count)
+        return (left_state, right_state), count
+
+    def order(self) -> Order:
+        return Order.merge(self._left.order(), self._right.order())
 
     @property
     def arity(self) -> int:

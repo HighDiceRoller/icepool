@@ -15,7 +15,7 @@ U_co = TypeVar('U_co', bound=Outcome, covariant=True)
 
 
 class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
-    """Wraps an evaluator with expressions to be evaluated first."""
+    """Assigns an expression to be evaluated first to each input of an evaluator."""
 
     def __init__(self,
                  *expressions: 'icepool.expression.MultisetExpression',
@@ -27,10 +27,19 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
 
     def next_state(self, state, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
-        counts = tuple(
-            expression.evaluate_counts(outcome, *counts)
-            for expression in self._expressions)
-        return self._evaluator.next_state(state, outcome, *counts)
+        if state is None:
+            expression_states = (None,) * len(self._expressions)
+            evaluator_state = None
+        else:
+            expression_states, evaluator_state = state
+
+        expression_states, expression_counts = zip(
+            *(expression.next_state(expression_state, outcome, *counts)
+              for expression, expression_state in zip(self._expressions,
+                                                      expression_states)))
+        evaluator_state = self._evaluator.next_state(evaluator_state,
+                                                     *expression_counts)
+        return expression_states, evaluator_state
 
     def final_outcome(self, final_state):
         """Forwards to inner."""

@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from typing import Hashable
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Outcome
+from icepool.typing import Order, Outcome
 
 from abc import abstractmethod
 from functools import cached_property
@@ -19,9 +19,13 @@ class AdjustCountsExpression(MultisetExpression):
     def adjust_count(count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
-        inner = self._inner.evaluate_counts(outcome, *counts)
-        return self.adjust_count(inner, self._constant)
+    def next_state(self, state, outcome: Outcome,
+                   *counts: int) -> tuple[Hashable, int]:
+        count = self.adjust_count(counts[0], self._constant)
+        return state, count
+
+    def order(self) -> Order:
+        return self._inner.order()
 
     @property
     def arity(self) -> int:

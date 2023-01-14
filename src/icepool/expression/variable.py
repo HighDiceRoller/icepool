@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Outcome
+from icepool.typing import Order, Outcome
 
 from functools import cached_property
 from typing import Final, Hashable, Literal, overload
@@ -17,8 +17,12 @@ class MultisetVariable(MultisetExpression):
         """
         self._index = index
 
-    def evaluate_counts(self, outcome: Outcome, *counts: int) -> int:
-        return counts[self._index]
+    def next_state(self, state, outcome: Outcome,
+                   *counts: int) -> tuple[Hashable, int]:
+        return state, counts[self._index]
+
+    def order(self):
+        return Order.Any
 
     @property
     def arity(self) -> int:
