@@ -42,8 +42,11 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, int, U_co]):
         return expression_states, evaluator_state
 
     def final_outcome(self, final_state):
-        """Forwards to inner."""
-        return self._evaluator.final_outcome(final_state)
+        if final_state is None:
+            return self._evaluator.final_outcome(None)
+        else:
+            _, evaluator_state = final_state
+        return self._evaluator.final_outcome(evaluator_state)
 
     def order(self):
         """Forwards to inner."""

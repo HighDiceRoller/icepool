@@ -29,20 +29,20 @@ class MultisetExpression(Hashable, ABC):
     @abstractmethod
     def next_state(self, state, outcome: Outcome,
                    *counts: int) -> tuple[Hashable, int]:
-        """
+        """Updates the state for this expression and does any necessary count modification.
+
+        Args:
+            state: The overall state. This will contain all information needed
+                by this expression and any previous expressions.
+            outcome: The current outcome.
+            *counts: The raw counts originating from the generators.
+                This must be passed to any previous expressions.
 
         Returns:
-            The modified state.
-            The modified count.
+            state: The updated state, which will be seen again by this
+            `next_state` later.
+            count: The resulting count, which will be sent forward.
         """
-
-    def final_outcome(self, final_state: Hashable) -> Hashable:
-        """Modifies the final state, if necessary.
-
-        Returns:
-            The modified final_state.
-        """
-        return final_state
 
     @abstractmethod
     def order(self) -> Order:
