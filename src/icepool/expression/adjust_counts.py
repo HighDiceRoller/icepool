@@ -27,6 +27,10 @@ class AdjustCountsExpression(MultisetExpression):
     def order(self) -> Order:
         return self._inner.order()
 
+    def shift_variables(self, shift: int) -> MultisetExpression:
+        return self.__class__(self._inner.shift_variables(shift),
+                              self._constant)
+
     @property
     def arity(self) -> int:
         return self._inner.arity

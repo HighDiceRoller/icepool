@@ -55,6 +55,10 @@ class MultisetExpression(Hashable, ABC):
             The required order.
         """
 
+    @abstractmethod
+    def shift_variables(self, shift: int) -> 'MultisetExpression':
+        """Returns a copy of this expressions with the variable indexes shifted by the given amount."""
+
     @property
     @abstractmethod
     def arity(self) -> int:
