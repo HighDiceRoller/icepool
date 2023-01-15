@@ -69,8 +69,12 @@ from icepool.generator.deal import Deal
 
 from icepool.generator.suit import SuitGenerator
 
-import icepool.evaluator as evaluator
 import icepool.expression as expression
+
+import icepool.generator as generator
+import icepool.evaluator as evaluator
+
+from icepool.generators_with_expression import GeneratorsWithExpression
 
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
@@ -79,5 +83,5 @@ __all__ = [
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
     'MultisetGenerator', 'Pool', 'standard_pool', 'MultisetEvaluator', 'Order',
-    'Deck', 'Deal', 'SuitGenerator', 'evaluator', 'expression'
+    'Deck', 'Deal', 'SuitGenerator', 'expression'
 ]

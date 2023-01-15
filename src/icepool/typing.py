@@ -2,12 +2,24 @@ __docformat__ = 'google'
 
 import enum
 
-from typing import Hashable, Literal, Protocol, TypeVar
+from typing import Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, TypeVar, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from icepool import MultisetGenerator
+    from icepool.generators_with_expression import GeneratorsWithExpression
+
+T = TypeVar('T')
 
 T_contra = TypeVar('T_contra', contravariant=True)
 
+T_co = TypeVar('T_co', bound='Outcome', covariant=True)
+"""Type variable representing an outcome type."""
+
 SetComparatorStr = Literal['<', '<=', 'issubset', '>', '>=', 'issuperset', '!=',
                            '==', 'isdisjoint']
+
+Evaluable: TypeAlias = 'GeneratorsWithExpression[T] | MultisetGenerator[T, tuple[int]] | Mapping[T, int] | Sequence[T]'
+"""Type of objects that can be evaluated by a MultisetEvaluator."""
 
 
 class Order(enum.IntEnum):
