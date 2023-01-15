@@ -17,7 +17,7 @@ T_co = TypeVar('T_co', bound='Outcome', covariant=True)
 """An outcome type."""
 
 Evaluable: TypeAlias = 'EvaluableInterface[T] | Mapping[T, int] | Sequence[T]'
-"""Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluato."""
+"""Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator."""
 
 
 class Order(enum.IntEnum):

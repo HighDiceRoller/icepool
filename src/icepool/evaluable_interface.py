@@ -379,7 +379,7 @@ class EvaluableInterface(Generic[T_co]):
         return compare(self, other, icepool.evaluator.IsDisjointSetEvaluator)
 
 
-def convert_evaluable(
+def evaluable_to_expression(
     evaluable: 'Evaluable[T]',) -> 'icepool.expression.MultisetExpression':
     """Converts a single argument to an evaluable."""
     if isinstance(evaluable, icepool.expression.FullyBoundExpression):
@@ -396,7 +396,7 @@ def adjust_counts(
     left: 'Evaluable[T]', constant: int,
     operation_class: 'Type[icepool.expression.AdjustCountsExpression]'
 ) -> 'FullyBoundExpression[T]':
-    left_expression = convert_evaluable(left)
+    left_expression = evaluable_to_expression(left)
     expression = operation_class(left_expression, constant)
     return icepool.expression.FullyBoundExpression(expression)
 
@@ -405,8 +405,8 @@ def binary_operation(
     left: 'Evaluable[T]', right: 'Evaluable[T]',
     operation_class: 'Type[icepool.expression.BinaryOperatorExpression]'
 ) -> 'FullyBoundExpression[T]':
-    left_expression = convert_evaluable(left)
-    right_expression = convert_evaluable(right)
+    left_expression = evaluable_to_expression(left)
+    right_expression = evaluable_to_expression(right)
     expression = operation_class(left_expression, right_expression)
     return icepool.expression.FullyBoundExpression(expression)
 
@@ -415,8 +415,8 @@ def compare(
     left: 'Evaluable[T]', right: 'Evaluable[T]',
     operation_class: Type['icepool.evaluator.ComparisonEvaluator']
 ) -> 'icepool.Die[bool]':
-    left_expression = convert_evaluable(left)
-    right_expression = convert_evaluable(right)
+    left_expression = evaluable_to_expression(left)
+    right_expression = evaluable_to_expression(right)
     evaluator = icepool.expression.ExpressionEvaluator(
         left_expression, right_expression, evaluator=operation_class())
     return evaluator.evaluate()

@@ -241,8 +241,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         self.validate_arity(
             sum(generator.arity for generator in converted_generators))
 
-        converted_generators = converted_generators + tuple(
-            self.extra_generators)
+        converted_generators = converted_generators + self.extra_generators
 
         if not all(generator._is_resolvable()
                    for generator in converted_generators):
@@ -256,7 +255,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         alignment = icepool.generator.alignment.Alignment(
             self.alignment(outcomes))
 
-        dist = algorithm(order, alignment, tuple(converted_generators))
+        dist = algorithm(order, alignment, converted_generators)
 
         final_outcomes = []
         final_weights = []
@@ -280,7 +279,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     def _select_algorithm(
         self, *generators: icepool.MultisetGenerator[T_contra, Any]
-    ) -> tuple[Callable, Order]:
+    ) -> tuple[
+            'Callable[[Order, icepool.generator.alignment.Alignment[T_contra], tuple[icepool.MultisetGenerator[T_contra, Any], ...]], Mapping[Any, int]]',
+            Order]:
         """Selects an algorithm and iteration order.
 
         Returns:
@@ -322,7 +323,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             return self._eval_internal_iterative, eval_order
 
     def _eval_internal(
-        self, order: int,
+        self, order: Order,
         alignment: 'icepool.generator.alignment.Alignment[T_contra]',
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
