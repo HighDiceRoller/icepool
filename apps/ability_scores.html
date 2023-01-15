@@ -110,59 +110,61 @@
 
     <h2>Multiple arrays and total price</h2>
 
-    <p>(The preceding chart and table are for a single array.)</p>
+    <div class="static_controls">
+        <p>(The preceding chart and table are for a single array.)</p>
 
-    <form id="multiple_array_inputs">
-        Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" />
-        array(s) and keep the best.
-    </form>
+        <form id="multiple_array_inputs">
+            Roll <input name="num_arrays" id="num_arrays" type="number" min="1" max="24" value="1" required onwheel="" />
+            array(s) and keep the best.
+        </form>
 
-    <form id="pricing">
-        Pricing:
-        <select id="pricingPresetSelect">
-            <option value="custom"></option>
-            <option value="raw">Raw</option>
-            <option value="mod">Modifier (D&#38;D 3e, 4e, 5e; Pathfinder)</option>
-            <option value="mod_dcc">Modifier (Dungeon Crawl Classics)</option>
-            <option value="mod_swn">Modifier (Stars/Worlds Without Number)</option>
-            <option value="pb_5e">Point buy (D&#38;D 5e)</option>
-            <option value="pb_pf">Point buy (Pathfinder)</option>
-        </select>
-        <table>
-            <tr>
-                <td>3: <input name="p3" id="p3" type="number" min="-25" max="50" value="3" required onwheel="" /></td>
-                <td>4: <input name="p4" id="p4" type="number" min="-25" max="50" value="4" required onwheel="" /></td>
-                <td>5: <input name="p5" id="p5" type="number" min="-25" max="50" value="5" required onwheel="" /></td>
-                <td>6: <input name="p6" id="p6" type="number" min="-25" max="50" value="6" required onwheel="" /></td>
-                <td>7: <input name="p7" id="p7" type="number" min="-25" max="50" value="7" required onwheel="" /></td>
-                <td>8: <input name="p8" id="p8" type="number" min="-25" max="50" value="8" required onwheel="" /></td>
-                <td>9: <input name="p9" id="p9" type="number" min="-25" max="50" value="9" required onwheel="" /></td>
-                <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" />
-                </td>
-            </tr>
-            <tr>
-                <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" />
-                </td>
-                <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" />
-                </td>
-                <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" />
-                </td>
-                <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" />
-                </td>
-                <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" />
-                </td>
-                <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" />
-                </td>
-                <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" />
-                </td>
-                <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" />
-                </td>
-            </tr>
-        </table>
-        <span name="monotonicityWarning" id="monotonicityWarning" style="display:none; color:red;">Warning: Prices are
-            not in increasing order. The most expensive ability scores and arrays will be taken even if they are not the
-            highest.</span>
-    </form>
+        <form id="pricing">
+            Pricing:
+            <select id="pricingPresetSelect">
+                <option value="custom"></option>
+                <option value="raw">Raw</option>
+                <option value="mod">Modifier (D&#38;D 3e, 4e, 5e; Pathfinder)</option>
+                <option value="mod_dcc">Modifier (Dungeon Crawl Classics)</option>
+                <option value="mod_swn">Modifier (Stars/Worlds Without Number)</option>
+                <option value="pb_5e">Point buy (D&#38;D 5e)</option>
+                <option value="pb_pf">Point buy (Pathfinder)</option>
+            </select>
+            <table>
+                <tr>
+                    <td>3: <input name="p3" id="p3" type="number" min="-25" max="50" value="3" required onwheel="" /></td>
+                    <td>4: <input name="p4" id="p4" type="number" min="-25" max="50" value="4" required onwheel="" /></td>
+                    <td>5: <input name="p5" id="p5" type="number" min="-25" max="50" value="5" required onwheel="" /></td>
+                    <td>6: <input name="p6" id="p6" type="number" min="-25" max="50" value="6" required onwheel="" /></td>
+                    <td>7: <input name="p7" id="p7" type="number" min="-25" max="50" value="7" required onwheel="" /></td>
+                    <td>8: <input name="p8" id="p8" type="number" min="-25" max="50" value="8" required onwheel="" /></td>
+                    <td>9: <input name="p9" id="p9" type="number" min="-25" max="50" value="9" required onwheel="" /></td>
+                    <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" />
+                    </td>
+                    <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" />
+                    </td>
+                    <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" />
+                    </td>
+                    <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" />
+                    </td>
+                    <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" />
+                    </td>
+                    <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" />
+                    </td>
+                    <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" />
+                    </td>
+                    <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" />
+                    </td>
+                </tr>
+            </table>
+            <span name="monotonicityWarning" id="monotonicityWarning" style="display:none; color:red;">Warning: Prices are
+                not in increasing order. The most expensive ability scores and arrays will be taken even if they are not the
+                highest.</span>
+        </form>
+    </div>
 
     <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
@@ -190,7 +192,7 @@
 
 
 
-    <div style="max-width:1280px;">
+    <div class="text_content">
         <h2>Notes</h2>
 
         <ul>
