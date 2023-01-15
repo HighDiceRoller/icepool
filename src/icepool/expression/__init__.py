@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.expression.variable import MultisetVariable, multiset_variables
-from icepool.expression.evaluator import ExpressionEvaluator
+from icepool.expression.expression_evaluator import ExpressionEvaluator
 from icepool.expression.binary_operator import (
     BinaryOperatorExpression, IntersectionExpression, DifferenceExpression,
     UnionExpression, DisjointUnionExpression, SymmetricDifferenceExpression)

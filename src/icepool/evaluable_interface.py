@@ -429,7 +429,8 @@ def adjust_counts(
     generators: list['icepool.MultisetGenerator[T, tuple[int]]']
     generators, expressions = merge_evaluables(left)
     expression = operation_class(expressions[0], constant)
-    return GeneratorsWithExpression(generators[0], expression=expression)
+    return icepool.expression.GeneratorsWithExpression(generators[0],
+                                                       expression=expression)
 
 
 def binary_operation(
@@ -439,7 +440,8 @@ def binary_operation(
     generators: list['icepool.MultisetGenerator[T, tuple[int]]']
     generators, expressions = merge_evaluables(left, right)
     expression = operation_class(*expressions)
-    return GeneratorsWithExpression(*generators, expression=expression)
+    return icepool.expression.GeneratorsWithExpression(*generators,
+                                                       expression=expression)
 
 
 def compare(

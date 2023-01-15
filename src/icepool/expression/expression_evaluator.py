@@ -37,7 +37,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             *(expression.next_state(expression_state, outcome, *counts)
               for expression, expression_state in zip(self._expressions,
                                                       expression_states)))
-        evaluator_state = self._evaluator.next_state(evaluator_state,
+        evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
                                                      *expression_counts)
         return expression_states, evaluator_state
 
