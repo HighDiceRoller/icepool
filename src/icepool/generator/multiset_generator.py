@@ -6,7 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collections import Counts
 from icepool.evaluable_interface import EvaluableInterface
-from icepool.typing import Outcome
+from icepool.typing import Evaluable, Outcome
 
 import bisect
 import functools
@@ -156,6 +156,34 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
 
     def __hash__(self) -> int:
         return self._hash
+
+    # The result has a truth value, but is not a bool.
+    def __eq__(  # type: ignore
+            self: 'Evaluable[T_co]', other) -> 'icepool.DieWithTruth[bool]':
+
+        def data_callback():
+            return EvaluableInterface.__eq__(self, other)._data
+
+        def truth_value_callback():
+            if not isinstance(other, MultisetGenerator):
+                return False
+            return self._key_tuple == other._key_tuple
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
+
+    # The result has a truth value, but is not a bool.
+    def __ne__(  # type: ignore
+            self: 'Evaluable[T_co]', other) -> 'icepool.DieWithTruth[bool]':
+
+        def data_callback():
+            return EvaluableInterface.__ne__(self, other)._data
+
+        def truth_value_callback():
+            if not isinstance(other, MultisetGenerator):
+                return True
+            return self._key_tuple != other._key_tuple
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def min_outcome(self) -> T_co:
         return self.outcomes()[0]
