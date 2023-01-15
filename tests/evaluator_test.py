@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12
+from icepool import d4, d6, d8, d10, d12, Pool
 
 
 class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
@@ -37,7 +37,7 @@ def test_sum_descending():
 
 
 def test_sum_descending_limit_outcomes():
-    result = -SumPoolDescending().evaluate((-icepool.d8, -icepool.d6))
+    result = -SumPoolDescending().evaluate(Pool([-icepool.d8, -icepool.d6]))
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
