@@ -12,7 +12,7 @@ from icepool.expression.adjust_counts import (AdjustCountsExpression,
                                               FilterCountsExpression,
                                               UniqueExpression)
 
-from icepool.expression.generators_with_expression import GeneratorsWithExpression, merge
+from icepool.expression.generators_with_expression import GeneratorsWithExpression, merge_evaluables
 from icepool.expression.from_callable import evaluator_from_callable
 
 __all__ = [

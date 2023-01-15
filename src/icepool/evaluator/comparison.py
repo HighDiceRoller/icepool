@@ -8,7 +8,7 @@ from abc import abstractmethod
 from collections import defaultdict
 
 import math
-from icepool.typing import Outcome, Order, SetComparatorStr
+from icepool.typing import Outcome, Order
 from typing import Collection, Mapping, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
@@ -22,8 +22,8 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
     """The right-hand multiset, if fixed."""
 
     def __init__(self,
-                 right: Mapping[T_contra, int] |
-                 Collection[T_contra] | None = None):
+                 right: Mapping[T_contra, int] | Collection[T_contra] |
+                 None = None):
         """Constructor.
 
         Args:
@@ -40,22 +40,6 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
             self._right = defaultdict(int)
             for outcome in right:
                 self._right[outcome] += 1
-
-
-    @classmethod
-    def new_by_name(cls, name: SetComparatorStr, right: Mapping[T_contra, int] |
-                 Collection[T_contra] | None = None) -> 'ComparisonEvaluator[T_contra]':
-        """Creates a new instance by the operation name."""
-        match name:
-            case '<': return IsProperSubsetEvaluator(right)
-            case '<=' | 'issubset': return IsSubsetEvaluator(right)
-            case '>': return IsProperSubsetEvaluator(right)
-            case '>=' | 'issuperset': return IsSupersetEvaluator(right)
-            case '==': return IsEqualSetEvaluator(right)
-            case '!=': return IsNotEqualSetEvaluator(right)
-            case 'isdisjoint': return IsDisjointSetEvaluator(right)
-            case _: raise ValueError(f'Invalid comparator {name}.')
-
 
     @abstractmethod
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:

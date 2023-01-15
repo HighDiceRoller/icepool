@@ -217,7 +217,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                 isinstance(generator,
                            icepool.expression.GeneratorsWithExpression)
                 for generator in evaluables):
-            generators, expressions = icepool.expression.merge(*evaluables)
+            generators, expressions = icepool.expression.merge_evaluables(
+                *evaluables)
 
             evaluator: 'MultisetEvaluator[T_contra, U_co]' = icepool.expression.ExpressionEvaluator(
                 *expressions, evaluator=self)

@@ -9,8 +9,7 @@ from icepool.typing import Outcome, Order
 from typing import Any
 
 
-class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Outcome, tuple[Any,
-                                                                       int]]):
+class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
     """The highest outcome that has positive count, along with that count.
 
     If no outcomes have positive count, an arbitrary outcome will be produced
@@ -35,7 +34,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Outcome, tuple[Any,
         return Order.Any
 
 
-class AllCountsEvaluator(MultisetEvaluator[Outcome, tuple[int, ...]]):
+class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     """All counts in ascending order.
 
     In other words, this produces tuples of the sizes of all matching sets.
@@ -68,7 +67,7 @@ class AllCountsEvaluator(MultisetEvaluator[Outcome, tuple[int, ...]]):
         return Order.Any
 
 
-class LargestCountEvaluator(MultisetEvaluator[Outcome, int]):
+class LargestCountEvaluator(MultisetEvaluator[Any, int]):
     """The largest count of any outcome."""
 
     def next_state(self, state, _, count):
@@ -80,8 +79,7 @@ class LargestCountEvaluator(MultisetEvaluator[Outcome, int]):
         return Order.Any
 
 
-class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Outcome, tuple[int,
-                                                                       Any]]):
+class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
     def next_state(self, state, outcome, count):
