@@ -10,47 +10,11 @@ from collections import defaultdict
 
 import math
 from icepool.typing import Outcome, Order
-from typing import Collection, Mapping, TypeVar
-
-T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
-"""Type variable representing the input outcome type."""
+from typing import Any, Collection, Mapping, TypeVar
 
 
-class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
-    """Compares the multisets produced by two generators, or a left generator and a fixed right side."""
-
-    _right: Mapping[T_contra, int | float] | None
-    """The right-hand multiset, if fixed."""
-
-    def __init__(self,
-                 right: Mapping[T_contra, int] | Collection[T_contra] |
-                 None = None):
-        """Constructor.
-
-        Args:
-            right: If not provided, the evaulator will take left and right
-                generators as arguments to `evaluate()`.
-                If provided, this will be used as the right-hand side of the
-                comparison, and `evaluate()` will only take a left generator.
-                Dice are not allowed as elements, only fixed outcomes.
-        """
-        if right is None:
-            self._right = None
-        elif isinstance(right, Mapping):
-            self._right = {k: v for k, v in right.items()}
-        else:
-            self._right = defaultdict(int)
-            for outcome in right:
-                self._right[outcome] += 1
-
-        # Check outcomes.
-        if self._right is not None:
-            if any(
-                    isinstance(k, icepool.Population)
-                    for k in self._right.keys()):
-                raise TypeError(
-                    'If a Mapping or Collection is provided to a multiset comparison, it must be fixed.'
-                )
+class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
+    """Compares the multisets produced by two generators."""
 
     @abstractmethod
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
@@ -65,10 +29,8 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
     def default_outcome() -> bool:
         """The final outcome if both left and right have no outcomes."""
 
-    def next_state(self, state, outcome, left, right=None):
+    def next_state(self, state, outcome, left, right):
         """Implementation."""
-        if self._right is not None:
-            right = self._right.get(outcome, 0)
         has_any, has_all = state or (False, True)
         this_any, this_all = self.any_all(left, right)
         has_all = has_all and this_all
@@ -86,15 +48,8 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
         """Allows any order."""
         return Order.Any
 
-    def alignment(self, *_):
-        """Implementation."""
-        if self._right is not None:
-            return self._right.keys()
-        else:
-            return ()
 
-
-class IsProperSubsetEvaluator(ComparisonEvaluator[T_contra]):
+class IsProperSubsetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return left < right, left <= right
@@ -104,7 +59,7 @@ class IsProperSubsetEvaluator(ComparisonEvaluator[T_contra]):
         return False
 
 
-class IsSubsetEvaluator(ComparisonEvaluator[T_contra]):
+class IsSubsetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return True, left <= right
@@ -114,7 +69,7 @@ class IsSubsetEvaluator(ComparisonEvaluator[T_contra]):
         return True
 
 
-class IsProperSupersetEvaluator(ComparisonEvaluator[T_contra]):
+class IsProperSupersetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return left > right, left >= right
@@ -124,7 +79,7 @@ class IsProperSupersetEvaluator(ComparisonEvaluator[T_contra]):
         return False
 
 
-class IsSupersetEvaluator(ComparisonEvaluator[T_contra]):
+class IsSupersetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return True, left >= right
@@ -134,7 +89,7 @@ class IsSupersetEvaluator(ComparisonEvaluator[T_contra]):
         return True
 
 
-class IsEqualSetEvaluator(ComparisonEvaluator[T_contra]):
+class IsEqualSetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return True, left == right
@@ -144,7 +99,7 @@ class IsEqualSetEvaluator(ComparisonEvaluator[T_contra]):
         return True
 
 
-class IsNotEqualSetEvaluator(ComparisonEvaluator[T_contra]):
+class IsNotEqualSetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return left != right, True
@@ -154,7 +109,7 @@ class IsNotEqualSetEvaluator(ComparisonEvaluator[T_contra]):
         return False
 
 
-class IsDisjointSetEvaluator(ComparisonEvaluator[T_contra]):
+class IsDisjointSetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
         return True, not ((left > 0) and right > 0)
