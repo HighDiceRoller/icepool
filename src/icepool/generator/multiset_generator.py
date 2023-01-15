@@ -161,27 +161,7 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co]):
     def max_outcome(self) -> T_co:
         return self.outcomes()[-1]
 
-    # Binary operations with other generators.
-
-    def binary_operator(
-        self: 'MultisetGenerator[T_co, tuple[int]]', op: Callable,
-        right: 'MultisetGenerator[T_co, tuple[int]]'
-    ) -> 'MultisetGenerator[T_co, tuple[int]]':
-        """Binary operation with another generator.
-
-        You can also use the symbolic operators directly, e.g.
-        `generator & [1, 2, 2]`.
-        In this case, if the other argument is a `Mapping` or `Sequence`, it
-        will be converted into a generator automatically.
-
-        Args:
-            op_name: One of the following strings:
-                `+, -, |, &, ^`.
-            right: The other `MultisetGenerator`.
-        """
-        from icepool.expression import multiset_variables, ExpressionGenerator
-        expression = op(multiset_variables[0], multiset_variables[1])
-        return ExpressionGenerator(self, right, expression=expression)
+    # Binary operations.
 
     def __add__(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
@@ -197,7 +177,7 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co]):
         other_generator = implicit_convert_to_generator(other)
         return other_generator.binary_operator(operator.add, self)
 
-    def disjoint_sum(
+    def disjoint_union(
         self: 'MultisetGenerator[T_co, tuple[int]]', other:
         'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Sequence[T_co]'
     ) -> 'MultisetGenerator[T_co, tuple[int]]':

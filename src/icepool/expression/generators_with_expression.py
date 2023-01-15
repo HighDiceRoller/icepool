@@ -335,6 +335,67 @@ class GeneratorsWithExpression(Generic[T_co]):
 
     # Comparators.
 
+    def __lt__(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+               /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other,
+                           icepool.evaluator.IsProperSubsetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def __le__(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+               /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other, icepool.evaluator.IsSubsetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def issubset(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+                 /) -> 'icepool.Die[bool]':
+        return compare(self, other, icepool.evaluator.IsSubsetEvaluator)
+
+    def __gt__(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+               /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other,
+                           icepool.evaluator.IsProperSupersetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def __ge__(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+               /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other, icepool.evaluator.IsSupersetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    # The result has no truth value.
+    def __eq__(  # type: ignore
+            self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+            /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other, icepool.evaluator.IsEqualSetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    # The result has no truth value.
+    def __ne__(  # type: ignore
+            self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+            /) -> 'icepool.Die[bool]':
+        try:
+            return compare(self, other,
+                           icepool.evaluator.IsNotEqualSetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def issuperset(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+                   /) -> 'icepool.Die[bool]':
+        return compare(self, other, icepool.evaluator.IsSupersetEvaluator)
+
+    def isdisjoint(self: 'Evaluable[T_co]', other: 'Evaluable[T_co]',
+                   /) -> 'icepool.Die[bool]':
+        return compare(self, other, icepool.evaluator.IsDisjointSetEvaluator)
+
 
 def convert_evaluable(
     evaluable: 'Evaluable[T]',
