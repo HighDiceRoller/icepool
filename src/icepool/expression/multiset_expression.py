@@ -8,7 +8,7 @@ from icepool.typing import Order, Outcome
 
 from abc import ABC, abstractmethod
 from functools import cached_property, reduce
-from typing import Callable, Collection, Hashable, Mapping, Type, TypeAlias, TypeVar
+from typing import Callable, Collection, Hashable, Mapping, Sequence, Type, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
 """Type variable representing an outcome type."""
@@ -27,16 +27,20 @@ class MultisetExpression(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome: Outcome,
-                   *counts: int) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
+                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:
             state: The overall state. This will contain all information needed
                 by this expression and any previous expressions.
             outcome: The current outcome.
-            *counts: The raw counts originating from the generators.
+            counts: The raw counts originating from the free variables.
                 This must be passed to any previous expressions.
+            bound_counts: The counts originating from bound generators, in the
+                same order as they were returned from `bound_generators()`.
+                Each sub-expression will split this tuple until each
+                bound generator expression receives just its own count.
 
         Returns:
             state: The updated state, which will be seen again by this
@@ -57,7 +61,7 @@ class MultisetExpression(ABC):
 
     @abstractmethod
     def shift_variables(self, shift: int) -> 'MultisetExpression':
-        """Returns a copy of this expressions with the variable indexes shifted by the given amount."""
+        """Returns a copy of this expression with its variable indexes shifted by the given amount."""
 
     @property
     @abstractmethod
@@ -65,7 +69,13 @@ class MultisetExpression(ABC):
         """The minimum number of multisets/counts that must be provided to this expression.
 
         Any excess multisets/counts that are provided will be ignored.
+
+        This does not include bound generators.
         """
+
+    @abstractmethod
+    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        """Returns a sequence of bound generators."""
 
     # Binary operators.
 

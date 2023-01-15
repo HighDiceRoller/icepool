@@ -1,11 +1,14 @@
 __docformat__ = 'google'
 
-from typing import Hashable
+import icepool
+
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Order, Outcome
 
 from abc import abstractmethod
 from functools import cached_property
+
+from icepool.typing import Order, Outcome
+from typing import Hashable, Sequence
 
 
 class AdjustCountsExpression(MultisetExpression):
@@ -19,9 +22,10 @@ class AdjustCountsExpression(MultisetExpression):
     def adjust_count(count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def next_state(self, state, outcome: Outcome,
-                   *counts: int) -> tuple[Hashable, int]:
-        state, count = self._inner.next_state(state, outcome, *counts)
+    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
+                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+        state, count = self._inner.next_state(state, outcome, counts,
+                                              bound_counts)
         count = self.adjust_count(counts[0], self._constant)
         return state, count
 
@@ -31,6 +35,13 @@ class AdjustCountsExpression(MultisetExpression):
     def shift_variables(self, shift: int) -> MultisetExpression:
         return self.__class__(self._inner.shift_variables(shift),
                               self._constant)
+
+    @cached_property
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._inner.bound_generators()
+
+    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._bound_generators
 
     @property
     def arity(self) -> int:

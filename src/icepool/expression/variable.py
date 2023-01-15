@@ -1,10 +1,11 @@
 __docformat__ = 'google'
 
+import icepool
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Order, Outcome
 
 from functools import cached_property
-from typing import Final, Hashable, Literal, overload
+from typing import Final, Hashable, Literal, Sequence, overload
 
 
 class MultisetVariable(MultisetExpression):
@@ -21,8 +22,8 @@ class MultisetVariable(MultisetExpression):
         """
         self._index = index
 
-    def next_state(self, state, outcome: Outcome,
-                   *counts: int) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
+                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
         # We don't need any state, so always return str(self) as the state as
         # a diagnostic marker.
         return str(self), counts[self._index]
@@ -36,6 +37,9 @@ class MultisetVariable(MultisetExpression):
     @property
     def arity(self) -> int:
         return self._index + 1
+
+    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return ()
 
     def __str__(self) -> str:
         return f'mv[{self._index}]'

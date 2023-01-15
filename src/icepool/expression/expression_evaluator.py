@@ -70,4 +70,4 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             return '(' + ', '.join(
                 str(expression)
                 for expression in self._expressions) + ') -> ' + str(
-                    self._evaluator)
+                    type(self._evaluator))

@@ -1,6 +1,8 @@
 __docformat__ = 'google'
 
-from typing import Hashable
+import icepool
+
+from typing import Hashable, Sequence
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Order, Outcome
 
@@ -20,13 +22,17 @@ class BinaryOperatorExpression(MultisetExpression):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
-    def next_state(self, state, outcome: Outcome,
-                   *counts: int) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
+                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+        bound_counts_split = len(self._left.bound_generators())
+        left_bound_counts = bound_counts[:bound_counts_split]
+        right_bound_counts = bound_counts[bound_counts_split:]
         left_state, right_state = state or (None, None)
         left_state, left_count = self._left.next_state(left_state, outcome,
-                                                       *counts)
+                                                       counts,
+                                                       left_bound_counts)
         right_state, right_count = self._right.next_state(
-            right_state, outcome, *counts)
+            right_state, outcome, counts, right_bound_counts)
         count = self.merge_counts(left_count, right_count)
         count = max(count, 0)
         return (left_state, right_state), count
@@ -41,6 +47,13 @@ class BinaryOperatorExpression(MultisetExpression):
     @property
     def arity(self) -> int:
         return max(self._left.arity, self._right.arity)
+
+    @cached_property
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._left.bound_generators() + self._right.bound_generators()
+
+    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._bound_generators
 
 
 class IntersectionExpression(BinaryOperatorExpression):
