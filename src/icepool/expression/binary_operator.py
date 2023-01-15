@@ -28,6 +28,7 @@ class BinaryOperatorExpression(MultisetExpression):
         right_state, right_count = self._right.next_state(
             right_state, outcome, *counts)
         count = self.merge_counts(left_count, right_count)
+        count = max(count, 0)
         return (left_state, right_state), count
 
     def order(self) -> Order:

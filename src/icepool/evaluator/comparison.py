@@ -2,6 +2,7 @@
 
 __docformat__ = 'google'
 
+import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from abc import abstractmethod
@@ -31,6 +32,7 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
                 generators as arguments to `evaluate()`.
                 If provided, this will be used as the right-hand side of the
                 comparison, and `evaluate()` will only take a left generator.
+                Dice are not allowed as elements, only fixed outcomes.
         """
         if right is None:
             self._right = None
@@ -40,6 +42,15 @@ class ComparisonEvaluator(MultisetEvaluator[T_contra, bool]):
             self._right = defaultdict(int)
             for outcome in right:
                 self._right[outcome] += 1
+
+        # Check outcomes.
+        if self._right is not None:
+            if any(
+                    isinstance(k, icepool.Population)
+                    for k in self._right.keys()):
+                raise TypeError(
+                    'If a Mapping or Collection is provided to a multiset comparison, it must be fixed.'
+                )
 
     @abstractmethod
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
