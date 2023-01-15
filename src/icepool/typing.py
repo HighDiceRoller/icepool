@@ -8,11 +8,13 @@ if TYPE_CHECKING:
     from icepool.evaluable_interface import EvaluableInterface
 
 T = TypeVar('T')
+"""An outcome type."""
 
 T_contra = TypeVar('T_contra', contravariant=True)
+"""An outcome type."""
 
 T_co = TypeVar('T_co', bound='Outcome', covariant=True)
-"""Type variable representing an outcome type."""
+"""An outcome type."""
 
 Evaluable: TypeAlias = 'EvaluableInterface[T] | Mapping[T, int] | Sequence[T]'
 """Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluato."""

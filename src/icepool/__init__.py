@@ -70,6 +70,7 @@ from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 
 import icepool.expression as expression
+import icepool.typing as typing
 
 import icepool.generator as generator
 import icepool.evaluator as evaluator
@@ -81,5 +82,5 @@ __all__ = [
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
     'MultisetGenerator', 'Pool', 'standard_pool', 'EvaluableInterface',
-    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'expression'
+    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'expression', 'typing'
 ]
