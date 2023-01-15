@@ -31,10 +31,12 @@ class Order(enum.IntEnum):
             ValueError if both Ascending and Descending appear.
         """
         result = Order.Any
-        for order in Order:
-            if result != Order.Any:
-                if (order > 0) != (result > 0):
-                    raise ValueError('Conflicting orders.')
+        for order in orders:
+            if result == Order.Ascending and order == Order.Descending:
+                raise ValueError(f'Conflicting orders {orders}.')
+            if result == Order.Descending and order == Order.Ascending:
+                raise ValueError(f'Conflicting orders {orders}.')
+            if result == Order.Any:
                 result = order
         return result
 
