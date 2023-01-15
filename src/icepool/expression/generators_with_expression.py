@@ -21,23 +21,16 @@ U = TypeVar('U', bound=Outcome)
 """Another outcome type."""
 
 
-class GeneratorsWithExpression(EvaluableInterface[T_co]):
-    """One or more generators feeding into a single expression."""
+class FullyBoundExpression(EvaluableInterface[T_co]):
+    """An expression without any free variables.
+
+    This is used to implement method chaining on generators.
+    It is not intended to be instantiated directly.
+    """
 
     def __init__(self,
-                 *generators: 'icepool.MultisetGenerator[T_co, tuple[int]]',
                  expression: 'icepool.expression.MultisetExpression') -> None:
-        if any(generator.arity != 1 for generator in generators):
-            raise ValueError(
-                'Direct evaluation is only valid for MultisetGenerators with exactly one output.'
-            )
-        self._generators = generators
         self._expression = expression
-
-    @property
-    def generators(
-            self) -> 'tuple[icepool.MultisetGenerator[T_co, tuple[int]], ...]':
-        return self._generators
 
     @property
     def expression(self) -> 'icepool.expression.MultisetExpression':

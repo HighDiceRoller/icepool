@@ -294,14 +294,16 @@ class MultisetExpression(ABC):
 
     def compare(
         self, right: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-        operation_class: Type['icepool.evaluator.ComparisonEvaluator[T]']
+        operation_class: Type['icepool.evaluator.ComparisonEvaluator']
     ) -> 'icepool.MultisetEvaluator[T, bool]':
         if isinstance(right, MultisetExpression):
             return icepool.expression.ExpressionEvaluator(
                 self, right, evaluator=operation_class())
         elif isinstance(right, (Mapping, Collection)):
+            right_expression = icepool.expression.BoundGeneratorExpression(
+                icepool.implicit_convert_to_generator(right))
             return icepool.expression.ExpressionEvaluator(
-                self, evaluator=operation_class(right))
+                self, right_expression, evaluator=operation_class())
         else:
             raise TypeError('Right side is not comparable.')
 

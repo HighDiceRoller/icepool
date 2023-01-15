@@ -9,7 +9,7 @@ from icepool.typing import Evaluable, Outcome
 from typing import TYPE_CHECKING, Callable, Generic, Mapping, Sequence, Type, TypeVar
 
 if TYPE_CHECKING:
-    from icepool.expression.generators_with_expression import GeneratorsWithExpression
+    from icepool.expression.generators_with_expression import FullyBoundExpression
 
 T = TypeVar('T', bound=Outcome)
 """An outcome type."""
@@ -27,28 +27,28 @@ class EvaluableInterface(Generic[T_co]):
     # Count adjustment.
 
     def __mul__(self: 'Evaluable[T_co]',
-                constant: int) -> 'GeneratorsWithExpression[T_co]':
+                constant: int) -> 'FullyBoundExpression[T_co]':
         return adjust_counts(self, constant,
                              icepool.expression.MultiplyCountsExpression)
 
     def __rmul__(self: 'Evaluable[T_co]',
-                 constant: int) -> 'GeneratorsWithExpression[T_co]':
+                 constant: int) -> 'FullyBoundExpression[T_co]':
         # Commutable in this case.
         return adjust_counts(self, constant,
                              icepool.expression.MultiplyCountsExpression)
 
     def multiply_counts(self: 'Evaluable[T_co]',
-                        constant: int) -> 'GeneratorsWithExpression[T_co]':
+                        constant: int) -> 'FullyBoundExpression[T_co]':
         return adjust_counts(self, constant,
                              icepool.expression.MultiplyCountsExpression)
 
     def __floordiv__(self: 'Evaluable[T_co]',
-                     constant: int) -> 'GeneratorsWithExpression[T_co]':
+                     constant: int) -> 'FullyBoundExpression[T_co]':
         return adjust_counts(self, constant,
                              icepool.expression.FloorDivCountsExpression)
 
     def divide_counts(self: 'Evaluable[T_co]',
-                      constant: int) -> 'GeneratorsWithExpression[T_co]':
+                      constant: int) -> 'FullyBoundExpression[T_co]':
         """Divides all counts (rounding down).
 
         Same as `self // constant`.
@@ -57,7 +57,7 @@ class EvaluableInterface(Generic[T_co]):
                              icepool.expression.FloorDivCountsExpression)
 
     def filter_counts(self: 'Evaluable[T_co]',
-                      min_count: int) -> 'GeneratorsWithExpression[T_co]':
+                      min_count: int) -> 'FullyBoundExpression[T_co]':
         """Counts less than `min_count` are treated as zero.
 
         For example, `generator.filter_counts(2)` would only produce
@@ -67,7 +67,7 @@ class EvaluableInterface(Generic[T_co]):
                              icepool.expression.FilterCountsExpression)
 
     def unique(self: 'Evaluable[T_co]',
-               max_count: int = 1) -> 'GeneratorsWithExpression[T_co]':
+               max_count: int = 1) -> 'FullyBoundExpression[T_co]':
         """Counts each outcome at most `max_count` times.
 
         For example, `generator.unique(2)` would count each outcome at most
@@ -79,7 +79,7 @@ class EvaluableInterface(Generic[T_co]):
     # Binary operators.
 
     def __add__(self: 'Evaluable[T_co]',
-                other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(self, other,
                                     icepool.expression.DisjointUnionExpression)
@@ -88,7 +88,7 @@ class EvaluableInterface(Generic[T_co]):
 
     def disjoint_union(
             self: 'Evaluable[T_co]',
-            *others: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+            *others: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         """The multiset disjoint sum with another generator.
 
         Same as `self + other + ...`.
@@ -96,7 +96,7 @@ class EvaluableInterface(Generic[T_co]):
         return functools.reduce(operator.add, others, self)  # type: ignore
 
     def __radd__(self: 'Evaluable[T_co]',
-                 other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                 other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(other, self,
                                     icepool.expression.DisjointUnionExpression)
@@ -104,16 +104,15 @@ class EvaluableInterface(Generic[T_co]):
             return NotImplemented
 
     def __sub__(self: 'Evaluable[T_co]',
-                other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(self, other,
                                     icepool.expression.DifferenceExpression)
         except TypeError:
             return NotImplemented
 
-    def difference(
-            self: 'Evaluable[T_co]',
-            *others: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+    def difference(self: 'Evaluable[T_co]',
+                   *others: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         """The multiset difference with another generator(s).
 
         Same as `self - other - ...`.
@@ -121,7 +120,7 @@ class EvaluableInterface(Generic[T_co]):
         return functools.reduce(operator.sub, others, self)  # type: ignore
 
     def __rsub__(self: 'Evaluable[T_co]',
-                 other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                 other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(other, self,
                                     icepool.expression.DifferenceExpression)
@@ -129,7 +128,7 @@ class EvaluableInterface(Generic[T_co]):
             return NotImplemented
 
     def __and__(self: 'Evaluable[T_co]',
-                other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(self, other,
                                     icepool.expression.IntersectionExpression)
@@ -138,7 +137,7 @@ class EvaluableInterface(Generic[T_co]):
 
     def intersection(
             self: 'Evaluable[T_co]',
-            *others: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+            *others: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         """The multiset intersection with another generator.
 
         Same as `self & other & ...`.
@@ -146,7 +145,7 @@ class EvaluableInterface(Generic[T_co]):
         return functools.reduce(operator.and_, others, self)  # type: ignore
 
     def __rand__(self: 'Evaluable[T_co]',
-                 other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                 other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(other, self,
                                     icepool.expression.IntersectionExpression)
@@ -154,7 +153,7 @@ class EvaluableInterface(Generic[T_co]):
             return NotImplemented
 
     def __or__(self: 'Evaluable[T_co]',
-               other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+               other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(self, other,
                                     icepool.expression.UnionExpression)
@@ -162,7 +161,7 @@ class EvaluableInterface(Generic[T_co]):
             return NotImplemented
 
     def union(self: 'Evaluable[T_co]',
-              *others: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+              *others: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         """The multiset union with another generator.
 
         Same as `self | other | ...`.
@@ -170,7 +169,7 @@ class EvaluableInterface(Generic[T_co]):
         return functools.reduce(operator.or_, others, self)  # type: ignore
 
     def __ror__(self: 'Evaluable[T_co]',
-                other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(other, self,
                                     icepool.expression.UnionExpression)
@@ -178,7 +177,7 @@ class EvaluableInterface(Generic[T_co]):
             return NotImplemented
 
     def __xor__(self: 'Evaluable[T_co]',
-                other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(
                 self, other, icepool.expression.SymmetricDifferenceExpression)
@@ -187,7 +186,7 @@ class EvaluableInterface(Generic[T_co]):
 
     def symmetric_difference(
             self: 'Evaluable[T_co]',
-            other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+            other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         """The multiset symmetric difference with another generator.
 
         Same as `self ^ other`.
@@ -196,7 +195,7 @@ class EvaluableInterface(Generic[T_co]):
             self, other, icepool.expression.SymmetricDifferenceExpression)
 
     def __rxor__(self: 'Evaluable[T_co]',
-                 other: 'Evaluable[T_co]') -> 'GeneratorsWithExpression[T_co]':
+                 other: 'Evaluable[T_co]') -> 'FullyBoundExpression[T_co]':
         try:
             return binary_operation(
                 other, self, icepool.expression.SymmetricDifferenceExpression)
@@ -381,78 +380,43 @@ class EvaluableInterface(Generic[T_co]):
 
 
 def convert_evaluable(
-    evaluable: 'Evaluable[T]',
-) -> tuple[list['icepool.MultisetGenerator[T, tuple[int]]'],
-           'icepool.expression.MultisetExpression']:
-    """Converts a single argument to a list of generators and an expression."""
-    if isinstance(evaluable, icepool.expression.GeneratorsWithExpression):
-        return list(evaluable.generators), evaluable.expression
+    evaluable: 'Evaluable[T]',) -> 'icepool.expression.MultisetExpression':
+    """Converts a single argument to an evaluable."""
+    if isinstance(evaluable, icepool.expression.FullyBoundExpression):
+        return evaluable.expression
     elif isinstance(evaluable, (icepool.MultisetGenerator, Mapping, Sequence)):
-        return [icepool.implicit_convert_to_generator(evaluable)
-               ], icepool.expression.MultisetVariable(0)
+        generator = icepool.implicit_convert_to_generator(evaluable)
+        return icepool.expression.BoundGeneratorExpression(generator)
     else:
         raise TypeError(
             f'Could not convert argument of type {type(evaluable)}.')
 
 
-def merge_evaluables(
-    *evaluables: 'Evaluable[T]',
-) -> tuple[list['icepool.MultisetGenerator[T, tuple[int]]'],
-           list['icepool.expression.MultisetExpression']]:
-    """Merges a number of Evaluables together, returning a sequence of generators and a sequence of expressions.
-
-    Args:
-        *evaluables: These may be one of the following:
-            * `GeneratorsWithExpression`
-            * `MultisetGenerator`, which is treated as a single generator
-                with the identity expression `MultisetVariable(0)`.
-            * `Mapping` or `Sequence`, which is treated as a generator
-                that always outputs that multiset.
-
-    Raises:
-        `TypeError` if the arguments are not of valid type.
-    """
-    generators: list['icepool.MultisetGenerator[T, tuple[int]]'] = []
-    expressions: list[icepool.expression.MultisetExpression] = []
-    for evaluable in evaluables:
-        curr_generators, curr_expression = convert_evaluable(evaluable)
-        expressions += [curr_expression.shift_variables(len(generators))]
-        generators += curr_generators
-
-    return generators, expressions
-
-
 def adjust_counts(
     left: 'Evaluable[T]', constant: int,
     operation_class: 'Type[icepool.expression.AdjustCountsExpression]'
-) -> 'GeneratorsWithExpression[T]':
-    generators: list['icepool.MultisetGenerator[T, tuple[int]]']
-    generators, expressions = merge_evaluables(left)
-    expression = operation_class(expressions[0], constant)
-    return icepool.expression.GeneratorsWithExpression(generators[0],
-                                                       expression=expression)
+) -> 'FullyBoundExpression[T]':
+    left_expression = convert_evaluable(left)
+    expression = operation_class(left_expression, constant)
+    return icepool.expression.FullyBoundExpression(expression)
 
 
 def binary_operation(
     left: 'Evaluable[T]', right: 'Evaluable[T]',
     operation_class: 'Type[icepool.expression.BinaryOperatorExpression]'
-) -> 'GeneratorsWithExpression[T]':
-    generators: list['icepool.MultisetGenerator[T, tuple[int]]']
-    generators, expressions = merge_evaluables(left, right)
-    expression = operation_class(*expressions)
-    return icepool.expression.GeneratorsWithExpression(*generators,
-                                                       expression=expression)
+) -> 'FullyBoundExpression[T]':
+    left_expression = convert_evaluable(left)
+    right_expression = convert_evaluable(right)
+    expression = operation_class(left_expression, right_expression)
+    return icepool.expression.FullyBoundExpression(expression)
 
 
 def compare(
     left: 'Evaluable[T]', right: 'Evaluable[T]',
-    operation_class: Type['icepool.evaluator.ComparisonEvaluator[T]']
+    operation_class: Type['icepool.evaluator.ComparisonEvaluator']
 ) -> 'icepool.Die[bool]':
-    if isinstance(right, (Mapping, Sequence)):
-        # Right-hand side is a constant.
-        evaluator = operation_class(right)
-        return evaluator.evaluate(left)
-    else:
-        # Right-hand side is an expression.
-        evaluator = operation_class()
-        return evaluator.evaluate(left, right)
+    left_expression = convert_evaluable(left)
+    right_expression = convert_evaluable(right)
+    evaluator = icepool.expression.ExpressionEvaluator(
+        left_expression, right_expression, evaluator=operation_class())
+    return evaluator.evaluate()
