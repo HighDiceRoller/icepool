@@ -54,13 +54,10 @@ class RerollType(enum.Enum):
 
 
 class Outcome(Hashable, Protocol[T_contra]):
-    """Protocol to attempt to verify that outcomes are hashable and sortable.
+    """Protocol to attempt to verify that outcome types are hashable and sortable.
 
     Far from foolproof, e.g. it cannot enforce total ordering.
     """
 
     def __lt__(self, other: T_contra) -> bool:
-        ...
-
-    def __eq__(self, other):
         ...
