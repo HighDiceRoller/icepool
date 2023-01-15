@@ -41,10 +41,6 @@ class BinaryOperatorExpression(MultisetExpression):
     def arity(self) -> int:
         return max(self._left.arity, self._right.arity)
 
-    @cached_property
-    def _key_tuple(self) -> tuple[Hashable, ...]:
-        return type(self), self._left, self._right
-
 
 class IntersectionExpression(BinaryOperatorExpression):
 

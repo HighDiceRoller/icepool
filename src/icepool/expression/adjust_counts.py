@@ -36,10 +36,6 @@ class AdjustCountsExpression(MultisetExpression):
     def arity(self) -> int:
         return self._inner.arity
 
-    @cached_property
-    def _key_tuple(self) -> tuple[Hashable, ...]:
-        return type(self), self._inner, self._constant
-
 
 class MultiplyCountsExpression(AdjustCountsExpression):
     """Multiplies all counts by the constant."""

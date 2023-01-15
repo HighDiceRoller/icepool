@@ -37,10 +37,6 @@ class MultisetVariable(MultisetExpression):
     def arity(self) -> int:
         return self._index + 1
 
-    @cached_property
-    def _key_tuple(self) -> tuple[Hashable, ...]:
-        return type(self), self._index
-
     def __str__(self) -> str:
         return f'mv[{self._index}]'
 
