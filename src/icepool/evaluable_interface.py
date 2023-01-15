@@ -9,7 +9,7 @@ from icepool.typing import Evaluable, Outcome
 from typing import TYPE_CHECKING, Callable, Generic, Mapping, Sequence, Type, TypeVar
 
 if TYPE_CHECKING:
-    from icepool.expression.generators_with_expression import FullyBoundExpression
+    from icepool.expression.fully_bound_expression import FullyBoundExpression
 
 T = TypeVar('T', bound=Outcome)
 """An outcome type."""
