@@ -385,7 +385,7 @@ def convert_evaluable(
 ) -> tuple[list['icepool.MultisetGenerator[T, tuple[int]]'],
            'icepool.expression.MultisetExpression']:
     """Converts a single argument to a list of generators and an expression."""
-    if isinstance(evaluable, GeneratorsWithExpression):
+    if isinstance(evaluable, icepool.expression.GeneratorsWithExpression):
         return list(evaluable.generators), evaluable.expression
     elif isinstance(evaluable, (icepool.MultisetGenerator, Mapping, Sequence)):
         return [icepool.implicit_convert_to_generator(evaluable)

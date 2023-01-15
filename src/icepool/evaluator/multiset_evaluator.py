@@ -1,10 +1,10 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.expression
 import icepool.evaluable_interface
+import icepool.generator.alignment
 from icepool.collections import union_sorted_sets
-from icepool.generator.alignment import Alignment
+
 from icepool.typing import Evaluable, Outcome, Order
 
 from abc import ABC, abstractmethod
@@ -194,7 +194,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """A cache of (order, generators) -> weight distribution over states. """
         return {}
 
-    def evaluate(self, *evaluables: Evaluable[T_contra]) -> 'icepool.Die[U_co]':
+    def evaluate(self,
+                 *evaluables: 'Evaluable[T_contra]') -> 'icepool.Die[U_co]':
         """Evaluates generator(s).
 
         You can call the `MultisetEvaluator` object directly for the same effect,
@@ -213,6 +214,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         Returns:
             A `Die` representing the distribution of the final score.
         """
+        import icepool.expression
 
         if any(
                 isinstance(generator,
@@ -239,7 +241,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         # We use a separate class to guarantee all outcomes are visited.
         outcomes = union_sorted_sets(
             *(generator.outcomes() for generator in converted_generators))
-        alignment = Alignment(self.alignment(outcomes))
+        alignment = icepool.generator.alignment.Alignment(
+            self.alignment(outcomes))
 
         dist = algorithm(order, alignment, tuple(converted_generators))
 
@@ -258,7 +261,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         return icepool.Die(final_outcomes, final_weights)
 
-    def __call__(self, *generators: Evaluable[T_contra]) -> 'icepool.Die[U_co]':
+    def __call__(self,
+                 *generators: 'Evaluable[T_contra]') -> 'icepool.Die[U_co]':
         """Same as `self.evaluate()`."""
         return self.evaluate(*generators)
 
@@ -306,7 +310,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             return self._eval_internal_iterative, eval_order
 
     def _eval_internal(
-        self, order: int, alignment: Alignment[T_contra],
+        self, order: int,
+        alignment: 'icepool.generator.alignment.Alignment[T_contra]',
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order,
@@ -352,7 +357,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         return result
 
     def _eval_internal_iterative(
-        self, order: int, alignment: Alignment[T_contra],
+        self, order: int,
+        alignment: 'icepool.generator.alignment.Alignment[T_contra]',
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order,
@@ -390,10 +396,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     @staticmethod
     def _pop_generators(
-        side: int, alignment: Alignment[T_contra],
+        side: int, alignment: 'icepool.generator.alignment.Alignment[T_contra]',
         generators: tuple[icepool.MultisetGenerator[T_contra, Any], ...]
-    ) -> tuple[T_contra, Alignment[T_contra], tuple[
-            'icepool.NextMultisetGenerator', ...]]:
+    ) -> 'tuple[T_contra, icepool.generator.alignment.Alignment[T_contra], tuple[icepool.NextMultisetGenerator, ...]]':
         """Pops a single outcome from the generators.
 
         Returns:
