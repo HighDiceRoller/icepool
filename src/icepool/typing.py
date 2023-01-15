@@ -32,9 +32,7 @@ class Order(enum.IntEnum):
         """
         result = Order.Any
         for order in orders:
-            if result == Order.Ascending and order == Order.Descending:
-                raise ValueError(f'Conflicting orders {orders}.')
-            if result == Order.Descending and order == Order.Ascending:
+            if (result > 0 and order < 0) or (result < 0 and order > 0):
                 raise ValueError(f'Conflicting orders {orders}.')
             if result == Order.Any:
                 result = order
