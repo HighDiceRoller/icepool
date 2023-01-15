@@ -2,12 +2,14 @@
 
 __docformat__ = 'google'
 
+from functools import cached_property
+import itertools
 import icepool
 from icepool.collections import union_sorted_sets
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
-from typing import Iterable, TypeVar
+from typing import Iterable, Iterator, Sequence, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -30,14 +32,25 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
         The state is a tuple of the substates.
         """
+        if self._extra_arity > 0:
+            extra_counts = counts[-self._extra_arity:]
+            counts = counts[:-self._extra_arity]
+        else:
+            extra_counts = ()
+
         if state is None:
             return tuple(
-                evaluator.next_state(None, outcome, *counts)
-                for evaluator in self._inners)
+                evaluator.next_state(None, outcome, *counts, *
+                                     evaluator_extra_counts)
+                for evaluator, evaluator_extra_counts in zip(
+                    self._inners, self._split_extra_counts(*extra_counts)))
         else:
             return tuple(
-                evaluator.next_state(substate, outcome, *counts)
-                for evaluator, substate in zip(self._inners, state))
+                evaluator.next_state(substate, outcome, *counts, *
+                                     evaluator_extra_counts)
+                for evaluator, substate, evaluator_extra_counts in zip(
+                    self._inners, state, self._split_extra_counts(
+                        *extra_counts)))
 
     def final_outcome(self, final_state):
         """Runs `final_state` for all subevals.
@@ -60,6 +73,29 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     def alignment(self, outcomes):
         return union_sorted_sets(
             *(evaluator.alignment(outcomes) for evaluator in self._inners))
+
+    @cached_property
+    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return tuple(
+            itertools.chain.from_iterable(
+                expression.extra_generators for expression in self._inners))
+
+    def validate_arity(self, arity: int) -> None:
+        for evaluator in self._inners:
+            evaluator.validate_arity(arity)
+
+    @cached_property
+    def _extra_arity(self) -> int:
+        return sum(generator.arity for generator in self.extra_generators)
+
+    def _split_extra_counts(self,
+                            *extra_counts: int) -> Iterator[tuple[int, ...]]:
+        index = 0
+        for expression in self._inners:
+            counts_length = sum(
+                generator.arity for generator in expression.extra_generators)
+            yield extra_counts[index:index + counts_length]
+            index += counts_length
 
     def __str__(self) -> str:
         return 'JointEvaluator(\n' + ''.join(

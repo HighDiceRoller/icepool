@@ -19,6 +19,8 @@ class BoundGeneratorExpression(MultisetExpression):
     """
 
     def __init__(self, generator: icepool.MultisetGenerator) -> None:
+        if generator.arity != 1:
+            raise ValueError('Bound generators must have an arity of 1.')
         self._generator = generator
 
     def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],

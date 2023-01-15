@@ -189,6 +189,24 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
+    @property
+    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        """An optional sequence of extra generators that will be added to the end."""
+        return ()
+
+    def validate_arity(self, arity: int) -> None:
+        """An optional method to verify the total input arity.
+
+        This is called after any implicit conversion to generators, but does
+        not include any `extra_generators()`.
+
+        Overriding `next_state` with a fixed number of counts will make this
+        check redundant.
+
+        Raises:
+            `ValueError` if the total input arity is not valid.
+        """
+
     @cached_property
     def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
         """A cache of (order, generators) -> weight distribution over states. """
@@ -214,23 +232,17 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         Returns:
             A `Die` representing the distribution of the final score.
         """
-        import icepool.expression
-
-        if any(
-                isinstance(generator,
-                           icepool.expression.GeneratorsWithExpression)
-                for generator in evaluables):
-            generators, expressions = icepool.evaluable_interface.merge_evaluables(
-                *evaluables)
-
-            evaluator: 'MultisetEvaluator[T_contra, U_co]' = icepool.expression.ExpressionEvaluator(
-                *expressions, evaluator=self)
-            return evaluator.evaluate(*generators)
 
         # Convert arguments to generators.
         converted_generators = tuple(
             icepool.implicit_convert_to_generator(generator)
             for generator in evaluables)
+
+        self.validate_arity(
+            sum(generator.arity for generator in converted_generators))
+
+        converted_generators = converted_generators + tuple(
+            self.extra_generators)
 
         if not all(generator._is_resolvable()
                    for generator in converted_generators):

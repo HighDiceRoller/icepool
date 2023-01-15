@@ -1,11 +1,14 @@
 __docformat__ = 'google'
 
+from functools import cached_property
+import itertools
+import icepool
 import icepool.expression
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Order, Outcome
 
-from typing import TypeVar
+from typing import Iterable, Sequence, TypeVar
 
 T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
 """Type variable representing the input outcome type."""
@@ -33,10 +36,18 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         else:
             expression_states, evaluator_state = state
 
+        if self._bound_arity > 0:
+            bound_counts = counts[-self._bound_arity:]
+            counts = counts[:-self._bound_arity]
+        else:
+            bound_counts = ()
+
         expression_states, expression_counts = zip(
-            *(expression.next_state(expression_state, outcome, *counts)
-              for expression, expression_state in zip(self._expressions,
-                                                      expression_states)))
+            *(expression.next_state(expression_state, outcome, counts,
+                                    expression_bound_counts)
+              for expression, expression_state, expression_bound_counts in zip(
+                  self._expressions, expression_states,
+                  self._split_bound_counts(bound_counts))))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
                                                      *expression_counts)
         return expression_states, evaluator_state
@@ -57,6 +68,37 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     def alignment(self, *generators):
         """Forwards to inner."""
         return self._evaluator.alignment(*generators)
+
+    @cached_property
+    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return tuple(self._evaluator.extra_generators) + self._bound_generators
+
+    def validate_arity(self, arity: int) -> None:
+        required_arity = max(
+            (expression.arity for expression in self._expressions), default=0)
+        if arity < required_arity:
+            raise ValueError(
+                f'Expected arity of {required_arity}, got {arity}.')
+
+    @cached_property
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        """The entire flattened list of bound generators."""
+        return tuple(
+            itertools.chain.from_iterable(expression.bound_generators()
+                                          for expression in self._expressions))
+
+    @cached_property
+    def _bound_arity(self) -> int:
+        return len(self._bound_generators)
+
+    def _split_bound_counts(self,
+                            *bound_counts: int) -> 'Iterable[tuple[int, ...]]':
+        """Splits a tuple of counts into one set of bound counts per expression."""
+        index = 0
+        for expression in self._expressions:
+            counts_length = len(expression.bound_generators())
+            yield bound_counts[index:index + counts_length]
+            index += counts_length
 
     def __bool__(self) -> bool:
         if self._truth_value is None:
