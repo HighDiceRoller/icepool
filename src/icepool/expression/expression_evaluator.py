@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool.expression
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Outcome
+from icepool.typing import Order, Outcome
 
 from typing import TypeVar
 
@@ -48,9 +48,11 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             _, evaluator_state = final_state
         return self._evaluator.final_outcome(evaluator_state)
 
-    def order(self):
+    def order(self) -> Order:
         """Forwards to inner."""
-        return self._evaluator.order()
+        expression_order = Order.merge(
+            *(expression.order() for expression in self._expressions))
+        return Order.merge(expression_order, self._evaluator.order())
 
     def alignment(self, *generators):
         """Forwards to inner."""
