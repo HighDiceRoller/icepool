@@ -38,15 +38,11 @@ def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
 
     Args:
         arg: The argument must either already be a MultisetGenerator;
-            or a `Mapping` or `Sequence` representing a fixed multiset.
+            or a `Mapping` or `Sequence`.
     """
     if isinstance(arg, MultisetGenerator):
         return arg
     elif isinstance(arg, (Mapping, Sequence)):
-        if any(isinstance(k, icepool.Population) for k in arg):
-            raise TypeError(
-                'Only fixed multisets may be implicitly converted to a MultisetGenerator. Construct a Pool or Deal explicitly.'
-            )
         return icepool.Pool(arg)
     else:
         raise TypeError(
