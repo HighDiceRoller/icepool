@@ -27,8 +27,14 @@ class Order(enum.IntEnum):
     def merge(*orders: 'Order') -> 'Order':
         """Merges the given Orders.
 
+        Returns:
+            `Any` if all arguments are `Any`.
+            `Ascending` if there is at least one `Ascending` in the arguments.
+            `Descending` if there is at least one `Descending` in the arguments.
+
         Raises:
-            ValueError if both Ascending and Descending appear.
+            `ValueError` if both `Ascending` and `Descending` are in the
+            arguments.
         """
         result = Order.Any
         for order in orders:
