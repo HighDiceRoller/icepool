@@ -14,11 +14,11 @@ import math
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-Q_co = TypeVar('Q_co', bound=tuple[int, ...], covariant=True)
+Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
 """Type variable representing the count types. In this future this may be replaced with a TypeVarTuple."""
 
 
-class Deal(MultisetGenerator[T_co, Q_co]):
+class Deal(MultisetGenerator[T_co, Qs_co]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
     _deck: 'icepool.Deck[T_co]'

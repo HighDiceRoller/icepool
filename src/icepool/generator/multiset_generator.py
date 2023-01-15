@@ -4,7 +4,7 @@ import operator
 import icepool
 import icepool.generator
 from icepool.collections import Counts
-from icepool.typing import Outcome, SetComparatorStr
+from icepool.typing import Outcome
 
 import bisect
 import functools
@@ -18,12 +18,7 @@ from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mappi
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
 
-Q_co = TypeVar('Q_co', bound=tuple, covariant=True)
-"""Type variable representing the counts type.
-
-In this future this may be replaced with a TypeVarTuple."""
-
-Qints_co = TypeVar('Qints_co', bound=tuple[int, ...], covariant=True)
+Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
 """Type variable representing the counts type, which is a tuple of `int`s.
 
 In this future this may be replaced with a TypeVarTuple."""
@@ -37,12 +32,18 @@ NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
 
 
 def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
+    """Implcitly comverts the argument to a MultisetGenerator.
+
+    Args:
+        arg: The argument must either already be a MultisetGenerator;
+            or a `Mapping` or `Sequence` representing a fixed multiset.
+    """
     if isinstance(arg, MultisetGenerator):
         return arg
     elif isinstance(arg, (Mapping, Sequence)):
         if any(isinstance(k, icepool.Population) for k in arg):
             raise TypeError(
-                'Only fixed multisets may be implicitly converted to a MultisetGenerator.'
+                'Only fixed multisets may be implicitly converted to a MultisetGenerator. Construct a Pool or Deal explicitly.'
             )
         return icepool.Pool(arg)
     else:
@@ -51,7 +52,7 @@ def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
         )
 
 
-class MultisetGenerator(ABC, Generic[T_co, Q_co]):
+class MultisetGenerator(ABC, Generic[T_co, Qs_co]):
     """Abstract base class for generating one or more multisets.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
@@ -154,231 +155,11 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
     def __hash__(self) -> int:
         return self._hash
 
-    def evaluate(self, evaluator: 'icepool.MultisetEvaluator[T_co, Any, U]',
-                 /) -> 'icepool.Die[U]':
-        """Evaluates this generator using the given `MultisetEvaluator`."""
-        return evaluator.evaluate(self)
-
     def min_outcome(self) -> T_co:
         return self.outcomes()[0]
 
     def max_outcome(self) -> T_co:
         return self.outcomes()[-1]
-
-    # Built-in evaluators.
-
-    def expand(self) -> 'icepool.Die[tuple[T_co, ...]]':
-        """All possible sorted tuples of outcomes.
-
-        This is expensive and not recommended unless there are few possibilities.
-        """
-        return icepool.evaluator.ExpandEvaluator().evaluate(self)
-
-    def sum(
-        self,
-        map: Callable[[T_co], U] | Mapping[T_co, U] | None = None
-    ) -> 'icepool.Die[U]':
-        """The sum of the outcomes.
-
-        Args:
-            map: If provided, the outcomes will be mapped according to this
-                before summing.
-        """
-        return icepool.evaluator.SumEvaluator(map).evaluate(self)
-
-    def count(self) -> 'icepool.Die[int]':
-        """The total count over all outcomes.
-
-        This is usually not very interesting unless some other operation is
-        performed first. Examples:
-
-        `generator.unique().count()` will count the number of unique outcomes.
-
-        `(generator & [4, 5, 6]).count()` will count up to one each of
-        4, 5, and 6.
-        """
-        return icepool.evaluator.count_evaluator.evaluate(self)
-
-    def highest_outcome_and_count(self) -> 'icepool.Die[tuple[T_co, int]]':
-        """The highest outcome with positive count, along with that count.
-
-        If no outcomes have positive count, an arbitrary outcome will be
-        produced with a 0 count.
-        """
-        return icepool.evaluator.HighestOutcomeAndCountEvaluator().evaluate(
-            self)
-
-    def all_counts(self,
-                   positive_only: bool = True,
-                   reverse=False) -> 'icepool.Die[tuple[int, ...]]':
-        """Produces a tuple of all counts, i.e. the sizes of all matching sets.
-
-        Args:
-            positive_only: If `True` (default), negative and zero counts
-                will be omitted.
-            reversed: If `False` (default), the counts will be in ascending
-                order. If `True`, they will be in descending order.
-        """
-        result = icepool.evaluator.AllCountsEvaluator(
-            positive_only=positive_only).evaluate(self)
-
-        if reverse:
-            result = result.map(lambda x: tuple(reversed(x)))
-
-        return result
-
-    def largest_count(self) -> 'icepool.Die[int]':
-        """The largest matching set among the outcomes.
-
-        Returns:
-            A `Die` with outcomes set_size.
-            The greatest single such set is returned.
-        """
-        return icepool.evaluator.LargestCountEvaluator().evaluate(self)
-
-    def largest_count_and_outcome(self) -> 'icepool.Die[tuple[int, T_co]]':
-        """The largest matching set among the outcomes.
-
-        Returns:
-            A `Die` with outcomes (set_size, outcome).
-            The greatest single such set is returned.
-        """
-        return icepool.evaluator.LargestCountAndOutcomeEvaluator().evaluate(
-            self)
-
-    def largest_straight(
-            self: 'MultisetGenerator[int, tuple[int]]') -> 'icepool.Die[int]':
-        """The best straight among the outcomes.
-
-        Outcomes must be `int`s.
-
-        Returns:
-            A `Die` with outcomes straight_size.
-            The greatest single such straight is returned.
-        """
-        return icepool.evaluator.LargestStraightEvaluator().evaluate(self)
-
-    def largest_straight_and_outcome(
-        self: 'MultisetGenerator[int, tuple[int]]'
-    ) -> 'icepool.Die[tuple[int, int]]':
-        """The best straight among the outcomes.
-
-        Outcomes must be `int`s.
-
-        Returns:
-            A `Die` with outcomes (straight_size, outcome).
-            The greatest single such straight is returned.
-        """
-        return icepool.evaluator.LargestStraightAndOutcomeEvaluator().evaluate(
-            self)
-
-    # Comparators.
-
-    def compare(
-            self: 'MultisetGenerator[T_co, tuple[int]]',
-            op_name: SetComparatorStr, right:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        """Compares the outcome multiset to another multiset.
-
-        You can also use the symbolic operators directly, e.g.
-        `generator <= [1, 2, 2]`.
-        In this case, if the other argument is a `Mapping` or `Collection`, it
-        will be converted into a generator automatically.
-
-        Args:
-            op_name: One of the following strings:
-                `<, <=, >, >=, ==, !=, isdisjoint`.
-            right: The right-side generator or multiset to compare with.
-        """
-        if isinstance(right, MultisetGenerator):
-            return icepool.evaluator.ComparisonEvaluator.new_by_name(
-                op_name).evaluate(self, right)  # type: ignore
-        elif isinstance(right, (Mapping, Collection)):
-            return icepool.evaluator.ComparisonEvaluator.new_by_name(
-                op_name, right).evaluate(self)
-        else:
-            return NotImplemented
-
-    def __lt__(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        return self.compare('<', other)
-
-    def __le__(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        return self.compare('<=', other)
-
-    def issubset(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a subset of the other multiset.
-
-        Same as `self <= other`.
-        """
-        return self <= other
-
-    def __gt__(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        return self.compare('>', other)
-
-    def __ge__(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        return self.compare('>=', other)
-
-    def issuperset(
-            self: 'MultisetGenerator[T_co, tuple[int]]', other:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is a superset of the target multiset.
-
-        Same as `self >= other`.
-        """
-        return self >= other
-
-    # The result has a truth value, but is not a bool.
-    def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
-
-        def data_callback() -> 'Counts[bool]':
-            # May fail if types are incompatible.
-            return self.compare('==', other)._data  # type: ignore
-
-        def truth_value_callback() -> bool:
-            return self.equals(other)
-
-        return icepool.DieWithTruth(data_callback, truth_value_callback)
-
-    # The result has a truth value, but is not a bool.
-    def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
-
-        def data_callback() -> 'Counts[bool]':
-            # May fail if types are incompatible.
-            return self.compare('!=', other)._data  # type: ignore
-
-        def truth_value_callback() -> bool:
-            return not self.equals(other)
-
-        return icepool.DieWithTruth(data_callback, truth_value_callback)
-
-    def isdisjoint(
-            self: 'MultisetGenerator[T_co, tuple[int]]', right:
-        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
-            /) -> 'icepool.Die[bool]':
-        """Whether the outcome multiset is disjoint from the target multiset."""
-        result = self.compare('isdisjoint', right)
-        if result is NotImplemented:
-            raise TypeError(
-                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
-            )
-        return result
 
     # Binary operations with other generators.
 
@@ -524,9 +305,9 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
 
     # Count adjustment.
 
-    def binary_int_operator(
-            self: 'MultisetGenerator[T_co, Qints_co]', op: Callable,
-            constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def binary_int_operator(self: 'MultisetGenerator[T_co, Qs_co]',
+                            op: Callable,
+                            constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         """Binary operation with an integer. These adjust counts.
 
         Args:
@@ -541,37 +322,37 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         else:
             return NotImplemented
 
-    def __mul__(self: 'MultisetGenerator[T_co, Qints_co]',
-                constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def __mul__(self: 'MultisetGenerator[T_co, Qs_co]',
+                constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         return self.binary_int_operator(operator.mul, constant)
 
     # Commutable in this case.
-    def __rmul__(self: 'MultisetGenerator[T_co, Qints_co]',
-                 constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def __rmul__(self: 'MultisetGenerator[T_co, Qs_co]',
+                 constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         return self.binary_int_operator(operator.mul, constant)
 
-    def multiply_counts(self: 'MultisetGenerator[T_co, Qints_co]',
-                        constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def multiply_counts(self: 'MultisetGenerator[T_co, Qs_co]',
+                        constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         """Multiplies all counts by a constant.
 
         Same as `self * constant`.
         """
         return self * constant
 
-    def __floordiv__(self: 'MultisetGenerator[T_co, Qints_co]',
-                     constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def __floordiv__(self: 'MultisetGenerator[T_co, Qs_co]',
+                     constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         return self.binary_int_operator(operator.floordiv, constant)
 
-    def divide_counts(self: 'MultisetGenerator[T_co, Qints_co]',
-                      constant: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def divide_counts(self: 'MultisetGenerator[T_co, Qs_co]',
+                      constant: int) -> 'MultisetGenerator[T_co, Qs_co]':
         """Divides all counts (rounding down).
 
         Same as `self // constant`.
         """
         return self // constant
 
-    def filter_counts(self: 'MultisetGenerator[T_co, Qints_co]',
-                      min_count: int) -> 'MultisetGenerator[T_co, Qints_co]':
+    def filter_counts(self: 'MultisetGenerator[T_co, Qs_co]',
+                      min_count: int) -> 'MultisetGenerator[T_co, Qs_co]':
         """Counts less than `min_count` are treated as zero.
 
         For example, `generator.filter_counts(2)` would only produce
@@ -581,8 +362,8 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         expression = FilterCountsExpression(multiset_variables[0], min_count)
         return MapExpressionGenerator(self, expression)  # type: ignore
 
-    def unique(self: 'MultisetGenerator[T_co, Qints_co]',
-               max_count: int = 1) -> 'MultisetGenerator[T_co, Qints_co]':
+    def unique(self: 'MultisetGenerator[T_co, Qs_co]',
+               max_count: int = 1) -> 'MultisetGenerator[T_co, Qs_co]':
         """Counts each outcome at most `max_count` times.
 
         For example, `generator.unique(2)` would count each outcome at most
@@ -591,6 +372,235 @@ class MultisetGenerator(ABC, Generic[T_co, Q_co]):
         from icepool.expression import multiset_variables, MapExpressionGenerator, UniqueExpression
         expression = UniqueExpression(multiset_variables[0], max_count)
         return MapExpressionGenerator(self, expression)  # type: ignore
+
+    # Evaluation.
+
+    def evaluate(self: 'MultisetGenerator[T_co, tuple[int]]',
+                 evaluator: 'icepool.MultisetEvaluator[T_co, U]',
+                 /) -> 'icepool.Die[U]':
+        """Evaluates this generator using the given `MultisetEvaluator`."""
+        return evaluator.evaluate(self)
+
+    def expand(
+        self: 'MultisetGenerator[T_co, tuple[int]]'
+    ) -> 'icepool.Die[tuple[T_co, ...]]':
+        """All possible sorted tuples of outcomes.
+
+        This is expensive and not recommended unless there are few possibilities.
+        """
+        return icepool.evaluator.ExpandEvaluator().evaluate(self)
+
+    def sum(
+        self: 'MultisetGenerator[T_co, tuple[int]]',
+        map: Callable[[T_co], U] | Mapping[T_co, U] | None = None
+    ) -> 'icepool.Die[U]':
+        """The sum of the outcomes.
+
+        Args:
+            map: If provided, the outcomes will be mapped according to this
+                before summing.
+        """
+        return icepool.evaluator.SumEvaluator(map).evaluate(self)
+
+    def count(
+            self: 'MultisetGenerator[T_co, tuple[int]]') -> 'icepool.Die[int]':
+        """The total count over all outcomes.
+
+        This is usually not very interesting unless some other operation is
+        performed first. Examples:
+
+        `generator.unique().count()` will count the number of unique outcomes.
+
+        `(generator & [4, 5, 6]).count()` will count up to one each of
+        4, 5, and 6.
+        """
+        return icepool.evaluator.count_evaluator.evaluate(self)
+
+    def highest_outcome_and_count(
+        self: 'MultisetGenerator[T_co, tuple[int]]'
+    ) -> 'icepool.Die[tuple[T_co, int]]':
+        """The highest outcome with positive count, along with that count.
+
+        If no outcomes have positive count, an arbitrary outcome will be
+        produced with a 0 count.
+        """
+        return icepool.evaluator.HighestOutcomeAndCountEvaluator().evaluate(
+            self)
+
+    def all_counts(self: 'MultisetGenerator[T_co, tuple[int]]',
+                   positive_only: bool = True,
+                   reverse=False) -> 'icepool.Die[tuple[int, ...]]':
+        """Produces a tuple of all counts, i.e. the sizes of all matching sets.
+
+        Args:
+            positive_only: If `True` (default), negative and zero counts
+                will be omitted.
+            reversed: If `False` (default), the counts will be in ascending
+                order. If `True`, they will be in descending order.
+        """
+        result = icepool.evaluator.AllCountsEvaluator(
+            positive_only=positive_only).evaluate(self)
+
+        if reverse:
+            result = result.map(lambda x: tuple(reversed(x)))
+
+        return result
+
+    def largest_count(
+            self: 'MultisetGenerator[T_co, tuple[int]]') -> 'icepool.Die[int]':
+        """The largest matching set among the outcomes.
+
+        Returns:
+            A `Die` with outcomes set_size.
+            The greatest single such set is returned.
+        """
+        return icepool.evaluator.LargestCountEvaluator().evaluate(self)
+
+    def largest_count_and_outcome(
+        self: 'MultisetGenerator[T_co, tuple[int]]'
+    ) -> 'icepool.Die[tuple[int, T_co]]':
+        """The largest matching set among the outcomes.
+
+        Returns:
+            A `Die` with outcomes (set_size, outcome).
+            The greatest single such set is returned.
+        """
+        return icepool.evaluator.LargestCountAndOutcomeEvaluator().evaluate(
+            self)
+
+    def largest_straight(
+            self: 'MultisetGenerator[int, tuple[int]]') -> 'icepool.Die[int]':
+        """The best straight among the outcomes.
+
+        Outcomes must be `int`s.
+
+        Returns:
+            A `Die` with outcomes straight_size.
+            The greatest single such straight is returned.
+        """
+        return icepool.evaluator.LargestStraightEvaluator().evaluate(self)
+
+    def largest_straight_and_outcome(
+        self: 'MultisetGenerator[int, tuple[int]]'
+    ) -> 'icepool.Die[tuple[int, int]]':
+        """The best straight among the outcomes.
+
+        Outcomes must be `int`s.
+
+        Returns:
+            A `Die` with outcomes (straight_size, outcome).
+            The greatest single such straight is returned.
+        """
+        return icepool.evaluator.LargestStraightAndOutcomeEvaluator().evaluate(
+            self)
+
+    # Comparators.
+
+    def compare(
+            self: 'MultisetGenerator[T_co, tuple[int]]',
+            op_name: SetComparatorStr, right:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Compares the outcome multiset to another multiset.
+
+        You can also use the symbolic operators directly, e.g.
+        `generator <= [1, 2, 2]`.
+        In this case, if the other argument is a `Mapping` or `Collection`, it
+        will be converted into a generator automatically.
+
+        Args:
+            op_name: One of the following strings:
+                `<, <=, >, >=, ==, !=, isdisjoint`.
+            right: The right-side generator or multiset to compare with.
+        """
+        if isinstance(right, MultisetGenerator):
+            return icepool.evaluator.ComparisonEvaluator.new_by_name(
+                op_name).evaluate(self, right)  # type: ignore
+        elif isinstance(right, (Mapping, Collection)):
+            return icepool.evaluator.ComparisonEvaluator.new_by_name(
+                op_name, right).evaluate(self)
+        else:
+            return NotImplemented
+
+    def __lt__(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('<', other)
+
+    def __le__(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('<=', other)
+
+    def issubset(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a subset of the other multiset.
+
+        Same as `self <= other`.
+        """
+        return self <= other
+
+    def __gt__(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('>', other)
+
+    def __ge__(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        return self.compare('>=', other)
+
+    def issuperset(
+            self: 'MultisetGenerator[T_co, tuple[int]]', other:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is a superset of the target multiset.
+
+        Same as `self >= other`.
+        """
+        return self >= other
+
+    # The result has a truth value, but is not a bool.
+    def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+
+        def data_callback() -> 'Counts[bool]':
+            # May fail if types are incompatible.
+            return self.compare('==', other)._data  # type: ignore
+
+        def truth_value_callback() -> bool:
+            return self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
+
+    # The result has a truth value, but is not a bool.
+    def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+
+        def data_callback() -> 'Counts[bool]':
+            # May fail if types are incompatible.
+            return self.compare('!=', other)._data  # type: ignore
+
+        def truth_value_callback() -> bool:
+            return not self.equals(other)
+
+        return icepool.DieWithTruth(data_callback, truth_value_callback)
+
+    def isdisjoint(
+            self: 'MultisetGenerator[T_co, tuple[int]]', right:
+        'MultisetGenerator[T_co, tuple[int]] | Mapping[T_co, int] | Collection[T_co]',
+            /) -> 'icepool.Die[bool]':
+        """Whether the outcome multiset is disjoint from the target multiset."""
+        result = self.compare('isdisjoint', right)
+        if result is NotImplemented:
+            raise TypeError(
+                f'Cannot evaluate with right side of type {right.__class__.__name__}.'
+            )
+        return result
 
     # Sampling.
 
