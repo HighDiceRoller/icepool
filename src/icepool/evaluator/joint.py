@@ -19,7 +19,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
+class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
     def __init__(self, *inners: MultisetEvaluator):
@@ -66,10 +66,10 @@ class JointEvaluator(MultisetEvaluator[T_contra, Q_contra, tuple]):
             f'    {evaluator},\n' for evaluator in self._inners) + ')'
 
 
-class MapEvaluator(MultisetEvaluator[T_contra, int, tuple[U_co, ...]]):
+class MapEvaluator(MultisetEvaluator[T_contra, tuple[U_co, ...]]):
     """A `MultisetEvaluator` that jointly evaluates a single evaluator on each input multiset."""
 
-    def __init__(self, inner: MultisetEvaluator[T_contra, int, U_co],
+    def __init__(self, inner: MultisetEvaluator[T_contra, U_co],
                  *lengths) -> None:
         """Constructor.
 

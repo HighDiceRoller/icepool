@@ -17,7 +17,7 @@ Q_contra = TypeVar('Q_contra', contravariant=True)
 """Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
 
 
-class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
+class ExpandEvaluator(MultisetEvaluator[Outcome, tuple]):
     """Expands all results of a generator.
 
     This is expensive and not recommended unless there are few possibilities.
@@ -40,7 +40,7 @@ class ExpandEvaluator(MultisetEvaluator[Outcome, int, tuple]):
         return tuple(sorted(final_state))
 
 
-class SumEvaluator(MultisetEvaluator[Outcome, int, Any]):
+class SumEvaluator(MultisetEvaluator[Outcome, Any]):
     """Sums all outcomes."""
 
     def __init__(self, map: Callable | Mapping | None = None) -> None:
@@ -82,7 +82,7 @@ sum_evaluator: Final = SumEvaluator()
 """Shared instance for caching."""
 
 
-class CountEvaluator(MultisetEvaluator[Outcome, int, int]):
+class CountEvaluator(MultisetEvaluator[Outcome, int]):
     """Returns the total count of outcomes.
 
     Usually not very interesting unless the counts are adjusted by
