@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.expression
+import icepool.evaluable_interface
 from icepool.collections import union_sorted_sets
 from icepool.generator.alignment import Alignment
 from icepool.typing import Evaluable, Outcome, Order
@@ -217,7 +218,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                 isinstance(generator,
                            icepool.expression.GeneratorsWithExpression)
                 for generator in evaluables):
-            generators, expressions = icepool.expression.merge_evaluables(
+            generators, expressions = icepool.evaluable_interface.merge_evaluables(
                 *evaluables)
 
             evaluator: 'MultisetEvaluator[T_contra, U_co]' = icepool.expression.ExpressionEvaluator(

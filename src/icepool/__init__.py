@@ -61,8 +61,10 @@ from icepool.collections import CountsKeysView, CountsValuesView, CountsItemsVie
 from icepool.population.lowest_highest import lowest, highest, sum_lowest, sum_highest
 
 from icepool.generator.pool import Pool, standard_pool
+
 from icepool.generator.multiset_generator import MultisetGenerator, NextMultisetGenerator, implicit_convert_to_generator
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
+from icepool.evaluable_interface import EvaluableInterface
 
 from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
@@ -78,6 +80,6 @@ __all__ = [
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
-    'MultisetGenerator', 'Pool', 'standard_pool', 'MultisetEvaluator', 'Order',
-    'Deck', 'Deal', 'expression'
+    'MultisetGenerator', 'Pool', 'standard_pool', 'EvaluableInterface',
+    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'expression'
 ]
