@@ -75,14 +75,17 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         return self._prefix_generators
 
     def validate_arity(self, arity: int) -> None:
-        if arity < self.arity:
-            raise ValueError(f'Expected arity of {self.arity}, got {arity}.')
+        if arity < self._arity:
+            raise ValueError(f'Expected arity of {self._arity}, got {arity}.')
 
     @cached_property
-    def arity(self) -> int:
+    def _arity(self) -> int:
         """The number of input multisets."""
         return max((expression.arity for expression in self._expressions),
                    default=0)
+
+    def arity(self) -> int:
+        return self._arity
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

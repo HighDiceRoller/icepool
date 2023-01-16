@@ -331,7 +331,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             return evaluator.evaluate(*expressions)
         evaluator = icepool.evaluator.expression.ExpressionEvaluator(
             *expressions, evaluator=evaluator)
-        if evaluator.arity == 0:
+        if evaluator.arity() == 0:
             return evaluator.evaluate()
         else:
             return evaluator
@@ -445,7 +445,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         else:
             raise TypeError('Right side is not comparable.')
 
-        if evaluator.arity == 0:
+        if evaluator.arity() == 0:
             return evaluator.evaluate()
         else:
             return evaluator
