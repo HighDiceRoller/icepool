@@ -13,11 +13,17 @@ K = TypeVar('K', bound=Hashable)
 T = TypeVar('T', bound='Outcome')
 """An outcome type."""
 
-T_contra = TypeVar('T_contra', contravariant=True)
-"""An outcome type."""
-
 T_co = TypeVar('T_co', bound='Outcome', covariant=True)
 """An outcome type."""
+
+T_contra = TypeVar('T_contra', bound='Outcome', contravariant=True)
+"""An outcome type."""
+
+U = TypeVar('U', bound='Outcome')
+"""Another outcome type."""
+
+U_co = TypeVar('U_co', bound='Outcome', covariant=True)
+"""Another outcome type."""
 
 Evaluable: TypeAlias = 'MultisetExpression | Mapping[T, int] | Sequence[T]'
 """Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator."""

@@ -8,10 +8,8 @@ import itertools
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, Iterable, Mapping, MutableMapping, Sequence, TypeAlias, TypeVar
-
-T = TypeVar('T', bound=Outcome)
-"""Type variable representing the outcome type."""
+from icepool.typing import T
+from typing import Any, Iterable, Mapping, MutableMapping, Sequence
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,

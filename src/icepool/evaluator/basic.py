@@ -5,16 +5,7 @@ __docformat__ = 'google'
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
-from typing import Any, Callable, Final, Hashable, Mapping, TypeVar
-
-T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
-"""Type variable representing the input outcome type."""
-
-U_co = TypeVar('U_co', bound=Outcome, covariant=True)
-"""Type variable representing the final outcome type."""
-
-Q_contra = TypeVar('Q_contra', contravariant=True)
-"""Type variable representing the count type. This may be replaced with a `TypeVarTuple` in the future."""
+from typing import Any, Callable, Final, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):

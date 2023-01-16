@@ -6,15 +6,9 @@ import icepool
 import icepool.expression
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Order, Outcome
+from icepool.typing import Order, Outcome, T_contra, U_co
 
-from typing import Iterable, Sequence, TypeVar
-
-T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
-"""Type variable representing the input outcome type."""
-
-U_co = TypeVar('U_co', bound=Outcome, covariant=True)
-"""Type variable representing the final outcome type."""
+from typing import Iterable
 
 
 class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):

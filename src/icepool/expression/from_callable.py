@@ -5,7 +5,7 @@ from icepool.expression.variable import MultisetVariable as MV
 
 import inspect
 
-from typing import Callable, TypeAlias, TypeVar, overload
+from typing import Callable, TypeAlias, overload
 
 NestedTupleOrEvaluator: TypeAlias = MultisetEvaluator | tuple[
     'NestedTupleOrEvaluator', ...]

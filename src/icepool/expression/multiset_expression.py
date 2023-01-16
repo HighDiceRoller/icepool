@@ -8,14 +8,8 @@ import operator
 from abc import ABC, abstractmethod
 from functools import cached_property, reduce
 
-from icepool.typing import Order, Outcome
-from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, Type, TypeAlias, TypeVar
-
-T = TypeVar('T', bound=Outcome)
-"""Type variable representing an outcome type."""
-
-U = TypeVar('U', bound=Outcome)
-"""Type variable representing another outcome type."""
+from icepool.typing import T, U, Order, Outcome
+from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, Type
 
 
 def implicit_convert_to_expression(arg) -> 'MultisetExpression':

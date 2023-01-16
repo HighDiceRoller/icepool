@@ -6,11 +6,9 @@ import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from abc import abstractmethod
-from collections import defaultdict
 
-import math
-from icepool.typing import Outcome, Order
-from typing import Any, Collection, Mapping, TypeVar
+from icepool.typing import Order
+from typing import Any
 
 
 class ComparisonEvaluator(MultisetEvaluator[Any, bool]):

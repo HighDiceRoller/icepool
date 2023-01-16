@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 from icepool.collections import union_sorted_sets
 
-from icepool.typing import Evaluable, Outcome, Order
+from icepool.typing import Evaluable, Outcome, Order, T_contra, U_co
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -12,19 +12,13 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, NoReturn, Sequence, TypeAlias, TypeVar, cast, TYPE_CHECKING
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
-
-T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
-"""Type variable representing the input outcome type."""
-
-U_co = TypeVar('U_co', bound=Outcome, covariant=True)
-"""Type variable representing the final outcome type."""
 
 
 class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
