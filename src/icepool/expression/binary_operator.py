@@ -14,6 +14,8 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
     def __init__(self, left: MultisetExpression[T_contra],
                  right: MultisetExpression[T_contra]) -> None:
+        self.validate_output_arity(left)
+        self.validate_output_arity(right)
         self._left = left
         self._right = right
 

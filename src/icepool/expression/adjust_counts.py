@@ -15,6 +15,7 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
 
     def __init__(self, inner: MultisetExpression[T_contra],
                  constant: int) -> None:
+        self.validate_output_arity(inner)
         self._inner = inner
         self._constant = constant
 

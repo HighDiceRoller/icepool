@@ -27,6 +27,7 @@ class KeepExpression(MultisetExpression[T_contra]):
         cls, inner: MultisetExpression[T_contra],
         sorted_roll_counts: int | slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
+        cls.validate_output_arity(inner)
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
         if isinstance(sorted_roll_counts, int):
