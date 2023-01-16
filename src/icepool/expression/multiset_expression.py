@@ -3,11 +3,13 @@ __docformat__ = 'google'
 import icepool
 import icepool.expression
 
-from icepool.typing import Order, Outcome
+import operator
 
 from abc import ABC, abstractmethod
 from functools import cached_property, reduce
-from typing import Callable, Collection, Hashable, Mapping, Sequence, Type, TypeAlias, TypeVar
+
+from icepool.typing import Order, Outcome
+from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, Type, TypeAlias, TypeVar
 
 T = TypeVar('T', bound=Outcome)
 """Type variable representing an outcome type."""
@@ -91,72 +93,126 @@ class MultisetExpression(ABC):
 
     # Binary operators.
 
-    def __add__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __add__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(self, other)
 
-    def __radd__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __radd__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(other, self)
 
-    def disjoint_sum(self,
-                     *others: 'MultisetExpression') -> 'MultisetExpression':
+    def disjoint_sum(
+        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        others = tuple(
+            implicit_convert_to_expression(other) for other in others)
         return reduce(operator.add, others, self)  # type: ignore
 
-    def __sub__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __sub__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.DifferenceExpression(self, other)
 
-    def __rsub__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __rsub__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.DifferenceExpression(other, self)
 
     def difference(self, *others: 'MultisetExpression') -> 'MultisetExpression':
+        others = tuple(
+            implicit_convert_to_expression(other) for other in others)
         return reduce(operator.sub, others, self)  # type: ignore
 
-    def __and__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __and__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.IntersectionExpression(self, other)
 
-    def __rand__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __rand__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.IntersectionExpression(other, self)
 
-    def intersection(self,
-                     *others: 'MultisetExpression') -> 'MultisetExpression':
+    def intersection(
+        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        others = tuple(
+            implicit_convert_to_expression(other) for other in others)
         return reduce(operator.and_, others, self)  # type: ignore
 
-    def __or__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __or__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.UnionExpression(self, other)
 
-    def __ror__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __ror__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.UnionExpression(other, self)
 
-    def union(self, *others: 'MultisetExpression') -> 'MultisetExpression':
+    def union(
+        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        others = tuple(
+            implicit_convert_to_expression(other) for other in others)
         return reduce(operator.or_, others, self)  # type: ignore
 
-    def __xor__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __xor__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
-    def __rxor__(self, other: 'MultisetExpression') -> 'MultisetExpression':
-        if not isinstance(other, MultisetExpression):
+    def __rxor__(
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
             return NotImplemented
         return icepool.expression.SymmetricDifferenceExpression(other, self)
 
     def symmetric_difference(
-            self, other: 'MultisetExpression') -> 'MultisetExpression':
+        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
+    ) -> 'MultisetExpression':
+        other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     # Adjust counts.
