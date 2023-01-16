@@ -212,22 +212,28 @@ class MultisetExpression(ABC):
     def evaluate(
         *expressions: 'MultisetExpression',
         evaluator: 'icepool.MultisetEvaluator[T, U]'
-    ) -> 'icepool.MultisetEvaluator[T,  U]':
+    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
         """Attaches a final `MultisetEvaluator` to expressions.
 
-        The result is an `MultisetEvaluator` that runs the expressions
-        before sending the results to the provided evaluator.
+        Returns:
+            A `Die` if all expressions are fully bound.
+            A `MultisetEvaluator` otherwise.
         """
-        return icepool.expression.ExpressionEvaluator(*expressions,
-                                                      evaluator=evaluator)
+        evaluator = icepool.expression.ExpressionEvaluator(*expressions,
+                                                           evaluator=evaluator)
+        if evaluator.arity == 0:
+            return evaluator.evaluate()
+        else:
+            return evaluator
 
-    def expand(self) -> 'icepool.MultisetEvaluator[T,  tuple[T, ...]]':
+    def expand(
+        self
+    ) -> 'icepool.MultisetEvaluator[T, tuple[T, ...]] | icepool.Die[tuple[T, ...]]':
         """All possible sorted tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
         """
-        evaluator = icepool.evaluator.ExpandEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(evaluator=icepool.evaluator.ExpandEvaluator())
 
     def sum(
         self,
