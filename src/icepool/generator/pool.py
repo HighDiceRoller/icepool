@@ -17,9 +17,15 @@ from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping,
 
 
 class Pool(MultisetGenerator[T, tuple[int]]):
-    """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
+    """Represents a multiset of sorted/unordered dice, only distinguished by the outcomes they roll.
 
-    This should be used in conjunction with `MultisetEvaluator` to generate a result.
+    This should be used in conjunction with `MultisetEvaluator` to generate a
+    result.
+
+    Note that operators are performed on the multiset of rolls, not the multiset
+    of dice. For example, `d6.pool(3) - d6.pool(3)` is not an empty pool, but
+    an expression meaning "roll two pools of 3d6, with dice in the second pool
+    cancelling matching dice in the first pool one-for-one".
     """
 
     _sorted_roll_counts: tuple[int, ...]
