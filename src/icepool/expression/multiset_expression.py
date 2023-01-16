@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.evaluator.expression
+import icepool.evaluator
 
 import operator
 
@@ -436,11 +436,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         operation_class: Type['icepool.evaluator.ComparisonEvaluator']
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         if isinstance(right, MultisetExpression):
-            evaluator = icepool.evaluator.expression.ExpressionEvaluator(
+            evaluator = icepool.evaluator.ExpressionEvaluator(
                 self, right, evaluator=operation_class())
         elif isinstance(right, (Mapping, Sequence)):
             right_expression = icepool.implicit_convert_to_expression(right)
-            evaluator = icepool.evaluator.expression.ExpressionEvaluator(
+            evaluator = icepool.evaluator.ExpressionEvaluator(
                 self, right_expression, evaluator=operation_class())
         else:
             raise TypeError('Right side is not comparable.')

@@ -21,5 +21,5 @@ __all__ = [
     'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
     'SymmetricDifferenceExpression', 'AdjustCountsExpression',
     'MultiplyCountsExpression', 'FloorDivCountsExpression',
-    'FilterCountsExpression', 'UniqueExpression'
+    'FilterCountsExpression', 'UniqueExpression', 'KeepExpression'
 ]
