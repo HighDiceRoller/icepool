@@ -132,3 +132,9 @@ def test_lowest():
     result = icepool.sum_lowest(icepool.d6, icepool.d6)
     expected = icepool.d6.sum_lowest(2, 1)
     assert result.equals(expected)
+
+
+def test_double_index():
+    result = d6.pool(3)[:2][-1]
+    expected = d6.pool(3)[1]
+    assert result == expected

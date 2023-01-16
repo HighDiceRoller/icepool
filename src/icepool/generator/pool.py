@@ -124,12 +124,20 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return Pool._new_raw(dice, keep_tuple)
 
     @cached_property
-    def _size(self) -> int:
+    def _raw_size(self) -> int:
         return sum(count for _, count in self._dice)
 
-    def size(self) -> int:
-        """The number of dice in this pool, counting multiples of the same `Die`."""
-        return self._size
+    def raw_size(self) -> int:
+        """The number of dice in this pool before the keep_tuple is applied."""
+        return self._raw_size
+
+    @cached_property
+    def _keep_size(self) -> int:
+        return sum(self.keep_tuple())
+
+    def keep_size(self) -> int:
+        """The total count produced by this pool after the keep_tuple is applied."""
+        return self._keep_size
 
     def _is_resolvable(self) -> bool:
         return all(not die.is_empty() for die, _ in self._dice)
@@ -209,10 +217,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
 
-        This is always an absolute selection on all `size` dice,
-        not a relative selection on already-selected dice,
-        which would be ambiguous in the presence of multiple or negative counts.
-
         For example, here are some ways of selecting the two highest dice out of 5:
 
         * `pool[3:5]`
@@ -256,15 +260,32 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 On a `Pool` consisting of a single `Die` this would have
                 the -1 and 1 cancel each other out.
 
-        Raises:
-            ValueError: If more than one `...` is used.
-        """
-        convert_to_die = isinstance(index, int)
-        index = make_keep_tuple(self.size(), index)
-        if len(index) != self.size():
-            raise ValueError('Cannot change the size of a pool.')
+        If this is called more than once, the selection is applied relative
+        to the previous keep_tuple. For example, applying `[:2][-1]` would
+        produce the second-lowest roll.
 
-        result = Pool._new_raw(self._dice, index)
+        Raises:
+            ValueError: If:
+                * More than one `...` is used.
+                * The current keep_tuple has negative counts.
+                * The provided index specifies a fixed length that is
+                    different than the total of the counts in the current
+                    keep_tuple.
+        """
+        if any(x < 0 for x in self.keep_tuple()):
+            raise ValueError(
+                'A pool with negative counts cannot be further indexed.')
+
+        convert_to_die = isinstance(index, int)
+        relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
+
+        # Merge keep tuples.
+        keep_tuple: list[int] = []
+        for x in self.keep_tuple():
+            keep_tuple.append(sum(relative_keep_tuple[:x]))
+            relative_keep_tuple = relative_keep_tuple[x:]
+
+        result = Pool._new_raw(self._dice, tuple(keep_tuple))
         if convert_to_die:
             # It's difficult to determine the return type of sum().
             return result.sum()  # type: ignore
@@ -382,7 +403,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the lowest outcomes in the pool.
 
-        The args override any `keep_tuple` of this pool.
+        The arguments are relative to any keep_tuple already applied to this
+        pool.
 
         Args:
             keep: The number of lowest dice will be summed.
@@ -394,15 +416,16 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = min(drop, self.size())
-        stop = min(keep + drop, self.size())
+        start = min(drop, self.raw_size())
+        stop = min(keep + drop, self.raw_size())
         # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
     def sum_highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the highest outcomes in the pool.
 
-        The args override any `keep_tuple` of this pool.
+        The arguments are relative to any keep_tuple already applied to this
+        pool.
 
         Args:
             keep: The number of highest dice will be summed.
@@ -414,14 +437,14 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = self.size() - min(keep + drop, self.size())
-        stop = self.size() - min(drop, self.size())
+        start = self.raw_size() - min(keep + drop, self.raw_size())
+        stop = self.raw_size() - min(drop, self.raw_size())
         # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
     def __str__(self) -> str:
         return (
-            f'Pool of {self.size()} dice with keep_tuple={self.keep_tuple()}\n'
+            f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'
             + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
