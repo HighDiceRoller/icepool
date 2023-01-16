@@ -16,7 +16,7 @@ import random
 from abc import ABC, abstractmethod
 from functools import cached_property
 
-from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar, cast
 
 T_co = TypeVar('T_co', bound=Outcome, covariant=True)
 """Type variable representing the outcome type."""
@@ -144,9 +144,13 @@ class MultisetGenerator(Generic[T_co, Qs_co], MultisetExpression):
             self, other) -> 'icepool.DieWithTruth[bool]':
 
         def data_callback() -> Counts[bool]:
-            return MultisetExpression.__eq__(self, other).evaluate()._data
+            die = cast('icepool.Die[bool]',
+                       MultisetExpression.__eq__(self, other))
+            if not isinstance(die, icepool.Die):
+                raise TypeError('Did not resolve to a die.')
+            return die._data
 
-        def truth_value_callback():
+        def truth_value_callback() -> bool:
             if not isinstance(other, MultisetGenerator):
                 return False
             return self._key_tuple == other._key_tuple
@@ -158,9 +162,13 @@ class MultisetGenerator(Generic[T_co, Qs_co], MultisetExpression):
             self, other) -> 'icepool.DieWithTruth[bool]':
 
         def data_callback() -> Counts[bool]:
-            return MultisetExpression.__ne__(self, other).evaluate()._data
+            die = cast('icepool.Die[bool]',
+                       MultisetExpression.__ne__(self, other))
+            if not isinstance(die, icepool.Die):
+                raise TypeError('Did not resolve to a die.')
+            return die._data
 
-        def truth_value_callback():
+        def truth_value_callback() -> bool:
             if not isinstance(other, MultisetGenerator):
                 return True
             return self._key_tuple != other._key_tuple
@@ -179,9 +187,6 @@ class MultisetGenerator(Generic[T_co, Qs_co], MultisetExpression):
         return Order.Any
 
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        if self.output_arity != 1:
-            raise ValueError(
-                'Only generators with output arity == 1 are valid for binding.')
         return (self,)
 
     @property
