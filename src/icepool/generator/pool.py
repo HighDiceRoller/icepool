@@ -266,14 +266,9 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         sorted_roll_counts = sorted_roll_counts_tuple(self.size(),
                                                       sorted_roll_counts)
         if len(sorted_roll_counts) != self.size():
-            if len(self._dice) != 1:
-                raise ValueError(
-                    'Cannot change the size of a pool unless it has exactly one type of die.'
-                )
-            dice = Counts([(self._dice[0][0], len(sorted_roll_counts))])
-            result = Pool._new_from_mapping(dice, sorted_roll_counts)
-        else:
-            result = Pool._new_raw(self._dice, sorted_roll_counts)
+            raise ValueError('Cannot change the size of a pool.')
+
+        result = Pool._new_raw(self._dice, sorted_roll_counts)
         if convert_to_die:
             # It's difficult to determine the return type of sum().
             return result.sum()  # type: ignore
