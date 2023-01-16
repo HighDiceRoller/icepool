@@ -7,7 +7,7 @@ import icepool.generator
 from icepool.collections import Counts
 from icepool.evaluable_interface import EvaluableInterface
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Evaluable, Outcome
+from icepool.typing import Evaluable, Order, Outcome
 
 import bisect
 import functools
@@ -15,6 +15,7 @@ import itertools
 import random
 
 from abc import ABC, abstractmethod
+from functools import cached_property
 
 from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar
 
@@ -51,7 +52,7 @@ def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
         )
 
 
-class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
+class MultisetGenerator(Generic[T_co, Qs_co], MultisetExpression):
     """Abstract base class for generating one or more multisets.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
@@ -76,7 +77,7 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
     @property
     @abstractmethod
     def output_arity(self) -> int:
-        """The number of counts generated. Must be constant."""
+        """The number of multisets/counts generated. Must be constant."""
 
     @abstractmethod
     def _is_resolvable(self) -> bool:
@@ -147,19 +148,21 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
             return False
         return self._key_tuple == other._key_tuple
 
-    @functools.cached_property
+    @cached_property
     def _hash(self) -> int:
         return hash(self._key_tuple)
 
     def __hash__(self) -> int:
         return self._hash
 
+    # Equality with truth value, needed for hashing.
+
     # The result has a truth value, but is not a bool.
     def __eq__(  # type: ignore
-            self: 'Evaluable[T_co]', other) -> 'icepool.DieWithTruth[bool]':
+            self, other) -> 'icepool.DieWithTruth[bool]':
 
-        def data_callback():
-            return EvaluableInterface.__eq__(self, other)._data
+        def data_callback() -> Counts[bool]:
+            return MultisetExpression.__eq__(self, other).evaluate()._data
 
         def truth_value_callback():
             if not isinstance(other, MultisetGenerator):
@@ -170,10 +173,10 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
 
     # The result has a truth value, but is not a bool.
     def __ne__(  # type: ignore
-            self: 'Evaluable[T_co]', other) -> 'icepool.DieWithTruth[bool]':
+            self, other) -> 'icepool.DieWithTruth[bool]':
 
-        def data_callback():
-            return EvaluableInterface.__ne__(self, other)._data
+        def data_callback() -> Counts[bool]:
+            return MultisetExpression.__ne__(self, other).evaluate()._data
 
         def truth_value_callback():
             if not isinstance(other, MultisetGenerator):
@@ -181,6 +184,27 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
             return self._key_tuple != other._key_tuple
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
+
+    # Expression API.
+
+    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
+        # No state is needed, so we return our own __str__ for diagnostic
+        # purposes.
+        return str(self), bound_counts[0]
+
+    def order(self) -> Order:
+        return Order.Any
+
+    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        if self.output_arity != 1:
+            raise ValueError(
+                'Only generators with output arity == 1 are valid for binding.')
+        return (self,)
+
+    @property
+    def arity(self) -> int:
+        return 0
 
     def min_outcome(self) -> T_co:
         return self.outcomes()[0]
