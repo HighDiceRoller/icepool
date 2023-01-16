@@ -23,8 +23,8 @@ class BoundGeneratorExpression(MultisetExpression):
             raise ValueError('Bound generators must have an arity of 1.')
         self._generator = generator
 
-    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
-                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
         # No state is needed, so we return the class name of the generator
         # for diagnostic purposes.
         return str(type(self._generator)), bound_counts[0]

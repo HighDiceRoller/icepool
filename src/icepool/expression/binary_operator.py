@@ -22,8 +22,8 @@ class BinaryOperatorExpression(MultisetExpression):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
-    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
-                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
         bound_counts_split = len(self._left.bound_generators())
         left_bound_counts = bound_counts[:bound_counts_split]
         right_bound_counts = bound_counts[bound_counts_split:]

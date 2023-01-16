@@ -32,25 +32,28 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
         The state is a tuple of the substates.
         """
-        if self._extra_arity > 0:
-            extra_counts = counts[-self._extra_arity:]
-            counts = counts[:-self._extra_arity]
-        else:
-            extra_counts = ()
+        prefix_counts = counts[:self._extra_arity]
+        counts = counts[self._extra_arity:]
 
         if state is None:
             return tuple(
-                evaluator.next_state(None, outcome, *counts, *
-                                     evaluator_extra_counts)
-                for evaluator, evaluator_extra_counts in zip(
-                    self._inners, self._split_extra_counts(*extra_counts)))
+                evaluator.next_state(
+                    None,
+                    outcome,
+                    *evaluator_prefix_counts,
+                    *counts,
+                ) for evaluator, evaluator_prefix_counts in zip(
+                    self._inners, self._split_prefix_counts(*prefix_counts)))
         else:
             return tuple(
-                evaluator.next_state(substate, outcome, *counts, *
-                                     evaluator_extra_counts)
-                for evaluator, substate, evaluator_extra_counts in zip(
-                    self._inners, state, self._split_extra_counts(
-                        *extra_counts)))
+                evaluator.next_state(
+                    substate,
+                    outcome,
+                    *evaluator_prefix_counts,
+                    *counts,
+                ) for evaluator, substate, evaluator_prefix_counts in zip(
+                    self._inners, state,
+                    self._split_prefix_counts(*prefix_counts)))
 
     def final_outcome(self, final_state):
         """Runs `final_state` for all subevals.
@@ -75,10 +78,10 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
             *(evaluator.alignment(outcomes) for evaluator in self._inners))
 
     @cached_property
-    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return tuple(
             itertools.chain.from_iterable(
-                expression.extra_generators for expression in self._inners))
+                expression.prefix_generators for expression in self._inners))
 
     def validate_arity(self, arity: int) -> None:
         for evaluator in self._inners:
@@ -86,14 +89,14 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
     @cached_property
     def _extra_arity(self) -> int:
-        return sum(generator.arity for generator in self.extra_generators)
+        return sum(generator.arity for generator in self.prefix_generators)
 
-    def _split_extra_counts(self,
-                            *extra_counts: int) -> Iterator[tuple[int, ...]]:
+    def _split_prefix_counts(self,
+                             *extra_counts: int) -> Iterator[tuple[int, ...]]:
         index = 0
         for expression in self._inners:
             counts_length = sum(
-                generator.arity for generator in expression.extra_generators)
+                generator.arity for generator in expression.prefix_generators)
             yield extra_counts[index:index + counts_length]
             index += counts_length
 

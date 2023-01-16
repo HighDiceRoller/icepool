@@ -22,8 +22,8 @@ class MultisetVariable(MultisetExpression):
         """
         self._index = index
 
-    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
-                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
         # We don't need any state, so always return str(self) as the state as
         # a diagnostic marker.
         return str(self), counts[self._index]

@@ -190,8 +190,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         return range(outcomes[0], outcomes[-1] + 1)
 
     @property
-    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        """An optional sequence of extra generators that will be added to the end."""
+    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        """An optional sequence of extra generators whose counts will be prepended to *counts."""
         return ()
 
     def validate_arity(self, arity: int) -> None:
@@ -241,7 +241,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         self.validate_arity(
             sum(generator.arity for generator in converted_generators))
 
-        converted_generators = converted_generators + self.extra_generators
+        converted_generators = self.prefix_generators + converted_generators
 
         if not all(generator._is_resolvable()
                    for generator in converted_generators):

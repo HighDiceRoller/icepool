@@ -27,8 +27,8 @@ class MultisetExpression(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome: Outcome, counts: tuple[int, ...],
-                   bound_counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:

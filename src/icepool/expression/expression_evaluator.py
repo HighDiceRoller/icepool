@@ -36,19 +36,22 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        if self._bound_arity > 0:
-            bound_counts = counts[-self._bound_arity:]
-            counts = counts[:-self._bound_arity]
-        else:
-            bound_counts = ()
+        bound_counts = counts[:self._bound_arity]
+        prefix_counts = counts[self._bound_arity:self._bound_arity +
+                               len(self._evaluator.prefix_generators)]
+        counts = counts[self._bound_arity +
+                        len(self._evaluator.prefix_generators):]
 
-        expression_states, expression_counts = zip(
-            *(expression.next_state(expression_state, outcome, counts,
-                                    expression_bound_counts)
-              for expression, expression_state, expression_bound_counts in zip(
-                  self._expressions, expression_states,
-                  self._split_bound_counts(bound_counts))))
+        expression_states, expression_counts = zip(*(expression.next_state(
+            expression_state,
+            outcome,
+            expression_bound_counts,
+            counts,
+        ) for expression, expression_state, expression_bound_counts in zip(
+            self._expressions, expression_states,
+            self._split_bound_counts(bound_counts))))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
+                                                     *prefix_counts,
                                                      *expression_counts)
         return expression_states, evaluator_state
 
@@ -70,8 +73,8 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         return self._evaluator.alignment(*generators)
 
     @cached_property
-    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return tuple(self._evaluator.extra_generators) + self._bound_generators
+    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._bound_generators + self._evaluator.prefix_generators
 
     def validate_arity(self, arity: int) -> None:
         required_arity = max(
