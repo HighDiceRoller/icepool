@@ -29,10 +29,10 @@ class BinaryOperatorExpression(MultisetExpression):
         right_bound_counts = bound_counts[bound_counts_split:]
         left_state, right_state = state or (None, None)
         left_state, left_count = self._left.next_state(left_state, outcome,
-                                                       counts,
-                                                       left_bound_counts)
+                                                       left_bound_counts,
+                                                       counts)
         right_state, right_count = self._right.next_state(
-            right_state, outcome, counts, right_bound_counts)
+            right_state, outcome, right_bound_counts, counts)
         count = self.merge_counts(left_count, right_count)
         count = max(count, 0)
         return (left_state, right_state), count
