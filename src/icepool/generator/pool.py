@@ -194,22 +194,20 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return self._keep_tuple
 
     @overload
-    def set_keep_tuple(self, index: slice | Sequence[int]) -> 'Pool[T]':
+    def keep(self, index: slice | Sequence[int]) -> 'Pool[T]':
         ...
 
     @overload
-    def set_keep_tuple(self, index: int) -> 'icepool.Die[T]':
+    def keep(self, index: int) -> 'icepool.Die[T]':
         ...
 
     @overload
-    def set_keep_tuple(
-            self,
-            index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
+    def keep(self,
+             index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
         ...
 
-    def set_keep_tuple(
-            self,
-            index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
+    def keep(self,
+             index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[index]` for the same effect as this method.
@@ -217,7 +215,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
 
-        For example, here are some ways of selecting the two highest dice out of 5:
+        For example, here are some ways of selecting the two highest dice out of
+        five:
 
         * `pool[3:5]`
         * `pool[3:]`
@@ -247,7 +246,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
             * If `index` is shorter than `size`, `...`
                 acts as enough zero counts to make up the difference.
-                E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
+                E.g. `pool[1, ..., 1]` on five dice would act as
+                `pool[1, 0, 0, 0, 1]`.
             * If `index` has length equal to `size`, `...` has no effect.
                 E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
             * If `index` is longer than `size` and `...` is on one side,
@@ -292,7 +292,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         else:
             return result
 
-    __getitem__ = set_keep_tuple
+    __getitem__ = keep
 
     @cached_property
     def _min_outcome(self) -> T:
