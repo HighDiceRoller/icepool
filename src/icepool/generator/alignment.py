@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.typing import Outcome, T_co
+from icepool.typing import Outcome, T
 
 from functools import cached_property
 
@@ -10,13 +10,13 @@ from typing import Collection, Hashable, Iterator, Sequence, TypeAlias
 AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int], int]]
 
 
-class Alignment(MultisetGenerator[T_co, tuple[()]]):
+class Alignment(MultisetGenerator[T, tuple[()]]):
     """A generator that only outputs 0 counts with weight 1."""
 
-    def __init__(self, outcomes: Collection[T_co]):
+    def __init__(self, outcomes: Collection[T]):
         self._outcomes = tuple(sorted(outcomes))
 
-    def outcomes(self) -> Sequence[T_co]:
+    def outcomes(self) -> Sequence[T]:
         return self._outcomes
 
     @property
