@@ -16,6 +16,23 @@ U = TypeVar('U', bound=Outcome)
 """Type variable representing another outcome type."""
 
 
+def implicit_convert_to_expression(arg) -> 'MultisetExpression':
+    """Implcitly converts the argument to a `MultisetExpression`.
+
+    Args:
+        arg: The argument must either already be a `MultisetGenerator`;
+            or a `Mapping` or `Sequence`.
+    """
+    if isinstance(arg, MultisetExpression):
+        return arg
+    elif isinstance(arg, (Mapping, Sequence)):
+        return icepool.Pool(arg)
+    else:
+        raise TypeError(
+            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a MultisetGenerator.'
+        )
+
+
 class MultisetExpression(ABC):
     """Abstract base class representing an expression that operates on multisets.
 
@@ -295,8 +312,7 @@ class MultisetExpression(ABC):
             return icepool.expression.ExpressionEvaluator(
                 self, right, evaluator=operation_class())
         elif isinstance(right, (Mapping, Collection)):
-            right_expression = icepool.expression.BoundGeneratorExpression(
-                icepool.implicit_convert_to_generator(right))
+            right_expression = icepool.implicit_convert_to_expression(right)
             return icepool.expression.ExpressionEvaluator(
                 self, right_expression, evaluator=operation_class())
         else:

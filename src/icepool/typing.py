@@ -5,7 +5,7 @@ import enum
 from typing import Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from icepool.evaluable_interface import EvaluableInterface
+    from icepool.expression.multiset_expression import MultisetExpression
 
 T = TypeVar('T')
 """An outcome type."""
@@ -16,7 +16,7 @@ T_contra = TypeVar('T_contra', contravariant=True)
 T_co = TypeVar('T_co', bound='Outcome', covariant=True)
 """An outcome type."""
 
-Evaluable: TypeAlias = 'EvaluableInterface[T] | Mapping[T, int] | Sequence[T]'
+Evaluable: TypeAlias = 'MultisetExpression | Mapping[T, int] | Sequence[T]'
 """Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator."""
 
 

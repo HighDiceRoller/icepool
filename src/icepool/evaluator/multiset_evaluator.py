@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.evaluable_interface
 from icepool.collections import union_sorted_sets
 
 from icepool.typing import Evaluable, Outcome, Order
@@ -236,28 +235,34 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         from icepool.generator.alignment import Alignment
 
-        # Convert arguments to generators.
-        converted_generators = tuple(
-            icepool.implicit_convert_to_generator(generator)
-            for generator in evaluables)
+        # Convert arguments to expressions.
+        expressions = tuple(
+            icepool.implicit_convert_to_expression(evaluable)
+            for evaluable in evaluables)
+
+        if not all(
+                isinstance(expression, icepool.MultisetGenerator)
+                for expression in expressions):
+            raise NotImplementedError('TODO')
+
+        generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
 
         self.validate_arity(
-            sum(generator.output_arity for generator in converted_generators))
+            sum(generator.output_arity for generator in generators))
 
-        converted_generators = self.prefix_generators + converted_generators
+        generators = self.prefix_generators + generators
 
-        if not all(generator._is_resolvable()
-                   for generator in converted_generators):
+        if not all(generator._is_resolvable() for generator in generators):
             return icepool.Die([])
 
-        algorithm, order = self._select_algorithm(*converted_generators)
+        algorithm, order = self._select_algorithm(*generators)
 
         # We use a separate class to guarantee all outcomes are visited.
         outcomes = union_sorted_sets(
-            *(generator.outcomes() for generator in converted_generators))
+            *(generator.outcomes() for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
 
-        dist = algorithm(order, alignment, converted_generators)
+        dist = algorithm(order, alignment, generators)
 
         final_outcomes = []
         final_weights = []

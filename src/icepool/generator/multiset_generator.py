@@ -5,7 +5,6 @@ import icepool
 
 import icepool.generator
 from icepool.collections import Counts
-from icepool.evaluable_interface import EvaluableInterface
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Evaluable, Order, Outcome
 
@@ -33,23 +32,6 @@ U = TypeVar('U', bound=Outcome)
 NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
                                                   Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
-
-
-def implicit_convert_to_generator(arg) -> 'MultisetGenerator':
-    """Implcitly comverts the argument to a MultisetGenerator.
-
-    Args:
-        arg: The argument must either already be a MultisetGenerator;
-            or a `Mapping` or `Sequence`.
-    """
-    if isinstance(arg, MultisetGenerator):
-        return arg
-    elif isinstance(arg, (Mapping, Sequence)):
-        return icepool.Pool(arg)
-    else:
-        raise TypeError(
-            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a MultisetGenerator.'
-        )
 
 
 class MultisetGenerator(Generic[T_co, Qs_co], MultisetExpression):

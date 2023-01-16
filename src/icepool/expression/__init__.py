@@ -12,8 +12,6 @@ from icepool.expression.adjust_counts import (AdjustCountsExpression,
                                               FilterCountsExpression,
                                               UniqueExpression)
 
-from icepool.expression.bound_generator import BoundGeneratorExpression
-from icepool.expression.fully_bound_expression import FullyBoundExpression
 from icepool.expression.from_callable import evaluator_from_callable
 
 __all__ = [
