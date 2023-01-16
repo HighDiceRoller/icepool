@@ -49,7 +49,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             counts,
         ) for expression, expression_state, expression_bound_counts in zip(
             self._expressions, expression_states,
-            self._split_bound_counts(bound_counts))))
+            self._split_bound_counts(*bound_counts))))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
                                                      *prefix_counts,
                                                      *expression_counts)
