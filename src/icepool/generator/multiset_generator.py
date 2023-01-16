@@ -75,7 +75,7 @@ class MultisetGenerator(ABC, Generic[T_co, Qs_co], EvaluableInterface[T_co]):
 
     @property
     @abstractmethod
-    def arity(self) -> int:
+    def output_arity(self) -> int:
         """The number of counts generated. Must be constant."""
 
     @abstractmethod

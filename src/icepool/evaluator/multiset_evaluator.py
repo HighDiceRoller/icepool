@@ -242,7 +242,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             for generator in evaluables)
 
         self.validate_arity(
-            sum(generator.arity for generator in converted_generators))
+            sum(generator.output_arity for generator in converted_generators))
 
         converted_generators = self.prefix_generators + converted_generators
 

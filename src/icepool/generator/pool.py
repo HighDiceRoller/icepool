@@ -161,7 +161,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         return self._outcomes
 
     @property
-    def arity(self) -> int:
+    def output_arity(self) -> int:
         return 1
 
     def _estimate_order_costs(self) -> tuple[int, int]:

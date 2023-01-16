@@ -23,7 +23,7 @@ class Alignment(MultisetGenerator[T_co, tuple[()]]):
         return self._outcomes
 
     @property
-    def arity(self) -> int:
+    def output_arity(self) -> int:
         return 0
 
     def _is_resolvable(self) -> bool:
