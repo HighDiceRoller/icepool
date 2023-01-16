@@ -32,10 +32,6 @@ class AdjustCountsExpression(MultisetExpression):
     def order(self) -> Order:
         return self._inner.order()
 
-    def shift_variables(self, shift: int) -> MultisetExpression:
-        return self.__class__(self._inner.shift_variables(shift),
-                              self._constant)
-
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._inner.bound_generators()

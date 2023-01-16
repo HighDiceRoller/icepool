@@ -31,9 +31,6 @@ class MultisetVariable(MultisetExpression):
     def order(self):
         return Order.Any
 
-    def shift_variables(self, shift: int) -> MultisetExpression:
-        return MultisetVariable(self._index + shift)
-
     @property
     def arity(self) -> int:
         return self._index + 1

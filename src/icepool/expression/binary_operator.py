@@ -40,10 +40,6 @@ class BinaryOperatorExpression(MultisetExpression):
     def order(self) -> Order:
         return Order.merge(self._left.order(), self._right.order())
 
-    def shift_variables(self, shift: int) -> MultisetExpression:
-        return self.__class__(self._left.shift_variables(shift),
-                              self._right.shift_variables(shift))
-
     @property
     def arity(self) -> int:
         return max(self._left.arity, self._right.arity)

@@ -32,9 +32,6 @@ class BoundGeneratorExpression(MultisetExpression):
     def order(self) -> Order:
         return Order.Any
 
-    def shift_variables(self, shift: int) -> 'MultisetExpression':
-        return self
-
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self._generator,)
 
