@@ -283,6 +283,27 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return icepool.expression.UniqueExpression(self, max_count)
 
+    # Keep highest / lowest.
+
+    def __setitem__(
+        self, sorted_roll_counts: int | slice | Sequence[int]
+    ) -> 'MultisetExpression[T_contra]':
+        return icepool.expression.KeepExpression(self, sorted_roll_counts)
+
+    def keep_lowest(self,
+                    keep: int = 1,
+                    drop: int = 0) -> 'MultisetExpression[T_contra]':
+        """Keep some of the lowest results from this multiset and drop the rest."""
+        t = (0,) * drop + (1,) * keep + (...,)
+        return icepool.expression.KeepExpression(self, t)
+
+    def keep_highest(self,
+                     keep: int = 1,
+                     drop: int = 0) -> 'MultisetExpression[T_contra]':
+        """Keep some of the highest results from this multiset and drop the rest."""
+        t = (...,) + (1,) * keep + (0,) * drop
+        return icepool.expression.KeepExpression(self, t)
+
     # Evaluations.
 
     def evaluate(

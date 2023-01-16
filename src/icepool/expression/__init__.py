@@ -10,6 +10,7 @@ from icepool.expression.adjust_counts import (AdjustCountsExpression,
                                               FloorDivCountsExpression,
                                               FilterCountsExpression,
                                               UniqueExpression)
+from icepool.expression.keep import KeepExpression
 
 from icepool.expression.multiset_function import multiset_function
 
