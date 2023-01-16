@@ -20,29 +20,27 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     _inner: MultisetExpression[T_contra]
     _order: Order
-    _sorted_roll_counts: tuple[int, ...]
+    _keep_tuple: tuple[int, ...]
 
     # May return inner unmodified.
     def __new__(  # type: ignore
         cls, inner: MultisetExpression[T_contra],
-        sorted_roll_counts: int | slice | Sequence[int | EllipsisType]
+        index: int | slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
         cls.validate_output_arity(inner)
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
-        if isinstance(sorted_roll_counts, int):
-            if sorted_roll_counts >= 0:
+        if isinstance(index, int):
+            if index >= 0:
                 self._order = Order.Ascending
-                self._sorted_roll_counts = (0,) * (sorted_roll_counts - 1) + (
-                    1,)
+                self._keep_tuple = (0,) * (index - 1) + (1,)
             else:
                 self._order = Order.Descending
-                self._sorted_roll_counts = (
-                    1,) + (0,) * (-sorted_roll_counts - 1)
-        elif isinstance(sorted_roll_counts, slice):
-            if sorted_roll_counts.step is not None:
+                self._keep_tuple = (1,) + (0,) * (-index - 1)
+        elif isinstance(index, slice):
+            if index.step is not None:
                 raise ValueError('step is not supported.')
-            start, stop = sorted_roll_counts.start, sorted_roll_counts.stop
+            start, stop = index.start, index.stop
             if start is None:
                 if stop is None:
                     # No endpoints, so just return inner as-is.
@@ -53,7 +51,7 @@ class KeepExpression(MultisetExpression[T_contra]):
                             'If only stop is provided, it must be non-negative.'
                         )
                     self._order = Order.Ascending
-                    self._sorted_roll_counts = (1,) * stop
+                    self._keep_tuple = (1,) * stop
             else:
                 # start is not None.
                 if stop is None:
@@ -61,48 +59,44 @@ class KeepExpression(MultisetExpression[T_contra]):
                         raise ValueError(
                             'If only start is provided, it must be negative.')
                     self._order = Order.Descending
-                    self._sorted_roll_counts = (1,) * -start
+                    self._keep_tuple = (1,) * -start
                 else:
                     # Both are provided.
                     if start >= 0 and stop >= 0:
                         self._order = Order.Ascending
-                        self._sorted_roll_counts = (0,) * start + (1,) * stop
+                        self._keep_tuple = (0,) * start + (1,) * stop
                     elif start < 0 and stop < 0:
                         self._order = Order.Descending
-                        self._sorted_roll_counts = (0,) * -stop + (1,) * -start
+                        self._keep_tuple = (0,) * -stop + (1,) * -start
                     else:
                         raise ValueError(
                             'If both start and stop are provided, they must be both negative or both not negative.'
                         )
-        elif isinstance(sorted_roll_counts, Sequence):
-            if sorted_roll_counts[0] == ...:
+        elif isinstance(index, Sequence):
+            if index[0] == ...:
                 self._order = Order.Descending
                 # Type verified below.
-                self._sorted_roll_counts = tuple(
-                    sorted_roll_counts[1:])  # type: ignore
-            elif sorted_roll_counts[-1] == ...:
+                self._keep_tuple = tuple(index[1:])  # type: ignore
+            elif index[-1] == ...:
                 self._order = Order.Ascending
                 # Type verified below.
-                self._sorted_roll_counts = tuple(
-                    sorted_roll_counts[:-1])  # type: ignore
+                self._keep_tuple = tuple(index[:-1])  # type: ignore
             else:
                 raise ValueError(
                     'If a sequence is provided, either the first or last element (but not both) must be an Ellipsis (...)'
                 )
-            if ... in self._sorted_roll_counts:
+            if ... in self._keep_tuple:
                 raise ValueError(
                     'If a sequence is provided, either the first or last element (but not both) must be an Ellipsis (...)'
                 )
         else:
-            raise TypeError(
-                f'Invalid type {type(sorted_roll_counts)} for sorted_roll_counts.'
-            )
+            raise TypeError(f'Invalid type {type(index)} for index.')
         return self
 
     def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
                                                                        ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        remaining, inner_state = state or (self._sorted_roll_counts, None)
+        remaining, inner_state = state or (self._keep_tuple, None)
         inner_state, count = self._inner.next_state(inner_state, outcome,
                                                     bound_counts, counts)
         if count < 0:

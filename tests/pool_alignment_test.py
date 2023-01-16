@@ -33,25 +33,25 @@ def test_mixed_pool():
     assert result.outcomes() == (8,)
 
 
-def test_simple_pool_sorted_roll_counts():
+def test_simple_pool_keep_tuple():
     pool = d6.pool(5)[-2:]
     result = call_path_length.evaluate(pool)
     assert result.outcomes() == (6,)
 
 
-def test_simple_pool_sorted_roll_counts_low():
+def test_simple_pool_keep_tuple_low():
     pool = d6.pool(5)[:2]
     result = call_path_length.evaluate(pool)
     assert result.outcomes() == (6,)
 
 
-def test_mixed_pool_sorted_roll_counts():
+def test_mixed_pool_keep_tuple():
     pool = Pool([d4, d6, d6, d8])[-2:]
     result = call_path_length.evaluate(pool)
     assert result.outcomes() == (8,)
 
 
-def test_mixed_pool_sorted_roll_counts_low():
+def test_mixed_pool_keep_tuple_low():
     pool = Pool([d4, d6, d6, d8])[:2]
     result = call_path_length.evaluate(pool)
     assert result.outcomes() == (8,)

@@ -295,9 +295,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
     # Keep highest / lowest.
 
     def __setitem__(
-        self, sorted_roll_counts: int | slice | Sequence[int]
+            self, index: int | slice | Sequence[int]
     ) -> 'MultisetExpression[T_contra]':
-        return icepool.expression.KeepExpression(self, sorted_roll_counts)
+        return icepool.expression.KeepExpression(self, index)
 
     def keep_lowest(self,
                     keep: int = 1,

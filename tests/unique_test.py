@@ -17,7 +17,7 @@ test_pools = [
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_unique_vs_expand(pool):
-    if any(x < 0 for x in pool.sorted_roll_counts()):
+    if any(x < 0 for x in pool.keep_tuple()):
         pytest.skip()
 
     def unique(x):
@@ -30,7 +30,7 @@ def test_unique_vs_expand(pool):
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_unique_count(pool):
-    if any(x < 0 for x in pool.sorted_roll_counts()):
+    if any(x < 0 for x in pool.keep_tuple()):
         pytest.skip()
 
     a = pool.unique().expand().map(len)

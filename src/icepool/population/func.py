@@ -372,7 +372,7 @@ class ApplySorted():
             again_end=again_end)
 
     def __getitem__(
-        self, sorted_roll_counts: int | slice | tuple[int, ...]
+        self, index: int | slice | tuple[int, ...]
     ) -> 'Callable[..., icepool.Die[T]]':
 
         def result(
@@ -386,17 +386,17 @@ class ApplySorted():
                 raise TypeError(
                     'The first argument must be callable. Did you forget to provide a function?'
                 )
-            if isinstance(sorted_roll_counts, int):
-                return icepool.Pool(dice)[sorted_roll_counts].map(
-                    func, again_depth=again_depth, again_end=again_end)
+            if isinstance(index, int):
+                return icepool.Pool(dice)[index].map(func,
+                                                     again_depth=again_depth,
+                                                     again_end=again_end)
             else:
                 # Expression evaluators are difficult to type.
-                return icepool.Pool(
-                    dice)[sorted_roll_counts].expand().map(  # type: ignore
-                        func,
-                        star=True,
-                        again_depth=again_depth,
-                        again_end=again_end)
+                return icepool.Pool(dice)[index].expand().map(  # type: ignore
+                    func,
+                    star=True,
+                    again_depth=again_depth,
+                    again_end=again_end)
 
         return result
 

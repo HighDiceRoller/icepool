@@ -891,7 +891,7 @@ class Die(Population[T_co]):
         Args:
             rolls: The number of copies of this `Die` to put in the pool.
                 Or, a sequence of one `int` per die acting as
-                `sorted_roll_counts`. Note that `...` cannot be used in the
+                `keep_tuple`. Note that `...` cannot be used in the
                 argument to this method, as the argument determines the size of
                 the pool.
         """
@@ -919,9 +919,9 @@ class Die(Population[T_co]):
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
-        sorted_roll_counts = slice(start, stop)
+        index = slice(start, stop)
         # Expression evaluators are difficult to type.
-        return self.pool(rolls)[sorted_roll_counts].sum()  # type: ignore
+        return self.pool(rolls)[index].sum()  # type: ignore
 
     def lowest(self, rolls: int, /) -> 'Die':
         """Roll this die several times and keep the lowest."""
@@ -951,9 +951,9 @@ class Die(Population[T_co]):
             return self.highest(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
-        sorted_roll_counts = slice(start, stop)
+        index = slice(start, stop)
         # Expression evaluators are difficult to type.
-        return self.pool(rolls)[sorted_roll_counts].sum()  # type: ignore
+        return self.pool(rolls)[index].sum()  # type: ignore
 
     def highest(self, rolls: int, /) -> 'Die[T_co]':
         """Roll this die several times and keep the highest."""

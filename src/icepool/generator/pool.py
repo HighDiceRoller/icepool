@@ -29,7 +29,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     first pool one-for-one".
     """
 
-    _sorted_roll_counts: tuple[int, ...]
+    _keep_tuple: tuple[int, ...]
     _dice: tuple[tuple['icepool.Die[T]', int]]
 
     def __new__(
@@ -83,22 +83,22 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
             dice_counts[die] += qty
-        sorted_roll_counts = (1,) * sum(times)
-        return cls._new_from_mapping(dice_counts, sorted_roll_counts)
+        keep_tuple = (1,) * sum(times)
+        return cls._new_from_mapping(dice_counts, keep_tuple)
 
     @classmethod
     @cache
     def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]', int]],
-                 sorted_roll_counts: tuple[int, ...]) -> 'Pool[T]':
+                 keep_tuple: tuple[int, ...]) -> 'Pool[T]':
         """All pool creation ends up here. This method is cached.
 
         Args:
             dice: A tuple of (die, count) pairs.
-            sorted_roll_counts: A tuple of how many times to count each die.
+            keep_tuple: A tuple of how many times to count each die.
         """
         self = super(Pool, cls).__new__(cls)
         self._dice = dice
-        self._sorted_roll_counts = sorted_roll_counts
+        self._keep_tuple = keep_tuple
         return self
 
     @classmethod
@@ -112,16 +112,16 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
     @classmethod
     def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
-                          sorted_roll_counts: Sequence[int]) -> 'Pool[T]':
+                          keep_tuple: Sequence[int]) -> 'Pool[T]':
         """Creates a new pool.
 
         Args:
             dice_counts: A map from dice to rolls.
-            sorted_roll_counts: A tuple with length equal to the number of dice.
+            keep_tuple: A tuple with length equal to the number of dice.
         """
         dice = tuple(sorted(dice_counts.items(),
                             key=lambda kv: kv[0].key_tuple))
-        return Pool._new_raw(dice, sorted_roll_counts)
+        return Pool._new_raw(dice, keep_tuple)
 
     @cached_property
     def _size(self) -> int:
@@ -177,37 +177,35 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         """
         return icepool.generator.pool_cost.estimate_costs(self)
 
-    def sorted_roll_counts(self) -> tuple[int, ...]:
+    def keep_tuple(self) -> tuple[int, ...]:
         """The tuple indicating which dice in the pool will be counted.
 
         The tuple has one element per `Die` in the pool, from lowest roll to
         highest roll. The `Die` in the corresponding sorted position will be
         counted that many times.
         """
-        return self._sorted_roll_counts
+        return self._keep_tuple
 
     @overload
-    def set_sorted_roll_counts(
-            self, sorted_roll_counts: slice | Sequence[int]) -> 'Pool[T]':
+    def set_keep_tuple(self, index: slice | Sequence[int]) -> 'Pool[T]':
         ...
 
     @overload
-    def set_sorted_roll_counts(self,
-                               sorted_roll_counts: int) -> 'icepool.Die[T]':
+    def set_keep_tuple(self, index: int) -> 'icepool.Die[T]':
         ...
 
     @overload
-    def set_sorted_roll_counts(
-        self, sorted_roll_counts: int | slice | Sequence[int]
-    ) -> 'Pool[T] | icepool.Die[T]':
+    def set_keep_tuple(
+            self,
+            index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
         ...
 
-    def set_sorted_roll_counts(
-        self, sorted_roll_counts: int | slice | Sequence[int]
-    ) -> 'Pool[T] | icepool.Die[T]':
+    def set_keep_tuple(
+            self,
+            index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
-        Use `pool[sorted_roll_counts]` for the same effect as this method.
+        Use `pool[index]` for the same effect as this method.
 
         The dice are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
@@ -244,15 +242,15 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             This number may be "negative" if more `int`s are provided than
             the size of the `Pool`. Specifically:
 
-            * If `sorted_roll_counts` is shorter than `size`, `...`
+            * If `index` is shorter than `size`, `...`
                 acts as enough zero counts to make up the difference.
                 E.g. `pool[1, ..., 1]` on five dice would act as `pool[1, 0, 0, 0, 1]`.
-            * If `sorted_roll_counts` has length equal to `size`, `...` has no effect.
+            * If `index` has length equal to `size`, `...` has no effect.
                 E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-            * If `sorted_roll_counts` is longer than `size` and `...` is on one side,
-                elements will be dropped from `sorted_roll_counts` on the side with `...`.
+            * If `index` is longer than `size` and `...` is on one side,
+                elements will be dropped from `index` on the side with `...`.
                 E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-            * If `sorted_roll_counts` is longer than `size` and `...`
+            * If `index` is longer than `size` and `...`
                 is in the middle, the counts will be as the sum of two
                 one-sided `...`.
                 E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
@@ -262,20 +260,19 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         Raises:
             ValueError: If more than one `...` is used.
         """
-        convert_to_die = isinstance(sorted_roll_counts, int)
-        sorted_roll_counts = sorted_roll_counts_tuple(self.size(),
-                                                      sorted_roll_counts)
-        if len(sorted_roll_counts) != self.size():
+        convert_to_die = isinstance(index, int)
+        index = make_keep_tuple(self.size(), index)
+        if len(index) != self.size():
             raise ValueError('Cannot change the size of a pool.')
 
-        result = Pool._new_raw(self._dice, sorted_roll_counts)
+        result = Pool._new_raw(self._dice, index)
         if convert_to_die:
             # It's difficult to determine the return type of sum().
             return result.sum()  # type: ignore
         else:
             return result
 
-    __getitem__ = set_sorted_roll_counts
+    __getitem__ = set_keep_tuple
 
     @cached_property
     def _min_outcome(self) -> T:
@@ -298,9 +295,9 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         Yields:
             popped_pool: The pool after the min outcome is popped.
-            neTunt: The number of dice that rolled the min outcome, after
-                accounting for sorted_roll_counts.
-            net_weight: The weight of this incremental result.
+            count: The number of dice that rolled the min outcome, after
+                accounting for keep_tuple.
+            weight: The weight of this incremental result.
         """
         if not self.outcomes():
             yield self, (0,), 1
@@ -321,14 +318,13 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 result_weight *= weight
             if total_hits == 0:
                 resulTunt = 0
-                popped_sorted_roll_counts = self.sorted_roll_counts()
+                popped_keep_tuple = self.keep_tuple()
             else:
-                resulTunt = sum(self.sorted_roll_counts()[:total_hits])
-                popped_sorted_roll_counts = self.sorted_roll_counts(
-                )[total_hits:]
+                resulTunt = sum(self.keep_tuple()[:total_hits])
+                popped_keep_tuple = self.keep_tuple()[total_hits:]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
-                                                 popped_sorted_roll_counts)
-            if not any(popped_sorted_roll_counts):
+                                                 popped_keep_tuple)
+            if not any(popped_keep_tuple):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
                                0) + result_weight * popped_pool.denominator()
@@ -337,17 +333,16 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             yield popped_pool, (resulTunt,), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(
-                self.sorted_roll_counts()),), skip_weight
+            yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
             popped_pool: The pool after the max outcome is popped.
-            neTunt: The number of dice that rolled the max outcome, after
-                accounting for sorted_roll_counts.
-            net_weight: The weight of this incremental result.
+            count: The number of dice that rolled the max outcome, after
+                accounting for keep_tuple.
+            weight: The weight of this incremental result.
         """
         if not self.outcomes():
             yield self, (0,), 1
@@ -368,14 +363,13 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 result_weight *= weight
             if total_hits == 0:
                 resulTunt = 0
-                popped_sorted_roll_counts = self.sorted_roll_counts()
+                popped_keep_tuple = self.keep_tuple()
             else:
-                resulTunt = sum(self.sorted_roll_counts()[-total_hits:])
-                popped_sorted_roll_counts = self.sorted_roll_counts(
-                )[:-total_hits]
+                resulTunt = sum(self.keep_tuple()[-total_hits:])
+                popped_keep_tuple = self.keep_tuple()[:-total_hits]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
-                                                 popped_sorted_roll_counts)
-            if not any(popped_sorted_roll_counts):
+                                                 popped_keep_tuple)
+            if not any(popped_keep_tuple):
                 # Dump all dice in exchange for the denominator.
                 skip_weight = (skip_weight or
                                0) + result_weight * popped_pool.denominator()
@@ -384,13 +378,12 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             yield popped_pool, (resulTunt,), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(
-                self.sorted_roll_counts()),), skip_weight
+            yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
 
     def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the lowest outcomes in the pool.
 
-        The args override any `sorted_roll_counts` of this pool.
+        The args override any `keep_tuple` of this pool.
 
         Args:
             keep: The number of lowest dice will be summed.
@@ -410,7 +403,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def sum_highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the highest outcomes in the pool.
 
-        The args override any `sorted_roll_counts` of this pool.
+        The args override any `keep_tuple` of this pool.
 
         Args:
             keep: The number of highest dice will be summed.
@@ -429,87 +422,85 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
     def __str__(self) -> str:
         return (
-            f'Pool of {self.size()} dice with sorted_roll_counts={self.sorted_roll_counts()}\n'
+            f'Pool of {self.size()} dice with keep_tuple={self.keep_tuple()}\n'
             + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
 
     @cached_property
     def _key_tuple(self) -> tuple:
-        return Pool, self._dice, self._sorted_roll_counts
+        return Pool, self._dice, self._keep_tuple
 
 
-def sorted_roll_counts_tuple(
-        pool_size: int,
-        sorted_roll_counts: int | slice | Sequence[int]) -> tuple[int, ...]:
-    """Expresses `sorted_roll_counts` as a tuple.
+def make_keep_tuple(pool_size: int,
+                    index: int | slice | Sequence[int]) -> tuple[int, ...]:
+    """Expresses `index` as a keep_tuple.
 
-    See `Pool.set_sorted_roll_counts()` for details.
+    See `Pool.set_keep_tuple()` for details.
 
     Args:
         `pool_size`: An `int` specifying the size of the pool.
-        `sorted_roll_counts`: Raw specification for how the dice are to be counted.
+        `keep_tuple`: Raw specification for how the dice are to be counted.
     Raises:
         ValueError: If:
             * More than one `Ellipsis` is used.
             * An `Ellipsis` is used in the center with too few `pool_size`.
     """
-    if isinstance(sorted_roll_counts, int):
+    if isinstance(index, int):
         result = [0] * pool_size
-        result[sorted_roll_counts] = 1
+        result[index] = 1
         return tuple(result)
-    elif isinstance(sorted_roll_counts, slice):
-        if sorted_roll_counts.step is not None:
+    elif isinstance(index, slice):
+        if index.step is not None:
             raise ValueError('step is not supported for pool subscripting')
         result = [0] * pool_size
-        result[sorted_roll_counts] = [1] * len(result[sorted_roll_counts])
+        result[index] = [1] * len(result[index])
         return tuple(result)
     else:
         split = None
-        for i, x in enumerate(sorted_roll_counts):
+        for i, x in enumerate(index):
             if x is Ellipsis:
                 if split is None:
                     split = i
                 else:
                     raise ValueError(
-                        'Cannot use more than one Ellipsis (...) for sorted_roll_counts.'
+                        'Cannot use more than one Ellipsis (...) for keep_tuple.'
                     )
 
         if split is None:
-            if len(sorted_roll_counts) != pool_size:
+            if len(index) != pool_size:
                 raise ValueError(
-                    f'Length of {sorted_roll_counts} does not match pool size of {pool_size}'
+                    f'Length of {index} does not match pool size of {pool_size}'
                 )
-            return tuple(sorted_roll_counts)
+            return tuple(index)
 
-        extra_dice = pool_size - len(sorted_roll_counts) + 1
+        extra_dice = pool_size - len(index) + 1
 
         if split == 0:
             # Ellipsis on left.
-            sorted_roll_counts = sorted_roll_counts[1:]
+            index = index[1:]
             if extra_dice < 0:
-                return tuple(sorted_roll_counts[-extra_dice:])
+                return tuple(index[-extra_dice:])
             else:
-                return (0,) * extra_dice + tuple(sorted_roll_counts)
-        elif split == len(sorted_roll_counts) - 1:
+                return (0,) * extra_dice + tuple(index)
+        elif split == len(index) - 1:
             # Ellipsis on right.
-            sorted_roll_counts = sorted_roll_counts[:-1]
+            index = index[:-1]
             if extra_dice < 0:
-                return tuple(sorted_roll_counts[:extra_dice])
+                return tuple(index[:extra_dice])
             else:
-                return tuple(sorted_roll_counts) + (0,) * extra_dice
+                return tuple(index) + (0,) * extra_dice
         else:
             # Ellipsis in center.
             if extra_dice < 0:
                 result = [0] * pool_size
                 for i in range(min(split, pool_size)):
-                    result[i] += sorted_roll_counts[i]
-                reverse_split = split - len(sorted_roll_counts)
+                    result[i] += index[i]
+                reverse_split = split - len(index)
                 for i in range(-1, max(reverse_split - 1, -pool_size - 1), -1):
-                    result[i] += sorted_roll_counts[i]
+                    result[i] += index[i]
                 return tuple(result)
             else:
-                return tuple(
-                    sorted_roll_counts[:split]) + (0,) * extra_dice + tuple(
-                        sorted_roll_counts[split + 1:])
+                return tuple(index[:split]) + (0,) * extra_dice + tuple(
+                    index[split + 1:])
 
 
 def standard_pool(

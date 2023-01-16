@@ -150,7 +150,7 @@ def test_enumerate_pool_vs_outer_product():
 
 @pytest.mark.parametrize('pool', test_pools)
 def test_expand_vs_sum(pool):
-    if any(x < 0 for x in pool.sorted_roll_counts()):
+    if any(x < 0 for x in pool.keep_tuple()):
         pytest.skip()
     else:
         result = icepool.evaluator.ExpandEvaluator()(pool).map(sum)
