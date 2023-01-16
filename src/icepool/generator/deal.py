@@ -73,7 +73,6 @@ class Deal(MultisetGenerator[T, Qs_co]):
         """
         return self.deck().outcomes()
 
-    @property
     def output_arity(self) -> int:
         return len(self._hand_sizes)
 

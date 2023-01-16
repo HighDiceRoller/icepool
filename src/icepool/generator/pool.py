@@ -164,7 +164,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
-    @property
     def output_arity(self) -> int:
         return 1
 

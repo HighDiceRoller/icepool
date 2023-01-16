@@ -243,7 +243,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
 
         self.validate_arity(
-            sum(generator.output_arity for generator in generators))
+            sum(generator.output_arity() for generator in generators))
 
         generators = self.prefix_generators + generators
 

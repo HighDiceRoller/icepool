@@ -81,13 +81,13 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     @cached_property
     def _extra_arity(self) -> int:
         return sum(
-            generator.output_arity for generator in self.prefix_generators)
+            generator.output_arity() for generator in self.prefix_generators)
 
     def _split_prefix_counts(self,
                              *extra_counts: int) -> Iterator[tuple[int, ...]]:
         index = 0
         for expression in self._inners:
-            counts_length = sum(generator.output_arity
+            counts_length = sum(generator.output_arity()
                                 for generator in expression.prefix_generators)
             yield extra_counts[index:index + counts_length]
             index += counts_length
