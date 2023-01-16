@@ -95,7 +95,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         if isinstance(inner,
                       icepool.MultisetGenerator) and inner.output_arity != 1:
             raise ValueError(
-                'Only generators with output arity of 1 may be bound to expressions.'
+                'Only generators with output arity of 1 may be bound to expressions. Use a multiset_function to select individual outputs.'
             )
 
     # Binary operators.

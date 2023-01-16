@@ -56,3 +56,10 @@ def test_two_hand_sum_diff_size():
 
     assert deal.denominator() == result.denominator()
     assert (result.marginals[0] * 2).mean() == result.marginals[1].mean()
+
+
+def test_multiple_bind_error():
+    deck = icepool.Deck(range(4), times=4)
+    deal = deck.deal(2, 2)
+    with pytest.raises(ValueError):
+        deal.unique()
