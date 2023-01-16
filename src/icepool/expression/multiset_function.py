@@ -28,46 +28,66 @@ def replace_tuples_with_joint_evaluator(
 
 
 @overload
-def evaluator_from_callable(
+def multiset_function(
         func: Callable[[MV], NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(
+def multiset_function(
         func: Callable[[MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(
+def multiset_function(
         func: Callable[[MV, MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(
+def multiset_function(
         func: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluator[T_contra,
                                                                 U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
-def evaluator_from_callable(
+def multiset_function(
         func: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """EXPERIMENTAL: Creates an evaluator from a callable.
 
-    The callable should take in multiset variables and output an evaluator,
-    or a nested tuple of evaluators. For example, to compute the sums of each
-    side's difference of two multisets:
+    For example, to create an evaluator which computes the elements each of two
+    multisets has that the other doesn't:
 
     ```
-    evaluator_from_callable(lambda a, b: ((a - b).sum(), (b - a).sum()))
+    multiset_function(lambda a, b: ((a - b).expand(),
+                                    (b - a).expand()))
     ```
+
+    Any globals inside `func` are effectively bound at the time
+    `multiset_function(func)` is called. Note that this is different than how
+    ordinary Python closures behave. For example,
+
+    ```
+    target = [1, 2, 3]
+    evaluator = multiset_function(lambda a: (a & target).count())
+    print(evaluator.evaluate(d6.pool(3)))
+
+    target = [1]
+    print(evaluator.evaluate(d6.pool(3)))
+    ```
+
+    would produce the same thing both times.
+
+    Args:
+        func: This should take in multiset variables and output an evaluator
+            or a nested tuple of evaluators. Tuples will produce a
+            `JointEvaluator`.
     """
     parameters = inspect.signature(func).parameters
     for parameter in parameters.values():
