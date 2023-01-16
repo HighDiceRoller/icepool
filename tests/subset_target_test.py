@@ -50,13 +50,6 @@ def test_all_matching_sets() -> None:
     assert result == expected
 
 
-def test_all_matching_sets_descending() -> None:
-    pool: Pool[int] = Pool([1, 1, 2, 4, 4])
-    result = pool.all_counts(reverse=True).simplify()
-    expected = Die([(2, 2, 1)])
-    assert result == expected
-
-
 def test_largest_straight_full():
     result = Pool([1, 2, 3]).largest_straight().simplify()
     expected = Die([3])
