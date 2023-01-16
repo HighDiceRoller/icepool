@@ -237,7 +237,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         if not all(
                 isinstance(expression, icepool.MultisetGenerator)
                 for expression in expressions):
-            from icepool.expression.expression_evaluator import ExpressionEvaluator
+            from icepool.evaluator.expression import ExpressionEvaluator
             return ExpressionEvaluator(*expressions, evaluator=self).evaluate()
 
         generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
