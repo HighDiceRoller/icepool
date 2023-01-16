@@ -1,16 +1,13 @@
 __docformat__ = 'google'
 
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.typing import Outcome
+from icepool.typing import Outcome, T_co
 
 from functools import cached_property
 
-from typing import Collection, Hashable, Iterator, Sequence, TypeAlias, TypeVar
+from typing import Collection, Hashable, Iterator, Sequence, TypeAlias
 
 AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int], int]]
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
 
 
 class Alignment(MultisetGenerator[T_co, tuple[()]]):

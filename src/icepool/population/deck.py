@@ -6,17 +6,11 @@ import icepool.math
 import icepool.creation_args
 from icepool.collections import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
-from icepool.typing import Outcome
+from icepool.typing import U, Outcome, T_co
 
 from functools import cached_property
 
-from typing import Any, Callable, Iterator, Mapping, Sequence, TypeVar
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
-
-U = TypeVar('U', bound=Outcome)
-"""Type variable representing another outcome type."""
+from typing import Any, Callable, Iterator, Mapping, Sequence
 
 
 class Deck(Population[T_co]):

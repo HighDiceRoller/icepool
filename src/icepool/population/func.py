@@ -1,20 +1,14 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.typing import Outcome
+from icepool.typing import Outcome, T, U
 
 from collections import defaultdict
 from functools import cache
 import itertools
 import math
 
-from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, TypeVar, overload
-
-T = TypeVar('T', bound=Outcome)
-"""An outcome type."""
-
-U = TypeVar('U', bound=Outcome)
-"""Another outcome type."""
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, overload
 
 
 @cache
@@ -282,7 +276,8 @@ def iter_cartesian_product(
         if isinstance(arg, icepool.Die):
             return arg.items()
         elif isinstance(arg, icepool.Pool):
-            return arg.expand().items()
+            # Expression evaluators are difficult to type.
+            return arg.expand().items()  # type: ignore
         else:
             return [(arg, 1)]
 
@@ -369,10 +364,12 @@ class ApplySorted():
                 'The first argument must be callable. Did you forget to provide a function?'
             )
         pool = icepool.Pool(dice)
-        return pool.expand().map(func,
-                                 star=True,
-                                 again_depth=again_depth,
-                                 again_end=again_end)
+        # Expression evaluators are difficult to type.
+        return pool.expand().map(  # type: ignore
+            func,
+            star=True,
+            again_depth=again_depth,
+            again_end=again_end)
 
     def __getitem__(
         self, sorted_roll_counts: int | slice | tuple[int, ...]
@@ -393,11 +390,13 @@ class ApplySorted():
                 return icepool.Pool(dice)[sorted_roll_counts].map(
                     func, again_depth=again_depth, again_end=again_end)
             else:
-                return icepool.Pool(dice)[sorted_roll_counts].expand().map(
-                    func,
-                    star=True,
-                    again_depth=again_depth,
-                    again_end=again_end)
+                # Expression evaluators are difficult to type.
+                return icepool.Pool(
+                    dice)[sorted_roll_counts].expand().map(  # type: ignore
+                        func,
+                        star=True,
+                        again_depth=again_depth,
+                        again_end=again_end)
 
         return result
 

@@ -25,6 +25,9 @@ U = TypeVar('U', bound='Outcome')
 U_co = TypeVar('U_co', bound='Outcome', covariant=True)
 """Another outcome type."""
 
+Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
+"""A tuple of count types. In this future this may be replaced with a TypeVarTuple."""
+
 Evaluable: TypeAlias = 'MultisetExpression | Mapping[T, int] | Sequence[T]'
 """Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator."""
 

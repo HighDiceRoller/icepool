@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from collections import defaultdict
 import icepool
 from icepool.collections import CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.typing import Outcome
+from icepool.typing import Outcome, T_co
 
 from abc import ABC, abstractmethod
 import bisect
@@ -15,9 +15,6 @@ import operator
 import random
 
 from typing import Any, Callable, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable respresenting the outcome type."""
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""

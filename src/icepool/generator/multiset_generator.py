@@ -6,7 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collections import Counts
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Evaluable, Order, Outcome
+from icepool.typing import Evaluable, Order, Outcome, Qs_co, T_co
 
 import bisect
 import functools
@@ -16,18 +16,7 @@ import random
 from abc import ABC, abstractmethod
 from functools import cached_property
 
-from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, TypeVar, cast
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
-
-Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
-"""Type variable representing the counts type, which is a tuple of `int`s.
-
-In this future this may be replaced with a TypeVarTuple."""
-
-U = TypeVar('U', bound=Outcome)
-"""Type variable representing another outcome type."""
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, cast
 
 NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
                                                   Sequence, int]]

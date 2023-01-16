@@ -8,7 +8,7 @@ import icepool.population.markov_chain
 from icepool.collections import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
-from icepool.typing import Outcome
+from icepool.typing import U, Outcome, T_co
 
 import bisect
 from collections import defaultdict
@@ -17,13 +17,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeVar, cast, overload
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
-
-U = TypeVar('U', bound=Outcome)
-"""Type variable representing a secondary outcome type, e.g. the output of a function."""
+from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
 
 
 def is_bare_outcome(outcome) -> bool:
@@ -926,7 +920,8 @@ class Die(Population[T_co]):
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
         sorted_roll_counts = slice(start, stop)
-        return self.pool(rolls)[sorted_roll_counts].sum()
+        # Expression evaluators are difficult to type.
+        return self.pool(rolls)[sorted_roll_counts].sum()  # type: ignore
 
     def lowest(self, rolls: int, /) -> 'Die':
         """Roll this die several times and keep the lowest."""
@@ -957,7 +952,8 @@ class Die(Population[T_co]):
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
         sorted_roll_counts = slice(start, stop)
-        return self.pool(rolls)[sorted_roll_counts].sum()
+        # Expression evaluators are difficult to type.
+        return self.pool(rolls)[sorted_roll_counts].sum()  # type: ignore
 
     def highest(self, rolls: int, /) -> 'Die[T_co]':
         """Roll this die several times and keep the highest."""

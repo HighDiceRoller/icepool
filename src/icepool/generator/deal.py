@@ -1,8 +1,8 @@
 __docformat__ = 'google'
 
-from icepool.typing import Outcome
+from icepool.typing import Outcome, Qs_co, T_co
 
-from typing import Any, Hashable, TypeVar
+from typing import Any, Hashable
 import icepool
 from icepool.collections import CountsKeysView
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
@@ -10,12 +10,6 @@ from icepool.math import iter_hypergeom
 
 from functools import cached_property
 import math
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
-
-Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
-"""Type variable representing the count types. In this future this may be replaced with a TypeVarTuple."""
 
 
 class Deal(MultisetGenerator[T_co, Qs_co]):

@@ -1,13 +1,11 @@
 import icepool
-from icepool.typing import Outcome
+from icepool.typing import Outcome, T
 
 import enum
 import math
 from collections import defaultdict
 
-from typing import Any, Callable, MutableMapping, TypeVar
-
-T = TypeVar('T', bound=Outcome)
+from typing import Callable, MutableMapping
 
 
 class SpecialValue(enum.Enum):

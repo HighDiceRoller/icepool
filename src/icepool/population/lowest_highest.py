@@ -4,11 +4,8 @@ import icepool
 
 import math
 
-from icepool.typing import Outcome
-from typing import Sequence, TypeVar, cast
-
-T_contra = TypeVar('T_contra', bound=Outcome, contravariant=True)
-"""An outcome type."""
+from icepool.typing import Outcome, T_contra
+from typing import cast
 
 
 def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
@@ -80,7 +77,8 @@ def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
         return highest(*dice)
 
     # Use pool.
-    return icepool.Pool(dice)[start:stop].sum()
+    # Expression evaluators are difficult to type.
+    return icepool.Pool(dice)[start:stop].sum()  # type: ignore
 
 
 def lowest(

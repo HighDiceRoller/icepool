@@ -6,17 +6,14 @@ import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collections import Counts
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
-from icepool.typing import Outcome
+from icepool.typing import Outcome, T_co
 
 import itertools
 import math
 from collections import defaultdict
 from functools import cache, cached_property
 
-from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, TypeVar, overload
-
-T_co = TypeVar('T_co', bound=Outcome, covariant=True)
-"""Type variable representing the outcome type."""
+from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, cast, overload
 
 
 class Pool(MultisetGenerator[T_co, tuple[int]]):
@@ -271,7 +268,8 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         else:
             result = Pool._new_raw(self._dice, sorted_roll_counts)
         if convert_to_die:
-            return result.sum()
+            # It's difficult to determine the return type of sum().
+            return result.sum()  # type: ignore
         else:
             return result
 
