@@ -7,13 +7,14 @@ from icepool.expression.multiset_expression import MultisetExpression
 from abc import abstractmethod
 from functools import cached_property
 
-from icepool.typing import Order, Outcome
+from icepool.typing import Order, Outcome, T_contra
 from typing import Hashable, Sequence
 
 
-class AdjustCountsExpression(MultisetExpression):
+class AdjustCountsExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, inner: MultisetExpression, constant: int) -> None:
+    def __init__(self, inner: MultisetExpression[T_contra],
+                 constant: int) -> None:
         self._inner = inner
         self._constant = constant
 
@@ -22,7 +23,8 @@ class AdjustCountsExpression(MultisetExpression):
     def adjust_count(count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                       ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         state, count = self._inner.next_state(state, outcome, bound_counts,
                                               counts)

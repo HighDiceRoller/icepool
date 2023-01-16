@@ -6,7 +6,7 @@ import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collections import Counts
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
-from icepool.typing import Outcome, T_co
+from icepool.typing import Outcome, T
 
 import itertools
 import math
@@ -16,19 +16,19 @@ from functools import cache, cached_property
 from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, cast, overload
 
 
-class Pool(MultisetGenerator[T_co, tuple[int]]):
+class Pool(MultisetGenerator[T, tuple[int]]):
     """Represents a set of sorted/unordered dice, only distinguished by the outcomes they roll.
 
     This should be used in conjunction with `MultisetEvaluator` to generate a result.
     """
 
     _sorted_roll_counts: tuple[int, ...]
-    _dice: tuple[tuple['icepool.Die[T_co]', int]]
+    _dice: tuple[tuple['icepool.Die[T]', int]]
 
     def __new__(
             cls,
             dice:
-        'Sequence[icepool.Die[T_co] | T_co] | Mapping[icepool.Die[T_co], int] | Mapping[T_co, int] | Mapping[icepool.Die[T_co] | T_co, int]',
+        'Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | Mapping[icepool.Die[T] | T, int]',
             times: Sequence[int] | int = 1) -> 'Pool':
         """Public constructor for a pool.
 
@@ -73,7 +73,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         dice, times = icepool.creation_args.itemize(dice, times)
         converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
 
-        dice_counts: MutableMapping['icepool.Die[T_co]', int] = defaultdict(int)
+        dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
             dice_counts[die] += qty
         sorted_roll_counts = (1,) * sum(times)
@@ -81,8 +81,8 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
 
     @classmethod
     @cache
-    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T_co]', int]],
-                 sorted_roll_counts: tuple[int, ...]) -> 'Pool[T_co]':
+    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]', int]],
+                 sorted_roll_counts: tuple[int, ...]) -> 'Pool[T]':
         """All pool creation ends up here. This method is cached.
 
         Args:
@@ -104,8 +104,8 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         Pool._new_raw.cache_clear()
 
     @classmethod
-    def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T_co]', int],
-                          sorted_roll_counts: Sequence[int]) -> 'Pool[T_co]':
+    def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
+                          sorted_roll_counts: Sequence[int]) -> 'Pool[T]':
         """Creates a new pool.
 
         Args:
@@ -135,25 +135,25 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
         return self._denominator
 
     @cached_property
-    def _dice_tuple(self) -> tuple['icepool.Die[T_co]', ...]:
+    def _dice_tuple(self) -> tuple['icepool.Die[T]', ...]:
         return sum(((die,) * count for die, count in self._dice), start=())
 
     @cached_property
-    def _unique_dice(self) -> Collection['icepool.Die[T_co]']:
+    def _unique_dice(self) -> Collection['icepool.Die[T]']:
         return set(die for die, _ in self._dice)
 
-    def unique_dice(self) -> Collection['icepool.Die[T_co]']:
+    def unique_dice(self) -> Collection['icepool.Die[T]']:
         """The collection of unique dice in this pool."""
         return self._unique_dice
 
     @cached_property
-    def _outcomes(self) -> Sequence[T_co]:
+    def _outcomes(self) -> Sequence[T]:
         outcome_set = set(
             itertools.chain.from_iterable(
                 die.outcomes() for die in self.unique_dice()))
         return tuple(sorted(outcome_set))
 
-    def outcomes(self) -> Sequence[T_co]:
+    def outcomes(self) -> Sequence[T]:
         """The union of outcomes among all dice in this pool."""
         return self._outcomes
 
@@ -181,23 +181,23 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
 
     @overload
     def set_sorted_roll_counts(
-            self, sorted_roll_counts: slice | Sequence[int]) -> 'Pool[T_co]':
+            self, sorted_roll_counts: slice | Sequence[int]) -> 'Pool[T]':
         ...
 
     @overload
     def set_sorted_roll_counts(self,
-                               sorted_roll_counts: int) -> 'icepool.Die[T_co]':
+                               sorted_roll_counts: int) -> 'icepool.Die[T]':
         ...
 
     @overload
     def set_sorted_roll_counts(
         self, sorted_roll_counts: int | slice | Sequence[int]
-    ) -> 'Pool[T_co] | icepool.Die[T_co]':
+    ) -> 'Pool[T] | icepool.Die[T]':
         ...
 
     def set_sorted_roll_counts(
         self, sorted_roll_counts: int | slice | Sequence[int]
-    ) -> 'Pool[T_co] | icepool.Die[T_co]':
+    ) -> 'Pool[T] | icepool.Die[T]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[sorted_roll_counts]` for the same effect as this method.
@@ -276,18 +276,18 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
     __getitem__ = set_sorted_roll_counts
 
     @cached_property
-    def _min_outcome(self) -> T_co:
+    def _min_outcome(self) -> T:
         return min(die.min_outcome() for die in self.unique_dice())
 
-    def min_outcome(self) -> T_co:
+    def min_outcome(self) -> T:
         """The min outcome among all dice in this pool."""
         return self._min_outcome
 
     @cached_property
-    def _max_outcome(self) -> T_co:
+    def _max_outcome(self) -> T:
         return max(die.max_outcome() for die in self.unique_dice())
 
-    def max_outcome(self) -> T_co:
+    def max_outcome(self) -> T:
         """The max outcome among all dice in this pool."""
         return self._max_outcome
 
@@ -296,7 +296,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
 
         Yields:
             popped_pool: The pool after the min outcome is popped.
-            net_count: The number of dice that rolled the min outcome, after
+            neTunt: The number of dice that rolled the min outcome, after
                 accounting for sorted_roll_counts.
             net_weight: The weight of this incremental result.
         """
@@ -318,10 +318,10 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
                 total_hits += hits
                 result_weight *= weight
             if total_hits == 0:
-                result_count = 0
+                resulTunt = 0
                 popped_sorted_roll_counts = self.sorted_roll_counts()
             else:
-                result_count = sum(self.sorted_roll_counts()[:total_hits])
+                resulTunt = sum(self.sorted_roll_counts()[:total_hits])
                 popped_sorted_roll_counts = self.sorted_roll_counts(
                 )[total_hits:]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
@@ -332,7 +332,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count,), result_weight
+            yield popped_pool, (resulTunt,), result_weight
 
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(
@@ -343,7 +343,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
 
         Yields:
             popped_pool: The pool after the max outcome is popped.
-            net_count: The number of dice that rolled the max outcome, after
+            neTunt: The number of dice that rolled the max outcome, after
                 accounting for sorted_roll_counts.
             net_weight: The weight of this incremental result.
         """
@@ -365,10 +365,10 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
                 total_hits += hits
                 result_weight *= weight
             if total_hits == 0:
-                result_count = 0
+                resulTunt = 0
                 popped_sorted_roll_counts = self.sorted_roll_counts()
             else:
-                result_count = sum(self.sorted_roll_counts()[-total_hits:])
+                resulTunt = sum(self.sorted_roll_counts()[-total_hits:])
                 popped_sorted_roll_counts = self.sorted_roll_counts(
                 )[:-total_hits]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
@@ -379,7 +379,7 @@ class Pool(MultisetGenerator[T_co, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count,), result_weight
+            yield popped_pool, (resulTunt,), result_weight
 
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(
@@ -531,8 +531,8 @@ def standard_pool(
 
 
 def iter_die_pop_min(
-        die: 'icepool.Die[T_co]', rolls: int,
-        min_outcome) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
+        die: 'icepool.Die[T]', rolls: int,
+        min_outcome) -> Iterator[tuple['icepool.Die[T]', int, int, int]]:
     """Helper function to iterate over the possibilities of several identical dice rolling a min outcome.
 
     Args:
@@ -570,8 +570,8 @@ def iter_die_pop_min(
 
 
 def iter_die_pop_max(
-        die: 'icepool.Die[T_co]', rolls: int,
-        max_outcome) -> Iterator[tuple['icepool.Die[T_co]', int, int, int]]:
+        die: 'icepool.Die[T]', rolls: int,
+        max_outcome) -> Iterator[tuple['icepool.Die[T]', int, int, int]]:
     """Helper function to iterate over the possibilities of several identical dice rolling a max outcome.
 
     Args:

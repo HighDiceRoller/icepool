@@ -5,10 +5,10 @@ from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Order, Outcome
 
 from functools import cached_property
-from typing import Final, Hashable, Literal, Sequence, overload
+from typing import Any, Final, Hashable, Literal, Sequence, overload
 
 
-class MultisetVariable(MultisetExpression):
+class MultisetVariable(MultisetExpression[Any]):
     """Represents an input multiset.
 
     All expressions start from these.

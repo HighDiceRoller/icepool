@@ -8,16 +8,19 @@ import operator
 from abc import ABC, abstractmethod
 from functools import cached_property, reduce
 
-from icepool.typing import T, U, Order, Outcome
-from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, Type
+from icepool.typing import T, U, Order, Outcome, T_contra
+from typing import Any, Callable, Generic, Hashable, Mapping, Sequence, Type
 
 
-def implicit_convert_to_expression(arg) -> 'MultisetExpression':
+def implicit_convert_to_expression(
+    arg:
+    'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+) -> 'MultisetExpression[T_contra]':
     """Implcitly converts the argument to a `MultisetExpression`.
 
     Args:
         arg: The argument must either already be a `MultisetGenerator`;
-            or a `Mapping` or `Sequence`.
+            or a `Mapping` or `Collection`.
     """
     if isinstance(arg, MultisetExpression):
         return arg
@@ -29,7 +32,7 @@ def implicit_convert_to_expression(arg) -> 'MultisetExpression':
         )
 
 
-class MultisetExpression(ABC):
+class MultisetExpression(ABC, Generic[T_contra]):
     """Abstract base class representing an expression that operates on multisets.
 
     Use `MultisetVariable` to start an expression.
@@ -39,7 +42,8 @@ class MultisetExpression(ABC):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                       ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
@@ -88,8 +92,9 @@ class MultisetExpression(ABC):
     # Binary operators.
 
     def __add__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -97,8 +102,9 @@ class MultisetExpression(ABC):
         return icepool.expression.DisjointUnionExpression(self, other)
 
     def __radd__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -106,15 +112,17 @@ class MultisetExpression(ABC):
         return icepool.expression.DisjointUnionExpression(other, self)
 
     def disjoint_sum(
-        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, *others:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.add, others, self)  # type: ignore
 
     def __sub__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -122,22 +130,26 @@ class MultisetExpression(ABC):
         return icepool.expression.DifferenceExpression(self, other)
 
     def __rsub__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
         return icepool.expression.DifferenceExpression(other, self)
 
-    def difference(self, *others: 'MultisetExpression') -> 'MultisetExpression':
+    def difference(
+        self, *others: 'MultisetExpression[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.sub, others, self)  # type: ignore
 
     def __and__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -145,8 +157,9 @@ class MultisetExpression(ABC):
         return icepool.expression.IntersectionExpression(self, other)
 
     def __rand__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -154,15 +167,17 @@ class MultisetExpression(ABC):
         return icepool.expression.IntersectionExpression(other, self)
 
     def intersection(
-        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, *others:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.and_, others, self)  # type: ignore
 
     def __or__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -170,8 +185,9 @@ class MultisetExpression(ABC):
         return icepool.expression.UnionExpression(self, other)
 
     def __ror__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -179,15 +195,17 @@ class MultisetExpression(ABC):
         return icepool.expression.UnionExpression(other, self)
 
     def union(
-        self, *others: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, *others:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.or_, others, self)  # type: ignore
 
     def __xor__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -195,8 +213,9 @@ class MultisetExpression(ABC):
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     def __rxor__(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -204,44 +223,46 @@ class MultisetExpression(ABC):
         return icepool.expression.SymmetricDifferenceExpression(other, self)
 
     def symmetric_difference(
-        self, other: 'MultisetExpression | Mapping[Any, int] | Sequence'
-    ) -> 'MultisetExpression':
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra]':
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     # Adjust counts.
 
-    def __mul__(self, other: int) -> 'MultisetExpression':
+    def __mul__(self, other: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(other, int):
             return NotImplemented
         return icepool.expression.MultiplyCountsExpression(self, other)
 
     # Commutable in this case.
-    def __rmul__(self, other: int) -> 'MultisetExpression':
+    def __rmul__(self, other: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(other, int):
             return NotImplemented
         return icepool.expression.MultiplyCountsExpression(self, other)
 
-    def multiply_counts(self, constant: int, /) -> 'MultisetExpression':
+    def multiply_counts(self, constant: int,
+                        /) -> 'MultisetExpression[T_contra]':
         """Multiplies all counts by a constant.
 
         Same as `self * constant`.
         """
         return self * constant
 
-    def __floordiv__(self, other: int) -> 'MultisetExpression':
+    def __floordiv__(self, other: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(other, int):
             return NotImplemented
         return icepool.expression.FloorDivCountsExpression(self, other)
 
-    def divide_counts(self, constant: int, /) -> 'MultisetExpression':
+    def divide_counts(self, constant: int, /) -> 'MultisetExpression[T_contra]':
         """Divides all counts by a constant (rounding down).
 
         Same as `self // constant`.
         """
         return self // constant
 
-    def filter_counts(self, min_count: int) -> 'MultisetExpression':
+    def filter_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
         """Counts less than `min_count` are treated as zero.
 
         For example, `generator.filter_counts(2)` would only produce
@@ -249,7 +270,7 @@ class MultisetExpression(ABC):
         """
         return icepool.expression.FilterCountsExpression(self, min_count)
 
-    def unique(self, max_count: int = 1) -> 'MultisetExpression':
+    def unique(self, max_count: int = 1) -> 'MultisetExpression[T_contra]':
         """Counts each outcome at most `max_count` times.
 
         For example, `generator.unique(2)` would count each outcome at most
@@ -260,9 +281,9 @@ class MultisetExpression(ABC):
     # Evaluations.
 
     def evaluate(
-        *expressions: 'MultisetExpression',
-        evaluator: 'icepool.MultisetEvaluator[T, U]'
-    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
+        *expressions: 'MultisetExpression[T_contra]',
+        evaluator: 'icepool.MultisetEvaluator[T_contra, U]'
+    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
         """Attaches a final `MultisetEvaluator` to expressions.
 
         Returns:
@@ -282,7 +303,7 @@ class MultisetExpression(ABC):
 
     def expand(
         self
-    ) -> 'icepool.Die[tuple[T, ...]] | icepool.MultisetEvaluator[T, tuple[T, ...]]':
+    ) -> 'icepool.Die[tuple[T_contra, ...]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, ...]]':
         """All possible sorted tuples of outcomes.
 
         This is expensive and not recommended unless there are few possibilities.
@@ -291,8 +312,8 @@ class MultisetExpression(ABC):
 
     def sum(
         self,
-        map: Callable[[T], U] | Mapping[T, U] | None = None
-    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
+        map: Callable[[T_contra], U] | Mapping[T_contra, U] | None = None
+    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
         evaluator = icepool.evaluator.SumEvaluator(map)
         if map is None:
             return self.evaluate(evaluator=icepool.evaluator.sum_evaluator)
@@ -301,7 +322,7 @@ class MultisetExpression(ABC):
 
     def count(
             self
-    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[Outcome, int]':
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
         """The total count over all outcomes.
 
         This is usually not very interesting unless some other operation is
@@ -316,7 +337,7 @@ class MultisetExpression(ABC):
 
     def highest_outcome_and_count(
         self
-    ) -> 'icepool.Die[tuple[T, int]] | icepool.MultisetEvaluator[T, tuple[T, int]]':
+    ) -> 'icepool.Die[tuple[T_contra, int]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, int]]':
         """The highest outcome with positive count, along with that count.
 
         If no outcomes have positive count, an arbitrary outcome will be
@@ -328,7 +349,7 @@ class MultisetExpression(ABC):
     def all_counts(
         self,
         positive_only: bool = True
-    ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T, tuple[int, ...]]':
+    ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T_contra, tuple[int, ...]]':
         """Produces a tuple of all counts, i.e. the sizes of all matching sets.
 
         Args:
@@ -339,20 +360,22 @@ class MultisetExpression(ABC):
             positive_only=positive_only))
 
     def largest_count(
-            self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+            self
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
         """The size of the largest matching set among the outcomes."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountEvaluator())
 
     def largest_count_and_outcome(
         self
-    ) -> 'icepool.Die[tuple[int, T]] | icepool.MultisetEvaluator[T, tuple[int, T]]':
+    ) -> 'icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]':
         """The largest matching set among the outcomes and its outcome."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
 
     def largest_straight(
-            self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
+        self: 'MultisetExpression[int]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
         """The size of the largest straight among the outcomes.
 
         Outcomes must be `int`s.
@@ -361,7 +384,7 @@ class MultisetExpression(ABC):
             evaluator=icepool.evaluator.LargestStraightEvaluator())
 
     def largest_straight_and_outcome(
-        self
+        self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
         """The size of the largest straight among the outcomes and the highest outcome in that straight.
 
@@ -373,13 +396,14 @@ class MultisetExpression(ABC):
     # Comparators.
 
     def compare(
-        self, right: 'MultisetExpression | Mapping[T, int] | Collection[T]',
+        self, right:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
         operation_class: Type['icepool.evaluator.ComparisonEvaluator']
-    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         if isinstance(right, MultisetExpression):
             evaluator = icepool.expression.ExpressionEvaluator(
                 self, right, evaluator=operation_class())
-        elif isinstance(right, (Mapping, Collection)):
+        elif isinstance(right, (Mapping, Sequence)):
             right_expression = icepool.implicit_convert_to_expression(right)
             evaluator = icepool.expression.ExpressionEvaluator(
                 self, right_expression, evaluator=operation_class())
@@ -391,52 +415,64 @@ class MultisetExpression(ABC):
         else:
             return evaluator
 
-    def __lt__(self,
-               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    def __lt__(
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other,
                                 icepool.evaluator.IsProperSubsetEvaluator)
         except TypeError:
             return NotImplemented
 
-    def __le__(self,
-               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    def __le__(
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other, icepool.evaluator.IsSubsetEvaluator)
         except TypeError:
             return NotImplemented
 
-    def issubset(self,
-                 other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-                 /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    def issubset(
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Whether the outcome multiset is a subset of the other multiset.
 
         Same as `self <= other`.
         """
         return self.compare(other, icepool.evaluator.IsSubsetEvaluator)
 
-    def __gt__(self,
-               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    def __gt__(
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other,
                                 icepool.evaluator.IsProperSupersetEvaluator)
         except TypeError:
             return NotImplemented
 
-    def __ge__(self,
-               other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+    def __ge__(
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other, icepool.evaluator.IsSupersetEvaluator)
         except TypeError:
             return NotImplemented
 
     def issuperset(
-            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Whether the outcome multiset is a superset of the target multiset.
 
         Same as `self >= other`.
@@ -445,8 +481,10 @@ class MultisetExpression(ABC):
 
     # The result has no truth value.
     def __eq__(  # type: ignore
-            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other, icepool.evaluator.IsEqualSetEvaluator)
         except TypeError:
@@ -454,15 +492,19 @@ class MultisetExpression(ABC):
 
     # The result has no truth value.
     def __ne__(  # type: ignore
-            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
             return self.compare(other, icepool.evaluator.IsNotEqualSetEvaluator)
         except TypeError:
             return NotImplemented
 
     def isdisjoint(
-            self, other: 'MultisetExpression | Mapping[T, int] | Collection[T]',
-            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Whether the outcome multiset is disjoint from the target multiset."""
         return self.compare(other, icepool.evaluator.IsDisjointSetEvaluator)

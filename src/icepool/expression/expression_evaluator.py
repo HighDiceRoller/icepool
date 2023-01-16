@@ -14,10 +14,11 @@ from typing import Iterable
 class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     """Assigns an expression to be evaluated first to each input of an evaluator."""
 
-    def __init__(self,
-                 *expressions: 'icepool.expression.MultisetExpression',
-                 evaluator: MultisetEvaluator[T_contra, U_co],
-                 truth_value: bool | None = None) -> None:
+    def __init__(
+            self,
+            *expressions: 'icepool.expression.MultisetExpression[T_contra]',
+            evaluator: MultisetEvaluator[T_contra, U_co],
+            truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
         self._expressions = expressions
         self._truth_value = truth_value

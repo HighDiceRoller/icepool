@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.typing import Outcome, Qs_co, T_co
+from icepool.typing import Outcome, Qs_co, T
 
 from typing import Any, Hashable
 import icepool
@@ -12,13 +12,13 @@ from functools import cached_property
 import math
 
 
-class Deal(MultisetGenerator[T_co, Qs_co]):
+class Deal(MultisetGenerator[T, Qs_co]):
     """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
 
-    _deck: 'icepool.Deck[T_co]'
+    _deck: 'icepool.Deck[T]'
     _hand_sizes: tuple[int, ...]
 
-    def __init__(self, deck: 'icepool.Deck[T_co]', *hand_sizes: int) -> None:
+    def __init__(self, deck: 'icepool.Deck[T]', *hand_sizes: int) -> None:
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -46,14 +46,14 @@ class Deal(MultisetGenerator[T_co, Qs_co]):
             )
 
     @classmethod
-    def _new_raw(cls, deck: 'icepool.Deck[T_co]',
-                 hand_sizes: tuple[int, ...]) -> 'Deal[T_co, Any]':
+    def _new_raw(cls, deck: 'icepool.Deck[T]',
+                 hand_sizes: tuple[int, ...]) -> 'Deal[T, Any]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes
         return self
 
-    def deck(self) -> 'icepool.Deck[T_co]':
+    def deck(self) -> 'icepool.Deck[T]':
         """The `Deck` the cards are dealt from."""
         return self._deck
 
@@ -65,7 +65,7 @@ class Deal(MultisetGenerator[T_co, Qs_co]):
         """The total number of cards dealt."""
         return sum(self.hand_sizes())
 
-    def outcomes(self) -> CountsKeysView[T_co]:
+    def outcomes(self) -> CountsKeysView[T]:
         """The outcomes of the `Deck` in sorted order.
 
         These are also the `keys` of the `Deck` as a `Mapping`.
@@ -92,7 +92,7 @@ class Deal(MultisetGenerator[T_co, Qs_co]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _generate_common(self, popped_deck: 'icepool.Deck[T_co]',
+    def _generate_common(self, popped_deck: 'icepool.Deck[T]',
                          deck_count: int) -> NextMultisetGenerator:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(

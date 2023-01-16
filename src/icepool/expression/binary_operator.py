@@ -4,16 +4,16 @@ import icepool
 
 from typing import Hashable, Sequence
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Order, Outcome
+from icepool.typing import Order, Outcome, T_contra
 
 from abc import abstractmethod
 from functools import cached_property
 
 
-class BinaryOperatorExpression(MultisetExpression):
+class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, left: MultisetExpression,
-                 right: MultisetExpression) -> None:
+    def __init__(self, left: MultisetExpression[T_contra],
+                 right: MultisetExpression[T_contra]) -> None:
         self._left = left
         self._right = right
 
@@ -22,7 +22,8 @@ class BinaryOperatorExpression(MultisetExpression):
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
-    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
+    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                       ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         bound_counts_split = len(self._left.bound_generators())
         left_bound_counts = bound_counts[:bound_counts_split]
