@@ -6,24 +6,20 @@ from icepool.typing import Outcome
 from functools import cached_property
 import math
 
+from icepool.typing import K, T
 from typing import Any, Collection, Hashable, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, TypeVar, ValuesView
 
-T = TypeVar('T', bound=Hashable)
-"""Type variable."""
 
-U = TypeVar('U', bound=Outcome)
-
-
-class Counts(Mapping[T, int]):
+class Counts(Mapping[K, int]):
     """Immutable dictionary with sorted keys and `int` values.
 
     The values of keys(), values(), and items() are also Sequences, which means
     they can be indexed.
     """
 
-    _mapping: Mapping[T, int]
+    _mapping: Mapping[K, int]
 
-    def __init__(self, items: Collection[tuple[T, int]]):
+    def __init__(self, items: Collection[tuple[K, int]]):
         """
         Args:
             items: A Collection of key, value pairs.
@@ -33,7 +29,7 @@ class Counts(Mapping[T, int]):
         """
         items = sorted(items)
 
-        mapping: MutableMapping[T, int] = {}
+        mapping: MutableMapping[K, int] = {}
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid key.')
@@ -65,11 +61,11 @@ class Counts(Mapping[T, int]):
     def __getitem__(self, key) -> int:
         return self._mapping[key]
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[K]:
         return iter(self._mapping)
 
     @cached_property
-    def _keys(self) -> Sequence[T]:
+    def _keys(self) -> Sequence[K]:
         return tuple(self._mapping.keys())
 
     def keys(self) -> 'CountsKeysView':
@@ -83,10 +79,10 @@ class Counts(Mapping[T, int]):
         return CountsValuesView(self)
 
     @cached_property
-    def _items(self) -> Sequence[tuple[T, int]]:
+    def _items(self) -> Sequence[tuple[K, int]]:
         return tuple(self._mapping.items())
 
-    def items(self) -> 'CountsItemsView[T]':
+    def items(self) -> 'CountsItemsView[K]':
         return CountsItemsView(self)
 
     def __str__(self) -> str:
@@ -109,22 +105,22 @@ class Counts(Mapping[T, int]):
         return self._hash
 
     @cached_property
-    def _remove_min(self) -> 'Counts[T]':
+    def _remove_min(self) -> 'Counts[K]':
         return Counts(self.items()[1:])
 
-    def remove_min(self) -> 'Counts[T]':
+    def remove_min(self) -> 'Counts[K]':
         """A `Counts` with the min element removed."""
         return self._remove_min
 
     @cached_property
-    def _remove_max(self) -> 'Counts[T]':
+    def _remove_max(self) -> 'Counts[K]':
         return Counts(self.items()[:-1])
 
-    def remove_max(self) -> 'Counts[T]':
+    def remove_max(self) -> 'Counts[K]':
         """A `Counts` with the max element removed."""
         return self._remove_max
 
-    def simplify(self) -> 'Counts[T]':
+    def simplify(self) -> 'Counts[K]':
         """Divides all counts by their greatest common denominator."""
         gcd = math.gcd(*self.values())
         if gcd <= 1:
@@ -133,10 +129,10 @@ class Counts(Mapping[T, int]):
         return Counts(data)
 
 
-class CountsKeysView(KeysView[T], Sequence[T]):
+class CountsKeysView(KeysView[K], Sequence[K]):
     """This functions as both a `KeysView` and a `Sequence`."""
 
-    def __init__(self, counts: Counts[T]):
+    def __init__(self, counts: Counts[K]):
         self._mapping = counts
 
     def __getitem__(self, index):
@@ -165,7 +161,7 @@ class CountsValuesView(ValuesView[int], Sequence[int]):
         return self._mapping._values == other
 
 
-class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
+class CountsItemsView(ItemsView[K, int], Sequence[tuple[K, int]]):
     """This functions as both an `ItemsView` and a `Sequence`."""
 
     def __init__(self, counts: Counts):
@@ -178,6 +174,6 @@ class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
         return self._mapping._items == other
 
 
-def union_sorted_sets(*args: Sequence[U]) -> Sequence[U]:
+def union_sorted_sets(*args: Sequence[T]) -> Sequence[T]:
     """Merge sorted sets into another sorted set."""
     return tuple(sorted(set.union(*(set(arg) for arg in args))))

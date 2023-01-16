@@ -7,7 +7,10 @@ from typing import Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, Ty
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
 
-T = TypeVar('T')
+K = TypeVar('K', bound=Hashable)
+"""A key type."""
+
+T = TypeVar('T', bound='Outcome')
 """An outcome type."""
 
 T_contra = TypeVar('T_contra', contravariant=True)
