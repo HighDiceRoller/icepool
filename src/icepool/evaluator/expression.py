@@ -33,9 +33,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
 
         bound_counts = counts[:self._bound_arity]
         prefix_counts = counts[self._bound_arity:self._bound_arity +
-                               len(self._evaluator.prefix_generators)]
+                               len(self._evaluator.prefix_generators())]
         counts = counts[self._bound_arity +
-                        len(self._evaluator.prefix_generators):]
+                        len(self._evaluator.prefix_generators()):]
 
         expression_states, expression_counts = zip(*(expression.next_state(
             expression_state,
@@ -68,8 +68,11 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         return self._evaluator.alignment(*generators)
 
     @cached_property
+    def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._bound_generators + self._evaluator.prefix_generators()
+
     def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._bound_generators + self._evaluator.prefix_generators
+        return self._prefix_generators
 
     def validate_arity(self, arity: int) -> None:
         if arity < self.arity:

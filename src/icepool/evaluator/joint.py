@@ -69,10 +69,13 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
             *(evaluator.alignment(outcomes) for evaluator in self._inners))
 
     @cached_property
-    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return tuple(
             itertools.chain.from_iterable(
-                expression.prefix_generators for expression in self._inners))
+                expression.prefix_generators() for expression in self._inners))
+
+    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._prefix_generators
 
     def validate_arity(self, arity: int) -> None:
         for evaluator in self._inners:
@@ -81,14 +84,14 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     @cached_property
     def _extra_arity(self) -> int:
         return sum(
-            generator.output_arity() for generator in self.prefix_generators)
+            generator.output_arity() for generator in self.prefix_generators())
 
     def _split_prefix_counts(self,
                              *extra_counts: int) -> Iterator[tuple[int, ...]]:
         index = 0
         for expression in self._inners:
             counts_length = sum(generator.output_arity()
-                                for generator in expression.prefix_generators)
+                                for generator in expression.prefix_generators())
             yield extra_counts[index:index + counts_length]
             index += counts_length
 
