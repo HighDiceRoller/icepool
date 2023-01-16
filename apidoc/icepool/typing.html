@@ -104,7 +104,7 @@
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="kn">from</span> <span class="nn">icepool.evaluable_interface</span> <span class="kn">import</span> <span class="n">EvaluableInterface</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
@@ -115,7 +115,7 @@
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="n">T_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T_co&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;EvaluableInterface[T] | Mapping[T, int] | Sequence[T]&#39;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">&quot;&quot;&quot;Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator.&quot;&quot;&quot;</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
@@ -205,7 +205,7 @@
                 </section>
                 <section id="Evaluable">
                     <div class="attr variable">
-            <span class="name">Evaluable</span><span class="annotation">: TypeAlias</span><span class="default_value"> = &#39;EvaluableInterface[T] | Mapping[T, int] | Sequence[T]&#39;</span>
+            <span class="name">Evaluable</span><span class="annotation">: TypeAlias</span><span class="default_value"> = &#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
 
         
     </div>
