@@ -7,12 +7,18 @@ import inspect
 
 from typing import Callable, TypeAlias, overload
 
-NestedTupleOrEvaluator: TypeAlias = MultisetEvaluator | tuple[
-    'NestedTupleOrEvaluator', ...]
+from icepool.typing import T_contra, U_co
+
+NestedTupleOrEvaluator: TypeAlias = MultisetEvaluator[T_contra, U_co] | tuple[
+    'NestedTupleOrEvaluator[T_contra, U_co]', ...]
+
+NestedTupleOrOutcome: TypeAlias = U_co | tuple['NestedTupleOrOutcome[U_co]',
+                                               ...]
 
 
 def replace_tuples_with_joint_evaluator(
-        tuple_or_evaluator: NestedTupleOrEvaluator, /) -> MultisetEvaluator:
+        tuple_or_evaluator: NestedTupleOrEvaluator[T_contra, U_co],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """Recursively replaces tuples with `JointEvaluator`s."""
     if isinstance(tuple_or_evaluator, tuple):
         return icepool.evaluator.JointEvaluator(*(
@@ -22,33 +28,37 @@ def replace_tuples_with_joint_evaluator(
 
 
 @overload
-def evaluator_from_callable(func: Callable[[MV], NestedTupleOrEvaluator],
-                            /) -> MultisetEvaluator:
+def evaluator_from_callable(
+        func: Callable[[MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(func: Callable[[MV, MV], NestedTupleOrEvaluator],
-                            /) -> MultisetEvaluator:
+def evaluator_from_callable(
+        func: Callable[[MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(func: Callable[[MV, MV, MV],
-                                           NestedTupleOrEvaluator],
-                            /) -> MultisetEvaluator:
+def evaluator_from_callable(
+        func: Callable[[MV, MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
-def evaluator_from_callable(func: Callable[[MV, MV, MV, MV],
-                                           NestedTupleOrEvaluator],
-                            /) -> MultisetEvaluator:
+def evaluator_from_callable(
+        func: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluator[T_contra,
+                                                                U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
-def evaluator_from_callable(func: Callable[..., NestedTupleOrEvaluator],
-                            /) -> MultisetEvaluator:
+def evaluator_from_callable(
+        func: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """EXPERIMENTAL: Creates an evaluator from a callable.
 
     The callable should take in multiset variables and output an evaluator,
