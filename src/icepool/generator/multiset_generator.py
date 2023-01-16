@@ -6,6 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collections import Counts
 from icepool.evaluable_interface import EvaluableInterface
+from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Evaluable, Outcome
 
 import bisect

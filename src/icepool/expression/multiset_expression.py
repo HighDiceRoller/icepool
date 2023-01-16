@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.expression
-import icepool.evaluator
 
 from icepool.typing import Order, Outcome
 

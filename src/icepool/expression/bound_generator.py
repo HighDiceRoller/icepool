@@ -18,7 +18,7 @@ class BoundGeneratorExpression(MultisetExpression):
     variable are considered to be the same generator.
     """
 
-    def __init__(self, generator: icepool.MultisetGenerator) -> None:
+    def __init__(self, generator: 'icepool.MultisetGenerator') -> None:
         if generator.arity != 1:
             raise ValueError('Bound generators must have an arity of 1.')
         self._generator = generator
