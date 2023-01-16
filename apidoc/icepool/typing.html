@@ -139,7 +139,7 @@
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="n">Qs_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;Qs_co&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">&quot;&quot;&quot;A tuple of count types. In this future this may be replaced with a TypeVarTuple.&quot;&quot;&quot;</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;MultisetExpression[T] | Mapping[T, int] | Sequence[T]&#39;</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">&quot;&quot;&quot;Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator.&quot;&quot;&quot;</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
@@ -281,7 +281,7 @@
                 </section>
                 <section id="Evaluable">
                     <div class="attr variable">
-            <span class="name">Evaluable</span><span class="annotation">: TypeAlias</span><span class="default_value"> = &#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
+            <span class="name">Evaluable</span><span class="annotation">: TypeAlias</span><span class="default_value"> = &#39;MultisetExpression[T] | Mapping[T, int] | Sequence[T]&#39;</span>
 
         
     </div>
