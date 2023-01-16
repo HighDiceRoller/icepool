@@ -12,11 +12,7 @@ from typing import Hashable, Sequence
 
 
 class KeepExpression(MultisetExpression[T_contra]):
-    """An expression to keep some of the lowest or highest elements of a multiset.
-
-    Unlike the `Pool` version, this must be anchored at one end with the other
-    end open. This is because the size of the multiset is not known.
-    """
+    """An expression to keep some of the lowest or highest elements of a multiset."""
 
     _inner: MultisetExpression[T_contra]
     _order: Order

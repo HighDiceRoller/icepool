@@ -294,10 +294,31 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     # Keep highest / lowest.
 
-    def __setitem__(
+    def keep(
             self, index: int | slice | Sequence[int]
     ) -> 'MultisetExpression[T_contra]':
+        """Selects pulls after drawing and sorting.
+
+        This is less capable and less efficient than the `Pool` version.
+        In particular, it does not know how many elements it is selecting from,
+        so it must be anchored at either the lowest or highest end. On the other
+        hand, this can be applied to any expression.
+
+        The valid types of argument are:
+
+        * An `int`, which will keep only the element at the specified index.
+        * A `slice`, which must have one the following sign patterns:
+            `+x:+y, -x:-y, :+x, -x:`
+        * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.
+            Each sorted element will be counted that many times, with the
+            `Ellipsis` treated as enough zeros (possibly "negative") to
+            fill the rest of the elements.
+
+        Use the `[]` operator for the same effect as this method.
+        """
         return icepool.expression.KeepExpression(self, index)
+
+    __getitem__ = keep
 
     def keep_lowest(self,
                     keep: int = 1,
