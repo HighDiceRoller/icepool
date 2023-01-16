@@ -111,10 +111,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(other, self)
 
-    def disjoint_sum(
+    def disjoint_union(
         self, *others:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
+        """The combined elements from both multisets."""
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.add, others, self)  # type: ignore
@@ -142,6 +143,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def difference(
         self, *others: 'MultisetExpression[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
+        """The elements from the left multiset that are not in any of the others."""
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.sub, others, self)  # type: ignore
@@ -170,6 +172,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, *others:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
+        """The elements that all the multisets have in common."""
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.and_, others, self)  # type: ignore
@@ -198,6 +201,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, *others:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
+        """The elements that appear in any of the multisets."""
         others = tuple(
             implicit_convert_to_expression(other) for other in others)
         return reduce(operator.or_, others, self)  # type: ignore
@@ -226,6 +230,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
+        """The elements that appear in the left or right multiset but not both."""
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
@@ -304,7 +309,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def expand(
         self
     ) -> 'icepool.Die[tuple[T_contra, ...]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, ...]]':
-        """All possible sorted tuples of outcomes.
+        """All elements of the multiset.
 
         This is expensive and not recommended unless there are few possibilities.
         """
@@ -314,7 +319,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self,
         map: Callable[[T_contra], U] | Mapping[T_contra, U] | None = None
     ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
-        evaluator = icepool.evaluator.SumEvaluator(map)
+        """The sum of all elements."""
         if map is None:
             return self.evaluate(evaluator=icepool.evaluator.sum_evaluator)
         else:
@@ -362,21 +367,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def largest_count(
             self
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        """The size of the largest matching set among the outcomes."""
+        """The size of the largest matching set among the elements."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountEvaluator())
 
     def largest_count_and_outcome(
         self
     ) -> 'icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]':
-        """The largest matching set among the outcomes and its outcome."""
+        """The largest matching set among the elements and its outcome."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
 
     def largest_straight(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
-        """The size of the largest straight among the outcomes.
+        """The size of the largest straight among the elements.
 
         Outcomes must be `int`s.
         """
@@ -386,7 +391,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def largest_straight_and_outcome(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
-        """The size of the largest straight among the outcomes and the highest outcome in that straight.
+        """The size of the largest straight among the elements and the highest outcome in that straight.
 
         Outcomes must be `int`s.
         """
@@ -441,7 +446,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether the outcome multiset is a subset of the other multiset.
+        """Whether this multiset is a subset of the other multiset.
 
         Same as `self <= other`.
         """
@@ -473,7 +478,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether the outcome multiset is a superset of the target multiset.
+        """Whether this multiset is a superset of the other multiset.
 
         Same as `self >= other`.
         """
@@ -506,5 +511,5 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether the outcome multiset is disjoint from the target multiset."""
+        """Whether this multiset is disjoint from the other multiset."""
         return self.compare(other, icepool.evaluator.IsDisjointSetEvaluator)
