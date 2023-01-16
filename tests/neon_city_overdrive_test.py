@@ -2,6 +2,7 @@ import icepool
 import pytest
 
 from icepool import d6, Die
+from icepool.expression import multiset_function
 
 # See https://rpg.stackexchange.com/q/171498/72732
 # for approaches by myself and others.
@@ -22,16 +23,27 @@ expected = Die({
 })
 
 
+def final_score(outcome: int, count: int) -> int:
+    if count == 0:
+        return 0
+    elif outcome < 6:
+        return outcome
+    else:
+        return count + 5
+
+
 def test_using_multiset_ops():
     mid_result = (d6.pool(6) - d6.pool(6)).highest_outcome_and_count()
 
-    def final_score(outcome: int, count: int) -> int:
-        if count == 0:
-            return 0
-        elif outcome < 6:
-            return outcome
-        else:
-            return count + 5
+    result = mid_result.map(final_score, star=True)
+    assert result == expected
 
+
+def test_using_multiset_function():
+
+    def mid_result(a, b):
+        return (a - b).highest_outcome_and_count()
+
+    mid_result = multiset_function(mid_result).evaluate(d6.pool(6), d6.pool(6))
     result = mid_result.map(final_score, star=True)
     assert result == expected
