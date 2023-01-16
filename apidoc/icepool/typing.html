@@ -32,13 +32,25 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
+                    <a class="variable" href="#K">K</a>
+            </li>
+            <li>
                     <a class="variable" href="#T">T</a>
+            </li>
+            <li>
+                    <a class="variable" href="#T_co">T_co</a>
             </li>
             <li>
                     <a class="variable" href="#T_contra">T_contra</a>
             </li>
             <li>
-                    <a class="variable" href="#T_co">T_co</a>
+                    <a class="variable" href="#U">U</a>
+            </li>
+            <li>
+                    <a class="variable" href="#U_co">U_co</a>
+            </li>
+            <li>
+                    <a class="variable" href="#Qs_co">Qs_co</a>
             </li>
             <li>
                     <a class="variable" href="#Evaluable">Evaluable</a>
@@ -106,64 +118,89 @@
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">K</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Hashable</span><span class="p">)</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">&quot;&quot;&quot;A key type.&quot;&quot;&quot;</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">T_contra</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T_contra&#39;</span><span class="p">,</span> <span class="n">contravariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">)</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="n">T_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T_co&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">&quot;&quot;&quot;Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator.&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="n">T_contra</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T_contra&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="n">contravariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">&quot;&quot;&quot;An outcome type.&quot;&quot;&quot;</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Can be used to define what order outcomes are seen in by MultisetEvaluators.&quot;&quot;&quot;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">Ascending</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">Descending</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">        Returns:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        Raises:</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">            arguments.</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="n">U</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">&quot;&quot;&quot;Another outcome type.&quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="n">U_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;U_co&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">&quot;&quot;&quot;Another outcome type.&quot;&quot;&quot;</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="n">Qs_co</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;Qs_co&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">&quot;&quot;&quot;A tuple of count types. In this future this may be replaced with a TypeVarTuple.&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="n">Evaluable</span><span class="p">:</span> <span class="n">TypeAlias</span> <span class="o">=</span> <span class="s1">&#39;MultisetExpression | Mapping[T, int] | Sequence[T]&#39;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">&quot;&quot;&quot;Type of objects that can be evaluated by a MultisetEvaluator using ExpressionEvaluator.&quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Can be used to define what order outcomes are seen in by MultisetEvaluators.&quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="n">Ascending</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">Descending</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">        Returns:</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        Raises:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">            arguments.</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>        <span class="o">...</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>        <span class="o">...</span>
 </span></pre></div>
 
 
             </section>
+                <section id="K">
+                    <div class="attr variable">
+            <span class="name">K</span><span class="default_value"> = ~K</span>
+
+        
+    </div>
+    <a class="headerlink" href="#K"></a>
+    
+            <div class="docstring"><p>A key type.</p>
+</div>
+
+
+                </section>
                 <section id="T">
                     <div class="attr variable">
             <span class="name">T</span><span class="default_value"> = ~T</span>
@@ -171,6 +208,19 @@
         
     </div>
     <a class="headerlink" href="#T"></a>
+    
+            <div class="docstring"><p>An outcome type.</p>
+</div>
+
+
+                </section>
+                <section id="T_co">
+                    <div class="attr variable">
+            <span class="name">T_co</span><span class="default_value"> = +T_co</span>
+
+        
+    </div>
+    <a class="headerlink" href="#T_co"></a>
     
             <div class="docstring"><p>An outcome type.</p>
 </div>
@@ -190,15 +240,41 @@
 
 
                 </section>
-                <section id="T_co">
+                <section id="U">
                     <div class="attr variable">
-            <span class="name">T_co</span><span class="default_value"> = +T_co</span>
+            <span class="name">U</span><span class="default_value"> = ~U</span>
 
         
     </div>
-    <a class="headerlink" href="#T_co"></a>
+    <a class="headerlink" href="#U"></a>
     
-            <div class="docstring"><p>An outcome type.</p>
+            <div class="docstring"><p>Another outcome type.</p>
+</div>
+
+
+                </section>
+                <section id="U_co">
+                    <div class="attr variable">
+            <span class="name">U_co</span><span class="default_value"> = +U_co</span>
+
+        
+    </div>
+    <a class="headerlink" href="#U_co"></a>
+    
+            <div class="docstring"><p>Another outcome type.</p>
+</div>
+
+
+                </section>
+                <section id="Qs_co">
+                    <div class="attr variable">
+            <span class="name">Qs_co</span><span class="default_value"> = +Qs_co</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Qs_co"></a>
+    
+            <div class="docstring"><p>A tuple of count types. In this future this may be replaced with a TypeVarTuple.</p>
 </div>
 
 
@@ -227,31 +303,31 @@
 
     </div>
     <a class="headerlink" href="#Order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Order-24"><a href="#Order-24"><span class="linenos">24</span></a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-</span><span id="Order-25"><a href="#Order-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Can be used to define what order outcomes are seen in by MultisetEvaluators.&quot;&quot;&quot;</span>
-</span><span id="Order-26"><a href="#Order-26"><span class="linenos">26</span></a>    <span class="n">Ascending</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="Order-27"><a href="#Order-27"><span class="linenos">27</span></a>    <span class="n">Descending</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-</span><span id="Order-28"><a href="#Order-28"><span class="linenos">28</span></a>    <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Order-29"><a href="#Order-29"><span class="linenos">29</span></a>
-</span><span id="Order-30"><a href="#Order-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
-</span><span id="Order-31"><a href="#Order-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
-</span><span id="Order-32"><a href="#Order-32"><span class="linenos">32</span></a>
-</span><span id="Order-33"><a href="#Order-33"><span class="linenos">33</span></a><span class="sd">        Returns:</span>
-</span><span id="Order-34"><a href="#Order-34"><span class="linenos">34</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
-</span><span id="Order-35"><a href="#Order-35"><span class="linenos">35</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
-</span><span id="Order-36"><a href="#Order-36"><span class="linenos">36</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
-</span><span id="Order-37"><a href="#Order-37"><span class="linenos">37</span></a>
-</span><span id="Order-38"><a href="#Order-38"><span class="linenos">38</span></a><span class="sd">        Raises:</span>
-</span><span id="Order-39"><a href="#Order-39"><span class="linenos">39</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
-</span><span id="Order-40"><a href="#Order-40"><span class="linenos">40</span></a><span class="sd">            arguments.</span>
-</span><span id="Order-41"><a href="#Order-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Order-42"><a href="#Order-42"><span class="linenos">42</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="Order-43"><a href="#Order-43"><span class="linenos">43</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
-</span><span id="Order-44"><a href="#Order-44"><span class="linenos">44</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order-45"><a href="#Order-45"><span class="linenos">45</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order-46"><a href="#Order-46"><span class="linenos">46</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order-47"><a href="#Order-47"><span class="linenos">47</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order-48"><a href="#Order-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">result</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Order-36"><a href="#Order-36"><span class="linenos">36</span></a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+</span><span id="Order-37"><a href="#Order-37"><span class="linenos">37</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Can be used to define what order outcomes are seen in by MultisetEvaluators.&quot;&quot;&quot;</span>
+</span><span id="Order-38"><a href="#Order-38"><span class="linenos">38</span></a>    <span class="n">Ascending</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="Order-39"><a href="#Order-39"><span class="linenos">39</span></a>    <span class="n">Descending</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="Order-40"><a href="#Order-40"><span class="linenos">40</span></a>    <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="Order-41"><a href="#Order-41"><span class="linenos">41</span></a>
+</span><span id="Order-42"><a href="#Order-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
+</span><span id="Order-43"><a href="#Order-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
+</span><span id="Order-44"><a href="#Order-44"><span class="linenos">44</span></a>
+</span><span id="Order-45"><a href="#Order-45"><span class="linenos">45</span></a><span class="sd">        Returns:</span>
+</span><span id="Order-46"><a href="#Order-46"><span class="linenos">46</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
+</span><span id="Order-47"><a href="#Order-47"><span class="linenos">47</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
+</span><span id="Order-48"><a href="#Order-48"><span class="linenos">48</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
+</span><span id="Order-49"><a href="#Order-49"><span class="linenos">49</span></a>
+</span><span id="Order-50"><a href="#Order-50"><span class="linenos">50</span></a><span class="sd">        Raises:</span>
+</span><span id="Order-51"><a href="#Order-51"><span class="linenos">51</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
+</span><span id="Order-52"><a href="#Order-52"><span class="linenos">52</span></a><span class="sd">            arguments.</span>
+</span><span id="Order-53"><a href="#Order-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Order-54"><a href="#Order-54"><span class="linenos">54</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span><span id="Order-55"><a href="#Order-55"><span class="linenos">55</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+</span><span id="Order-56"><a href="#Order-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span id="Order-57"><a href="#Order-57"><span class="linenos">57</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</span><span id="Order-58"><a href="#Order-58"><span class="linenos">58</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order-59"><a href="#Order-59"><span class="linenos">59</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order-60"><a href="#Order-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -303,25 +379,25 @@
 
     </div>
     <a class="headerlink" href="#Order.merge"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Order.merge-30"><a href="#Order.merge-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
-</span><span id="Order.merge-31"><a href="#Order.merge-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
-</span><span id="Order.merge-32"><a href="#Order.merge-32"><span class="linenos">32</span></a>
-</span><span id="Order.merge-33"><a href="#Order.merge-33"><span class="linenos">33</span></a><span class="sd">        Returns:</span>
-</span><span id="Order.merge-34"><a href="#Order.merge-34"><span class="linenos">34</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
-</span><span id="Order.merge-35"><a href="#Order.merge-35"><span class="linenos">35</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
-</span><span id="Order.merge-36"><a href="#Order.merge-36"><span class="linenos">36</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
-</span><span id="Order.merge-37"><a href="#Order.merge-37"><span class="linenos">37</span></a>
-</span><span id="Order.merge-38"><a href="#Order.merge-38"><span class="linenos">38</span></a><span class="sd">        Raises:</span>
-</span><span id="Order.merge-39"><a href="#Order.merge-39"><span class="linenos">39</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
-</span><span id="Order.merge-40"><a href="#Order.merge-40"><span class="linenos">40</span></a><span class="sd">            arguments.</span>
-</span><span id="Order.merge-41"><a href="#Order.merge-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Order.merge-42"><a href="#Order.merge-42"><span class="linenos">42</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
-</span><span id="Order.merge-43"><a href="#Order.merge-43"><span class="linenos">43</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
-</span><span id="Order.merge-44"><a href="#Order.merge-44"><span class="linenos">44</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order.merge-45"><a href="#Order.merge-45"><span class="linenos">45</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order.merge-46"><a href="#Order.merge-46"><span class="linenos">46</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order.merge-47"><a href="#Order.merge-47"><span class="linenos">47</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order.merge-48"><a href="#Order.merge-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">result</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Order.merge-42"><a href="#Order.merge-42"><span class="linenos">42</span></a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="o">*</span><span class="n">orders</span><span class="p">:</span> <span class="s1">&#39;Order&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Order&#39;</span><span class="p">:</span>
+</span><span id="Order.merge-43"><a href="#Order.merge-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges the given Orders.</span>
+</span><span id="Order.merge-44"><a href="#Order.merge-44"><span class="linenos">44</span></a>
+</span><span id="Order.merge-45"><a href="#Order.merge-45"><span class="linenos">45</span></a><span class="sd">        Returns:</span>
+</span><span id="Order.merge-46"><a href="#Order.merge-46"><span class="linenos">46</span></a><span class="sd">            `Any` if all arguments are `Any`.</span>
+</span><span id="Order.merge-47"><a href="#Order.merge-47"><span class="linenos">47</span></a><span class="sd">            `Ascending` if there is at least one `Ascending` in the arguments.</span>
+</span><span id="Order.merge-48"><a href="#Order.merge-48"><span class="linenos">48</span></a><span class="sd">            `Descending` if there is at least one `Descending` in the arguments.</span>
+</span><span id="Order.merge-49"><a href="#Order.merge-49"><span class="linenos">49</span></a>
+</span><span id="Order.merge-50"><a href="#Order.merge-50"><span class="linenos">50</span></a><span class="sd">        Raises:</span>
+</span><span id="Order.merge-51"><a href="#Order.merge-51"><span class="linenos">51</span></a><span class="sd">            `ValueError` if both `Ascending` and `Descending` are in the</span>
+</span><span id="Order.merge-52"><a href="#Order.merge-52"><span class="linenos">52</span></a><span class="sd">            arguments.</span>
+</span><span id="Order.merge-53"><a href="#Order.merge-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Order.merge-54"><a href="#Order.merge-54"><span class="linenos">54</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span><span id="Order.merge-55"><a href="#Order.merge-55"><span class="linenos">55</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+</span><span id="Order.merge-56"><a href="#Order.merge-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+</span><span id="Order.merge-57"><a href="#Order.merge-57"><span class="linenos">57</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</span><span id="Order.merge-58"><a href="#Order.merge-58"><span class="linenos">58</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order.merge-59"><a href="#Order.merge-59"><span class="linenos">59</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order.merge-60"><a href="#Order.merge-60"><span class="linenos">60</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -380,10 +456,10 @@
 
     </div>
     <a class="headerlink" href="#RerollType"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-51"><a href="#RerollType-51"><span class="linenos">51</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="RerollType-52"><a href="#RerollType-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
-</span><span id="RerollType-53"><a href="#RerollType-53"><span class="linenos">53</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="RerollType-54"><a href="#RerollType-54"><span class="linenos">54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-63"><a href="#RerollType-63"><span class="linenos">63</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="RerollType-64"><a href="#RerollType-64"><span class="linenos">64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="RerollType-65"><a href="#RerollType-65"><span class="linenos">65</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="RerollType-66"><a href="#RerollType-66"><span class="linenos">66</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -426,14 +502,14 @@
 
     </div>
     <a class="headerlink" href="#Outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-57"><a href="#Outcome-57"><span class="linenos">57</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
-</span><span id="Outcome-58"><a href="#Outcome-58"><span class="linenos">58</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
-</span><span id="Outcome-59"><a href="#Outcome-59"><span class="linenos">59</span></a>
-</span><span id="Outcome-60"><a href="#Outcome-60"><span class="linenos">60</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
-</span><span id="Outcome-61"><a href="#Outcome-61"><span class="linenos">61</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Outcome-62"><a href="#Outcome-62"><span class="linenos">62</span></a>
-</span><span id="Outcome-63"><a href="#Outcome-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Outcome-64"><a href="#Outcome-64"><span class="linenos">64</span></a>        <span class="o">...</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-69"><a href="#Outcome-69"><span class="linenos">69</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
+</span><span id="Outcome-70"><a href="#Outcome-70"><span class="linenos">70</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
+</span><span id="Outcome-71"><a href="#Outcome-71"><span class="linenos">71</span></a>
+</span><span id="Outcome-72"><a href="#Outcome-72"><span class="linenos">72</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
+</span><span id="Outcome-73"><a href="#Outcome-73"><span class="linenos">73</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Outcome-74"><a href="#Outcome-74"><span class="linenos">74</span></a>
+</span><span id="Outcome-75"><a href="#Outcome-75"><span class="linenos">75</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Outcome-76"><a href="#Outcome-76"><span class="linenos">76</span></a>        <span class="o">...</span>
 </span></pre></div>
 
 
