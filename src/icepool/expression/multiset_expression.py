@@ -240,9 +240,14 @@ class MultisetExpression(ABC):
         map: Callable[[T], U] | Mapping[T, U] | None = None
     ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
         evaluator = icepool.evaluator.SumEvaluator(map)
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        if map is None:
+            return self.evaluate(evaluator=icepool.evaluator.sum_evaluator)
+        else:
+            return self.evaluate(evaluator=icepool.evaluator.SumEvaluator(map))
 
-    def count(self) -> 'icepool.MultisetEvaluator[Outcome, int]':
+    def count(
+            self
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[Outcome, int]':
         """The total count over all outcomes.
 
         This is usually not very interesting unless some other operation is
@@ -253,8 +258,7 @@ class MultisetExpression(ABC):
         `(generator & [4, 5, 6]).count()` will count up to one each of
         4, 5, and 6.
         """
-        evaluator = icepool.evaluator.count_evaluator
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(evaluator=icepool.evaluator.count_evaluator)
 
     def highest_outcome_and_count(
         self
@@ -264,8 +268,8 @@ class MultisetExpression(ABC):
         If no outcomes have positive count, an arbitrary outcome will be
         produced with a 0 count.
         """
-        evaluator = icepool.evaluator.HighestOutcomeAndCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(
+            evaluator=icepool.evaluator.HighestOutcomeAndCountEvaluator())
 
     def all_counts(
         self,
@@ -277,22 +281,21 @@ class MultisetExpression(ABC):
             positive_only: If `True` (default), negative and zero counts
                 will be omitted.
         """
-        evaluator = icepool.evaluator.AllCountsEvaluator(
-            positive_only=positive_only)
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(evaluator=icepool.evaluator.AllCountsEvaluator(
+            positive_only=positive_only))
 
     def largest_count(
             self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
         """The size of the largest matching set among the outcomes."""
-        evaluator = icepool.evaluator.LargestCountEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(
+            evaluator=icepool.evaluator.LargestCountEvaluator())
 
     def largest_count_and_outcome(
         self
     ) -> 'icepool.Die[tuple[int, T]] | icepool.MultisetEvaluator[T, tuple[int, T]]':
         """The largest matching set among the outcomes and its outcome."""
-        evaluator = icepool.evaluator.LargestCountAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(
+            evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
 
     def largest_straight(
             self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
@@ -300,8 +303,8 @@ class MultisetExpression(ABC):
 
         Outcomes must be `int`s.
         """
-        evaluator = icepool.evaluator.LargestStraightEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(
+            evaluator=icepool.evaluator.LargestStraightEvaluator())
 
     def largest_straight_and_outcome(
         self
@@ -310,8 +313,8 @@ class MultisetExpression(ABC):
 
         Outcomes must be `int`s.
         """
-        evaluator = icepool.evaluator.LargestStraightAndOutcomeEvaluator()
-        return icepool.expression.ExpressionEvaluator(self, evaluator=evaluator)
+        return self.evaluate(
+            evaluator=icepool.evaluator.LargestStraightAndOutcomeEvaluator())
 
     # Comparators.
 
