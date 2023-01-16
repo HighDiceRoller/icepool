@@ -275,6 +275,10 @@ class MultisetExpression(ABC):
             A `Die` if all expressions are fully bound.
             A `MultisetEvaluator` otherwise.
         """
+        if all(
+                isinstance(expression, icepool.MultisetGenerator)
+                for expression in expressions):
+            return evaluator.evaluate(*expressions)
         evaluator = icepool.expression.ExpressionEvaluator(*expressions,
                                                            evaluator=evaluator)
         if evaluator.arity == 0:
