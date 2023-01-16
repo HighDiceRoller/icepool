@@ -24,9 +24,9 @@ class AdjustCountsExpression(MultisetExpression):
 
     def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        state, count = self._inner.next_state(state, outcome, counts,
-                                              bound_counts)
-        count = self.adjust_count(counts[0], self._constant)
+        state, count = self._inner.next_state(state, outcome, bound_counts,
+                                              counts)
+        count = self.adjust_count(count, self._constant)
         return state, count
 
     def order(self) -> Order:
