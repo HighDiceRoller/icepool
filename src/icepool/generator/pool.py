@@ -273,7 +273,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         return Pool._new_raw(self._dice, tuple(keep_tuple))
 
-    __getitem__ = keep
+    def __getitem__(
+            self,
+            index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        return self.keep(index)
 
     @cached_property
     def _min_outcome(self) -> T:

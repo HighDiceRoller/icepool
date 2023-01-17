@@ -319,7 +319,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return icepool.expression.KeepExpression(self, index)
 
-    __getitem__ = keep
+    def __getitem__(
+        self, index: int | slice | Sequence[int | EllipsisType]
+    ) -> 'MultisetExpression[T_contra]':
+        return self.keep(index)
 
     def keep_lowest(self,
                     keep: int = 1,
