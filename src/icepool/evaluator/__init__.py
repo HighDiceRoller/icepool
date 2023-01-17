@@ -14,6 +14,7 @@ from icepool.evaluator.comparison import (
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
 from icepool.evaluator.joint import JointEvaluator
+from icepool.evaluator.constant import ConstantEvaluator
 from icepool.evaluator.expression import ExpressionEvaluator
 
 __all__ = [
@@ -25,5 +26,5 @@ __all__ = [
     'IsSubsetEvaluator', 'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
     'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'JointEvaluator',
-    'ExpressionEvaluator'
+    'ConstantEvaluator', 'ExpressionEvaluator'
 ]

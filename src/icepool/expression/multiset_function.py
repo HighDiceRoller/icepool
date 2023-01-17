@@ -1,3 +1,4 @@
+import icepool
 import icepool.evaluator
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
@@ -9,55 +10,60 @@ from typing import Callable, TypeAlias, overload
 
 from icepool.typing import T_contra, U_co
 
-NestedTupleOrEvaluator: TypeAlias = MultisetEvaluator[T_contra, U_co] | tuple[
-    'NestedTupleOrEvaluator[T_contra, U_co]', ...]
+NestedTupleOrEvaluatorOrDie: TypeAlias = MultisetEvaluator[
+    T_contra, U_co] | 'icepool.Die[U_co]' | tuple[
+        'NestedTupleOrEvaluatorOrDie[T_contra, U_co]', ...]
 
 NestedTupleOrOutcome: TypeAlias = U_co | tuple['NestedTupleOrOutcome[U_co]',
                                                ...]
 
 
 def replace_tuples_with_joint_evaluator(
-        tuple_or_evaluator: NestedTupleOrEvaluator[T_contra, U_co],
+        arg: NestedTupleOrEvaluatorOrDie[T_contra, U_co],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """Recursively replaces tuples with `JointEvaluator`s."""
-    if isinstance(tuple_or_evaluator, tuple):
-        return icepool.evaluator.JointEvaluator(*(
-            replace_tuples_with_joint_evaluator(x) for x in tuple_or_evaluator))
+    if isinstance(arg, tuple):
+        return icepool.evaluator.JointEvaluator(
+            *(replace_tuples_with_joint_evaluator(x) for x in arg))
+    elif isinstance(arg, icepool.Die):
+        # Die resulting from a fully-bound expression.
+        return icepool.evaluator.ConstantEvaluator(arg)
     else:
-        return tuple_or_evaluator
+        return arg
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        func: Callable[[MV], NestedTupleOrEvaluatorOrDie[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        func: Callable[[MV, MV], NestedTupleOrEvaluatorOrDie[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV, MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        func: Callable[[MV, MV, MV], NestedTupleOrEvaluatorOrDie[T_contra,
+                                                                 U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluator[T_contra,
-                                                                U_co]],
+        func: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluatorOrDie[T_contra,
+                                                                     U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 def multiset_function(
-        func: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
+        func: Callable[..., NestedTupleOrEvaluatorOrDie[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """EXPERIMENTAL: Creates an evaluator from a callable.
 
