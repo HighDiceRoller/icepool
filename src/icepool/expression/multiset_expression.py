@@ -122,13 +122,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DisjointUnionExpression(other, self)
 
     def disjoint_union(
-        self, *others:
+        *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The combined elements from both multisets."""
-        others = tuple(
-            implicit_convert_to_expression(other) for other in others)
-        return reduce(operator.add, others, self)  # type: ignore
+        """The combined elements from all of the multisets."""
+        expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
+        return icepool.expression.DisjointUnionExpression(*expressions)
 
     def __sub__(
         self, other:
@@ -151,12 +150,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DifferenceExpression(other, self)
 
     def difference(
-        self, *others: 'MultisetExpression[T_contra]'
+        *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The elements from the left multiset that are not in any of the others."""
-        others = tuple(
-            implicit_convert_to_expression(other) for other in others)
-        return reduce(operator.sub, others, self)  # type: ignore
+        """The elements from the left multiset that are not in any of the others.
+
+        If no arguments are given, the result will be an empty multiset, i.e.
+        all zero counts.
+        """
+        expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
+        return icepool.expression.DifferenceExpression(*expressions)
 
     def __and__(
         self, other:
@@ -179,13 +182,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.IntersectionExpression(other, self)
 
     def intersection(
-        self, *others:
+        *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
         """The elements that all the multisets have in common."""
-        others = tuple(
-            implicit_convert_to_expression(other) for other in others)
-        return reduce(operator.and_, others, self)  # type: ignore
+        expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
+        return icepool.expression.IntersectionExpression(*expressions)
 
     def __or__(
         self, other:
@@ -208,13 +210,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.UnionExpression(other, self)
 
     def union(
-        self, *others:
+        *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
         """The elements that appear in any of the multisets."""
-        others = tuple(
-            implicit_convert_to_expression(other) for other in others)
-        return reduce(operator.or_, others, self)  # type: ignore
+        expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
+        return icepool.expression.UnionExpression(*expressions)
 
     def __xor__(
         self, other:

@@ -1,58 +1,88 @@
 __docformat__ = 'google'
 
+import operator
 import icepool
 
-from typing import Hashable, Sequence
+from typing import Hashable, Iterable, Sequence
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Order, Outcome, T_contra
 
 from abc import abstractmethod
-from functools import cached_property
+from functools import cached_property, reduce
 
 
 class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, left: MultisetExpression[T_contra],
-                 right: MultisetExpression[T_contra]) -> None:
-        self.validate_output_arity(left)
-        self.validate_output_arity(right)
-        self._left = left
-        self._right = right
+    def __init__(self, *prevs: MultisetExpression[T_contra]) -> None:
+        """Constructor.
+
+        Args:
+            *prevs: Any number of expressions to feed into the operator.
+                If zero expressions are provided, the result will have all zero
+                counts.
+                If more than two expressions are provided, the counts will be
+                `reduce`d.
+        """
+        for prev in prevs:
+            self.validate_output_arity(prev)
+        self._prevs = prevs
 
     @staticmethod
     @abstractmethod
     def merge_counts(left: int, right: int) -> int:
         """Merge counts produced by the left and right expression."""
 
+    @staticmethod
+    @abstractmethod
+    def symbol() -> str:
+        """A symbol representing this operation."""
+
     def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
                                                                        ...],
                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        bound_counts_split = len(self._left.bound_generators())
-        left_bound_counts = bound_counts[:bound_counts_split]
-        right_bound_counts = bound_counts[bound_counts_split:]
-        left_state, right_state = state or (None, None)
-        left_state, left_count = self._left.next_state(left_state, outcome,
-                                                       left_bound_counts,
-                                                       counts)
-        right_state, right_count = self._right.next_state(
-            right_state, outcome, right_bound_counts, counts)
-        count = self.merge_counts(left_count, right_count)
+        if len(self._prevs) == 0:
+            return (), 0
+        prev_states = state or (None,) * len(self._prevs)
+
+        prev_states, prev_counts = zip(*(prev.next_state(
+            prev_state,
+            outcome,
+            prev_bound_counts,
+            counts,
+        ) for prev, prev_state, prev_bound_counts in zip(
+            self._prevs, prev_states, self._split_bound_counts(*bound_counts))))
+
+        count = reduce(self.merge_counts, prev_counts)
         count = max(count, 0)
-        return (left_state, right_state), count
+        return prev_states, count
 
     def order(self) -> Order:
-        return Order.merge(self._left.order(), self._right.order())
+        return Order.merge(*(prev.order() for prev in self._prevs))
 
     @property
     def arity(self) -> int:
-        return max(self._left.arity, self._right.arity)
+        return max(prev.arity for prev in self._prevs)
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._left.bound_generators() + self._right.bound_generators()
+        return reduce(operator.add,
+                      (prev.bound_generators() for prev in self._prevs))
 
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._bound_generators
+
+    def _split_bound_counts(self,
+                            *bound_counts: int) -> 'Iterable[tuple[int, ...]]':
+        """Splits a tuple of counts into one set of bound counts per expression."""
+        index = 0
+        for prev in self._prevs:
+            counts_length = len(prev.bound_generators())
+            yield bound_counts[index:index + counts_length]
+            index += counts_length
+
+    def __str__(self) -> str:
+        return '(' + (' ' + self.symbol() + ' ').join(
+            str(prev) for prev in self._prevs) + ')'
 
 
 class IntersectionExpression(BinaryOperatorExpression):
@@ -61,8 +91,9 @@ class IntersectionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return min(left, right)
 
-    def __str__(self) -> str:
-        return f'({self._left} & {self._right})'
+    @staticmethod
+    def symbol() -> str:
+        return '&'
 
 
 class DifferenceExpression(BinaryOperatorExpression):
@@ -71,8 +102,9 @@ class DifferenceExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return left - right
 
-    def __str__(self) -> str:
-        return f'({self._left} - {self._right})'
+    @staticmethod
+    def symbol() -> str:
+        return '-'
 
 
 class UnionExpression(BinaryOperatorExpression):
@@ -81,8 +113,9 @@ class UnionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return max(left, right)
 
-    def __str__(self) -> str:
-        return f'({self._left} | {self._right})'
+    @staticmethod
+    def symbol() -> str:
+        return '|'
 
 
 class DisjointUnionExpression(BinaryOperatorExpression):
@@ -91,8 +124,9 @@ class DisjointUnionExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return left + right
 
-    def __str__(self) -> str:
-        return f'({self._left} + {self._right})'
+    @staticmethod
+    def symbol() -> str:
+        return '+'
 
 
 class SymmetricDifferenceExpression(BinaryOperatorExpression):
@@ -101,5 +135,6 @@ class SymmetricDifferenceExpression(BinaryOperatorExpression):
     def merge_counts(left: int, right: int) -> int:
         return abs(max(left, 0) - max(right, 0))
 
-    def __str__(self) -> str:
-        return f'({self._left} ^ {self._right})'
+    @staticmethod
+    def symbol() -> str:
+        return '^'

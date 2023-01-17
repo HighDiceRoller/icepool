@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.expression.multiset_expression import MultisetExpression
+from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
 from icepool.expression.variable import MultisetVariable, multiset_variables
 from icepool.expression.binary_operator import (
     BinaryOperatorExpression, IntersectionExpression, DifferenceExpression,
