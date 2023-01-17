@@ -68,12 +68,14 @@ from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 
-import icepool.expression as expression
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
-import icepool.typing as typing
+from icepool.expression.multiset_function import multiset_function
 
+import icepool.expression as expression
 import icepool.generator as generator
 import icepool.evaluator as evaluator
+
+import icepool.typing as typing
 
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
@@ -82,5 +84,5 @@ __all__ = [
     'highest', 'sum_lowest', 'sum_highest', 'min_outcome', 'max_outcome',
     'reduce', 'accumulate', 'apply', 'apply_sorted', 'Reroll', 'RerollType',
     'MultisetGenerator', 'Pool', 'standard_pool', 'MultisetEvaluator', 'Order',
-    'Deck', 'Deal', 'MultisetExpression', 'expression', 'typing'
+    'Deck', 'Deal', 'MultisetExpression', 'multiset_function', 'typing'
 ]

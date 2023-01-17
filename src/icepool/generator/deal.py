@@ -13,7 +13,7 @@ import math
 
 
 class Deal(MultisetGenerator[T, Qs_co]):
-    """EXPERIMENTAL: Represents an sorted/unordered deal of cards from a `Deck`. """
+    """Represents an sorted/unordered deal of cards from a `Deck`."""
 
     _deck: 'icepool.Deck[T]'
     _hand_sizes: tuple[int, ...]
