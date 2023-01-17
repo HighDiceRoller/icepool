@@ -202,6 +202,7 @@ class OutputManager():
                 'data': self.probabilities(die, probability_type),
                 'label': die_label,
                 'borderColor': color,
+                'backgroundColor': color,
                 'pointStyle': point,
             } for die, die_label, color, point in zip(aligned_dice, self.die_labels, self.colors, self.points) if color is not None
         ]
@@ -389,11 +390,13 @@ var chart = new Chart(chartContext, {
                     usePointStyle: true,
                 },
             },
+            tooltip : {
+                usePointStyle: true,
+            },
         },
         elements: {
             point: {
-                borderWidth: 3,
-                radius: 3,
+                radius: 4,
             },
         },
     },
