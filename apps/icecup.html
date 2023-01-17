@@ -124,10 +124,10 @@ class OutputManager():
     ]
     
     DEFAULT_POINTS = [
-        'circle',
-        'triangle',
-        'rect',
-        'rectRot',
+        ('circle', 3),
+        ('triangle', 4),
+        ('rect', 3),
+        ('rectRot', 3),
     ]
     
     def __init__(self):
@@ -140,8 +140,7 @@ class OutputManager():
         self.dice = []
         self.die_labels = []
         # None if this is a print rather than a full output.
-        self.colors = []
-        self.points = []
+        self.styles = []
         self.starting_random_state = random.getstate()
     
     @staticmethod
@@ -176,16 +175,14 @@ class OutputManager():
         self.dice.append(die)
         self.die_labels.append(die_label)
         color = OutputManager.DEFAULT_COLORS[self.die_count % len(OutputManager.DEFAULT_COLORS)]
-        self.colors.append(color)
-        point = OutputManager.DEFAULT_POINTS[self.die_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
-        self.points.append(point)
+        point, point_size = OutputManager.DEFAULT_POINTS[self.die_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
+        self.styles.append((color, point, point_size))
         self.die_count += 1
         
     def append_print(self, args, kwargs):
         self.dice.append(icepool.Die([]))
         self.die_labels.append((args, kwargs))
-        self.colors.append(None)
-        self.points.append(None)
+        self.styles.append(None)
     
     def chart_data(self, probability_type):
         """
@@ -201,14 +198,15 @@ class OutputManager():
             {
                 'data': self.probabilities(die, probability_type),
                 'label': die_label,
-                'borderColor': color,
-                'backgroundColor': color,
-                'pointStyle': point,
-            } for die, die_label, color, point in zip(aligned_dice, self.die_labels, self.colors, self.points) if color is not None
+                'borderColor': style[0],
+                'backgroundColor': style[0],
+                'pointStyle': style[1],
+                'radius': style[2],
+            } for die, die_label, style in zip(aligned_dice, self.die_labels, self.styles) if style is not None
         ]
         
-        for die, die_label, color in zip(self.dice, self.die_labels, self.colors):
-            if color is not None:
+        for die, die_label, style in zip(self.dice, self.die_labels, self.styles):
+            if style is not None:
                 builtins.print(die_label)
                 format_string = self.format_string(die, probability_type)
                 builtins.print(f'{die:{format_string}}')
@@ -396,7 +394,7 @@ var chart = new Chart(chartContext, {
         },
         elements: {
             point: {
-                radius: 4,
+                radius: 3,
             },
         },
     },
