@@ -125,9 +125,9 @@ class OutputManager():
     
     DEFAULT_POINTS = [
         'circle',
-        'crossRot',
-        'rect',
         'triangle',
+        'rect',
+        'rectRot',
     ]
     
     def __init__(self):
@@ -392,7 +392,7 @@ var chart = new Chart(chartContext, {
         },
         elements: {
             point: {
-                borderWidth: 2,
+                borderWidth: 1.5,
                 radius: 4,
             },
         },
