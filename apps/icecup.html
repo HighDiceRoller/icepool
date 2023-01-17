@@ -123,6 +123,13 @@ class OutputManager():
         'rgba(217, 210, 105, 1.0)',
     ]
     
+    DEFAULT_POINTS = [
+        'circle',
+        'crossRot',
+        'rect',
+        'triangle',
+    ]
+    
     def __init__(self):
         self.reset()
 
@@ -134,6 +141,7 @@ class OutputManager():
         self.die_labels = []
         # None if this is a print rather than a full output.
         self.colors = []
+        self.points = []
         self.starting_random_state = random.getstate()
     
     @staticmethod
@@ -169,12 +177,15 @@ class OutputManager():
         self.die_labels.append(die_label)
         color = OutputManager.DEFAULT_COLORS[self.die_count % len(OutputManager.DEFAULT_COLORS)]
         self.colors.append(color)
+        point = OutputManager.DEFAULT_POINTS[self.die_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
+        self.points.append(point)
         self.die_count += 1
         
     def append_print(self, args, kwargs):
         self.dice.append(icepool.Die([]))
         self.die_labels.append((args, kwargs))
         self.colors.append(None)
+        self.points.append(None)
     
     def chart_data(self, probability_type):
         """
@@ -191,7 +202,8 @@ class OutputManager():
                 'data': self.probabilities(die, probability_type),
                 'label': die_label,
                 'borderColor': color,
-            } for die, die_label, color in zip(aligned_dice, self.die_labels, self.colors) if color is not None
+                'pointStyle': point,
+            } for die, die_label, color, point in zip(aligned_dice, self.die_labels, self.colors, self.points) if color is not None
         ]
         
         for die, die_label, color in zip(self.dice, self.die_labels, self.colors):
@@ -371,6 +383,11 @@ var chart = new Chart(chartContext, {
                 font: {
                     size: 36,
                 },
+            },
+        },
+        elements: {
+            point: {
+                radius: 4,
             },
         },
     },
