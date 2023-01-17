@@ -175,4 +175,6 @@ class CountsItemsView(ItemsView[K, int], Sequence[tuple[K, int]]):
 
 def union_sorted_sets(*args: Sequence[T]) -> Sequence[T]:
     """Merge sorted sets into another sorted set."""
+    if not args:
+        return ()
     return tuple(sorted(set.union(*(set(arg) for arg in args))))

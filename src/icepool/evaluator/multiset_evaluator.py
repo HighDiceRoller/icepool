@@ -294,6 +294,10 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         eval_order = self.order()
 
+        if not generators:
+            # No generators.
+            return self._eval_internal, eval_order
+
         pop_min_costs, pop_max_costs = zip(
             *(generator._estimate_order_costs() for generator in generators))
 
