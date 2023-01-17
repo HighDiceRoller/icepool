@@ -31,7 +31,6 @@ class MultisetVariable(MultisetExpression[Any]):
     def order(self):
         return Order.Any
 
-    @property
     def arity(self) -> int:
         return self._index + 1
 

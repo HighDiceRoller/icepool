@@ -81,7 +81,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     @cached_property
     def _arity(self) -> int:
         """The number of input multisets."""
-        return max((expression.arity for expression in self._expressions),
+        return max((expression.arity() for expression in self._expressions),
                    default=0)
 
     def arity(self) -> int:

@@ -76,7 +76,6 @@ class MultisetExpression(ABC, Generic[T_contra]):
             The required order.
         """
 
-    @property
     @abstractmethod
     def arity(self) -> int:
         """The minimum number of multisets/counts that must be provided to this expression.

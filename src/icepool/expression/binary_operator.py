@@ -59,9 +59,12 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def order(self) -> Order:
         return Order.merge(*(prev.order() for prev in self._prevs))
 
-    @property
+    @cached_property
+    def _arity(self) -> int:
+        return max(prev.arity() for prev in self._prevs)
+
     def arity(self) -> int:
-        return max(prev.arity for prev in self._prevs)
+        return self._arity
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

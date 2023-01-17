@@ -42,9 +42,8 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._bound_generators
 
-    @property
     def arity(self) -> int:
-        return self._inner.arity
+        return self._inner.arity()
 
 
 class MultiplyCountsExpression(AdjustCountsExpression):
