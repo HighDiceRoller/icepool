@@ -125,8 +125,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             dice_counts: A map from dice to rolls.
             keep_tuple: A tuple with length equal to the number of dice.
         """
-        dice = tuple(sorted(dice_counts.items(),
-                            key=lambda kv: kv[0].key_tuple))
+        dice = tuple(
+            sorted(dice_counts.items(), key=lambda kv: kv[0]._key_tuple))
         return Pool._new_raw(dice, keep_tuple)
 
     @cached_property
