@@ -625,9 +625,6 @@
                                 <a class="function" href="#MultisetExpression.bound_generators">bound_generators</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultisetExpression.validate_output_arity">validate_output_arity</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#MultisetExpression.disjoint_union">disjoint_union</a>
                         </li>
                         <li>
@@ -8017,8 +8014,7 @@ secure.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#MultisetExpression">MultisetExpression</a></dt>
-                                <dd id="MultisetGenerator.validate_output_arity" class="function"><a href="#MultisetExpression.validate_output_arity">validate_output_arity</a></dd>
-                <dd id="MultisetGenerator.disjoint_union" class="function"><a href="#MultisetExpression.disjoint_union">disjoint_union</a></dd>
+                                <dd id="MultisetGenerator.disjoint_union" class="function"><a href="#MultisetExpression.disjoint_union">disjoint_union</a></dd>
                 <dd id="MultisetGenerator.difference" class="function"><a href="#MultisetExpression.difference">difference</a></dd>
                 <dd id="MultisetGenerator.intersection" class="function"><a href="#MultisetExpression.intersection">intersection</a></dd>
                 <dd id="MultisetGenerator.union" class="function"><a href="#MultisetExpression.union">union</a></dd>
@@ -9285,8 +9281,7 @@ dice to be summed.</li>
 
             </div>
             <div><dt><a href="#MultisetExpression">MultisetExpression</a></dt>
-                                <dd id="Pool.validate_output_arity" class="function"><a href="#MultisetExpression.validate_output_arity">validate_output_arity</a></dd>
-                <dd id="Pool.difference" class="function"><a href="#MultisetExpression.difference">difference</a></dd>
+                                <dd id="Pool.difference" class="function"><a href="#MultisetExpression.difference">difference</a></dd>
                 <dd id="Pool.intersection" class="function"><a href="#MultisetExpression.intersection">intersection</a></dd>
                 <dd id="Pool.union" class="function"><a href="#MultisetExpression.union">union</a></dd>
                 <dd id="Pool.symmetric_difference" class="function"><a href="#MultisetExpression.symmetric_difference">symmetric_difference</a></dd>
@@ -11474,8 +11469,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 
             </div>
             <div><dt><a href="#MultisetExpression">MultisetExpression</a></dt>
-                                <dd id="Deal.validate_output_arity" class="function"><a href="#MultisetExpression.validate_output_arity">validate_output_arity</a></dd>
-                <dd id="Deal.disjoint_union" class="function"><a href="#MultisetExpression.disjoint_union">disjoint_union</a></dd>
+                                <dd id="Deal.disjoint_union" class="function"><a href="#MultisetExpression.disjoint_union">disjoint_union</a></dd>
                 <dd id="Deal.difference" class="function"><a href="#MultisetExpression.difference">difference</a></dd>
                 <dd id="Deal.intersection" class="function"><a href="#MultisetExpression.intersection">intersection</a></dd>
                 <dd id="Deal.union" class="function"><a href="#MultisetExpression.union">union</a></dd>
@@ -11574,7 +11568,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="MultisetExpression-91"><a href="#MultisetExpression-91"><span class="linenos"> 91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a sequence of bound generators.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-92"><a href="#MultisetExpression-92"><span class="linenos"> 92</span></a>
 </span><span id="MultisetExpression-93"><a href="#MultisetExpression-93"><span class="linenos"> 93</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MultisetExpression-94"><a href="#MultisetExpression-94"><span class="linenos"> 94</span></a>    <span class="k">def</span> <span class="nf">validate_output_arity</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetExpression-94"><a href="#MultisetExpression-94"><span class="linenos"> 94</span></a>    <span class="k">def</span> <span class="nf">_validate_output_arity</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="MultisetExpression-95"><a href="#MultisetExpression-95"><span class="linenos"> 95</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates that if the given expression is a generator, its output arity is 1.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-96"><a href="#MultisetExpression-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span>
 </span><span id="MultisetExpression-97"><a href="#MultisetExpression-97"><span class="linenos"> 97</span></a>                      <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">)</span> <span class="ow">and</span> <span class="n">inner</span><span class="o">.</span><span class="n">output_arity</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -12217,34 +12211,6 @@ raise a ValueError for any incompatibilities.</p>
 
 
             <div class="docstring"><p>Returns a sequence of bound generators.</p>
-</div>
-
-
-                            </div>
-                            <div id="MultisetExpression.validate_output_arity" class="classattr">
-                                        <input id="MultisetExpression.validate_output_arity-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-                    <div class="decorator">@staticmethod</div>
-
-        <span class="def">def</span>
-        <span class="name">validate_output_arity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">inner</span><span class="p">:</span> <span class="n"><a href="#MultisetExpression">icepool.MultisetExpression</a></span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="MultisetExpression.validate_output_arity-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#MultisetExpression.validate_output_arity"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.validate_output_arity-93"><a href="#MultisetExpression.validate_output_arity-93"><span class="linenos"> 93</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MultisetExpression.validate_output_arity-94"><a href="#MultisetExpression.validate_output_arity-94"><span class="linenos"> 94</span></a>    <span class="k">def</span> <span class="nf">validate_output_arity</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetExpression.validate_output_arity-95"><a href="#MultisetExpression.validate_output_arity-95"><span class="linenos"> 95</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates that if the given expression is a generator, its output arity is 1.&quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.validate_output_arity-96"><a href="#MultisetExpression.validate_output_arity-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span>
-</span><span id="MultisetExpression.validate_output_arity-97"><a href="#MultisetExpression.validate_output_arity-97"><span class="linenos"> 97</span></a>                      <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">)</span> <span class="ow">and</span> <span class="n">inner</span><span class="o">.</span><span class="n">output_arity</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="MultisetExpression.validate_output_arity-98"><a href="#MultisetExpression.validate_output_arity-98"><span class="linenos"> 98</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="MultisetExpression.validate_output_arity-99"><a href="#MultisetExpression.validate_output_arity-99"><span class="linenos"> 99</span></a>                <span class="s1">&#39;Only generators with output arity of 1 may be bound to expressions. Use a multiset_function to select individual outputs.&#39;</span>
-</span><span id="MultisetExpression.validate_output_arity-100"><a href="#MultisetExpression.validate_output_arity-100"><span class="linenos">100</span></a>            <span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Validates that if the given expression is a generator, its output arity is 1.</p>
 </div>
 
 
