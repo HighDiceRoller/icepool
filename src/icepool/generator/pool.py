@@ -307,8 +307,17 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
     # Overrides to MultisetExpression.
 
-    def keep(self,
-             index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+    @overload
+    def keep(self, index: slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        ...
+
+    @overload
+    def keep(self, index: int) -> 'icepool.Die[T]':
+        ...
+
+    def keep(
+        self, index: slice | Sequence[int | EllipsisType] | int
+    ) -> 'Pool[T] | icepool.Die[T]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[index]` for the same effect as this method.
@@ -333,6 +342,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         The valid types of argument are:
 
         * An `int`. This will count only the roll at the specified index.
+            In this case, the result is a `Die` rather than a `Pool`.
         * A `slice`. The selected dice are counted once each.
         * A sequence of one `int` for each `Die`.
             Each roll is counted that many times, which could be multiple or
@@ -372,6 +382,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                     different than the total of the counts in the current
                     keep_tuple.
         """
+        convert_to_die = isinstance(index, int)
+
         if any(x < 0 for x in self.keep_tuple()):
             raise ValueError(
                 'A pool with negative counts cannot be further indexed.')
@@ -384,11 +396,25 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             keep_tuple.append(sum(relative_keep_tuple[:x]))
             relative_keep_tuple = relative_keep_tuple[x:]
 
-        return Pool._new_raw(self._dice, tuple(keep_tuple))
+        result = Pool._new_raw(self._dice, tuple(keep_tuple))
+
+        if convert_to_die:
+            return cast(icepool.Die[T], result.sum())
+        else:
+            return result
+
+    @overload
+    def __getitem__(self,
+                    index: slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        ...
+
+    @overload
+    def __getitem__(self, index: int) -> 'icepool.Die[T]':
+        ...
 
     def __getitem__(
-            self,
-            index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        self, index: int | slice | Sequence[int | EllipsisType]
+    ) -> 'Pool[T] | icepool.Die[T]':
         return self.keep(index)
 
     def __add__(

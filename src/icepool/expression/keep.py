@@ -21,19 +21,12 @@ class KeepExpression(MultisetExpression[T_contra]):
     # May return inner unmodified.
     def __new__(  # type: ignore
         cls, inner: MultisetExpression[T_contra],
-        index: int | slice | Sequence[int | EllipsisType]
+        index: slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
         cls.validate_output_arity(inner)
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
-        if isinstance(index, int):
-            if index >= 0:
-                self._order = Order.Ascending
-                self._keep_tuple = (0,) * (index - 1) + (1,)
-            else:
-                self._order = Order.Descending
-                self._keep_tuple = (1,) + (0,) * (-index - 1)
-        elif isinstance(index, slice):
+        if isinstance(index, slice):
             if index.step is not None:
                 raise ValueError('step is not supported.')
             start, stop = index.start, index.stop

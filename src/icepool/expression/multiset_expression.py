@@ -296,7 +296,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     # Keep highest / lowest.
 
     def keep(
-        self, index: int | slice | Sequence[int | EllipsisType]
+        self, index: slice | Sequence[int | EllipsisType]
     ) -> 'MultisetExpression[T_contra]':
         """Selects pulls after drawing and sorting.
 
@@ -307,7 +307,6 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         The valid types of argument are:
 
-        * An `int`, which will keep only the element at the specified index.
         * A `slice`, which must have one the following sign patterns:
             `+x:+y, -x:-y, :+x, -x:`
         * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.
@@ -320,7 +319,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.KeepExpression(self, index)
 
     def __getitem__(
-        self, index: int | slice | Sequence[int | EllipsisType]
+        self, index: slice | Sequence[int | EllipsisType]
     ) -> 'MultisetExpression[T_contra]':
         return self.keep(index)
 
