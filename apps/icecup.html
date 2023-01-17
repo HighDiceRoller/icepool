@@ -384,9 +384,15 @@ var chart = new Chart(chartContext, {
                     size: 36,
                 },
             },
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                },
+            },
         },
         elements: {
             point: {
+                borderWidth: 2,
                 radius: 4,
             },
         },
