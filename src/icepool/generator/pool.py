@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from types import EllipsisType
 import icepool
 import icepool.math
 import icepool.generator.pool_cost
@@ -193,21 +194,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         """
         return self._keep_tuple
 
-    @overload
-    def keep(self, index: slice | Sequence[int]) -> 'Pool[T]':
-        ...
-
-    @overload
-    def keep(self, index: int) -> 'icepool.Die[T]':
-        ...
-
-    @overload
     def keep(self,
-             index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
-        ...
-
-    def keep(self,
-             index: int | slice | Sequence[int]) -> 'Pool[T] | icepool.Die[T]':
+             index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
         """A `Pool` with the selected dice counted after rolling and sorting.
 
         Use `pool[index]` for the same effect as this method.
@@ -231,8 +219,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         The valid types of argument are:
 
-        * An `int`. This will count only the `Die` at the specified index
-            (once). In this case, the result will be a `Die`, not a `Pool`.
+        * An `int`. This will count only the `Die` at the specified index.
         * A `slice`. The selected dice are counted once each.
         * A sequence of one `int` for each `Die`.
             Each `Die` is counted that many times, which could be multiple or
@@ -276,7 +263,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             raise ValueError(
                 'A pool with negative counts cannot be further indexed.')
 
-        convert_to_die = isinstance(index, int)
         relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
 
         # Merge keep tuples.
@@ -285,12 +271,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             keep_tuple.append(sum(relative_keep_tuple[:x]))
             relative_keep_tuple = relative_keep_tuple[x:]
 
-        result = Pool._new_raw(self._dice, tuple(keep_tuple))
-        if convert_to_die:
-            # It's difficult to determine the return type of sum().
-            return result.sum()  # type: ignore
-        else:
-            return result
+        return Pool._new_raw(self._dice, tuple(keep_tuple))
 
     __getitem__ = keep
 
@@ -452,8 +433,9 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return Pool, self._dice, self._keep_tuple
 
 
-def make_keep_tuple(pool_size: int,
-                    index: int | slice | Sequence[int]) -> tuple[int, ...]:
+def make_keep_tuple(
+        pool_size: int,
+        index: int | slice | Sequence[int | EllipsisType]) -> tuple[int, ...]:
     """Expresses `index` as a keep_tuple.
 
     See `Pool.set_keep_tuple()` for details.
@@ -486,6 +468,9 @@ def make_keep_tuple(pool_size: int,
                     raise ValueError(
                         'Cannot use more than one Ellipsis (...) for keep_tuple.'
                     )
+
+        # The following code is designed to replace Ellipsis with actual zeros.
+        index = cast('Sequence[int]', index)
 
         if split is None:
             if len(index) != pool_size:

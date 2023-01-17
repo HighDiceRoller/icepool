@@ -85,7 +85,7 @@ def test_keep_lowest_drop_highest(keep):
 
 def test_pool_select():
     pool = icepool.Pool([icepool.d6] * 5)
-    assert pool[-2].equals(pool[-2:-1].sum())
+    assert pool[-2].sum() == pool[-2:-1].sum()
     assert pool[-2:].keep_tuple() == (0, 0, 0, 1, 1)
 
 

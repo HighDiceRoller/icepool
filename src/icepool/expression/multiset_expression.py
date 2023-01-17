@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from types import EllipsisType
 import icepool
 import icepool.evaluator
 
@@ -295,7 +296,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     # Keep highest / lowest.
 
     def keep(
-            self, index: int | slice | Sequence[int]
+        self, index: int | slice | Sequence[int | EllipsisType]
     ) -> 'MultisetExpression[T_contra]':
         """Selects pulls after drawing and sorting.
 
@@ -325,14 +326,14 @@ class MultisetExpression(ABC, Generic[T_contra]):
                     drop: int = 0) -> 'MultisetExpression[T_contra]':
         """Keep some of the lowest results from this multiset and drop the rest."""
         t = (0,) * drop + (1,) * keep + (...,)
-        return icepool.expression.KeepExpression(self, t)
+        return self.keep(t)
 
     def keep_highest(self,
                      keep: int = 1,
                      drop: int = 0) -> 'MultisetExpression[T_contra]':
         """Keep some of the highest results from this multiset and drop the rest."""
         t = (...,) + (1,) * keep + (0,) * drop
-        return icepool.expression.KeepExpression(self, t)
+        return self.keep(t)
 
     # Evaluations.
 
