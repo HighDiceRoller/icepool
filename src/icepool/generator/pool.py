@@ -1,20 +1,25 @@
 __docformat__ = 'google'
 
-from types import EllipsisType
 import icepool
+import icepool.expression
 import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collections import Counts
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
-from icepool.typing import Outcome, T
 
 import itertools
 import math
+import operator
 from collections import defaultdict
-from functools import cache, cached_property
+from functools import cache, cached_property, reduce
 
-from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, cast, overload
+from icepool.typing import Outcome, T
+from types import EllipsisType
+from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from icepool.expression import MultisetExpression
 
 
 class Pool(MultisetGenerator[T, tuple[int]]):
@@ -194,90 +199,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         """
         return self._keep_tuple
 
-    def keep(self,
-             index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
-        """A `Pool` with the selected dice counted after rolling and sorting.
-
-        Use `pool[index]` for the same effect as this method.
-
-        The dice are sorted in ascending order for this purpose,
-        regardless of which order the outcomes are evaluated in.
-
-        For example, here are some ways of selecting the two highest dice out of
-        five:
-
-        * `pool[3:5]`
-        * `pool[3:]`
-        * `pool[-2:]`
-        * `pool[..., 1, 1]`
-        * `pool[0, 0, 0, 1, 1]`
-
-        These will count the highest as a positive and the lowest as a negative:
-
-        * `pool[-1, 0, 0, 0, 1]`
-        * `pool[-1, ..., 1]`
-
-        The valid types of argument are:
-
-        * An `int`. This will count only the `Die` at the specified index.
-        * A `slice`. The selected dice are counted once each.
-        * A sequence of one `int` for each `Die`.
-            Each `Die` is counted that many times, which could be multiple or
-            negative times.
-
-            Up to one `...` (`Ellipsis`) may be used.
-            `...` will be replaced with a number of zero
-            counts depending on the size of the pool.
-            This number may be "negative" if more `int`s are provided than
-            the size of the `Pool`. Specifically:
-
-            * If `index` is shorter than `size`, `...`
-                acts as enough zero counts to make up the difference.
-                E.g. `pool[1, ..., 1]` on five dice would act as
-                `pool[1, 0, 0, 0, 1]`.
-            * If `index` has length equal to `size`, `...` has no effect.
-                E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-            * If `index` is longer than `size` and `...` is on one side,
-                elements will be dropped from `index` on the side with `...`.
-                E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-            * If `index` is longer than `size` and `...`
-                is in the middle, the counts will be as the sum of two
-                one-sided `...`.
-                E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                On a `Pool` consisting of a single `Die` this would have
-                the -1 and 1 cancel each other out.
-
-        If this is called more than once, the selection is applied relative
-        to the previous keep_tuple. For example, applying `[:2][-1]` would
-        produce the second-lowest roll.
-
-        Raises:
-            ValueError: If:
-                * More than one `...` is used.
-                * The current keep_tuple has negative counts.
-                * The provided index specifies a fixed length that is
-                    different than the total of the counts in the current
-                    keep_tuple.
-        """
-        if any(x < 0 for x in self.keep_tuple()):
-            raise ValueError(
-                'A pool with negative counts cannot be further indexed.')
-
-        relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
-
-        # Merge keep tuples.
-        keep_tuple: list[int] = []
-        for x in self.keep_tuple():
-            keep_tuple.append(sum(relative_keep_tuple[:x]))
-            relative_keep_tuple = relative_keep_tuple[x:]
-
-        return Pool._new_raw(self._dice, tuple(keep_tuple))
-
-    def __getitem__(
-            self,
-            index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
-        return self.keep(index)
-
     @cached_property
     def _min_outcome(self) -> T:
         return min(die.min_outcome() for die in self.unique_dice())
@@ -383,6 +304,146 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
+
+    # Overrides to MultisetExpression.
+
+    def keep(self,
+             index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        """A `Pool` with the selected dice counted after rolling and sorting.
+
+        Use `pool[index]` for the same effect as this method.
+
+        The dice are sorted in ascending order for this purpose,
+        regardless of which order the outcomes are evaluated in.
+
+        For example, here are some ways of selecting the two highest dice out of
+        five:
+
+        * `pool[3:5]`
+        * `pool[3:]`
+        * `pool[-2:]`
+        * `pool[..., 1, 1]`
+        * `pool[0, 0, 0, 1, 1]`
+
+        These will count the highest as a positive and the lowest as a negative:
+
+        * `pool[-1, 0, 0, 0, 1]`
+        * `pool[-1, ..., 1]`
+
+        The valid types of argument are:
+
+        * An `int`. This will count only the `Die` at the specified index.
+        * A `slice`. The selected dice are counted once each.
+        * A sequence of one `int` for each `Die`.
+            Each `Die` is counted that many times, which could be multiple or
+            negative times.
+
+            Up to one `...` (`Ellipsis`) may be used.
+            `...` will be replaced with a number of zero
+            counts depending on the size of the pool.
+            This number may be "negative" if more `int`s are provided than
+            the size of the `Pool`. Specifically:
+
+            * If `index` is shorter than `size`, `...`
+                acts as enough zero counts to make up the difference.
+                E.g. `pool[1, ..., 1]` on five dice would act as
+                `pool[1, 0, 0, 0, 1]`.
+            * If `index` has length equal to `size`, `...` has no effect.
+                E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
+            * If `index` is longer than `size` and `...` is on one side,
+                elements will be dropped from `index` on the side with `...`.
+                E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
+            * If `index` is longer than `size` and `...`
+                is in the middle, the counts will be as the sum of two
+                one-sided `...`.
+                E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
+                On a `Pool` consisting of a single `Die` this would have
+                the -1 and 1 cancel each other out.
+
+        If this is called more than once, the selection is applied relative
+        to the previous keep_tuple. For example, applying `[:2][-1]` would
+        produce the second-lowest roll.
+
+        Raises:
+            ValueError: If:
+                * More than one `...` is used.
+                * The current keep_tuple has negative counts.
+                * The provided index specifies a fixed length that is
+                    different than the total of the counts in the current
+                    keep_tuple.
+        """
+        if any(x < 0 for x in self.keep_tuple()):
+            raise ValueError(
+                'A pool with negative counts cannot be further indexed.')
+
+        relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
+
+        # Merge keep tuples.
+        keep_tuple: list[int] = []
+        for x in self.keep_tuple():
+            keep_tuple.append(sum(relative_keep_tuple[:x]))
+            relative_keep_tuple = relative_keep_tuple[x:]
+
+        return Pool._new_raw(self._dice, tuple(keep_tuple))
+
+    def __getitem__(
+            self,
+            index: int | slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
+        return self.keep(index)
+
+    def __add__(
+        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        try:
+            return self.disjoint_union(other)
+        except TypeError:
+            return NotImplemented
+
+    def __radd__(
+        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        try:
+            return self.disjoint_union(other)
+        except TypeError:
+            return NotImplemented
+
+    def disjoint_union(
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        args = tuple(
+            icepool.expression.implicit_convert_to_expression(arg)
+            for arg in args)
+        if all(isinstance(arg, Pool) for arg in args):
+            pools = cast(tuple[Pool, ...], args)
+            keep_tuple: tuple[int, ...] = tuple(
+                reduce(operator.add, (pool.keep_tuple() for pool in pools), ()))
+            if len(keep_tuple) == 0:
+                # All empty.
+                return Pool._new_empty()
+            if all(x == keep_tuple[0] for x in keep_tuple):
+                # All sorted positions count the same, so we can merge the
+                # pools.
+                dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
+                for pool in pools:
+                    for die, die_count in pool._dice:
+                        dice[die] += die_count
+                return Pool._new_from_mapping(dice, keep_tuple)
+        return icepool.expression.MultisetExpression.disjoint_union(*args)
+
+    def __mul__(self, other: int) -> 'Pool[T]':
+        if not isinstance(other, int):
+            return NotImplemented
+        return self.multiply_counts(other)
+
+    # Commutable in this case.
+    def __rmul__(self, other: int) -> 'Pool[T]':
+        if not isinstance(other, int):
+            return NotImplemented
+        return self.multiply_counts(other)
+
+    def multiply_counts(self, constant: int, /) -> 'Pool[T]':
+        return Pool._new_raw(self._dice,
+                             tuple(x * constant for x in self.keep_tuple()))
 
     def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
         """The sum of the lowest outcomes in the pool.
