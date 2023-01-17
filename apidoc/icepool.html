@@ -157,9 +157,6 @@
                                 <a class="function" href="#Die.sign">sign</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Die.key_tuple">key_tuple</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Die.equals">equals</a>
                         </li>
                 </ul>
@@ -2320,7 +2317,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-1346"><a href="#Die-1346"><span class="linenos">1346</span></a>            <span class="s1">&#39;want to use die.if_else() instead.&#39;</span><span class="p">)</span>
 </span><span id="Die-1347"><a href="#Die-1347"><span class="linenos">1347</span></a>
 </span><span id="Die-1348"><a href="#Die-1348"><span class="linenos">1348</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>    <span class="k">def</span> <span class="nf">key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Die-1349"><a href="#Die-1349"><span class="linenos">1349</span></a>    <span class="k">def</span> <span class="nf">_key_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 </span><span id="Die-1350"><a href="#Die-1350"><span class="linenos">1350</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A tuple that uniquely (as `equals()`) identifies this die.</span>
 </span><span id="Die-1351"><a href="#Die-1351"><span class="linenos">1351</span></a>
 </span><span id="Die-1352"><a href="#Die-1352"><span class="linenos">1352</span></a><span class="sd">        Apart from being hashable and totally orderable, this is not guaranteed</span>
@@ -2330,7 +2327,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-1356"><a href="#Die-1356"><span class="linenos">1356</span></a>
 </span><span id="Die-1357"><a href="#Die-1357"><span class="linenos">1357</span></a>    <span class="nd">@cached_property</span>
 </span><span id="Die-1358"><a href="#Die-1358"><span class="linenos">1358</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">)</span>
+</span><span id="Die-1359"><a href="#Die-1359"><span class="linenos">1359</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">)</span>
 </span><span id="Die-1360"><a href="#Die-1360"><span class="linenos">1360</span></a>
 </span><span id="Die-1361"><a href="#Die-1361"><span class="linenos">1361</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Die-1362"><a href="#Die-1362"><span class="linenos">1362</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
@@ -2360,9 +2357,9 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-1386"><a href="#Die-1386"><span class="linenos">1386</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die-1387"><a href="#Die-1387"><span class="linenos">1387</span></a>
 </span><span id="Die-1388"><a href="#Die-1388"><span class="linenos">1388</span></a>        <span class="k">if</span> <span class="n">simplify</span><span class="p">:</span>
-</span><span id="Die-1389"><a href="#Die-1389"><span class="linenos">1389</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span>
+</span><span id="Die-1389"><a href="#Die-1389"><span class="linenos">1389</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span><span id="Die-1390"><a href="#Die-1390"><span class="linenos">1390</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die-1391"><a href="#Die-1391"><span class="linenos">1391</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span>
+</span><span id="Die-1391"><a href="#Die-1391"><span class="linenos">1391</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span><span id="Die-1392"><a href="#Die-1392"><span class="linenos">1392</span></a>
 </span><span id="Die-1393"><a href="#Die-1393"><span class="linenos">1393</span></a>    <span class="c1"># Strings.</span>
 </span><span id="Die-1394"><a href="#Die-1394"><span class="linenos">1394</span></a>
@@ -4284,22 +4281,6 @@ arguments.</p>
 
 
                             </div>
-                            <div id="Die.key_tuple" class="classattr">
-                                <div class="attr variable">
-            <span class="name">key_tuple</span><span class="annotation">: tuple</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Die.key_tuple"></a>
-    
-            <div class="docstring"><p>A tuple that uniquely (as <code><a href="#Die.equals">equals()</a></code>) identifies this die.</p>
-
-<p>Apart from being hashable and totally orderable, this is not guaranteed
-to be in any particular format or have any other properties.</p>
-</div>
-
-
-                            </div>
                             <div id="Die.equals" class="classattr">
                                         <input id="Die.equals-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -4336,9 +4317,9 @@ to be in any particular format or have any other properties.</p>
 </span><span id="Die.equals-1386"><a href="#Die.equals-1386"><span class="linenos">1386</span></a>            <span class="k">return</span> <span class="kc">False</span>
 </span><span id="Die.equals-1387"><a href="#Die.equals-1387"><span class="linenos">1387</span></a>
 </span><span id="Die.equals-1388"><a href="#Die.equals-1388"><span class="linenos">1388</span></a>        <span class="k">if</span> <span class="n">simplify</span><span class="p">:</span>
-</span><span id="Die.equals-1389"><a href="#Die.equals-1389"><span class="linenos">1389</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">key_tuple</span>
+</span><span id="Die.equals-1389"><a href="#Die.equals-1389"><span class="linenos">1389</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span><span id="Die.equals-1390"><a href="#Die.equals-1390"><span class="linenos">1390</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Die.equals-1391"><a href="#Die.equals-1391"><span class="linenos">1391</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key_tuple</span>
+</span><span id="Die.equals-1391"><a href="#Die.equals-1391"><span class="linenos">1391</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_tuple</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_key_tuple</span>
 </span></pre></div>
 
 
@@ -8182,8 +8163,8 @@ secure.</p>
 </span><span id="Pool-126"><a href="#Pool-126"><span class="linenos">126</span></a><span class="sd">            dice_counts: A map from dice to rolls.</span>
 </span><span id="Pool-127"><a href="#Pool-127"><span class="linenos">127</span></a><span class="sd">            keep_tuple: A tuple with length equal to the number of dice.</span>
 </span><span id="Pool-128"><a href="#Pool-128"><span class="linenos">128</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-129"><a href="#Pool-129"><span class="linenos">129</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">dice_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
-</span><span id="Pool-130"><a href="#Pool-130"><span class="linenos">130</span></a>                            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">key_tuple</span><span class="p">))</span>
+</span><span id="Pool-129"><a href="#Pool-129"><span class="linenos">129</span></a>        <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="Pool-130"><a href="#Pool-130"><span class="linenos">130</span></a>            <span class="nb">sorted</span><span class="p">(</span><span class="n">dice_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_key_tuple</span><span class="p">))</span>
 </span><span id="Pool-131"><a href="#Pool-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">dice</span><span class="p">,</span> <span class="n">keep_tuple</span><span class="p">)</span>
 </span><span id="Pool-132"><a href="#Pool-132"><span class="linenos">132</span></a>
 </span><span id="Pool-133"><a href="#Pool-133"><span class="linenos">133</span></a>    <span class="nd">@cached_property</span>
