@@ -23,9 +23,9 @@
 <div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 30vh; min-height: 150px;">
     <div class="col" id="editor"></div>
     <div class="col" style="overflow: auto; height: 100%;">
-        <h3 style="margin-top:0;">Output log</h3>
+        <h3 style="text-align:left;margin-top:0;">Output log</h3>
         <div id="output" style="white-space: pre; font-family: monospace;"></div>
-        <h3>Error log</h3>
+        <h3 style="text-align:left;">Error log</h3>
         <div id="error" style="color: red; white-space: pre; font-family: monospace;"></div>
     </div>
 </div>
@@ -51,28 +51,31 @@
 
 <div id="computation_time">Computation time:</div>
 
-<h1>Icecup</h1>
+<div class="text_content">
 
-<p>A simple frontend for the Icepool Python package.</p>
+    <h1>Icecup</h1>
 
-<h2>Tips</h2>
+    <p>A simple frontend for the Icepool Python package.</p>
 
-<ul>
-    <li>Use the <tt>output(die, [label])</tt> function to add a die to the plot and print its probabilities. You can use the optional second <tt>label</tt> argument to give the die a name.</li>
-    <li>In addition to the "Run" button, you can use Ctrl-Enter or Cmd-Enter to run the script.</li>
-    <li>The URL updates automatically when you run the script.</li>
-    <li>If you use the <tt>random</tt> module (including <tt>.sample()</tt> methods), the script will be re-run each time.</li>
-</ul>
+    <h2>Tips</h2>
 
-<h2>Useful links</h2>
+    <ul>
+        <li>Use the <tt>output(die, [label])</tt> function to add a die to the plot and print its probabilities. You can use the optional second <tt>label</tt> argument to give the die a name.</li>
+        <li>In addition to the "Run" button, you can use Ctrl-Enter or Cmd-Enter to run the script.</li>
+        <li>The URL updates automatically when you run the script.</li>
+        <li>If you use the <tt>random</tt> module (including <tt>.sample()</tt> methods), the script will be re-run each time.</li>
+    </ul>
 
-<ul>
-    <li><a href="https://github.com/HighDiceRoller/icepool">Icepool Github.</a></li>
-    <li><a href="https://highdiceroller.github.io/icepool/apidoc/icepool.html">API documentation.</a></li>
-    <li><a href="https://highdiceroller.github.io/icepool/notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
-</ul>
+    <h2>Useful links</h2>
 
-Built using the <a href="https://ace.c9.io/">Ace code editor</a>, <a href="https://www.chartjs.org/">Chart.js</a>, and <a href="https://pyodide.org/">Pyodide</a>.
+    <ul>
+        <li><a href="https://github.com/HighDiceRoller/icepool">Icepool Github.</a></li>
+        <li><a href="https://highdiceroller.github.io/icepool/apidoc/icepool.html">API documentation.</a></li>
+        <li><a href="https://highdiceroller.github.io/icepool/notebooks/lab/index.html">JupyterLite distribution.</a> Contains a collection of example notebooks.</li>
+    </ul>
+
+    Built using the <a href="https://ace.c9.io/">Ace code editor</a>, <a href="https://www.chartjs.org/">Chart.js</a>, and <a href="https://pyodide.org/">Pyodide</a>.
+</div>
 
 <script id="icecupWorker" type="javascript/worker">
 importScripts("https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js");
