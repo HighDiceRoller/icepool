@@ -24,7 +24,7 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
                 `reduce`d.
         """
         for prev in prevs:
-            self.validate_output_arity(prev)
+            self._validate_output_arity(prev)
         self._prevs = prevs
 
     @staticmethod

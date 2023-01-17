@@ -90,7 +90,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """Returns a sequence of bound generators."""
 
     @staticmethod
-    def validate_output_arity(inner: 'MultisetExpression') -> None:
+    def _validate_output_arity(inner: 'MultisetExpression') -> None:
         """Validates that if the given expression is a generator, its output arity is 1."""
         if isinstance(inner,
                       icepool.MultisetGenerator) and inner.output_arity() != 1:

@@ -23,7 +23,7 @@ class KeepExpression(MultisetExpression[T_contra]):
         cls, inner: MultisetExpression[T_contra],
         index: slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
-        cls.validate_output_arity(inner)
+        cls._validate_output_arity(inner)
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
         if isinstance(index, slice):
