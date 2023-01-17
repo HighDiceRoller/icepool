@@ -16,8 +16,7 @@ from icepool.expression.multiset_function import multiset_function
 
 __all__ = [
     'multiset_function', 'MultisetExpression', 'MultisetVariable',
-    'multiset_variables', 'ExpressionGenerator', 'ExpressionEvaluator',
-    'BinaryOperatorExpression', 'IntersectionExpression',
+    'multiset_variables', 'BinaryOperatorExpression', 'IntersectionExpression',
     'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
     'SymmetricDifferenceExpression', 'AdjustCountsExpression',
     'MultiplyCountsExpression', 'FloorDivCountsExpression',
