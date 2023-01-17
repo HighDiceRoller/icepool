@@ -313,11 +313,11 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         Use `pool[index]` for the same effect as this method.
 
-        The dice are sorted in ascending order for this purpose,
+        The rolls are sorted in ascending order for this purpose,
         regardless of which order the outcomes are evaluated in.
 
-        For example, here are some ways of selecting the two highest dice out of
-        five:
+        For example, here are some ways of selecting the two highest rolls out
+        of five:
 
         * `pool[3:5]`
         * `pool[3:]`
@@ -332,10 +332,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         The valid types of argument are:
 
-        * An `int`. This will count only the `Die` at the specified index.
+        * An `int`. This will count only the roll at the specified index.
         * A `slice`. The selected dice are counted once each.
         * A sequence of one `int` for each `Die`.
-            Each `Die` is counted that many times, which could be multiple or
+            Each roll is counted that many times, which could be multiple or
             negative times.
 
             Up to one `...` (`Ellipsis`) may be used.
@@ -410,6 +410,12 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def disjoint_union(
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
+        """The combined elements from all the multisets.
+
+        We have an optimization here if all arguments are pools with all sorted
+        positions counted the same. In this case we can merge the pools directly
+        instead of merging the rolls after the fact.
+        """
         args = tuple(
             icepool.expression.implicit_convert_to_expression(arg)
             for arg in args)
