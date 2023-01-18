@@ -242,10 +242,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 total_hits += hits
                 result_weight *= weight
             if total_hits == 0:
-                resulTunt = 0
+                result_count = 0
                 popped_keep_tuple = self.keep_tuple()
             else:
-                resulTunt = sum(self.keep_tuple()[:total_hits])
+                result_count = sum(self.keep_tuple()[:total_hits])
                 popped_keep_tuple = self.keep_tuple()[total_hits:]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
                                                  popped_keep_tuple)
@@ -255,7 +255,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (resulTunt,), result_weight
+            yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
