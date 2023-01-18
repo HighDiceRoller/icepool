@@ -287,10 +287,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 total_hits += hits
                 result_weight *= weight
             if total_hits == 0:
-                resulTunt = 0
+                result_count = 0
                 popped_keep_tuple = self.keep_tuple()
             else:
-                resulTunt = sum(self.keep_tuple()[-total_hits:])
+                result_count = sum(self.keep_tuple()[-total_hits:])
                 popped_keep_tuple = self.keep_tuple()[:-total_hits]
             popped_pool = Pool._new_from_mapping(next_dice_counts,
                                                  popped_keep_tuple)
@@ -300,7 +300,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (resulTunt,), result_weight
+            yield popped_pool, (result_count,), result_weight
 
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
@@ -375,7 +375,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         produce the second-lowest roll.
 
         Raises:
-            ValueError: If:
+            IndexError: If:
                 * More than one `...` is used.
                 * The current keep_tuple has negative counts.
                 * The provided index specifies a fixed length that is
@@ -385,7 +385,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         convert_to_die = isinstance(index, int)
 
         if any(x < 0 for x in self.keep_tuple()):
-            raise ValueError(
+            raise IndexError(
                 'A pool with negative counts cannot be further indexed.')
 
         relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
@@ -399,7 +399,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         result = Pool._new_raw(self._dice, tuple(keep_tuple))
 
         if convert_to_die:
-            return cast(icepool.Die[T], result.sum())
+            return cast(icepool.Die[T],
+                        icepool.evaluator.KeepEvaluator(0).evaluate(result))
         else:
             return result
 
@@ -540,7 +541,7 @@ def make_keep_tuple(
         `pool_size`: An `int` specifying the size of the pool.
         `keep_tuple`: Raw specification for how the dice are to be counted.
     Raises:
-        ValueError: If:
+        IndexError: If:
             * More than one `Ellipsis` is used.
             * An `Ellipsis` is used in the center with too few `pool_size`.
     """
@@ -550,7 +551,7 @@ def make_keep_tuple(
         return tuple(result)
     elif isinstance(index, slice):
         if index.step is not None:
-            raise ValueError('step is not supported for pool subscripting')
+            raise IndexError('step is not supported for pool subscripting')
         result = [0] * pool_size
         result[index] = [1] * len(result[index])
         return tuple(result)
@@ -561,7 +562,7 @@ def make_keep_tuple(
                 if split is None:
                     split = i
                 else:
-                    raise ValueError(
+                    raise IndexError(
                         'Cannot use more than one Ellipsis (...) for keep_tuple.'
                     )
 
@@ -570,7 +571,7 @@ def make_keep_tuple(
 
         if split is None:
             if len(index) != pool_size:
-                raise ValueError(
+                raise IndexError(
                     f'Length of {index} does not match pool size of {pool_size}'
                 )
             return tuple(index)

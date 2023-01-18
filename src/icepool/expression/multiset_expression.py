@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property, reduce
 
 from icepool.typing import T, U, Order, Outcome, T_contra
-from typing import Any, Callable, Generic, Hashable, Mapping, Sequence, Type
+from typing import Any, Callable, Generic, Hashable, Mapping, Sequence, Type, overload
 
 
 def implicit_convert_to_expression(
@@ -295,9 +295,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     # Keep highest / lowest.
 
+    @overload
     def keep(
         self, index: slice | Sequence[int | EllipsisType]
     ) -> 'MultisetExpression[T_contra]':
+        ...
+
+    @overload
+    def keep(
+        self, index: int
+    ) -> 'icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
+        ...
+
+    def keep(
+        self, index: slice | Sequence[int | EllipsisType] | int
+    ) -> 'MultisetExpression[T_contra] | icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
         """Selects pulls after drawing and sorting.
 
         This is less capable and less efficient than the `Pool` version.
@@ -313,14 +325,33 @@ class MultisetExpression(ABC, Generic[T_contra]):
             Each sorted element will be counted that many times, with the
             `Ellipsis` treated as enough zeros (possibly "negative") to
             fill the rest of the elements.
+        * An `int`, which evaluates by taking the element at the specified
+            index. In this case the result is a `Die` (if fully bound) or a
+            `MultisetEvaluator` (if there are free variables).
 
         Use the `[]` operator for the same effect as this method.
         """
-        return icepool.expression.KeepExpression(self, index)
+        if isinstance(index, int):
+            return self.evaluate(
+                evaluator=icepool.evaluator.KeepEvaluator(index))
+        else:
+            return icepool.expression.KeepExpression(self, index)
 
+    @overload
     def __getitem__(
         self, index: slice | Sequence[int | EllipsisType]
     ) -> 'MultisetExpression[T_contra]':
+        ...
+
+    @overload
+    def __getitem__(
+        self, index: int
+    ) -> 'icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
+        ...
+
+    def __getitem__(
+        self, index: slice | Sequence[int | EllipsisType] | int
+    ) -> 'MultisetExpression[T_contra] | icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
         return self.keep(index)
 
     def keep_lowest(self,

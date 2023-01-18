@@ -15,6 +15,7 @@ from icepool.evaluator.comparison import (
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
 from icepool.evaluator.joint import JointEvaluator
 from icepool.evaluator.constant import ConstantEvaluator
+from icepool.evaluator.keep import KeepEvaluator
 from icepool.evaluator.expression import ExpressionEvaluator
 
 __all__ = [

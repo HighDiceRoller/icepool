@@ -138,3 +138,19 @@ def test_double_index():
     result = d6.pool(3)[:2][-1]
     expected = d6.pool(3)[1]
     assert result == expected
+
+
+def test_expression_keep():
+    result = (d6.pool(3) | d6.pool(3))[0]
+    expected = d6.pool(6)[0]
+    assert result == expected
+
+
+def test_bad_pool_keep_int():
+    with pytest.raises(IndexError):
+        d6.pool(3)[10]
+
+
+def test_bad_expression_keep_int():
+    with pytest.raises(IndexError):
+        (d6.pool(3) & d6.pool(3))[0]
