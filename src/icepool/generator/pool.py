@@ -533,8 +533,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             tie: What to do if `keep` is odd but the current keep_size
                 is even, or vice versa.
                 * 'error' (default): Raises `IndexError`.
-                * 'high': The higher outcome is taken.
-                * 'low': The lower outcome is taken.
+                * 'low': The lower of the two possible outcomes is taken.
+                * 'high': The higher of the two possible outcomes is taken.
         """
         if keep < 0:
             raise ValueError(f'keep={keep} cannot be negative.')
@@ -546,11 +546,14 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             # Need to consult the tiebreaker.
             match tie:
                 case 'error':
-                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.')
+                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
+                    " Specify tie='low' or tie='high' to determine what to pick.")
                 case 'high':
                     start = (self.keep_size() + 1 - keep) // 2
                 case 'low':
                     start = (self.keep_size() - 1 - keep) // 2
+                case _:
+                    raise ValueError(f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'.")
         stop = start + keep
         return self[start:stop].sum()  # type: ignore
 
