@@ -400,7 +400,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         if convert_to_die:
             return cast(icepool.Die[T],
-                        icepool.evaluator.KeepEvaluator(0).evaluate(result))
+                        icepool.evaluator.KeepEvaluator().evaluate(result))
         else:
             return result
 
