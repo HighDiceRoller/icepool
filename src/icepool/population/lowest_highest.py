@@ -5,7 +5,7 @@ import icepool
 import math
 
 from icepool.typing import Outcome, T_contra
-from typing import cast
+from typing import Literal, cast
 
 
 def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
@@ -44,6 +44,23 @@ def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     start = len(dice) - min(keep + drop, len(dice))
     stop = len(dice) - min(drop, len(dice))
     return _sum_slice(*dice, start=start, stop=stop)
+
+
+def sum_middle(*dice,
+               keep: int = 1,
+               tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+    """The sum of the middle outcomes among the dice.
+
+    Args:
+        keep: The number of outcomes to sum. If this is greater than the
+            current keep_size, all are kept.
+        tie: What to do if `keep` is odd but the current keep_size
+            is even, or vice versa.
+            * 'error' (default): Raises `IndexError`.
+            * 'high': The higher outcome is taken.
+            * 'low': The lower outcome is taken.
+    """
+    return icepool.Pool(dice).sum_middle(keep, tie=tie)
 
 
 def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':

@@ -962,6 +962,26 @@ class Die(Population[T_co]):
         return icepool.from_cumulative_quantities(
             self.outcomes(), [x**rolls for x in self.quantities_le()])
 
+    def sum_middle(
+            self,
+            rolls: int,
+            /,
+            keep: int = 1,
+            *,
+            tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+        """Roll several of this `Die` and sum the sorted results in the middle.
+
+        Args:
+            keep: The number of outcomes to sum. If this is greater than the
+                current keep_size, all are kept.
+            tie: What to do if `keep` is odd but the current keep_size
+                is even, or vice versa.
+                * 'error' (default): Raises `IndexError`.
+                * 'high': The higher outcome is taken.
+                * 'low': The lower outcome is taken.
+        """
+        return self.pool(rolls).sum_middle(keep, tie=tie)
+
     # Unary operators.
 
     def __neg__(self) -> 'Die[T_co]':

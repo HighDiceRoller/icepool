@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12
+from icepool import d4, d6, d8, d10, d12, Pool, Die
 
 max_tuple_length = 5
 max_num_values = 5
@@ -154,3 +154,49 @@ def test_bad_pool_keep_int():
 def test_bad_expression_keep_int():
     with pytest.raises(IndexError):
         (d6.pool(3) & d6.pool(3))[0]
+
+
+def test_sum_middle_odd():
+    result = Pool([0, 10, 20]).sum_middle(1)
+    expected = Die([10])
+    assert result == expected
+
+
+def test_sum_middle_even():
+    result = Pool([0, 10, 20, 30]).sum_middle(2)
+    expected = Die([30])
+    assert result == expected
+
+
+def test_sum_middle_odd_index_even_pool_error():
+    with pytest.raises(IndexError):
+        Pool([0, 10, 20, 30]).sum_middle(3)
+
+
+def test_sum_middle_odd_index_even_pool_low():
+    result = Pool([0, 10, 20, 30]).sum_middle(3, tie='low')
+    expected = Die([30])
+    assert result == expected
+
+
+def test_sum_middle_odd_index_even_pool_high():
+    result = Pool([0, 10, 20, 30]).sum_middle(3, tie='high')
+    expected = Die([60])
+    assert result == expected
+
+
+def test_sum_middle_even_index_odd_pool_error():
+    with pytest.raises(IndexError):
+        Pool([0, 10, 20, 30, 40]).sum_middle(2)
+
+
+def test_sum_middle_even_index_odd_pool_low():
+    result = Pool([0, 10, 20, 30, 40]).sum_middle(2, tie='low')
+    expected = Die([30])
+    assert result == expected
+
+
+def test_sum_middle_even_index_odd_pool_high():
+    result = Pool([0, 10, 20, 30, 40]).sum_middle(2, tie='high')
+    expected = Die([50])
+    assert result == expected

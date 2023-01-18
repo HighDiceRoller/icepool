@@ -16,7 +16,7 @@ from functools import cache, cached_property, reduce
 
 from icepool.typing import Outcome, T
 from types import EllipsisType
-from typing import Any, Collection, Hashable, Iterator, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
+from typing import Any, Collection, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.expression import MultisetExpression
@@ -494,8 +494,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = min(drop, self.raw_size())
-        stop = min(keep + drop, self.raw_size())
+        start = min(drop, self.keep_size())
+        stop = min(keep + drop, self.keep_size())
         # Should support sum.
         return self[start:stop].sum()  # type: ignore
 
@@ -515,9 +515,43 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         if drop < 0:
             raise ValueError(f'drop={drop} cannot be negative.')
 
-        start = self.raw_size() - min(keep + drop, self.raw_size())
-        stop = self.raw_size() - min(drop, self.raw_size())
+        start = self.keep_size() - min(keep + drop, self.keep_size())
+        stop = self.keep_size() - min(drop, self.keep_size())
         # Should support sum.
+        return self[start:stop].sum()  # type: ignore
+
+    def sum_middle(self,
+                   keep: int = 1,
+                   *,
+                   tie: Literal['error', 'high',
+                                'low'] = 'error') -> 'icepool.Die':
+        """The sum of the middle outcomes.
+
+        Args:
+            keep: The number of outcomes to sum. If this is greater than the
+                current keep_size, all are kept.
+            tie: What to do if `keep` is odd but the current keep_size
+                is even, or vice versa.
+                * 'error' (default): Raises `IndexError`.
+                * 'high': The higher outcome is taken.
+                * 'low': The lower outcome is taken.
+        """
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+
+        if keep % 2 == self.keep_size() % 2:
+            # The "good" case.
+            start = (self.keep_size() - keep) // 2
+        else:
+            # Need to consult the tiebreaker.
+            match tie:
+                case 'error':
+                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.')
+                case 'high':
+                    start = (self.keep_size() + 1 - keep) // 2
+                case 'low':
+                    start = (self.keep_size() - 1 - keep) // 2
+        stop = start + keep
         return self[start:stop].sum()  # type: ignore
 
     def __str__(self) -> str:
