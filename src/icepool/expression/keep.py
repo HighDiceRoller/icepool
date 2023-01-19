@@ -82,10 +82,12 @@ class KeepExpression(MultisetExpression[T_contra]):
                 self._order = Order.Descending
                 # Type verified below.
                 self._keep_tuple = tuple(reversed(index[1:]))  # type: ignore
+                self._drop = None
             elif index[-1] == ...:
                 self._order = Order.Ascending
                 # Type verified below.
                 self._keep_tuple = tuple(index[:-1])  # type: ignore
+                self._drop = None
             else:
                 raise ValueError(
                     'If a sequence is provided, either the first or last element (but not both) must be an Ellipsis (...)'
