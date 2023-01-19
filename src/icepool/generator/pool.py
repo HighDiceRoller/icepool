@@ -418,6 +418,43 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     ) -> 'Pool[T] | icepool.Die[T]':
         return self.keep(index)
 
+    def keep_middle(self,
+                   keep: int = 1,
+                   *,
+                   tie: Literal['error', 'high',
+                                'low'] = 'error') -> 'Pool[T]':
+        """Keeps a number of the middle outcomes.
+
+        Args:
+            keep: The number of outcomes to sum. If this is greater than the
+                current keep_size, all are kept.
+            tie: What to do if `keep` is odd but the current keep_size
+                is even, or vice versa.
+                * 'error' (default): Raises `IndexError`.
+                * 'low': The lower of the two possible outcomes is taken.
+                * 'high': The higher of the two possible outcomes is taken.
+        """
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+
+        if keep % 2 == self.keep_size() % 2:
+            # The "good" case.
+            start = (self.keep_size() - keep) // 2
+        else:
+            # Need to consult the tiebreaker.
+            match tie:
+                case 'error':
+                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
+                    " Specify tie='low' or tie='high' to determine what to pick.")
+                case 'high':
+                    start = (self.keep_size() + 1 - keep) // 2
+                case 'low':
+                    start = (self.keep_size() - 1 - keep) // 2
+                case _:
+                    raise ValueError(f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'.")
+        stop = start + keep
+        return self[start:stop]
+
     def __add__(
         self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
@@ -536,26 +573,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 * 'low': The lower of the two possible outcomes is taken.
                 * 'high': The higher of the two possible outcomes is taken.
         """
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-
-        if keep % 2 == self.keep_size() % 2:
-            # The "good" case.
-            start = (self.keep_size() - keep) // 2
-        else:
-            # Need to consult the tiebreaker.
-            match tie:
-                case 'error':
-                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
-                    " Specify tie='low' or tie='high' to determine what to pick.")
-                case 'high':
-                    start = (self.keep_size() + 1 - keep) // 2
-                case 'low':
-                    start = (self.keep_size() - 1 - keep) // 2
-                case _:
-                    raise ValueError(f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'.")
-        stop = start + keep
-        return self[start:stop].sum()  # type: ignore
+        return self.keep_middle(keep, tie=tie).sum()  # type: ignore
 
     def __str__(self) -> str:
         return (

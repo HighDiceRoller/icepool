@@ -972,6 +972,7 @@ class Die(Population[T_co]):
         """Roll several of this `Die` and sum the sorted results in the middle.
 
         Args:
+            rolls: The number of dice to roll.
             keep: The number of outcomes to sum. If this is greater than the
                 current keep_size, all are kept.
             tie: What to do if `keep` is odd but the current keep_size
