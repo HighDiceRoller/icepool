@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Die
+from icepool import d4, d6, d8, d10, d12, Pool, Die, Deck
 
 max_tuple_length = 5
 max_num_values = 5
@@ -199,4 +199,40 @@ def test_sum_middle_even_index_odd_pool_low():
 def test_sum_middle_even_index_odd_pool_high():
     result = Pool([0, 10, 20, 30, 40]).sum_middle(2, tie='high')
     expected = Die([50])
+    assert result == expected
+
+
+def test_keep_expression_near_nonnegative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[:2].sum()
+    expected = Die([10])
+    assert result == expected
+
+
+def test_keep_expression_far_nonnegative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[2:].sum()
+    expected = Die([90])
+    assert result == expected
+
+
+def test_keep_expression_near_negative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[-2:].sum()
+    expected = Die([70])
+    assert result == expected
+
+
+def test_keep_expression_far_negative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[:-2].sum()
+    expected = Die([30])
+    assert result == expected
+
+
+def test_keep_expression_both_nonnegative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[1:4].sum()
+    expected = Die([60])
+    assert result == expected
+
+
+def test_keep_expression_both_negative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[-4:-1].sum()
+    expected = Die([60])
     assert result == expected

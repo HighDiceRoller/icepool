@@ -319,8 +319,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         The valid types of argument are:
 
-        * A `slice`, which must have one the following sign patterns:
-            `+x:+y, -x:-y, :+x, -x:`
+        * A `slice`. If both start and stop are provided, they must both be
+            non-negative or both be negative. step is not supported.
         * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.
             Each sorted element will be counted that many times, with the
             `Ellipsis` treated as enough zeros (possibly "negative") to
