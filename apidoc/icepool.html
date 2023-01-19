@@ -382,6 +382,9 @@
                     <a class="function" href="#sum_highest">sum_highest</a>
             </li>
             <li>
+                    <a class="function" href="#sum_middle">sum_middle</a>
+            </li>
+            <li>
                     <a class="function" href="#min_outcome">min_outcome</a>
             </li>
             <li>
@@ -813,7 +816,7 @@ are considered.</li>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="kn">from</span> <span class="nn">icepool.collections</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.population.lowest_highest</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">sum_lowest</span><span class="p">,</span> <span class="n">sum_highest</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.population.lowest_highest</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">sum_lowest</span><span class="p">,</span> <span class="n">sum_highest</span><span class="p">,</span> <span class="n">sum_middle</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
@@ -836,11 +839,12 @@ are considered.</li>
 </span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cartesian_product&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="s1">&#39;Again&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="s1">&#39;from_cumulative_quantities&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_highest&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a><span class="p">]</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_highest&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -7143,6 +7147,54 @@ to be summed.</li>
 
 
                 </section>
+                <section id="sum_middle">
+                            <input id="sum_middle-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">sum_middle</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span>,</span><span class="param">	<span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">tie</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span>:</span></span>
+
+                <label class="view-source-button" for="sum_middle-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#sum_middle"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="sum_middle-50"><a href="#sum_middle-50"><span class="linenos">50</span></a><span class="k">def</span> <span class="nf">sum_middle</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">,</span>
+</span><span id="sum_middle-51"><a href="#sum_middle-51"><span class="linenos">51</span></a>               <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="sum_middle-52"><a href="#sum_middle-52"><span class="linenos">52</span></a>               <span class="n">tie</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die&#39;</span><span class="p">:</span>
+</span><span id="sum_middle-53"><a href="#sum_middle-53"><span class="linenos">53</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The sum of the middle outcomes among the dice.</span>
+</span><span id="sum_middle-54"><a href="#sum_middle-54"><span class="linenos">54</span></a>
+</span><span id="sum_middle-55"><a href="#sum_middle-55"><span class="linenos">55</span></a><span class="sd">    Args:</span>
+</span><span id="sum_middle-56"><a href="#sum_middle-56"><span class="linenos">56</span></a><span class="sd">        keep: The number of outcomes to sum. If this is greater than the</span>
+</span><span id="sum_middle-57"><a href="#sum_middle-57"><span class="linenos">57</span></a><span class="sd">            current keep_size, all are kept.</span>
+</span><span id="sum_middle-58"><a href="#sum_middle-58"><span class="linenos">58</span></a><span class="sd">        tie: What to do if `keep` is odd but the current keep_size</span>
+</span><span id="sum_middle-59"><a href="#sum_middle-59"><span class="linenos">59</span></a><span class="sd">            is even, or vice versa.</span>
+</span><span id="sum_middle-60"><a href="#sum_middle-60"><span class="linenos">60</span></a><span class="sd">            * &#39;error&#39; (default): Raises `IndexError`.</span>
+</span><span id="sum_middle-61"><a href="#sum_middle-61"><span class="linenos">61</span></a><span class="sd">            * &#39;high&#39;: The higher outcome is taken.</span>
+</span><span id="sum_middle-62"><a href="#sum_middle-62"><span class="linenos">62</span></a><span class="sd">            * &#39;low&#39;: The lower outcome is taken.</span>
+</span><span id="sum_middle-63"><a href="#sum_middle-63"><span class="linenos">63</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="sum_middle-64"><a href="#sum_middle-64"><span class="linenos">64</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">dice</span><span class="p">)</span><span class="o">.</span><span class="n">sum_middle</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The sum of the middle outcomes among the dice.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>keep:</strong>  The number of outcomes to sum. If this is greater than the
+current keep_size, all are kept.</li>
+<li><strong>tie:</strong>  What to do if <code>keep</code> is odd but the current keep_size
+is even, or vice versa.
+<ul>
+<li>'error' (default): Raises <code>IndexError</code>.</li>
+<li>'high': The higher outcome is taken.</li>
+<li>'low': The lower outcome is taken.</li>
+</ul></li>
+</ul>
+</div>
+
+
+                </section>
                 <section id="min_outcome">
                             <input id="min_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -11983,8 +12035,8 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="MultisetExpression-320"><a href="#MultisetExpression-320"><span class="linenos">320</span></a>
 </span><span id="MultisetExpression-321"><a href="#MultisetExpression-321"><span class="linenos">321</span></a><span class="sd">        The valid types of argument are:</span>
 </span><span id="MultisetExpression-322"><a href="#MultisetExpression-322"><span class="linenos">322</span></a>
-</span><span id="MultisetExpression-323"><a href="#MultisetExpression-323"><span class="linenos">323</span></a><span class="sd">        * A `slice`, which must have one the following sign patterns:</span>
-</span><span id="MultisetExpression-324"><a href="#MultisetExpression-324"><span class="linenos">324</span></a><span class="sd">            `+x:+y, -x:-y, :+x, -x:`</span>
+</span><span id="MultisetExpression-323"><a href="#MultisetExpression-323"><span class="linenos">323</span></a><span class="sd">        * A `slice`. If both start and stop are provided, they must both be</span>
+</span><span id="MultisetExpression-324"><a href="#MultisetExpression-324"><span class="linenos">324</span></a><span class="sd">            non-negative or both be negative. step is not supported.</span>
 </span><span id="MultisetExpression-325"><a href="#MultisetExpression-325"><span class="linenos">325</span></a><span class="sd">        * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.</span>
 </span><span id="MultisetExpression-326"><a href="#MultisetExpression-326"><span class="linenos">326</span></a><span class="sd">            Each sorted element will be counted that many times, with the</span>
 </span><span id="MultisetExpression-327"><a href="#MultisetExpression-327"><span class="linenos">327</span></a><span class="sd">            `Ellipsis` treated as enough zeros (possibly &quot;negative&quot;) to</span>
@@ -12705,8 +12757,8 @@ twice.</p>
 </span><span id="MultisetExpression.keep-320"><a href="#MultisetExpression.keep-320"><span class="linenos">320</span></a>
 </span><span id="MultisetExpression.keep-321"><a href="#MultisetExpression.keep-321"><span class="linenos">321</span></a><span class="sd">        The valid types of argument are:</span>
 </span><span id="MultisetExpression.keep-322"><a href="#MultisetExpression.keep-322"><span class="linenos">322</span></a>
-</span><span id="MultisetExpression.keep-323"><a href="#MultisetExpression.keep-323"><span class="linenos">323</span></a><span class="sd">        * A `slice`, which must have one the following sign patterns:</span>
-</span><span id="MultisetExpression.keep-324"><a href="#MultisetExpression.keep-324"><span class="linenos">324</span></a><span class="sd">            `+x:+y, -x:-y, :+x, -x:`</span>
+</span><span id="MultisetExpression.keep-323"><a href="#MultisetExpression.keep-323"><span class="linenos">323</span></a><span class="sd">        * A `slice`. If both start and stop are provided, they must both be</span>
+</span><span id="MultisetExpression.keep-324"><a href="#MultisetExpression.keep-324"><span class="linenos">324</span></a><span class="sd">            non-negative or both be negative. step is not supported.</span>
 </span><span id="MultisetExpression.keep-325"><a href="#MultisetExpression.keep-325"><span class="linenos">325</span></a><span class="sd">        * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.</span>
 </span><span id="MultisetExpression.keep-326"><a href="#MultisetExpression.keep-326"><span class="linenos">326</span></a><span class="sd">            Each sorted element will be counted that many times, with the</span>
 </span><span id="MultisetExpression.keep-327"><a href="#MultisetExpression.keep-327"><span class="linenos">327</span></a><span class="sd">            `Ellipsis` treated as enough zeros (possibly &quot;negative&quot;) to</span>
@@ -12735,8 +12787,8 @@ hand, this can be applied to any expression.</p>
 <p>The valid types of argument are:</p>
 
 <ul>
-<li>A <code>slice</code>, which must have one the following sign patterns:
-<code>+x:+y, -x:-y, :+x, -x:</code></li>
+<li>A <code>slice</code>. If both start and stop are provided, they must both be
+non-negative or both be negative. step is not supported.</li>
 <li>A sequence of <code>int</code> with <code>...</code> (<code>Ellipsis</code>) at exactly one end.
 Each sorted element will be counted that many times, with the
 <code>Ellipsis</code> treated as enough zeros (possibly "negative") to
