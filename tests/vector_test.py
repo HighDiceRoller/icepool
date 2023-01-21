@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, d8
+from icepool import d6, d8, cartesian_product
 
 
 def test_cartesian_product():
@@ -110,4 +110,10 @@ def test_one_hot():
 
     result = 3 @ icepool.one_hot(6)
     expected = icepool.d6.pool(3).evaluate(evaluator=OneHotEvaluator())
+    assert result == expected
+
+
+def test_pool_vector_sum():
+    result = cartesian_product(d6, d6).pool(2).sum()
+    expected = cartesian_product(2 @ d6, 2 @ d6)
     assert result == expected

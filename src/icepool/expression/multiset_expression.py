@@ -36,7 +36,8 @@ def implicit_convert_to_expression(
 class MultisetExpression(ABC, Generic[T_contra]):
     """Abstract base class representing an expression that operates on multisets.
 
-    Use `MultisetVariable` to start an expression.
+    Expression methods can be applied to `MultisetGenerator`s to do simple
+    evaluations. For joint evaluations, try `multiset_function`.
 
     Use the provided operators and methods to build up more complicated
     expressions, or to attach a final evaluator.
@@ -385,6 +386,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         evaluator: 'icepool.MultisetEvaluator[T_contra, U]'
     ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
         """Attaches a final `MultisetEvaluator` to expressions.
+
+        All of the `MultisetExpression` methods following this are evaluations.
 
         Returns:
             A `Die` if all expressions are fully bound.

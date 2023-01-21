@@ -2,8 +2,11 @@
 
 __docformat__ = 'google'
 
+from icepool.elementwise import binary_elementwise
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
+
+import operator
 
 from typing import Any, Callable, Final, Mapping
 
@@ -64,9 +67,19 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 # The outcome does not need to support addition or
                 # multiplication in this case.
                 return outcome
-            return outcome * count
+            return binary_elementwise(outcome,
+                                      count,
+                                      operator.mul,
+                                      broadcast=True)
         else:
-            return state + outcome * count
+            contribution = binary_elementwise(outcome,
+                                              count,
+                                              operator.mul,
+                                              broadcast=True)
+            return binary_elementwise(state,
+                                      contribution,
+                                      operator.add,
+                                      broadcast=True)
 
     def order(self):
         """Allows any order."""
