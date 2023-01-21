@@ -11,6 +11,8 @@ from typing import Literal, cast
 def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The lowest outcome among the rolls, or the sum of some of the lowest.
 
+    The outcomes should support addition and multiplication if `keep != 1`.
+
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.
         keep: The number of lowest dice will be summed.
@@ -29,6 +31,8 @@ def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
 
 def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     """The highest outcome among the rolls, or the sum of some of the highest.
+
+    The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.
@@ -50,6 +54,8 @@ def middle(*dice,
            keep: int = 1,
            tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
     """The middle of the outcomes among the rolls, or the sum of some of the middle.
+
+    The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
         keep: The number of outcomes to sum. If this is greater than the

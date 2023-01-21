@@ -44,12 +44,12 @@ def test_sum_descending_limit_outcomes():
 
 def test_sum_descending_keep_highest():
     result = SumPoolDescending().evaluate(icepool.d6.pool([0, 1, 1, 1]))
-    expected = icepool.d6.sum_highest(4, 3)
+    expected = icepool.d6.highest(4, 3)
     assert result.equals(expected)
 
 
 def test_zero_weight_outcomes():
-    result = icepool.Die(range(5), times=[0, 1, 0, 1, 0]).sum_highest(3, 2)
+    result = icepool.Die(range(5), times=[0, 1, 0, 1, 0]).highest(3, 2)
     assert len(result) == 9
 
 

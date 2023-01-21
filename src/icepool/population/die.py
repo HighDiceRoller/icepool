@@ -901,8 +901,10 @@ class Die(Population[T_co]):
             pool_size = len(rolls)
             return icepool.Pool({self: pool_size})[rolls]
 
-    def sum_lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
-        """Roll several of this `Die` and sum the sorted results from the lowest.
+    def lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+        """Roll several of this `Die` and return the lowest result, or the sum of some of the lowest.
+
+        The outcomes should support addition and multiplication if `keep != 1`.
 
         Args:
             rolls: The number of dice to roll. All dice will have the same
@@ -915,7 +917,7 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self.lowest(rolls)
+            return self._lowest_single(rolls)
 
         start = drop if drop > 0 else None
         stop = keep + (drop or 0)
@@ -923,7 +925,7 @@ class Die(Population[T_co]):
         # Expression evaluators are difficult to type.
         return self.pool(rolls)[index].sum()  # type: ignore
 
-    def lowest(self, rolls: int, /) -> 'Die':
+    def _lowest_single(self, rolls: int, /) -> 'Die':
         """Roll this die several times and keep the lowest."""
         if rolls == 0:
             return self.zero().simplify()
@@ -931,12 +933,14 @@ class Die(Population[T_co]):
             self.outcomes(), [x**rolls for x in self.quantities_ge()],
             reverse=True)
 
-    def sum_highest(self,
-                    rolls: int,
-                    /,
-                    keep: int = 1,
-                    drop: int = 0) -> 'Die[T_co]':
-        """Roll several of this `Die` and sum the sorted results from the highest.
+    def highest(self,
+                rolls: int,
+                /,
+                keep: int = 1,
+                drop: int = 0) -> 'Die[T_co]':
+        """Roll several of this `Die` and return the highest result, or the sum of some of the highest.
+
+        The outcomes should support addition and multiplication if `keep != 1`.
 
         Args:
             rolls: The number of dice to roll.
@@ -948,28 +952,29 @@ class Die(Population[T_co]):
             A `Die` representing the probability distribution of the sum.
         """
         if keep == 1 and drop == 0:
-            return self.highest(rolls)
+            return self._highest_single(rolls)
         start = -(keep + (drop or 0))
         stop = -drop if drop > 0 else None
         index = slice(start, stop)
         # Expression evaluators are difficult to type.
         return self.pool(rolls)[index].sum()  # type: ignore
 
-    def highest(self, rolls: int, /) -> 'Die[T_co]':
+    def _highest_single(self, rolls: int, /) -> 'Die[T_co]':
         """Roll this die several times and keep the highest."""
         if rolls == 0:
             return self.zero().simplify()
         return icepool.from_cumulative_quantities(
             self.outcomes(), [x**rolls for x in self.quantities_le()])
 
-    def sum_middle(
-            self,
-            rolls: int,
-            /,
-            keep: int = 1,
-            *,
-            tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+    def middle(self,
+               rolls: int,
+               /,
+               keep: int = 1,
+               *,
+               tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
         """Roll several of this `Die` and sum the sorted results in the middle.
+
+        The outcomes should support addition and multiplication if `keep != 1`.
 
         Args:
             rolls: The number of dice to roll.
