@@ -402,15 +402,3 @@ class ApplySorted():
 
 
 apply_sorted: Final = ApplySorted()
-"""As apply() but sorts the outcomes first.
-
-This is more efficient than `apply()` but still not particularly efficient.
-
-You can use `apply_sorted[index]()` to only keep certain sorted indexes.
-See `Pool.keep()` for documentation.
-
-Args:
-    func: A function that takes one argument per input `Die` and returns an
-        argument to `Die()`.
-    *args: `func` will be called with all sorted joint outcomes of these.
-"""

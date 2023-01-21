@@ -44,12 +44,26 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
+import icepool.population.func
 from icepool.population.func import (d, __getattr__, coin, one_hot,
                                      cartesian_product,
                                      from_cumulative_quantities, from_rv,
                                      min_outcome, max_outcome, align,
-                                     align_range, reduce, accumulate, apply,
-                                     apply_sorted)
+                                     align_range, reduce, accumulate, apply)
+
+apply_sorted = icepool.population.func.apply_sorted
+"""As apply() but sorts the outcomes first.
+
+This is more efficient than `apply()` but still not particularly efficient.
+
+You can use `apply_sorted[index]()` to only keep certain sorted indexes.
+See `Pool.keep()` for documentation.
+
+Args:
+    func: A function that takes one argument per input `Die` and returns an
+        argument to `Die()`.
+    *args: `func` will be called with all sorted joint outcomes of these.
+"""
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
