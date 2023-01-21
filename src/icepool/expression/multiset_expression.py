@@ -60,9 +60,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 bound generator expression receives just its own count.
 
         Returns:
-            state: The updated state, which will be seen again by this
+            * state: The updated state, which will be seen again by this
             `next_state` later.
-            count: The resulting count, which will be sent forward.
+            * count: The resulting count, which will be sent forward.
         """
 
     @abstractmethod
