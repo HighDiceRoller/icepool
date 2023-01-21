@@ -60,6 +60,10 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
         """Implementation."""
         outcome = self._map(outcome)
         if state is None:
+            if count == 1:
+                # The outcome does not need to support addition or
+                # multiplication in this case.
+                return outcome
             return outcome * count
         else:
             return state + outcome * count
