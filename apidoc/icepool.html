@@ -364,12 +364,6 @@
                     <a class="function" href="#align_range">align_range</a>
             </li>
             <li>
-                    <a class="function" href="#_lowest_single">_lowest_single</a>
-            </li>
-            <li>
-                    <a class="function" href="#_highest_single">_highest_single</a>
-            </li>
-            <li>
                     <a class="function" href="#lowest">lowest</a>
             </li>
             <li>
@@ -810,7 +804,7 @@ are considered.</li>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="kn">from</span> <span class="nn">icepool.collections</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">_lowest_single</span><span class="p">,</span> <span class="n">_highest_single</span><span class="p">,</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
@@ -832,13 +826,12 @@ are considered.</li>
 </span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cartesian_product&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="s1">&#39;Again&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="s1">&#39;from_cumulative_quantities&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;_lowest_single&#39;</span><span class="p">,</span> <span class="s1">&#39;_highest_single&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a><span class="p">]</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="s1">&#39;from_cumulative_quantities&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;apply_sorted&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -6947,80 +6940,6 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
 
                 </section>
-                <section id="_lowest_single">
-                            <input id="_lowest_single-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">_lowest_single</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="_lowest_single-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#_lowest_single"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="_lowest_single-109"><a href="#_lowest_single-109"><span class="linenos">109</span></a><span class="k">def</span> <span class="nf">_lowest_single</span><span class="p">(</span>
-</span><span id="_lowest_single-110"><a href="#_lowest_single-110"><span class="linenos">110</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T_contra | icepool.Die[T_contra]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T_contra]&#39;</span><span class="p">:</span>
-</span><span id="_lowest_single-111"><a href="#_lowest_single-111"><span class="linenos">111</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Roll all the dice and take the lowest single one.</span>
-</span><span id="_lowest_single-112"><a href="#_lowest_single-112"><span class="linenos">112</span></a>
-</span><span id="_lowest_single-113"><a href="#_lowest_single-113"><span class="linenos">113</span></a><span class="sd">    The maximum outcome is equal to the least maximum outcome among all</span>
-</span><span id="_lowest_single-114"><a href="#_lowest_single-114"><span class="linenos">114</span></a><span class="sd">    input dice.</span>
-</span><span id="_lowest_single-115"><a href="#_lowest_single-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="_lowest_single-116"><a href="#_lowest_single-116"><span class="linenos">116</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-</span><span id="_lowest_single-117"><a href="#_lowest_single-117"><span class="linenos">117</span></a>    <span class="n">max_outcome</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
-</span><span id="_lowest_single-118"><a href="#_lowest_single-118"><span class="linenos">118</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">max_outcome</span><span class="o">=</span><span class="n">max_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
-</span><span id="_lowest_single-119"><a href="#_lowest_single-119"><span class="linenos">119</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="_lowest_single-120"><a href="#_lowest_single-120"><span class="linenos">120</span></a>    <span class="n">quantities_ge</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="_lowest_single-121"><a href="#_lowest_single-121"><span class="linenos">121</span></a>        <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">quantities_ge</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)))</span>
-</span><span id="_lowest_single-122"><a href="#_lowest_single-122"><span class="linenos">122</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cumulative_quantities</span><span class="p">(</span><span class="n">dice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span>
-</span><span id="_lowest_single-123"><a href="#_lowest_single-123"><span class="linenos">123</span></a>                                              <span class="n">quantities_ge</span><span class="p">,</span>
-</span><span id="_lowest_single-124"><a href="#_lowest_single-124"><span class="linenos">124</span></a>                                              <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Roll all the dice and take the lowest single one.</p>
-
-<p>The maximum outcome is equal to the least maximum outcome among all
-input dice.</p>
-</div>
-
-
-                </section>
-                <section id="_highest_single">
-                            <input id="_highest_single-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">_highest_single</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="_highest_single-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#_highest_single"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="_highest_single-127"><a href="#_highest_single-127"><span class="linenos">127</span></a><span class="k">def</span> <span class="nf">_highest_single</span><span class="p">(</span>
-</span><span id="_highest_single-128"><a href="#_highest_single-128"><span class="linenos">128</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T_contra | icepool.Die[T_contra]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T_contra]&#39;</span><span class="p">:</span>
-</span><span id="_highest_single-129"><a href="#_highest_single-129"><span class="linenos">129</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Roll all the dice and take the highest single one.</span>
-</span><span id="_highest_single-130"><a href="#_highest_single-130"><span class="linenos">130</span></a>
-</span><span id="_highest_single-131"><a href="#_highest_single-131"><span class="linenos">131</span></a><span class="sd">    The minimum outcome is equal to the greatest minimum outcome among all</span>
-</span><span id="_highest_single-132"><a href="#_highest_single-132"><span class="linenos">132</span></a><span class="sd">    input dice.</span>
-</span><span id="_highest_single-133"><a href="#_highest_single-133"><span class="linenos">133</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="_highest_single-134"><a href="#_highest_single-134"><span class="linenos">134</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-</span><span id="_highest_single-135"><a href="#_highest_single-135"><span class="linenos">135</span></a>    <span class="n">min_outcome</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
-</span><span id="_highest_single-136"><a href="#_highest_single-136"><span class="linenos">136</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">min_outcome</span><span class="o">=</span><span class="n">min_outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)</span>
-</span><span id="_highest_single-137"><a href="#_highest_single-137"><span class="linenos">137</span></a>    <span class="n">dice</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">)</span>
-</span><span id="_highest_single-138"><a href="#_highest_single-138"><span class="linenos">138</span></a>    <span class="n">quantities_le</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="_highest_single-139"><a href="#_highest_single-139"><span class="linenos">139</span></a>        <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">quantities_le</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">)))</span>
-</span><span id="_highest_single-140"><a href="#_highest_single-140"><span class="linenos">140</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">from_cumulative_quantities</span><span class="p">(</span><span class="n">dice</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outcomes</span><span class="p">(),</span> <span class="n">quantities_le</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Roll all the dice and take the highest single one.</p>
-
-<p>The minimum outcome is equal to the greatest minimum outcome among all
-input dice.</p>
-</div>
-
-
-                </section>
                 <section id="lowest">
                             <input id="lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -7933,9 +7852,11 @@ bound generator expression receives just its own count.</li>
 <h6 id="returns">Returns:</h6>
 
 <blockquote>
-  <p>state: The updated state, which will be seen again by this
-  <code><a href="#MultisetGenerator.next_state">next_state</a></code> later.
-  count: The resulting count, which will be sent forward.</p>
+  <ul>
+  <li>state: The updated state, which will be seen again by this
+  <code><a href="#MultisetGenerator.next_state">next_state</a></code> later.</li>
+  <li>count: The resulting count, which will be sent forward.</li>
+  </ul>
 </blockquote>
 </div>
 
@@ -11701,9 +11622,9 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="MultisetExpression-61"><a href="#MultisetExpression-61"><span class="linenos"> 61</span></a><span class="sd">                bound generator expression receives just its own count.</span>
 </span><span id="MultisetExpression-62"><a href="#MultisetExpression-62"><span class="linenos"> 62</span></a>
 </span><span id="MultisetExpression-63"><a href="#MultisetExpression-63"><span class="linenos"> 63</span></a><span class="sd">        Returns:</span>
-</span><span id="MultisetExpression-64"><a href="#MultisetExpression-64"><span class="linenos"> 64</span></a><span class="sd">            state: The updated state, which will be seen again by this</span>
+</span><span id="MultisetExpression-64"><a href="#MultisetExpression-64"><span class="linenos"> 64</span></a><span class="sd">            * state: The updated state, which will be seen again by this</span>
 </span><span id="MultisetExpression-65"><a href="#MultisetExpression-65"><span class="linenos"> 65</span></a><span class="sd">            `next_state` later.</span>
-</span><span id="MultisetExpression-66"><a href="#MultisetExpression-66"><span class="linenos"> 66</span></a><span class="sd">            count: The resulting count, which will be sent forward.</span>
+</span><span id="MultisetExpression-66"><a href="#MultisetExpression-66"><span class="linenos"> 66</span></a><span class="sd">            * count: The resulting count, which will be sent forward.</span>
 </span><span id="MultisetExpression-67"><a href="#MultisetExpression-67"><span class="linenos"> 67</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-68"><a href="#MultisetExpression-68"><span class="linenos"> 68</span></a>
 </span><span id="MultisetExpression-69"><a href="#MultisetExpression-69"><span class="linenos"> 69</span></a>    <span class="nd">@abstractmethod</span>
@@ -12291,9 +12212,9 @@ expressions, or to attach a final evaluator.</p>
 </span><span id="MultisetExpression.next_state-61"><a href="#MultisetExpression.next_state-61"><span class="linenos">61</span></a><span class="sd">                bound generator expression receives just its own count.</span>
 </span><span id="MultisetExpression.next_state-62"><a href="#MultisetExpression.next_state-62"><span class="linenos">62</span></a>
 </span><span id="MultisetExpression.next_state-63"><a href="#MultisetExpression.next_state-63"><span class="linenos">63</span></a><span class="sd">        Returns:</span>
-</span><span id="MultisetExpression.next_state-64"><a href="#MultisetExpression.next_state-64"><span class="linenos">64</span></a><span class="sd">            state: The updated state, which will be seen again by this</span>
+</span><span id="MultisetExpression.next_state-64"><a href="#MultisetExpression.next_state-64"><span class="linenos">64</span></a><span class="sd">            * state: The updated state, which will be seen again by this</span>
 </span><span id="MultisetExpression.next_state-65"><a href="#MultisetExpression.next_state-65"><span class="linenos">65</span></a><span class="sd">            `next_state` later.</span>
-</span><span id="MultisetExpression.next_state-66"><a href="#MultisetExpression.next_state-66"><span class="linenos">66</span></a><span class="sd">            count: The resulting count, which will be sent forward.</span>
+</span><span id="MultisetExpression.next_state-66"><a href="#MultisetExpression.next_state-66"><span class="linenos">66</span></a><span class="sd">            * count: The resulting count, which will be sent forward.</span>
 </span><span id="MultisetExpression.next_state-67"><a href="#MultisetExpression.next_state-67"><span class="linenos">67</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -12317,9 +12238,11 @@ bound generator expression receives just its own count.</li>
 <h6 id="returns">Returns:</h6>
 
 <blockquote>
-  <p>state: The updated state, which will be seen again by this
-  <code><a href="#MultisetExpression.next_state">next_state</a></code> later.
-  count: The resulting count, which will be sent forward.</p>
+  <ul>
+  <li>state: The updated state, which will be seen again by this
+  <code><a href="#MultisetExpression.next_state">next_state</a></code> later.</li>
+  <li>count: The resulting count, which will be sent forward.</li>
+  </ul>
 </blockquote>
 </div>
 
