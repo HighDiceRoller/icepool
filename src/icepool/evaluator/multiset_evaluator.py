@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 from icepool.collections import union_sorted_sets
 
-from icepool.typing import Evaluable, Outcome, Order, T_contra, U_co
+from icepool.typing import Order, T_contra, U_co
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -16,6 +16,7 @@ from typing import Any, Callable, Collection, Generic, Hashable, Mapping, Mutabl
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
+    from icepool.expression import MultisetExpression
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
@@ -208,18 +209,20 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """A cache of (order, generators) -> weight distribution over states. """
         return {}
 
-    def evaluate(self,
-                 *evaluables: 'Evaluable[T_contra]') -> 'icepool.Die[U_co]':
+    def evaluate(
+        self, *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[U_co]':
         """Evaluates generator(s).
 
         You can call the `MultisetEvaluator` object directly for the same effect,
         e.g. `sum_evaluator(generator)` is an alias for `sum_evaluator.evaluate(generator)`.
 
-        Most evaluators will expect a fixed number of evaluables.
+        Most evaluators will expect a fixed number of input multisets.
         The union of the outcomes of the generator(s) must be totally orderable.
 
         Args:
-            *evaluables: Each element may be one of the following:
+            *args: Each may be one of the following:
                 * A `GeneratorsWithExpression`.
                 * A `MultisetGenerator`.
                 * A mappable mapping outcomes to the number of those outcomes.
@@ -232,8 +235,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         # Convert arguments to expressions.
         expressions = tuple(
-            icepool.implicit_convert_to_expression(evaluable)
-            for evaluable in evaluables)
+            icepool.implicit_convert_to_expression(arg) for arg in args)
 
         if not all(
                 isinstance(expression, icepool.MultisetGenerator)
@@ -275,8 +277,10 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         return icepool.Die(final_outcomes, final_weights)
 
-    def __call__(self,
-                 *generators: 'Evaluable[T_contra]') -> 'icepool.Die[U_co]':
+    def __call__(
+        self, *generators:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[U_co]':
         """Same as `self.evaluate()`."""
         return self.evaluate(*generators)
 

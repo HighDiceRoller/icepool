@@ -6,7 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collections import Counts
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Evaluable, Order, Outcome, Qs_co, T
+from icepool.typing import Order, Outcome, Qs_co, T
 
 import bisect
 import functools
