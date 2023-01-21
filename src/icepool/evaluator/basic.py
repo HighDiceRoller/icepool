@@ -67,19 +67,10 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 # The outcome does not need to support addition or
                 # multiplication in this case.
                 return outcome
-            return binary_elementwise(outcome,
-                                      count,
-                                      operator.mul,
-                                      broadcast=True)
+            return binary_elementwise(outcome, count, operator.mul)
         else:
-            contribution = binary_elementwise(outcome,
-                                              count,
-                                              operator.mul,
-                                              broadcast=True)
-            return binary_elementwise(state,
-                                      contribution,
-                                      operator.add,
-                                      broadcast=True)
+            contribution = binary_elementwise(outcome, count, operator.mul)
+            return binary_elementwise(state, contribution, operator.add)
 
     def order(self):
         """Allows any order."""

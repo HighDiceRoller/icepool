@@ -50,11 +50,6 @@ def test_nested_binary_elementwise():
                                                                             ]))
 
 
-def test_binary_op_mismatch_scalar_vector():
-    with pytest.raises(ValueError):
-        result = icepool.d6 + icepool.cartesian_product(d6, d8)
-
-
 def test_binary_op_mismatch_outcome_len():
     with pytest.raises(ValueError):
         result = icepool.cartesian_product(d6, d8) + (1, 2, 3)
@@ -110,6 +105,12 @@ def test_one_hot():
 
     result = 3 @ icepool.one_hot(6)
     expected = icepool.d6.pool(3).evaluate(evaluator=OneHotEvaluator())
+    assert result == expected
+
+
+def test_vector_scalar_mult():
+    result = cartesian_product(d6, d8) * 2
+    expected = cartesian_product(d6 * 2, d8 * 2)
     assert result == expected
 
 

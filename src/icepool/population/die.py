@@ -255,7 +255,7 @@ class Die(Population[T_co]):
     def unary_operator(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
         """Performs the unary operation on the outcomes.
 
-        Operations on tuples are performed elementwise recursively. If you need
+        Operatiors on tuples are applied elementwise recursively. If you need
         some other specific behavior, use your own outcome class, or use `map()`
         rather than an operator.
 
@@ -285,12 +285,21 @@ class Die(Population[T_co]):
                         **kwargs) -> 'Die[U]':
         """Performs the operation on pairs of outcomes.
 
-        Operations on tuples are performed elementwise recursively. If you need
+        By the time this is called, the other operand has already been
+        converted to a `Die`.
+
+        Operators on tuples are applied elementwise recursively.  If you need
         some other specific behavior, use your own outcome class, or use `map()`
         rather than an operator.
 
-        By the time this is called, the other operand has already been
-        converted to a `Die`.
+        If one side of a binary operator is a tuple and the other is not, the
+        binary operator is applied to each element of the tuple with the
+        non-tuple side. For example, the following are equivalent:
+
+        ```
+        cartesian_product(d6, d8) * 2
+        cartesian_product(d6 * 2, d8 * 2)
+        ```
 
         This is used for the standard binary operators
         `+, -, *, /, //, %, **, <<, >>, &, |, ^`.

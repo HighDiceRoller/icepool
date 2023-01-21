@@ -29,22 +29,24 @@ def unary_elementwise(a, op: Callable, *args, **kwargs):
         return op(a, *args, **kwargs)
 
 
-def binary_elementwise(a, b, op: Callable, broadcast=False, *args, **kwargs):
+def binary_elementwise(a, b, op: Callable, *args, **kwargs):
     """Applies a binary operation recursively elementwise.
 
-    Specifically, if the argument is a tuple, the operation is performed on
-    each pair of elements, and the results are placed in a tuple. This is done
-    recursively.
+    Specifically:
+
+    * If both sides are not tuples, the operation is performed as normal.
+    * If both sides are tuples, the operation is mapped over each pair of
+        elements.
+    * If one side is a tuple and the other is not, the operation is mapped
+        over each element of the tuple side with the non-tuple side.
 
     Args:
         op: The binary operation to perform.
         a, b: The arguments to the operation.
-        broadcast: If `True`, a scalar argument will be broadcast to a tuple.
         *args, **kwargs: Any extra arguments are forwarded to `op`.
 
     Raises:
-        ValueError: If a tuple is paired with a non-tuple or a tuple of a
-            different length.
+        ValueError: If both sides are tuples but their lengths are different.
     """
     a_len = tuple_len(a)
     b_len = tuple_len(b)
@@ -54,23 +56,13 @@ def binary_elementwise(a, b, op: Callable, broadcast=False, *args, **kwargs):
             return op(a, b, *args, **kwargs)
         else:
             # a is scalar, b is vector.
-            if broadcast:
-                return tuple(
-                    binary_elementwise(a, bb, op, *args, **kwargs) for bb in b)
-            else:
-                raise ValueError(
-                    'Cannot apply operation elementwise between a non-tuple and a tuple.'
-                )
+            return tuple(
+                binary_elementwise(a, bb, op, *args, **kwargs) for bb in b)
     else:
         if b_len is None:
             # b is scalar, a is vector.
-            if broadcast:
-                return tuple(
-                    binary_elementwise(aa, b, op, *args, **kwargs) for aa in a)
-            else:
-                raise ValueError(
-                    'Cannot apply operation elementwise between a tuple and a non-tuple.'
-                )
+            return tuple(
+                binary_elementwise(aa, b, op, *args, **kwargs) for aa in a)
         else:
             if a_len == b_len:
                 return tuple(
