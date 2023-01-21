@@ -354,17 +354,27 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'MultisetExpression[T_contra] | icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
         return self.keep(index)
 
-    def keep_lowest(self,
-                    keep: int = 1,
-                    drop: int = 0) -> 'MultisetExpression[T_contra]':
-        """Keep some of the lowest results from this multiset and drop the rest."""
+    def lowest(self,
+               keep: int = 1,
+               drop: int = 0) -> 'MultisetExpression[T_contra]':
+        """Keep some of the lowest outcomes from this multiset and drop the rest.
+
+        Args:
+            keep: The number of lowest outcomes will be kept.
+            drop: This number of lowest outcomes will be dropped before keeping.
+        """
         t = (0,) * drop + (1,) * keep + (...,)
         return self.keep(t)
 
-    def keep_highest(self,
-                     keep: int = 1,
-                     drop: int = 0) -> 'MultisetExpression[T_contra]':
-        """Keep some of the highest results from this multiset and drop the rest."""
+    def highest(self,
+                keep: int = 1,
+                drop: int = 0) -> 'MultisetExpression[T_contra]':
+        """Keep some of the highest outcomes from this multiset and drop the rest.
+
+        Args:
+            keep: The number of highest outcomes will be kept.
+            drop: This number of highest outcomes will be dropped before keeping.
+        """
         t = (...,) + (1,) * keep + (0,) * drop
         return self.keep(t)
 

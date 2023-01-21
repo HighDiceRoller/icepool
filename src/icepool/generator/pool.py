@@ -418,15 +418,35 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     ) -> 'Pool[T] | icepool.Die[T]':
         return self.keep(index)
 
-    def keep_middle(self,
+    def lowest(self, keep: int = 1, drop: int = 0) -> 'Pool[T]':
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+        if drop < 0:
+            raise ValueError(f'drop={drop} cannot be negative.')
+
+        start = min(drop, self.keep_size())
+        stop = min(keep + drop, self.keep_size())
+        return self[start:stop]
+
+    def highest(self, keep: int = 1, drop: int = 0) -> 'Pool[T]':
+        if keep < 0:
+            raise ValueError(f'keep={keep} cannot be negative.')
+        if drop < 0:
+            raise ValueError(f'drop={drop} cannot be negative.')
+
+        start = self.keep_size() - min(keep + drop, self.keep_size())
+        stop = self.keep_size() - min(drop, self.keep_size())
+        return self[start:stop]
+
+    def middle(self,
                    keep: int = 1,
                    *,
                    tie: Literal['error', 'high',
                                 'low'] = 'error') -> 'Pool[T]':
-        """Keeps a number of the middle outcomes.
+        """Keep some of the middle outcomes from this multiset and drop the rest.
 
         Args:
-            keep: The number of outcomes to sum. If this is greater than the
+            keep: The number of outcomes to keep. If this is greater than the
                 current keep_size, all are kept.
             tie: What to do if `keep` is odd but the current keep_size
                 is even, or vice versa.
@@ -500,6 +520,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                 return Pool._new_from_mapping(dice, keep_tuple)
         return icepool.expression.MultisetExpression.disjoint_union(*args)
 
+
+
     def __mul__(self, other: int) -> 'Pool[T]':
         if not isinstance(other, int):
             return NotImplemented
@@ -514,66 +536,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def multiply_counts(self, constant: int, /) -> 'Pool[T]':
         return Pool._new_raw(self._dice,
                              tuple(x * constant for x in self.keep_tuple()))
-
-    def sum_lowest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-        """The sum of the lowest outcomes in the pool.
-
-        The arguments are relative to any keep_tuple already applied to this
-        pool.
-
-        Args:
-            keep: The number of lowest dice will be summed.
-            drop: This number of lowest dice will be dropped before keeping
-                dice to be summed.
-        """
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-        if drop < 0:
-            raise ValueError(f'drop={drop} cannot be negative.')
-
-        start = min(drop, self.keep_size())
-        stop = min(keep + drop, self.keep_size())
-        # Should support sum.
-        return self[start:stop].sum()  # type: ignore
-
-    def sum_highest(self, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-        """The sum of the highest outcomes in the pool.
-
-        The arguments are relative to any keep_tuple already applied to this
-        pool.
-
-        Args:
-            keep: The number of highest dice will be summed.
-            drop: This number of highest dice will be dropped before keeping
-                dice to be summed.
-        """
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-        if drop < 0:
-            raise ValueError(f'drop={drop} cannot be negative.')
-
-        start = self.keep_size() - min(keep + drop, self.keep_size())
-        stop = self.keep_size() - min(drop, self.keep_size())
-        # Should support sum.
-        return self[start:stop].sum()  # type: ignore
-
-    def sum_middle(self,
-                   keep: int = 1,
-                   *,
-                   tie: Literal['error', 'high',
-                                'low'] = 'error') -> 'icepool.Die':
-        """The sum of the middle outcomes.
-
-        Args:
-            keep: The number of outcomes to sum. If this is greater than the
-                current keep_size, all are kept.
-            tie: What to do if `keep` is odd but the current keep_size
-                is even, or vice versa.
-                * 'error' (default): Raises `IndexError`.
-                * 'low': The lower of the two possible outcomes is taken.
-                * 'high': The higher of the two possible outcomes is taken.
-        """
-        return self.keep_middle(keep, tie=tie).sum()  # type: ignore
 
     def __str__(self) -> str:
         return (

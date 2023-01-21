@@ -69,7 +69,7 @@ test_dice = [
 @pytest.mark.parametrize('keep', [0, 1, 2])
 @pytest.mark.parametrize('drop', [0, 1, 2])
 def test_pool_lowest(dice, keep, drop):
-    result = icepool.Pool(dice).sum_lowest(keep=keep, drop=drop)
+    result = icepool.Pool(dice).lowest(keep=keep, drop=drop).sum()
 
     def expected_lowest(*outcomes):
         if keep == 0:
@@ -87,7 +87,7 @@ def test_pool_lowest(dice, keep, drop):
 @pytest.mark.parametrize('keep', [0, 1, 2])
 @pytest.mark.parametrize('drop', [0, 1, 2])
 def test_pool_highest(dice, keep, drop):
-    result = icepool.Pool(dice).sum_highest(keep=keep, drop=drop)
+    result = icepool.Pool(dice).highest(keep=keep, drop=drop).sum()
 
     def expected_highest(*outcomes):
         if keep == 0:

@@ -6,7 +6,7 @@ from icepool import d6, apply
 
 def test_keep_highest_expression():
 
-    result = (d6.pool(4) & [1, 2, 3, 4, 5, 6] * 4).keep_highest(3).sum()
+    result = (d6.pool(4) & [1, 2, 3, 4, 5, 6] * 4).highest(3).sum()
 
     def drop_lowest(*outcomes):
         return sum(outcomes) - min(outcomes)

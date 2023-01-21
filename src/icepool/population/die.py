@@ -986,7 +986,8 @@ class Die(Population[T_co]):
                 * 'high': The higher outcome is taken.
                 * 'low': The lower outcome is taken.
         """
-        return self.pool(rolls).sum_middle(keep, tie=tie)
+        # Expression evaluators are difficult to type.
+        return self.pool(rolls).middle(keep, tie=tie).sum()  # type: ignore
 
     # Unary operators.
 

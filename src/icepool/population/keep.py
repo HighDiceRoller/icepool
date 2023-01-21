@@ -66,7 +66,8 @@ def middle(*dice,
             * 'high': The higher outcome is taken.
             * 'low': The lower outcome is taken.
     """
-    return icepool.Pool(dice).sum_middle(keep, tie=tie)
+    # Expression evaluators are difficult to type.
+    return icepool.Pool(dice).middle(keep, tie=tie).sum()  # type: ignore
 
 
 def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':

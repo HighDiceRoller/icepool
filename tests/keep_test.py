@@ -156,48 +156,48 @@ def test_bad_expression_keep_int():
         (d6.pool(3) & d6.pool(3))[0]
 
 
-def test_sum_middle_odd():
-    result = Pool([0, 10, 20]).sum_middle(1)
+def test_middle_odd():
+    result = Pool([0, 10, 20]).middle(1).sum()
     expected = Die([10])
     assert result == expected
 
 
-def test_sum_middle_even():
-    result = Pool([0, 10, 20, 30]).sum_middle(2)
+def test_middle_even():
+    result = Pool([0, 10, 20, 30]).middle(2).sum()
     expected = Die([30])
     assert result == expected
 
 
-def test_sum_middle_odd_index_even_pool_error():
+def test_middle_odd_index_even_pool_error():
     with pytest.raises(IndexError):
-        Pool([0, 10, 20, 30]).sum_middle(3)
+        Pool([0, 10, 20, 30]).middle(3).sum()
 
 
-def test_sum_middle_odd_index_even_pool_low():
-    result = Pool([0, 10, 20, 30]).sum_middle(3, tie='low')
+def test_middle_odd_index_even_pool_low():
+    result = Pool([0, 10, 20, 30]).middle(3, tie='low').sum()
     expected = Die([30])
     assert result == expected
 
 
-def test_sum_middle_odd_index_even_pool_high():
-    result = Pool([0, 10, 20, 30]).sum_middle(3, tie='high')
+def test_middle_odd_index_even_pool_high():
+    result = Pool([0, 10, 20, 30]).middle(3, tie='high').sum()
     expected = Die([60])
     assert result == expected
 
 
-def test_sum_middle_even_index_odd_pool_error():
+def test_middle_even_index_odd_pool_error():
     with pytest.raises(IndexError):
-        Pool([0, 10, 20, 30, 40]).sum_middle(2)
+        Pool([0, 10, 20, 30, 40]).middle(2).sum()
 
 
-def test_sum_middle_even_index_odd_pool_low():
-    result = Pool([0, 10, 20, 30, 40]).sum_middle(2, tie='low')
+def test_middle_even_index_odd_pool_low():
+    result = Pool([0, 10, 20, 30, 40]).middle(2, tie='low').sum()
     expected = Die([30])
     assert result == expected
 
 
-def test_sum_middle_even_index_odd_pool_high():
-    result = Pool([0, 10, 20, 30, 40]).sum_middle(2, tie='high')
+def test_middle_even_index_odd_pool_high():
+    result = Pool([0, 10, 20, 30, 40]).middle(2, tie='high').sum()
     expected = Die([50])
     assert result == expected
 
