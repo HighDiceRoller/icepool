@@ -58,7 +58,7 @@ from icepool.population.die_with_truth import DieWithTruth
 
 from icepool.collections import CountsKeysView, CountsValuesView, CountsItemsView
 
-from icepool.population.keep import _lowest_single, _highest_single, lowest, highest, middle
+from icepool.population.keep import lowest, highest, middle
 
 from icepool.generator.pool import Pool, standard_pool
 
@@ -80,10 +80,9 @@ import icepool.typing as typing
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
     'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
-    'from_cumulative_quantities', 'from_rv', 'align', 'align_range',
-    '_lowest_single', '_highest_single', 'lowest', 'highest', 'middle',
-    'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
-    'apply_sorted', 'Reroll', 'RerollType', 'MultisetGenerator', 'Pool',
-    'standard_pool', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
+    'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
+    'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
+    'apply', 'apply_sorted', 'Reroll', 'RerollType', 'MultisetGenerator',
+    'Pool', 'standard_pool', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
     'MultisetExpression', 'multiset_function', 'typing'
 ]
