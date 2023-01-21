@@ -8,8 +8,8 @@ from icepool.typing import Outcome, T_contra
 from typing import Literal, cast
 
 
-def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-    """The sum of the lowest outcomes among the dice.
+def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    """The lowest outcome among the rolls, or the sum of some of the lowest.
 
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.
@@ -27,8 +27,8 @@ def sum_lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     return _sum_slice(*dice, start=start, stop=stop)
 
 
-def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
-    """The sum of the highest outcomes among the dice.
+def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+    """The highest outcome among the rolls, or the sum of some of the highest.
 
     Args:
         *dice: The dice to be considered. At least one `Die` must be provided.
@@ -46,10 +46,10 @@ def sum_highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     return _sum_slice(*dice, start=start, stop=stop)
 
 
-def sum_middle(*dice,
-               keep: int = 1,
-               tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
-    """The sum of the middle outcomes among the dice.
+def middle(*dice,
+           keep: int = 1,
+           tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+    """The middle of the outcomes among the rolls, or the sum of some of the middle.
 
     Args:
         keep: The number of outcomes to sum. If this is greater than the
@@ -88,17 +88,17 @@ def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
         return sum(dice)  # type: ignore
 
     if stop == 1:
-        return lowest(*dice)
+        return _lowest_single(*dice)
 
     if start == len(dice) - 1:
-        return highest(*dice)
+        return _highest_single(*dice)
 
     # Use pool.
     # Expression evaluators are difficult to type.
     return icepool.Pool(dice)[start:stop].sum()  # type: ignore
 
 
-def lowest(
+def _lowest_single(
         *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
     """Roll all the dice and take the lowest single one.
 
@@ -116,7 +116,7 @@ def lowest(
                                               reverse=True)
 
 
-def highest(
+def _highest_single(
         *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
     """Roll all the dice and take the highest single one.
 

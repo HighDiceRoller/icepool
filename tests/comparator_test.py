@@ -208,13 +208,13 @@ def test_nearest_ge_gap():
 
 
 def test_highest():
-    result = icepool.sum_highest(icepool.d4 + 1, icepool.d6)
+    result = icepool.highest(icepool.d4 + 1, icepool.d6)
     expected = icepool.Die({2: 2, 3: 4, 4: 6, 5: 8, 6: 4})
     assert result.equals(expected)
 
 
 def test_lowest():
-    result = icepool.sum_lowest(icepool.d4 + 1, icepool.d6)
+    result = icepool.lowest(icepool.d4 + 1, icepool.d6)
     expected = icepool.Die({1: 4, 2: 8, 3: 6, 4: 4, 5: 2})
     assert result.equals(expected)
 

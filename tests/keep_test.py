@@ -123,13 +123,13 @@ def test_pool_select_mixed_sign_split():
 
 
 def test_highest():
-    result = icepool.sum_highest(icepool.d6, icepool.d6)
+    result = icepool.highest(icepool.d6, icepool.d6)
     expected = icepool.d6.sum_highest(2, 1)
     assert result.equals(expected)
 
 
 def test_lowest():
-    result = icepool.sum_lowest(icepool.d6, icepool.d6)
+    result = icepool.lowest(icepool.d6, icepool.d6)
     expected = icepool.d6.sum_lowest(2, 1)
     assert result.equals(expected)
 
