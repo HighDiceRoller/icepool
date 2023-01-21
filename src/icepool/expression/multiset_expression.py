@@ -360,6 +360,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
                drop: int = 0) -> 'MultisetExpression[T_contra]':
         """Keep some of the lowest outcomes from this multiset and drop the rest.
 
+        In contrast to the die and free function versions, this does not
+        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
+        Alternatively, you can perform some other evaluation.
+
         Args:
             keep: The number of lowest outcomes will be kept.
             drop: This number of lowest outcomes will be dropped before keeping.
@@ -371,6 +375,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 keep: int = 1,
                 drop: int = 0) -> 'MultisetExpression[T_contra]':
         """Keep some of the highest outcomes from this multiset and drop the rest.
+
+        In contrast to the die and free function versions, this does not
+        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
+        Alternatively, you can perform some other evaluation.
 
         Args:
             keep: The number of highest outcomes will be kept.

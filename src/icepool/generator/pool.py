@@ -445,6 +445,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                                 'low'] = 'error') -> 'Pool[T]':
         """Keep some of the middle outcomes from this multiset and drop the rest.
 
+        In contrast to the die and free function versions, this does not
+        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
+        Alternatively, you can perform some other evaluation.
+
         Args:
             keep: The number of outcomes to keep. If this is greater than the
                 current keep_size, all are kept.
