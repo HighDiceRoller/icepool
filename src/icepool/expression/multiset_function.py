@@ -2,7 +2,7 @@ import icepool
 import icepool.evaluator
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.expression.variable import MultisetVariable as MV, multiset_variables as mv
+from icepool.expression.variable import MultisetVariable as MV
 
 import inspect
 
@@ -104,5 +104,5 @@ def multiset_function(
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
             )
-    tuple_or_evaluator = func(*mv[:len(parameters)])
+    tuple_or_evaluator = func(*(MV(i) for i in range(len(parameters))))
     return replace_tuples_with_joint_evaluator(tuple_or_evaluator)

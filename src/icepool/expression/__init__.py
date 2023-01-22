@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
-from icepool.expression.variable import MultisetVariable, multiset_variables
+from icepool.expression.variable import MultisetVariable
 from icepool.expression.binary_operator import (
     BinaryOperatorExpression, IntersectionExpression, DifferenceExpression,
     UnionExpression, DisjointUnionExpression, SymmetricDifferenceExpression)
@@ -16,7 +16,7 @@ from icepool.expression.multiset_function import multiset_function
 
 __all__ = [
     'multiset_function', 'MultisetExpression', 'MultisetVariable',
-    'multiset_variables', 'BinaryOperatorExpression', 'IntersectionExpression',
+    'BinaryOperatorExpression', 'IntersectionExpression',
     'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
     'SymmetricDifferenceExpression', 'AdjustCountsExpression',
     'MultiplyCountsExpression', 'FloorDivCountsExpression',
