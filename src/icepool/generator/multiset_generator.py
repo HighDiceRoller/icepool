@@ -165,8 +165,9 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
 
     # Expression API.
 
-    def next_state(self, state, outcome: Outcome, bound_counts: tuple[int, ...],
-                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: Outcome, bound_counts: tuple[int,
+                                                                       ...],
+                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         # No state is needed, so we return our own __str__ for diagnostic
         # purposes.
         return str(self), bound_counts[0]

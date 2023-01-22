@@ -100,14 +100,14 @@ class KeepExpression(MultisetExpression[T_contra]):
             raise TypeError(f'Invalid type {type(index)} for index.')
         return self
 
-    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                       ...],
-                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                        ...],
+                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         if self._drop is None:
             # Use _keep_tuple.
             remaining, inner_state = state or (self._keep_tuple, None)
-            inner_state, count = self._inner.next_state(inner_state, outcome,
-                                                        bound_counts, counts)
+            inner_state, count = self._inner._next_state(
+                inner_state, outcome, bound_counts, counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'
@@ -118,8 +118,8 @@ class KeepExpression(MultisetExpression[T_contra]):
         else:
             # Use drop.
             remaining, inner_state = state or (self._drop, None)
-            inner_state, count = self._inner.next_state(inner_state, outcome,
-                                                        bound_counts, counts)
+            inner_state, count = self._inner._next_state(
+                inner_state, outcome, bound_counts, counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'

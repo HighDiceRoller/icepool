@@ -37,14 +37,14 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def symbol() -> str:
         """A symbol representing this operation."""
 
-    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                       ...],
-                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                        ...],
+                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         if len(self._prevs) == 0:
             return (), 0
         prev_states = state or (None,) * len(self._prevs)
 
-        prev_states, prev_counts = zip(*(prev.next_state(
+        prev_states, prev_counts = zip(*(prev._next_state(
             prev_state,
             outcome,
             prev_bound_counts,

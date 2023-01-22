@@ -44,9 +44,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
     """
 
     @abstractmethod
-    def next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                       ...],
-                   counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
+                                                                        ...],
+                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:

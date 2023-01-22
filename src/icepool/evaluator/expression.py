@@ -37,7 +37,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         counts = counts[self._bound_arity +
                         len(self._evaluator.prefix_generators()):]
 
-        expression_states, expression_counts = zip(*(expression.next_state(
+        expression_states, expression_counts = zip(*(expression._next_state(
             expression_state,
             outcome,
             expression_bound_counts,
