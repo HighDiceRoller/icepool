@@ -536,133 +536,133 @@
     },
     {
       "name": "@jupyterlite/app-lab",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-repl",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-retro",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/contents",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/iframe-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/javascript-kernel-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/kernel",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/licenses",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/localforage",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/pyolite-kernel-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/repl-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/retro-application-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server-extension",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/session",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/settings",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/translation",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/ui-components",
-      "versionInfo": "0.1.0-beta.17",
+      "versionInfo": "0.1.0-beta.18",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
@@ -1244,7 +1244,7 @@
     },
     {
       "name": "json5",
-      "versionInfo": "2.2.2",
+      "versionInfo": "2.2.3",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (c) 2012-2018 Aseem Kishore, and [others].\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n[others]: https://github.com/json5/json5/contributors\n"
     },
