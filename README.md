@@ -78,6 +78,10 @@ BibTeX:
 }
 ```
 
+## Backwards compatibility
+
+Frankly, this is not a high priority. If you need specific behavior, I recommend version pinning. I believe the `Die` interface to be reasonably stable, but there's a good chance that `Multiset*` will see more changes in the future.
+
 ## Inline examples
 
 ### Summing ability scores

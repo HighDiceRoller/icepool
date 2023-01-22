@@ -213,7 +213,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The elements that appear in any of the multisets."""
+        """The most of each element that appear in any of the multisets."""
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.UnionExpression(*expressions)
 
