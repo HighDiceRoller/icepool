@@ -96,7 +96,7 @@ __all__ = [
     'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
-    'apply', 'apply_sorted', 'Reroll', 'RerollType', 'MultisetGenerator',
-    'Pool', 'standard_pool', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
-    'MultisetExpression', 'multiset_function', 'typing'
+    'apply', 'apply_sorted', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
+    'MultisetGenerator', 'MultisetExpression', 'MultisetEvaluator', 'Order',
+    'Deck', 'Deal', 'multiset_function', 'typing'
 ]
