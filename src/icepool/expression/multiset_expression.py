@@ -127,6 +127,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'MultisetExpression[T_contra]':
         """The combined elements from all of the multisets.
 
+        Same as `a + b + c + ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
         Example:
         ```
         Pool([1, 2, 2, 3]) + Pool([1, 2, 4]) -> [1, 1, 2, 2, 2, 3, 4]
@@ -160,6 +164,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
         """The elements from the left multiset that are not in any of the others.
+
+        Same as `a - b - c - ...`.
+
+        Any resulting counts that would be negative are set to zero.
 
         Example:
         ```
@@ -198,6 +206,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'MultisetExpression[T_contra]':
         """The elements that all the multisets have in common.
 
+        Same as `a & b & c & ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
         Example:
         ```
         Pool([1, 2, 2, 3]) & Pool([1, 2, 4]) -> [1, 2]
@@ -232,6 +244,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'MultisetExpression[T_contra]':
         """The most of each outcome that appear in any of the multisets.
 
+        Same as `a | b | c | ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
         Example:
         ```
         Pool([1, 2, 2, 3]) | Pool([1, 2, 4]) -> [1, 2, 2, 3, 4]
@@ -265,6 +281,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
         """The elements that appear in the left or right multiset but not both.
+
+        Same as `a ^ b`.
+
+        Any negative counts are treated as zero.
 
         Example:
         ```
