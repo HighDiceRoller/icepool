@@ -78,7 +78,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
 
     @abstractmethod
-    def arity(self) -> int:
+    def _arity(self) -> int:
         """The minimum number of multisets/counts that must be provided to this expression.
 
         Any excess multisets/counts that are provided will be ignored.

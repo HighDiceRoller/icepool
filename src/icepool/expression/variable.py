@@ -32,7 +32,7 @@ class MultisetVariable(MultisetExpression[Any]):
     def _order(self):
         return Order.Any
 
-    def arity(self) -> int:
+    def _arity(self) -> int:
         return self._index + 1
 
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

@@ -178,7 +178,7 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self,)
 
-    def arity(self) -> int:
+    def _arity(self) -> int:
         return 0
 
     def min_outcome(self) -> T:
