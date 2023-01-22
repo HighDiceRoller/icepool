@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2023-01-22T23:24:35.688414Z",
+      "created": "2023-01-22T23:31:22.111828Z",
       "format": null,
-      "last_modified": "2023-01-22T23:24:20.364409Z",
+      "last_modified": "2023-01-22T23:31:06.727602Z",
       "mimetype": null,
       "name": "adnd.ipynb",
       "path": "ability_scores/adnd.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2023-01-22T23:24:35.688414Z",
+      "created": "2023-01-22T23:31:22.111828Z",
       "format": null,
-      "last_modified": "2023-01-22T23:24:20.364409Z",
+      "last_modified": "2023-01-22T23:31:06.727602Z",
       "mimetype": null,
       "name": "completely_unfair.ipynb",
       "path": "ability_scores/completely_unfair.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2023-01-22T23:24:35.688414Z",
+      "created": "2023-01-22T23:31:22.111828Z",
       "format": null,
-      "last_modified": "2023-01-22T23:24:20.364409Z",
+      "last_modified": "2023-01-22T23:31:06.727602Z",
       "mimetype": null,
       "name": "rolling_for_stats_in_groups.ipynb",
       "path": "ability_scores/rolling_for_stats_in_groups.ipynb",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2023-01-22T23:24:35.688414Z",
+      "created": "2023-01-22T23:31:22.111828Z",
       "format": null,
-      "last_modified": "2023-01-22T23:24:20.364409Z",
+      "last_modified": "2023-01-22T23:31:06.727602Z",
       "mimetype": null,
       "name": "one_set_strictly_better.ipynb",
       "path": "ability_scores/one_set_strictly_better.ipynb",
@@ -50,9 +50,9 @@
     },
     {
       "content": null,
-      "created": "2023-01-22T23:24:35.688414Z",
+      "created": "2023-01-22T23:31:22.111828Z",
       "format": null,
-      "last_modified": "2023-01-22T23:24:20.364409Z",
+      "last_modified": "2023-01-22T23:31:06.731602Z",
       "mimetype": null,
       "name": "snake_draft.ipynb",
       "path": "ability_scores/snake_draft.ipynb",
@@ -61,9 +61,9 @@
       "writable": true
     }
   ],
-  "created": "2023-01-22T23:24:35.688414Z",
+  "created": "2023-01-22T23:31:22.111828Z",
   "format": "json",
-  "last_modified": "2023-01-22T23:24:35.688414Z",
+  "last_modified": "2023-01-22T23:31:22.111828Z",
   "mimetype": null,
   "name": "ability_scores",
   "path": "ability_scores",
