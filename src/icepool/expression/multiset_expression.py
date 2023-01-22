@@ -358,15 +358,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def lowest(self,
                keep: int = 1,
                drop: int = 0) -> 'MultisetExpression[T_contra]':
-        """Keep some of the lowest outcomes from this multiset and drop the rest.
+        """Keep some of the lowest elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
         automatically sum the dice. Use `.sum()` afterwards if you want to sum.
         Alternatively, you can perform some other evaluation.
 
         Args:
-            keep: The number of lowest outcomes will be kept.
-            drop: This number of lowest outcomes will be dropped before keeping.
+            keep: The number of lowest elements will be kept.
+            drop: This number of lowest elements will be dropped before keeping.
         """
         t = (0,) * drop + (1,) * keep + (...,)
         return self.keep(t)
@@ -374,15 +374,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def highest(self,
                 keep: int = 1,
                 drop: int = 0) -> 'MultisetExpression[T_contra]':
-        """Keep some of the highest outcomes from this multiset and drop the rest.
+        """Keep some of the highest elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
         automatically sum the dice. Use `.sum()` afterwards if you want to sum.
         Alternatively, you can perform some other evaluation.
 
         Args:
-            keep: The number of highest outcomes will be kept.
-            drop: This number of highest outcomes will be dropped before keeping.
+            keep: The number of highest elements will be kept.
+            drop: This number of highest elements will be dropped before keeping.
         """
         t = (...,) + (1,) * keep + (0,) * drop
         return self.keep(t)
@@ -434,7 +434,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def count(
             self
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        """The total count over all outcomes.
+        """The total number of elements in the multiset.
 
         This is usually not very interesting unless some other operation is
         performed first. Examples:
@@ -480,7 +480,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def largest_count_and_outcome(
         self
     ) -> 'icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]':
-        """The largest matching set among the elements and its outcome."""
+        """The largest matching set among the elements and the corresponding outcome."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
 

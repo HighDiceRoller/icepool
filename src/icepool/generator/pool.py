@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 
 class Pool(MultisetGenerator[T, tuple[int]]):
-    """Represents a multiset of sorted/unordered dice, only distinguished by the outcomes they roll.
+    """Represents a multiset of outcomes resulting from the roll of several dice.
 
     This should be used in conjunction with `MultisetEvaluator` to generate a
     result.
@@ -175,7 +175,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return tuple(sorted(outcome_set))
 
     def outcomes(self) -> Sequence[T]:
-        """The union of outcomes among all dice in this pool."""
+        """The union of possible outcomes among all dice in this pool."""
         return self._outcomes
 
     def output_arity(self) -> int:
@@ -443,20 +443,20 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                    *,
                    tie: Literal['error', 'high',
                                 'low'] = 'error') -> 'Pool[T]':
-        """Keep some of the middle outcomes from this multiset and drop the rest.
+        """Keep some of the middle elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
         automatically sum the dice. Use `.sum()` afterwards if you want to sum.
         Alternatively, you can perform some other evaluation.
 
         Args:
-            keep: The number of outcomes to keep. If this is greater than the
+            keep: The number of elements to keep. If this is greater than the
                 current keep_size, all are kept.
             tie: What to do if `keep` is odd but the current keep_size
                 is even, or vice versa.
                 * 'error' (default): Raises `IndexError`.
-                * 'low': The lower of the two possible outcomes is taken.
-                * 'high': The higher of the two possible outcomes is taken.
+                * 'low': The lower of the two possible elements is taken.
+                * 'high': The higher of the two possible elements is taken.
         """
         if keep < 0:
             raise ValueError(f'keep={keep} cannot be negative.')
