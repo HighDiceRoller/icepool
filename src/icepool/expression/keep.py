@@ -15,7 +15,7 @@ class KeepExpression(MultisetExpression[T_contra]):
     """An expression to keep some of the lowest or highest elements of a multiset."""
 
     _inner: MultisetExpression[T_contra]
-    _order: Order
+    _keep_order: Order
     _keep_tuple: tuple[int, ...]
     """The left side is always the end regardless of order."""
     _drop: int | None
@@ -40,12 +40,12 @@ class KeepExpression(MultisetExpression[T_contra]):
                 else:
                     if stop >= 0:
                         # [:+b] keeps from the bottom.
-                        self._order = Order.Ascending
+                        self._keep_order = Order.Ascending
                         self._keep_tuple = (1,) * stop
                         self._drop = None
                     else:
                         # [:-b] drops from the top.
-                        self._order = Order.Descending
+                        self._keep_order = Order.Descending
                         self._keep_tuple = ()
                         self._drop = -stop
             else:
@@ -53,24 +53,24 @@ class KeepExpression(MultisetExpression[T_contra]):
                 if stop is None:
                     if start < 0:
                         # [-a:] keeps from the top.
-                        self._order = Order.Descending
+                        self._keep_order = Order.Descending
                         self._keep_tuple = (1,) * -start
                         self._drop = None
                     else:
                         # [a:] drops from the bottom.
-                        self._order = Order.Ascending
+                        self._keep_order = Order.Ascending
                         self._keep_tuple = ()
                         self._drop = start
                 else:
                     # Both are provided.
                     if start >= 0 and stop >= 0:
                         # [a:b]
-                        self._order = Order.Ascending
+                        self._keep_order = Order.Ascending
                         self._keep_tuple = (0,) * start + (1,) * (stop - start)
                         self._drop = None
                     elif start < 0 and stop < 0:
                         # [-a:-b]
-                        self._order = Order.Descending
+                        self._keep_order = Order.Descending
                         self._keep_tuple = (0,) * -stop + (1,) * (stop - start)
                         self._drop = None
                     else:
@@ -79,12 +79,12 @@ class KeepExpression(MultisetExpression[T_contra]):
                         )
         elif isinstance(index, Sequence):
             if index[0] == ...:
-                self._order = Order.Descending
+                self._keep_order = Order.Descending
                 # Type verified below.
                 self._keep_tuple = tuple(reversed(index[1:]))  # type: ignore
                 self._drop = None
             elif index[-1] == ...:
-                self._order = Order.Ascending
+                self._keep_order = Order.Ascending
                 # Type verified below.
                 self._keep_tuple = tuple(index[:-1])  # type: ignore
                 self._drop = None
@@ -129,8 +129,8 @@ class KeepExpression(MultisetExpression[T_contra]):
             remaining -= dropped
             return (remaining, inner_state), count
 
-    def order(self) -> Order:
-        return Order.merge(self._order, self._inner.order())
+    def _order(self) -> Order:
+        return Order.merge(self._keep_order, self._inner._order())
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

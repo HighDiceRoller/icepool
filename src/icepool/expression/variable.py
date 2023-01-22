@@ -29,7 +29,7 @@ class MultisetVariable(MultisetExpression[Any]):
         # a diagnostic marker.
         return str(self), counts[self._index]
 
-    def order(self):
+    def _order(self):
         return Order.Any
 
     def arity(self) -> int:

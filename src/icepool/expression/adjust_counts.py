@@ -32,8 +32,8 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
         count = self.adjust_count(count, self._constant)
         return state, count
 
-    def order(self) -> Order:
-        return self._inner.order()
+    def _order(self) -> Order:
+        return self._inner._order()
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

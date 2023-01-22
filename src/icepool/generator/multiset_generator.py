@@ -172,7 +172,7 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
         # purposes.
         return str(self), bound_counts[0]
 
-    def order(self) -> Order:
+    def _order(self) -> Order:
         return Order.Any
 
     def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
