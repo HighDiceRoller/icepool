@@ -125,7 +125,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The combined elements from all of the multisets."""
+        """The combined elements from all of the multisets.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) + Pool([1, 2, 4]) -> [1, 1, 2, 2, 2, 3, 4]
+        ```
+        """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.DisjointUnionExpression(*expressions)
 
@@ -154,6 +160,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
         """The elements from the left multiset that are not in any of the others.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) - Pool([1, 2, 4]) -> [2, 3]
+        ```
 
         If no arguments are given, the result will be an empty multiset, i.e.
         all zero counts.
@@ -185,7 +196,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The elements that all the multisets have in common."""
+        """The elements that all the multisets have in common.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) & Pool([1, 2, 4]) -> [1, 2]
+        ```
+        """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.IntersectionExpression(*expressions)
 
@@ -213,7 +230,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The most of each element that appear in any of the multisets."""
+        """The most of each outcome that appear in any of the multisets.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) | Pool([1, 2, 4]) -> [1, 2, 2, 3, 4]
+        ```
+        """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.UnionExpression(*expressions)
 
@@ -241,7 +264,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra]':
-        """The elements that appear in the left or right multiset but not both."""
+        """The elements that appear in the left or right multiset but not both.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) ^ Pool([1, 2, 4]) -> [2, 3, 4]
+        ```
+        """
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 

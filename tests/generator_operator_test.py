@@ -1,7 +1,9 @@
+import operator
 import icepool
 import pytest
 
-from icepool import d6
+from icepool import d6, Pool
+from icepool.population.die import Die
 
 
 def test_difference():
@@ -32,3 +34,18 @@ def test_multiple_intersection():
     result = d6.pool(1).intersection([d6], [d6]).sum()
     expected = (2 @ d6 == 12) * d6
     assert result == expected
+
+
+ops_and_expected = [
+    (operator.add, (1, 1, 2, 2, 2, 3, 4)),
+    (operator.sub, (2, 3)),
+    (operator.and_, (1, 2)),
+    (operator.or_, (1, 2, 2, 3, 4)),
+    (operator.xor, (2, 3, 4)),
+]
+
+
+@pytest.mark.parametrize('op,expected', ops_and_expected)
+def test_operator_examples(op, expected):
+    result = op(Pool([1, 2, 2, 3]), Pool([1, 2, 4])).expand()
+    assert result == Die([expected])
