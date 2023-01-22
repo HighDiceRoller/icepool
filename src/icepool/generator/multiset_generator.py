@@ -175,7 +175,7 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
     def _order(self) -> Order:
         return Order.Any
 
-    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self,)
 
     def _arity(self) -> int:

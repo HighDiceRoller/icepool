@@ -67,19 +67,20 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
         return self._cached_arity
 
     @cached_property
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _cached_bound_generators(
+            self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return reduce(operator.add,
-                      (prev.bound_generators() for prev in self._prevs))
+                      (prev._bound_generators() for prev in self._prevs))
 
-    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._bound_generators
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._cached_bound_generators
 
     def _split_bound_counts(self,
                             *bound_counts: int) -> 'Iterable[tuple[int, ...]]':
         """Splits a tuple of counts into one set of bound counts per expression."""
         index = 0
         for prev in self._prevs:
-            counts_length = len(prev.bound_generators())
+            counts_length = len(prev._bound_generators())
             yield bound_counts[index:index + counts_length]
             index += counts_length
 

@@ -87,7 +87,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
 
     @abstractmethod
-    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         """Returns a sequence of bound generators."""
 
     @staticmethod

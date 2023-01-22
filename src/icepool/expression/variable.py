@@ -35,7 +35,7 @@ class MultisetVariable(MultisetExpression[Any]):
     def _arity(self) -> int:
         return self._index + 1
 
-    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return ()
 
     def __str__(self) -> str:

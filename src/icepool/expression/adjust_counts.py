@@ -36,11 +36,12 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
         return self._inner._order()
 
     @cached_property
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner.bound_generators()
+    def _cached_bound_generators(
+            self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._inner._bound_generators()
 
-    def bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._bound_generators
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._cached_bound_generators
 
     def _arity(self) -> int:
         return self._inner._arity()

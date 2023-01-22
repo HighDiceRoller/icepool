@@ -92,7 +92,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         """The entire flattened list of bound generators."""
         return tuple(
-            itertools.chain.from_iterable(expression.bound_generators()
+            itertools.chain.from_iterable(expression._bound_generators()
                                           for expression in self._expressions))
 
     @cached_property
@@ -104,7 +104,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         """Splits a tuple of counts into one set of bound counts per expression."""
         index = 0
         for expression in self._expressions:
-            counts_length = len(expression.bound_generators())
+            counts_length = len(expression._bound_generators())
             yield bound_counts[index:index + counts_length]
             index += counts_length
 
