@@ -1,3 +1,20 @@
+## 0.25.0
+
+Expanded multiset processing with multiset expressions.
+
+* `OutcomeCountGenerator`, `OutcomeCountEvaluator` renamed to `MultisetGenerator`, `MultisetEvaluator`.
+* `multiset_function` is an easy way to create joint evaluators.
+* `Pool` indexing is now relative rather than absolute.
+* Renamed `pool.sorted_roll_counts` to `pool.keep` and `pool.keep_tuple`.
+* `Die` versions of `sum_highest` etc. renamed to just `highest`; these always return dice.
+* `MultisetExpression` (including generators like `Pool`) have `highest()` returning an expression.
+* `Die` operators now does mixed vector-scalar binary operations by broadcasting the scalar.
+* Add `middle()` methods.
+* Remove `*generators` argument from `evaluator.order()`, `evaluator.final_outcome()`.
+* `*generators` argument of `evaluator.alignment` replaced with the union of all generator outcomes.
+* Removed suits.
+* Stop using `__class_getitem__`, which is intended for typing only.
+
 ## 0.24.0
 
 Reworked built-in generators and evaluators.
