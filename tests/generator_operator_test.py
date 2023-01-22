@@ -2,8 +2,7 @@ import operator
 import icepool
 import pytest
 
-from icepool import d6, Pool
-from icepool.population.die import Die
+from icepool import d6, Pool, Deck, Die
 
 
 def test_difference():
@@ -48,4 +47,34 @@ ops_and_expected = [
 @pytest.mark.parametrize('op,expected', ops_and_expected)
 def test_operator_examples(op, expected):
     result = op(Pool([1, 2, 2, 3]), Pool([1, 2, 4])).expand()
+    assert result == Die([expected])
+
+
+@pytest.mark.parametrize('op,expected', ops_and_expected)
+def test_operator_examples_deal(op, expected):
+    result = op(Deck([1, 2, 2, 3]).deal(4), Deck([1, 2, 4]).deal(3)).expand()
+    assert result == Die([expected])
+
+
+def test_example_multiply_counts():
+    expected = (Pool([1, 2, 2, 3]) * 2).expand()
+    result = Die([(1, 1, 2, 2, 2, 2, 3, 3)])
+    assert result == Die([expected])
+
+
+def test_example_divide_counts():
+    expected = (Pool([1, 2, 2, 3]) // 2).expand()
+    result = Die([(2,)])
+    assert result == Die([expected])
+
+
+def test_example_filter_counts():
+    expected = Pool([1, 2, 2, 3]).filter_counts(2).expand()
+    result = Die([(2, 2)])
+    assert result == Die([expected])
+
+
+def test_example_unique():
+    expected = Pool([1, 2, 2, 3]).unique().expand()
+    result = Die([(1, 2, 3)])
     assert result == Die([expected])

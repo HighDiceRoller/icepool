@@ -292,6 +292,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """Multiplies all counts by a constant.
 
         Same as `self * constant`.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
+        ```
         """
         return self * constant
 
@@ -304,6 +309,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """Divides all counts by a constant (rounding down).
 
         Same as `self // constant`.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) // 2 -> [2]
+        ```
         """
         return self // constant
 
@@ -312,6 +322,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         For example, `generator.filter_counts(2)` would only produce
         pairs and better.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]).filter_counts(2) -> [2, 2]
+        ```
         """
         return icepool.expression.FilterCountsExpression(self, min_count)
 
@@ -320,6 +335,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         For example, `generator.unique(2)` would count each outcome at most
         twice.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
+        ```
         """
         return icepool.expression.UniqueExpression(self, max_count)
 
