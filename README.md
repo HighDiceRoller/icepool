@@ -30,7 +30,7 @@ Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discu
 
 ## API documentation
 
-[pdoc on GitHub.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
+[pdoc on GitHub.](https://highdiceroller.github.io/icepool/apidoc/latest/icepool.html)
 
 ## JupyterLite notebooks
 
