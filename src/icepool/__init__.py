@@ -98,5 +98,5 @@ __all__ = [
     'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
     'apply', 'apply_sorted', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
     'MultisetGenerator', 'MultisetExpression', 'MultisetEvaluator', 'Order',
-    'Deck', 'Deal', 'multiset_function', 'typing'
+    'Deck', 'Deal', 'multiset_function', 'typing', 'evaluator'
 ]

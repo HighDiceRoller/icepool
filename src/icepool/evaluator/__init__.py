@@ -19,13 +19,13 @@ from icepool.evaluator.keep import KeepEvaluator
 from icepool.evaluator.expression import ExpressionEvaluator
 
 __all__ = [
-    'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator', 'CountEvaluator',
-    'count_evaluator', 'HighestOutcomeAndCountEvaluator',
+    'JointEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
+    'CountEvaluator', 'count_evaluator', 'HighestOutcomeAndCountEvaluator',
     'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator',
     'AllCountsEvaluator', 'LargestStraightEvaluator',
     'LargestStraightAndOutcomeEvaluator', 'ComparisonEvaluator',
     'IsSubsetEvaluator', 'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
     'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
-    'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'JointEvaluator',
-    'ConstantEvaluator', 'ExpressionEvaluator'
+    'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'ConstantEvaluator',
+    'KeepEvaluator', 'ExpressionEvaluator'
 ]
