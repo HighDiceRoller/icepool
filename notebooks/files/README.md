@@ -2,7 +2,7 @@ This collection of Jupyter notebooks gives several examples of using the `icepoo
 
 [Repository.](https://github.com/HighDiceRoller/icepool)
 
-[API documentation.](https://highdiceroller.github.io/icepool/apidoc/icepool.html)
+[API documentation.](https://highdiceroller.github.io/icepool/apidoc/latest/icepool.html)
 
 If you have questions or comments, feel free to message me on [Reddit](https://www.reddit.com/user/HighDiceRoller) or [Twitter](https://twitter.com/highdiceroller).
 
