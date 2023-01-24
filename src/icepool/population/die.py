@@ -307,8 +307,8 @@ class Die(Population[T_co]):
         it is not the same as `@`, which rolls the right side multiple times,
         or `d()`, which creates a standard die.
 
-        The comparators (`<, <=, >=, >, ==, !=, cmp`) use a linear algorithm
-        using the fact that outcomes are totally ordered.
+        For non-tuples, the comparators (`<, <=, >=, >, ==, !=, cmp`) use a
+        linear algorithm using the fact that outcomes are totally ordered.
 
         `==` and `!=` additionally set the truth value of the `Die` according to
         whether the dice themselves are the same or not.
@@ -1250,32 +1250,28 @@ class Die(Population[T_co]):
 
     def __lt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
-        ):
+        if self.tuple_len() is not None:
             return self.binary_operator(other, operator.lt)
         else:
             return Die._lt_le(operator.lt, self, other)
 
     def __le__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
-        ):
+        if self.tuple_len() is not None:
             return self.binary_operator(other, operator.le)
         else:
             return Die._lt_le(operator.le, self, other)
 
     def __ge__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
-        ):
+        if self.tuple_len() is not None:
             return self.binary_operator(other, operator.ge)
         else:
             return Die._lt_le(operator.le, other, self)
 
     def __gt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
-        ):
+        if self.tuple_len() is not None:
             return self.binary_operator(other, operator.gt)
         else:
             return Die._lt_le(operator.lt, other, self)
@@ -1328,8 +1324,7 @@ class Die(Population[T_co]):
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
-            if self.tuple_len() is not None and self.tuple_len(
-            ) == other.tuple_len():
+            if self.tuple_len() is not None:
                 return self.binary_operator(other_die, operator.eq)._data
             else:
                 return Die._eq(False, self, other_die)
@@ -1344,8 +1339,7 @@ class Die(Population[T_co]):
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
-            if self.tuple_len() is not None and self.tuple_len(
-            ) == other.tuple_len():
+            if self.tuple_len() is not None:
                 return self.binary_operator(other_die, operator.ne)._data
             else:
                 return Die._eq(True, self, other_die)
