@@ -1250,19 +1250,35 @@ class Die(Population[T_co]):
 
     def __lt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        return Die._lt_le(operator.lt, self, other)
+        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
+        ):
+            return self.binary_operator(other, operator.lt)
+        else:
+            return Die._lt_le(operator.lt, self, other)
 
     def __le__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        return Die._lt_le(operator.le, self, other)
+        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
+        ):
+            return self.binary_operator(other, operator.le)
+        else:
+            return Die._lt_le(operator.le, self, other)
 
     def __ge__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        return Die._lt_le(operator.le, other, self)
+        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
+        ):
+            return self.binary_operator(other, operator.ge)
+        else:
+            return Die._lt_le(operator.le, other, self)
 
     def __gt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        return Die._lt_le(operator.lt, other, self)
+        if self.tuple_len() is not None and self.tuple_len() == other.tuple_len(
+        ):
+            return self.binary_operator(other, operator.gt)
+        else:
+            return Die._lt_le(operator.lt, other, self)
 
     # Equality operators. These produce a `DieWithTruth`.
 
@@ -1311,10 +1327,14 @@ class Die(Population[T_co]):
     def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
-        def data_callback():
-            return Die._eq(False, self, other_die)
+        def data_callback() -> Counts[bool]:
+            if self.tuple_len() is not None and self.tuple_len(
+            ) == other.tuple_len():
+                return self.binary_operator(other_die, operator.eq)._data
+            else:
+                return Die._eq(False, self, other_die)
 
-        def truth_value_callback():
+        def truth_value_callback() -> bool:
             return self.equals(other)
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
@@ -1323,10 +1343,14 @@ class Die(Population[T_co]):
     def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
-        def data_callback():
-            return Die._eq(True, self, other_die)
+        def data_callback() -> Counts[bool]:
+            if self.tuple_len() is not None and self.tuple_len(
+            ) == other.tuple_len():
+                return self.binary_operator(other_die, operator.ne)._data
+            else:
+                return Die._eq(True, self, other_die)
 
-        def truth_value_callback():
+        def truth_value_callback() -> bool:
             return not self.equals(other)
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)

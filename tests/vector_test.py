@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, d8, cartesian_product
+from icepool import d6, d8, cartesian_product, Die
 
 
 def test_cartesian_product():
@@ -117,4 +117,10 @@ def test_vector_scalar_mult():
 def test_pool_vector_sum():
     result = cartesian_product(d6, d6).pool(2).sum()
     expected = cartesian_product(2 @ d6, 2 @ d6)
+    assert result == expected
+
+
+def test_vector_comparison():
+    result = cartesian_product(d6, d6) > cartesian_product(0, 0)
+    expected = Die([(True, True)], times=36)
     assert result == expected
