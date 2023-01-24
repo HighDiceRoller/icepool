@@ -1,4 +1,8 @@
-## 0.25.1
+## v0.25.2
+
+Comparisons on dice with tuple outcomes are now performed elementwise.
+
+## v0.25.1
 
 Testing GitHub workflows.
 
