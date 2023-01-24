@@ -35,6 +35,13 @@ def test_apply_sorted_4d6kh3():
     assert result.equals(expected)
 
 
+def test_apply_sorted_highest_4d6kh3():
+    result = icepool.apply_sorted.highest(3)((lambda x, y, z: x + y + z), d6,
+                                             d6, d6, d6)
+    expected = icepool.d6.highest(4, 3)
+    assert result.equals(expected)
+
+
 def test_apply_no_dice():
     result = icepool.apply(lambda: 1)
     expected = icepool.Die({1: 1})

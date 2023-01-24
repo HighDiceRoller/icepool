@@ -359,6 +359,11 @@ class ApplySorted():
         again_depth: int = 1,
         again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
     ) -> 'icepool.Die[T]':
+        """Calls the function with the sorted rolls of the dice.
+
+        Returns:
+            A `Die` with the
+        """
         if not callable(func):
             raise TypeError(
                 'The first argument must be callable. Did you forget to provide a function?'
@@ -382,6 +387,7 @@ class ApplySorted():
             again_depth: int = 1,
             again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
         ) -> 'icepool.Die[T]':
+            """Calls the function with the with the sorted rolls of the dice with indexing."""
             if not callable(func):
                 raise TypeError(
                     'The first argument must be callable. Did you forget to provide a function?'
@@ -393,6 +399,71 @@ class ApplySorted():
             else:
                 # Expression evaluators are difficult to type.
                 return icepool.Pool(dice)[index].expand().map(  # type: ignore
+                    func,
+                    star=True,
+                    again_depth=again_depth,
+                    again_end=again_end)
+
+        return result
+
+    def lowest(self, keep=1, drop=0) -> 'Callable[..., icepool.Die[T]]':
+        """Calls the function with the lowest sorted rolls of the dice."""
+
+        def result(
+            func:
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+            *dice: 'Outcome | icepool.Die',
+            again_depth: int = 1,
+            again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+        ) -> 'icepool.Die[T]':
+            # Expression evaluators are difficult to type.
+            return icepool.Pool(dice).lowest(keep,
+                                             drop).expand().map(  # type: ignore
+                                                 func,
+                                                 star=True,
+                                                 again_depth=again_depth,
+                                                 again_end=again_end)
+
+        return result
+
+    def highest(self, keep=1, *, drop=0) -> 'Callable[..., icepool.Die[T]]':
+        """Calls the function with the highest sorted rolls of the dice."""
+
+        def result(
+            func:
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+            *dice: 'Outcome | icepool.Die',
+            again_depth: int = 1,
+            again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+        ) -> 'icepool.Die[T]':
+            # Expression evaluators are difficult to type.
+            return icepool.Pool(dice).highest(
+                keep, drop).expand().map(  # type: ignore
+                    func,
+                    star=True,
+                    again_depth=again_depth,
+                    again_end=again_end)
+
+        return result
+
+    def middle(
+        self,
+        keep: int = 1,
+        *,
+        tie: Literal['error', 'high', 'low'] = 'error'
+    ) -> 'Callable[..., icepool.Die[T]]':
+        """Calls the function with the middle sorted rolls of the dice."""
+
+        def result(
+            func:
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+            *dice: 'Outcome | icepool.Die',
+            again_depth: int = 1,
+            again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+        ) -> 'icepool.Die[T]':
+            # Expression evaluators are difficult to type.
+            return icepool.Pool(dice).middle(
+                keep, tie=tie).expand().map(  # type: ignore
                     func,
                     star=True,
                     again_depth=again_depth,

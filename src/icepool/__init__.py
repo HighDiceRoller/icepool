@@ -56,8 +56,16 @@ apply_sorted = icepool.population.func.apply_sorted
 
 This is more efficient than `apply()` but still not particularly efficient.
 
-You can use `apply_sorted[index]()` to only keep certain sorted indexes.
-See `Pool.keep()` for documentation.
+To keep only certain sorted positions, you can use the following as the `Pool`
+methods of the same names:
+
+```
+apply_sorted[index](func, *dice)
+apply_sorted.keep(index)(func, *dice)
+apply_sorted.lowest(keep, drop)(func, *dice)
+apply_sorted.highest(keep, drop)(func, *dice)
+apply_sorted.middle(keep, tie)(func, *dice)
+```
 
 Args:
     func: A function that takes one argument per input `Die` and returns an
