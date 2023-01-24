@@ -122,7 +122,7 @@ Fortunately, Icepool can do this simply and reasonably efficiently with no expli
 ```python
 import icepool
 
-class AllMatchingSets(icepool.OutcomeCountEvaluator):
+class AllMatchingSets(icepool.MultisetEvaluator):
     def next_state(self, state, outcome, count):
         """next_state computes a "running total"
         given one outcome at a time and how many dice rolled that outcome.
