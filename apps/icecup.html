@@ -49,7 +49,9 @@
     <canvas id="chart"></canvas>
 </div>
 
-<div id="computation_time">Computation time:</div>
+<span style="float: left;" id="computation_time">Computation time:</span>
+<span style="float: right;" id="icepool_version">Icepool version:</span>
+<div style="clear: both;"></div>
 
 <div class="text_content">
 
@@ -92,8 +94,14 @@ async function initPyodide(){
         (s) => {self.postMessage({ cmd: 'setLoadingText', text: s });});
     
     self.postMessage({ cmd: 'setLoadingText', text: 'Loading icepool' });
-    await pyodide.runPythonAsync(`import micropip;await micropip.install('icepool')`)
-    self.postMessage({ cmd: 'setLoadingText', text: '' });
+    let icepoolVersion = await pyodide.runPythonAsync(`
+import micropip
+await micropip.install('icepool')
+micropip.list()['icepool'].version
+`)
+    self.postMessage({ cmd: 'setIcepoolVersion', text: icepoolVersion });
+        
+    self.postMessage({ cmd: 'setLoadingText', text: '' });;
     return pyodide;
 }
 
@@ -291,6 +299,8 @@ function createPyodideWorker() {
             updateComputationTime(msg.data.computationTime);
         } else if (msg.data.cmd === "setLoadingText") {
             setLoadingText(msg.data.text);
+        } else if (msg.data.cmd === "setIcepoolVersion") {
+            setIcepoolVersion(msg.data.text);
         }
     }
     return worker;
@@ -420,6 +430,10 @@ function setLoadingText(text) {
         };
     }
     chart.update();
+}
+
+function setIcepoolVersion(text) {
+    document.getElementById("icepool_version").textContent = 'Icepool version: ' + text;
 }
 
 function clearOutput() {
