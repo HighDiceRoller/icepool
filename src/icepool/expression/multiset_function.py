@@ -28,8 +28,10 @@ def replace_tuples_with_joint_evaluator(
     elif isinstance(arg, icepool.Die):
         # Die resulting from a fully-bound expression.
         return icepool.evaluator.ConstantEvaluator(arg)
-    else:
+    elif isinstance(arg, MultisetEvaluator):
         return arg
+    else:
+        raise TypeError(f'Expected evaluator, got {type(arg)}.')
 
 
 @overload
