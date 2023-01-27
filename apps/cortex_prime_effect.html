@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cortex Prime effect die calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <meta property="og:title" content="Cortex Prime calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/cortex_prime.html" />
+    <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/cortex_prime_effect_preview.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cortex Prime calculator" />
+    <meta name="twitter:site" content="@highdiceroller" />
+    <meta name="twitter:creator" content="@highdiceroller" />
+    <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/cortex_prime_effect_preview.png" />
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="common.js"></script>
+</head>
+
+<body>
+    <h1>Cortex Prime effect die calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
+    
+    <div class="floating_controls">
+        <form id="inputs">
+            <table>
+                <tr>
+                    <th></th>
+                    <th>d4</th>
+                    <th>d6</th>
+                    <th>d8</th>
+                    <th>d10</th>
+                    <th>d12</th>
+                    <th style="border-left: 2px solid #bfbfbf;">Keep</th>
+                </tr>
+                <tr id="pinputs">
+                    <th style="text-align:left;">Player</th>
+                    <td><input name="p4" id="p4" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p6" id="p6" type="number" min="0" max="10" value="2" required onwheel="" /></td>
+                    <td><input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="pk" id="pk" type="number" min="0" max="10" value="2" required onwheel="" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <h2>Probability of beating target while keeping effect die</h2>
+        
+    <div style="width: 90%; margin: auto;">
+        <div class="chart_container"><canvas id="effectChart"></canvas></div>
+    </div>
+    
+    <script type="text/javascript">
+        setInputsFromSearchQuery();
+
+        var effectChartContext = document.getElementById('effectChart').getContext('2d');
+        var effectChart = new Chart(effectChartContext, {
+            type: 'line',
+            data: {
+                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+                datasets: [
+                    {
+                        label: 'Fail',
+                        fill: '+1',
+                        borderColor: 'rgba(220, 0, 0, 1.0)',
+                        backgroundColor: 'rgba(220, 0, 0, 0.5)',
+                        radius: 0,
+                        data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+                    },
+                    {
+                        label: 'd4',
+                        fill: '+1',
+                        borderColor: 'rgba(220, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(220, 200, 0, 0.5)',
+                        pointStyle: 'triangle',
+                        radius: 5,
+                        data: [],
+                    },
+                    {
+                        label: 'd6',
+                        fill: '+1',
+                        borderColor: 'rgba(0, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(0, 200, 0, 0.5)',
+                        pointStyle: 'rect',
+                        radius: 4,
+                        data: [],
+                    },
+                    {
+                        label: 'd8',
+                        fill: '+1',
+                        borderColor: 'rgba(0, 200, 240, 1.0)',
+                        backgroundColor: 'rgba(0, 200, 240, 0.5)',
+                        pointStyle: 'rectRot',
+                        radius: 4,
+                        data: [],
+                    },
+                    {
+                        label: 'd10',
+                        fill: '+1',
+                        borderColor: 'rgba(0, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(0, 0, 240, 0.5)',
+                        pointStyle: 'crossRot',
+                        radius: 5,
+                        data: [],
+                    },
+                    {
+                        label: 'd12',
+                        fill: {value: 0},
+                        borderColor: 'rgba(220, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(220, 0, 240, 0.5)',
+                        pointStyle: 'circle',
+                        radius: 4,
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Total',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display: true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                    legend: {
+                        labels: {
+                            usePointStyle: true,
+                        },
+                    },
+                    tooltip : {
+                        usePointStyle: true,
+                    },
+                },
+            },
+        });
+        
+        function setLoadingText(text) {
+            console.log(text);
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
+                return;
+            }
+            effectChart.options.plugins.title.text = loadingText[0];
+            effectChart.update();
+        }
+        
+        async function initPyodide() {
+            setLoadingText('Loading pyodide')
+            let pyodide = await loadPyodide({
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.21.3/full/",
+            });
+
+            await pyodide.loadPackage(["micropip"], setLoadingText);
+
+            setLoadingText('Loading icepool')
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('icepool==0.25.2')
+                
+                import js
+                import pyodide
+                from bisect import bisect_left
+                from icepool import Die, Pool, multiset_function
+                from functools import cache
+                
+                possible_die_sizes = [4, 6, 8, 10, 12]
+                
+                def hitch_die(die_size):
+                    return Die({0:1, die_size: die_size - 1})
+                
+                def number_die(die_size):
+                    return Die(range(2, die_size + 1))
+                
+                @cache
+                def make_evaluator(keep):
+                    return multiset_function(lambda a: a.highest(keep=keep).sum())
+                    
+                @cache
+                def make_low_high_evaluator(keep):
+                    return multiset_function(lambda a, b: (a+b).highest(keep=keep).sum())
+                
+                def updateResults():
+                    die_sizes = sum(([hitch_die(die_size)] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+                    hitch_pool = Pool(die_sizes)
+                    non_hitch = (hitch_pool - {0: 100}).expand()
+                    
+                    keep = int(js.document.getElementById('pk').value)
+                    
+                    evaluator = make_evaluator(keep)
+                    low_high_evaluator = make_low_high_evaluator(keep)
+                    
+                    # d4.
+                    def total_d4(non_hitch_outcome):
+                        if len(non_hitch_outcome) == 0:
+                            return 0
+                        pool = Pool([number_die(x) for x in non_hitch_outcome])
+                        return evaluator(pool)
+                    result = non_hitch.map(total_d4).clip(3, 25).set_range(3, 25)
+                    js.effectChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+                    
+                    for effect_die in [6, 8, 10, 12]:
+                        def total_with_effect(non_hitch_outcome):
+                            if len(non_hitch_outcome) < 2:
+                                return 0
+                            if non_hitch_outcome[-1] < effect_die:
+                                return 0
+                            index = bisect_left(non_hitch_outcome, effect_die)
+                            low_pool = Pool([number_die(x) for x in non_hitch_outcome[:index]])
+                            high_pool = Pool([number_die(x) for x in non_hitch_outcome[index:]])[1:]
+                            return low_high_evaluator(low_pool, high_pool)
+
+                        result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
+                        
+                        data_set_index = effect_die // 2 - 1
+                        js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+            `);
+
+            effectChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display: false,
+            };
+            return pyodide;
+        }
+        let pyodideReadyPromise = initPyodide();
+        
+        async function updateRoll() {
+            let pyodide = await pyodideReadyPromise;
+
+            pyodide.runPython(`
+                updateResults()
+            `);
+            
+            effectChart.update();
+        }
+        
+        function validateInputsAndUpdate() {
+            if (validateInputs()) {
+                updateRoll();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        function updateIfValid() {
+            if (inputsAreValid()) {
+                updateRoll();
+                updateSearchQueryFromForms();
+            }
+        }
+        
+        updateRoll();
+        updateSearchQueryFromForms();
+        
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validateInputsAndUpdate);
+        pinputs.addEventListener('input', updateIfValid);
+    </script>
+    
+    <div class="text_content">
+        <h2>Notes</h2>
+
+        <ul>
+            <li>Remember that players lose ties.</li>
+            <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do
+                not contribute to the total.</li>
+        </ul>
+
+        <h3>How does it work?</h3>
+        <p>
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a
+                href="https://www.chartjs.org/">Chart.js</a>,
+            and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
+        </p>
+
+        <h3>Prior work</h3>
+        <p>
+            Here is a <a href="https://ramblurr.github.io/firefly-rpg-generator/probability.html">previous calculator by
+                Casey Link</a>, which uses exponential-time enumeration of all possible die results.
+            While my calculator needs to load <a href="https://pyodide.org/en/stable/">pyodide</a>, it can compute
+            larger pools at interactive speed due to a <a
+                href="https://github.com/HighDiceRoller/icepool/blob/main/papers/icepool_preprint.pdf">polynomial-time
+                algorithm</a>.
+        </p>
+
+        <p>
+            Questions, comments, or suggestions? Find me on <a
+                href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a
+                href="https://twitter.com/highdiceroller">Twitter</a>.
+        </p>
+    </div>
+</body>
