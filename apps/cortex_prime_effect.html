@@ -51,7 +51,7 @@
         </form>
     </div>
     
-    <h2>Probability of beating target while keeping effect die</h2>
+    <h2>Probability of beating difficulty with effect die</h2>
         
     <div style="width: 90%; margin: auto;">
         <div class="chart_container"><canvas id="effectChart"></canvas></div>
@@ -70,7 +70,8 @@
                         label: 'Fail',
                         fill: '+1',
                         borderColor: 'rgba(220, 0, 0, 1.0)',
-                        backgroundColor: 'rgba(220, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(220, 0, 0, 0.25)',
+                        borderWidth: 0,
                         radius: 0,
                         data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
                     },
@@ -78,7 +79,7 @@
                         label: 'd4',
                         fill: '+1',
                         borderColor: 'rgba(220, 200, 0, 1.0)',
-                        backgroundColor: 'rgba(220, 200, 0, 0.5)',
+                        backgroundColor: 'rgba(220, 200, 0, 0.25)',
                         pointStyle: 'triangle',
                         radius: 5,
                         data: [],
@@ -87,7 +88,7 @@
                         label: 'd6',
                         fill: '+1',
                         borderColor: 'rgba(0, 200, 0, 1.0)',
-                        backgroundColor: 'rgba(0, 200, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 200, 0, 0.25)',
                         pointStyle: 'rect',
                         radius: 4,
                         data: [],
@@ -96,7 +97,7 @@
                         label: 'd8',
                         fill: '+1',
                         borderColor: 'rgba(0, 200, 240, 1.0)',
-                        backgroundColor: 'rgba(0, 200, 240, 0.5)',
+                        backgroundColor: 'rgba(0, 200, 240, 0.25)',
                         pointStyle: 'rectRot',
                         radius: 4,
                         data: [],
@@ -105,7 +106,7 @@
                         label: 'd10',
                         fill: '+1',
                         borderColor: 'rgba(0, 0, 240, 1.0)',
-                        backgroundColor: 'rgba(0, 0, 240, 0.5)',
+                        backgroundColor: 'rgba(0, 0, 240, 0.25)',
                         pointStyle: 'crossRot',
                         radius: 5,
                         data: [],
@@ -114,7 +115,7 @@
                         label: 'd12',
                         fill: {value: 0},
                         borderColor: 'rgba(220, 0, 240, 1.0)',
-                        backgroundColor: 'rgba(220, 0, 240, 0.5)',
+                        backgroundColor: 'rgba(220, 0, 240, 0.25)',
                         pointStyle: 'circle',
                         radius: 4,
                         data: [],
@@ -288,6 +289,8 @@
         <h2>Notes</h2>
 
         <ul>
+            <li>The vertical <b>position</b> of each <b>curve</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of at <b>least</b> that size.</li>
+            <li>The vertical <b>extent</b> of each <b>area</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of <b>exactly</b> that size.</li>
             <li>Remember that players lose ties.</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do
                 not contribute to the total.</li>
