@@ -67,43 +67,38 @@
                 labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
                 datasets: [
                     {
-                        label: 'Fail',
+                        label: 'd4',
+                        order: 4,
                         fill: '+1',
                         borderColor: 'rgba(220, 0, 0, 1.0)',
                         backgroundColor: 'rgba(220, 0, 0, 0.25)',
-                        borderWidth: 0,
-                        radius: 0,
-                        data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                    },
-                    {
-                        label: 'd4',
-                        fill: '+1',
-                        borderColor: 'rgba(220, 200, 0, 1.0)',
-                        backgroundColor: 'rgba(220, 200, 0, 0.25)',
                         pointStyle: 'triangle',
                         radius: 5,
                         data: [],
                     },
                     {
                         label: 'd6',
+                        order: 3,
                         fill: '+1',
-                        borderColor: 'rgba(0, 200, 0, 1.0)',
-                        backgroundColor: 'rgba(0, 200, 0, 0.25)',
+                        borderColor: 'rgba(220, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(220, 200, 0, 0.25)',
                         pointStyle: 'rect',
                         radius: 4,
                         data: [],
                     },
                     {
                         label: 'd8',
+                        order: 2,
                         fill: '+1',
-                        borderColor: 'rgba(0, 200, 240, 1.0)',
-                        backgroundColor: 'rgba(0, 200, 240, 0.25)',
+                        borderColor: 'rgba(0, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(0, 200, 0, 0.25)',
                         pointStyle: 'rectRot',
                         radius: 4,
                         data: [],
                     },
                     {
                         label: 'd10',
+                        order: 1,
                         fill: '+1',
                         borderColor: 'rgba(0, 0, 240, 1.0)',
                         backgroundColor: 'rgba(0, 0, 240, 0.25)',
@@ -113,6 +108,7 @@
                     },
                     {
                         label: 'd12',
+                        order: 0,
                         fill: {value: 0},
                         borderColor: 'rgba(220, 0, 240, 1.0)',
                         backgroundColor: 'rgba(220, 0, 240, 0.25)',
@@ -225,7 +221,7 @@
                         pool = Pool([number_die(x) for x in non_hitch_outcome])
                         return evaluator(pool)
                     result = non_hitch.map(total_d4).clip(3, 25).set_range(3, 25)
-                    js.effectChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+                    js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
                     
                     for effect_die in [6, 8, 10, 12]:
                         def total_with_effect(non_hitch_outcome):
@@ -240,7 +236,7 @@
 
                         result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
                         
-                        data_set_index = effect_die // 2 - 1
+                        data_set_index = effect_die // 2 - 2
                         js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
             `);
 
@@ -289,7 +285,7 @@
         <h2>Notes</h2>
 
         <ul>
-            <li>The vertical <b>position</b> of each <b>curve</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of at <b>least</b> that size.</li>
+            <li>The vertical <b>position</b> of each <b>curve</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of <b>at least</b> that size.</li>
             <li>The vertical <b>extent</b> of each <b>area</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of <b>exactly</b> that size.</li>
             <li>Remember that players lose ties, dice that hitch can't be used for effect, and the player can always have a "free" d4 effect if they succeed.</li>
             <li>If more dice are specified to be kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
