@@ -9,24 +9,28 @@ from typing import Callable, Collection, Hashable
 
 
 class FilterOutcomesExpression(MultisetExpression[T_contra]):
-    """Drops all elements not in the target set of outcomes.
+    """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
 
-    This is similar to `intersection`, except the target set is considered to
-    have unlimited multiplicity.
+    This is similar to `intersection` or `difference`, except the target set is
+    considered to have unlimited multiplicity.
     """
 
-    def __init__(
-            self, inner: MultisetExpression[T_contra],
-            target: Callable[[T_contra], bool] | Collection[T_contra]) -> None:
+    def __init__(self,
+                 inner: MultisetExpression[T_contra],
+                 target: Callable[[T_contra], bool] | Collection[T_contra],
+                 *,
+                 invert: bool = False) -> None:
         """Constructor.
 
         Args:
             inner: The inner expression.
-            target: A collection of outcomes to keep, or a callable returning
-                `True` iff the outcome should be kept.
+            target: A callable returning `True` iff the outcome should be kept,
+                or a collection of outcomes to keep.
+            invert: If set, the filter is inverted.
         """
 
         self._inner = inner
+        self._invert = invert
         if callable(target):
             self._func = target
         else:
@@ -42,7 +46,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
                     counts: tuple[int, ...]) -> tuple[Hashable, int]:
         state, count = self._inner._next_state(state, outcome, bound_counts,
                                                counts)
-        if self._func(outcome):
+        if bool(self._func(outcome)) != self._invert:
             return state, count
         else:
             return state, 0

@@ -294,15 +294,35 @@ class MultisetExpression(ABC, Generic[T_contra]):
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
-    def filter_outcomes(self, target: Callable[[T_contra], bool] |
-                        Collection[T_contra],
-                        /) -> 'MultisetExpression[T_contra]':
-        """Drops all elements not in the target set of outcomes.
+    def keep_outcomes(self,
+                      target: Callable[[T_contra], bool] | Collection[T_contra],
+                      /) -> 'MultisetExpression[T_contra]':
+        """Keeps the elements in the target set of outcomes, and drops the rest.
 
-        This is similar to `intersection`, except the target set is considered
+        This is similar to `intersection()`, except the right side is considered
         to have unlimited multiplicity.
+
+        Args:
+            target: A callable returning `True` iff the outcome should be kept,
+                or a collection of outcomes to keep.
         """
         return icepool.expression.FilterOutcomesExpression(self, target)
+
+    def drop_outcomes(self,
+                      target: Callable[[T_contra], bool] | Collection[T_contra],
+                      /) -> 'MultisetExpression[T_contra]':
+        """Drops the elements in the target set of outcomes, and keeps the rest.
+
+        This is similar to `difference()`, except the right side is considered
+        to have unlimited multiplicity.
+
+        Args:
+            target: A callable returning `True` iff the outcome should be
+                dropped, or a collection of outcomes to drop.
+        """
+        return icepool.expression.FilterOutcomesExpression(self,
+                                                           target,
+                                                           invert=True)
 
     # Adjust counts.
 
