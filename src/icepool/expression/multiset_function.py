@@ -5,6 +5,7 @@ from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.expression.variable import MultisetVariable as MV
 
 import inspect
+from functools import update_wrapper
 
 from typing import Callable, TypeAlias, overload
 
@@ -67,35 +68,40 @@ def multiset_function(
 def multiset_function(
         func: Callable[..., NestedTupleOrEvaluatorOrDie[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
-    """EXPERIMENTAL: Creates an evaluator from a callable.
+    """EXPERIMENTAL: A decorator that turns a function into an evaluator.
 
     For example, to create an evaluator which computes the elements each of two
     multisets has that the other doesn't:
 
     ```
-    multiset_function(lambda a, b: ((a - b).expand(),
-                                    (b - a).expand()))
+    @multiset_function
+    def two_way_difference(a, b):
+        return (a - b).expand(), (b - a).expand()
     ```
 
     Any globals inside `func` are effectively bound at the time
-    `multiset_function(func)` is called. Note that this is different than how
+    `multiset_function` is invoked. Note that this is different than how
     ordinary Python closures behave. For example,
 
     ```
     target = [1, 2, 3]
-    evaluator = multiset_function(lambda a: (a & target).count())
-    print(evaluator.evaluate(d6.pool(3)))
+
+    @multiset_function
+    def count_intersection(a):
+        return (a & target).count()
+
+    print(count_intersection(d6.pool(3)))
 
     target = [1]
-    print(evaluator.evaluate(d6.pool(3)))
+    print(count_intersection(d6.pool(3)))
     ```
 
     would produce the same thing both times.
 
     Args:
-        func: This should take in multiset variables and output an evaluator
-            or a nested tuple of evaluators. Tuples will produce a
-            `JointEvaluator`.
+        func: This should take in a fixed number of multiset variables and
+            output an evaluator or a nested tuple of evaluators. Tuples will
+            result in a `JointEvaluator`.
     """
     parameters = inspect.signature(func).parameters
     for parameter in parameters.values():
@@ -107,4 +113,5 @@ def multiset_function(
                 'Callable must take only a fixed number of positional arguments.'
             )
     tuple_or_evaluator = func(*(MV(i) for i in range(len(parameters))))
-    return replace_tuples_with_joint_evaluator(tuple_or_evaluator)
+    evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
+    return update_wrapper(evaluator, func)
