@@ -176,6 +176,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         If no arguments are given, the result will be an empty multiset, i.e.
         all zero counts.
+
+        Note that, as a multiset operation, this will only cancel elements 1:1.
+        If you want to drop all elements in a set of outcomes regardless of
+        count, either use `drop_outcomes()` instead, or use a large number of
+        counts on the right side.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.DifferenceExpression(*expressions)
@@ -214,6 +219,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
         ```
+
+        Note that, as a multiset operation, this will only intersect elements
+        1:1.
+        If you want to keep all elements in a set of outcomes regardless of
+        count, either use `keep_outcomes()` instead, or use a large number of
+        counts on the right side.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.IntersectionExpression(*expressions)
