@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property, reduce
 
 from icepool.typing import T, U, Order, Outcome, T_contra
-from typing import Any, Callable, Generic, Hashable, Mapping, Sequence, Type, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, Sequence, Type, overload
 
 
 def implicit_convert_to_expression(
@@ -102,9 +102,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
     # Binary operators.
 
     def __add__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -112,9 +112,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DisjointUnionExpression(self, other)
 
     def __radd__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -133,16 +133,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example:
         ```
-        Pool([1, 2, 2, 3]) + Pool([1, 2, 4]) -> [1, 1, 2, 2, 2, 3, 4]
+        [1, 2, 2, 3] + [1, 2, 4] -> [1, 1, 2, 2, 2, 3, 4]
         ```
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.DisjointUnionExpression(*expressions)
 
     def __sub__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -150,9 +150,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DifferenceExpression(self, other)
 
     def __rsub__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -171,7 +171,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example:
         ```
-        Pool([1, 2, 2, 3]) - Pool([1, 2, 4]) -> [2, 3]
+        [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
         ```
 
         If no arguments are given, the result will be an empty multiset, i.e.
@@ -181,9 +181,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DifferenceExpression(*expressions)
 
     def __and__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -191,9 +191,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.IntersectionExpression(self, other)
 
     def __rand__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -212,16 +212,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example:
         ```
-        Pool([1, 2, 2, 3]) & Pool([1, 2, 4]) -> [1, 2]
+        [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
         ```
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.IntersectionExpression(*expressions)
 
     def __or__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -229,9 +229,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.UnionExpression(self, other)
 
     def __ror__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -250,16 +250,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example:
         ```
-        Pool([1, 2, 2, 3]) | Pool([1, 2, 4]) -> [1, 2, 2, 3, 4]
+        [1, 2, 2, 3] | [1, 2, 4] -> [1, 2, 2, 3, 4]
         ```
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
         return icepool.expression.UnionExpression(*expressions)
 
     def __xor__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -267,9 +267,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     def __rxor__(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
         except TypeError:
@@ -277,9 +277,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.SymmetricDifferenceExpression(other, self)
 
     def symmetric_difference(
-        self, other:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'MultisetExpression[T_contra]':
+            self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         """The elements that appear in the left or right multiset but not both.
 
         Same as `a ^ b`.
@@ -288,11 +288,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example:
         ```
-        Pool([1, 2, 2, 3]) ^ Pool([1, 2, 4]) -> [2, 3, 4]
+        [1, 2, 2, 3] ^ [1, 2, 4] -> [2, 3, 4]
         ```
         """
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
+
+    def filter_outcomes(self, target: Callable[[T_contra], bool] |
+                        Collection[T_contra],
+                        /) -> 'MultisetExpression[T_contra]':
+        """Drops all elements not in the target set of outcomes.
+
+        This is similar to `intersection`, except the target set is considered
+        to have unlimited multiplicity.
+        """
+        return icepool.expression.FilterOutcomesExpression(self, target)
 
     # Adjust counts.
 

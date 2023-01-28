@@ -10,6 +10,7 @@ from icepool.expression.adjust_counts import (AdjustCountsExpression,
                                               FloorDivCountsExpression,
                                               FilterCountsExpression,
                                               UniqueExpression)
+from icepool.expression.filter_outcomes import FilterOutcomesExpression
 from icepool.expression.keep import KeepExpression
 
 from icepool.expression.multiset_function import multiset_function
@@ -20,5 +21,6 @@ __all__ = [
     'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
     'SymmetricDifferenceExpression', 'AdjustCountsExpression',
     'MultiplyCountsExpression', 'FloorDivCountsExpression',
-    'FilterCountsExpression', 'UniqueExpression', 'KeepExpression'
+    'FilterCountsExpression', 'UniqueExpression', 'FilterOutcomesExpression',
+    'KeepExpression'
 ]

@@ -30,6 +30,10 @@ def test_intersection_size():
     assert (Pool([1, 1, 2, 4, 4]) & [1, 2, 2, 4]).count() == Die([3])
 
 
+def test_filter_outcomes_size():
+    assert Pool([1, 1, 2, 4, 4]).filter_outcomes([1, 2]).count() == Die([3])
+
+
 def test_largest_matching_set():
     result = Pool([1, 1, 2, 4, 4]).largest_count().simplify()
     expected = Die([2])
