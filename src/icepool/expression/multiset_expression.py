@@ -308,7 +308,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def keep_outcomes(self,
                       target: Callable[[T_contra], bool] | Collection[T_contra],
                       /) -> 'MultisetExpression[T_contra]':
-        """Keeps the elements in the target set of outcomes, and drops the rest.
+        """Keeps the elements in the target set of outcomes, and drops the rest by setting their counts to zero.
 
         This is similar to `intersection()`, except the right side is considered
         to have unlimited multiplicity.
@@ -322,7 +322,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def drop_outcomes(self,
                       target: Callable[[T_contra], bool] | Collection[T_contra],
                       /) -> 'MultisetExpression[T_contra]':
-        """Drops the elements in the target set of outcomes, and keeps the rest.
+        """Drops the elements in the target set of outcomes by setting their counts to zero, and keeps the rest.
 
         This is similar to `difference()`, except the right side is considered
         to have unlimited multiplicity.
@@ -575,16 +575,23 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     def all_counts(
         self,
-        positive_only: bool = True
+        filter: int | None = 1
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T_contra, tuple[int, ...]]':
         """Produces a tuple of all counts, i.e. the sizes of all matching sets.
 
         Args:
-            positive_only: If `True` (default), negative and zero counts
-                will be omitted.
+            filter: Any counts below this value will not be in the output.
+                For example, `filter=2` will only produce pairs and better.
+                If `None`, no filtering will be done.
+
+                Why not just place `filter_counts()` before this?
+                `filter_counts()` operates by setting counts to zero, so you
+                would still need an argument to specify whether you want to
+                output zero counts. So we might as well use the argument to do
+                both.
         """
         return self.evaluate(evaluator=icepool.evaluator.AllCountsEvaluator(
-            positive_only=positive_only))
+            filter=filter))
 
     def largest_count(
             self

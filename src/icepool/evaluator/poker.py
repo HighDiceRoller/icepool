@@ -40,25 +40,28 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     In other words, this produces tuples of the sizes of all matching sets.
     """
 
-    def __init__(self, *, positive_only: bool = True) -> None:
+    def __init__(self, *, filter: int | None = 1) -> None:
         """
         Args:
-            positive_only: If `True` (default), any zero and negative values
-                in the result are removed.
+            filter: Any counts below this value will not be in the output.
+                For example, `filter=2` will only produce pairs and better.
+                If `None`, no filtering will be done.
         """
-        self._positive_only = positive_only
+        self._filter = filter
 
     def next_state(self, state, outcome, count):
         """Implementation."""
-        state = (state or ()) + (count,)
-        return tuple(sorted(state))
+        state = state or ()
+        if self._filter is None or count >= self._filter:
+            state = state + (count,)
+            return tuple(sorted(state))
+        else:
+            return state
 
     def final_outcome(self, final_state) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
-        if self._positive_only:
-            return tuple(x for x in final_state if x > 0)
         else:
             return final_state
 
