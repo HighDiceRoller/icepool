@@ -178,7 +178,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.25.2')
+                await micropip.install('icepool==0.25.3')
                 
                 import js
                 import pyodide
@@ -205,7 +205,7 @@
                 def updateResults():
                     die_sizes = sum(([hitch_die(die_size)] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
                     hitch_pool = Pool(die_sizes)
-                    non_hitch = (hitch_pool - {0: 100}).expand()
+                    non_hitch = hitch_pool.drop_outcomes([0]).expand()
                     
                     keep = int(js.document.getElementById('pk').value)
                     
