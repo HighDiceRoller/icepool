@@ -1,3 +1,11 @@
+## v0.25.3
+
+* Tuple outcomes can now be compared with single outcomes.
+* Add `.keep, .highest, lowest, .middle` variants of `apply_sorted`.
+* Recommend `multiset_function` be used as a decorator, add `update_wrapper`.
+* Add `keep_outcomes, drop_outcomes` methods to expressions.
+* Add `any` evaluation to expresions.
+
 ## v0.25.2
 
 Comparisons on dice with tuple outcomes are now performed elementwise.
