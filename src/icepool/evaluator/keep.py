@@ -54,7 +54,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
                 raise IndexError('Expected exactly one element.')
             else:
                 raise IndexError(
-                    f'Evaluation ended {final_state[1]} elements short of reaching the kept index.'
+                    f'Evaluation ended {final_state[1]} element(s) short of reaching the kept index.'
                 )
         return final_state[0]
 
