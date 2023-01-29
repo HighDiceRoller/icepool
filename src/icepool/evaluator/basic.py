@@ -103,3 +103,23 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
 
 count_evaluator: Final = CountEvaluator()
 """Shared instance for caching."""
+
+
+class AnyEvaluator(MultisetEvaluator[Any, bool]):
+    """Returns `True` iff at least one count is positive."""
+
+    def next_state(self, state, outcome, count):
+        """Implementation."""
+        return state or (count > 0)
+
+    def final_outcome(self, final_state):
+        """Implementation."""
+        return final_state or False
+
+    def order(self):
+        """Allows any order."""
+        return Order.Any
+
+
+any_evaluator: Final = AnyEvaluator()
+"""Shared instance for caching."""

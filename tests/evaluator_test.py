@@ -163,3 +163,8 @@ def test_contains_subset_vs_intersection_size():
     result_a = pool.issuperset([1, 2, 3, 3])
     result_b = (pool & [1, 2, 3, 3]).count() == 4
     assert result_a == result_b
+
+
+def test_any():
+    result = (d6.pool(1) & d6.pool(1)).any()
+    assert result == (d6 == d6)

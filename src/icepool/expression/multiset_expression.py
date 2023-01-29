@@ -556,6 +556,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return self.evaluate(evaluator=icepool.evaluator.count_evaluator)
 
+    def any(
+        self
+    ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
+        """Whether the multiset has at least one positive count."""
+        return self.evaluate(evaluator=icepool.evaluator.any_evaluator)
+
     def highest_outcome_and_count(
         self
     ) -> 'icepool.Die[tuple[T_contra, int]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, int]]':

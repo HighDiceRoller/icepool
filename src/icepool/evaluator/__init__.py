@@ -2,7 +2,10 @@
 
 __docformat__ = 'google'
 
-from icepool.evaluator.basic import ExpandEvaluator, SumEvaluator, sum_evaluator, CountEvaluator, count_evaluator
+from icepool.evaluator.basic import (ExpandEvaluator, SumEvaluator,
+                                     sum_evaluator, CountEvaluator,
+                                     count_evaluator, AnyEvaluator,
+                                     any_evaluator)
 from icepool.evaluator.poker import (HighestOutcomeAndCountEvaluator,
                                      LargestCountEvaluator,
                                      LargestCountAndOutcomeEvaluator,
@@ -20,12 +23,12 @@ from icepool.evaluator.expression import ExpressionEvaluator
 
 __all__ = [
     'JointEvaluator', 'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator',
-    'CountEvaluator', 'count_evaluator', 'HighestOutcomeAndCountEvaluator',
-    'LargestCountEvaluator', 'LargestCountAndOutcomeEvaluator',
-    'AllCountsEvaluator', 'LargestStraightEvaluator',
-    'LargestStraightAndOutcomeEvaluator', 'ComparisonEvaluator',
-    'IsSubsetEvaluator', 'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
-    'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
+    'CountEvaluator', 'count_evaluator', 'AnyEvaluator', 'any_evaluator',
+    'HighestOutcomeAndCountEvaluator', 'LargestCountEvaluator',
+    'LargestCountAndOutcomeEvaluator', 'AllCountsEvaluator',
+    'LargestStraightEvaluator', 'LargestStraightAndOutcomeEvaluator',
+    'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
+    'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'ConstantEvaluator',
     'KeepEvaluator', 'ExpressionEvaluator'
 ]
