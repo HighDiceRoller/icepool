@@ -25,9 +25,8 @@ class MultisetVariable(MultisetExpression[Any]):
     def _next_state(self, state, outcome: Outcome, bound_counts: tuple[int,
                                                                        ...],
                     counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        # We don't need any state, so always return str(self) as the state as
-        # a diagnostic marker.
-        return str(self), counts[self._index]
+        # We don't need any state.
+        return None, counts[self._index]
 
     def _order(self):
         return Order.Any
