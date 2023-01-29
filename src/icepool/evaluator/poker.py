@@ -6,7 +6,7 @@ import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.typing import Outcome, Order
-from typing import Any
+from typing import Any, Literal
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
@@ -29,7 +29,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
         else:
             return state
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -40,7 +40,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     In other words, this produces tuples of the sizes of all matching sets.
     """
 
-    def __init__(self, *, positive_only: bool = True):
+    def __init__(self, *, positive_only: bool = True) -> None:
         """
         Args:
             positive_only: If `True` (default), any zero and negative values
@@ -53,7 +53,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         state = (state or ()) + (count,)
         return tuple(sorted(state))
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
@@ -62,7 +62,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         else:
             return final_state
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -74,7 +74,7 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return max(state or count, count)
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -86,7 +86,7 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
         """Implementation."""
         return max(state or (count, outcome), (count, outcome))
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -103,13 +103,13 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             run = 0
         return max(best_run, run), run
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> int:
         """Implementation."""
         if final_state is None:
             return 0
         return final_state[0]
 
-    def order(self):
+    def order(self) -> Literal[Order.Ascending]:
         """Ascending order."""
         return Order.Ascending
 
@@ -129,11 +129,11 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
             run = 0
         return max(best_run_and_outcome, (run, outcome)), run
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> tuple[int, int]:
         """Implementation."""
         return final_state[0]
 
-    def order(self):
+    def order(self) -> Literal[Order.Ascending]:
         """Ascending order."""
         return Order.Ascending
 

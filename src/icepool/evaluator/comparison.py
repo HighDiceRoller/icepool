@@ -8,7 +8,7 @@ from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from abc import abstractmethod
 
 from icepool.typing import Order
-from typing import Any
+from typing import Any, Literal
 
 
 class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
@@ -35,14 +35,14 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         has_any = has_all and (has_any or this_any)
         return has_any, has_all
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> bool:
         """Implementation."""
         if final_state is None:
             return self.default_outcome()
         has_any, has_all = final_state
         return has_any and has_all
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 

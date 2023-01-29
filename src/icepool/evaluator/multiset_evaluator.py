@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.collections import union_sorted_sets
+from icepool.collections import sorted_union
 
 from icepool.typing import Order, T_contra, U_co
 
@@ -256,7 +256,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         algorithm, order = self._select_algorithm(*generators)
 
         # We use a separate class to guarantee all outcomes are visited.
-        outcomes = union_sorted_sets(
+        outcomes = sorted_union(
             *(generator.outcomes() for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
 

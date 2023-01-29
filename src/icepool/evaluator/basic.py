@@ -8,7 +8,7 @@ from icepool.typing import Outcome, Order
 
 import operator
 
-from typing import Any, Callable, Final, Mapping
+from typing import Any, Callable, Final, Literal, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
@@ -23,11 +23,11 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         """Implementation."""
         return (state or ()) + (outcome,) * count
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
@@ -72,7 +72,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
             contribution = binary_elementwise(outcome, count, operator.mul)
             return binary_elementwise(state, contribution, operator.add)
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -92,11 +92,11 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return (state or 0) + count
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> int:
         """Implementation."""
         return final_state or 0
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 
@@ -112,11 +112,11 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
         """Implementation."""
         return state or (count > 0)
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> bool:
         """Implementation."""
         return final_state or False
 
-    def order(self):
+    def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
 

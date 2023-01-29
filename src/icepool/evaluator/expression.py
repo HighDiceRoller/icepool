@@ -8,7 +8,7 @@ import icepool.expression
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Order, Outcome, T_contra, U_co
 
-from typing import Iterable
+from typing import Collection, Iterable
 
 
 class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
@@ -50,7 +50,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
                                                      *expression_counts)
         return expression_states, evaluator_state
 
-    def final_outcome(self, final_state):
+    def final_outcome(
+            self,
+            final_state) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         if final_state is None:
             return self._evaluator.final_outcome(None)
         else:
@@ -63,7 +65,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             *(expression._order() for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 
-    def alignment(self, *generators):
+    def alignment(self, *generators) -> Collection[T_contra]:
         """Forwards to inner."""
         return self._evaluator.alignment(*generators)
 

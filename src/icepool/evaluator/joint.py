@@ -5,17 +5,17 @@ __docformat__ = 'google'
 from functools import cached_property
 import itertools
 import icepool
-from icepool.collections import union_sorted_sets
+from icepool.collections import sorted_union
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order, T_contra, U_co
 
-from typing import Iterable, Iterator
+from typing import Collection, Iterable, Iterator
 
 
 class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
-    def __init__(self, *inners: MultisetEvaluator):
+    def __init__(self, *inners: MultisetEvaluator) -> None:
         self._inners = inners
 
     def next_state(self, state, outcome, *counts):
@@ -46,7 +46,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
                     self._inners, state,
                     self._split_prefix_counts(*prefix_counts)))
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state) -> tuple:
         """Runs `final_state` for all subevals.
 
         The final outcome is a tuple of the final suboutcomes.
@@ -55,7 +55,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
             inner.final_outcome(final_substate)
             for inner, final_substate in zip(self._inners, final_state))
 
-    def order(self):
+    def order(self) -> Order:
         """Determines the common order of the subevals.
 
         Raises:
@@ -64,8 +64,8 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         """
         return Order.merge(*(inner.order() for inner in self._inners))
 
-    def alignment(self, outcomes):
-        return union_sorted_sets(
+    def alignment(self, outcomes) -> Collection[T_contra]:
+        return sorted_union(
             *(evaluator.alignment(outcomes) for evaluator in self._inners))
 
     @cached_property
