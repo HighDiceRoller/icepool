@@ -38,6 +38,12 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._inner._bound_generators()
 
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        new_inner, prefix_start = self._inner._unbind(prefix_start, free_start)
+        new_expression = type(self)(new_inner, self._constant)
+        return new_expression, prefix_start
+
     def _arity(self) -> int:
         return self._inner._arity()
 

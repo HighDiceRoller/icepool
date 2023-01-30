@@ -37,5 +37,9 @@ class MultisetVariable(MultisetExpression[Any]):
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return ()
 
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        return MultisetVariable(self._index + free_start), prefix_start
+
     def __str__(self) -> str:
         return f'mv[{self._index}]'

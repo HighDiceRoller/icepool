@@ -1,14 +1,15 @@
 __docformat__ = 'google'
 
-import operator
 import icepool
 
-from typing import Hashable, Iterable, Sequence
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Order, Outcome, T_contra
 
+import operator
 from abc import abstractmethod
 from functools import cached_property, reduce
+
+from typing import Hashable, Iterable, Sequence
+from icepool.typing import Order, Outcome, T_contra
 
 
 class BinaryOperatorExpression(MultisetExpression[T_contra]):
@@ -74,6 +75,15 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._cached_bound_generators
+
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        new_prevs = []
+        for prev in self._prevs:
+            new_prev, prefix_start = prev._unbind(prefix_start, free_start)
+            new_prevs.append(new_prev)
+        new_expression = type(self)(*new_prevs)
+        return new_expression, prefix_start
 
     def _split_bound_counts(self,
                             *bound_counts: int) -> 'Iterable[tuple[int, ...]]':

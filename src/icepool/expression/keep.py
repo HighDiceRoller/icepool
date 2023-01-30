@@ -100,6 +100,15 @@ class KeepExpression(MultisetExpression[T_contra]):
             raise TypeError(f'Invalid type {type(index)} for index.')
         return self
 
+    @classmethod
+    def _new_raw(cls, inner: MultisetExpression[T_contra], keep_order: Order,
+                 keep_tuple: tuple[int, ...], drop: int | None):
+        self = super(KeepExpression, cls).__new__(cls)
+        self._inner = inner
+        self._keep_order = keep_order
+        self._keep_tuple = keep_tuple
+        self._drop = drop
+
     def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
                                                                         ...],
                     counts: tuple[int, ...]) -> tuple[Hashable, int]:
@@ -139,6 +148,13 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._cached_bound_generators
+
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        new_inner, prefix_start = self._inner._unbind(prefix_start, free_start)
+        new_expression = KeepExpression._new_raw(new_inner, self._keep_order,
+                                                 self._keep_tuple, self._drop)
+        return new_expression, prefix_start
 
     def _arity(self) -> int:
         return self._inner._arity()

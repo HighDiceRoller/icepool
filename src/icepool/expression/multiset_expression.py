@@ -90,6 +90,25 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         """Returns a sequence of bound generators."""
 
+    @abstractmethod
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        """Replaces bound generators within this expression with free variables.
+
+        Bound generators are replaced with free variables with index equal to
+        their position in _bound_generators().
+
+        Variables that are already free have their indexes shifted by the
+        number of bound genrators.
+
+        Args:
+            prefix_start: The index of the next bound generator.
+            free_start: The total number of bound generators.
+
+        Returns:
+            The transformed expression and the new prefix_start.
+        """
+
     @staticmethod
     def _validate_output_arity(inner: 'MultisetExpression') -> None:
         """Validates that if the given expression is a generator, its output arity is 1."""

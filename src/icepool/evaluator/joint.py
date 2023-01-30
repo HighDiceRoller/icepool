@@ -88,6 +88,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
     @cached_property
     def _prefix_slices(self) -> tuple[slice, ...]:
+        """Precomputed slices for determining which prefix counts go with which sub-evaluator."""
         result = []
         index = 0
         for expression in self._inners:
