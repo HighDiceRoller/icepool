@@ -151,10 +151,13 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
-        new_inner, prefix_start = self._inner._unbind(prefix_start, free_start)
-        new_expression = KeepExpression._new_raw(new_inner, self._keep_order,
-                                                 self._keep_tuple, self._drop)
-        return new_expression, prefix_start
+        unbound_inner, prefix_start = self._inner._unbind(
+            prefix_start, free_start)
+        unbound_expression = KeepExpression._new_raw(unbound_inner,
+                                                     self._keep_order,
+                                                     self._keep_tuple,
+                                                     self._drop)
+        return unbound_expression, prefix_start
 
     def _arity(self) -> int:
         return self._inner._arity()

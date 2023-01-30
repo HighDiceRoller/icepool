@@ -57,12 +57,13 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
-        new_inner, prefix_start = self._inner._unbind(prefix_start, free_start)
-        new_expression = FilterOutcomesExpression(new_inner,
-                                                  self._func,
-                                                  invert=self._invert)
-        new_expression._inner = new_inner
-        return new_expression, prefix_start
+        unbound_inner, prefix_start = self._inner._unbind(
+            prefix_start, free_start)
+        unbound_expression = FilterOutcomesExpression(unbound_inner,
+                                                      self._func,
+                                                      invert=self._invert)
+        unbound_expression._inner = unbound_inner
+        return unbound_expression, prefix_start
 
     def _arity(self) -> int:
         return self._inner._arity()

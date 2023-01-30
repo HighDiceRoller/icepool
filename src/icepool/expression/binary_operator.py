@@ -73,12 +73,12 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
-        new_prevs = []
+        unbound_prevs = []
         for prev in self._prevs:
-            new_prev, prefix_start = prev._unbind(prefix_start, free_start)
-            new_prevs.append(new_prev)
-        new_expression = type(self)(*new_prevs)
-        return new_expression, prefix_start
+            unbound_prev, prefix_start = prev._unbind(prefix_start, free_start)
+            unbound_prevs.append(unbound_prev)
+        unbound_expression = type(self)(*unbound_prevs)
+        return unbound_expression, prefix_start
 
     def __str__(self) -> str:
         return '(' + (' ' + self.symbol() + ' ').join(
