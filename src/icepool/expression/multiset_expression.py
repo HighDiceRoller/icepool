@@ -530,9 +530,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 isinstance(expression, icepool.MultisetGenerator)
                 for expression in expressions):
             return evaluator.evaluate(*expressions)
-        evaluator = icepool.evaluator.expression.ExpressionEvaluator(
-            *expressions, evaluator=evaluator)
-        if evaluator.arity() == 0:
+        evaluator = icepool.evaluator.ExpressionEvaluator(*expressions,
+                                                          evaluator=evaluator)
+        if evaluator._free_arity == 0:
             return evaluator.evaluate()
         else:
             return evaluator
@@ -659,7 +659,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         else:
             raise TypeError('Right side is not comparable.')
 
-        if evaluator.arity() == 0:
+        if evaluator._free_arity == 0:
             return evaluator.evaluate()
         else:
             return evaluator

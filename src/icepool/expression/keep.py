@@ -158,3 +158,17 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     def _arity(self) -> int:
         return self._inner._arity()
+
+    def __str__(self) -> str:
+        if self._drop:
+            if self._order == Order.Ascending:
+                return f'{self._inner}[{self._drop}:]'
+            else:
+                return f'{self._inner}[:-{self._drop}]'
+        else:
+            index_string = ', '.join(str(x) for x in self._keep_tuple)
+            if self._order == Order.Ascending:
+                index_string = index_string + ', ...'
+            else:
+                index_string = '..., ' + index_string
+            return f'{self._inner}[{index_string}]'

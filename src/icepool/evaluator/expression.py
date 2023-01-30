@@ -23,8 +23,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         self._bound_generators = tuple(
             itertools.chain.from_iterable(
                 expression._bound_generators() for expression in expressions))
-        self._arity = max((expression._arity() for expression in expressions),
-                          default=0)
+        self._bound_arity = len(self._bound_generators)
+        self._free_arity = max(
+            (expression._arity() for expression in expressions), default=0)
 
         unbound_expressions: 'list[icepool.expression.MultisetExpression[T_contra]]' = []
         prefix_start = 0
@@ -43,8 +44,8 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        prefix_counts = counts[:len(self._evaluator.prefix_generators())]
-        counts = counts[len(self._evaluator.prefix_generators()):]
+        prefix_counts = counts[:self._bound_arity]
+        counts = counts[self._bound_arity:]
 
         expression_states, expression_counts = zip(
             *(expression._next_state(expression_state, outcome, *counts)
@@ -81,13 +82,10 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._prefix_generators
 
-    def arity(self) -> int:
-        """The number of inputs this evaluator expects, not counting bound generators."""
-        return self._arity
-
     def validate_arity(self, arity: int) -> None:
-        if arity < self._arity:
-            raise ValueError(f'Expected arity of {self._arity}, got {arity}.')
+        if arity < self._free_arity:
+            raise ValueError(
+                f'Expected arity of {self._free_arity}, got {arity}.')
 
     def __bool__(self) -> bool:
         if self._truth_value is None:
@@ -97,10 +95,11 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         return self._truth_value
 
     def __str__(self) -> str:
+        input_string = f'{self._bound_arity} bound, {self._free_arity} free'
         if len(self._expressions) == 1:
-            return f'{self._expressions[0]} -> {self._evaluator}'
+            expression_string = f'{self._expressions[0]}'
         else:
-            return '(' + ', '.join(
-                str(expression)
-                for expression in self._expressions) + ') -> ' + str(
-                    type(self._evaluator))
+            expression_string = ', '.join(
+                str(expression) for expression in self._expressions)
+        output_string = str(self._evaluator)
+        return f'Expression: {input_string} -> {expression_string} -> {output_string}'
