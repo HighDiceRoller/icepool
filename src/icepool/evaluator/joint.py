@@ -86,14 +86,21 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         return sum(
             generator.output_arity() for generator in self.prefix_generators())
 
-    def _split_prefix_counts(self,
-                             *extra_counts: int) -> Iterator[tuple[int, ...]]:
+    @cached_property
+    def _prefix_slices(self) -> tuple[slice, ...]:
+        result = []
         index = 0
         for expression in self._inners:
             counts_length = sum(generator.output_arity()
                                 for generator in expression.prefix_generators())
-            yield extra_counts[index:index + counts_length]
+            result.append(slice(index, index + counts_length))
             index += counts_length
+        return tuple(result)
+
+    def _split_prefix_counts(self,
+                             *extra_counts: int) -> Iterator[tuple[int, ...]]:
+        for index in self._prefix_slices:
+            yield extra_counts[index]
 
     def __str__(self) -> str:
         return 'JointEvaluator(\n' + ''.join(
