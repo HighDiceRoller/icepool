@@ -41,11 +41,9 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
             self._func = func
 
-    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                        ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        state, count = self._inner._next_state(state, outcome, bound_counts,
-                                               counts)
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
+        state, count = self._inner._next_state(state, outcome, *counts)
         if bool(self._func(outcome)) != self._invert:
             return state, count
         else:

@@ -38,20 +38,15 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def symbol() -> str:
         """A symbol representing this operation."""
 
-    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                        ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
         if len(self._prevs) == 0:
             return (), 0
         prev_states = state or (None,) * len(self._prevs)
 
-        prev_states, prev_counts = zip(*(prev._next_state(
-            prev_state,
-            outcome,
-            prev_bound_counts,
-            counts,
-        ) for prev, prev_state, prev_bound_counts in zip(
-            self._prevs, prev_states, self._split_bound_counts(*bound_counts))))
+        prev_states, prev_counts = zip(
+            *(prev._next_state(prev_state, outcome, *counts)
+              for prev, prev_state in zip(self._prevs, prev_states)))
 
         count = reduce(self.merge_counts, prev_counts)
         count = max(count, 0)
@@ -84,15 +79,6 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
             new_prevs.append(new_prev)
         new_expression = type(self)(*new_prevs)
         return new_expression, prefix_start
-
-    def _split_bound_counts(self,
-                            *bound_counts: int) -> 'Iterable[tuple[int, ...]]':
-        """Splits a tuple of counts into one set of bound counts per expression."""
-        index = 0
-        for prev in self._prevs:
-            counts_length = len(prev._bound_generators())
-            yield bound_counts[index:index + counts_length]
-            index += counts_length
 
     def __str__(self) -> str:
         return '(' + (' ' + self.symbol() + ' ').join(

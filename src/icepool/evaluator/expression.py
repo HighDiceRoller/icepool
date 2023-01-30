@@ -20,7 +20,19 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             evaluator: MultisetEvaluator[T_contra, U_co],
             truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
-        self._expressions = expressions
+        self._bound_generators = tuple(
+            itertools.chain.from_iterable(
+                expression._bound_generators() for expression in expressions))
+        self._arity = max((expression._arity() for expression in expressions),
+                          default=0)
+
+        unbound_expressions: 'list[icepool.expression.MultisetExpression[T_contra]]' = []
+        prefix_start = 0
+        for expression in expressions:
+            unbound_expression, prefix_start = expression._unbind(
+                prefix_start, len(self._bound_generators))
+            unbound_expressions.append(unbound_expression)
+        self._expressions = tuple(unbound_expressions)
         self._truth_value = truth_value
 
     def next_state(self, state, outcome, *counts):
@@ -31,20 +43,13 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        bound_counts = counts[:self._bound_arity]
-        prefix_counts = counts[self._bound_arity:self._bound_arity +
-                               len(self._evaluator.prefix_generators())]
-        counts = counts[self._bound_arity +
-                        len(self._evaluator.prefix_generators()):]
+        prefix_counts = counts[:len(self._evaluator.prefix_generators())]
+        counts = counts[len(self._evaluator.prefix_generators()):]
 
-        expression_states, expression_counts = zip(*(expression._next_state(
-            expression_state,
-            outcome,
-            expression_bound_counts,
-            counts,
-        ) for expression, expression_state, expression_bound_counts in zip(
-            self._expressions, expression_states,
-            self._split_bound_counts(*bound_counts))))
+        expression_states, expression_counts = zip(
+            *(expression._next_state(expression_state, outcome, *counts)
+              for expression, expression_state in zip(self._expressions,
+                                                      expression_states)))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
                                                      *prefix_counts,
                                                      *expression_counts)
@@ -76,39 +81,13 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._prefix_generators
 
-    def validate_arity(self, arity: int) -> None:
-        if arity < self._cached_arity:
-            raise ValueError(
-                f'Expected arity of {self._cached_arity}, got {arity}.')
-
-    @cached_property
-    def _cached_arity(self) -> int:
-        """The number of input multisets."""
-        return max((expression._arity() for expression in self._expressions),
-                   default=0)
-
     def arity(self) -> int:
-        return self._cached_arity
+        """The number of inputs this evaluator expects, not counting bound generators."""
+        return self._arity
 
-    @cached_property
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        """The entire flattened list of bound generators."""
-        return tuple(
-            itertools.chain.from_iterable(expression._bound_generators()
-                                          for expression in self._expressions))
-
-    @cached_property
-    def _bound_arity(self) -> int:
-        return len(self._bound_generators)
-
-    def _split_bound_counts(self,
-                            *bound_counts: int) -> 'Iterable[tuple[int, ...]]':
-        """Splits a tuple of counts into one set of bound counts per expression."""
-        index = 0
-        for expression in self._expressions:
-            counts_length = len(expression._bound_generators())
-            yield bound_counts[index:index + counts_length]
-            index += counts_length
+    def validate_arity(self, arity: int) -> None:
+        if arity < self._arity:
+            raise ValueError(f'Expected arity of {self._arity}, got {arity}.')
 
     def __bool__(self) -> bool:
         if self._truth_value is None:

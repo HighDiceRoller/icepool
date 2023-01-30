@@ -24,11 +24,9 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
     def adjust_count(count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                        ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        state, count = self._inner._next_state(state, outcome, bound_counts,
-                                               counts)
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
+        state, count = self._inner._next_state(state, outcome, *counts)
         count = self.adjust_count(count, self._constant)
         return state, count
 

@@ -44,21 +44,17 @@ class MultisetExpression(ABC, Generic[T_contra]):
     """
 
     @abstractmethod
-    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                        ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:
             state: The overall state. This will contain all information needed
                 by this expression and any previous expressions.
             outcome: The current outcome.
-            counts: The raw counts originating from the free variables.
+            counts: The raw counts: first, the counts resulting from bound
+                generators, then the counts from free variables.
                 This must be passed to any previous expressions.
-            bound_counts: The counts originating from bound generators, in the
-                same order as they were returned from `bound_generators()`.
-                Each sub-expression will split this tuple until each
-                bound generator expression receives just its own count.
 
         Returns:
             * state: The updated state, which will be seen again by this

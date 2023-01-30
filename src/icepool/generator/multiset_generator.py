@@ -165,11 +165,10 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
 
     # Expression API.
 
-    def _next_state(self, state, outcome: Outcome, bound_counts: tuple[int,
-                                                                       ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
-        # We don't need any state.
-        return None, bound_counts[0]
+    def _next_state(self, state, outcome: Outcome,
+                    *counts: int) -> tuple[Hashable, int]:
+        raise RuntimeError(
+            'Internal error: Expressions should be unbound before evaluation.')
 
     def _order(self) -> Order:
         return Order.Any

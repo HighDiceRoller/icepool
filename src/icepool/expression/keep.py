@@ -108,15 +108,15 @@ class KeepExpression(MultisetExpression[T_contra]):
         self._keep_order = keep_order
         self._keep_tuple = keep_tuple
         self._drop = drop
+        return self
 
-    def _next_state(self, state, outcome: T_contra, bound_counts: tuple[int,
-                                                                        ...],
-                    counts: tuple[int, ...]) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
         if self._drop is None:
             # Use _keep_tuple.
             remaining, inner_state = state or (self._keep_tuple, None)
             inner_state, count = self._inner._next_state(
-                inner_state, outcome, bound_counts, counts)
+                inner_state, outcome, *counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'
@@ -128,7 +128,7 @@ class KeepExpression(MultisetExpression[T_contra]):
             # Use drop.
             remaining, inner_state = state or (self._drop, None)
             inner_state, count = self._inner._next_state(
-                inner_state, outcome, bound_counts, counts)
+                inner_state, outcome, *counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'
