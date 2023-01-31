@@ -52,28 +52,6 @@ from icepool.population.func import (d, __getattr__, coin, one_hot,
                                      align_range, reduce, accumulate, apply,
                                      outcome_function)
 
-sorted_apply = icepool.population.func.sorted_apply
-"""As apply() but sorts the outcomes first.
-
-This is more efficient than `apply()` but still not particularly efficient.
-
-To keep only certain sorted positions, you can use the following as the `Pool`
-methods of the same names:
-
-```
-sorted_apply[index](func, *dice)
-sorted_apply.keep(index)(func, *dice)
-sorted_apply.lowest(keep, drop)(func, *dice)
-sorted_apply.highest(keep, drop)(func, *dice)
-sorted_apply.middle(keep, tie)(func, *dice)
-```
-
-Args:
-    func: A function that takes one argument per input `Die` and returns an
-        argument to `Die()`.
-    *args: `func` will be called with all sorted joint outcomes of these.
-"""
-
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
 from icepool.population.again import Again
@@ -105,7 +83,7 @@ __all__ = [
     'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
-    'apply', 'outcome_function', 'sorted_apply', 'Reroll', 'RerollType', 'Pool',
+    'apply', 'outcome_function', 'Reroll', 'RerollType', 'Pool',
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'typing',
     'evaluator'
