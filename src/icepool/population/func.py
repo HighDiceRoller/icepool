@@ -4,11 +4,11 @@ import icepool
 from icepool.typing import Outcome, T, U
 
 from collections import defaultdict
-from functools import cache
+from functools import cache, partial, update_wrapper, wraps
 import itertools
 import math
 
-from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, overload
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, cast, overload
 
 
 @cache
@@ -296,6 +296,8 @@ def apply(
 ) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
 
+    See `outcome_function` for a decorator version of this.
+
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
     `apply()` is flexible but not very efficient for more than a few dice.
@@ -348,8 +350,71 @@ def apply(
                        again_end=again_end)
 
 
+def outcome_function(
+    func:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None' = None,
+    /,
+    *,
+    again_depth: int = 1,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
+    """Decorator that turns a function that takes outcomes into a function that takes dice.
+
+    This is basically a decorator version of `apply()` and produces behavior
+    similar to AnyDice functions, though Icepool has different typing rules
+    among other differences.
+
+    `outcome_function` can either be used with no arguments:
+
+    ```
+    @outcome_function
+    def explode_six(x):
+        if x == 6:
+            return 6 + Again()
+        else:
+            return x
+
+    explode_six(d6, again_depth=2)
+    ```
+
+    Or with keyword arguments, in which case the extra arguments are bound:
+
+    ```
+    @outcome_function(again_depth=2)
+    def explode_six(x):
+        if x == 6:
+            return 6 + Again()
+        else:
+            return x
+
+    explode_six(d6)
+    ```
+
+    Args:
+        again_depth: Forwarded to the final die constructor.
+        again_end: Forwarded to the final die constructor.
+    """
+
+    if func is not None:
+        return update_wrapper(partial(apply, func), func)
+    else:
+
+        def decorator(
+            func:
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]'
+        ) -> 'Callable[..., icepool.Die[T]]':
+
+            return update_wrapper(
+                partial(apply,
+                        func,
+                        again_depth=again_depth,
+                        again_end=again_end), func)
+
+        return decorator
+
+
 class SortedApply():
-    """Class producing `apply_sorted` functions."""
+    """Class producing `sorted_apply` functions."""
 
     def __call__(
         self,

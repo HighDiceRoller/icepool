@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, Pool
+from icepool import d6, Pool, outcome_function, Again
 
 
 def test_apply_reroll():
@@ -78,3 +78,27 @@ def test_accumulate_initial():
                                      initial=icepool.d6):
         expected += icepool.d6
         assert result.equals(expected)
+
+
+def test_outcome_function():
+
+    @outcome_function
+    def explode_six(x):
+        if x == 6:
+            return 6 + Again()
+        else:
+            return x
+
+    a = explode_six(d6, again_depth=2)
+
+    @outcome_function(again_depth=2)
+    def explode_six(x):
+        if x == 6:
+            return 6 + Again()
+        else:
+            return x
+
+    b = explode_six(d6)
+
+    assert a == d6.explode(depth=2)
+    assert b == d6.explode(depth=2)

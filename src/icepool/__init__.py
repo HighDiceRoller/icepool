@@ -49,7 +49,8 @@ from icepool.population.func import (d, __getattr__, coin, one_hot,
                                      cartesian_product,
                                      from_cumulative_quantities, from_rv,
                                      min_outcome, max_outcome, align,
-                                     align_range, reduce, accumulate, apply)
+                                     align_range, reduce, accumulate, apply,
+                                     outcome_function)
 
 sorted_apply = icepool.population.func.sorted_apply
 """As apply() but sorts the outcomes first.
@@ -104,7 +105,8 @@ __all__ = [
     'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
-    'apply', 'sorted_apply', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
-    'MultisetGenerator', 'MultisetExpression', 'MultisetEvaluator', 'Order',
-    'Deck', 'Deal', 'multiset_function', 'typing', 'evaluator'
+    'apply', 'outcome_function', 'sorted_apply', 'Reroll', 'RerollType', 'Pool',
+    'standard_pool', 'MultisetGenerator', 'MultisetExpression',
+    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'typing',
+    'evaluator'
 ]
