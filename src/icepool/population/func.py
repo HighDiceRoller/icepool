@@ -301,8 +301,9 @@ def apply(
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
     `apply()` is flexible but not very efficient for more than a few dice.
-    If at all possible, use `reduce()` (if the problem can be solved by
-    considering one additional die at a time) or `Pool` (most problems) instead.
+    If at all possible, use `reduce()`, `Pool` methods, and/or
+    `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
+    efficient than using `apply` on the dice in order.
 
     Args:
         func: A function that takes one argument per input `Die` and returns an
@@ -312,7 +313,7 @@ def apply(
             * Single outcome.
             * `Die`. All outcomes will be sent to `func`.
             * `Pool`. All sorted tuples of outcomes will be sent to `func`,
-                as `pool.expand()`.
+                as `Pool.expand()`.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
