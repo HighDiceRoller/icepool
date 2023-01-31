@@ -17,7 +17,7 @@ def test_apply_die():
 
 
 def test_apply_sorted_max():
-    result = icepool.apply_sorted(lambda x, y: y, icepool.d6, icepool.d6)
+    result = icepool.sorted_apply(lambda x, y: y, icepool.d6, icepool.d6)
     expected = icepool.d6.highest(2)
     assert result.equals(expected)
 
@@ -29,14 +29,14 @@ def test_apply_pool():
 
 
 def test_apply_sorted_4d6kh3():
-    result = icepool.apply_sorted[-3:]((lambda x, y, z: x + y + z), d6, d6, d6,
+    result = icepool.sorted_apply[-3:]((lambda x, y, z: x + y + z), d6, d6, d6,
                                        d6)
     expected = icepool.d6.highest(4, 3)
     assert result.equals(expected)
 
 
 def test_apply_sorted_highest_4d6kh3():
-    result = icepool.apply_sorted.highest(3)((lambda x, y, z: x + y + z), d6,
+    result = icepool.sorted_apply.highest(3)((lambda x, y, z: x + y + z), d6,
                                              d6, d6, d6)
     expected = icepool.d6.highest(4, 3)
     assert result.equals(expected)

@@ -307,7 +307,7 @@ def apply(
     * If the problem is easy to solve by considering one additional `Die` at a
         time, try using `reduce()` instead.
     * If the order in which the dice are rolled is not important, you can use
-        `apply_sorted()`. This is less efficient than either of the above two,
+        `sorted_apply()`. This is less efficient than either of the above two,
         but is still more efficient than `apply()`.
 
     Args:
@@ -348,7 +348,7 @@ def apply(
                        again_end=again_end)
 
 
-class ApplySorted():
+class SortedApply():
     """Class producing `apply_sorted` functions."""
 
     def __call__(
@@ -472,4 +472,4 @@ class ApplySorted():
         return result
 
 
-apply_sorted: Final = ApplySorted()
+sorted_apply: Final = SortedApply()
