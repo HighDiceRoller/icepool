@@ -323,10 +323,6 @@ def apply(
                 as `pool.expand()`.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
-
-    Returns:
-        A `Die` constructed from the outputs of `func` and the product of the
-        quantities of the dice.
     """
     if not callable(func):
         raise TypeError(
@@ -348,6 +344,37 @@ def apply(
                        final_quantities,
                        again_depth=again_depth,
                        again_end=again_end)
+
+
+@overload
+def outcome_function(
+        func:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+        /) -> 'Callable[..., icepool.Die[T]]':
+    ...
+
+
+@overload
+def outcome_function(
+    func: None,
+    /,
+    *,
+    again_depth: int = 1,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
+    ...
+
+
+@overload
+def outcome_function(
+    func:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None' = None,
+    /,
+    *,
+    again_depth: int = 1,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
+    ...
 
 
 def outcome_function(
@@ -424,11 +451,7 @@ class SortedApply():
         again_depth: int = 1,
         again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
     ) -> 'icepool.Die[T]':
-        """Calls the function with the sorted rolls of the dice.
-
-        Returns:
-            A `Die` with the
-        """
+        """Calls the function with the sorted rolls of the dice."""
         if not callable(func):
             raise TypeError(
                 'The first argument must be callable. Did you forget to provide a function?'
@@ -481,6 +504,10 @@ class SortedApply():
             again_depth: int = 1,
             again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
         ) -> 'icepool.Die[T]':
+            if not callable(func):
+                raise TypeError(
+                    'The first argument must be callable. Did you forget to provide a function?'
+                )
             # Expression evaluators are difficult to type.
             return icepool.Pool(dice).lowest(keep,
                                              drop).expand().map(  # type: ignore
@@ -501,6 +528,10 @@ class SortedApply():
             again_depth: int = 1,
             again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
         ) -> 'icepool.Die[T]':
+            if not callable(func):
+                raise TypeError(
+                    'The first argument must be callable. Did you forget to provide a function?'
+                )
             # Expression evaluators are difficult to type.
             return icepool.Pool(dice).highest(
                 keep, drop).expand().map(  # type: ignore
@@ -526,6 +557,10 @@ class SortedApply():
             again_depth: int = 1,
             again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
         ) -> 'icepool.Die[T]':
+            if not callable(func):
+                raise TypeError(
+                    'The first argument must be callable. Did you forget to provide a function?'
+                )
             # Expression evaluators are difficult to type.
             return icepool.Pool(dice).middle(
                 keep, tie=tie).expand().map(  # type: ignore
