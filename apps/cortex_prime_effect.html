@@ -203,8 +203,8 @@
                     return multiset_function(lambda a, b: (a+b).highest(keep=keep).sum())
                 
                 def updateResults():
-                    die_sizes = sum(([hitch_die(die_size)] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
-                    hitch_pool = Pool(die_sizes)
+                    die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+                    hitch_pool = Pool([hitch_die(die_size) for die_size in die_sizes])
                     non_hitch = hitch_pool.drop_outcomes([0]).expand()
                     
                     keep = int(js.document.getElementById('pk').value)
@@ -222,6 +222,12 @@
                     js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
                     
                     for effect_die in [6, 8, 10, 12]:
+                        data_set_index = effect_die // 2 - 2
+                        if effect_die not in die_sizes:
+                            js.effectChart.data.datasets[data_set_index].data = js.effectChart.data.datasets[data_set_index-1].data
+                            js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(True)
+                            continue
+                            
                         def total_with_effect(non_hitch_outcome):
                             if len(non_hitch_outcome) < 2:
                                 return 0
@@ -234,8 +240,8 @@
 
                         result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
                         
-                        data_set_index = effect_die // 2 - 2
                         js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+                        js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(False)
             `);
 
             effectChart.options.plugins.title = {
