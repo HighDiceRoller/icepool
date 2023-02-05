@@ -352,6 +352,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     # Adjust counts.
 
+    def map_counts(self, func: Callable[[T_contra, int], int],
+                   /) -> 'MultisetExpression[T_contra]':
+        """Maps the counts to new counts.
+
+        Args:
+            func: A function that takes `outcome, count` and produces a modified
+                count.
+        """
+        return icepool.expression.MapCountsExpression(self, func)
+
     def __mul__(self, other: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(other, int):
             return NotImplemented

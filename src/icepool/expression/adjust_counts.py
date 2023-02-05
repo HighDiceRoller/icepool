@@ -8,7 +8,46 @@ from abc import abstractmethod
 from functools import cached_property
 
 from icepool.typing import Order, Outcome, T_contra
-from typing import Hashable, Sequence
+from typing import Callable, Hashable, Sequence
+
+
+class MapCountsExpression(MultisetExpression[T_contra]):
+    """Expression that maps outcomes and counts to new counts."""
+
+    def __init__(self, inner: MultisetExpression[T_contra],
+                 func: Callable[[T_contra, int], int]) -> None:
+        """Constructor.
+
+        Args:
+            inner: The inner expression.
+            func: A function that takes `outcome, count` and produces a modified
+                count.
+        """
+        self._validate_output_arity(inner)
+        self._inner = inner
+        self._func = func
+
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
+        state, count = self._inner._next_state(state, outcome, *counts)
+        count = self._func(outcome, count)
+        return state, count
+
+    def _order(self) -> Order:
+        return self._inner._order()
+
+    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._inner._bound_generators()
+
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        unbound_inner, prefix_start = self._inner._unbind(
+            prefix_start, free_start)
+        unbound_expression = MapCountsExpression(unbound_inner, self._func)
+        return unbound_expression, prefix_start
+
+    def _arity(self) -> int:
+        return self._inner._arity()
 
 
 class AdjustCountsExpression(MultisetExpression[T_contra]):

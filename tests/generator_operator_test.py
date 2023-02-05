@@ -74,7 +74,20 @@ def test_example_filter_counts():
     assert result == Die([expected])
 
 
+def test_example_filter_counts_using_map():
+    expected = Pool([1, 2, 2,
+                     3]).map_counts(lambda o, c: c if c >= 2 else 0).expand()
+    result = Die([(2, 2)])
+    assert result == Die([expected])
+
+
 def test_example_unique():
     expected = Pool([1, 2, 2, 3]).unique().expand()
+    result = Die([(1, 2, 3)])
+    assert result == Die([expected])
+
+
+def test_example_unique_using_map() -> None:
+    expected = Pool([1, 2, 2, 3]).map_counts(lambda o, c: min(c, 1)).expand()
     result = Die([(1, 2, 3)])
     assert result == Die([expected])
