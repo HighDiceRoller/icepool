@@ -654,7 +654,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     # Comparators.
 
-    def compare(
+    def _compare(
         self, right:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
         operation_class: Type['icepool.evaluator.ComparisonEvaluator']
@@ -680,8 +680,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other,
-                                icepool.evaluator.IsProperSubsetEvaluator)
+            return self._compare(other,
+                                 icepool.evaluator.IsProperSubsetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -691,7 +691,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other, icepool.evaluator.IsSubsetEvaluator)
+            return self._compare(other, icepool.evaluator.IsSubsetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -704,7 +704,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Same as `self <= other`.
         """
-        return self.compare(other, icepool.evaluator.IsSubsetEvaluator)
+        return self._compare(other, icepool.evaluator.IsSubsetEvaluator)
 
     def __gt__(
             self, other:
@@ -712,8 +712,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other,
-                                icepool.evaluator.IsProperSupersetEvaluator)
+            return self._compare(other,
+                                 icepool.evaluator.IsProperSupersetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -723,7 +723,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other, icepool.evaluator.IsSupersetEvaluator)
+            return self._compare(other, icepool.evaluator.IsSupersetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -736,7 +736,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Same as `self >= other`.
         """
-        return self.compare(other, icepool.evaluator.IsSupersetEvaluator)
+        return self._compare(other, icepool.evaluator.IsSupersetEvaluator)
 
     # The result has no truth value.
     def __eq__(  # type: ignore
@@ -745,7 +745,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other, icepool.evaluator.IsEqualSetEvaluator)
+            return self._compare(other, icepool.evaluator.IsEqualSetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -756,7 +756,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         try:
-            return self.compare(other, icepool.evaluator.IsNotEqualSetEvaluator)
+            return self._compare(other,
+                                 icepool.evaluator.IsNotEqualSetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -766,4 +767,4 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Whether this multiset is disjoint from the other multiset."""
-        return self.compare(other, icepool.evaluator.IsDisjointSetEvaluator)
+        return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
