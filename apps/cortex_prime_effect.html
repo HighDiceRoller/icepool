@@ -188,9 +188,11 @@
                 
                 possible_die_sizes = [4, 6, 8, 10, 12]
                 
+                @cache
                 def hitch_die(die_size):
                     return Die({0:1, die_size: die_size - 1})
                 
+                @cache
                 def number_die(die_size):
                     return Die(range(2, die_size + 1))
                 
