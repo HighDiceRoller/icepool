@@ -195,10 +195,6 @@
                 @cache
                 def number_die(die_size):
                     return Die(range(2, die_size + 1))
-                
-                @cache
-                def make_evaluator(keep):
-                    return multiset_function(lambda a: a.highest(keep=keep).sum())
                     
                 @cache
                 def make_low_high_evaluator(keep):
@@ -211,15 +207,14 @@
                     
                     keep = int(js.document.getElementById('pk').value)
                     
-                    evaluator = make_evaluator(keep)
                     low_high_evaluator = make_low_high_evaluator(keep)
                     
                     # d4.
                     def total_d4(non_hitch_outcome):
                         if len(non_hitch_outcome) == 0:
                             return 0
-                        pool = Pool([number_die(x) for x in non_hitch_outcome])
-                        return evaluator(pool)
+                        pool = Pool([number_die(x) for x in non_hitch_outcome]).highest(keep=keep)
+                        return pool.sum()
                     result = non_hitch.map(total_d4).clip(3, 25).set_range(3, 25)
                     js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
                     
