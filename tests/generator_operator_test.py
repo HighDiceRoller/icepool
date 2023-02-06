@@ -88,6 +88,6 @@ def test_example_unique():
 
 
 def test_example_unique_using_map() -> None:
-    expected = Pool([1, 2, 2, 3]).map_counts(lambda o, c: min(c, 1)).expand()
+    expected = Pool([1, 2, 2, 3]).map_counts(lambda c: min(c, 1)).expand()
     result = Die([(1, 2, 3)])
     assert result == Die([expected])

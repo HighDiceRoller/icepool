@@ -4,28 +4,55 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 
+import inspect
 from abc import abstractmethod
 from functools import cached_property
 
 from icepool.typing import Order, Outcome, T_contra
-from typing import Callable, Hashable, Sequence
+from typing import Callable, Hashable, Sequence, cast, overload
 
 
 class MapCountsExpression(MultisetExpression[T_contra]):
     """Expression that maps outcomes and counts to new counts."""
 
+    _func: Callable[[T_contra, int], int]
+
+    @overload
+    def __init__(self, inner: MultisetExpression[T_contra],
+                 func: Callable[[int], int]) -> None:
+        ...
+
+    @overload
     def __init__(self, inner: MultisetExpression[T_contra],
                  func: Callable[[T_contra, int], int]) -> None:
+        ...
+
+    def __init__(
+            self, inner: MultisetExpression[T_contra],
+            func: Callable[[int], int] | Callable[[T_contra, int], int]
+    ) -> None:
         """Constructor.
 
         Args:
             inner: The inner expression.
-            func: A function that takes `outcome, count` and produces a modified
-                count.
+            func: A function that takes either `count` or `outcome, count` and
+                produces a modified count.
         """
         self._validate_output_arity(inner)
         self._inner = inner
-        self._func = func
+
+        parameters = inspect.signature(func).parameters
+        if len(parameters.values()) == 1:
+            count_only_func = cast(Callable[[int], int], func)
+
+            def wrapped(outcome: T_contra, count: int) -> int:
+                return count_only_func(count)
+
+            self._func = wrapped
+
+        else:
+            func = cast(Callable[[T_contra, int], int], func)
+            self._func = func
 
     def _next_state(self, state, outcome: T_contra,
                     *counts: int) -> tuple[Hashable, int]:

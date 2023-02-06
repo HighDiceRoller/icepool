@@ -352,13 +352,24 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     # Adjust counts.
 
+    @overload
+    def map_counts(self, func: Callable[[int], int],
+                   /) -> 'MultisetExpression[T_contra]':
+        ...
+
+    @overload
     def map_counts(self, func: Callable[[T_contra, int], int],
+                   /) -> 'MultisetExpression[T_contra]':
+        ...
+
+    def map_counts(self,
+                   func: Callable[[int], int] | Callable[[T_contra, int], int],
                    /) -> 'MultisetExpression[T_contra]':
         """Maps the counts to new counts.
 
         Args:
-            func: A function that takes `outcome, count` and produces a modified
-                count.
+            func: A function that takes `count` or `outcome, count` and produces
+                a modified count.
         """
         return icepool.expression.MapCountsExpression(self, func)
 
