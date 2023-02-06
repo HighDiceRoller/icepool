@@ -49,7 +49,7 @@
         </form>
     </div>
     
-    <h2>Probability of beating difficulty with effect die</h2>
+    <h2>Probability of reaching total with effect die</h2>
         
     <div style="width: 90%; margin: auto;">
         <div class="chart_container"><canvas id="effectChart"></canvas></div>
@@ -62,7 +62,7 @@
         var effectChart = new Chart(effectChartContext, {
             type: 'line',
             data: {
-                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+                labels: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
                 datasets: [
                     {
                         label: 'd4',
@@ -126,7 +126,7 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Difficulty',
+                            text: 'Total',
                         },
                     },
                     y: {
@@ -215,7 +215,7 @@
                         pool = Pool([number_die(x) for x in non_hitch_outcome]).highest(keep=keep)
                         return pool.sum()
                     result = non_hitch.map(total_d4).clip(3, 25).set_range(3, 25)
-                    js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+                    js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
                     
                     for effect_die in [6, 8, 10, 12]:
                         data_set_index = effect_die // 2 - 2
@@ -238,7 +238,7 @@
 
                         result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
                         
-                        js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_gt()[:-1]])
+                        js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
                         js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(False)
             `);
 
@@ -287,8 +287,8 @@
         <h2>Notes</h2>
 
         <ul>
-            <li>The vertical <b>position</b> of each <b>curve</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of <b>at least</b> that size.</li>
-            <li>The vertical <b>extent</b> of each <b>area</b> at a particular difficulty is the chance of beating that difficulty while keeping an effect die of <b>exactly</b> that size.</li>
+            <li>The vertical <b>position</b> of each <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>The vertical <b>extent</b> of each <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
             <li>The area above the d4 curve represents failure.</li>
             <li>This does not take heroic successes into account.</li>
             <li>Remember that players lose ties, dice that hitch can't be used for effect, and the player can always have a "free" d4 effect if they succeed.</li>
