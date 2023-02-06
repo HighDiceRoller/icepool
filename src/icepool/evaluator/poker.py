@@ -6,7 +6,7 @@ import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.typing import Outcome, Order
-from typing import Any, Literal
+from typing import Any, Collection, Literal, Sequence
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
@@ -68,6 +68,10 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
+
+    def alignment(self, outcomes: Sequence) -> Collection:
+        """Always sees zeros."""
+        return outcomes
 
 
 class LargestCountEvaluator(MultisetEvaluator[Any, int]):
