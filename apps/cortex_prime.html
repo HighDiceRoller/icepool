@@ -40,7 +40,7 @@
                     <th>Keep</th>
                 </tr>
                 <tr id="pinputs">
-                    <th style="text-align:left;">Player</th>
+                    <th style="text-align:left;">Roller</th>
                     <td><input name="p4" id="p4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="p6" id="p6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
                     <td><input name="p8" id="p8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
@@ -51,7 +51,7 @@
                     <td><input name="pk" id="pk" type="number" min="0" max="20" value="2" required onwheel="" /></td>
                 </tr>
                 <tr id="oinputs">
-                    <th style="text-align:left;">Opposition</th>
+                    <th style="text-align:left;">Difficulty</th>
                     <td><input name="o4" id="o4" type="number" min="0" max="20" value="0" required onwheel="" /></td>
                     <td><input name="o6" id="o6" type="number" min="0" max="20" value="2" required onwheel="" /></td>
                     <td><input name="o8" id="o8" type="number" min="0" max="20" value="0" required onwheel="" /></td>
@@ -74,14 +74,14 @@
         <div style="font-size: 150%;">
             Show:
             <select id="distSelect">
-                <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf"><i>Chance of rolling greater than</option>
+                <option value="pmf">Chance of exactly</option>
+                <option value="ccdf"><i>Chance of at least</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
         <div style="font-size: 150%;">
             Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br />
-            Chance of player rolling greater than opposition: <span id="successChance"></span>
+            Chance of rolling greater than difficulty: <span id="successChance"></span>
         </div>
     </div>
 
@@ -90,8 +90,8 @@
         <div style="font-size: 150%;">
             Show:
             <select id="hitchDistSelect">
-                <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf" selected><i>Chance of rolling at least</option>
+                <option value="pmf">Chance of exactly</option>
+                <option value="ccdf" selected><i>Chance of at least</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="hitchChart"></canvas></div>
@@ -107,13 +107,13 @@
                 labels: [],
                 datasets: [
                     {
-                        label: 'Player',
+                        label: 'Roller',
                         borderColor: 'rgba(0, 0, 255, 1.0)',
                         backgroundColor: 'rgba(0, 0, 255, 1.0)',
                         data: [],
                     },
                     {
-                        label: 'Opposition',
+                        label: 'Difficulty',
                         borderColor: 'rgba(215, 0, 0, 1.0)',
                         backgroundColor: 'rgba(215, 0, 0, 1.0)',
                         data: [],
@@ -160,7 +160,7 @@
                 labels: [],
                 datasets: [
                     {
-                        label: 'Player',
+                        label: 'Roller',
                         borderColor: 'rgba(0, 0, 255, 1.0)',
                         data: [],
                     },
@@ -307,8 +307,8 @@
                 js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
                 js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(1.0 - x) * 100.0 for x in die_player.probabilities_le()])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(1.0 - x) * 100.0 for x in die_opposition.probabilities_le()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
                 
             `);
 
@@ -406,8 +406,7 @@
         <h2>Notes</h2>
 
         <ul>
-            <li>Remember that players lose ties. This is why the chart for totals has an option for "chance of rolling
-                greater than" while the chart for hitches has an option for "chance of rolling at least".</li>
+            <li>Remember that the second roller loses ties.</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do
                 not contribute to the total.</li>
         </ul>
