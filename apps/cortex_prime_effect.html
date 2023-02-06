@@ -198,8 +198,7 @@
                 
                 # Dropping from the bottom helps caching.
                 @cache
-                def low_high_evaluator(keep, die_count):
-                    drop = max(die_count - keep, 0)
+                def low_high_evaluator(drop):
                     return multiset_function(lambda a, b: (a+b)[drop:].sum())
                 
                 def updateResults():
@@ -233,7 +232,8 @@
                             index = bisect_left(non_hitch_outcome, effect_die)
                             low_pool = Pool([number_die(x) for x in non_hitch_outcome[:index]])
                             high_pool = Pool([number_die(x) for x in non_hitch_outcome[index:]])[1:]
-                            evaluator = low_high_evaluator(keep, len(non_hitch_outcome) - 1)
+                            drop = max(len(non_hitch_outcome) - keep - 1, 0)
+                            evaluator = low_high_evaluator(drop)
                             return evaluator(low_pool, high_pool)
 
                         result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
