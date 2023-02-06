@@ -64,6 +64,7 @@ from icepool.population.keep import lowest, highest, middle
 from icepool.generator.pool import Pool, standard_pool
 
 from icepool.generator.multiset_generator import MultisetGenerator, NextMultisetGenerator
+from icepool.generator.alignment import Alignment
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.population.deck import Deck
@@ -84,7 +85,7 @@ __all__ = [
     'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
     'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
     'apply', 'outcome_function', 'Reroll', 'RerollType', 'Pool',
-    'standard_pool', 'MultisetGenerator', 'MultisetExpression',
+    'standard_pool', 'MultisetGenerator', 'Alignment', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'typing',
     'evaluator'
 ]

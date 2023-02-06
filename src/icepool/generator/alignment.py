@@ -11,7 +11,11 @@ AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int], int]]
 
 
 class Alignment(MultisetGenerator[T, tuple[()]]):
-    """A generator that only outputs 0 counts with weight 1."""
+    """A generator that does not output any counts.
+
+    This can be used to enforce that certain outcomes are seen without otherwise
+    affecting a multiset evaluation.
+    """
 
     def __init__(self, outcomes: Collection[T]):
         self._outcomes = tuple(sorted(outcomes))

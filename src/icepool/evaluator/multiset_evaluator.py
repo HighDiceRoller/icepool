@@ -150,9 +150,12 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         The default implementation returns `()`; this means outcomes with zero
         count may or may not be seen by `next_state`.
 
-        If you want the outcomes seen by `next_state` to be consecutive
-        `int`s, you can set `alignment = icepool.MultisetEvaluator.range_alignment`.
+        If you want `next_state` to see consecutive `int` outcomes, you can set
+        `alignment = icepool.MultisetEvaluator.range_alignment`.
         See `range_alignment()` below.
+
+        If you want `next_state` to see all generator outcomes, you can return
+        `outcomes` as-is.
 
         Args:
             outcomes: The outcomes that could be produced by the generators, in
