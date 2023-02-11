@@ -63,11 +63,11 @@ def multiset_function(
 def multiset_function(
         func: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
-    """A decorator that turns a function into an evaluator.
+    """A decorator that turns a function into a `MultisetEvaluator`.
 
     The provided function should take in arguments representing multisets,
     do some operations on them (see `MultisetExpression`), and finish off with
-    an evaluation. You can use tuples to perform a joint evaluation.
+    an evaluation. You can return tuples to perform a joint evaluation.
 
     For example, to create an evaluator which computes the elements each of two
     multisets has that the other doesn't:
@@ -96,6 +96,10 @@ def multiset_function(
     ```
 
     would produce the same thing both times.
+
+    `multiset_function` has considerable overhead, being effectively a
+    mini-language within Python. For better performance, you can try
+    implementing your own subclass of `MultisetEvaluator` directly.
 
     Args:
         func: This should take in a fixed number of multiset variables and
