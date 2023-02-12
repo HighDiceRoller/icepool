@@ -40,6 +40,6 @@ def test_vampire():
         loss_type = 'bestial' if hunger_botch > 0 else ''
         return success, win_type, loss_type
 
-    # star=1 unpacks the tuples before giving them to eval_one_hot.
-    result = total.map(eval_one_hot, star=1)
+    # star=True unpacks the tuples before giving them to eval_one_hot.
+    result = total.map(eval_one_hot, star=True)
     assert result.quantity((0, '', '')) == 2000
