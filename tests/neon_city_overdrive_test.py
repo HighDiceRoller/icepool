@@ -35,7 +35,7 @@ def final_score(outcome: int, count: int) -> int:
 def test_using_multiset_ops():
     mid_result = (d6.pool(6) - d6.pool(6)).highest_outcome_and_count()
 
-    result = mid_result.map(final_score, star=True)
+    result = mid_result.map(final_score)
     assert result == expected
 
 
@@ -45,5 +45,5 @@ def test_using_multiset_function():
     def mid_result(a, b):
         return (a - b).highest_outcome_and_count()
 
-    result = mid_result(d6.pool(6), d6.pool(6)).map(final_score, star=True)
+    result = mid_result(d6.pool(6), d6.pool(6)).map(final_score)
     assert result == expected
