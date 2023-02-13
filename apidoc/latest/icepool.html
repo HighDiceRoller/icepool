@@ -7341,62 +7341,63 @@ of dice.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">apply</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n"><a href="#Again">icepool.Again</a></span><span class="p">]]</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n"><a href="#Outcome">icepool.Outcome</a></span> <span class="o">|</span> <span class="n"><a href="#Die">icepool.Die</a></span> <span class="o">|</span> <span class="n"><a href="#Pool">icepool.Pool</a></span>,</span><span class="param">	<span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+        <span class="name">apply</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n"><a href="#Again">icepool.Again</a></span><span class="p">]]</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n"><a href="#Outcome">icepool.Outcome</a></span> <span class="o">|</span> <span class="n"><a href="#Die">icepool.Die</a></span> <span class="o">|</span> <span class="n"><a href="#MultisetExpression">icepool.MultisetExpression</a></span>,</span><span class="param">	<span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="apply-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#apply"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-291"><a href="#apply-291"><span class="linenos">291</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
-</span><span id="apply-292"><a href="#apply-292"><span class="linenos">292</span></a>    <span class="n">func</span><span class="p">:</span>
-</span><span id="apply-293"><a href="#apply-293"><span class="linenos">293</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]&#39;</span><span class="p">,</span>
-</span><span id="apply-294"><a href="#apply-294"><span class="linenos">294</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Outcome | icepool.Die | icepool.Pool&#39;</span><span class="p">,</span>
-</span><span id="apply-295"><a href="#apply-295"><span class="linenos">295</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="apply-296"><a href="#apply-296"><span class="linenos">296</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="apply-297"><a href="#apply-297"><span class="linenos">297</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
-</span><span id="apply-298"><a href="#apply-298"><span class="linenos">298</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.</span>
-</span><span id="apply-299"><a href="#apply-299"><span class="linenos">299</span></a>
-</span><span id="apply-300"><a href="#apply-300"><span class="linenos">300</span></a><span class="sd">    See `outcome_function` for a decorator version of this.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="apply-293"><a href="#apply-293"><span class="linenos">293</span></a><span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
+</span><span id="apply-294"><a href="#apply-294"><span class="linenos">294</span></a>    <span class="n">func</span><span class="p">:</span>
+</span><span id="apply-295"><a href="#apply-295"><span class="linenos">295</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]&#39;</span><span class="p">,</span>
+</span><span id="apply-296"><a href="#apply-296"><span class="linenos">296</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Outcome | icepool.Die | icepool.MultisetExpression&#39;</span><span class="p">,</span>
+</span><span id="apply-297"><a href="#apply-297"><span class="linenos">297</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="apply-298"><a href="#apply-298"><span class="linenos">298</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="apply-299"><a href="#apply-299"><span class="linenos">299</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+</span><span id="apply-300"><a href="#apply-300"><span class="linenos">300</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.</span>
 </span><span id="apply-301"><a href="#apply-301"><span class="linenos">301</span></a>
-</span><span id="apply-302"><a href="#apply-302"><span class="linenos">302</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
+</span><span id="apply-302"><a href="#apply-302"><span class="linenos">302</span></a><span class="sd">    See `outcome_function` for a decorator version of this.</span>
 </span><span id="apply-303"><a href="#apply-303"><span class="linenos">303</span></a>
-</span><span id="apply-304"><a href="#apply-304"><span class="linenos">304</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than a few dice.</span>
-</span><span id="apply-305"><a href="#apply-305"><span class="linenos">305</span></a><span class="sd">    If at all possible, use `reduce()`, `Pool` methods, and/or</span>
-</span><span id="apply-306"><a href="#apply-306"><span class="linenos">306</span></a><span class="sd">    `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more</span>
-</span><span id="apply-307"><a href="#apply-307"><span class="linenos">307</span></a><span class="sd">    efficient than using `apply` on the dice in order.</span>
-</span><span id="apply-308"><a href="#apply-308"><span class="linenos">308</span></a>
-</span><span id="apply-309"><a href="#apply-309"><span class="linenos">309</span></a><span class="sd">    Args:</span>
-</span><span id="apply-310"><a href="#apply-310"><span class="linenos">310</span></a><span class="sd">        func: A function that takes one argument per input `Die` and returns an</span>
-</span><span id="apply-311"><a href="#apply-311"><span class="linenos">311</span></a><span class="sd">            argument to `Die()`.</span>
-</span><span id="apply-312"><a href="#apply-312"><span class="linenos">312</span></a><span class="sd">        *args: `func` will be called with all joint outcomes of these.</span>
-</span><span id="apply-313"><a href="#apply-313"><span class="linenos">313</span></a><span class="sd">            Allowed arg types are:</span>
-</span><span id="apply-314"><a href="#apply-314"><span class="linenos">314</span></a><span class="sd">            * Single outcome.</span>
-</span><span id="apply-315"><a href="#apply-315"><span class="linenos">315</span></a><span class="sd">            * `Die`. All outcomes will be sent to `func`.</span>
-</span><span id="apply-316"><a href="#apply-316"><span class="linenos">316</span></a><span class="sd">            * `Pool`. All sorted tuples of outcomes will be sent to `func`,</span>
-</span><span id="apply-317"><a href="#apply-317"><span class="linenos">317</span></a><span class="sd">                as `Pool.expand()`.</span>
-</span><span id="apply-318"><a href="#apply-318"><span class="linenos">318</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
-</span><span id="apply-319"><a href="#apply-319"><span class="linenos">319</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
-</span><span id="apply-320"><a href="#apply-320"><span class="linenos">320</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply-321"><a href="#apply-321"><span class="linenos">321</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-</span><span id="apply-322"><a href="#apply-322"><span class="linenos">322</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="apply-323"><a href="#apply-323"><span class="linenos">323</span></a>            <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
-</span><span id="apply-324"><a href="#apply-324"><span class="linenos">324</span></a>        <span class="p">)</span>
-</span><span id="apply-325"><a href="#apply-325"><span class="linenos">325</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="apply-326"><a href="#apply-326"><span class="linenos">326</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">func</span><span class="p">()],</span>
-</span><span id="apply-327"><a href="#apply-327"><span class="linenos">327</span></a>                           <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
-</span><span id="apply-328"><a href="#apply-328"><span class="linenos">328</span></a>                           <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
-</span><span id="apply-329"><a href="#apply-329"><span class="linenos">329</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-330"><a href="#apply-330"><span class="linenos">330</span></a>    <span class="n">final_quantities</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="apply-331"><a href="#apply-331"><span class="linenos">331</span></a>    <span class="k">for</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">final_quantity</span> <span class="ow">in</span> <span class="n">iter_cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-</span><span id="apply-332"><a href="#apply-332"><span class="linenos">332</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="apply-333"><a href="#apply-333"><span class="linenos">333</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="apply-334"><a href="#apply-334"><span class="linenos">334</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
-</span><span id="apply-335"><a href="#apply-335"><span class="linenos">335</span></a>            <span class="n">final_quantities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_quantity</span><span class="p">)</span>
-</span><span id="apply-336"><a href="#apply-336"><span class="linenos">336</span></a>
-</span><span id="apply-337"><a href="#apply-337"><span class="linenos">337</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">final_outcomes</span><span class="p">,</span>
-</span><span id="apply-338"><a href="#apply-338"><span class="linenos">338</span></a>                       <span class="n">final_quantities</span><span class="p">,</span>
-</span><span id="apply-339"><a href="#apply-339"><span class="linenos">339</span></a>                       <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
-</span><span id="apply-340"><a href="#apply-340"><span class="linenos">340</span></a>                       <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
+</span><span id="apply-304"><a href="#apply-304"><span class="linenos">304</span></a><span class="sd">    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
+</span><span id="apply-305"><a href="#apply-305"><span class="linenos">305</span></a>
+</span><span id="apply-306"><a href="#apply-306"><span class="linenos">306</span></a><span class="sd">    `apply()` is flexible but not very efficient for more than a few dice.</span>
+</span><span id="apply-307"><a href="#apply-307"><span class="linenos">307</span></a><span class="sd">    If at all possible, use `reduce()`, `MultisetExpression` methods, and/or</span>
+</span><span id="apply-308"><a href="#apply-308"><span class="linenos">308</span></a><span class="sd">    `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more</span>
+</span><span id="apply-309"><a href="#apply-309"><span class="linenos">309</span></a><span class="sd">    efficient than using `apply` on the dice in order.</span>
+</span><span id="apply-310"><a href="#apply-310"><span class="linenos">310</span></a>
+</span><span id="apply-311"><a href="#apply-311"><span class="linenos">311</span></a><span class="sd">    Args:</span>
+</span><span id="apply-312"><a href="#apply-312"><span class="linenos">312</span></a><span class="sd">        func: A function that takes one argument per input `Die` and returns an</span>
+</span><span id="apply-313"><a href="#apply-313"><span class="linenos">313</span></a><span class="sd">            argument to `Die()`.</span>
+</span><span id="apply-314"><a href="#apply-314"><span class="linenos">314</span></a><span class="sd">        *args: `func` will be called with all joint outcomes of these.</span>
+</span><span id="apply-315"><a href="#apply-315"><span class="linenos">315</span></a><span class="sd">            Allowed arg types are:</span>
+</span><span id="apply-316"><a href="#apply-316"><span class="linenos">316</span></a><span class="sd">            * Single outcome.</span>
+</span><span id="apply-317"><a href="#apply-317"><span class="linenos">317</span></a><span class="sd">            * `Die`. All outcomes will be sent to `func`.</span>
+</span><span id="apply-318"><a href="#apply-318"><span class="linenos">318</span></a><span class="sd">            * `MultisetExpression`. All sorted tuples of outcomes will be sent</span>
+</span><span id="apply-319"><a href="#apply-319"><span class="linenos">319</span></a><span class="sd">                to `func`, as `MultisetExpression.expand()`. The expression must</span>
+</span><span id="apply-320"><a href="#apply-320"><span class="linenos">320</span></a><span class="sd">                be fully bound.</span>
+</span><span id="apply-321"><a href="#apply-321"><span class="linenos">321</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
+</span><span id="apply-322"><a href="#apply-322"><span class="linenos">322</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
+</span><span id="apply-323"><a href="#apply-323"><span class="linenos">323</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="apply-324"><a href="#apply-324"><span class="linenos">324</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+</span><span id="apply-325"><a href="#apply-325"><span class="linenos">325</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="apply-326"><a href="#apply-326"><span class="linenos">326</span></a>            <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
+</span><span id="apply-327"><a href="#apply-327"><span class="linenos">327</span></a>        <span class="p">)</span>
+</span><span id="apply-328"><a href="#apply-328"><span class="linenos">328</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="apply-329"><a href="#apply-329"><span class="linenos">329</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">func</span><span class="p">()],</span>
+</span><span id="apply-330"><a href="#apply-330"><span class="linenos">330</span></a>                           <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
+</span><span id="apply-331"><a href="#apply-331"><span class="linenos">331</span></a>                           <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
+</span><span id="apply-332"><a href="#apply-332"><span class="linenos">332</span></a>    <span class="n">final_outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-333"><a href="#apply-333"><span class="linenos">333</span></a>    <span class="n">final_quantities</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="apply-334"><a href="#apply-334"><span class="linenos">334</span></a>    <span class="k">for</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">final_quantity</span> <span class="ow">in</span> <span class="n">iter_cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+</span><span id="apply-335"><a href="#apply-335"><span class="linenos">335</span></a>        <span class="n">final_outcome</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="apply-336"><a href="#apply-336"><span class="linenos">336</span></a>        <span class="k">if</span> <span class="n">final_outcome</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="apply-337"><a href="#apply-337"><span class="linenos">337</span></a>            <span class="n">final_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_outcome</span><span class="p">)</span>
+</span><span id="apply-338"><a href="#apply-338"><span class="linenos">338</span></a>            <span class="n">final_quantities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">final_quantity</span><span class="p">)</span>
+</span><span id="apply-339"><a href="#apply-339"><span class="linenos">339</span></a>
+</span><span id="apply-340"><a href="#apply-340"><span class="linenos">340</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">final_outcomes</span><span class="p">,</span>
+</span><span id="apply-341"><a href="#apply-341"><span class="linenos">341</span></a>                       <span class="n">final_quantities</span><span class="p">,</span>
+</span><span id="apply-342"><a href="#apply-342"><span class="linenos">342</span></a>                       <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
+</span><span id="apply-343"><a href="#apply-343"><span class="linenos">343</span></a>                       <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -7407,7 +7408,7 @@ of dice.</li>
 <p>Example: <code>apply(lambda a, b: a + b, d6, d6)</code> is the same as d6 + d6.</p>
 
 <p><code><a href="#apply">apply()</a></code> is flexible but not very efficient for more than a few dice.
-If at all possible, use <code><a href="#reduce">reduce()</a></code>, <code><a href="#Pool">Pool</a></code> methods, and/or
+If at all possible, use <code><a href="#reduce">reduce()</a></code>, <code><a href="#MultisetExpression">MultisetExpression</a></code> methods, and/or
 <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>s. Even <code><a href="#Pool.expand">Pool.expand()</a></code> (which sorts rolls) is more
 efficient than using <code><a href="#apply">apply</a></code> on the dice in order.</p>
 
@@ -7421,8 +7422,9 @@ Allowed arg types are:
 <ul>
 <li>Single outcome.</li>
 <li><code><a href="#Die">Die</a></code>. All outcomes will be sent to <code>func</code>.</li>
-<li><code><a href="#Pool">Pool</a></code>. All sorted tuples of outcomes will be sent to <code>func</code>,
-as <code><a href="#Pool.expand">Pool.expand()</a></code>.</li>
+<li><code><a href="#MultisetExpression">MultisetExpression</a></code>. All sorted tuples of outcomes will be sent
+to <code>func</code>, as <code><a href="#MultisetExpression.expand">MultisetExpression.expand()</a></code>. The expression must
+be fully bound.</li>
 </ul></li>
 <li><strong>again_depth:</strong>  Forwarded to the final die constructor.</li>
 <li><strong>again_end:</strong>  Forwarded to the final die constructor.</li>
@@ -7442,71 +7444,75 @@ as <code><a href="#Pool.expand">Pool.expand()</a></code>.</li>
 
     </div>
     <a class="headerlink" href="#outcome_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="outcome_function-374"><a href="#outcome_function-374"><span class="linenos">374</span></a><span class="k">def</span> <span class="nf">outcome_function</span><span class="p">(</span>
-</span><span id="outcome_function-375"><a href="#outcome_function-375"><span class="linenos">375</span></a>    <span class="n">func</span><span class="p">:</span>
-</span><span id="outcome_function-376"><a href="#outcome_function-376"><span class="linenos">376</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="outcome_function-377"><a href="#outcome_function-377"><span class="linenos">377</span></a>    <span class="o">/</span><span class="p">,</span>
-</span><span id="outcome_function-378"><a href="#outcome_function-378"><span class="linenos">378</span></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="outcome_function-379"><a href="#outcome_function-379"><span class="linenos">379</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="outcome_function-380"><a href="#outcome_function-380"><span class="linenos">380</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="outcome_function-381"><a href="#outcome_function-381"><span class="linenos">381</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]&#39;</span><span class="p">:</span>
-</span><span id="outcome_function-382"><a href="#outcome_function-382"><span class="linenos">382</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator that turns a function that takes outcomes into a function that takes dice.</span>
-</span><span id="outcome_function-383"><a href="#outcome_function-383"><span class="linenos">383</span></a>
-</span><span id="outcome_function-384"><a href="#outcome_function-384"><span class="linenos">384</span></a><span class="sd">    This is basically a decorator version of `apply()` and produces behavior</span>
-</span><span id="outcome_function-385"><a href="#outcome_function-385"><span class="linenos">385</span></a><span class="sd">    similar to AnyDice functions, though Icepool has different typing rules</span>
-</span><span id="outcome_function-386"><a href="#outcome_function-386"><span class="linenos">386</span></a><span class="sd">    among other differences.</span>
-</span><span id="outcome_function-387"><a href="#outcome_function-387"><span class="linenos">387</span></a>
-</span><span id="outcome_function-388"><a href="#outcome_function-388"><span class="linenos">388</span></a><span class="sd">    `outcome_function` can either be used with no arguments:</span>
-</span><span id="outcome_function-389"><a href="#outcome_function-389"><span class="linenos">389</span></a>
-</span><span id="outcome_function-390"><a href="#outcome_function-390"><span class="linenos">390</span></a><span class="sd">    ```</span>
-</span><span id="outcome_function-391"><a href="#outcome_function-391"><span class="linenos">391</span></a><span class="sd">    @outcome_function</span>
-</span><span id="outcome_function-392"><a href="#outcome_function-392"><span class="linenos">392</span></a><span class="sd">    def explode_six(x):</span>
-</span><span id="outcome_function-393"><a href="#outcome_function-393"><span class="linenos">393</span></a><span class="sd">        if x == 6:</span>
-</span><span id="outcome_function-394"><a href="#outcome_function-394"><span class="linenos">394</span></a><span class="sd">            return 6 + Again()</span>
-</span><span id="outcome_function-395"><a href="#outcome_function-395"><span class="linenos">395</span></a><span class="sd">        else:</span>
-</span><span id="outcome_function-396"><a href="#outcome_function-396"><span class="linenos">396</span></a><span class="sd">            return x</span>
-</span><span id="outcome_function-397"><a href="#outcome_function-397"><span class="linenos">397</span></a>
-</span><span id="outcome_function-398"><a href="#outcome_function-398"><span class="linenos">398</span></a><span class="sd">    explode_six(d6, again_depth=2)</span>
-</span><span id="outcome_function-399"><a href="#outcome_function-399"><span class="linenos">399</span></a><span class="sd">    ```</span>
-</span><span id="outcome_function-400"><a href="#outcome_function-400"><span class="linenos">400</span></a>
-</span><span id="outcome_function-401"><a href="#outcome_function-401"><span class="linenos">401</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="outcome_function-377"><a href="#outcome_function-377"><span class="linenos">377</span></a><span class="k">def</span> <span class="nf">outcome_function</span><span class="p">(</span>
+</span><span id="outcome_function-378"><a href="#outcome_function-378"><span class="linenos">378</span></a>    <span class="n">func</span><span class="p">:</span>
+</span><span id="outcome_function-379"><a href="#outcome_function-379"><span class="linenos">379</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="outcome_function-380"><a href="#outcome_function-380"><span class="linenos">380</span></a>    <span class="o">/</span><span class="p">,</span>
+</span><span id="outcome_function-381"><a href="#outcome_function-381"><span class="linenos">381</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="outcome_function-382"><a href="#outcome_function-382"><span class="linenos">382</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="outcome_function-383"><a href="#outcome_function-383"><span class="linenos">383</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="outcome_function-384"><a href="#outcome_function-384"><span class="linenos">384</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]&#39;</span><span class="p">:</span>
+</span><span id="outcome_function-385"><a href="#outcome_function-385"><span class="linenos">385</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator that turns a function that takes outcomes into a function that takes dice.</span>
+</span><span id="outcome_function-386"><a href="#outcome_function-386"><span class="linenos">386</span></a>
+</span><span id="outcome_function-387"><a href="#outcome_function-387"><span class="linenos">387</span></a><span class="sd">    The result must be a `Die`.</span>
+</span><span id="outcome_function-388"><a href="#outcome_function-388"><span class="linenos">388</span></a>
+</span><span id="outcome_function-389"><a href="#outcome_function-389"><span class="linenos">389</span></a><span class="sd">    This is basically a decorator version of `apply()` and produces behavior</span>
+</span><span id="outcome_function-390"><a href="#outcome_function-390"><span class="linenos">390</span></a><span class="sd">    similar to AnyDice functions, though Icepool has different typing rules</span>
+</span><span id="outcome_function-391"><a href="#outcome_function-391"><span class="linenos">391</span></a><span class="sd">    among other differences.</span>
+</span><span id="outcome_function-392"><a href="#outcome_function-392"><span class="linenos">392</span></a>
+</span><span id="outcome_function-393"><a href="#outcome_function-393"><span class="linenos">393</span></a><span class="sd">    `outcome_function` can either be used with no arguments:</span>
+</span><span id="outcome_function-394"><a href="#outcome_function-394"><span class="linenos">394</span></a>
+</span><span id="outcome_function-395"><a href="#outcome_function-395"><span class="linenos">395</span></a><span class="sd">    ```</span>
+</span><span id="outcome_function-396"><a href="#outcome_function-396"><span class="linenos">396</span></a><span class="sd">    @outcome_function</span>
+</span><span id="outcome_function-397"><a href="#outcome_function-397"><span class="linenos">397</span></a><span class="sd">    def explode_six(x):</span>
+</span><span id="outcome_function-398"><a href="#outcome_function-398"><span class="linenos">398</span></a><span class="sd">        if x == 6:</span>
+</span><span id="outcome_function-399"><a href="#outcome_function-399"><span class="linenos">399</span></a><span class="sd">            return 6 + Again()</span>
+</span><span id="outcome_function-400"><a href="#outcome_function-400"><span class="linenos">400</span></a><span class="sd">        else:</span>
+</span><span id="outcome_function-401"><a href="#outcome_function-401"><span class="linenos">401</span></a><span class="sd">            return x</span>
 </span><span id="outcome_function-402"><a href="#outcome_function-402"><span class="linenos">402</span></a>
-</span><span id="outcome_function-403"><a href="#outcome_function-403"><span class="linenos">403</span></a><span class="sd">    ```</span>
-</span><span id="outcome_function-404"><a href="#outcome_function-404"><span class="linenos">404</span></a><span class="sd">    @outcome_function(again_depth=2)</span>
-</span><span id="outcome_function-405"><a href="#outcome_function-405"><span class="linenos">405</span></a><span class="sd">    def explode_six(x):</span>
-</span><span id="outcome_function-406"><a href="#outcome_function-406"><span class="linenos">406</span></a><span class="sd">        if x == 6:</span>
-</span><span id="outcome_function-407"><a href="#outcome_function-407"><span class="linenos">407</span></a><span class="sd">            return 6 + Again()</span>
-</span><span id="outcome_function-408"><a href="#outcome_function-408"><span class="linenos">408</span></a><span class="sd">        else:</span>
-</span><span id="outcome_function-409"><a href="#outcome_function-409"><span class="linenos">409</span></a><span class="sd">            return x</span>
-</span><span id="outcome_function-410"><a href="#outcome_function-410"><span class="linenos">410</span></a>
-</span><span id="outcome_function-411"><a href="#outcome_function-411"><span class="linenos">411</span></a><span class="sd">    explode_six(d6)</span>
-</span><span id="outcome_function-412"><a href="#outcome_function-412"><span class="linenos">412</span></a><span class="sd">    ```</span>
-</span><span id="outcome_function-413"><a href="#outcome_function-413"><span class="linenos">413</span></a>
-</span><span id="outcome_function-414"><a href="#outcome_function-414"><span class="linenos">414</span></a><span class="sd">    Args:</span>
-</span><span id="outcome_function-415"><a href="#outcome_function-415"><span class="linenos">415</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
-</span><span id="outcome_function-416"><a href="#outcome_function-416"><span class="linenos">416</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
-</span><span id="outcome_function-417"><a href="#outcome_function-417"><span class="linenos">417</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="outcome_function-403"><a href="#outcome_function-403"><span class="linenos">403</span></a><span class="sd">    explode_six(d6, again_depth=2)</span>
+</span><span id="outcome_function-404"><a href="#outcome_function-404"><span class="linenos">404</span></a><span class="sd">    ```</span>
+</span><span id="outcome_function-405"><a href="#outcome_function-405"><span class="linenos">405</span></a>
+</span><span id="outcome_function-406"><a href="#outcome_function-406"><span class="linenos">406</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
+</span><span id="outcome_function-407"><a href="#outcome_function-407"><span class="linenos">407</span></a>
+</span><span id="outcome_function-408"><a href="#outcome_function-408"><span class="linenos">408</span></a><span class="sd">    ```</span>
+</span><span id="outcome_function-409"><a href="#outcome_function-409"><span class="linenos">409</span></a><span class="sd">    @outcome_function(again_depth=2)</span>
+</span><span id="outcome_function-410"><a href="#outcome_function-410"><span class="linenos">410</span></a><span class="sd">    def explode_six(x):</span>
+</span><span id="outcome_function-411"><a href="#outcome_function-411"><span class="linenos">411</span></a><span class="sd">        if x == 6:</span>
+</span><span id="outcome_function-412"><a href="#outcome_function-412"><span class="linenos">412</span></a><span class="sd">            return 6 + Again()</span>
+</span><span id="outcome_function-413"><a href="#outcome_function-413"><span class="linenos">413</span></a><span class="sd">        else:</span>
+</span><span id="outcome_function-414"><a href="#outcome_function-414"><span class="linenos">414</span></a><span class="sd">            return x</span>
+</span><span id="outcome_function-415"><a href="#outcome_function-415"><span class="linenos">415</span></a>
+</span><span id="outcome_function-416"><a href="#outcome_function-416"><span class="linenos">416</span></a><span class="sd">    explode_six(d6)</span>
+</span><span id="outcome_function-417"><a href="#outcome_function-417"><span class="linenos">417</span></a><span class="sd">    ```</span>
 </span><span id="outcome_function-418"><a href="#outcome_function-418"><span class="linenos">418</span></a>
-</span><span id="outcome_function-419"><a href="#outcome_function-419"><span class="linenos">419</span></a>    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="outcome_function-420"><a href="#outcome_function-420"><span class="linenos">420</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span> <span class="n">func</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
-</span><span id="outcome_function-421"><a href="#outcome_function-421"><span class="linenos">421</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="outcome_function-422"><a href="#outcome_function-422"><span class="linenos">422</span></a>
-</span><span id="outcome_function-423"><a href="#outcome_function-423"><span class="linenos">423</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
-</span><span id="outcome_function-424"><a href="#outcome_function-424"><span class="linenos">424</span></a>            <span class="n">func</span><span class="p">:</span>
-</span><span id="outcome_function-425"><a href="#outcome_function-425"><span class="linenos">425</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]&#39;</span>
-</span><span id="outcome_function-426"><a href="#outcome_function-426"><span class="linenos">426</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
+</span><span id="outcome_function-419"><a href="#outcome_function-419"><span class="linenos">419</span></a><span class="sd">    Args:</span>
+</span><span id="outcome_function-420"><a href="#outcome_function-420"><span class="linenos">420</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
+</span><span id="outcome_function-421"><a href="#outcome_function-421"><span class="linenos">421</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
+</span><span id="outcome_function-422"><a href="#outcome_function-422"><span class="linenos">422</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="outcome_function-423"><a href="#outcome_function-423"><span class="linenos">423</span></a>
+</span><span id="outcome_function-424"><a href="#outcome_function-424"><span class="linenos">424</span></a>    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="outcome_function-425"><a href="#outcome_function-425"><span class="linenos">425</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span> <span class="n">func</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
+</span><span id="outcome_function-426"><a href="#outcome_function-426"><span class="linenos">426</span></a>    <span class="k">else</span><span class="p">:</span>
 </span><span id="outcome_function-427"><a href="#outcome_function-427"><span class="linenos">427</span></a>
-</span><span id="outcome_function-428"><a href="#outcome_function-428"><span class="linenos">428</span></a>            <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span>
-</span><span id="outcome_function-429"><a href="#outcome_function-429"><span class="linenos">429</span></a>                <span class="n">partial</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span>
-</span><span id="outcome_function-430"><a href="#outcome_function-430"><span class="linenos">430</span></a>                        <span class="n">func</span><span class="p">,</span>
-</span><span id="outcome_function-431"><a href="#outcome_function-431"><span class="linenos">431</span></a>                        <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
-</span><span id="outcome_function-432"><a href="#outcome_function-432"><span class="linenos">432</span></a>                        <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
-</span><span id="outcome_function-433"><a href="#outcome_function-433"><span class="linenos">433</span></a>
-</span><span id="outcome_function-434"><a href="#outcome_function-434"><span class="linenos">434</span></a>        <span class="k">return</span> <span class="n">decorator</span>
+</span><span id="outcome_function-428"><a href="#outcome_function-428"><span class="linenos">428</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
+</span><span id="outcome_function-429"><a href="#outcome_function-429"><span class="linenos">429</span></a>            <span class="n">func</span><span class="p">:</span>
+</span><span id="outcome_function-430"><a href="#outcome_function-430"><span class="linenos">430</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]&#39;</span>
+</span><span id="outcome_function-431"><a href="#outcome_function-431"><span class="linenos">431</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
+</span><span id="outcome_function-432"><a href="#outcome_function-432"><span class="linenos">432</span></a>
+</span><span id="outcome_function-433"><a href="#outcome_function-433"><span class="linenos">433</span></a>            <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span>
+</span><span id="outcome_function-434"><a href="#outcome_function-434"><span class="linenos">434</span></a>                <span class="n">partial</span><span class="p">(</span><span class="n">apply</span><span class="p">,</span>
+</span><span id="outcome_function-435"><a href="#outcome_function-435"><span class="linenos">435</span></a>                        <span class="n">func</span><span class="p">,</span>
+</span><span id="outcome_function-436"><a href="#outcome_function-436"><span class="linenos">436</span></a>                        <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
+</span><span id="outcome_function-437"><a href="#outcome_function-437"><span class="linenos">437</span></a>                        <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
+</span><span id="outcome_function-438"><a href="#outcome_function-438"><span class="linenos">438</span></a>
+</span><span id="outcome_function-439"><a href="#outcome_function-439"><span class="linenos">439</span></a>        <span class="k">return</span> <span class="n">decorator</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Decorator that turns a function that takes outcomes into a function that takes dice.</p>
+
+<p>The result must be a <code><a href="#Die">Die</a></code>.</p>
 
 <p>This is basically a decorator version of <code><a href="#apply">apply()</a></code> and produces behavior
 similar to AnyDice functions, though Icepool has different typing rules
@@ -9184,7 +9190,7 @@ If empty, the pool will be considered to consist of 0d1.</li>
 </span><span id="MultisetGenerator-182"><a href="#MultisetGenerator-182"><span class="linenos">182</span></a>        <span class="n">unbound_expression</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">MultisetVariable</span><span class="p">(</span><span class="n">prefix_start</span><span class="p">)</span>
 </span><span id="MultisetGenerator-183"><a href="#MultisetGenerator-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">unbound_expression</span><span class="p">,</span> <span class="n">prefix_start</span> <span class="o">+</span> <span class="mi">1</span>
 </span><span id="MultisetGenerator-184"><a href="#MultisetGenerator-184"><span class="linenos">184</span></a>
-</span><span id="MultisetGenerator-185"><a href="#MultisetGenerator-185"><span class="linenos">185</span></a>    <span class="k">def</span> <span class="nf">_arity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="MultisetGenerator-185"><a href="#MultisetGenerator-185"><span class="linenos">185</span></a>    <span class="k">def</span> <span class="nf">_free_arity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="MultisetGenerator-186"><a href="#MultisetGenerator-186"><span class="linenos">186</span></a>        <span class="k">return</span> <span class="mi">0</span>
 </span><span id="MultisetGenerator-187"><a href="#MultisetGenerator-187"><span class="linenos">187</span></a>
 </span><span id="MultisetGenerator-188"><a href="#MultisetGenerator-188"><span class="linenos">188</span></a>    <span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
@@ -9723,7 +9729,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-75"><a href="#MultisetExpression-75"><span class="linenos"> 75</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-76"><a href="#MultisetExpression-76"><span class="linenos"> 76</span></a>
 </span><span id="MultisetExpression-77"><a href="#MultisetExpression-77"><span class="linenos"> 77</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="MultisetExpression-78"><a href="#MultisetExpression-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">_arity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="MultisetExpression-78"><a href="#MultisetExpression-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">_free_arity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="MultisetExpression-79"><a href="#MultisetExpression-79"><span class="linenos"> 79</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The minimum number of multisets/counts that must be provided to this expression.</span>
 </span><span id="MultisetExpression-80"><a href="#MultisetExpression-80"><span class="linenos"> 80</span></a>
 </span><span id="MultisetExpression-81"><a href="#MultisetExpression-81"><span class="linenos"> 81</span></a><span class="sd">        Any excess multisets/counts that are provided will be ignored.</span>
@@ -13756,11 +13762,11 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="multiset_function-64"><a href="#multiset_function-64"><span class="linenos"> 64</span></a><span class="k">def</span> <span class="nf">multiset_function</span><span class="p">(</span>
 </span><span id="multiset_function-65"><a href="#multiset_function-65"><span class="linenos"> 65</span></a>        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">NestedTupleOrEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]],</span>
 </span><span id="multiset_function-66"><a href="#multiset_function-66"><span class="linenos"> 66</span></a>        <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T_contra</span><span class="p">,</span> <span class="n">NestedTupleOrOutcome</span><span class="p">[</span><span class="n">U_co</span><span class="p">]]:</span>
-</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos"> 67</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that turns a function into an evaluator.</span>
+</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos"> 67</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator that turns a function into a `MultisetEvaluator`.</span>
 </span><span id="multiset_function-68"><a href="#multiset_function-68"><span class="linenos"> 68</span></a>
 </span><span id="multiset_function-69"><a href="#multiset_function-69"><span class="linenos"> 69</span></a><span class="sd">    The provided function should take in arguments representing multisets,</span>
 </span><span id="multiset_function-70"><a href="#multiset_function-70"><span class="linenos"> 70</span></a><span class="sd">    do some operations on them (see `MultisetExpression`), and finish off with</span>
-</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos"> 71</span></a><span class="sd">    an evaluation. You can use tuples to perform a joint evaluation.</span>
+</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos"> 71</span></a><span class="sd">    an evaluation. You can return tuples to perform a joint evaluation.</span>
 </span><span id="multiset_function-72"><a href="#multiset_function-72"><span class="linenos"> 72</span></a>
 </span><span id="multiset_function-73"><a href="#multiset_function-73"><span class="linenos"> 73</span></a><span class="sd">    For example, to create an evaluator which computes the elements each of two</span>
 </span><span id="multiset_function-74"><a href="#multiset_function-74"><span class="linenos"> 74</span></a><span class="sd">    multisets has that the other doesn&#39;t:</span>
@@ -13790,31 +13796,35 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="multiset_function-98"><a href="#multiset_function-98"><span class="linenos"> 98</span></a>
 </span><span id="multiset_function-99"><a href="#multiset_function-99"><span class="linenos"> 99</span></a><span class="sd">    would produce the same thing both times.</span>
 </span><span id="multiset_function-100"><a href="#multiset_function-100"><span class="linenos">100</span></a>
-</span><span id="multiset_function-101"><a href="#multiset_function-101"><span class="linenos">101</span></a><span class="sd">    Args:</span>
-</span><span id="multiset_function-102"><a href="#multiset_function-102"><span class="linenos">102</span></a><span class="sd">        func: This should take in a fixed number of multiset variables and</span>
-</span><span id="multiset_function-103"><a href="#multiset_function-103"><span class="linenos">103</span></a><span class="sd">            output an evaluator or a nested tuple of evaluators. Tuples will</span>
-</span><span id="multiset_function-104"><a href="#multiset_function-104"><span class="linenos">104</span></a><span class="sd">            result in a `JointEvaluator`.</span>
-</span><span id="multiset_function-105"><a href="#multiset_function-105"><span class="linenos">105</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="multiset_function-106"><a href="#multiset_function-106"><span class="linenos">106</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="multiset_function-107"><a href="#multiset_function-107"><span class="linenos">107</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="multiset_function-108"><a href="#multiset_function-108"><span class="linenos">108</span></a>        <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="multiset_function-109"><a href="#multiset_function-109"><span class="linenos">109</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="ow">or</span>
-</span><span id="multiset_function-110"><a href="#multiset_function-110"><span class="linenos">110</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span>
-</span><span id="multiset_function-111"><a href="#multiset_function-111"><span class="linenos">111</span></a>        <span class="p">]</span> <span class="ow">or</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="multiset_function-112"><a href="#multiset_function-112"><span class="linenos">112</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="multiset_function-113"><a href="#multiset_function-113"><span class="linenos">113</span></a>                <span class="s1">&#39;Callable must take only a fixed number of positional arguments.&#39;</span>
-</span><span id="multiset_function-114"><a href="#multiset_function-114"><span class="linenos">114</span></a>            <span class="p">)</span>
-</span><span id="multiset_function-115"><a href="#multiset_function-115"><span class="linenos">115</span></a>    <span class="n">tuple_or_evaluator</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">MV</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">))))</span>
-</span><span id="multiset_function-116"><a href="#multiset_function-116"><span class="linenos">116</span></a>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">replace_tuples_with_joint_evaluator</span><span class="p">(</span><span class="n">tuple_or_evaluator</span><span class="p">)</span>
-</span><span id="multiset_function-117"><a href="#multiset_function-117"><span class="linenos">117</span></a>    <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+</span><span id="multiset_function-101"><a href="#multiset_function-101"><span class="linenos">101</span></a><span class="sd">    `multiset_function` has considerable overhead, being effectively a</span>
+</span><span id="multiset_function-102"><a href="#multiset_function-102"><span class="linenos">102</span></a><span class="sd">    mini-language within Python. For better performance, you can try</span>
+</span><span id="multiset_function-103"><a href="#multiset_function-103"><span class="linenos">103</span></a><span class="sd">    implementing your own subclass of `MultisetEvaluator` directly.</span>
+</span><span id="multiset_function-104"><a href="#multiset_function-104"><span class="linenos">104</span></a>
+</span><span id="multiset_function-105"><a href="#multiset_function-105"><span class="linenos">105</span></a><span class="sd">    Args:</span>
+</span><span id="multiset_function-106"><a href="#multiset_function-106"><span class="linenos">106</span></a><span class="sd">        func: This should take in a fixed number of multiset variables and</span>
+</span><span id="multiset_function-107"><a href="#multiset_function-107"><span class="linenos">107</span></a><span class="sd">            output an evaluator or a nested tuple of evaluators. Tuples will</span>
+</span><span id="multiset_function-108"><a href="#multiset_function-108"><span class="linenos">108</span></a><span class="sd">            result in a `JointEvaluator`.</span>
+</span><span id="multiset_function-109"><a href="#multiset_function-109"><span class="linenos">109</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="multiset_function-110"><a href="#multiset_function-110"><span class="linenos">110</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="multiset_function-111"><a href="#multiset_function-111"><span class="linenos">111</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="multiset_function-112"><a href="#multiset_function-112"><span class="linenos">112</span></a>        <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="multiset_function-113"><a href="#multiset_function-113"><span class="linenos">113</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="ow">or</span>
+</span><span id="multiset_function-114"><a href="#multiset_function-114"><span class="linenos">114</span></a>                <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span>
+</span><span id="multiset_function-115"><a href="#multiset_function-115"><span class="linenos">115</span></a>        <span class="p">]</span> <span class="ow">or</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="multiset_function-116"><a href="#multiset_function-116"><span class="linenos">116</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="multiset_function-117"><a href="#multiset_function-117"><span class="linenos">117</span></a>                <span class="s1">&#39;Callable must take only a fixed number of positional arguments.&#39;</span>
+</span><span id="multiset_function-118"><a href="#multiset_function-118"><span class="linenos">118</span></a>            <span class="p">)</span>
+</span><span id="multiset_function-119"><a href="#multiset_function-119"><span class="linenos">119</span></a>    <span class="n">tuple_or_evaluator</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">MV</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">))))</span>
+</span><span id="multiset_function-120"><a href="#multiset_function-120"><span class="linenos">120</span></a>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">replace_tuples_with_joint_evaluator</span><span class="p">(</span><span class="n">tuple_or_evaluator</span><span class="p">)</span>
+</span><span id="multiset_function-121"><a href="#multiset_function-121"><span class="linenos">121</span></a>    <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>A decorator that turns a function into an evaluator.</p>
+            <div class="docstring"><p>A decorator that turns a function into a <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 
 <p>The provided function should take in arguments representing multisets,
 do some operations on them (see <code><a href="#MultisetExpression">MultisetExpression</a></code>), and finish off with
-an evaluation. You can use tuples to perform a joint evaluation.</p>
+an evaluation. You can return tuples to perform a joint evaluation.</p>
 
 <p>For example, to create an evaluator which computes the elements each of two
 multisets has that the other doesn't:</p>
@@ -13841,6 +13851,10 @@ print(count_intersection(d6.pool(3)))
 </code></pre>
 
 <p>would produce the same thing both times.</p>
+
+<p><code><a href="#multiset_function">multiset_function</a></code> has considerable overhead, being effectively a
+mini-language within Python. For better performance, you can try
+implementing your own subclass of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code> directly.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
