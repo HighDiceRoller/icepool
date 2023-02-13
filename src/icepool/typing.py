@@ -1,8 +1,9 @@
 __docformat__ = 'google'
 
 import enum
+import inspect
 
-from typing import Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, TypeVar, TYPE_CHECKING
+from typing import Any, Callable, Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
@@ -70,3 +71,27 @@ class Outcome(Hashable, Protocol[T_contra]):
 
     def __lt__(self, other: T_contra) -> bool:
         ...
+
+
+def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
+    """Counts the number of positional parameters of the callable.
+
+    Returns:
+        Two `int`s. The first is the number of required positional arguments;
+        the second is total number of positional arguments, or `None` if there
+        is a variadic `*args`.
+    """
+    required = 0
+    total = 0
+    parameters = inspect.signature(func, follow_wrapped=False).parameters
+    for parameter in parameters.values():
+        match parameter.kind:
+            case inspect.Parameter.POSITIONAL_ONLY | inspect.Parameter.POSITIONAL_OR_KEYWORD:
+                total += 1
+                if parameter.default == inspect.Parameter.empty:
+                    required += 1
+            case inspect.Parameter.VAR_POSITIONAL:
+                return required, None
+            case _:
+                break
+    return required, total
