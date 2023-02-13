@@ -260,7 +260,7 @@ def accumulate(
 
 
 def iter_cartesian_product(
-    *args: 'Outcome | icepool.Die | icepool.Pool'
+    *args: 'Outcome | icepool.Die | icepool.MultisetExpression'
 ) -> Iterator[tuple[tuple, int]]:
     """Yields the independent joint distribution of the arguments.
 
@@ -275,7 +275,9 @@ def iter_cartesian_product(
     def arg_items(arg) -> Sequence[tuple[Any, int]]:
         if isinstance(arg, icepool.Die):
             return arg.items()
-        elif isinstance(arg, icepool.Pool):
+        elif isinstance(arg, icepool.MultisetExpression):
+            if arg._free_arity() > 0:
+                raise ValueError('Expression must be fully bound.')
             # Expression evaluators are difficult to type.
             return arg.expand().items()  # type: ignore
         else:
@@ -290,7 +292,7 @@ def iter_cartesian_product(
 def apply(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
-    *args: 'Outcome | icepool.Die | icepool.Pool',
+    *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
@@ -301,7 +303,7 @@ def apply(
     Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
     `apply()` is flexible but not very efficient for more than a few dice.
-    If at all possible, use `reduce()`, `Pool` methods, and/or
+    If at all possible, use `reduce()`, `MultisetExpression` methods, and/or
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
     efficient than using `apply` on the dice in order.
 
@@ -312,8 +314,9 @@ def apply(
             Allowed arg types are:
             * Single outcome.
             * `Die`. All outcomes will be sent to `func`.
-            * `Pool`. All sorted tuples of outcomes will be sent to `func`,
-                as `Pool.expand()`.
+            * `MultisetExpression`. All sorted tuples of outcomes will be sent
+                to `func`, as `MultisetExpression.expand()`. The expression must
+                be fully bound.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
@@ -379,6 +382,8 @@ def outcome_function(
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     """Decorator that turns a function that takes outcomes into a function that takes dice.
+
+    The result must be a `Die`.
 
     This is basically a decorator version of `apply()` and produces behavior
     similar to AnyDice functions, though Icepool has different typing rules

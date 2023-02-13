@@ -82,3 +82,12 @@ def test_outcome_function():
 
     assert a == d6.explode(depth=2)
     assert b == d6.explode(depth=2)
+
+
+def test_expression_to_outcome_function():
+
+    @outcome_function
+    def test(x):
+        return sum(x)
+
+    assert test(d6.pool(3) - d6.pool(3)) == (d6.pool(3) - d6.pool(3)).sum()
