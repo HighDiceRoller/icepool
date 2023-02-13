@@ -73,8 +73,8 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         unbound_expression = MapCountsExpression(unbound_inner, self._func)
         return unbound_expression, prefix_start
 
-    def _arity(self) -> int:
-        return self._inner._arity()
+    def _free_arity(self) -> int:
+        return self._inner._free_arity()
 
 
 class AdjustCountsExpression(MultisetExpression[T_contra]):
@@ -109,8 +109,8 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
         unbound_expression = type(self)(unbound_inner, self._constant)
         return unbound_expression, prefix_start
 
-    def _arity(self) -> int:
-        return self._inner._arity()
+    def _free_arity(self) -> int:
+        return self._inner._free_arity()
 
 
 class MultiplyCountsExpression(AdjustCountsExpression):

@@ -65,8 +65,8 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         unbound_expression._inner = unbound_inner
         return unbound_expression, prefix_start
 
-    def _arity(self) -> int:
-        return self._inner._arity()
+    def _free_arity(self) -> int:
+        return self._inner._free_arity()
 
     def __str__(self) -> str:
         return f'{self._inner}.filter_outcomes()'

@@ -57,9 +57,9 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
     @cached_property
     def _cached_arity(self) -> int:
-        return max(prev._arity() for prev in self._prevs)
+        return max(prev._free_arity() for prev in self._prevs)
 
-    def _arity(self) -> int:
+    def _free_arity(self) -> int:
         return self._cached_arity
 
     @cached_property

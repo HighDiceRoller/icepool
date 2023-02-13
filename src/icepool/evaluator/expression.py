@@ -25,7 +25,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
                 expression._bound_generators() for expression in expressions))
         self._bound_arity = len(self._bound_generators)
         self._free_arity = max(
-            (expression._arity() for expression in expressions), default=0)
+            (expression._free_arity() for expression in expressions), default=0)
 
         unbound_expressions: 'list[icepool.expression.MultisetExpression[T_contra]]' = []
         prefix_start = 0

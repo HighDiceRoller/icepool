@@ -159,8 +159,8 @@ class KeepExpression(MultisetExpression[T_contra]):
                                                      self._drop)
         return unbound_expression, prefix_start
 
-    def _arity(self) -> int:
-        return self._inner._arity()
+    def _free_arity(self) -> int:
+        return self._inner._free_arity()
 
     def __str__(self) -> str:
         if self._drop:

@@ -181,7 +181,7 @@ class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
         unbound_expression = icepool.expression.MultisetVariable(prefix_start)
         return unbound_expression, prefix_start + 1
 
-    def _arity(self) -> int:
+    def _free_arity(self) -> int:
         return 0
 
     def min_outcome(self) -> T:
