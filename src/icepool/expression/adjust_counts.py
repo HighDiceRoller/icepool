@@ -41,7 +41,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         self._validate_output_arity(inner)
         self._inner = inner
 
-        parameters = inspect.signature(func).parameters
+        parameters = inspect.signature(func, follow_wrapped=False).parameters
         if len(parameters.values()) == 1:
             count_only_func = cast(Callable[[int], int], func)
 

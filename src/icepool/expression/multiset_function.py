@@ -106,7 +106,7 @@ def multiset_function(
             output an evaluator or a nested tuple of evaluators. Tuples will
             result in a `JointEvaluator`.
     """
-    parameters = inspect.signature(func).parameters
+    parameters = inspect.signature(func, follow_wrapped=False).parameters
     for parameter in parameters.values():
         if parameter.kind not in [
                 inspect.Parameter.POSITIONAL_ONLY,
