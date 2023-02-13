@@ -30,9 +30,9 @@ def test_map_depth():
 
 
 def test_map_star():
-    a = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=1, star=True)
-    b = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=2, star=True)
-    c = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=None, star=True)
+    a = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=1)
+    b = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=2)
+    c = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=None)
     assert a == b
     assert b == c
 

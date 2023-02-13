@@ -20,7 +20,7 @@ def bf_explode_basic(die, depth):
 @pytest.mark.parametrize('depth', range(6))
 def test_explode_d6(depth):
     result = icepool.d6.explode(depth=depth)
-    result_int = icepool.d6.explode(outcomes=[6], depth=depth)
+    result_int = icepool.d6.explode(which=[6], depth=depth)
     expected = bf_explode_basic(icepool.d6, depth)
     assert result.equals(expected)
     assert result_int.equals(expected)
@@ -28,5 +28,5 @@ def test_explode_d6(depth):
 
 @pytest.mark.parametrize('depth', range(6))
 def test_explode_multiple_weight(depth):
-    result = icepool.d6.explode(outcomes=[5, 6], depth=depth)
+    result = icepool.d6.explode(which=[5, 6], depth=depth)
     assert result.denominator() == 6**(depth + 1)

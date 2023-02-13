@@ -368,22 +368,24 @@ class Die(Population[T_co]):
     # Rerolls and other outcome management.
 
     def reroll(self,
-               outcomes: Callable[..., bool] | Collection[T_co] | None = None,
+               which: Callable[..., bool] | Collection[T_co] | None = None,
+               /,
                *,
-               star: bool = False,
+               star: bool | None = None,
                depth: int | None = None) -> 'Die[T_co]':
         """Rerolls the given outcomes.
 
         Args:
-            outcomes: Selects which outcomes to reroll. Options:
+            which: Selects which outcomes to reroll. Options:
                 * A single outcome to reroll.
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
                 * If not provided, the min outcome will be rerolled.
-            star: If set to `True`, outcomes will be unpacked as
-                `*outcome` before giving it to the `outcomes` function.
-                If `outcomes` is not a callable, this has no effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `which` is not callable.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -392,22 +394,25 @@ class Die(Population[T_co]):
             If the reroll would never terminate, the result has no outcomes.
         """
 
-        if outcomes is None:
+        if which is None:
             outcome_set = {self.min_outcome()}
-        elif callable(outcomes):
+        elif callable(which):
+            if star is None:
+                star = self.guess_star(which)
             if star:
+
                 # Need TypeVarTuple to check this.
                 outcome_set = {
                     outcome for outcome in self.outcomes()
-                    if outcomes(*outcome)  # type: ignore
+                    if which(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                    outcome for outcome in self.outcomes() if which(outcome)
                 }
         else:
             # Collection.
-            outcome_set = set(outcomes)
+            outcome_set = set(which)
 
         if depth is None:
             data = {
@@ -431,22 +436,24 @@ class Die(Population[T_co]):
         return icepool.Die(data)
 
     def filter(self,
-               outcomes: Callable[..., bool] | Collection[T_co],
+               which: Callable[..., bool] | Collection[T_co],
+               /,
                *,
-               star: bool = False,
+               star: bool | None = None,
                depth: int | None = None) -> 'Die[T_co]':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
 
         Args:
-            outcomes: Selects which outcomes to reroll until. Options:
+            which: Selects which outcomes to reroll until. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A collection of outcomes to reroll until.
-            star: If set to `True`, outcomes will be unpacked as
-                `*outcome` before giving it to the `outcomes` function.
-                If `outcomes` is not a callable, this has no effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `which` is not callable.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -455,21 +462,23 @@ class Die(Population[T_co]):
             If the reroll would never terminate, the result has no outcomes.
         """
 
-        if callable(outcomes):
+        if callable(which):
+            if star is None:
+                star = self.guess_star(which)
             if star:
+
                 not_outcomes = {
                     outcome for outcome in self.outcomes()
-                    if not outcomes(*outcome)  # type: ignore
+                    if not which(*outcome)  # type: ignore
                 }
             else:
                 not_outcomes = {
-                    outcome for outcome in self.outcomes()
-                    if not outcomes(outcome)
+                    outcome for outcome in self.outcomes() if not which(outcome)
                 }
         else:
             not_outcomes = {
                 not_outcome for not_outcome in self.outcomes()
-                if not_outcome not in outcomes
+                if not_outcome not in which
             }
         return self.reroll(not_outcomes, depth=depth)
 
@@ -588,7 +597,7 @@ class Die(Population[T_co]):
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.Again]',
             /,
             *,
-            star: bool = False,
+            star: bool | None = None,
             repeat: int | None = 1,
             again_depth: int = 1,
             again_end: 'U | Die[U] | icepool.RerollType | None' = None
@@ -608,10 +617,10 @@ class Die(Population[T_co]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            star: If set to `True`, outcomes of `self` will be unpacked as
-                `*outcome` before giving it to the `repl` function. `extra_dice`
-                are not unpacked. If `repl` is not a callable, this has no
-                effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `repl`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `repl` is not callable.
             repeat: This will be repeated with the same arguments on the
                 result this many times.
 
@@ -630,6 +639,8 @@ class Die(Population[T_co]):
 
         # Convert to a single-argument function.
         if callable(repl):
+            if star is None:
+                star = self.guess_star(repl)
             if star:
 
                 def transition_function(outcome):
@@ -669,7 +680,7 @@ class Die(Population[T_co]):
         'Callable[..., U | Die[U] | icepool.RerollType] | Mapping[T_co, U | Die[U] | icepool.RerollType]',
             /,
             *,
-            star: bool = False,
+            star: bool | None = None,
             repeat: int) -> 'Die[tuple[U, int]]':
         """Maps outcomes of the `Die` to other outcomes, while also counting
         timesteps.
@@ -696,10 +707,10 @@ class Die(Population[T_co]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be dice rather than just single outcomes.
                 The special value `icepool.Reroll` will reroll that old outcome.
-            star: If set to `True`, outcomes of `self` will be unpacked as
-                `*outcome` before giving it to the `repl` function. `extra_dice`
-                are not unpacked. If `repl` is not a callable, this has no
-                effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `repl`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `repl` is not callable.
             repeat: This will be repeated with the same arguments on the result
                 this many times.
             again_depth: Forwarded to the final die constructor.
@@ -710,6 +721,8 @@ class Die(Population[T_co]):
         """
         # Convert to a single-argument function.
         if callable(repl):
+            if star is None:
+                star = self.guess_star(repl)
             if star:
 
                 def transition_function(outcome):
@@ -746,46 +759,49 @@ class Die(Population[T_co]):
         return result
 
     def explode(self,
-                outcomes: Collection[T_co] | Callable[..., bool] | None = None,
+                which: Collection[T_co] | Callable[..., bool] | None = None,
                 *,
-                star: bool = False,
+                star: bool | None = None,
                 depth: int = 9,
                 end=None) -> 'Die[T_co]':
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
-            outcomes: Which outcomes to explode. Options:
+            which: Which outcomes to explode. Options:
                 * A single outcome to explode.
                 * An collection of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
                 * If not supplied, the max outcome will explode.
-            star: If set to `True`, outcomes will be unpacked as
-                `*outcome` before giving it to the `outcomes` function.
-                If `outcomes` is not a callable, this has no effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `which` is not callable.
             depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             end: Once depth is reached, further explosions will be treated
                 as this value. By default, a zero value will be used.
         """
 
-        if outcomes is None:
+        if which is None:
             outcome_set = {self.max_outcome()}
-        elif callable(outcomes):
+        elif callable(which):
+            if star is None:
+                star = self.guess_star(which)
             if star:
                 # Need TypeVarTuple to type-check this.
                 outcome_set = {
                     outcome for outcome in self.outcomes()
-                    if outcomes(*outcome)  # type: ignore
+                    if which(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if outcomes(outcome)
+                    outcome for outcome in self.outcomes() if which(outcome)
                 }
         else:
-            if not outcomes:
+            if not which:
                 return self
-            outcome_set = set(outcomes)
+            outcome_set = set(which)
 
         if depth < 0:
             raise ValueError('depth cannot be negative.')

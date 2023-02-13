@@ -132,7 +132,7 @@ class Deck(Population[T_co]):
             repl:
         'Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]',
             /,
-            star: bool = False) -> 'Deck[U]':
+            star: bool | None = None) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
 
         Args:
@@ -142,13 +142,15 @@ class Deck(Population[T_co]):
                     Unmapped old outcomes stay the same.
                 The new outcomes may be `Deck`s, in which case one card is
                 replaced with several. This is not recommended.
-            star: If set to `True`, outcomes of `self` will be unpacked as
-                `*outcome` before giving it to the `repl` function. `extra_dice`
-                are not unpacked. If `repl` is not a callable, this has no
-                effect.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `repl`.
+                If not provided, this will be guessed based on the function
+                signature. Has no effect if `repl` is not callable.
         """
         # Convert to a single-argument function.
         if callable(repl):
+            if star is None:
+                star = self.guess_star(repl)
             if star:
 
                 def transition_function(outcome):

@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from collections import defaultdict
 import icepool
 from icepool.collections import CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.typing import Outcome, T_co
+from icepool.typing import Outcome, T_co, count_positional_parameters
 
 from abc import ABC, abstractmethod
 import bisect
@@ -76,6 +76,19 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         or if there are tuples of different lengths.
         """
         return self._tuple_len
+
+    def guess_star(self, func: Callable) -> bool:
+        """Guesses whether outcomes should be unpacked before giving them to the given callable."""
+
+        required, total = count_positional_parameters(func)
+        if required > 1:
+            return True
+        if total == 0:
+            return True
+        if total is None:
+            return True
+
+        return False
 
     def is_empty(self) -> bool:
         """`True` iff this population has no outcomes. """

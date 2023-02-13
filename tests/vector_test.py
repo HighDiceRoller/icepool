@@ -56,31 +56,30 @@ def test_binary_op_mismatch_outcome_len():
 
 
 def test_map_star():
-    result = icepool.cartesian_product(d6, d6).map(lambda a, b: a + b,
-                                                   star=True)
+    result = icepool.cartesian_product(d6, d6).map(lambda a, b: a + b)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
 
 
 def test_reroll_star():
     result = icepool.cartesian_product(d6, d6)
-    result = result.reroll(lambda a, b: a == 6 and b == 6, star=True)
-    result = result.map(lambda a, b: a + b, star=True)
+    result = result.reroll(lambda a, b: a == 6 and b == 6)
+    result = result.map(lambda a, b: a + b)
     expected = (2 @ icepool.d6).reroll({12})
     assert result.equals(expected)
 
 
 def test_filter_star():
     result = icepool.cartesian_product(d6, d6)
-    result = result.filter(lambda a, b: a == 6 and b == 6, star=True)
-    result = result.map(lambda a, b: a + b, star=True)
+    result = result.filter(lambda a, b: a == 6 and b == 6)
+    result = result.map(lambda a, b: a + b)
     expected = (2 @ icepool.d6).filter({12})
     assert result.equals(expected)
 
 
 def test_explode_star():
     base = icepool.cartesian_product(d6, d6)
-    result = base.explode(lambda a, b: a == 6 and b == 6, star=True)
+    result = base.explode(lambda a, b: a == 6 and b == 6)
     expected = base.explode()
     assert result.equals(expected)
 
