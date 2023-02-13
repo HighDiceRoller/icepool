@@ -109,8 +109,8 @@ def multiset_function(
     parameters = inspect.signature(func).parameters
     for parameter in parameters.values():
         if parameter.kind not in [
-                inspect.Parameter.POSITIONAL_ONLY or
-                inspect.Parameter.POSITIONAL_OR_KEYWORD
+                inspect.Parameter.POSITIONAL_ONLY,
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
         ] or parameter.default != inspect.Parameter.empty:
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
