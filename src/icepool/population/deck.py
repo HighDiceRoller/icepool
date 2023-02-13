@@ -145,7 +145,7 @@ class Deck(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `repl` is not callable.
+                signature according to `guess_star()`.
         """
         # Convert to a single-argument function.
         if callable(repl):

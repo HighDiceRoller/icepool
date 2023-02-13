@@ -78,7 +78,16 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         return self._tuple_len
 
     def guess_star(self, func: Callable) -> bool:
-        """Guesses whether outcomes should be unpacked before giving them to the given callable."""
+        """Guesses whether outcomes should be unpacked before giving them to the given callable.
+
+        This is `True` if:
+
+        * If the function takes more than one required positional parameter.
+        * If the function takes no positional parameters.
+        * If the function has a variadic positional parameter, i.e. `*args`.
+
+        And `False` otherwise.
+        """
 
         required, total = count_positional_parameters(func)
         if required > 1:

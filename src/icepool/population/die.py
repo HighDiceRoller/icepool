@@ -385,7 +385,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `which` is not callable.
+                signature according to `guess_star()`.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -453,7 +453,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `which` is not callable.
+                signature according to `guess_star()`.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -620,7 +620,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `repl` is not callable.
+                signature according to `guess_star()`.
             repeat: This will be repeated with the same arguments on the
                 result this many times.
 
@@ -710,7 +710,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `repl` is not callable.
+                signature according to `guess_star()`.
             repeat: This will be repeated with the same arguments on the result
                 this many times.
             again_depth: Forwarded to the final die constructor.
@@ -776,7 +776,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature. Has no effect if `which` is not callable.
+                signature according to `guess_star()`.
             depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             end: Once depth is reached, further explosions will be treated
