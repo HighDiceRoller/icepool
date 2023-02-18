@@ -101,13 +101,7 @@ def test_is_in():
 
 
 def test_count():
-    result = icepool.d6.count(2, 4)
-    expected = 2 @ icepool.coin(1, 6)
-    assert result.equals(expected)
-
-
-def test_count_in():
-    result = icepool.d6.count_in(2, {2, 4})
+    result = icepool.d6.count(2, {2, 4})
     expected = 2 @ icepool.coin(2, 6)
     assert result.equals(expected)
 

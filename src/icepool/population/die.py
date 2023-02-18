@@ -848,11 +848,7 @@ class Die(Population[T_co]):
         """A die that returns True iff the roll of the die is contained in the target."""
         return self.map(lambda x: x in target)
 
-    def count(self, rolls: int, target, /) -> 'Die[int]':
-        """Roll this dice a number of times and count how many are == the target."""
-        return rolls @ (self == target)
-
-    def count_in(self, rolls: int, target: Container[T_co], /) -> 'Die[int]':
+    def count(self, rolls: int, target: Container[T_co], /) -> 'Die[int]':
         """Roll this dice a number of times and count how many are in the target."""
         return rolls @ self.is_in(target)
 
