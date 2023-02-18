@@ -19,15 +19,17 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         self._inners = inners
 
     def next_state(self, state, outcome, *counts):
-        """Runs `next_state` for all subevals.
+        """Runs `next_state` for all sub-evaluator.
 
-        The state is a tuple of the substates.
+        The state is a tuple of the sub-states.
+
+        If any sub-evaluator returns `Reroll`, the result as a whole is `Reroll`.
         """
         prefix_counts = counts[:self._extra_arity]
         counts = counts[self._extra_arity:]
 
         if state is None:
-            return tuple(
+            result = tuple(
                 evaluator.next_state(
                     None,
                     outcome,
@@ -36,7 +38,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
                 ) for evaluator, evaluator_prefix_counts in zip(
                     self._inners, self._split_prefix_counts(*prefix_counts)))
         else:
-            return tuple(
+            result = tuple(
                 evaluator.next_state(
                     substate,
                     outcome,
@@ -45,21 +47,34 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
                 ) for evaluator, substate, evaluator_prefix_counts in zip(
                     self._inners, state,
                     self._split_prefix_counts(*prefix_counts)))
+        if icepool.Reroll in result:
+            return icepool.Reroll
+        else:
+            return result
 
-    def final_outcome(self, final_state) -> tuple:
-        """Runs `final_state` for all subevals.
+    def final_outcome(self, final_state) -> 'tuple | icepool.RerollType':
+        """Runs `final_state` for all sub-evaluators.
 
         The final outcome is a tuple of the final suboutcomes.
+
+        If any sub-evaluator returns `Reroll`, the result as a whole is `Reroll`.
         """
-        return tuple(
-            inner.final_outcome(final_substate)
-            for inner, final_substate in zip(self._inners, final_state))
+        if final_state is None:
+            result = tuple(inner.final_outcome(None) for inner in self._inners)
+        else:
+            result = tuple(
+                inner.final_outcome(final_substate)
+                for inner, final_substate in zip(self._inners, final_state))
+        if icepool.Reroll in result:
+            return icepool.Reroll
+        else:
+            return result
 
     def order(self) -> Order:
-        """Determines the common order of the subevals.
+        """Determines the common order of the sub-evaluators.
 
         Raises:
-            ValueError: If subevals have conflicting orders, i.e. some are
+            ValueError: If sub-evaluators have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
         return Order.merge(*(inner.order() for inner in self._inners))
