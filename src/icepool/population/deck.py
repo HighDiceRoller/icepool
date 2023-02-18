@@ -40,8 +40,11 @@ class Deck(Population[T_co]):
                 Each outcome may be one of the following:
                 * A simple single outcome, which must be hashable and totally
                     orderable.
-                * A tuple. The elements must be valid outcomes.  In particular,
-                    `Reroll` and `Again` are not valid inside tuple outcomes.
+                * A tuple. The elements must be valid outcomes.
+
+                    `Again` is not valid inside tuple outcomes.
+
+                    `Reroll` causes the entire tuple to be rerolled.
 
                     Tuple elements may be `Deck`, in which case the Cartesian
                     product is taken.

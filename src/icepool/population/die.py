@@ -162,11 +162,14 @@ class Die(Population[T_co]):
 
                 * A simple single outcome, which must be hashable and totally
                     orderable.
-                * A tuple. The elements must be valid outcomes. In particular,
-                    `Reroll` and `Again` are not valid inside tuple outcomes.
+                * A tuple. The elements must be valid outcomes.
 
                     Tuple elements may be `Die`, in which case the Cartesian
                     product is taken.
+
+                    `Again` is not valid inside tuple outcomes.
+
+                    `Reroll` causes the entire tuple to be rerolled.
 
                     Operators on dice with tuple outcomes are performed
                     element-wise. See `Die.unary_operator` and

@@ -93,8 +93,6 @@ def expand_arg_inside_tuple(
         arg: T | icepool.Population[T] | icepool.RerollType) -> Mapping[T, int]:
     if isinstance(arg, icepool.Again):
         raise TypeError('Again is not allowed inside tuple outcomes.')
-    elif arg is icepool.Reroll:
-        raise TypeError('Reroll is not allowed inside tuple outcomes.')
     else:
         return expand_arg(arg)
 
