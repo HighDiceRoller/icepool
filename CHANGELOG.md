@@ -1,3 +1,13 @@
+## v0.25.4
+
+* `map` and similar functions will attempt to guess `star`.
+* Changed `positive_only` parameter to `expression.all_counts` to `filter`.
+* Changed implementation of bound generators to unbind expressions rather than dynamically splitting.
+* Retired `apply_sorted` and variants.
+* Add `outcome_function` decorator similar to `apply`.
+* Add `map_counts` expression.
+* `Reroll` in tuple outcomes and joint evaluations causes the whole thing to be rerolled.
+
 ## v0.25.3
 
 * Tuple outcomes can now be compared with single outcomes.
