@@ -40,7 +40,7 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 
 ### Tutorial notebooks
 
-In particular, here are a series of [tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fch00_introduction.ipynb)
+In particular, here are a series of [tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fc00_introduction.ipynb)
 
 ## Web applications
 
