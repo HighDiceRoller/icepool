@@ -50,7 +50,7 @@ function setInputsFromSearchQuery() {
         let field = $("#" + key);
         if (field.attr('type') == 'checkbox') {
             field.attr('checked', true);
-        } else {
+        } else if (field.attr('type') == 'number') {
             let n = parseInt(value);
             if (!(n >= field.attr('min') && n <= field.attr('max'))) {
                 return;
