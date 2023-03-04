@@ -124,21 +124,23 @@ class LineOutput():
         self.color = color
         self.point = point
         self.radius = radius
-        
-    def probabilities(self, probability_type):
-        if probability_type == 'ge':
-            return self.die.probabilities_ge(percent=True)
-        elif probability_type == 'le':
-            return self.die.probabilities_le(percent=True)
-        else:
-            return self.die.probabilities(percent=True)
-            
-    def dice(self):
-        return [self.die]
     
-    def datasets(self, probability_type):
+    @staticmethod
+    def probabilities(aligned, probability_type):
+        if probability_type == 'ge':
+            return aligned.probabilities_ge(percent=True)
+        elif probability_type == 'le':
+            return aligned.probabilities_le(percent=True)
+        else:
+            return aligned.probabilities(percent=True)
+            
+    def outcomes(self):
+        return set(self.die.outcomes())
+    
+    def datasets(self, outcomes, probability_type):
+        aligned = self.die.set_outcomes(outcomes)
         dataset = {
-            'data': self.probabilities(probability_type),
+            'data': self.probabilities(aligned, probability_type),
             'label': self.label,
             'borderColor': 'rgba(%d, %d, %d, 1.0)' % self.color,
             'backgroundColor': 'rgba(%d, %d, %d, 1.0)' % self.color,
@@ -165,8 +167,11 @@ class PrintOutput():
         self.args = args
         self.kwargs = kwargs
         
-    def datasets(self, probability_type):
-        return []
+    def datasets(self, outcomes, probability_type):
+        return {}
+        
+    def outcomes(self):
+        return set()
         
     def print(self, probability_type):
         builtins.print(*self.args, **self.kwargs)
@@ -247,19 +252,13 @@ class OutputManager():
         Returns:
             labels, datasets in js format
         """
-        aligned_dice = icepool.align(*itertools.chain.from_iterable(output.dice() for output in self.outputs))
-        if aligned_dice:
-            output_labels = list(aligned_dice[0].outcomes())
-        else:
-            output_labels = []
-        output_datasets = list(itertools.chain.from_iterable(output.datasets(probability_type) for output in self.outputs))
+        outcomes = sorted(set.union(*(output.outcomes() for output in self.outputs)))
+        output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
         
         for output in self.outputs:
             output.print(probability_type)
         
-        builtins.print(output_labels)
-        builtins.print(output_datasets)
-        return pyodide.ffi.to_js({'labels': output_labels, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
+        return pyodide.ffi.to_js({'labels': outcomes, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
     
     def used_random(self):
         import random
