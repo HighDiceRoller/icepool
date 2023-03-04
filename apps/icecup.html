@@ -115,6 +115,62 @@ import icepool
 import pyodide
 import builtins
 import js
+import itertools
+
+class LineOutput():
+    def __init__(self, die, label, color, point, radius):
+        self.die = die
+        self.label = label
+        self.color = color
+        self.point = point
+        self.radius = radius
+        
+    def probabilities(self, probability_type):
+        if probability_type == 'ge':
+            return self.die.probabilities_ge(percent=True)
+        elif probability_type == 'le':
+            return self.die.probabilities_le(percent=True)
+        else:
+            return self.die.probabilities(percent=True)
+            
+    def dice(self):
+        return [self.die]
+    
+    def datasets(self, probability_type):
+        dataset = {
+            'data': self.probabilities(probability_type),
+            'label': self.label,
+            'borderColor': self.color,
+            'backgroundColor': self.color,
+            'pointStyle': self.point,
+            'radius': self.radius,
+        }
+        return [dataset]
+        
+    def format_string(self, probability_type):
+        if probability_type == 'ge':
+            return 'md:*o|q>=|%>='
+        elif probability_type == 'le':
+            return 'md:*o|q<=|%<='
+        else:
+            return 'md:*o|q==|%=='
+        
+    def print(self, probability_type):
+        builtins.print(self.label)
+        format_string = self.format_string(probability_type)
+        builtins.print(f'{self.die:{format_string}}')
+        
+class PrintOutput():
+    def __init__(self, args, kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        
+    def datasets(self, probability_type):
+        return []
+        
+    def print(self, probability_type):
+        builtins.print(*self.args, **self.kwargs)
+    
 
 class OutputManager():
 
@@ -144,11 +200,8 @@ class OutputManager():
     def reset(self):
         import random
         # Not including prints.
-        self.die_count = 0
-        self.dice = []
-        self.die_labels = []
-        # None if this is a print rather than a full output.
-        self.styles = []
+        self.series_count = 0
+        self.outputs = []
         self.starting_random_state = random.getstate()
     
     @staticmethod
@@ -169,59 +222,43 @@ class OutputManager():
         else:
             return 'md:*o|q==|%=='
 
-    def append_output(self, die, die_label):
-        if die_label is None:
-            die_label = f'Output #{self.die_count}'
+    def append_output(self, die, label):
+        if label is None:
+            label = f'Output #{self.series_count}'
         else:
-            die_label = str(die_label)
+            label = str(label)
             
         try:
-            die_label += f' (Mean: {die.mean():.2f} SD: {die.standard_deviation():.2f})'
+            label += f' (Mean: {die.mean():.2f} SD: {die.standard_deviation():.2f})'
         except:
             pass
+            
+        color = OutputManager.DEFAULT_COLORS[self.series_count % len(OutputManager.DEFAULT_COLORS)]
+        point, radius = OutputManager.DEFAULT_POINTS[self.series_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
         
-        self.dice.append(die)
-        self.die_labels.append(die_label)
-        color = OutputManager.DEFAULT_COLORS[self.die_count % len(OutputManager.DEFAULT_COLORS)]
-        point, point_size = OutputManager.DEFAULT_POINTS[self.die_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
-        self.styles.append((color, point, point_size))
-        self.die_count += 1
+        self.outputs.append(LineOutput(die, label, color, point, radius))
+        self.series_count += 1
         
     def append_print(self, args, kwargs):
-        self.dice.append(icepool.Die([]))
-        self.die_labels.append((args, kwargs))
-        self.styles.append(None)
+        self.outputs.append(PrintOutput(args, kwargs))
     
     def chart_data(self, probability_type):
         """
         Returns:
             labels, datasets in js format
         """
-        if not self.dice:
-            return pyodide.ffi.to_js({'labels': [], 'datasets': []}, dict_converter=js.Object.fromEntries)
+        aligned_dice = icepool.align(*itertools.chain.from_iterable(output.dice() for output in self.outputs))
+        if aligned_dice:
+            output_labels = list(aligned_dice[0].outcomes())
+        else:
+            output_labels = []
+        output_datasets = list(itertools.chain.from_iterable(output.datasets(probability_type) for output in self.outputs))
         
-        aligned_dice = icepool.align(*self.dice)
-        output_labels = list(aligned_dice[0].outcomes())
-        output_datasets = [
-            {
-                'data': self.probabilities(die, probability_type),
-                'label': die_label,
-                'borderColor': style[0],
-                'backgroundColor': style[0],
-                'pointStyle': style[1],
-                'radius': style[2],
-            } for die, die_label, style in zip(aligned_dice, self.die_labels, self.styles) if style is not None
-        ]
+        for output in self.outputs:
+            output.print(probability_type)
         
-        for die, die_label, style in zip(self.dice, self.die_labels, self.styles):
-            if style is not None:
-                builtins.print(die_label)
-                format_string = self.format_string(die, probability_type)
-                builtins.print(f'{die:{format_string}}')
-            else:
-                args, kwargs = die_label
-                builtins.print(*args, **kwargs)
-        
+        builtins.print(output_labels)
+        builtins.print(output_datasets)
         return pyodide.ffi.to_js({'labels': output_labels, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
     
     def used_random(self):
