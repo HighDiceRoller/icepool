@@ -264,7 +264,7 @@ class OutputManager():
             suboutcome_label = ''
             if label is not None:
                 suboutcome_label += label + ' '
-            suboutcome_label += str(suboutcome)
+            suboutcome_label += ', '.join(str(x) for x in suboutcome)
             
             fill = 'origin' if first else '-1'
             self.append_output(subdie, suboutcome_label, fill, die.denominator())
