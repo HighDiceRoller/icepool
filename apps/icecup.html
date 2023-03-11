@@ -63,9 +63,8 @@
 
     <ul>
         <li>Use the <tt>output(die, [label])</tt> function to add a die to the plot and print its probabilities. You can use the optional second <tt>label</tt> argument to give the die a name.</li>
-        <li>Experimental: Use the <tt>area(die, [label])</tt> function to create a stacked area plot from a die with tuple outcomes.
-            The first element of the outcome will be the x-axis, and each of the possible remaining elements will produce a series.
-            The height of the curve is the chance of rolling at least equal to those remaining elements, and the width of the area is the chance of rolling exactly equal to those remaining elements.</li>
+        <li>Experimental: Use the <tt>area(die, [label])</tt> function to fill the area between the curve and the previous area plot. You should plot from the lowest/most specific condition to highest/least specific condition.</li>
+        <li>Use the <tt>limit(left, right)</tt> function to limit the extent of the x-axis (inclusive). <tt>None</tt> will not limit values on that side.</li>
         <li>In addition to the "Run" button, you can use Ctrl-Enter or Cmd-Enter to run the script.</li>
         <li>The URL updates automatically when you run the script.</li>
         <li>If you use the <tt>random</tt> module (including <tt>.sample()</tt> methods), the script will be re-run each time.</li>
@@ -121,33 +120,27 @@ import js
 import itertools
 
 class LineOutput():
-    def __init__(self, die, label, color, point, radius, fill=None, denominator=None):
+    def __init__(self, die, label, color, point, radius, fill=None):
         self.die = die
         self.label = label
         self.color = color
         self.point = point
         self.radius = radius
         self.fill = fill
-        self.denominator = denominator
     
-    @staticmethod
-    def probabilities(aligned, probability_type):
+    def probabilities(self, outcomes, probability_type):
         if probability_type == 'ge':
-            return aligned.probabilities_ge(percent=True)
+            return self.die.probabilities_ge(outcomes, percent=True)
         elif probability_type == 'le':
-            return aligned.probabilities_le(percent=True)
+            return self.die.probabilities_le(outcomes, percent=True)
         else:
-            return aligned.probabilities(percent=True)
+            return self.die.probabilities(outcomes, percent=True)
             
     def outcomes(self):
         return set(self.die.outcomes())
     
     def datasets(self, outcomes, probability_type):
-        aligned = self.die.set_outcomes(outcomes)
-        probabilities = self.probabilities(aligned, probability_type)
-        if self.denominator is not None:
-            factor = self.die.denominator() / self.denominator
-            probabilities = [factor * x for x in probabilities]
+        probabilities = self.probabilities(outcomes, probability_type)
         dataset = {
             'data': probabilities,
             'label': self.label,
@@ -220,15 +213,16 @@ class OutputManager():
         self.series_count = 0
         self.outputs = []
         self.starting_random_state = random.getstate()
-    
-    @staticmethod
-    def probabilities(die, probability_type):
-        if probability_type == 'ge':
-            return die.probabilities_ge(percent=True)
-        elif probability_type == 'le':
-            return die.probabilities_le(percent=True)
-        else:
-            return die.probabilities(percent=True)
+        self.has_fill = False
+        self.limit_left = None
+        self.limit_right = None
+        
+    def limit(self, left, right):
+        if left is not None and right is not None:
+            self.limit_left = min(left, right)
+            self.limit_right = max(left, right)
+        self.limit_left = left
+        self.limit_right = right
             
     @staticmethod
     def format_string(die, probability_type):
@@ -239,7 +233,7 @@ class OutputManager():
         else:
             return 'md:*o|q==|%=='
 
-    def append_output(self, die, label, fill=None, denominator=None):
+    def append_output(self, die, label, fill=False):
         if label is None:
             label = f'Output #{self.series_count}'
         else:
@@ -250,25 +244,18 @@ class OutputManager():
         except:
             pass
             
+        if fill:
+            if self.has_fill:
+                fill = '-1'
+            else:
+                fill = 'origin'
+                self.has_fill = True
+            
         color = OutputManager.DEFAULT_COLORS[self.series_count % len(OutputManager.DEFAULT_COLORS)]
         point, radius = OutputManager.DEFAULT_POINTS[self.series_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
         
-        self.outputs.append(LineOutput(die, label, color, point, radius, fill, denominator))
+        self.outputs.append(LineOutput(die, label, color, point, radius, fill))
         self.series_count += 1
-        
-    def append_area(self, die, label):
-        suboutcomes = die.marginals[1:].outcomes()
-        first = True
-        for suboutcome in reversed(suboutcomes):
-            subdie = die.filter(lambda a, *b: b >= suboutcome).marginals[0]
-            suboutcome_label = ''
-            if label is not None:
-                suboutcome_label += label + ' '
-            suboutcome_label += ', '.join(str(x) for x in suboutcome)
-            
-            fill = 'origin' if first else '-1'
-            self.append_output(subdie, suboutcome_label, fill, die.denominator())
-            first = False
         
     def append_print(self, args, kwargs):
         self.outputs.append(PrintOutput(args, kwargs))
@@ -278,7 +265,12 @@ class OutputManager():
         Returns:
             labels, datasets in js format
         """
-        outcomes = sorted(set.union(*(output.outcomes() for output in self.outputs)))
+        outcomes = set.union(*(output.outcomes() for output in self.outputs))
+        if self.limit_left is not None:
+            outcomes = {x for x in outcomes if x >= self.limit_left}
+        if self.limit_right is not None:
+            outcomes = {x for x in outcomes if x <= self.limit_right}
+        outcomes = sorted(outcomes)
         output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
         
         for output in self.outputs:
@@ -300,7 +292,10 @@ def print(*args, **kwargs):
     _manager.append_print(args, kwargs)
 
 def area(die, /, label=None):
-    _manager.append_area(die, label)
+    _manager.append_output(die, label, fill=True)
+    
+def limit(left=None, right=None):
+    _manager.limit(left, right)
 
 `)
 }
@@ -465,6 +460,9 @@ var chart = new Chart(chartContext, {
             },
             tooltip : {
                 usePointStyle: true,
+            },
+            filler: {
+                propagate: true,
             },
         },
         elements: {
