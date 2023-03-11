@@ -133,13 +133,35 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Quantities.
 
+    def quantity(self, outcome: Hashable) -> int:
+        """The quantity of a single outcome, or 0 if not present."""
+        return self.get(outcome, 0)
+
+    @overload
     def quantities(self) -> CountsValuesView:
+        ...
+
+    @overload
+    def quantities(self, outcomes: Sequence) -> Sequence[int]:
+        ...
+
+    def quantities(
+            self,
+            outcomes: Sequence | None = None
+    ) -> CountsValuesView | Sequence[int]:
         """The quantities of the mapping in sorted order.
 
         These are also the `values` of the mapping.
         Prefer to use the name `quantities`.
+
+        Args:
+            outcomes: If provided, the quantities corresponding to these
+                outcomes will be returned (or 0 if not present).
         """
-        return self.values()
+        if outcomes is None:
+            return self.values()
+        else:
+            return tuple(self.quantity(outcome) for outcome in outcomes)
 
     @cached_property
     def _denominator(self) -> int:
@@ -158,29 +180,6 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def has_zero_quantities(self) -> bool:
         """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
-
-    @cached_property
-    def _quantities_le(self) -> Sequence[int]:
-        return tuple(itertools.accumulate(self.values()))
-
-    def quantities_le(self) -> Sequence[int]:
-        """The quantity <= each outcome in order. """
-        return self._quantities_le
-
-    @cached_property
-    def _quantities_ge(self) -> Sequence[int]:
-        return tuple(
-            itertools.accumulate(self.values()[:-1],
-                                 operator.sub,
-                                 initial=self.denominator()))
-
-    def quantities_ge(self) -> Sequence[int]:
-        """The quantity >= each outcome in order. """
-        return self._quantities_ge
-
-    def quantity(self, outcome) -> int:
-        """The quantity of a single outcome, or 0 if not present. """
-        return self.get(outcome, 0)
 
     def quantity_ne(self, outcome) -> int:
         """The quantity != a single outcome. """
@@ -214,52 +213,130 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             return 0
         return self.quantities_ge()[index]
 
+    @cached_property
+    def _quantities_le(self) -> Sequence[int]:
+        return tuple(itertools.accumulate(self.values()))
+
+    def quantities_le(self, outcomes: Sequence | None = None) -> Sequence[int]:
+        """The quantity <= each outcome in order.
+
+        Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
+        """
+        if outcomes is None:
+            return self._quantities_le
+        else:
+            return tuple(self.quantity_le(x) for x in outcomes)
+
+    @cached_property
+    def _quantities_ge(self) -> Sequence[int]:
+        return tuple(
+            itertools.accumulate(self.values()[:-1],
+                                 operator.sub,
+                                 initial=self.denominator()))
+
+    def quantities_ge(self, outcomes: Sequence | None = None) -> Sequence[int]:
+        """The quantity >= each outcome in order.
+
+        Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
+        """
+        if outcomes is None:
+            return self._quantities_ge
+        else:
+            return tuple(self.quantity_ge(x) for x in outcomes)
+
     # Probabilities.
+
+    def probability(self, outcome: Hashable) -> float:
+        """The probability of a single outcome, or 0.0 if not present. """
+        return self.quantity(outcome) / self.denominator()
+
+    def probability_le(self, outcome: Hashable) -> float:
+        """The probability <= a single outcome. """
+        return self.quantity_le(outcome) / self.denominator()
+
+    def probability_lt(self, outcome: Hashable) -> float:
+        """The probability < a single outcome. """
+        return self.quantity_lt(outcome) / self.denominator()
+
+    def probability_ge(self, outcome: Hashable) -> float:
+        """The probability >= a single outcome. """
+        return self.quantity_ge(outcome) / self.denominator()
+
+    def probability_gt(self, outcome: Hashable) -> float:
+        """The probability > a single outcome. """
+        return self.quantity_gt(outcome) / self.denominator()
 
     @cached_property
     def _probabilities(self) -> Sequence[float]:
         return tuple(v / self.denominator() for v in self.values())
 
-    def probabilities(self, percent: bool = False) -> Sequence[float]:
+    def probabilities(self,
+                      outcomes: Sequence | None = None,
+                      *,
+                      percent: bool = False) -> Sequence[float]:
         """The probability of each outcome in order.
 
         Also known as the probability mass function (PMF).
 
         Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
         """
-        if percent:
-            return tuple(100.0 * x for x in self._probabilities)
+        if outcomes is None:
+            result = self._probabilities
         else:
-            return self._probabilities
+            result = tuple(self.probability(x) for x in outcomes)
+
+        if percent:
+            return tuple(100.0 * x for x in result)
+        else:
+            return result
 
     @cached_property
     def _probabilities_le(self) -> Sequence[float]:
         return tuple(
             quantity / self.denominator() for quantity in self.quantities_le())
 
-    def probabilities_le(self, percent: bool = False) -> Sequence[float]:
+    def probabilities_le(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: bool = False) -> Sequence[float]:
         """The probability of rolling <= each outcome in order.
 
         Also known as the cumulative distribution function (CDF),
         though this term is ambigiuous whether it is < or <=.
 
         Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
         """
-        if percent:
-            return tuple(100.0 * x for x in self._probabilities_le)
+        if outcomes is None:
+            result = self._probabilities_le
         else:
-            return self._probabilities_le
+            result = tuple(self.probability_le(x) for x in outcomes)
+
+        if percent:
+            return tuple(100.0 * x for x in result)
+        else:
+            return result
 
     @cached_property
     def _probabilities_ge(self) -> Sequence[float]:
         return tuple(
             quantity / self.denominator() for quantity in self.quantities_ge())
 
-    def probabilities_ge(self, percent: bool = False) -> Sequence[float]:
+    def probabilities_ge(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: bool = False) -> Sequence[float]:
         """The probability of rolling >= each outcome in order.
 
         Also known as the survival function (SF) or
@@ -267,41 +344,64 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         though these term are ambigiuous whether they are is > or >=.
 
         Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
         """
-        if percent:
-            return tuple(100.0 * x for x in self._probabilities_ge)
+        if outcomes is None:
+            result = self._probabilities_ge
         else:
-            return self._probabilities_ge
+            result = tuple(self.probability_ge(x) for x in outcomes)
 
-    def probabilities_lt(self, percent: bool = False) -> Sequence[float]:
+        if percent:
+            return tuple(100.0 * x for x in result)
+        else:
+            return result
+
+    def probabilities_lt(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: bool = False) -> Sequence[float]:
         """The probability of rolling < each outcome in order.
 
         Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
         """
-        if percent:
-            return tuple(100.0 * (1.0 - x) for x in self._probabilities_ge)
+        if outcomes is None:
+            result = tuple(1.0 - x for x in self._probabilities_ge)
         else:
-            return tuple((1.0 - x) for x in self._probabilities_ge)
+            result = tuple(1.0 - self.probability_ge(x) for x in outcomes)
 
-    def probabilities_gt(self, percent: bool = False) -> Sequence[float]:
+        if percent:
+            return tuple(100.0 * x for x in result)
+        else:
+            return result
+
+    def probabilities_gt(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: bool = False) -> Sequence[float]:
         """The probability of rolling > each outcome in order.
 
         Args:
+            outcomes: If provided, the probabilities corresponding to these
+                outcomes will be returned (or 0 if not present).
             percent: If set, the results will be in percent (i.e. total of 100.0).
                 Otherwise, the total will be 1.0.
         """
-        if percent:
-            return tuple(100.0 * (1.0 - x) for x in self._probabilities_le)
+        if outcomes is None:
+            result = tuple(1.0 - x for x in self._probabilities_le)
         else:
-            return tuple((1.0 - x) for x in self._probabilities_le)
+            result = tuple(1.0 - self.probability_le(x) for x in outcomes)
 
-    def probability(self, outcome) -> float:
-        """The probability of a single outcome, or 0.0 if not present. """
-        return self.quantity(outcome) / self.denominator()
+        if percent:
+            return tuple(100.0 * x for x in result)
+        else:
+            return result
 
     # Scalar statistics.
 

@@ -231,3 +231,12 @@ def test_probabilities():
     assert list(d4.probabilities_lt(percent=True)) == [0, 25, 50, 75]
     assert list(d4.probabilities_ge(percent=True)) == [100, 75, 50, 25]
     assert list(d4.probabilities_gt(percent=True)) == [75, 50, 25, 0]
+
+
+def test_probabilities_with_target():
+    target = [1, 4, 5]
+    assert list(d4.probabilities(target)) == [0.25, 0.25, 0.0]
+    assert list(d4.probabilities_le(target)) == [0.25, 1.0, 1.0]
+    assert list(d4.probabilities_lt(target)) == [0.0, 0.75, 1.0]
+    assert list(d4.probabilities_ge(target)) == [1.0, 0.25, 0.0]
+    assert list(d4.probabilities_gt(target)) == [0.75, 0.0, 0.0]
