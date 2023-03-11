@@ -1,3 +1,8 @@
+## v0.25.5
+
+* Add missing variants of `nearest` and `quantities` methods.
+* Add optional `outcomes` argument to `quantities` and `probabilities` methods.
+
 ## v0.25.4
 
 * `map` and similar functions will attempt to guess `star`.
