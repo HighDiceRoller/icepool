@@ -185,6 +185,27 @@ def test_nearest_le_gap():
     assert die.nearest_le(1) == 0
     assert die.nearest_le(2) == 0
     assert die.nearest_le(3) == 3
+    assert die.nearest_le(4) == 3
+
+
+def test_nearest_lt():
+    assert icepool.d6.nearest_lt(0) == None
+    assert icepool.d6.nearest_lt(1) == None
+    assert icepool.d6.nearest_lt(6) == 5
+    assert icepool.d6.nearest_lt(7) == 6
+
+
+def test_nearest_lt_gap():
+    die = icepool.Die([-3, 0, 3])
+    assert die.nearest_lt(-4) == None
+    assert die.nearest_lt(-3) == None
+    assert die.nearest_lt(-2) == -3
+    assert die.nearest_lt(-1) == -3
+    assert die.nearest_lt(0) == -3
+    assert die.nearest_lt(1) == 0
+    assert die.nearest_lt(2) == 0
+    assert die.nearest_lt(3) == 0
+    assert die.nearest_lt(4) == 3
 
 
 def test_nearest_ge():
@@ -205,6 +226,26 @@ def test_nearest_ge_gap():
     assert die.nearest_ge(2) == 3
     assert die.nearest_ge(3) == 3
     assert die.nearest_ge(4) == None
+
+
+def test_nearest_gt():
+    assert icepool.d6.nearest_gt(0) == 1
+    assert icepool.d6.nearest_gt(1) == 2
+    assert icepool.d6.nearest_gt(6) == None
+    assert icepool.d6.nearest_gt(7) == None
+
+
+def test_nearest_gt_gap():
+    die = icepool.Die([-3, 0, 3])
+    assert die.nearest_gt(-4) == -3
+    assert die.nearest_gt(-3) == 0
+    assert die.nearest_gt(-2) == 0
+    assert die.nearest_gt(-1) == 0
+    assert die.nearest_gt(0) == 3
+    assert die.nearest_gt(1) == 3
+    assert die.nearest_gt(2) == 3
+    assert die.nearest_gt(3) == None
+    assert die.nearest_gt(4) == None
 
 
 def test_highest():

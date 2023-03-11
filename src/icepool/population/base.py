@@ -116,7 +116,19 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         Returns `None` if there is no such outcome.
         """
+        if outcome in self:
+            return outcome
         index = bisect.bisect_right(self.outcomes(), outcome) - 1
+        if index < 0:
+            return None
+        return self.outcomes()[index]
+
+    def nearest_lt(self, outcome) -> T_co | None:
+        """The nearest outcome that is < the argument.
+
+        Returns `None` if there is no such outcome.
+        """
+        index = bisect.bisect_left(self.outcomes(), outcome) - 1
         if index < 0:
             return None
         return self.outcomes()[index]
@@ -126,7 +138,19 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         Returns `None` if there is no such outcome.
         """
+        if outcome in self:
+            return outcome
         index = bisect.bisect_left(self.outcomes(), outcome)
+        if index >= len(self):
+            return None
+        return self.outcomes()[index]
+
+    def nearest_gt(self, outcome) -> T_co | None:
+        """The nearest outcome that is > the argument.
+
+        Returns `None` if there is no such outcome.
+        """
+        index = bisect.bisect_right(self.outcomes(), outcome)
         if index >= len(self):
             return None
         return self.outcomes()[index]
@@ -185,33 +209,38 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The quantity != a single outcome. """
         return self.denominator() - self.quantity(outcome)
 
+    @cached_property
+    def _cumulative_quantities(self) -> Mapping[T_co, int]:
+        result = {}
+        cdf = 0
+        for outcome, quantity in self.items():
+            cdf += quantity
+            result[outcome] = cdf
+        return result
+
     def quantity_le(self, outcome) -> int:
-        """The quantity <= a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome) - 1
-        if index < 0:
+        """The quantity <= a single outcome."""
+        outcome = self.nearest_le(outcome)
+        if outcome is None:
             return 0
-        return self.quantities_le()[index]
+        else:
+            return self._cumulative_quantities[outcome]
 
     def quantity_lt(self, outcome) -> int:
-        """The quantity < a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome) - 1
-        if index < 0:
+        """The quantity < a single outcome."""
+        outcome = self.nearest_lt(outcome)
+        if outcome is None:
             return 0
-        return self.quantities_le()[index]
+        else:
+            return self._cumulative_quantities[outcome]
 
     def quantity_ge(self, outcome) -> int:
-        """The quantity >= a single outcome. """
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.quantities_ge()[index]
+        """The quantity >= a single outcome."""
+        return self.denominator() - self.quantity_lt(outcome)
 
     def quantity_gt(self, outcome) -> int:
-        """The quantity > a single outcome. """
-        index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self):
-            return 0
-        return self.quantities_ge()[index]
+        """The quantity > a single outcome."""
+        return self.denominator() - self.quantity_le(outcome)
 
     @cached_property
     def _quantities_le(self) -> Sequence[int]:
@@ -221,7 +250,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The quantity <= each outcome in order.
 
         Args:
-            outcomes: If provided, the probabilities corresponding to these
+            outcomes: If provided, the quantities corresponding to these
                 outcomes will be returned (or 0 if not present).
         """
         if outcomes is None:
@@ -240,13 +269,33 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The quantity >= each outcome in order.
 
         Args:
-            outcomes: If provided, the probabilities corresponding to these
+            outcomes: If provided, the quantities corresponding to these
                 outcomes will be returned (or 0 if not present).
         """
         if outcomes is None:
             return self._quantities_ge
         else:
             return tuple(self.quantity_ge(x) for x in outcomes)
+
+    def quantities_lt(self, outcomes: Sequence | None = None) -> Sequence[int]:
+        """The quantity < each outcome in order.
+
+        Args:
+            outcomes: If provided, the quantities corresponding to these
+                outcomes will be returned (or 0 if not present).
+        """
+        return tuple(
+            self.denominator() - x for x in self.quantities_ge(outcomes))
+
+    def quantities_gt(self, outcomes: Sequence | None = None) -> Sequence[int]:
+        """The quantity > each outcome in order.
+
+        Args:
+            outcomes: If provided, the quantities corresponding to these
+                outcomes will be returned (or 0 if not present).
+        """
+        return tuple(
+            self.denominator() - x for x in self.quantities_le(outcomes))
 
     # Probabilities.
 
