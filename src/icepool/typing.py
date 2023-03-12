@@ -95,3 +95,24 @@ def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
             case _:
                 break
     return required, total
+
+def guess_star(func: Callable) -> bool:
+    """Guesses whether outcomes should be unpacked before giving them to the given callable.
+
+    This is `True` if:
+
+    * If the function takes more than one required positional parameter.
+    * If the function takes no positional parameters.
+    * If the function has a variadic positional parameter, i.e. `*args`.
+
+    And `False` otherwise.
+    """
+    required, total = count_positional_parameters(func)
+    if required > 1:
+        return True
+    if total == 0:
+        return True
+    if total is None:
+        return True
+
+    return False

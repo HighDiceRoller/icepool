@@ -8,7 +8,7 @@ import icepool.population.markov_chain
 from icepool.collections import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
-from icepool.typing import U, Outcome, T_co
+from icepool.typing import U, Outcome, T_co, guess_star
 
 import bisect
 from collections import defaultdict
@@ -401,7 +401,7 @@ class Die(Population[T_co]):
             outcome_set = {self.min_outcome()}
         elif callable(which):
             if star is None:
-                star = self.guess_star(which)
+                star = guess_star(which)
             if star:
 
                 # Need TypeVarTuple to check this.
@@ -467,7 +467,7 @@ class Die(Population[T_co]):
 
         if callable(which):
             if star is None:
-                star = self.guess_star(which)
+                star = guess_star(which)
             if star:
 
                 not_outcomes = {
@@ -643,7 +643,7 @@ class Die(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = self.guess_star(repl)
+                star = guess_star(repl)
             if star:
 
                 def transition_function(outcome):
@@ -725,7 +725,7 @@ class Die(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = self.guess_star(repl)
+                star = guess_star(repl)
             if star:
 
                 def transition_function(outcome):
@@ -790,7 +790,7 @@ class Die(Population[T_co]):
             outcome_set = {self.max_outcome()}
         elif callable(which):
             if star is None:
-                star = self.guess_star(which)
+                star = guess_star(which)
             if star:
                 # Need TypeVarTuple to type-check this.
                 outcome_set = {
