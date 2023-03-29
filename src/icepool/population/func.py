@@ -120,7 +120,8 @@ def from_cumulative(outcomes: Sequence[T],
             d[outcome] = quantity - prev
             prev = quantity
     else:
-        raise TypeError(f'Unsupported type {type(cumulative)} for cumulative')
+        raise TypeError(
+            f'Unsupported type {type(cumulative)} for cumulative values.')
 
     return icepool.Die(d)
 
