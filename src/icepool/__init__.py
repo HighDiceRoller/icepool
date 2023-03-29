@@ -46,9 +46,8 @@ Operation in specific cases:
 
 import icepool.population.func
 from icepool.population.func import (d, __getattr__, coin, one_hot,
-                                     cartesian_product,
-                                     from_cumulative_quantities, from_rv,
-                                     min_outcome, max_outcome, align,
+                                     cartesian_product, from_cumulative,
+                                     from_rv, min_outcome, max_outcome, align,
                                      align_range, reduce, accumulate, apply,
                                      outcome_function)
 
@@ -82,10 +81,9 @@ import icepool.typing as typing
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
     'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
-    'from_cumulative_quantities', 'from_rv', 'align', 'align_range', 'lowest',
-    'highest', 'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate',
-    'apply', 'outcome_function', 'Reroll', 'RerollType', 'Pool',
-    'standard_pool', 'MultisetGenerator', 'Alignment', 'MultisetExpression',
-    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'typing',
-    'evaluator'
+    'from_cumulative', 'from_rv', 'align', 'align_range', 'lowest', 'highest',
+    'middle', 'min_outcome', 'max_outcome', 'reduce', 'accumulate', 'apply',
+    'outcome_function', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
+    'MultisetGenerator', 'Alignment', 'MultisetExpression', 'MultisetEvaluator',
+    'Order', 'Deck', 'Deal', 'multiset_function', 'typing', 'evaluator'
 ]

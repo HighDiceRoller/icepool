@@ -118,9 +118,9 @@ def _lowest_single(
     dice = icepool.align(*dice)
     quantities_ge = tuple(
         math.prod(t) for t in zip(*(die.quantities_ge() for die in dice)))
-    return icepool.from_cumulative_quantities(dice[0].outcomes(),
-                                              quantities_ge,
-                                              reverse=True)
+    return icepool.from_cumulative(dice[0].outcomes(),
+                                   quantities_ge,
+                                   reverse=True)
 
 
 def _highest_single(
@@ -136,4 +136,4 @@ def _highest_single(
     dice = icepool.align(*dice)
     quantities_le = tuple(
         math.prod(t) for t in zip(*(die.quantities_le() for die in dice)))
-    return icepool.from_cumulative_quantities(dice[0].outcomes(), quantities_le)
+    return icepool.from_cumulative(dice[0].outcomes(), quantities_le)

@@ -83,28 +83,45 @@ def cartesian_product(*dice: 'icepool.Die | Outcome') -> 'icepool.Die[tuple]':
     return apply(lambda *outcomes: outcomes, *dice)
 
 
-def from_cumulative_quantities(outcomes: Sequence[T],
-                               cumulative_quantities: Sequence[int],
-                               *,
-                               reverse: bool = False) -> 'icepool.Die[T]':
-    """Constructs a `Die` from a sequence of cumulative quantities.
+def from_cumulative(outcomes: Sequence[T],
+                    cumulative: 'Sequence[int] | Sequence[icepool.Die[bool]]',
+                    *,
+                    reverse: bool = False) -> 'icepool.Die[T]':
+    """Constructs a `Die` from a sequence of cumulative values.
 
     Args:
         outcomes: The outcomes of the resulting die. Sorted order is recommended
             but not necessary.
-        cumulative_quantities: The cumulative quantities (inclusive) of the
-            outcomes in the order they are given to this function.
+        cumulative: The cumulative values (inclusive) of the outcomes in the
+            order they are given to this function. These may be:
+            * `int` cumulative quantities.
+            * Dice representing the cumulative distribution at that point.
         reverse: Iff true, both of the arguments will be reversed. This allows
             e.g. constructing using a survival distribution.
     """
+    if len(outcomes) == 0:
+        return icepool.Die({})
+
+    if reverse:
+        outcomes = list(reversed(outcomes))
+        cumulative = list(reversed(cumulative))  # type: ignore
 
     prev = 0
     d = {}
-    for outcome, quantity in zip((reversed(outcomes) if reverse else outcomes),
-                                 (reversed(cumulative_quantities)
-                                  if reverse else cumulative_quantities)):
-        d[outcome] = quantity - prev
-        prev = quantity
+
+    if isinstance(cumulative[0], icepool.Die):
+        cumulative = commonize_denominator(*cumulative)
+        for outcome, die in zip(outcomes, cumulative):
+            d[outcome] = die.quantity_ne(False) - prev
+            prev = die.quantity_ne(False)
+    elif isinstance(cumulative[0], int):
+        cumulative = cast(Sequence[int], cumulative)
+        for outcome, quantity in zip(outcomes, cumulative):
+            d[outcome] = quantity - prev
+            prev = quantity
+    else:
+        raise TypeError(f'Unsupported type {type(cumulative)} for cumulative')
+
     return icepool.Die(d)
 
 
@@ -140,7 +157,7 @@ def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
     else:
         cdf = rv.cdf(outcomes, **kwargs)
         quantities_le = tuple(int(round(x * denominator)) for x in cdf)
-    return from_cumulative_quantities(outcomes, quantities_le)
+    return from_cumulative(outcomes, quantities_le)
 
 
 def min_outcome(*dice: 'T | icepool.Die[T]') -> T:
@@ -159,7 +176,7 @@ def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """Pads dice with zero quantities so that all have the same set of outcomes.
 
     Args:
-        *dice: One `Die` per argument.
+        *dice: Any number of dice or single outcomes convertible to dice.
 
     Returns:
         A tuple of aligned dice.
@@ -175,7 +192,7 @@ def align_range(
     """Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
 
     Args:
-        *dice: One `Die` per argument.
+        *dice: Any number of dice or single outcomes convertible to dice.
 
     Returns:
         A tuple of aligned dice.
@@ -184,6 +201,27 @@ def align_range(
     outcomes = range(icepool.min_outcome(*converted_dice),
                      icepool.max_outcome(*converted_dice) + 1)
     return tuple(die.set_outcomes(outcomes) for die in converted_dice)
+
+
+def commonize_denominator(
+        *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
+    """Scale the weights of the dice so that all of them have the same denominator.
+
+    Args:
+        *dice: Any number of dice or single outcomes convertible to dice.
+
+    Returns:
+        A tuple of dice with the same denominator.
+    """
+    converted_dice = [
+        icepool.implicit_convert_to_die(die).simplify() for die in dice
+    ]
+    denominator_lcm = math.lcm(
+        *(die.denominator() for die in converted_dice if die.denominator() > 0))
+    return tuple(
+        die.scale_quantities(denominator_lcm //
+                             die.denominator() if die.denominator() > 0 else 1)
+        for die in converted_dice)
 
 
 def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',

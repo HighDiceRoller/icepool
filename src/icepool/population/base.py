@@ -201,6 +201,13 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Quantities.
 
+    def scale_quantities(self: C, scale: int) -> C:
+        """Scales all quantities by an integer."""
+        if scale == 1:
+            return self
+        data = {outcome: quantity * scale for outcome, quantity in self.items()}
+        return self._new_type(data)
+
     def has_zero_quantities(self) -> bool:
         """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()

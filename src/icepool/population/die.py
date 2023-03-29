@@ -953,9 +953,9 @@ class Die(Population[T_co]):
         """Roll this die several times and keep the lowest."""
         if rolls == 0:
             return self.zero().simplify()
-        return icepool.from_cumulative_quantities(
-            self.outcomes(), [x**rolls for x in self.quantities_ge()],
-            reverse=True)
+        return icepool.from_cumulative(self.outcomes(),
+                                       [x**rolls for x in self.quantities_ge()],
+                                       reverse=True)
 
     def highest(self,
                 rolls: int,
@@ -987,8 +987,8 @@ class Die(Population[T_co]):
         """Roll this die several times and keep the highest."""
         if rolls == 0:
             return self.zero().simplify()
-        return icepool.from_cumulative_quantities(
-            self.outcomes(), [x**rolls for x in self.quantities_le()])
+        return icepool.from_cumulative(self.outcomes(),
+                                       [x**rolls for x in self.quantities_le()])
 
     def middle(self,
                rolls: int,
