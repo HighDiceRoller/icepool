@@ -1,3 +1,8 @@
+## v0.25.6
+
+* Rename `from_cumulative_quantities` to `from_cumulative` and allow die inputs.
+* Mark `multiset_function` experimental again and note more caveats in the docstring.
+
 ## v0.25.5
 
 * Add missing variants of `nearest` and `quantities` methods.
