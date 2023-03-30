@@ -17,6 +17,8 @@ General conventions:
 
 __docformat__ = 'google'
 
+__version__ = '0.26.7b0'
+
 from typing import Final
 
 from icepool.typing import Outcome, Order, RerollType
