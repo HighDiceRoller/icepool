@@ -1,3 +1,9 @@
+## v0.27.0
+
+Incremented two versions because I messed up the last version number.
+
+* `commonize_denominator` visible at top level.
+
 ## v0.25.6
 
 * Rename `from_cumulative_quantities` to `from_cumulative` and allow die inputs.
