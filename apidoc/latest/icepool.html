@@ -386,12 +386,6 @@
                     <a class="function" href="#from_rv">from_rv</a>
             </li>
             <li>
-                    <a class="function" href="#align">align</a>
-            </li>
-            <li>
-                    <a class="function" href="#align_range">align_range</a>
-            </li>
-            <li>
                     <a class="function" href="#lowest">lowest</a>
             </li>
             <li>
@@ -405,6 +399,15 @@
             </li>
             <li>
                     <a class="function" href="#max_outcome">max_outcome</a>
+            </li>
+            <li>
+                    <a class="function" href="#align">align</a>
+            </li>
+            <li>
+                    <a class="function" href="#align_range">align_range</a>
+            </li>
+            <li>
+                    <a class="function" href="#commonize_denominator">commonize_denominator</a>
             </li>
             <li>
                     <a class="function" href="#reduce">reduce</a>
@@ -794,76 +797,79 @@ are considered.</li>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.27.0&#39;</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">icepool.typing</span> <span class="kn">import</span> <span class="n">Outcome</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">RerollType</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="n">Reroll</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">RerollType</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">&quot;&quot;&quot;Indicates that an outcome should be rerolled (with unlimited depth).</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">This can be used in place of outcomes in many places. See individual function</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">and method descriptions for details.</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">This effectively removes the outcome from the probability space, along with its</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">contribution to the denominator.</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">This can be used for conditional probability by removing all outcomes not</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">consistent with the given observations.</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">Operation in specific cases:</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="kn">from</span> <span class="nn">icepool.typing</span> <span class="kn">import</span> <span class="n">Outcome</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">RerollType</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="n">Reroll</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">RerollType</span><span class="o">.</span><span class="n">Reroll</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">&quot;&quot;&quot;Indicates that an outcome should be rerolled (with unlimited depth).</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">This can be used in place of outcomes in many places. See individual function</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">and method descriptions for details.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">This effectively removes the outcome from the probability space, along with its</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">contribution to the denominator.</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">This can be used for conditional probability by removing all outcomes not</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">consistent with the given observations.</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">* When used with `Again`, only that stage is rerolled, not the entire `Again`</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">    tree.</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">    modification.</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">* When used with `MultisetEvaluator`, the entire evaluation is rerolled.</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="c1"># Expose certain names at top-level.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">Operation in specific cases:</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">* When used with `Again`, only that stage is rerolled, not the entire `Again`</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">    tree.</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">    modification.</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">* When used with `MultisetEvaluator`, the entire evaluation is rerolled.</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="kn">import</span> <span class="nn">icepool.population.func</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="kn">from</span> <span class="nn">icepool.population.func</span> <span class="kn">import</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span> <span class="n">one_hot</span><span class="p">,</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>                                     <span class="n">cartesian_product</span><span class="p">,</span> <span class="n">from_cumulative</span><span class="p">,</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                                     <span class="n">from_rv</span><span class="p">,</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                                     <span class="n">align_range</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="n">apply</span><span class="p">,</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                                     <span class="n">outcome_function</span><span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="kn">from</span> <span class="nn">icepool.population.base</span> <span class="kn">import</span> <span class="n">Population</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="kn">from</span> <span class="nn">icepool.population.die</span> <span class="kn">import</span> <span class="n">implicit_convert_to_die</span><span class="p">,</span> <span class="n">Die</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="kn">from</span> <span class="nn">icepool.population.again</span> <span class="kn">import</span> <span class="n">Again</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="kn">from</span> <span class="nn">icepool.population.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="kn">from</span> <span class="nn">icepool.collections</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="c1"># Expose certain names at top-level.</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="kn">import</span> <span class="nn">icepool.population.func</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="kn">from</span> <span class="nn">icepool.population.func</span> <span class="kn">import</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span> <span class="n">one_hot</span><span class="p">,</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                                     <span class="n">cartesian_product</span><span class="p">,</span> <span class="n">from_cumulative</span><span class="p">,</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                                     <span class="n">from_rv</span><span class="p">,</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>                                     <span class="n">align_range</span><span class="p">,</span> <span class="n">commonize_denominator</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>                                     <span class="n">accumulate</span><span class="p">,</span> <span class="n">apply</span><span class="p">,</span> <span class="n">outcome_function</span><span class="p">)</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="kn">from</span> <span class="nn">icepool.population.base</span> <span class="kn">import</span> <span class="n">Population</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="kn">from</span> <span class="nn">icepool.population.die</span> <span class="kn">import</span> <span class="n">implicit_convert_to_die</span><span class="p">,</span> <span class="n">Die</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="kn">from</span> <span class="nn">icepool.population.again</span> <span class="kn">import</span> <span class="n">Again</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="kn">from</span> <span class="nn">icepool.population.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.collections</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="kn">from</span> <span class="nn">icepool.generator.multiset_generator</span> <span class="kn">import</span> <span class="n">MultisetGenerator</span><span class="p">,</span> <span class="n">NextMultisetGenerator</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="kn">from</span> <span class="nn">icepool.generator.alignment</span> <span class="kn">import</span> <span class="n">Alignment</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.multiset_evaluator</span> <span class="kn">import</span> <span class="n">MultisetEvaluator</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="kn">from</span> <span class="nn">icepool.population.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="kn">from</span> <span class="nn">icepool.generator.deal</span> <span class="kn">import</span> <span class="n">Deal</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_function</span> <span class="kn">import</span> <span class="n">multiset_function</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="kn">import</span> <span class="nn">icepool.expression</span> <span class="k">as</span> <span class="nn">expression</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="kn">import</span> <span class="nn">icepool.generator</span> <span class="k">as</span> <span class="nn">generator</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="kn">import</span> <span class="nn">icepool.evaluator</span> <span class="k">as</span> <span class="nn">evaluator</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="kn">import</span> <span class="nn">icepool.typing</span> <span class="k">as</span> <span class="nn">typing</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="kn">from</span> <span class="nn">icepool.generator.multiset_generator</span> <span class="kn">import</span> <span class="n">MultisetGenerator</span><span class="p">,</span> <span class="n">NextMultisetGenerator</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="kn">from</span> <span class="nn">icepool.generator.alignment</span> <span class="kn">import</span> <span class="n">Alignment</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.multiset_evaluator</span> <span class="kn">import</span> <span class="n">MultisetEvaluator</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="kn">from</span> <span class="nn">icepool.population.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="kn">from</span> <span class="nn">icepool.generator.deal</span> <span class="kn">import</span> <span class="n">Deal</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_function</span> <span class="kn">import</span> <span class="n">multiset_function</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="kn">import</span> <span class="nn">icepool.expression</span> <span class="k">as</span> <span class="nn">expression</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a><span class="kn">import</span> <span class="nn">icepool.generator</span> <span class="k">as</span> <span class="nn">generator</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="kn">import</span> <span class="nn">icepool.evaluator</span> <span class="k">as</span> <span class="nn">evaluator</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cartesian_product&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="s1">&#39;Again&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;outcome_function&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Alignment&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a><span class="p">]</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="kn">import</span> <span class="nn">icepool.typing</span> <span class="k">as</span> <span class="nn">typing</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cartesian_product&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span> <span class="s1">&#39;Population&#39;</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>    <span class="s1">&#39;Again&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>    <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>    <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;outcome_function&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Alignment&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a>    <span class="s1">&#39;evaluator&#39;</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -7557,95 +7563,6 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 
 
                 </section>
-                <section id="align">
-                            <input id="align-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">align</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="align-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#align"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="align-177"><a href="#align-177"><span class="linenos">177</span></a><span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="align-178"><a href="#align-178"><span class="linenos">178</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of outcomes.</span>
-</span><span id="align-179"><a href="#align-179"><span class="linenos">179</span></a>
-</span><span id="align-180"><a href="#align-180"><span class="linenos">180</span></a><span class="sd">    Args:</span>
-</span><span id="align-181"><a href="#align-181"><span class="linenos">181</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
-</span><span id="align-182"><a href="#align-182"><span class="linenos">182</span></a>
-</span><span id="align-183"><a href="#align-183"><span class="linenos">183</span></a><span class="sd">    Returns:</span>
-</span><span id="align-184"><a href="#align-184"><span class="linenos">184</span></a><span class="sd">        A tuple of aligned dice.</span>
-</span><span id="align-185"><a href="#align-185"><span class="linenos">185</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="align-186"><a href="#align-186"><span class="linenos">186</span></a>    <span class="n">converted_dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="align-187"><a href="#align-187"><span class="linenos">187</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-</span><span id="align-188"><a href="#align-188"><span class="linenos">188</span></a>        <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">))</span>
-</span><span id="align-189"><a href="#align-189"><span class="linenos">189</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of outcomes.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>*dice:</strong>  Any number of dice or single outcomes convertible to dice.</li>
-</ul>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <p>A tuple of aligned dice.</p>
-</blockquote>
-</div>
-
-
-                </section>
-                <section id="align_range">
-                            <input id="align_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">align_range</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="align_range-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#align_range"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="align_range-192"><a href="#align_range-192"><span class="linenos">192</span></a><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span>
-</span><span id="align_range-193"><a href="#align_range-193"><span class="linenos">193</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;int | icepool.Die[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="align_range-194"><a href="#align_range-194"><span class="linenos">194</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
-</span><span id="align_range-195"><a href="#align_range-195"><span class="linenos">195</span></a>
-</span><span id="align_range-196"><a href="#align_range-196"><span class="linenos">196</span></a><span class="sd">    Args:</span>
-</span><span id="align_range-197"><a href="#align_range-197"><span class="linenos">197</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
-</span><span id="align_range-198"><a href="#align_range-198"><span class="linenos">198</span></a>
-</span><span id="align_range-199"><a href="#align_range-199"><span class="linenos">199</span></a><span class="sd">    Returns:</span>
-</span><span id="align_range-200"><a href="#align_range-200"><span class="linenos">200</span></a><span class="sd">        A tuple of aligned dice.</span>
-</span><span id="align_range-201"><a href="#align_range-201"><span class="linenos">201</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="align_range-202"><a href="#align_range-202"><span class="linenos">202</span></a>    <span class="n">converted_dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
-</span><span id="align_range-203"><a href="#align_range-203"><span class="linenos">203</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">converted_dice</span><span class="p">),</span>
-</span><span id="align_range-204"><a href="#align_range-204"><span class="linenos">204</span></a>                     <span class="n">icepool</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">converted_dice</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="align_range-205"><a href="#align_range-205"><span class="linenos">205</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of consecutive <code>int</code> outcomes.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>*dice:</strong>  Any number of dice or single outcomes convertible to dice.</li>
-</ul>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <p>A tuple of aligned dice.</p>
-</blockquote>
-</div>
-
-
-                </section>
                 <section id="lowest">
                             <input id="lowest-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -7839,6 +7756,145 @@ is even, or vice versa.
 
 
             <div class="docstring"><p>The maximum outcome among the dice.</p>
+</div>
+
+
+                </section>
+                <section id="align">
+                            <input id="align-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">align</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="align-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#align"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="align-177"><a href="#align-177"><span class="linenos">177</span></a><span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="align-178"><a href="#align-178"><span class="linenos">178</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of outcomes.</span>
+</span><span id="align-179"><a href="#align-179"><span class="linenos">179</span></a>
+</span><span id="align-180"><a href="#align-180"><span class="linenos">180</span></a><span class="sd">    Args:</span>
+</span><span id="align-181"><a href="#align-181"><span class="linenos">181</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
+</span><span id="align-182"><a href="#align-182"><span class="linenos">182</span></a>
+</span><span id="align-183"><a href="#align-183"><span class="linenos">183</span></a><span class="sd">    Returns:</span>
+</span><span id="align-184"><a href="#align-184"><span class="linenos">184</span></a><span class="sd">        A tuple of aligned dice.</span>
+</span><span id="align-185"><a href="#align-185"><span class="linenos">185</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="align-186"><a href="#align-186"><span class="linenos">186</span></a>    <span class="n">converted_dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="align-187"><a href="#align-187"><span class="linenos">187</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+</span><span id="align-188"><a href="#align-188"><span class="linenos">188</span></a>        <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">))</span>
+</span><span id="align-189"><a href="#align-189"><span class="linenos">189</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of outcomes.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>*dice:</strong>  Any number of dice or single outcomes convertible to dice.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A tuple of aligned dice.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="align_range">
+                            <input id="align_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">align_range</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="align_range-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#align_range"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="align_range-192"><a href="#align_range-192"><span class="linenos">192</span></a><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span>
+</span><span id="align_range-193"><a href="#align_range-193"><span class="linenos">193</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;int | icepool.Die[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="align_range-194"><a href="#align_range-194"><span class="linenos">194</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
+</span><span id="align_range-195"><a href="#align_range-195"><span class="linenos">195</span></a>
+</span><span id="align_range-196"><a href="#align_range-196"><span class="linenos">196</span></a><span class="sd">    Args:</span>
+</span><span id="align_range-197"><a href="#align_range-197"><span class="linenos">197</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
+</span><span id="align_range-198"><a href="#align_range-198"><span class="linenos">198</span></a>
+</span><span id="align_range-199"><a href="#align_range-199"><span class="linenos">199</span></a><span class="sd">    Returns:</span>
+</span><span id="align_range-200"><a href="#align_range-200"><span class="linenos">200</span></a><span class="sd">        A tuple of aligned dice.</span>
+</span><span id="align_range-201"><a href="#align_range-201"><span class="linenos">201</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="align_range-202"><a href="#align_range-202"><span class="linenos">202</span></a>    <span class="n">converted_dice</span> <span class="o">=</span> <span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span><span class="p">]</span>
+</span><span id="align_range-203"><a href="#align_range-203"><span class="linenos">203</span></a>    <span class="n">outcomes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">converted_dice</span><span class="p">),</span>
+</span><span id="align_range-204"><a href="#align_range-204"><span class="linenos">204</span></a>                     <span class="n">icepool</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">converted_dice</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="align_range-205"><a href="#align_range-205"><span class="linenos">205</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">set_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of consecutive <code>int</code> outcomes.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>*dice:</strong>  Any number of dice or single outcomes convertible to dice.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A tuple of aligned dice.</p>
+</blockquote>
+</div>
+
+
+                </section>
+                <section id="commonize_denominator">
+                            <input id="commonize_denominator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">commonize_denominator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="commonize_denominator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#commonize_denominator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="commonize_denominator-208"><a href="#commonize_denominator-208"><span class="linenos">208</span></a><span class="k">def</span> <span class="nf">commonize_denominator</span><span class="p">(</span>
+</span><span id="commonize_denominator-209"><a href="#commonize_denominator-209"><span class="linenos">209</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="commonize_denominator-210"><a href="#commonize_denominator-210"><span class="linenos">210</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Scale the weights of the dice so that all of them have the same denominator.</span>
+</span><span id="commonize_denominator-211"><a href="#commonize_denominator-211"><span class="linenos">211</span></a>
+</span><span id="commonize_denominator-212"><a href="#commonize_denominator-212"><span class="linenos">212</span></a><span class="sd">    Args:</span>
+</span><span id="commonize_denominator-213"><a href="#commonize_denominator-213"><span class="linenos">213</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
+</span><span id="commonize_denominator-214"><a href="#commonize_denominator-214"><span class="linenos">214</span></a>
+</span><span id="commonize_denominator-215"><a href="#commonize_denominator-215"><span class="linenos">215</span></a><span class="sd">    Returns:</span>
+</span><span id="commonize_denominator-216"><a href="#commonize_denominator-216"><span class="linenos">216</span></a><span class="sd">        A tuple of dice with the same denominator.</span>
+</span><span id="commonize_denominator-217"><a href="#commonize_denominator-217"><span class="linenos">217</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="commonize_denominator-218"><a href="#commonize_denominator-218"><span class="linenos">218</span></a>    <span class="n">converted_dice</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="commonize_denominator-219"><a href="#commonize_denominator-219"><span class="linenos">219</span></a>        <span class="n">icepool</span><span class="o">.</span><span class="n">implicit_convert_to_die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">dice</span>
+</span><span id="commonize_denominator-220"><a href="#commonize_denominator-220"><span class="linenos">220</span></a>    <span class="p">]</span>
+</span><span id="commonize_denominator-221"><a href="#commonize_denominator-221"><span class="linenos">221</span></a>    <span class="n">denominator_lcm</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">lcm</span><span class="p">(</span>
+</span><span id="commonize_denominator-222"><a href="#commonize_denominator-222"><span class="linenos">222</span></a>        <span class="o">*</span><span class="p">(</span><span class="n">die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span> <span class="k">if</span> <span class="n">die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="commonize_denominator-223"><a href="#commonize_denominator-223"><span class="linenos">223</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="commonize_denominator-224"><a href="#commonize_denominator-224"><span class="linenos">224</span></a>        <span class="n">die</span><span class="o">.</span><span class="n">scale_quantities</span><span class="p">(</span><span class="n">denominator_lcm</span> <span class="o">//</span>
+</span><span id="commonize_denominator-225"><a href="#commonize_denominator-225"><span class="linenos">225</span></a>                             <span class="n">die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="k">if</span> <span class="n">die</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="commonize_denominator-226"><a href="#commonize_denominator-226"><span class="linenos">226</span></a>        <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Scale the weights of the dice so that all of them have the same denominator.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>*dice:</strong>  Any number of dice or single outcomes convertible to dice.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A tuple of dice with the same denominator.</p>
+</blockquote>
 </div>
 
 
