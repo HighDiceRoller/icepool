@@ -99,7 +99,8 @@ async function initPyodide(){
     let icepoolVersion = await pyodide.runPythonAsync(`
 import micropip
 await micropip.install('icepool')
-micropip.list()['icepool'].version
+import icepool
+icepool.__version__
 `)
     self.postMessage({ cmd: 'setIcepoolVersion', text: icepoolVersion });
         
