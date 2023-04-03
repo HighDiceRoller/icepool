@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2023-02-14T07:02:24.481243Z",
+      "created": "2023-04-03T06:38:35.561376Z",
       "format": null,
-      "last_modified": "2023-02-14T07:02:06.412940Z",
+      "last_modified": "2023-04-03T06:38:05.705394Z",
       "mimetype": null,
       "name": "adnd.ipynb",
       "path": "ability_scores/adnd.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2023-02-14T07:02:24.481243Z",
+      "created": "2023-04-03T06:38:35.561376Z",
       "format": null,
-      "last_modified": "2023-02-14T07:02:06.412940Z",
+      "last_modified": "2023-04-03T06:38:05.705394Z",
       "mimetype": null,
       "name": "completely_unfair.ipynb",
       "path": "ability_scores/completely_unfair.ipynb",
@@ -26,21 +26,9 @@
     },
     {
       "content": null,
-      "created": "2023-02-14T07:02:24.481243Z",
+      "created": "2023-04-03T06:38:35.561376Z",
       "format": null,
-      "last_modified": "2023-02-14T07:02:06.412940Z",
-      "mimetype": null,
-      "name": "rolling_for_stats_in_groups.ipynb",
-      "path": "ability_scores/rolling_for_stats_in_groups.ipynb",
-      "size": 5521,
-      "type": "notebook",
-      "writable": true
-    },
-    {
-      "content": null,
-      "created": "2023-02-14T07:02:24.481243Z",
-      "format": null,
-      "last_modified": "2023-02-14T07:02:06.412940Z",
+      "last_modified": "2023-04-03T06:38:05.705394Z",
       "mimetype": null,
       "name": "one_set_strictly_better.ipynb",
       "path": "ability_scores/one_set_strictly_better.ipynb",
@@ -50,9 +38,21 @@
     },
     {
       "content": null,
-      "created": "2023-02-14T07:02:24.481243Z",
+      "created": "2023-04-03T06:38:35.561376Z",
       "format": null,
-      "last_modified": "2023-02-14T07:02:06.416940Z",
+      "last_modified": "2023-04-03T06:38:05.705394Z",
+      "mimetype": null,
+      "name": "rolling_for_stats_in_groups.ipynb",
+      "path": "ability_scores/rolling_for_stats_in_groups.ipynb",
+      "size": 5521,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2023-04-03T06:38:35.561376Z",
+      "format": null,
+      "last_modified": "2023-04-03T06:38:05.705394Z",
       "mimetype": null,
       "name": "snake_draft.ipynb",
       "path": "ability_scores/snake_draft.ipynb",
@@ -61,9 +61,9 @@
       "writable": true
     }
   ],
-  "created": "2023-02-14T07:02:24.481243Z",
+  "created": "2023-04-03T06:38:35.561376Z",
   "format": "json",
-  "last_modified": "2023-02-14T07:02:24.481243Z",
+  "last_modified": "2023-04-03T06:38:35.561376Z",
   "mimetype": null,
   "name": "ability_scores",
   "path": "ability_scores",
