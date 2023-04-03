@@ -6,7 +6,7 @@
             "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.6/jupyterlite_pyodide_kernel-0.0.6-py3-none-any.whl"
         ],
         "ignore_sys_prefix" : true,
-        "output_dir" : "dist",
+        "output_dir" : "dist"
     },
     "PipliteAddon": {
         "piplite_urls" : [
