@@ -325,7 +325,11 @@ async function runCode(code, probabilityType) {
         prevCode = code;
     }
     
-    let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "')");
+    try {
+        let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "')");
+    } catch (err) {
+        self.postMessage({ cmd: 'appendError', text: err + '\n'});
+    }
     self.postMessage({ cmd: 'updateChart', labels: chart_data.labels, datasets: chart_data.datasets });
 }
 
