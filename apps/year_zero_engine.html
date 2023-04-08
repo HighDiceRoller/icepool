@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Year Zero Engine calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <meta property="og:title" content="Year Zero Engine calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/year_zero.html" />
+    <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_preview.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Year Zero Engine calculator" />
+    <meta name="twitter:site" content="@highdiceroller" />
+    <meta name="twitter:creator" content="@highdiceroller" />
+    <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_preview.png" />
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="common.js"></script>
+</head>
+
+<body>
+    <h1>Year Zero Engine calculator <span style="font-size:75%;">by HighDiceRoller</span></h1>
+    
+    <div class="floating_controls">
+        <form id="inputs">
+            <table>
+                <tr>
+                    <th></th>
+                    <th>d6</th>
+                    <th>d8</th>
+                    <th>d10</th>
+                    <th>d12</th>
+                    <th style="text-align:left;">Reroll</th>
+                </tr>
+                <tr id="pinputs">
+                    <th style="text-align:left;">Active player</th>
+                    <td><input name="p6" id="p6" type="number" min="0" max="20" value="4" required onwheel="" /></td>
+                    <td><input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><select name="push" id="push">
+                        <option value="never" selected>Push never</option>
+                        <option value="fail">Push if fail</option>
+                        <option value="always">Push always</option>
+                    </select></td>
+                </tr>
+                <tr id="oinputs">
+                    <th style="text-align:left;">Opposition</th>
+                    <td><input name="o6" id="o6" type="number" min="0" max="20" value="0" required onwheel="" /></td>
+                    <td><input name="o8" id="o8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="o10" id="o10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="o12" id="o12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td style="text-align:left;">n/a</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <h2>Probability distribution of successes</h2>
+    <div style="width: 90%; margin: auto;">
+        <div style="font-size: 150%;">
+            Show:
+            <select id="distSelect">
+                <option value="pmf">Chance of exactly</option>
+                <option value="ccdf"><i>Chance of at least</option>
+            </select>
+        </div>
+        <div class="chart_container"><canvas id="successChart"></canvas></div>
+        
+        <div style="font-size: 150%;">
+            <table style="max-width:960px;margin:auto;">
+                <tr>
+                    <td style="width:30%;text-align:left;">Player wins: <span id="successChance"
+                            style="color:blue;"></span></td>
+                    <td style="width:20%;text-align:left;">Tie: <span id="tieChance"></span></td>
+                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChance"
+                            style="color:red;"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        setInputsFromSearchQuery();
+
+        var successChartContext = document.getElementById('successChart').getContext('2d');
+        var successChart = new Chart(successChartContext, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Net successes',
+                        fill: {value: 0},
+                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        backgroundColor: 'rgba(127, 127, 255, 0.25)',
+                        data: [],
+                    },
+                    {
+                        label: 'Without bane',
+                        fill: {value: 0},
+                        borderColor: 'rgba(0, 127, 0, 1.0)',
+                        backgroundColor: 'rgba(127, 255, 127, 0.25)',
+                        borderDash: [8, 8],
+                        data: [],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Successes',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Chance (%)',
+                        },
+                    },
+                },
+                plugins: {
+                    title: {
+                        fullSize: true,
+                        display: true,
+                        font: {
+                            size: 36,
+                        },
+                    },
+                    legend: {
+                        labels: {
+                            usePointStyle: true,
+                        },
+                    },
+                },
+            },
+        });
+
+
+        function setLoadingText(text) {
+            console.log(text);
+            let loadingText = text.match(/Loading \w+/);
+            if (!loadingText) {
+                return;
+            }
+            successChart.options.plugins.title.text = loadingText[0];
+            successChart.update();
+        }
+
+        async function initPyodide() {
+            setLoadingText('Loading pyodide')
+            let pyodide = await loadPyodide({
+                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.0/full/",
+            });
+
+            await pyodide.loadPackage(["micropip"], setLoadingText);
+
+            setLoadingText('Loading icepool')
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('icepool==0.25.4')
+                
+                import js
+                import pyodide
+                import icepool
+                from functools import cache
+                
+                possible_die_sizes = [6, 8, 10, 12]
+                
+                @cache
+                def year_zero_die(sides):
+                    def func(x):
+                        if x == 1:
+                            result = (0, 1, 0, 0, 0, 0)
+                        elif x < 6:
+                            result = (0, 0) + (sides == 6, sides == 8, sides == 10, sides == 12)
+                        elif x < 10:
+                            result = (1, 0, 0, 0, 0, 0)
+                        else:
+                            result = (2, 0, 0, 0, 0, 0)
+                        return result 
+                    return icepool.d(sides).map(func)
+                    
+                @cache
+                def year_zero_die_simple(sides):
+                    return year_zero_die(sides).marginals[:2]
+                    
+                @cache
+                def year_zero_die_push_always(sides):
+                    return year_zero_die_simple(sides).reroll([(0, 0)], depth=1)
+                
+                die_player = icepool.Die([])
+                die_opposition = icepool.Die([])
+                die_push = icepool.Die([])
+                
+                def calc_pool(prefix):
+                    result = icepool.Die([(0, 0, 0, 0, 0, 0)])
+                    for die_size in possible_die_sizes:
+                        count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
+                        result += count @ year_zero_die(die_size)
+                    return result
+                    
+                def calc_pool_simple(prefix):
+                    result = icepool.Die([(0, 0)])
+                    for die_size in possible_die_sizes:
+                        count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
+                        result += count @ year_zero_die_simple(die_size)
+                    return result
+                
+                def calc_pool_always(prefix):
+                    result = icepool.Die([(0, 0)])
+                    for die_size in possible_die_sizes:
+                        count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
+                        result += count @ year_zero_die_push_always(die_size)
+                    return result
+                
+                def calc_push_if_fail(active, target):
+                    success, bane, r6, r8, r10, r12 = active
+                    if success > target:
+                        return success - target, 0
+                    else:
+                        success = max(success - target, -1)
+                        result = (success, bane)
+                        result += r6 @ year_zero_die_simple(6)
+                        result += r8 @ year_zero_die_simple(8)
+                        result += r10 @ year_zero_die_simple(10)
+                        result += r12 @ year_zero_die_simple(12)
+                        return result
+                        
+                def without_bane(pushed):
+                    if pushed[1] > 0:
+                        return -1
+                    else:
+                        return pushed[0]
+            `);
+
+            successChart.options.plugins.title = {
+                text: "",
+                fullSize: false,
+                display: false,
+            };
+            
+            return pyodide;
+        }
+        let pyodideReadyPromise = initPyodide();
+
+        async function updateRolls() {
+            let pyodide = await pyodideReadyPromise;
+
+            pyodide.runPython(`
+            die_opposition = calc_pool_simple('o')
+            push_strategy = js.document.getElementById('push').value
+            if push_strategy == 'never':
+                die_player = calc_pool_simple('p')
+                die_push = icepool.Die([(icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1), 0)])
+            elif push_strategy == 'fail':
+                die_player = calc_pool('p')
+                die_push = icepool.apply(calc_push_if_fail, die_player, die_opposition.marginals[0])
+            else:
+                die_push = calc_pool_always('p') - (die_opposition.marginals[0], 0)
+                die_push = die_push.map(lambda s, b: (max(s, -1), b))
+            `);
+        }
+
+        async function updateChart() {
+            let pyodide = await pyodideReadyPromise;
+
+            pyodide.runPython(`
+            
+            series0 = die_push.marginals[0]
+            series1 = die_push.map(without_bane)
+            
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((series0 > 0).mean() * 100.0)
+            js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((series0 == 0).mean() * 100.0)
+            js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((series0 < 0).mean() * 100.0)
+            
+            _, series0, series1 = icepool.align_range(-1, series0, series1)
+            
+            js.successChart.data.labels = pyodide.ffi.to_js(['-1 or less', '0 (tie)'] + [float(x) for x in series0.outcomes()[2:]])
+            
+            selected_dist = js.document.getElementById('distSelect').value
+            
+            if selected_dist == 'pmf':
+                js.successChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in series0.probabilities()])
+                js.successChart.data.datasets[1].data = pyodide.ffi.to_js([None] + [float(x) * 100.0 for x in series1.probabilities()[1:]])
+            else:
+                js.successChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in series0.probabilities_ge()])
+                js.successChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in series1.probabilities_ge()])
+                
+            `);
+
+            successChart.update();
+        }
+
+        function validateInputsAndUpdate() {
+            if (validateInputs()) {
+                updateRolls();
+                updateChart();
+                updateSearchQueryFromForms();
+            }
+        }
+
+        function updateIfValid() {
+            if (inputsAreValid()) {
+                updateRolls();
+                updateChart();
+                updateSearchQueryFromForms();
+            }
+        }
+
+        updateRolls();
+        updateChart();
+        updateSearchQueryFromForms();
+
+        let pinputs = document.querySelector('#pinputs');
+        pinputs.addEventListener('change', validateInputsAndUpdate);
+        pinputs.addEventListener('input', updateIfValid);
+
+        let oinputs = document.querySelector('#oinputs');
+        oinputs.addEventListener('change', validateInputsAndUpdate);
+        oinputs.addEventListener('input', updateIfValid);
+
+        let dist_select = document.querySelector('#distSelect');
+        dist_select.addEventListener('input', updateChart);
+    </script>
+</body>
