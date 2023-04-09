@@ -93,7 +93,8 @@ async function initPyodide(){
     });
     
     await pyodide.loadPackage(["micropip"], 
-        (s) => {self.postMessage({ cmd: 'setLoadingText', text: s });});
+        {messageCallback : (s) => {self.postMessage({ cmd: 'setLoadingText', text: s });}}
+    );
     
     self.postMessage({ cmd: 'setLoadingText', text: 'Loading icepool' });
     let icepoolVersion = await pyodide.runPythonAsync(`
@@ -314,8 +315,9 @@ async function runCode(code, probabilityType) {
         self.postMessage({ cmd: 'clearError' });
         pyodide.runPython(`_manager.reset()`);
         try {
+            let code_in_main = 'def main():\n' + code.replace(/^/gm, '    ') + '\nmain()';
             let computationStart = performance.now();
-            pyodide.runPython(code);
+            pyodide.runPython(code_in_main);
             usedRandom = pyodide.runPython(`_manager.used_random()`);
             computationTime = (performance.now() - computationStart) / 1000.0;
             self.postMessage({ cmd: 'updateComputationTime', computationTime });
@@ -327,10 +329,10 @@ async function runCode(code, probabilityType) {
     
     try {
         let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "')");
+        self.postMessage({ cmd: 'updateChart', labels: chart_data.labels, datasets: chart_data.datasets });
     } catch (err) {
         self.postMessage({ cmd: 'appendError', text: err + '\n'});
     }
-    self.postMessage({ cmd: 'updateChart', labels: chart_data.labels, datasets: chart_data.datasets });
 }
 
 self.onmessage = async (msg) => {
