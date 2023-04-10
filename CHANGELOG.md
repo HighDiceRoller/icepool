@@ -1,3 +1,7 @@
+## v0.27.1
+
+* Counts type `Qs` is now invariant with more detailed typing in `Deal`.
+
 ## v0.27.0
 
 Incremented two versions because I messed up the last version number.
