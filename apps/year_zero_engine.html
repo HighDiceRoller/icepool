@@ -35,7 +35,7 @@
                     <th>d8</th>
                     <th>d10</th>
                     <th>d12</th>
-                    <th style="text-align:left;">Reroll</th>
+                    <th style="text-align:left;">Push if</th>
                 </tr>
                 <tr id="pinputs">
                     <th style="text-align:left;">Active player</th>
@@ -44,9 +44,10 @@
                     <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><select name="push" id="push">
-                        <option value="never" selected>Push never</option>
-                        <option value="fail">Push if fail</option>
-                        <option value="always">Push always</option>
+                        <option value="never" selected>Never</option>
+                        <option value="fail_no_bane">Fail and no bane in initial roll</option>
+                        <option value="fail">Fail</option>
+                        <option value="always">Always</option>
                     </select></td>
                 </tr>
                 <tr id="oinputs">
@@ -238,13 +239,26 @@
                         result += count @ year_zero_die_push_always(die_size)
                     return result
                 
+                @cache
                 def calc_push_if_fail(active, target):
                     success, bane, r6, r8, r10, r12 = active
                     if success > target:
                         return success - target, 0
                     else:
-                        success = max(success - target, -1)
-                        result = (success, bane)
+                        result = (success - target, bane)
+                        result += r6 @ year_zero_die_simple(6)
+                        result += r8 @ year_zero_die_simple(8)
+                        result += r10 @ year_zero_die_simple(10)
+                        result += r12 @ year_zero_die_simple(12)
+                        return result
+                
+                @cache
+                def calc_push_if_fail_and_no_initial_bane(active, target):
+                    success, bane, r6, r8, r10, r12 = active
+                    if success > target or bane > 0:
+                        return success - target, 0
+                    else:
+                        result = (success - target, bane)
                         result += r6 @ year_zero_die_simple(6)
                         result += r8 @ year_zero_die_simple(8)
                         result += r10 @ year_zero_die_simple(10)
@@ -282,9 +296,12 @@
             elif push_strategy == 'fail':
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_push_if_fail, die_player, die_opposition.marginals[0])
+            elif push_strategy == 'fail_no_bane':
+                die_player = calc_pool('p')
+                die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
             else:
                 die_push = calc_pool_always('p') - (die_opposition.marginals[0], 0)
-                die_push = die_push.map(lambda s, b: (max(s, -1), b))
+            die_push = die_push.map(lambda s, b: (max(s, -1), b))
             `);
         }
 
@@ -366,4 +383,25 @@
         let dist_select = document.querySelector('#distSelect');
         dist_select.addEventListener('input', updateChart);
     </script>
+    
+    <div class="text_content">
+        <h2>Notes</h2>
+
+        <ul>
+            <li>Remember, only the active player can push, and they can choose whether to do so after seeing the opposition roll.</li>
+        </ul>
+
+        <h3>How does it work?</h3>
+        <p>
+            I built this using <a href="https://pyodide.org/en/stable/">Pyodide</a>, <a
+                href="https://www.chartjs.org/">Chart.js</a>,
+            and of course, my own <a href="https://github.com/HighDiceRoller/icepool">Icepool</a> Python library.
+        </p>
+
+        <p>
+            Questions, comments, or suggestions? Find me on <a
+                href="https://www.reddit.com/user/HighDiceRoller">Reddit</a> or <a
+                href="https://twitter.com/highdiceroller">Twitter</a>.
+        </p>
+    </div>
 </body>
