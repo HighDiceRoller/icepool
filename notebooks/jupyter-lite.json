@@ -2,7 +2,7 @@
   "jupyter-config-data": {
     "appName": "Icepool Examples",
     "appUrl": "./lab",
-    "appVersion": "0.1.0-rc.0",
+    "appVersion": "0.1.0",
     "baseUrl": "./",
     "collaborative": true,
     "defaultKernelName": "python",
@@ -307,7 +307,7 @@
     "litePluginSettings": {
       "@jupyterlite/pyodide-kernel-extension:kernel": {
         "pipliteUrls": [
-          "./pypi/all.json?sha256=2889e3193f7283f7a7668d1f8af3ffea4e19be74b65717cf32e9cad019596f34",
+          "./pypi/all.json?sha256=61648213c509b7b8a4d9f9faee6f7ed10fe34a7ae9ae02db376cbf9f1bd70285",
           "./extensions/@jupyterlite/pyodide-kernel-extension/static/pypi/all.json?sha256=dada95d1039a199bb4503c6652605f7815ea056b19f3c08a6e78a0c5739f19d4"
         ]
       }
