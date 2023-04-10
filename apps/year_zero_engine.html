@@ -35,7 +35,7 @@
                     <th>d8</th>
                     <th>d10</th>
                     <th>d12</th>
-                    <th style="text-align:left;">Push if</th>
+                    <th style="text-align:left;">Push (if winning is possible) if</th>
                 </tr>
                 <tr id="pinputs">
                     <th style="text-align:left;">Active player</th>
@@ -43,10 +43,10 @@
                     <td><input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td><select name="push" id="push">
+                    <td style="text-align:left;"><select name="push" id="push">
                         <option value="never" selected>Never</option>
-                        <option value="fail_no_bane">Fail and no bane in initial roll</option>
-                        <option value="fail">Fail</option>
+                        <option value="fail_no_bane">Initial roll fails but has no banes</option>
+                        <option value="fail">Initial roll fails</option>
                         <option value="always">Always</option>
                     </select></td>
                 </tr>
@@ -62,7 +62,7 @@
         </form>
     </div>
     
-    <h2>Probability distribution of net successes</h2>
+    <h2>Probability distribution of successes and banes</h2>
     <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -83,7 +83,8 @@
                             style="color:red;"></span></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="width:30%;text-align:left;">Mean net successes: <span id="meanSuccesses"
+                            style="color:blue;"></td>
                     <td></td>
                     <td style="width:30%;text-align:left;">Mean banes: <span id="meanBanes"
                             style="color:red;"></span></td>
@@ -232,38 +233,51 @@
                         result += count @ year_zero_die_simple(die_size)
                     return result
                 
-                def calc_pool_always(prefix):
-                    result = icepool.Die([(0, 0)])
-                    for die_size in possible_die_sizes:
-                        count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
-                        result += count @ year_zero_die_push_always(die_size)
+                @cache
+                def calc_pool_always(active, target):
+                    success, bane, r6, r8, r10, r12 = active
+                    
+                    if success + r6 + r8 + r10 + r12 < target:
+                        # can't make it, so don't bother trying
+                        return success - target, 0
+
+                    result = (success - target, bane)
+                    result += r6 @ year_zero_die_simple(6)
+                    result += r8 @ year_zero_die_simple(8)
+                    result += r10 @ year_zero_die_simple(10)
+                    result += r12 @ year_zero_die_simple(12)
                     return result
                 
                 @cache
                 def calc_push_if_fail(active, target):
                     success, bane, r6, r8, r10, r12 = active
+                    if success + r6 + r8 + r10 + r12 < target:
+                        # can't make it, so don't bother trying
+                        return success - target, 0
                     if success > target:
                         return success - target, 0
-                    else:
-                        result = (success - target, bane)
-                        result += r6 @ year_zero_die_simple(6)
-                        result += r8 @ year_zero_die_simple(8)
-                        result += r10 @ year_zero_die_simple(10)
-                        result += r12 @ year_zero_die_simple(12)
-                        return result
+
+                    result = (success - target, bane)
+                    result += r6 @ year_zero_die_simple(6)
+                    result += r8 @ year_zero_die_simple(8)
+                    result += r10 @ year_zero_die_simple(10)
+                    result += r12 @ year_zero_die_simple(12)
+                    return result
                 
                 @cache
                 def calc_push_if_fail_and_no_initial_bane(active, target):
                     success, bane, r6, r8, r10, r12 = active
+                    if success + r6 + r8 + r10 + r12 < target:
+                        # can't make it, so don't bother trying
+                        return success - target, 0
                     if success > target or bane > 0:
                         return success - target, 0
-                    else:
-                        result = (success - target, bane)
-                        result += r6 @ year_zero_die_simple(6)
-                        result += r8 @ year_zero_die_simple(8)
-                        result += r10 @ year_zero_die_simple(10)
-                        result += r12 @ year_zero_die_simple(12)
-                        return result
+                    result = (success - target, bane)
+                    result += r6 @ year_zero_die_simple(6)
+                    result += r8 @ year_zero_die_simple(8)
+                    result += r10 @ year_zero_die_simple(10)
+                    result += r12 @ year_zero_die_simple(12)
+                    return result
                         
                 def without_bane(pushed):
                     if pushed[1] > 0:
@@ -293,14 +307,15 @@
                 js.successChart.data.datasets[2].hidden = pyodide.ffi.to_js(True)
                 die_player = calc_pool_simple('p')
                 die_push = icepool.Die([(icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1), 0)])
-            elif push_strategy == 'fail':
-                die_player = calc_pool('p')
-                die_push = icepool.apply(calc_push_if_fail, die_player, die_opposition.marginals[0])
             elif push_strategy == 'fail_no_bane':
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
+            elif push_strategy == 'fail':
+                die_player = calc_pool('p')
+                die_push = icepool.apply(calc_push_if_fail, die_player, die_opposition.marginals[0])
             else:
-                die_push = calc_pool_always('p') - (die_opposition.marginals[0], 0)
+                die_player = calc_pool('p')
+                die_push = icepool.apply(calc_pool_always, die_player, die_opposition.marginals[0])
             die_push = die_push.map(lambda s, b: (max(s, -1), b))
             `);
         }
@@ -328,7 +343,8 @@
                 js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((series0 == 0).mean() * 100.0)
                 js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((series0 < 0).mean() * 100.0)
                 js.successChart.data.labels = pyodide.ffi.to_js(["-1 or less (fail)", "0 (tie)"] + [float(x) for x in series0.outcomes()[2:]])
-                
+            
+            js.document.getElementById('meanSuccesses').innerHTML = '%0.2f' % series0.clip(0).mean()
             js.document.getElementById('meanBanes').innerHTML = '%0.2f' % bane_count.mean()
             
             selected_dist = js.document.getElementById('distSelect').value
@@ -388,7 +404,9 @@
         <h2>Notes</h2>
 
         <ul>
-            <li>Remember, only the active player can push, and they can choose whether to do so after seeing the opposition roll.</li>
+            <li>"Mean net successes" treats negative net successes as 0.</li>
+            <li>Only the active player can push, and they can choose whether to do so after seeing the opposition roll.</li>
+            <li>On an opposed roll, ties may be treated as fails, rerolled, or have some other effect. Consult your specific ruleset for details.</li>
         </ul>
 
         <h3>How does it work?</h3>
