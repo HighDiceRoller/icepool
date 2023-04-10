@@ -236,8 +236,7 @@
                 @cache
                 def calc_pool_always(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    
-                    if success + r6 + r8 + r10 + r12 < target:
+                    if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
                         return success - target, 0
 
@@ -251,7 +250,7 @@
                 @cache
                 def calc_push_if_fail(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 + r12 < target:
+                    if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
                         return success - target, 0
                     if success > target:
@@ -267,7 +266,7 @@
                 @cache
                 def calc_push_if_fail_and_no_initial_bane(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 + r12 < target:
+                    if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
                         return success - target, 0
                     if success > target or bane > 0:
@@ -306,7 +305,7 @@
             if push_strategy == 'never':
                 js.successChart.data.datasets[2].hidden = pyodide.ffi.to_js(True)
                 die_player = calc_pool_simple('p')
-                die_push = icepool.Die([(icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1), 0)])
+                die_push = icepool.Die([(die_player.marginals[0] - die_opposition.marginals[0], 0)])
             elif push_strategy == 'fail_no_bane':
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
