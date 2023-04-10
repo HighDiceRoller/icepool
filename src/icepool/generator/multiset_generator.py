@@ -6,7 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collections import Counts
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.typing import Order, Outcome, Qs_co, T
+from icepool.typing import Order, Outcome, Qs, T
 
 import bisect
 import functools
@@ -23,7 +23,7 @@ NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
 """The generator type returned by `_generate_min` and `_generate_max`."""
 
 
-class MultisetGenerator(Generic[T, Qs_co], MultisetExpression[T]):
+class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
     """Abstract base class for generating one or more multisets.
 
     These include dice pools (`Pool`) and card deals (`Deal`). Most likely you

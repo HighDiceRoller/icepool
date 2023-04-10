@@ -26,7 +26,7 @@ U = TypeVar('U', bound='Outcome')
 U_co = TypeVar('U_co', bound='Outcome', covariant=True)
 """Another outcome type."""
 
-Qs_co = TypeVar('Qs_co', bound=tuple[int, ...], covariant=True)
+Qs = TypeVar('Qs', bound=tuple[int, ...])
 """A tuple of count types. In this future this may be replaced with a TypeVarTuple."""
 
 

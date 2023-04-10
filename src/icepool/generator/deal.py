@@ -1,8 +1,8 @@
 __docformat__ = 'google'
 
-from icepool.typing import Outcome, Qs_co, T
+from icepool.typing import Outcome, Qs, T
 
-from typing import Any, Hashable
+from typing import Any, Hashable, cast
 import icepool
 from icepool.collections import CountsKeysView
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
@@ -12,11 +12,11 @@ from functools import cached_property
 import math
 
 
-class Deal(MultisetGenerator[T, Qs_co]):
+class Deal(MultisetGenerator[T, Qs]):
     """Represents an sorted/unordered deal of cards from a `Deck`."""
 
     _deck: 'icepool.Deck[T]'
-    _hand_sizes: tuple[int, ...]
+    _hand_sizes: Qs
 
     def __init__(self, deck: 'icepool.Deck[T]', *hand_sizes: int) -> None:
         """Constructor.
@@ -39,15 +39,14 @@ class Deal(MultisetGenerator[T, Qs_co]):
         if any(hand < 0 for hand in hand_sizes):
             raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
-        self._hand_sizes = hand_sizes
+        self._hand_sizes = cast(Qs, hand_sizes)
         if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
                 'The total number of cards dealt cannot exceed the size of the deck.'
             )
 
     @classmethod
-    def _new_raw(cls, deck: 'icepool.Deck[T]',
-                 hand_sizes: tuple[int, ...]) -> 'Deal[T, Any]':
+    def _new_raw(cls, deck: 'icepool.Deck[T]', hand_sizes: Qs) -> 'Deal[T, Qs]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes
@@ -57,7 +56,7 @@ class Deal(MultisetGenerator[T, Qs_co]):
         """The `Deck` the cards are dealt from."""
         return self._deck
 
-    def hand_sizes(self) -> tuple[int, ...]:
+    def hand_sizes(self) -> Qs:
         """The number of cards dealt to each hand as a tuple."""
         return self._hand_sizes
 
