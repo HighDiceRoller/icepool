@@ -4,7 +4,7 @@ import operator
 import icepool
 
 import icepool.generator
-from icepool.collections import Counts
+from icepool.counts import Counts
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import Order, Outcome, Qs, T
 

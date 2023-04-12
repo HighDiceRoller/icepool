@@ -58,7 +58,7 @@ from icepool.population.die import implicit_convert_to_die, Die
 from icepool.population.again import Again
 from icepool.population.die_with_truth import DieWithTruth
 
-from icepool.collections import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
 from icepool.population.keep import lowest, highest, middle
 

@@ -5,7 +5,7 @@ __docformat__ = 'google'
 from functools import cached_property
 import itertools
 import icepool
-from icepool.collections import sorted_union
+from icepool.counts import sorted_union
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order, T_contra, U_co
 

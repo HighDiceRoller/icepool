@@ -4,7 +4,7 @@ import icepool
 import icepool.population.again
 import icepool.math
 import icepool.creation_args
-from icepool.collections import Counts, CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.typing import U, Outcome, T_co, guess_star
 

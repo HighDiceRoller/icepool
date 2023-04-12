@@ -4,7 +4,7 @@ from icepool.typing import Outcome, Qs, T
 
 from typing import Any, Hashable, cast
 import icepool
-from icepool.collections import CountsKeysView
+from icepool.counts import CountsKeysView
 from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
 from icepool.math import iter_hypergeom
 
