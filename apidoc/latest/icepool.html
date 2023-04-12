@@ -797,7 +797,7 @@ are considered.</li>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.27.0&#39;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.27.1&#39;</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
@@ -838,7 +838,7 @@ are considered.</li>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="kn">from</span> <span class="nn">icepool.population.again</span> <span class="kn">import</span> <span class="n">Again</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="kn">from</span> <span class="nn">icepool.population.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.collections</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="kn">from</span> <span class="nn">icepool.counts</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>
@@ -1403,7 +1403,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-400"><a href="#Die-400"><span class="linenos"> 400</span></a>
 </span><span id="Die-401"><a href="#Die-401"><span class="linenos"> 401</span></a>        <span class="k">if</span> <span class="n">which</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-402"><a href="#Die-402"><span class="linenos"> 402</span></a>            <span class="n">outcome_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()}</span>
-</span><span id="Die-403"><a href="#Die-403"><span class="linenos"> 403</span></a>        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die-403"><a href="#Die-403"><span class="linenos"> 403</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die-404"><a href="#Die-404"><span class="linenos"> 404</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-405"><a href="#Die-405"><span class="linenos"> 405</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die-406"><a href="#Die-406"><span class="linenos"> 406</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -1469,7 +1469,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-466"><a href="#Die-466"><span class="linenos"> 466</span></a><span class="sd">            If the reroll would never terminate, the result has no outcomes.</span>
 </span><span id="Die-467"><a href="#Die-467"><span class="linenos"> 467</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-468"><a href="#Die-468"><span class="linenos"> 468</span></a>
-</span><span id="Die-469"><a href="#Die-469"><span class="linenos"> 469</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die-469"><a href="#Die-469"><span class="linenos"> 469</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die-470"><a href="#Die-470"><span class="linenos"> 470</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-471"><a href="#Die-471"><span class="linenos"> 471</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die-472"><a href="#Die-472"><span class="linenos"> 472</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -1645,7 +1645,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-642"><a href="#Die-642"><span class="linenos"> 642</span></a>            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Die</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span>
 </span><span id="Die-643"><a href="#Die-643"><span class="linenos"> 643</span></a>
 </span><span id="Die-644"><a href="#Die-644"><span class="linenos"> 644</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Die-645"><a href="#Die-645"><span class="linenos"> 645</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Die-645"><a href="#Die-645"><span class="linenos"> 645</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Die-646"><a href="#Die-646"><span class="linenos"> 646</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-647"><a href="#Die-647"><span class="linenos"> 647</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Die-648"><a href="#Die-648"><span class="linenos"> 648</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -1727,7 +1727,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-724"><a href="#Die-724"><span class="linenos"> 724</span></a><span class="sd">            The `Die` after the modification.</span>
 </span><span id="Die-725"><a href="#Die-725"><span class="linenos"> 725</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-726"><a href="#Die-726"><span class="linenos"> 726</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Die-727"><a href="#Die-727"><span class="linenos"> 727</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Die-727"><a href="#Die-727"><span class="linenos"> 727</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Die-728"><a href="#Die-728"><span class="linenos"> 728</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-729"><a href="#Die-729"><span class="linenos"> 729</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Die-730"><a href="#Die-730"><span class="linenos"> 730</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -1792,7 +1792,7 @@ the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</p>
 </span><span id="Die-789"><a href="#Die-789"><span class="linenos"> 789</span></a>
 </span><span id="Die-790"><a href="#Die-790"><span class="linenos"> 790</span></a>        <span class="k">if</span> <span class="n">which</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-791"><a href="#Die-791"><span class="linenos"> 791</span></a>            <span class="n">outcome_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()}</span>
-</span><span id="Die-792"><a href="#Die-792"><span class="linenos"> 792</span></a>        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die-792"><a href="#Die-792"><span class="linenos"> 792</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die-793"><a href="#Die-793"><span class="linenos"> 793</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die-794"><a href="#Die-794"><span class="linenos"> 794</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die-795"><a href="#Die-795"><span class="linenos"> 795</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -3102,7 +3102,7 @@ dice or between the dice.</li>
 </span><span id="Die.reroll-400"><a href="#Die.reroll-400"><span class="linenos">400</span></a>
 </span><span id="Die.reroll-401"><a href="#Die.reroll-401"><span class="linenos">401</span></a>        <span class="k">if</span> <span class="n">which</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.reroll-402"><a href="#Die.reroll-402"><span class="linenos">402</span></a>            <span class="n">outcome_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_outcome</span><span class="p">()}</span>
-</span><span id="Die.reroll-403"><a href="#Die.reroll-403"><span class="linenos">403</span></a>        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die.reroll-403"><a href="#Die.reroll-403"><span class="linenos">403</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die.reroll-404"><a href="#Die.reroll-404"><span class="linenos">404</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.reroll-405"><a href="#Die.reroll-405"><span class="linenos">405</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die.reroll-406"><a href="#Die.reroll-406"><span class="linenos">406</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -3212,7 +3212,7 @@ If omitted, rerolls an unlimited number of times.</li>
 </span><span id="Die.filter-466"><a href="#Die.filter-466"><span class="linenos">466</span></a><span class="sd">            If the reroll would never terminate, the result has no outcomes.</span>
 </span><span id="Die.filter-467"><a href="#Die.filter-467"><span class="linenos">467</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.filter-468"><a href="#Die.filter-468"><span class="linenos">468</span></a>
-</span><span id="Die.filter-469"><a href="#Die.filter-469"><span class="linenos">469</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die.filter-469"><a href="#Die.filter-469"><span class="linenos">469</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die.filter-470"><a href="#Die.filter-470"><span class="linenos">470</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.filter-471"><a href="#Die.filter-471"><span class="linenos">471</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die.filter-472"><a href="#Die.filter-472"><span class="linenos">472</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -3528,7 +3528,7 @@ and/or add zero-quantity outcomes (if they are not present in this <code><a href
 </span><span id="Die.map-642"><a href="#Die.map-642"><span class="linenos">642</span></a>            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Die</span><span class="p">[</span><span class="n">U</span><span class="p">],</span> <span class="bp">self</span><span class="p">)</span>
 </span><span id="Die.map-643"><a href="#Die.map-643"><span class="linenos">643</span></a>
 </span><span id="Die.map-644"><a href="#Die.map-644"><span class="linenos">644</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Die.map-645"><a href="#Die.map-645"><span class="linenos">645</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Die.map-645"><a href="#Die.map-645"><span class="linenos">645</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Die.map-646"><a href="#Die.map-646"><span class="linenos">646</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.map-647"><a href="#Die.map-647"><span class="linenos">647</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Die.map-648"><a href="#Die.map-648"><span class="linenos">648</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -3665,7 +3665,7 @@ result this many times.</p>
 </span><span id="Die.map_and_time-724"><a href="#Die.map_and_time-724"><span class="linenos">724</span></a><span class="sd">            The `Die` after the modification.</span>
 </span><span id="Die.map_and_time-725"><a href="#Die.map_and_time-725"><span class="linenos">725</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die.map_and_time-726"><a href="#Die.map_and_time-726"><span class="linenos">726</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Die.map_and_time-727"><a href="#Die.map_and_time-727"><span class="linenos">727</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Die.map_and_time-727"><a href="#Die.map_and_time-727"><span class="linenos">727</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Die.map_and_time-728"><a href="#Die.map_and_time-728"><span class="linenos">728</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.map_and_time-729"><a href="#Die.map_and_time-729"><span class="linenos">729</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Die.map_and_time-730"><a href="#Die.map_and_time-730"><span class="linenos">730</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -3791,7 +3791,7 @@ this many times.</li>
 </span><span id="Die.explode-789"><a href="#Die.explode-789"><span class="linenos">789</span></a>
 </span><span id="Die.explode-790"><a href="#Die.explode-790"><span class="linenos">790</span></a>        <span class="k">if</span> <span class="n">which</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.explode-791"><a href="#Die.explode-791"><span class="linenos">791</span></a>            <span class="n">outcome_set</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_outcome</span><span class="p">()}</span>
-</span><span id="Die.explode-792"><a href="#Die.explode-792"><span class="linenos">792</span></a>        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
+</span><span id="Die.explode-792"><a href="#Die.explode-792"><span class="linenos">792</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">which</span><span class="p">):</span>
 </span><span id="Die.explode-793"><a href="#Die.explode-793"><span class="linenos">793</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Die.explode-794"><a href="#Die.explode-794"><span class="linenos">794</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">which</span><span class="p">)</span>
 </span><span id="Die.explode-795"><a href="#Die.explode-795"><span class="linenos">795</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -7285,7 +7285,7 @@ arguments are processed.</p>
                                         <input id="CountsKeysView.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">CountsKeysView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">Counts</span><span class="p">[</span><span class="o">~</span><span class="n">K</span><span class="p">]</span></span>)</span>
+        <span class="name">CountsKeysView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">Counts</span><span class="p">[</span><span class="o">~</span><span class="n">K</span><span class="p">]</span></span>)</span>
 
                 <label class="view-source-button" for="CountsKeysView.__init__-view-source"><span>View Source</span></label>
 
@@ -7350,7 +7350,7 @@ arguments are processed.</p>
                                         <input id="CountsValuesView.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">CountsValuesView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">Counts</span></span>)</span>
+        <span class="name">CountsValuesView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">Counts</span></span>)</span>
 
                 <label class="view-source-button" for="CountsValuesView.__init__-view-source"><span>View Source</span></label>
 
@@ -7408,7 +7408,7 @@ arguments are processed.</p>
                                         <input id="CountsItemsView.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">CountsItemsView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">Counts</span></span>)</span>
+        <span class="name">CountsItemsView</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">counts</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">counts</span><span class="o">.</span><span class="n">Counts</span></span>)</span>
 
                 <label class="view-source-button" for="CountsItemsView.__init__-view-source"><span>View Source</span></label>
 
@@ -8087,7 +8087,7 @@ of dice.</li>
 </span><span id="apply-360"><a href="#apply-360"><span class="linenos">360</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
 </span><span id="apply-361"><a href="#apply-361"><span class="linenos">361</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
 </span><span id="apply-362"><a href="#apply-362"><span class="linenos">362</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="apply-363"><a href="#apply-363"><span class="linenos">363</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+</span><span id="apply-363"><a href="#apply-363"><span class="linenos">363</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 </span><span id="apply-364"><a href="#apply-364"><span class="linenos">364</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
 </span><span id="apply-365"><a href="#apply-365"><span class="linenos">365</span></a>            <span class="s1">&#39;The first argument must be callable. Did you forget to provide a function?&#39;</span>
 </span><span id="apply-366"><a href="#apply-366"><span class="linenos">366</span></a>        <span class="p">)</span>
@@ -13671,7 +13671,7 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </span><span id="Deck-152"><a href="#Deck-152"><span class="linenos">152</span></a><span class="sd">                signature according to `guess_star()`.</span>
 </span><span id="Deck-153"><a href="#Deck-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck-154"><a href="#Deck-154"><span class="linenos">154</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Deck-156"><a href="#Deck-156"><span class="linenos">156</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Deck-157"><a href="#Deck-157"><span class="linenos">157</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Deck-158"><a href="#Deck-158"><span class="linenos">158</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
@@ -13976,7 +13976,7 @@ use <code>len()</code>.</p>
 </span><span id="Deck.map-152"><a href="#Deck.map-152"><span class="linenos">152</span></a><span class="sd">                signature according to `guess_star()`.</span>
 </span><span id="Deck.map-153"><a href="#Deck.map-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck.map-154"><a href="#Deck.map-154"><span class="linenos">154</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Deck.map-155"><a href="#Deck.map-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Deck.map-155"><a href="#Deck.map-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="Deck.map-156"><a href="#Deck.map-156"><span class="linenos">156</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Deck.map-157"><a href="#Deck.map-157"><span class="linenos">157</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
 </span><span id="Deck.map-158"><a href="#Deck.map-158"><span class="linenos">158</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
