@@ -14,6 +14,7 @@
 /misc/*.png
 /.vscode/launch.json
 /src/.vscode/settings.json
-/*.bat
+*.bat
+*.ps1
 /.vscode
 /misc/*.svg
