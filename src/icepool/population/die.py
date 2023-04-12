@@ -1051,13 +1051,12 @@ class Die(Population[T_co]):
 
     @staticmethod
     def _zero(x):
-        return type(x)()
+        return x * 0
 
     def zero(self) -> 'Die[T_co]':
         """Zeros all outcomes of this die.
 
-        This is done by calling the constructor for each outcome's type with no
-        arguments.
+        This is done by multiplying all outcomes by `0`.
 
         The result will have the same denominator as this die.
 
