@@ -272,7 +272,10 @@ class OutputManager():
             outcomes = {x for x in outcomes if x >= self.limit_left}
         if self.limit_right is not None:
             outcomes = {x for x in outcomes if x <= self.limit_right}
-        outcomes = sorted(outcomes)
+        if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
+            outcomes = list(range(min(outcomes), max(outcomes) + 1))
+        else:
+            outcomes = sorted(outcomes)
         output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
         
         for output in self.outputs:
