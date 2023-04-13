@@ -267,7 +267,7 @@ class OutputManager():
         Returns:
             labels, datasets in js format
         """
-        outcomes = set.union(*(output.outcomes() for output in self.outputs))
+        outcomes = set.union(set(), *(output.outcomes() for output in self.outputs))
         if self.limit_left is not None:
             outcomes = {x for x in outcomes if x >= self.limit_left}
         if self.limit_right is not None:
