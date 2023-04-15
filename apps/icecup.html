@@ -268,15 +268,19 @@ class OutputManager():
             labels, datasets in js format
         """
         outcomes = set.union(set(), *(output.outcomes() for output in self.outputs))
-        if self.limit_left is not None:
-            outcomes = {x for x in outcomes if x >= self.limit_left}
-        if self.limit_right is not None:
-            outcomes = {x for x in outcomes if x <= self.limit_right}
-        if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
-            outcomes = list(range(min(outcomes), max(outcomes) + 1))
+        if outcomes:
+            if self.limit_left is not None:
+                outcomes = {x for x in outcomes if x >= self.limit_left}
+            if self.limit_right is not None:
+                outcomes = {x for x in outcomes if x <= self.limit_right}
+            if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
+                outcomes = list(range(min(outcomes), max(outcomes) + 1))
+            else:
+                outcomes = sorted(outcomes)
+            output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
         else:
-            outcomes = sorted(outcomes)
-        output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
+            outcomes = []
+            output_datasets = []
         
         for output in self.outputs:
             output.print(probability_type)
