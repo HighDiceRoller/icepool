@@ -1223,130 +1223,30 @@ class Die(Population[T_co]):
 
     # Comparators.
 
-    @staticmethod
-    def _lt_le(op: Callable[..., bool], lo: 'Die', hi: 'Die') -> 'Die[bool]':
-        """Linear algorithm for < and <=.
-
-        Args:
-            op: Either `operator.lt` or `operator.le`.
-            lo: The `Die` on the left of `op`.
-            hi: The `Die` on the right of `op`.
-        """
-        if lo.is_empty() or hi.is_empty():
-            return icepool.Die([])
-
-        d = lo.denominator() * hi.denominator()
-
-        # One-outcome cases.
-
-        if op(lo.max_outcome(), hi.min_outcome()):
-            return icepool.Die({True: d})
-
-        if not op(lo.min_outcome(), hi.max_outcome()):
-            return icepool.Die({False: d})
-
-        n = 0
-
-        lo_cweight = 0
-        lo_iter = iter(zip(lo.outcomes(), lo.quantities_le()))
-        lo_outcome, next_lo_cweight = next(lo_iter)
-        for hi_outcome, hi_weight in hi.items():
-            while op(lo_outcome, hi_outcome):
-                try:
-                    lo_cweight = next_lo_cweight
-                    lo_outcome, next_lo_cweight = next(lo_iter)
-                except StopIteration:
-                    break
-            n += lo_cweight * hi_weight
-
-        # We don't use coin() because it trims zero-quantity outcomes.
-        return icepool.Die({False: d - n, True: n})
-
     def __lt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.common_outcome_length(
-        ) is not None or other.common_outcome_length() is not None:
-            return self.binary_operator(other, operator.lt)
-        else:
-            return Die._lt_le(operator.lt, self, other)
+        return self.binary_operator(other, operator.lt)
 
     def __le__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.common_outcome_length(
-        ) is not None or other.common_outcome_length() is not None:
-            return self.binary_operator(other, operator.le)
-        else:
-            return Die._lt_le(operator.le, self, other)
+        return self.binary_operator(other, operator.le)
 
     def __ge__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.common_outcome_length(
-        ) is not None or other.common_outcome_length() is not None:
-            return self.binary_operator(other, operator.ge)
-        else:
-            return Die._lt_le(operator.le, other, self)
+        return self.binary_operator(other, operator.ge)
 
     def __gt__(self, other) -> 'Die[bool]':
         other = implicit_convert_to_die(other)
-        if self.common_outcome_length(
-        ) is not None or other.common_outcome_length() is not None:
-            return self.binary_operator(other, operator.gt)
-        else:
-            return Die._lt_le(operator.lt, other, self)
+        return self.binary_operator(other, operator.gt)
 
     # Equality operators. These produce a `DieWithTruth`.
-
-    @staticmethod
-    def _eq(invert: bool, a: 'Die', b: 'Die') -> 'Counts[bool]':
-        """Linear algorithm for == and !=.
-
-        Args:
-            invert: If `False`, this computes ==; if `True` this computes !=.
-            a, b: The dice.
-        """
-        if a.is_empty() or b.is_empty():
-            return Counts([])
-
-        d = a.denominator() * b.denominator()
-
-        # Single-outcome case.
-        if (a.keys().isdisjoint(b.keys())):
-            return Counts([(invert, d)])
-
-        n = 0
-
-        a_iter = iter(a.items())
-        b_iter = iter(b.items())
-
-        a_outcome, a_quantity = next(a_iter)
-        b_outcome, b_quantity = next(b_iter)
-
-        while True:
-            try:
-                if a_outcome == b_outcome:
-                    n += a_quantity * b_quantity
-                    a_outcome, a_quantity = next(a_iter)
-                    b_outcome, b_quantity = next(b_iter)
-                elif a_outcome < b_outcome:
-                    a_outcome, a_quantity = next(a_iter)
-                else:
-                    b_outcome, b_quantity = next(b_iter)
-            except StopIteration:
-                if invert:
-                    return Counts([(False, n), (True, d - n)])
-                else:
-                    return Counts([(False, d - n), (True, n)])
 
     # The result has a truth value, but is not a bool.
     def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
-            if self.common_outcome_length(
-            ) is not None or other_die.common_outcome_length() is not None:
-                return self.binary_operator(other_die, operator.eq)._data
-            else:
-                return Die._eq(False, self, other_die)
+            return self.binary_operator(other_die, operator.eq)._data
 
         def truth_value_callback() -> bool:
             return self.equals(other)
@@ -1358,11 +1258,7 @@ class Die(Population[T_co]):
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
-            if self.common_outcome_length(
-            ) is not None or other_die.common_outcome_length() is not None:
-                return self.binary_operator(other_die, operator.ne)._data
-            else:
-                return Die._eq(True, self, other_die)
+            return self.binary_operator(other_die, operator.ne)._data
 
         def truth_value_callback() -> bool:
             return not self.equals(other)
