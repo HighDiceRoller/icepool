@@ -14,7 +14,7 @@ import numbers
 import operator
 import random
 
-from typing import Any, Callable, Generic, Hashable, Mapping, MutableMapping, Sequence, TypeVar, overload
+from typing import Any, Callable, Generic, Hashable, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
@@ -59,23 +59,22 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         return self.keys()
 
     @cached_property
-    def _tuple_len(self) -> int | None:
+    def _common_outcome_length(self) -> int | None:
         result = None
         for outcome in self.outcomes():
-            if isinstance(outcome, tuple):
+            if isinstance(outcome, Sized):
                 if result is None:
                     result = len(outcome)
                 elif len(outcome) != result:
                     return None
         return result
 
-    def tuple_len(self) -> int | None:
-        """The common length of tuple outcomes.
+    def common_outcome_length(self) -> int | None:
+        """The common length of all outcomes.
 
-        This is `None` if outcomes are not tuples,
-        or if there are tuples of different lengths.
+        If outcomes have no lengths or different lengths, the result is `None`.
         """
-        return self._tuple_len
+        return self._common_outcome_length
 
     def guess_star(self, func: Callable) -> bool:
         """Guesses whether outcomes should be unpacked before giving them to the given callable.

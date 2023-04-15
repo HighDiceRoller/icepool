@@ -34,7 +34,7 @@ def make_headers(mapping: Population,
         if token == 'o':
             result.append('Outcome')
         elif token == '*o':
-            r = mapping.tuple_len()
+            r = mapping.common_outcome_length()
             if r is None:
                 result.append('Outcome')
             else:
@@ -63,7 +63,7 @@ def gather_cols(mapping: Population,
         if token == 'o':
             result.append([str(x) for x in mapping.outcomes()])
         elif token == '*o':
-            r = mapping.tuple_len()
+            r = mapping.common_outcome_length()
             if r is None:
                 result.append([str(x) for x in mapping.outcomes()])
             else:
