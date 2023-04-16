@@ -143,24 +143,11 @@ class Die(Population[T_co]):
 
                 Individual outcomes can each be one of the following:
 
-                * A simple single outcome, which must be hashable and totally
-                    orderable.
-                * A tuple. The elements must be valid outcomes.
-
-                    Tuple elements may be `Die`, in which case the Cartesian
-                    product is taken.
-
-                    `Again` is not valid inside tuple outcomes.
-
-                    `Reroll` causes the entire tuple to be rerolled.
-
-                    Operators on dice with tuple outcomes are performed
-                    element-wise. See `Die.unary_operator` and
-                    `Die.binary_operator` for details.
+                * An outcome, which must be hashable and totally orderable.
                 * A `Die`, which will be flattened into the result.
-                    The relative quantity to a `Die` input is shared by the
-                    `Die` as a whole. The denominator of the resulting `Die`
-                    will be multiplied if necessary.
+                    The quantity assigned to a `Die` is shared among its
+                    outcomes. The total denominator will be scaled up if
+                    necessary.
                 * `icepool.Reroll`, which will drop itself from consideration.
                 * EXPERIMENTAL: `icepool.Again`. See the main text for
                     explanation.

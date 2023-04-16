@@ -38,16 +38,7 @@ class Deck(Population[T_co]):
                 * A `Mapping` from outcomes to quantities.
 
                 Each outcome may be one of the following:
-                * A simple single outcome, which must be hashable and totally
-                    orderable.
-                * A tuple. The elements must be valid outcomes.
-
-                    `Again` is not valid inside tuple outcomes.
-
-                    `Reroll` causes the entire tuple to be rerolled.
-
-                    Tuple elements may be `Deck`, in which case the Cartesian
-                    product is taken.
+                * An outcome, which must be hashable and totally orderable.
                 * A `Deck`, which will be flattened into the result. If a
                     `times` is assigned to the `Deck`, the entire `Deck` will
                     be duplicated that many times.
