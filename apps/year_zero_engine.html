@@ -184,7 +184,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.25.4')
+                await micropip.install('icepool==0.28.0')
                 
                 import js
                 import pyodide
@@ -204,7 +204,7 @@
                             result = (1, 0, 0, 0, 0, 0)
                         else:
                             result = (2, 0, 0, 0, 0, 0)
-                        return result 
+                        return icepool.Vector(result) 
                     return icepool.d(sides).map(func)
                     
                 @cache
@@ -213,21 +213,21 @@
                     
                 @cache
                 def year_zero_die_push_always(sides):
-                    return year_zero_die_simple(sides).reroll([(0, 0)], depth=1)
+                    return year_zero_die_simple(sides).reroll([icepool.vectorize(0, 0)], depth=1)
                 
                 die_player = icepool.Die([])
                 die_opposition = icepool.Die([])
                 die_push = icepool.Die([])
                 
                 def calc_pool(prefix):
-                    result = icepool.Die([(0, 0, 0, 0, 0, 0)])
+                    result = icepool.Die([icepool.vectorize(0, 0, 0, 0, 0, 0)])
                     for die_size in possible_die_sizes:
                         count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
                         result += count @ year_zero_die(die_size)
                     return result
                     
                 def calc_pool_simple(prefix):
-                    result = icepool.Die([(0, 0)])
+                    result = icepool.Die([icepool.vectorize(0, 0)])
                     for die_size in possible_die_sizes:
                         count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
                         result += count @ year_zero_die_simple(die_size)
@@ -238,9 +238,9 @@
                     success, bane, r6, r8, r10, r12 = active
                     if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
-                        return success - target, 0
+                        return icepool.vectorize(success - target, 0)
 
-                    result = (success - target, bane)
+                    result = icepool.vectorize(success - target, bane)
                     result += r6 @ year_zero_die_simple(6)
                     result += r8 @ year_zero_die_simple(8)
                     result += r10 @ year_zero_die_simple(10)
@@ -252,11 +252,11 @@
                     success, bane, r6, r8, r10, r12 = active
                     if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
-                        return success - target, 0
+                        return icepool.vectorize(success - target, 0)
                     if success > target:
-                        return success - target, 0
+                        return icepool.vectorize(success - target, 0)
 
-                    result = (success - target, bane)
+                    result = icepool.vectorize(success - target, bane)
                     result += r6 @ year_zero_die_simple(6)
                     result += r8 @ year_zero_die_simple(8)
                     result += r10 @ year_zero_die_simple(10)
@@ -268,10 +268,10 @@
                     success, bane, r6, r8, r10, r12 = active
                     if success + r6 + r8 + r10 + r12 <= target:
                         # can't make it, so don't bother trying
-                        return success - target, 0
+                        return icepool.vectorize(success - target, 0)
                     if success > target or bane > 0:
-                        return success - target, 0
-                    result = (success - target, bane)
+                        return icepool.vectorize(success - target, 0)
+                    result = icepool.vectorize(success - target, bane)
                     result += r6 @ year_zero_die_simple(6)
                     result += r8 @ year_zero_die_simple(8)
                     result += r10 @ year_zero_die_simple(10)
@@ -305,7 +305,7 @@
             if push_strategy == 'never':
                 js.successChart.data.datasets[2].hidden = pyodide.ffi.to_js(True)
                 die_player = calc_pool_simple('p')
-                die_push = icepool.Die([(die_player.marginals[0] - die_opposition.marginals[0], 0)])
+                die_push = icepool.Die([icepool.vectorize(die_player.marginals[0] - die_opposition.marginals[0], 0)])
             elif push_strategy == 'fail_no_bane':
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
@@ -315,7 +315,7 @@
             else:
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_pool_always, die_player, die_opposition.marginals[0])
-            die_push = die_push.map(lambda s, b: (max(s, -1), b))
+            die_push = die_push.map(lambda s, b: icepool.vectorize(max(s, -1), b))
             `);
         }
 
@@ -332,7 +332,7 @@
             
             series0, series1, bane_count = icepool.align_range(series0, series1, bane_count)
             
-            if die_opposition.max_outcome() == (0, 0):
+            if die_opposition.max_outcome() == icepool.vectorize(0, 0):
                 js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((series0 > 0).mean() * 100.0)
                 js.document.getElementById('tieChance').innerHTML = 'n/a'
                 js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((series0 <= 0).mean() * 100.0)
