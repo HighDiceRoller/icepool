@@ -777,7 +777,7 @@ class Die(Population[T_co]):
 
         def map_final(outcome):
             if outcome in outcome_set:
-                return outcome + icepool.AgainExpression()
+                return outcome + icepool.Again
             else:
                 return outcome
 
