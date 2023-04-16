@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, d8, vectorize, Die
+from icepool import d6, d8, vectorize, Die, Vector
 
 
 def test_cartesian_product():
@@ -122,3 +122,11 @@ def test_vector_comparison():
     result = vectorize(d6, d6) > vectorize(0, 0)
     expected = Die([(True, True)], times=36)
     assert result == expected
+
+
+def test_vector_append():
+    assert Vector((1, 2)).append(3) == Vector((1, 2, 3))
+
+
+def test_vector_concatenate():
+    assert Vector((1, 2)).concatenate(range(2)) == Vector((1, 2, 0, 1))

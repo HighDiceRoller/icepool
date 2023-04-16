@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
+import itertools
 import math
 import operator
 from typing import Callable, Hashable, Iterable, Sequence, Type, cast, overload
@@ -322,6 +323,16 @@ class Vector(Hashable, Sequence[T_co]):
         if not isinstance(other, Vector):
             return True
         return self._data != other._data
+
+    # Sequence manipulation.
+
+    def append(self, other) -> 'Vector':
+        return Vector(self._data + (other,))
+
+    def concatenate(self, other: 'Iterable') -> 'Vector':
+        return Vector(itertools.chain(self, other))
+
+    # Strings.
 
     def __repr__(self) -> str:
         return type(self).__qualname__ + '(' + repr(self._data) + ')'
