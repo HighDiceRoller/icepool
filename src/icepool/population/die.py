@@ -32,7 +32,7 @@ def implicit_convert_to_die(
     """
     if isinstance(outcome, Die):
         return outcome
-    if isinstance(outcome, icepool.Again):
+    if isinstance(outcome, icepool.AgainExpression):
         raise TypeError('Again object cannot be implicitly converted to a Die.')
     return Die([outcome])
 
@@ -106,11 +106,11 @@ class Die(Population[T_co]):
         dice. Any other implicit conversions of arguments or operands to dice
         will be done with the default keyword arguments.
 
-        EXPERIMENTAL: Use `icepool.Again()` to roll the dice again, usually with
+        EXPERIMENTAL: Use `icepool.Again` to roll the dice again, usually with
         some modification. For example,
 
         ```
-        Die([1, 2, 3, 4, 5, 6 + Again()])
+        Die([1, 2, 3, 4, 5, 6 + Again])
         ```
 
         would be an exploding d6. Use the `again_depth` parameter to control
@@ -561,7 +561,7 @@ class Die(Population[T_co]):
     def map(
             self,
             repl:
-        'Callable[..., U | Die[U] | icepool.RerollType | icepool.Again] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.Again]',
+        'Callable[..., U | Die[U] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.AgainExpression]',
             /,
             *,
             star: bool | None = None,
@@ -777,7 +777,7 @@ class Die(Population[T_co]):
 
         def map_final(outcome):
             if outcome in outcome_set:
-                return outcome + icepool.Again()
+                return outcome + icepool.AgainExpression()
             else:
                 return outcome
 
@@ -1042,145 +1042,145 @@ class Die(Population[T_co]):
     # Binary operators.
 
     def __add__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.add)
 
     def __radd__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.add)
 
     def __sub__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.sub)
 
     def __rsub__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.sub)
 
     def __mul__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.mul)
 
     def __rmul__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.mul)
 
     def __truediv__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.truediv)
 
     def __rtruediv__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.truediv)
 
     def __floordiv__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.floordiv)
 
     def __rfloordiv__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.floordiv)
 
     def __pow__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.pow)
 
     def __rpow__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.pow)
 
     def __mod__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.mod)
 
     def __rmod__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.mod)
 
     def __lshift__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.lshift)
 
     def __rlshift__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.lshift)
 
     def __rshift__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.rshift)
 
     def __rrshift__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.rshift)
 
     def __and__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.and_)
 
     def __rand__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.and_)
 
     def __or__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.or_)
 
     def __ror__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.or_)
 
     def __xor__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.xor)
 
     def __rxor__(self, other) -> 'Die':
-        if isinstance(other, icepool.Again):
+        if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
         return other.binary_operator(self, operator.xor)

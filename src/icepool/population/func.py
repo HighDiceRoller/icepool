@@ -317,7 +317,7 @@ def iter_cartesian_product(
 
 def apply(
     func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -371,7 +371,7 @@ def apply(
 @overload
 def outcome_function(
         func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]',
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
         /) -> 'Callable[..., icepool.Die[T]]':
     ...
 
@@ -390,7 +390,7 @@ def outcome_function(
 @overload
 def outcome_function(
     func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None' = None,
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
     again_depth: int = 1,
@@ -401,7 +401,7 @@ def outcome_function(
 
 def outcome_function(
     func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again] | None' = None,
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
     again_depth: int = 1,
@@ -421,7 +421,7 @@ def outcome_function(
     @outcome_function
     def explode_six(x):
         if x == 6:
-            return 6 + Again()
+            return 6 + Again
         else:
             return x
 
@@ -434,7 +434,7 @@ def outcome_function(
     @outcome_function(again_depth=2)
     def explode_six(x):
         if x == 6:
-            return 6 + Again()
+            return 6 + Again
         else:
             return x
 
@@ -452,7 +452,7 @@ def outcome_function(
 
         def decorator(
             func:
-            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.Again]'
+            'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]'
         ) -> 'Callable[..., icepool.Die[T]]':
 
             return update_wrapper(

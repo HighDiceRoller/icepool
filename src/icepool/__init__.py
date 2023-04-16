@@ -39,7 +39,7 @@ Operation in specific cases:
 
 * When used with `Again`, only that stage is rerolled, not the entire `Again`
     tree.
-* To reroll with limited depth, use `Die.reroll()`, or `Again()` with no
+* To reroll with limited depth, use `Die.reroll()`, or `Again` with no
     modification.
 * When used with `MultisetEvaluator`, the entire evaluation is rerolled.
 """
@@ -56,7 +56,7 @@ from icepool.population.func import (d, __getattr__, coin, one_hot, iter_cartesi
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
 from icepool.collection.vector import tupleize, vectorize, Vector
-from icepool.population.again import Again
+from icepool.population.again import AgainExpression
 from icepool.population.die_with_truth import DieWithTruth
 
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
@@ -83,7 +83,7 @@ import icepool.typing as typing
 
 __all__ = [
     'd', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
-    'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
+    'vectorize', 'Vector', 'AgainExpression', 'CountsKeysView', 'CountsValuesView',
     'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
     'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',
     'commonize_denominator', 'reduce', 'accumulate', 'apply',

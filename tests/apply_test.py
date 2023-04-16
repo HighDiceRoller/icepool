@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, Pool, outcome_function, Again
+from icepool import d6, Pool, outcome_function, AgainExpression
 
 
 def test_apply_reroll():
@@ -65,7 +65,7 @@ def test_outcome_function():
     @outcome_function
     def explode_six(x):
         if x == 6:
-            return 6 + Again()
+            return 6 + AgainExpression()
         else:
             return x
 
@@ -74,7 +74,7 @@ def test_outcome_function():
     @outcome_function(again_depth=2)
     def explode_six(x):
         if x == 6:
-            return 6 + Again()
+            return 6 + AgainExpression()
         else:
             return x
 

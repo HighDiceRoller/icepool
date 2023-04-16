@@ -91,7 +91,7 @@ class Vector(Outcome, Sequence[T_co]):
                  *,
                  truth_value: bool | None = None) -> None:
         self._data = tuple(elements)
-        if any(isinstance(x, icepool.Again) for x in self._data):
+        if any(isinstance(x, icepool.AgainExpression) for x in self._data):
             raise TypeError('Again is not a valid element of Vector.')
         self._truth_value = truth_value
 
@@ -187,7 +187,7 @@ class Vector(Outcome, Sequence[T_co]):
         In this case, the result also has a truth value based on lexicographic
         ordering.
         """
-        if isinstance(other, (icepool.Population, icepool.Again)):
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
@@ -223,7 +223,7 @@ class Vector(Outcome, Sequence[T_co]):
         Comparators use a lexicographic ordering.
         This may change in the future.
         """
-        if isinstance(other, (icepool.Population, icepool.Again)):
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):

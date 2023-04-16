@@ -8,15 +8,15 @@ import operator
 from typing import Any, Callable, Mapping, Sequence
 
 
-class Again():
-    """A placeholder value used to indicate that the die should be rolled again.
+class AgainExpression():
+    """An expression indicating that the die should be rolled again, usually with some operation applied.
 
     This is designed to be used with the `Die()` constructor.
-    `Again` should not be fed to functions or methods other than `Die()`, but
-    it can be used with operators. Examples:
+    `AgainExpression`s should not be fed to functions or methods other than
+    `Die()`, but it can be used with operators. Examples:
 
-    * `Again()` + 6: Roll again and add 6.
-    * `Again()` + `Again()`: Roll again twice and sum.
+    * `Again` + 6: Roll again and add 6.
+    * `Again` + `Again`: Roll again twice and sum.
 
     The `again_depth` and `again_end` arguments to `Die()` affect how these
     arguments are processed.
@@ -24,19 +24,12 @@ class Again():
     If you want something more complex, use e.g. `Die.map()` instead.
     """
 
-    def __init__(self):
-        """Creates an `Again` placeholder from the given function and args. """
-        self._func = None
-        self._args = ()
-        self._truth_value = None
-
-    @classmethod
-    def _new_internal(cls,
-                      func: Callable | None = None,
-                      /,
-                      *args,
-                      truth_value: bool | None = None) -> 'Again':
-        """Extra arguments for implementing expressions containing Again.
+    def __init__(self,
+                 func: Callable | None = None,
+                 /,
+                 *args,
+                 truth_value: bool | None = None):
+        """Constructor.
 
         Any of the args may themselves be instances of `Again`. These are
         considered to be at the same level for purposes of `again_depth`.
@@ -50,14 +43,12 @@ class Again():
             truth_value: The truth value of the resulting object, if applicable.
                 You probably don't need to use this externally.
         """
-        self = super(Again, cls).__new__(cls)
         self._func = func
         self._args = args
         self._truth_value = truth_value
-        return self
 
     def _evaluate_arg(self, arg, die: 'icepool.Die'):
-        if isinstance(arg, Again):
+        if isinstance(arg, AgainExpression):
             return arg._evaluate(die)
         else:
             return arg
@@ -72,137 +63,131 @@ class Again():
 
     # Unary operators.
 
-    def __neg__(self) -> 'Again':
-        return Again._new_internal(operator.neg, self)
+    def __neg__(self) -> 'AgainExpression':
+        return AgainExpression(operator.neg, self)
 
-    def __pos__(self) -> 'Again':
-        return Again._new_internal(operator.pos, self)
+    def __pos__(self) -> 'AgainExpression':
+        return AgainExpression(operator.pos, self)
 
-    def __invert__(self) -> 'Again':
-        return Again._new_internal(operator.invert, self)
+    def __invert__(self) -> 'AgainExpression':
+        return AgainExpression(operator.invert, self)
 
-    def __abs__(self) -> 'Again':
-        return Again._new_internal(operator.abs, self)
+    def __abs__(self) -> 'AgainExpression':
+        return AgainExpression(operator.abs, self)
 
     # Binary operators.
 
-    def __add__(self, other) -> 'Again':
-        return Again._new_internal(operator.add, self, other)
+    def __add__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.add, self, other)
 
-    def __radd__(self, other) -> 'Again':
-        return Again._new_internal(operator.add, other, self)
+    def __radd__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.add, other, self)
 
-    def __sub__(self, other) -> 'Again':
-        return Again._new_internal(operator.sub, self, other)
+    def __sub__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.sub, self, other)
 
-    def __rsub__(self, other) -> 'Again':
-        return Again._new_internal(operator.sub, other, self)
+    def __rsub__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.sub, other, self)
 
-    def __mul__(self, other) -> 'Again':
-        return Again._new_internal(operator.mul, self, other)
+    def __mul__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.mul, self, other)
 
-    def __rmul__(self, other) -> 'Again':
-        return Again._new_internal(operator.mul, other, self)
+    def __rmul__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.mul, other, self)
 
-    def __truediv__(self, other) -> 'Again':
-        return Again._new_internal(operator.truediv, self, other)
+    def __truediv__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.truediv, self, other)
 
-    def __rtruediv__(self, other) -> 'Again':
-        return Again._new_internal(operator.truediv, other, self)
+    def __rtruediv__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.truediv, other, self)
 
-    def __floordiv__(self, other) -> 'Again':
-        return Again._new_internal(operator.floordiv, self, other)
+    def __floordiv__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.floordiv, self, other)
 
-    def __rfloordiv__(self, other) -> 'Again':
-        return Again._new_internal(operator.floordiv, other, self)
+    def __rfloordiv__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.floordiv, other, self)
 
-    def __pow__(self, other) -> 'Again':
-        return Again._new_internal(operator.pow, self, other)
+    def __pow__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.pow, self, other)
 
-    def __rpow__(self, other) -> 'Again':
-        return Again._new_internal(operator.pow, other, self)
+    def __rpow__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.pow, other, self)
 
-    def __mod__(self, other) -> 'Again':
-        return Again._new_internal(operator.mod, self, other)
+    def __mod__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.mod, self, other)
 
-    def __rmod__(self, other) -> 'Again':
-        return Again._new_internal(operator.mod, other, self)
+    def __rmod__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.mod, other, self)
 
-    def __lshift__(self, other) -> 'Again':
-        return Again._new_internal(operator.lshift, self, other)
+    def __lshift__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.lshift, self, other)
 
-    def __rlshift__(self, other) -> 'Again':
-        return Again._new_internal(operator.lshift, other, self)
+    def __rlshift__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.lshift, other, self)
 
-    def __rshift__(self, other) -> 'Again':
-        return Again._new_internal(operator.rshift, self, other)
+    def __rshift__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.rshift, self, other)
 
-    def __rrshift__(self, other) -> 'Again':
-        return Again._new_internal(operator.rshift, other, self)
+    def __rrshift__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.rshift, other, self)
 
-    def __and__(self, other) -> 'Again':
-        return Again._new_internal(operator.and_, self, other)
+    def __and__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.and_, self, other)
 
-    def __rand__(self, other) -> 'Again':
-        return Again._new_internal(operator.and_, other, self)
+    def __rand__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.and_, other, self)
 
-    def __or__(self, other) -> 'Again':
-        return Again._new_internal(operator.or_, self, other)
+    def __or__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.or_, self, other)
 
-    def __ror__(self, other) -> 'Again':
-        return Again._new_internal(operator.or_, other, self)
+    def __ror__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.or_, other, self)
 
-    def __xor__(self, other) -> 'Again':
-        return Again._new_internal(operator.xor, self, other)
+    def __xor__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.xor, self, other)
 
-    def __rxor__(self, other) -> 'Again':
-        return Again._new_internal(operator.xor, other, self)
+    def __rxor__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.xor, other, self)
 
-    def __matmul__(self, other) -> 'Again':
-        return Again._new_internal(operator.matmul, self, other)
+    def __matmul__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.matmul, self, other)
 
-    def __rmatmul__(self, other) -> 'Again':
-        return Again._new_internal(operator.matmul, other, self)
+    def __rmatmul__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.matmul, other, self)
 
-    def __lt__(self, other) -> 'Again':
-        return Again._new_internal(operator.lt, self, other)
+    def __lt__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.lt, self, other)
 
-    def __le__(self, other) -> 'Again':
-        return Again._new_internal(operator.le, self, other)
+    def __le__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.le, self, other)
 
-    def __gt__(self, other) -> 'Again':
-        return Again._new_internal(operator.gt, self, other)
+    def __gt__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.gt, self, other)
 
-    def __ge__(self, other) -> 'Again':
-        return Again._new_internal(operator.ge, self, other)
+    def __ge__(self, other) -> 'AgainExpression':
+        return AgainExpression(operator.ge, self, other)
 
     # Hashing and equality.
 
     # This returns a value with a truth value, but not a bool.
-    def __eq__(self, other) -> 'Again':  # type: ignore
-        if not isinstance(other, Again):
-            return Again._new_internal(operator.eq,
-                                       self,
-                                       other,
-                                       truth_value=False)
+    def __eq__(self, other) -> 'AgainExpression':  # type: ignore
+        if not isinstance(other, AgainExpression):
+            return AgainExpression(operator.eq, self, other, truth_value=False)
         truth_value = self._key_tuple == other._key_tuple
-        return Again._new_internal(operator.eq,
-                                   self,
-                                   other,
-                                   truth_value=truth_value)
+        return AgainExpression(operator.eq,
+                               self,
+                               other,
+                               truth_value=truth_value)
 
     # This returns a value with a truth value, but not a bool.
-    def __ne__(self, other) -> 'Again':  # type: ignore
-        if not isinstance(other, Again):
-            return Again._new_internal(operator.ne,
-                                       self,
-                                       other,
-                                       truth_value=True)
+    def __ne__(self, other) -> 'AgainExpression':  # type: ignore
+        if not isinstance(other, AgainExpression):
+            return AgainExpression(operator.ne, self, other, truth_value=True)
         truth_value = self._key_tuple != other._key_tuple
-        return Again._new_internal(operator.ne,
-                                   self,
-                                   other,
-                                   truth_value=truth_value)
+        return AgainExpression(operator.ne,
+                               self,
+                               other,
+                               truth_value=truth_value)
 
     def __bool__(self) -> bool:
         if self._truth_value is None:
@@ -233,7 +218,7 @@ def _contains_again_inner(outcome) -> bool:
         return False
     elif isinstance(outcome, Mapping):
         return any(_contains_again_inner(x) for x in outcome)
-    elif isinstance(outcome, icepool.Again):
+    elif isinstance(outcome, icepool.AgainExpression):
         return True
     else:
         return False
@@ -260,7 +245,7 @@ def _replace_agains_inner(outcome, die: 'icepool.Die'):
         return outcome
     elif isinstance(outcome, Mapping):
         return {_replace_agains_inner(k, die): v for k, v in outcome.items()}
-    elif isinstance(outcome, Again):
+    elif isinstance(outcome, AgainExpression):
         return outcome._evaluate(die)
     else:
         # tuple or simple arg that is not Again.
