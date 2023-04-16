@@ -8,9 +8,6 @@ from typing import Any, Callable, Hashable, Literal, Mapping, Protocol, Sequence
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
 
-K = TypeVar('K', bound=Hashable)
-"""A key type."""
-
 S = TypeVar('S', bound='Sequence')
 """A sequence type."""
 
