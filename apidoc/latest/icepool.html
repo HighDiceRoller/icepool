@@ -1820,7 +1820,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-778"><a href="#Die-778"><span class="linenos"> 778</span></a>
 </span><span id="Die-779"><a href="#Die-779"><span class="linenos"> 779</span></a>        <span class="k">def</span> <span class="nf">map_final</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
 </span><span id="Die-780"><a href="#Die-780"><span class="linenos"> 780</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">outcome_set</span><span class="p">:</span>
-</span><span id="Die-781"><a href="#Die-781"><span class="linenos"> 781</span></a>                <span class="k">return</span> <span class="n">outcome</span> <span class="o">+</span> <span class="n">icepool</span><span class="o">.</span><span class="n">AgainExpression</span><span class="p">()</span>
+</span><span id="Die-781"><a href="#Die-781"><span class="linenos"> 781</span></a>                <span class="k">return</span> <span class="n">outcome</span> <span class="o">+</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Again</span>
 </span><span id="Die-782"><a href="#Die-782"><span class="linenos"> 782</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die-783"><a href="#Die-783"><span class="linenos"> 783</span></a>                <span class="k">return</span> <span class="n">outcome</span>
 </span><span id="Die-784"><a href="#Die-784"><span class="linenos"> 784</span></a>
@@ -3690,7 +3690,7 @@ this many times.</li>
 </span><span id="Die.explode-778"><a href="#Die.explode-778"><span class="linenos">778</span></a>
 </span><span id="Die.explode-779"><a href="#Die.explode-779"><span class="linenos">779</span></a>        <span class="k">def</span> <span class="nf">map_final</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
 </span><span id="Die.explode-780"><a href="#Die.explode-780"><span class="linenos">780</span></a>            <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">outcome_set</span><span class="p">:</span>
-</span><span id="Die.explode-781"><a href="#Die.explode-781"><span class="linenos">781</span></a>                <span class="k">return</span> <span class="n">outcome</span> <span class="o">+</span> <span class="n">icepool</span><span class="o">.</span><span class="n">AgainExpression</span><span class="p">()</span>
+</span><span id="Die.explode-781"><a href="#Die.explode-781"><span class="linenos">781</span></a>                <span class="k">return</span> <span class="n">outcome</span> <span class="o">+</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Again</span>
 </span><span id="Die.explode-782"><a href="#Die.explode-782"><span class="linenos">782</span></a>            <span class="k">else</span><span class="p">:</span>
 </span><span id="Die.explode-783"><a href="#Die.explode-783"><span class="linenos">783</span></a>                <span class="k">return</span> <span class="n">outcome</span>
 </span><span id="Die.explode-784"><a href="#Die.explode-784"><span class="linenos">784</span></a>
