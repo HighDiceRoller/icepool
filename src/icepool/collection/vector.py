@@ -50,6 +50,13 @@ def tupleize(
 ) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]]':
     """Returns the Cartesian product of the arguments as `tuple`s or a `Population` thereof.
 
+    For example:
+    * `tupleize(1, 2)` would produce `(1, 2)`.
+    * `tupleize(d6, 0)` would produce a `Die` with outcomes `(1, 0)`, `(2, 0)`,
+        ... `(6, 0)`.
+    * `tupleize(d6, d6)` would produce a `Die` with outcomes `(1, 1)`, `(1, 2)`,
+        ... `(6, 5)`, `(6, 6)`.
+
     If `Population`s are provided, they must all be `Die` or all `Deck` and not
     a mixture of the two.
 
@@ -66,6 +73,13 @@ def vectorize(
     *args: 'T | icepool.Population[T]'
 ) -> 'Vector[T] | icepool.Population[Vector[T]]':
     """Returns the Cartesian product of the arguments as `Vector`s or a `Population` thereof.
+
+    For example:
+    * `vectorize(1, 2)` would produce `Vector(1, 2)`.
+    * `vectorize(d6, 0)` would produce a `Die` with outcomes `Vector(1, 0)`,
+        `Vector(2, 0)`, ... `Vector(6, 0)`.
+    * `vectorize(d6, d6)` would produce a `Die` with outcomes `Vector(1, 1)`,
+        `Vector(1, 2)`, ... `Vector(6, 5)`, `Vector(6, 6)`.
 
     If `Population`s are provided, they must all be `Die` or all `Deck` and not
     a mixture of the two.
@@ -207,22 +221,7 @@ class Vector(Outcome, Sequence[T_co]):
 
     def reverse_binary_operator(self, other, op: Callable[..., U], *args,
                                 **kwargs) -> 'Vector[U]':
-        """Binary operators on `Vector` are applied elementwise.
-
-        If the other operand is also a `Vector`, the operator is applied to each
-        pair of elements from `self` and `other`. Both must have the same
-        length.
-
-        Otherwise the other operand is broadcast to each element of `self`.
-
-        This is used for the standard binary operators
-        `+, -, *, /, //, %, **, <<, >>, &, |, ^`.
-
-        `@` is not included due to its different meaning in `Die`.
-
-        Comparators use a lexicographic ordering.
-        This may change in the future.
-        """
+        """Reverse version of `binary_operator()`."""
         if isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
