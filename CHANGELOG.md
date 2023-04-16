@@ -1,3 +1,19 @@
+## v0.28.0
+
+Retired implicit elementwise operations on tuples. This is now handled by a new explicit `Vector` container.
+`cartesian_product()` is replaced by two new functions: `tupleize()` and `vectorize()`.
+These compute the Cartesian product and produce a `tuple` or `Vector` respectively (or a die/deck thereof).
+
+The `Again` symbol is now used without parentheses. The name of the underlying type is now `AgainExpression`.
+
+`die.zero()` now multiplies all outcomes by `0` to determine the zero-outcome rather than using the default constructor.
+This allows it to work with `Vector`'s elementwise operations while still producing the expected result for
+tuples, strings, etc.
+
+Retired the linear algorithm for comparators for `Die`. While the quadratic algorithm is slower, it allows for non-bool outputs.
+
+`die.tuple_len()` renamed to `common_outcome_length`. Now applies to all sized outcome types.
+
 ## v0.27.1
 
 * Counts type `Qs` is now invariant with more detailed typing in `Deal`.
