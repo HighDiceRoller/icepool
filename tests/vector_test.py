@@ -1,38 +1,32 @@
 import icepool
 import pytest
 
-from icepool import d6, d8, cartesian_product, Die
+from icepool import d6, d8, vectorize, Die
 
 
 def test_cartesian_product():
-    result = icepool.cartesian_product(d6, d6)
+    result = icepool.vectorize(d6, d6)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))
     assert result_sum.equals(2 @ icepool.d6)
 
 
-def test_cartesian_product_constructor():
-    result = icepool.Die([(d6, d6)])
-    expected = icepool.cartesian_product(d6, d6)
-    assert result == expected
-
-
 def test_cartesian_product_cast():
-    result = icepool.cartesian_product(d6, 2)
+    result = icepool.vectorize(d6, 2)
     assert result.covariance(0, 1) == 0.0
     result_sum = result.map(lambda x: sum(x))
     assert result_sum.equals(icepool.d6 + 2)
 
 
 def test_vector_add():
-    result = icepool.cartesian_product(d8, 1) + icepool.cartesian_product(0, d6)
-    expected = icepool.cartesian_product(d8, d6 + 1)
+    result = icepool.vectorize(d8, 1) + icepool.vectorize(0, d6)
+    expected = icepool.vectorize(d8, d6 + 1)
     assert result.equals(expected)
 
 
 def test_vector_matmul():
-    result = 2 @ icepool.cartesian_product(d6, d8)
-    expected = icepool.cartesian_product(2 @ d6, 2 @ d8)
+    result = 2 @ icepool.vectorize(d6, d8)
+    expected = icepool.vectorize(2 @ d6, 2 @ d8)
     assert result.equals(expected)
 
 
@@ -51,18 +45,18 @@ def test_nested_binary_elementwise():
 
 
 def test_binary_op_mismatch_outcome_len():
-    with pytest.raises(ValueError):
-        result = icepool.cartesian_product(d6, d8) + (1, 2, 3)
+    with pytest.raises(IndexError):
+        result = icepool.vectorize(d6, d8) + icepool.vectorize(1, 2, 3)
 
 
 def test_map_star():
-    result = icepool.cartesian_product(d6, d6).map(lambda a, b: a + b)
+    result = icepool.vectorize(d6, d6).map(lambda a, b: a + b)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
 
 
 def test_reroll_star():
-    result = icepool.cartesian_product(d6, d6)
+    result = icepool.vectorize(d6, d6)
     result = result.reroll(lambda a, b: a == 6 and b == 6)
     result = result.map(lambda a, b: a + b)
     expected = (2 @ icepool.d6).reroll({12})
@@ -70,7 +64,7 @@ def test_reroll_star():
 
 
 def test_filter_star():
-    result = icepool.cartesian_product(d6, d6)
+    result = icepool.vectorize(d6, d6)
     result = result.filter(lambda a, b: a == 6 and b == 6)
     result = result.map(lambda a, b: a + b)
     expected = (2 @ icepool.d6).filter({12})
@@ -78,14 +72,14 @@ def test_filter_star():
 
 
 def test_explode_star():
-    base = icepool.cartesian_product(d6, d6)
+    base = icepool.vectorize(d6, d6)
     result = base.explode(lambda a, b: a == 6 and b == 6)
     expected = base.explode()
     assert result.equals(expected)
 
 
 def test_unpack_marginals():
-    base = icepool.cartesian_product(d6, d6)
+    base = icepool.vectorize(d6, d6)
     a, b = base.marginals
     assert a == b
     assert a.simplify() == icepool.d6
@@ -109,18 +103,19 @@ def test_one_hot():
 
 
 def test_vector_scalar_mult():
-    result = cartesian_product(d6, d8) * 2
-    expected = cartesian_product(d6 * 2, d8 * 2)
+    result = vectorize(d6, d8) * 2
+    expected = vectorize(d6 * 2, d8 * 2)
     assert result == expected
 
 
 def test_pool_vector_sum():
-    result = cartesian_product(d6, d6).pool(2).sum()
-    expected = cartesian_product(2 @ d6, 2 @ d6)
+    result = vectorize(d6, d6).pool(2).sum()
+    expected = vectorize(2 @ d6, 2 @ d6)
     assert result == expected
 
 
 def test_vector_comparison():
-    result = cartesian_product(d6, d6) > cartesian_product(0, 0)
+    pytest.skip('Not sure what to do with vector comparisons yet.')
+    result = vectorize(d6, d6) > vectorize(0, 0)
     expected = Die([(True, True)], times=36)
     assert result == expected

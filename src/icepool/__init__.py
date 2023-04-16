@@ -47,15 +47,15 @@ Operation in specific cases:
 # Expose certain names at top-level.
 
 import icepool.population.func
-from icepool.population.func import (d, __getattr__, coin, one_hot,
-                                     cartesian_product, from_cumulative,
+from icepool.population.func import (d, __getattr__, coin, one_hot, iter_cartesian_product,
+                                     from_cumulative,
                                      from_rv, min_outcome, max_outcome, align,
                                      align_range, commonize_denominator, reduce,
                                      accumulate, apply, outcome_function)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
-from icepool.collection.vector import Vector
+from icepool.collection.vector import tupleize, vectorize, Vector
 from icepool.population.again import Again
 from icepool.population.die_with_truth import DieWithTruth
 
@@ -82,12 +82,12 @@ import icepool.evaluator as evaluator
 import icepool.typing as typing
 
 __all__ = [
-    'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
-    'Vector', 'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
-    'from_cumulative', 'from_rv', 'lowest', 'highest', 'middle', 'min_outcome',
-    'max_outcome', 'align', 'align_range', 'commonize_denominator', 'reduce',
-    'accumulate', 'apply', 'outcome_function', 'Reroll', 'RerollType', 'Pool',
-    'standard_pool', 'MultisetGenerator', 'Alignment', 'MultisetExpression',
-    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'typing',
-    'evaluator'
+    'd', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
+    'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
+    'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
+    'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',
+    'commonize_denominator', 'reduce', 'accumulate', 'apply',
+    'outcome_function', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
+    'MultisetGenerator', 'Alignment', 'MultisetExpression', 'MultisetEvaluator',
+    'Order', 'Deck', 'Deal', 'multiset_function', 'typing', 'evaluator'
 ]

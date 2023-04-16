@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import multiset_function, d6, cartesian_product, MultisetExpression
+from icepool import multiset_function, d6, MultisetExpression
 
 
 def test_single_expression():

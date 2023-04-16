@@ -28,9 +28,7 @@ class Deck(Population[T_co]):
 
     def __new__(cls,
                 outcomes: Sequence | Mapping[Any, int],
-                times: Sequence[int] | int = 1,
-                *,
-                outcome_type: Type[T_co] | None = None) -> 'Deck[T_co]':
+                times: Sequence[int] | int = 1) -> 'Deck[T_co]':
         """Constructor for a `Deck`.
 
         Args:
@@ -69,12 +67,8 @@ class Deck(Population[T_co]):
                 outcomes[0], Deck):
             return outcomes[0]
 
-        data: Mapping[Any, int] = icepool.creation_args.expand_args_for_deck(
+        counts: Counts[T_co] = icepool.creation_args.expand_args_for_deck(
             outcomes, times)
-
-        counts: Counts[T_co] = Counts(
-            (icepool.creation_args.convert_outcome(k, outcome_type), v)
-            for k, v in data.items())
 
         return Deck._new_raw(counts)
 

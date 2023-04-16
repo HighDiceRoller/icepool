@@ -54,18 +54,18 @@ def itemize(keys: Mapping[Any, int] | Sequence,
 
 def expand_args_for_die(
         args: 'Sequence[T | icepool.Die[T] | icepool.RerollType]',
-        times: Sequence[int]) -> Mapping[T, int]:
+        times: Sequence[int]) -> Counts[T]:
 
     subdatas = [expand_arg(arg) for arg in args]
-    return merge_weights_lcm(subdatas, times)
+    return Counts(merge_weights_lcm(subdatas, times).items())
 
 
 def expand_args_for_deck(
         args: 'Sequence[T | icepool.Deck[T] | icepool.RerollType]',
-        times: Sequence[int]) -> Mapping[T, int]:
+        times: Sequence[int]) -> Counts[T]:
 
     subdatas = [expand_arg(arg) for arg in args]
-    return merge_duplicates(subdatas, times)
+    return Counts(merge_duplicates(subdatas, times).items())
 
 
 def expand_arg(
@@ -118,14 +118,3 @@ def merge_duplicates(subdatas: Sequence[Mapping[T, int]],
             data[outcome] += dup * subdup
 
     return data
-
-def convert_outcome(outcome, outcome_type: Type | None):
-    if outcome_type is not None:
-        if isinstance(outcome, outcome_type):
-            return outcome
-        else:
-            return outcome_type(outcome)  # type: ignore
-    elif isinstance(outcome, tuple):
-        return Vector(outcome)
-    else:
-        return outcome

@@ -11,6 +11,9 @@ if TYPE_CHECKING:
 K = TypeVar('K', bound=Hashable)
 """A key type."""
 
+S = TypeVar('S', bound='Sequence')
+"""A sequence type."""
+
 T = TypeVar('T', bound='Outcome')
 """An outcome type."""
 
@@ -71,7 +74,6 @@ class Outcome(Hashable, Protocol[T_contra]):
 
     def __lt__(self, other: T_contra) -> bool:
         ...
-
 
 def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.

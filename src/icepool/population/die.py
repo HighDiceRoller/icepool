@@ -21,37 +21,20 @@ import operator
 from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Type, cast, overload
 
 
-def is_bare_outcome(outcome) -> bool:
-    """Returns `True` iff the outcome is not a `Mapping` or `Collection` of a type that holds multiple outcomes.
-
-    Currently product tuples are allowed.
-    """
-    if isinstance(outcome, Mapping):
-        return False
-    if isinstance(outcome,
-                  Collection) and not isinstance(outcome, (str, bytes, tuple)):
-        return False
-    return True
-
-
 def implicit_convert_to_die(
         outcome: T_co | 'Die[T_co]' | icepool.RerollType) -> 'Die[T_co]':
     """Converts a single outcome to a `Die` that always rolls that outcome.
 
-    If the outcome is already a Die, it is returned as-is (even if it has
+    If the outcome is already a `Die`, it is returned as-is (even if it has
     multiple outcomes).
 
     Raises:
-        `TypeError` if `Again` or multiple outcomes are given.
+        `TypeError` if `Again` is given.
     """
     if isinstance(outcome, Die):
         return outcome
     if isinstance(outcome, icepool.Again):
         raise TypeError('Again object cannot be implicitly converted to a Die.')
-    if not is_bare_outcome(outcome):
-        raise TypeError(
-            'Only single outcomes may be implicitly converted to a Die. '
-            'Explicitly construct a Die for multiple outcomes.')
     return Die([outcome])
 
 
@@ -92,7 +75,6 @@ class Die(Population[T_co]):
         outcomes: Sequence | Mapping[Any, int],
         times: Sequence[int] | int = 1,
         *,
-        outcome_type: Type[T_co] | None = None,
         again_depth: int = 1,
         again_end: 'Outcome | Die | icepool.RerollType | None' = None
     ) -> 'Die[T_co]':
@@ -199,7 +181,6 @@ class Die(Population[T_co]):
                 # Create a test die with `Again`s removed,
                 # then find the zero.
                 test: Die[T_co] = Die(outcomes,
-                                      outcome_type=outcome_type,
                                       again_depth=0,
                                       again_end=icepool.Reroll)
                 if len(test) == 0:
@@ -211,6 +192,7 @@ class Die(Population[T_co]):
                 again_end = implicit_convert_to_die(again_end)
                 if icepool.population.again.contains_again(again_end):
                     raise ValueError('again_end cannot itself contain Again.')
+
             if again_depth == 0:
                 # Base case.
                 outcomes = icepool.population.again.replace_agains(
@@ -218,15 +200,10 @@ class Die(Population[T_co]):
             else:
                 tail: Die[T_co] = Die(outcomes,
                                       times,
-                                      outcome_type=outcome_type,
                                       again_depth=0,
                                       again_end=again_end)
                 for _ in range(again_depth):
-                    tail = Die(outcomes,
-                               times,
-                               outcome_type=outcome_type,
-                               again_depth=0,
-                               again_end=tail)
+                    tail = Die(outcomes, times, again_depth=0, again_end=tail)
                 return tail
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
@@ -238,12 +215,8 @@ class Die(Population[T_co]):
                 outcomes[0], Die):
             return outcomes[0]
 
-        data: Mapping[Any, int] = icepool.creation_args.expand_args_for_die(
+        counts: Counts[T_co] = icepool.creation_args.expand_args_for_die(
             outcomes, times)
-
-        counts: Counts[T_co] = Counts(
-            (icepool.creation_args.convert_outcome(k, outcome_type), v)
-            for k, v in data.items())
 
         return Die._new_raw(counts)
 
@@ -754,7 +727,7 @@ class Die(Population[T_co]):
                     outcome, next_outcome):
                 return outcome, steps
             else:
-                return icepool.cartesian_product(next_outcome, steps + 1)
+                return icepool.tupleize(next_outcome, steps + 1)
 
         for _ in range(repeat):
             next_result: 'Die[tuple[U, int]]' = icepool.apply(

@@ -1,10 +1,82 @@
 __docformat__ = 'google'
 
+import icepool
+
 import math
 import operator
-from typing import Callable, Hashable, Iterable, Sequence, overload
+from typing import Callable, Hashable, Iterable, Sequence, Type, cast, overload
 
-from icepool.typing import U, T_co
+from icepool.typing import Outcome, S, T, T_co, U
+
+
+# Typing: there is currently no way to intersect a type bound, and Protocol
+# can't be used with Sequence.
+def cartesian_product(
+        *args: 'Outcome | icepool.Population',
+        outcome_type: Type[S]) -> 'S | icepool.Population[S]':  #type: ignore
+    """Computes the Cartesian product of the arguments as a sequence, or a `Population` thereof.
+
+    If `Population`s are provided, they must all be `Die` or all `Deck` and not
+    a mixture of the two.
+
+    Returns:
+        If none of the outcomes is a `Population`, the result is a sequence
+        with one element per argument. Otherwise, the result is a `Population`
+        of the same type as the input `Population`, and the outcomes are
+        sequences with one element per argument.
+    """
+    population_type = None
+    for arg in args:
+        if isinstance(arg, icepool.Population):
+            if population_type is None:
+                population_type = arg._new_type
+            elif population_type != arg._new_type:
+                raise TypeError(
+                    'Arguments to vector() of type Population must all be Die or all be Deck, not a mixture of the two.'
+                )
+
+    if population_type is None:
+        return outcome_type(args)  # type: ignore
+    else:
+        data = {}
+        for outcomes, final_quantity in icepool.iter_cartesian_product(*args):
+            data[outcome_type(outcomes)] = final_quantity  # type: ignore
+        return population_type(data)
+
+
+def tupleize(
+    *args: 'T | icepool.Population[T]'
+) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]]':
+    """Returns the Cartesian product of the arguments as `tuple`s or a `Population` thereof.
+
+    If `Population`s are provided, they must all be `Die` or all `Deck` and not
+    a mixture of the two.
+
+    Returns:
+        If none of the outcomes is a `Population`, the result is a `tuple`
+        with one element per argument. Otherwise, the result is a `Population`
+        of the same type as the input `Population`, and the outcomes are
+        `tuple`s with one element per argument.
+    """
+    return cartesian_product(*args, outcome_type=tuple)
+
+
+def vectorize(
+    *args: 'T | icepool.Population[T]'
+) -> 'Vector[T] | icepool.Population[Vector[T]]':
+    """Returns the Cartesian product of the arguments as `Vector`s or a `Population` thereof.
+
+    If `Population`s are provided, they must all be `Die` or all `Deck` and not
+    a mixture of the two.
+
+    Returns:
+        If none of the outcomes is a `Population`, the result is a `Vector`
+        with one element per argument. Otherwise, the result is a `Population`
+        of the same type as the input `Population`, and the outcomes are
+        `Vector`s with one element per argument.
+    """
+    return cartesian_product(*args, outcome_type=Vector)
+
 
 class Vector(Hashable, Sequence[T_co]):
     """Immutable tuple-like class that applies most operators elementwise.
@@ -15,6 +87,8 @@ class Vector(Hashable, Sequence[T_co]):
 
     def __init__(self, elements: Iterable[T_co]) -> None:
         self._data = tuple(elements)
+        if any(isinstance(x, icepool.Again) for x in self._data):
+            raise TypeError('Again is not a valid element of Vector.')
 
     def __hash__(self) -> int:
         return hash((Vector, self._data))
@@ -23,10 +97,12 @@ class Vector(Hashable, Sequence[T_co]):
         return len(self._data)
 
     @overload
-    def __getitem__(self, index: int) -> T_co: ...
+    def __getitem__(self, index: int) -> T_co:
+        ...
 
     @overload
-    def __getitem__(self, index: slice) -> 'Vector[T_co]': ...
+    def __getitem__(self, index: slice) -> 'Vector[T_co]':
+        ...
 
     def __getitem__(self, index: int | slice) -> 'T_co | Vector[T_co]':
         if isinstance(index, int):
@@ -36,7 +112,8 @@ class Vector(Hashable, Sequence[T_co]):
 
     # Unary operators.
 
-    def unary_operator(self, op: Callable[..., U], *args, **kwargs)-> 'Vector[U]':
+    def unary_operator(self, op: Callable[..., U], *args,
+                       **kwargs) -> 'Vector[U]':
         """Unary operators on `Vector` are applied elementwise.
 
         This is used for the standard unary operators
@@ -98,16 +175,21 @@ class Vector(Hashable, Sequence[T_co]):
         Comparators use a lexicographic ordering instead.
         This may change in the future.
         """
+        if isinstance(other, (icepool.Population, icepool.Again)):
+            return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
-                return Vector(op(x, y, *args, **kwargs) for x, y in zip(self, other))
+                return Vector(
+                    op(x, y, *args, **kwargs) for x, y in zip(self, other))
             else:
-                raise IndexError('Binary operators on Vectors are only valid if both are the same length.')
+                raise IndexError(
+                    'Binary operators on Vectors are only valid if both are the same length.'
+                )
         else:
             return Vector(op(x, other, *args, **kwargs) for x in self)
 
     def reverse_binary_operator(self, other, op: Callable[..., U], *args,
-                        **kwargs) -> 'Vector[U]':
+                                **kwargs) -> 'Vector[U]':
         """Binary operators on `Vector` are applied elementwise.
 
         If the other operand is also a `Vector`, the operator is applied to each
@@ -124,11 +206,16 @@ class Vector(Hashable, Sequence[T_co]):
         Comparators use a lexicographic ordering.
         This may change in the future.
         """
+        if isinstance(other, (icepool.Population, icepool.Again)):
+            return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
-                return Vector(op(y, x, *args, **kwargs) for x, y in zip(self, other))
+                return Vector(
+                    op(y, x, *args, **kwargs) for x, y in zip(self, other))
             else:
-                raise IndexError('Binary operators on Vectors are only valid if both are the same length.')
+                raise IndexError(
+                    'Binary operators on Vectors are only valid if both are the same length.'
+                )
         else:
             return Vector(op(other, x, *args, **kwargs) for x in self)
 
@@ -240,4 +327,4 @@ class Vector(Hashable, Sequence[T_co]):
         return type(self).__qualname__ + '(' + repr(self._data) + ')'
 
     def __str__(self) -> str:
-        return '<' + ', '.join(str(x) for x in self._data) + '>'
+        return type(self).__qualname__ + '(' + str(self._data) + ')'

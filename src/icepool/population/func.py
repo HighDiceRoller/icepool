@@ -74,15 +74,6 @@ def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':
     return icepool.Die(data)
 
 
-def cartesian_product(*dice: 'icepool.Die | Outcome') -> 'icepool.Die[tuple]':
-    """Produces a `Die` whose outcomes are tuples of the outcomes of each of the inputs.
-
-    E.g. `outer_product(d6, d6)` would produce tuples
-    `(1, 1), (1, 2), ... (6, 6)`.
-    """
-    return apply(lambda *outcomes: outcomes, *dice)
-
-
 def from_cumulative(outcomes: Sequence[T],
                     cumulative: 'Sequence[int] | Sequence[icepool.Die[bool]]',
                     *,
@@ -299,7 +290,7 @@ def accumulate(
 
 
 def iter_cartesian_product(
-    *args: 'Outcome | icepool.Die | icepool.MultisetExpression'
+    *args: 'Outcome | icepool.Population | icepool.MultisetExpression'
 ) -> Iterator[tuple[tuple, int]]:
     """Yields the independent joint distribution of the arguments.
 
@@ -312,7 +303,7 @@ def iter_cartesian_product(
     """
 
     def arg_items(arg) -> Sequence[tuple[Any, int]]:
-        if isinstance(arg, icepool.Die):
+        if isinstance(arg, icepool.Population):
             return arg.items()
         elif isinstance(arg, icepool.MultisetExpression):
             if arg._free_arity() > 0:

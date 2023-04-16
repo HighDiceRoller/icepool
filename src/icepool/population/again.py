@@ -220,11 +220,7 @@ class Again():
 
 
 def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
-    """Returns True iff the outcome (recursively) contains any instances of Again.
-
-    Raises:
-        TypeError if Again is nested inside a tuple.
-    """
+    """Returns True iff the outcome (recursively) contains any instances of Again."""
     if isinstance(outcomes, icepool.Die):
         # Dice should already have flattened out any Agains.
         return False
@@ -239,10 +235,6 @@ def _contains_again_inner(outcome) -> bool:
         return any(_contains_again_inner(x) for x in outcome)
     elif isinstance(outcome, icepool.Again):
         return True
-    elif isinstance(outcome, tuple):
-        if any(_contains_again_inner(x) for x in outcome):
-            raise TypeError('tuple outcomes cannot contain Again objects.')
-        return False
     else:
         return False
 
