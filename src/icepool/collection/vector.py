@@ -79,17 +79,21 @@ def vectorize(
     return cartesian_product(*args, outcome_type=Vector)
 
 
-class Vector(Hashable, Sequence[T_co]):
+class Vector(Outcome, Sequence[T_co]):
     """Immutable tuple-like class that applies most operators elementwise.
 
     May become a variadic generic type in the future.
     """
     _data: tuple[T_co, ...]
 
-    def __init__(self, elements: Iterable[T_co]) -> None:
+    def __init__(self,
+                 elements: Iterable[T_co],
+                 *,
+                 truth_value: bool | None = None) -> None:
         self._data = tuple(elements)
         if any(isinstance(x, icepool.Again) for x in self._data):
             raise TypeError('Again is not a valid element of Vector.')
+        self._truth_value = truth_value
 
     def __hash__(self) -> int:
         return hash((Vector, self._data))
@@ -158,7 +162,11 @@ class Vector(Hashable, Sequence[T_co]):
 
     # Binary operators.
 
-    def binary_operator(self, other, op: Callable[..., U], *args,
+    def binary_operator(self,
+                        other,
+                        op: Callable[..., U],
+                        *args,
+                        compare_for_truth: bool = False,
                         **kwargs) -> 'Vector[U]':
         """Binary operators on `Vector` are applied elementwise.
 
@@ -173,21 +181,29 @@ class Vector(Hashable, Sequence[T_co]):
 
         `@` is not included due to its different meaning in `Die`.
 
-        Comparators use a lexicographic ordering instead.
-        This may change in the future.
+        This is also used for the comparators
+        `<, <=, >, >=, ==, !=`.
+
+        In this case, the result also has a truth value based on lexicographic
+        ordering.
         """
         if isinstance(other, (icepool.Population, icepool.Again)):
             return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
+                if compare_for_truth:
+                    truth_value = cast(bool, op(self._data, other._data))
+                else:
+                    truth_value = None
                 return Vector(
-                    op(x, y, *args, **kwargs) for x, y in zip(self, other))
+                    (op(x, y, *args, **kwargs) for x, y in zip(self, other)),
+                    truth_value=truth_value)
             else:
                 raise IndexError(
                     'Binary operators on Vectors are only valid if both are the same length.'
                 )
         else:
-            return Vector(op(x, other, *args, **kwargs) for x in self)
+            return Vector((op(x, other, *args, **kwargs) for x in self))
 
     def reverse_binary_operator(self, other, op: Callable[..., U], *args,
                                 **kwargs) -> 'Vector[U]':
@@ -293,36 +309,44 @@ class Vector(Hashable, Sequence[T_co]):
         return self.reverse_binary_operator(other, operator.xor)
 
     # Comparators.
+    # These returns a value with a truth value, but not a bool.
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other) -> 'Vector':  # type: ignore
         if not isinstance(other, Vector):
             return NotImplemented
-        return self._data < other._data
+        return self.binary_operator(other, operator.lt, compare_for_truth=True)
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other) -> 'Vector':  # type: ignore
         if not isinstance(other, Vector):
             return NotImplemented
-        return self._data <= other._data
+        return self.binary_operator(other, operator.le, compare_for_truth=True)
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other) -> 'Vector':  # type: ignore
         if not isinstance(other, Vector):
             return NotImplemented
-        return self._data > other._data
+        return self.binary_operator(other, operator.gt, compare_for_truth=True)
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other) -> 'Vector':  # type: ignore
         if not isinstance(other, Vector):
             return NotImplemented
-        return self._data >= other._data
+        return self.binary_operator(other, operator.ge, compare_for_truth=True)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> 'Vector | bool':  # type: ignore
         if not isinstance(other, Vector):
             return False
-        return self._data == other._data
+        return self.binary_operator(other, operator.eq, compare_for_truth=True)
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other) -> 'Vector | bool':  # type: ignore
         if not isinstance(other, Vector):
             return True
-        return self._data != other._data
+        return self.binary_operator(other, operator.ne, compare_for_truth=True)
+
+    def __bool__(self) -> bool:
+        if self._truth_value is None:
+            raise TypeError(
+                'Vector only has a truth value if it is the result of a comparison operator.'
+            )
+        return self._truth_value
 
     # Sequence manipulation.
 

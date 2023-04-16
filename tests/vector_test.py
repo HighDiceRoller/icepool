@@ -118,9 +118,8 @@ def test_pool_vector_sum():
 
 
 def test_vector_comparison():
-    pytest.skip('Not sure what to do with vector comparisons yet.')
     result = vectorize(d6, d6) > vectorize(0, 0)
-    expected = Die([(True, True)], times=36)
+    expected = Die([vectorize(True, True)], times=36)
     assert result == expected
 
 
