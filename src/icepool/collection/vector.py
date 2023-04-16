@@ -214,7 +214,7 @@ class Vector(Outcome, Sequence[T_co]):
                     truth_value=truth_value)
             else:
                 raise IndexError(
-                    'Binary operators on Vectors are only valid if both are the same length.'
+                    f'Binary operators on Vectors are only valid if both are the same length ({len(self)} vs. {len(other)}).'
                 )
         else:
             return Vector((op(x, other, *args, **kwargs) for x in self))
@@ -230,7 +230,7 @@ class Vector(Outcome, Sequence[T_co]):
                     op(y, x, *args, **kwargs) for x, y in zip(self, other))
             else:
                 raise IndexError(
-                    'Binary operators on Vectors are only valid if both are the same length.'
+                    f'Binary operators on Vectors are only valid if both are the same length ({len(self)} vs. {len(other)}).'
                 )
         else:
             return Vector(op(other, x, *args, **kwargs) for x in self)
