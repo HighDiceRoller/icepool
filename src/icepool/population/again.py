@@ -5,7 +5,7 @@ import icepool
 from functools import cached_property
 import operator
 
-from typing import Any, Callable, Mapping, Sequence
+from typing import Any, Callable, Final, Mapping, Sequence
 
 
 class AgainExpression():

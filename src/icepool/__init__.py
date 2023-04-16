@@ -57,6 +57,23 @@ from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
 from icepool.collection.vector import tupleize, vectorize, Vector
 from icepool.population.again import AgainExpression
+
+Again: Final = AgainExpression()
+"""A symbol indicating that the die should be rolled again, usually with some operation applied.
+
+This is designed to be used with the `Die()` constructor.
+`AgainExpression`s should not be fed to functions or methods other than
+`Die()`, but it can be used with operators. Examples:
+
+* `Again + 6`: Roll again and add 6.
+* `Again + Again`: Roll again twice and sum.
+
+The `again_depth` and `again_end` arguments to `Die()` affect how these
+arguments are processed.
+
+If you want something more complex, use e.g. `Die.map()` instead.
+"""
+
 from icepool.population.die_with_truth import DieWithTruth
 
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
@@ -83,7 +100,7 @@ import icepool.typing as typing
 
 __all__ = [
     'd', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
-    'vectorize', 'Vector', 'AgainExpression', 'CountsKeysView', 'CountsValuesView',
+    'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
     'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
     'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',
     'commonize_denominator', 'reduce', 'accumulate', 'apply',
