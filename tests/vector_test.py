@@ -31,14 +31,14 @@ def test_vector_matmul():
 
 
 def test_nested_unary_elementwise():
-    result = icepool.Die([(((1,),),)])
+    result = icepool.Die([vectorize(vectorize(vectorize(1,),),)])
     result = -result
     assert result.marginals[0].marginals[0].marginals[0].equals(
         icepool.Die([-1]))
 
 
 def test_nested_binary_elementwise():
-    result = icepool.Die([(((1,),),)])
+    result = icepool.Die([vectorize(vectorize(vectorize(1,),),)])
     result = result + result
     assert result.marginals[0].marginals[0].marginals[0].equals(icepool.Die([2
                                                                             ]))
@@ -93,6 +93,9 @@ def test_one_hot():
             if state is None:
                 state = ()
             return state + (count,)
+
+        def final_outcome(self, final_state):
+            return icepool.Vector(final_state)
 
         def alignment(self, *_):
             return [1, 2, 3, 4, 5, 6]

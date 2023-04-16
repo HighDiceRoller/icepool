@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from collections import defaultdict
 import icepool
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.typing import Outcome, T_co, count_positional_parameters
+from icepool.typing import U, Outcome, T_co, count_positional_parameters
 
 from abc import ABC, abstractmethod
 import bisect
@@ -47,6 +47,13 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     @abstractmethod
     def items(self) -> CountsItemsView[T_co]:
         """The (outcome, quantity)s of the population in sorted order."""
+
+    def _unary_operator(self, op: Callable[..., U], *args, **kwargs):
+        data: MutableMapping[Any, int] = defaultdict(int)
+        for outcome, quantity in self.items():
+            new_outcome = op(outcome, *args, **kwargs)
+            data[new_outcome] += quantity
+        return self._new_type(data)
 
     # Outcomes.
 
@@ -571,30 +578,16 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         def __getitem__(self, dims: int | slice, /):
             """Marginalizes the given dimensions."""
-            return self._population.unary_operator_non_elementwise(
-                operator.getitem, dims)
+            return self._population._unary_operator(operator.getitem, dims)
 
     @property
     def marginals(self):
         """A property that applies the `[]` operator to outcomes.
 
-        This is not performed elementwise on tuples, so that this can be used
-        to slice tuple outcomes. For example, `population.marginals[:2]` will
-        marginalize the first two elements of tuples.
+        For example, `population.marginals[:2]` will marginalize the first two
+        elements of the outcomes.
         """
         return Population._Marginals(self)
-
-    def unary_operator_non_elementwise(self: C, op: Callable, *args,
-                                       **kwargs) -> C:
-        """As `unary_operator()`, but not elementwise.
-
-        This is used for `marginals()`.
-        """
-        data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, quantity in self.items():
-            new_outcome = op(outcome, *args, **kwargs)
-            data[new_outcome] += quantity
-        return self._new_type(data)
 
     def covariance(self: 'Population[tuple[numbers.Real, ...]]', i: int,
                    j: int) -> float:

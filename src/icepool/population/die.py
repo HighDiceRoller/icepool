@@ -6,7 +6,6 @@ import icepool.population.format
 import icepool.creation_args
 import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
-from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
 from icepool.typing import U, Outcome, T_co, guess_star
 from icepool.collection.vector import Vector
@@ -231,12 +230,10 @@ class Die(Population[T_co]):
         self._data = data
         return self
 
-    def unary_operator(self, op: Callable[..., U], *args, **kwargs) -> 'Die[U]':
+    # Defined separately from the superclass to help typing.
+    def unary_operator(self: 'icepool.Die[T_co]', op: Callable[..., U], *args,
+                       **kwargs) -> 'icepool.Die[U]':
         """Performs the unary operation on the outcomes.
-
-        Operatiors on tuples are applied elementwise recursively. If you need
-        some other specific behavior, use your own outcome class, or use `map()`
-        rather than an operator.
 
         This is used for the standard unary operators
         `-, +, abs, ~, round, trunc, floor, ceil`
@@ -254,11 +251,7 @@ class Die(Population[T_co]):
         Raises:
             ValueError: If tuples are of mismatched length.
         """
-        data: MutableMapping[Any, int] = defaultdict(int)
-        for outcome, quantity in self.items():
-            new_outcome = unary_elementwise(outcome, op, *args, **kwargs)
-            data[new_outcome] += quantity
-        return icepool.Die(data)
+        return self._unary_operator(op, *args, **kwargs)
 
     def binary_operator(self, other: 'Die', op: Callable[..., U], *args,
                         **kwargs) -> 'Die[U]':
@@ -266,10 +259,6 @@ class Die(Population[T_co]):
 
         By the time this is called, the other operand has already been
         converted to a `Die`.
-
-        Operators on tuples are applied elementwise recursively.  If you need
-        some other specific behavior, use your own outcome class, or use `map()`
-        rather than an operator.
 
         If one side of a binary operator is a tuple and the other is not, the
         binary operator is applied to each element of the tuple with the
@@ -309,10 +298,9 @@ class Die(Population[T_co]):
              quantity_self), (outcome_other,
                               quantity_other) in itertools.product(
                                   self.items(), other.items()):
-            new_outcome = binary_elementwise(outcome_self, outcome_other, op,
-                                             *args, **kwargs)
+            new_outcome = op(outcome_self, outcome_other, *args, **kwargs)
             data[new_outcome] += quantity_self * quantity_other
-        return icepool.Die(data)
+        return self._new_type(data)
 
     # Basic access.
 

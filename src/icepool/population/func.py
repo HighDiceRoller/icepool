@@ -60,17 +60,17 @@ def coin(n: int, d: int, /) -> 'icepool.Die[bool]':
 
 
 def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':
-    """A `Die` with tuple outcomes with one element set to `True` uniformly at random and the rest `False`.
+    """A `Die` with `Vector` outcomes with one element set to `True` uniformly at random and the rest `False`.
 
-    This is an easy (if expensive) way of representing how many dice in a pool
-    rolled each number. For example, the outcomes of `10 @ one_hot(6)` are
-    the `(ones, twos, threes, fours, fives, sixes)` rolled in 10d6.
+    This is an easy (if somewhat expensive) way of representing how many dice
+    in a pool rolled each number. For example, the outcomes of `10 @ one_hot(6)`
+    are the `(ones, twos, threes, fours, fives, sixes)` rolled in 10d6.
     """
     data = []
     for i in range(sides):
         outcome = [False] * sides
         outcome[i] = True
-        data.append(tuple(outcome))
+        data.append(icepool.Vector(outcome))
     return icepool.Die(data)
 
 
@@ -225,8 +225,6 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
     Analogous to
     [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce).
 
-    The function is applied non-elementwise to tuple outcomes.
-
     Args:
         func: The function to apply. The function should take two arguments,
             which are an outcome from each of two dice, and produce an outcome
@@ -264,8 +262,6 @@ def accumulate(
 
     The number of results is equal to the number of elements of `dice`, with
     one additional element if `initial` is provided.
-
-    The function is applied non-elementwise to tuple outcomes.
 
     Args:
         func: The function to apply. The function should take two arguments,

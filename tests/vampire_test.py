@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from icepool import vectorize
+
 
 def test_vampire():
 
@@ -10,15 +12,15 @@ def test_vampire():
     # In this case we have four types of symbols.
 
     normal_die = icepool.Die({
-        (0, 0, 0, 0): 5,  # failure
-        (0, 1, 0, 0): 4,  # success
-        (0, 0, 1, 0): 1,  # crit
+        vectorize(0, 0, 0, 0): 5,  # failure
+        vectorize(0, 1, 0, 0): 4,  # success
+        vectorize(0, 0, 1, 0): 1,  # crit
     })
     hunger_die = icepool.Die({
-        (1, 0, 0, 0): 1,  # bestial failure
-        (0, 0, 0, 0): 4,  # failure
-        (0, 1, 0, 0): 4,  # success
-        (0, 0, 0, 1): 1,  # messy crit
+        vectorize(1, 0, 0, 0): 1,  # bestial failure
+        vectorize(0, 0, 0, 0): 4,  # failure
+        vectorize(0, 1, 0, 0): 4,  # success
+        vectorize(0, 0, 0, 1): 1,  # messy crit
     })
 
     # Summing the dice produces the total number of each symbol rolled.
