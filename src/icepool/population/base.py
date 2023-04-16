@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from collections import defaultdict
 import icepool
-from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.typing import Outcome, T_co, count_positional_parameters
 
 from abc import ABC, abstractmethod

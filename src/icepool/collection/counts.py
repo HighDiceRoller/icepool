@@ -6,7 +6,7 @@ from functools import cached_property
 import math
 
 from icepool.typing import K, T
-from typing import Collection, ItemsView, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
+from typing import Collection, ItemsView, Iterable, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
 
 
 class Counts(Mapping[K, int]):
@@ -18,7 +18,7 @@ class Counts(Mapping[K, int]):
 
     _mapping: Mapping[K, int]
 
-    def __init__(self, items: Collection[tuple[K, int]]):
+    def __init__(self, items: Iterable[tuple[K, int]]):
         """
         Args:
             items: A Collection of key, value pairs.

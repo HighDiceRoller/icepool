@@ -5,10 +5,11 @@ import icepool.population.again
 import icepool.population.format
 import icepool.creation_args
 import icepool.population.markov_chain
-from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.elementwise import unary_elementwise, binary_elementwise
 from icepool.population.base import Population
 from icepool.typing import U, Outcome, T_co, guess_star
+from icepool.collection.vector import Vector
 
 import bisect
 from collections import defaultdict
@@ -17,7 +18,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
+from typing import Any, Callable, Collection, Container, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Type, cast, overload
 
 
 def is_bare_outcome(outcome) -> bool:
@@ -91,8 +92,9 @@ class Die(Population[T_co]):
         outcomes: Sequence | Mapping[Any, int],
         times: Sequence[int] | int = 1,
         *,
+        outcome_type: Type[T_co] | None = None,
         again_depth: int = 1,
-        again_end: 'T_co | Die[T_co] | icepool.RerollType | None' = None
+        again_end: 'Outcome | Die | icepool.RerollType | None' = None
     ) -> 'Die[T_co]':
         """Constructor for a `Die`.
 
@@ -191,45 +193,41 @@ class Die(Population[T_co]):
         if again_depth < 0:
             raise ValueError('again_depth cannot be negative.')
 
-        if isinstance(outcomes, Die):
-            if times == 1:
-                return outcomes
+        # Check for Again.
+        if icepool.population.again.contains_again(outcomes):
+            if again_end is None:
+                # Create a test die with `Again`s removed,
+                # then find the zero.
+                test: Die[T_co] = Die(outcomes,
+                                      outcome_type=outcome_type,
+                                      again_depth=0,
+                                      again_end=icepool.Reroll)
+                if len(test) == 0:
+                    raise ValueError(
+                        'If all outcomes contain Again, an explicit again_end must be provided.'
+                    )
+                again_end = test.zero().simplify()
             else:
-                outcomes = outcomes._data
-        else:
-            # Check for Again.
-            if icepool.population.again.contains_again(outcomes):
-                if again_end is None:
-                    # Create a test die with `Again`s removed,
-                    # then find the zero.
-                    test: Die[T_co] = Die(outcomes,
-                                          again_depth=0,
-                                          again_end=icepool.Reroll)
-                    if len(test) == 0:
-                        raise ValueError(
-                            'If all outcomes contain Again, an explicit again_end must be provided.'
-                        )
-                    again_end = test.zero().simplify()
-                else:
-                    again_end = implicit_convert_to_die(again_end)
-                    if icepool.population.again.contains_again(again_end):
-                        raise ValueError(
-                            'again_end cannot itself contain Again.')
-                if again_depth == 0:
-                    # Base case.
-                    outcomes = icepool.population.again.replace_agains(
-                        outcomes, again_end)
-                else:
-                    tail: Die[T_co] = Die(outcomes,
-                                          times,
-                                          again_depth=0,
-                                          again_end=again_end)
-                    for _ in range(again_depth):
-                        tail = Die(outcomes,
-                                   times,
-                                   again_depth=0,
-                                   again_end=tail)
-                    return tail
+                again_end = implicit_convert_to_die(again_end)
+                if icepool.population.again.contains_again(again_end):
+                    raise ValueError('again_end cannot itself contain Again.')
+            if again_depth == 0:
+                # Base case.
+                outcomes = icepool.population.again.replace_agains(
+                    outcomes, again_end)
+            else:
+                tail: Die[T_co] = Die(outcomes,
+                                      times,
+                                      outcome_type=outcome_type,
+                                      again_depth=0,
+                                      again_end=again_end)
+                for _ in range(again_depth):
+                    tail = Die(outcomes,
+                               times,
+                               outcome_type=outcome_type,
+                               again_depth=0,
+                               again_end=tail)
+                return tail
 
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
         # Agains have been replaced by this point.
@@ -240,9 +238,14 @@ class Die(Population[T_co]):
                 outcomes[0], Die):
             return outcomes[0]
 
-        data: Counts[T_co] = icepool.creation_args.expand_args_for_die(
+        data: Mapping[Any, int] = icepool.creation_args.expand_args_for_die(
             outcomes, times)
-        return Die._new_raw(data)
+
+        counts: Counts[T_co] = Counts(
+            (icepool.creation_args.convert_outcome(k, outcome_type), v)
+            for k, v in data.items())
+
+        return Die._new_raw(counts)
 
     @classmethod
     def _new_raw(cls, data: Counts[T_co]) -> 'Die[T_co]':

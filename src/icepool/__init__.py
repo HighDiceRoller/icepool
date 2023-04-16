@@ -55,10 +55,11 @@ from icepool.population.func import (d, __getattr__, coin, one_hot,
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
+from icepool.collection.vector import Vector
 from icepool.population.again import Again
 from icepool.population.die_with_truth import DieWithTruth
 
-from icepool.counts import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
 
 from icepool.population.keep import lowest, highest, middle
 
@@ -82,7 +83,7 @@ import icepool.typing as typing
 
 __all__ = [
     'd', 'coin', 'one_hot', 'cartesian_product', 'Outcome', 'Die', 'Population',
-    'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
+    'Vector', 'Again', 'CountsKeysView', 'CountsValuesView', 'CountsItemsView',
     'from_cumulative', 'from_rv', 'lowest', 'highest', 'middle', 'min_outcome',
     'max_outcome', 'align', 'align_range', 'commonize_denominator', 'reduce',
     'accumulate', 'apply', 'outcome_function', 'Reroll', 'RerollType', 'Pool',

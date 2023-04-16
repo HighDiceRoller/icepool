@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.counts import Counts
+from icepool.collection.counts import Counts
 from icepool.population.die import Die
 from icepool.typing import T, Outcome
 

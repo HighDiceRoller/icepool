@@ -4,13 +4,13 @@ import icepool
 import icepool.population.again
 import icepool.math
 import icepool.creation_args
-from icepool.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.typing import U, Outcome, T_co, guess_star
 
 from functools import cached_property
 
-from typing import Any, Callable, Iterator, Mapping, Sequence
+from typing import Any, Callable, Iterator, Mapping, Sequence, Type
 
 
 class Deck(Population[T_co]):
@@ -28,7 +28,9 @@ class Deck(Population[T_co]):
 
     def __new__(cls,
                 outcomes: Sequence | Mapping[Any, int],
-                times: Sequence[int] | int = 1) -> 'Deck[T_co]':
+                times: Sequence[int] | int = 1,
+                *,
+                outcome_type: Type[T_co] | None = None) -> 'Deck[T_co]':
         """Constructor for a `Deck`.
 
         Args:
@@ -57,11 +59,6 @@ class Deck(Population[T_co]):
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
         """
-        if isinstance(outcomes, Deck):
-            if times == 1:
-                return outcomes
-            else:
-                outcomes = outcomes._data
 
         if icepool.population.again.contains_again(outcomes):
             raise ValueError('Again cannot be used with Decks.')
@@ -72,9 +69,14 @@ class Deck(Population[T_co]):
                 outcomes[0], Deck):
             return outcomes[0]
 
-        data: Counts[T_co] = icepool.creation_args.expand_args_for_deck(
+        data: Mapping[Any, int] = icepool.creation_args.expand_args_for_deck(
             outcomes, times)
-        return Deck._new_raw(data)
+
+        counts: Counts[T_co] = Counts(
+            (icepool.creation_args.convert_outcome(k, outcome_type), v)
+            for k, v in data.items())
+
+        return Deck._new_raw(counts)
 
     @classmethod
     def _new_raw(cls, data: Counts[T_co]) -> 'Deck[T_co]':

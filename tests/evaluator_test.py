@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool
+from icepool import d4, d6, d8, d10, d12, Pool, Vector
 
 
 class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
@@ -97,7 +97,7 @@ def test_runs_skip():
     die = icepool.Die([0, 10])
     result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
         die.pool(10))
-    assert result.outcomes() == ((1, 0), (1, 10))
+    assert result.outcomes() == (Vector((1, 0)), Vector((1, 10)))
 
 
 class SumFixedOrder(icepool.MultisetEvaluator):

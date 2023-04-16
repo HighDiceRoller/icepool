@@ -235,3 +235,9 @@ class Vector(Hashable, Sequence[T_co]):
         if not isinstance(other, Vector):
             return True
         return self._data != other._data
+
+    def __repr__(self) -> str:
+        return type(self).__qualname__ + '(' + repr(self._data) + ')'
+
+    def __str__(self) -> str:
+        return '<' + ', '.join(str(x) for x in self._data) + '>'

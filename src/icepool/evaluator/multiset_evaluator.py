@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.counts import sorted_union
+from icepool.collection.counts import sorted_union
 
 from icepool.typing import Order, T_contra, U_co
 
