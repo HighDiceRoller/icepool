@@ -209,19 +209,7 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     if isinstance(outcomes, icepool.Die):
         # Dice should already have flattened out any Agains.
         return False
-    return any(_contains_again_inner(x) for x in outcomes)
-
-
-def _contains_again_inner(outcome) -> bool:
-    if isinstance(outcome, icepool.Die):
-        # Dice should already have flattened out any Agains.
-        return False
-    elif isinstance(outcome, Mapping):
-        return any(_contains_again_inner(x) for x in outcome)
-    elif isinstance(outcome, icepool.AgainExpression):
-        return True
-    else:
-        return False
+    return any(isinstance(x, icepool.AgainExpression) for x in outcomes)
 
 
 def replace_agains(outcomes: Mapping[Any, int] | Sequence,
@@ -240,12 +228,7 @@ def replace_agains(outcomes: Mapping[Any, int] | Sequence,
 
 
 def _replace_agains_inner(outcome, die: 'icepool.Die'):
-    if isinstance(outcome, icepool.Die):
-        # Dice should already have flattened out any Agains.
-        return outcome
-    elif isinstance(outcome, Mapping):
-        return {_replace_agains_inner(k, die): v for k, v in outcome.items()}
-    elif isinstance(outcome, AgainExpression):
+    if isinstance(outcome, AgainExpression):
         return outcome._evaluate(die)
     else:
         # tuple or simple arg that is not Again.
