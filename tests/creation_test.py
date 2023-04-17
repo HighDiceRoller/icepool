@@ -57,6 +57,11 @@ def test_negative_weight_error():
         icepool.Die([1], times=[-1])
 
 
+def test_not_orderable_error():
+    with pytest.raises(TypeError):
+        icepool.Die([(icepool.d6, 0)])
+
+
 def test_implicit_mapping_error():
     with pytest.raises(TypeError):
         icepool.d6 + {}

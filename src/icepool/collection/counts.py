@@ -28,6 +28,18 @@ class Counts(Mapping[T, int]):
         """
         items = sorted(items)
 
+        # Courtesy check for tuples with non-orderable elements.
+        if len(items) == 1:
+            first_key = items[0][0]
+            if isinstance(first_key, tuple):
+                for x in first_key:
+                    try:
+                        bool(x < x)
+                    except TypeError:
+                        raise TypeError(
+                            f'tuple element has non-orderable type {type(x).__name__}.'
+                        ) from None
+
         mapping: MutableMapping[T, int] = {}
         for key, value in items:
             if key is None:
