@@ -233,7 +233,7 @@
                 @cache
                 def calc_pool_always(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 + r12 <= target:
+                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
                         # can't make it, so don't bother trying
                         return icepool.vectorize(success - target, 0)
 
@@ -247,7 +247,7 @@
                 @cache
                 def calc_push_if_fail(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 + r12 <= target:
+                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
                         # can't make it, so don't bother trying
                         return icepool.vectorize(success - target, 0)
                     if success > target:
@@ -263,7 +263,7 @@
                 @cache
                 def calc_push_if_fail_and_no_initial_bane(active, target):
                     success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 + r12 <= target:
+                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
                         # can't make it, so don't bother trying
                         return icepool.vectorize(success - target, 0)
                     if success > target or bane > 0:
@@ -460,6 +460,7 @@
             <li>This is based on the rules as laid out in the <i>Year Zero Engine Standard Reference Document v1.0</i>. In particular, banes (1s) cannot be rerolled.</li>
             <li>"Mean net successes" treats negative net successes as 0.</li>
             <li>Only the active player can push, and they can choose whether to do so after seeing the opposition roll.</li>
+            <li>We assume the player chooses to reroll the dice that rolled between 2 and 5.</li>
             <li>On an opposed roll, ties may be treated as fails, rerolled, or have some other effect. Consult your specific ruleset for details.</li>
         </ul>
 
