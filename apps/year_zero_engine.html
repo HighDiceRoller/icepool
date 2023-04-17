@@ -70,34 +70,34 @@
             <h3>Push</h3>
             <table style="max-width:960px;margin:auto;">
                 <tr>
-                    <td style="width:30%;text-align:left;">Player wins: <span id="successChance"
+                    <td style="width:35%;text-align:left;">Player wins: <span id="successChance"
                             style="color:blue;"></span></td>
-                    <td style="width:20%;text-align:left;">Tie: <span id="tieChance"></span></td>
-                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChance"
+                    <td style="width:30%;text-align:left;">Tie: <span id="tieChance"></span></td>
+                    <td style="width:35%;text-align:left;">Opposition wins: <span id="loseChance"
                             style="color:rgb(255, 127, 63);"></span></td>
                 </tr>
                 <tr>
-                    <td style="width:30%;text-align:left;">Mean net successes: <span id="meanSuccesses"
+                    <td style="width:35%;text-align:left;">Mean net successes: <span id="meanSuccesses"
                             style="color:blue;"></td>
-                    <td></td>
-                    <td style="width:30%;text-align:left;">Mean banes: <span id="meanBanes"
+                    <td style="width:30%;text-align:left;"></td>
+                    <td style="width:35%;text-align:left;">Mean banes: <span id="meanBanes"
                             style="color:red;"></span></td>
                 </tr>
             </table>
             <h3>No push</h3>
             <table style="max-width:960px;margin:auto;">
                 <tr>
-                    <td style="width:30%;text-align:left;">Player wins: <span id="successChanceNoPush"
+                    <td style="width:35%;text-align:left;">Player wins: <span id="successChanceNoPush"
                             style="color:blue;"></span></td>
-                    <td style="width:20%;text-align:left;">Tie: <span id="tieChanceNoPush"></span></td>
-                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChanceNoPush"
+                    <td style="width:30%;text-align:left;">Tie: <span id="tieChanceNoPush"></span></td>
+                    <td style="width:35%;text-align:left;">Opposition wins: <span id="loseChanceNoPush"
                             style="color:rgb(255, 127, 63);"></span></td>
                 </tr>
                 <tr>
-                    <td style="width:30%;text-align:left;">Mean net successes: <span id="meanSuccessesNoPush"
+                    <td style="width:35%;text-align:left;">Mean net successes: <span id="meanSuccessesNoPush"
                             style="color:blue;"></td>
-                    <td></td>
-                    <td></td>
+                    <td style="width:30%;text-align:left;"></td>
+                    <td style="width:35%;text-align:left;"></td>
                 </tr>
             </table>
         </div>
@@ -281,11 +281,8 @@
                     else:
                         return pushed[0]
                         
-                def success_color(n, max_n):
-                    if max_n <= 1:
-                        a = 0.75
-                    else:
-                        a = 0.25 + 0.75 * (n - 1) / (max_n - 1)
+                def success_color(n):
+                    a = min(0.25 + 0.75 * (n - 1) / 4, 1.0)
                     return f'rgba(0, 0, 191, {a})'
             `);
 
@@ -351,7 +348,7 @@
                     dataset = {
                         'label' : str(success_count),
                         'data' : data,
-                        'backgroundColor' : success_color(success_count, die_success.max_outcome()),
+                        'backgroundColor' : success_color(success_count),
                     }
                 success_datasets.append(dataset)
                 
