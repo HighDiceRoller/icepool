@@ -343,8 +343,8 @@
                 js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((series0 < 0).mean() * 100.0)
                 js.successChart.data.labels = pyodide.ffi.to_js(["-1 or less (fail)", "0 (tie)"] + [float(x) for x in series0.outcomes()[2:]])
             
-            js.document.getElementById('meanSuccesses').innerHTML = '%0.2f' % series0.clip(0).mean()
-            js.document.getElementById('meanBanes').innerHTML = '%0.2f' % bane_count.mean()
+            js.document.getElementById('meanSuccesses').innerHTML = '%0.3f' % series0.clip(0).mean()
+            js.document.getElementById('meanBanes').innerHTML = '%0.3f' % bane_count.mean()
             
             selected_dist = js.document.getElementById('distSelect').value
             
