@@ -44,9 +44,8 @@
                     <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td style="text-align:left;"><select name="push" id="push">
-                        <option value="never" selected>Never</option>
                         <option value="fail_no_bane">Initial roll fails but has no banes</option>
-                        <option value="fail">Initial roll fails</option>
+                        <option value="fail" selected>Initial roll fails</option>
                         <option value="always">Always</option>
                     </select></td>
                 </tr>
@@ -67,7 +66,8 @@
 
         <div class="chart_container_wide" style="height:25vw;"><canvas id="successChart"></canvas></div>
         
-        <div style="font-size: 150%;">
+        <div>
+            <h3>Push</h3>
             <table style="max-width:960px;margin:auto;">
                 <tr>
                     <td style="width:30%;text-align:left;">Player wins: <span id="successChance"
@@ -84,6 +84,22 @@
                             style="color:red;"></span></td>
                 </tr>
             </table>
+            <h3>No push</h3>
+            <table style="max-width:960px;margin:auto;">
+                <tr>
+                    <td style="width:30%;text-align:left;">Player wins: <span id="successChanceNoPush"
+                            style="color:blue;"></span></td>
+                    <td style="width:20%;text-align:left;">Tie: <span id="tieChanceNoPush"></span></td>
+                    <td style="width:30%;text-align:left;">Opposition wins: <span id="loseChanceNoPush"
+                            style="color:rgb(255, 127, 63);"></span></td>
+                </tr>
+                <tr>
+                    <td style="width:30%;text-align:left;">Mean net successes: <span id="meanSuccessesNoPush"
+                            style="color:blue;"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
         </div>
     </div>
     
@@ -94,7 +110,7 @@
         var successChart = new Chart(successChartContext, {
             type: 'bar',
             data: {
-                labels: ['5 banes', '4 banes', '3 banes', '2 banes', '1 bane', 'Net successes'],
+                labels: [],
             },
             options: {
                 indexAxis: 'y',
@@ -197,6 +213,7 @@
                 
                 die_player = icepool.Die([])
                 die_opposition = icepool.Die([])
+                die_no_push = icepool.Die([])
                 die_push = icepool.Die([])
                 
                 def calc_pool(prefix):
@@ -265,7 +282,10 @@
                         return pushed[0]
                         
                 def success_color(n, max_n):
-                    a = 0.25 + 0.75 * (n - 1) / (max_n - 1)
+                    if max_n <= 1:
+                        a = 0.75
+                    else:
+                        a = 0.25 + 0.75 * (n - 1) / (max_n - 1)
                     return f'rgba(0, 0, 191, {a})'
             `);
 
@@ -285,10 +305,7 @@
             pyodide.runPython(`
             die_opposition = calc_pool_simple('o')
             push_strategy = js.document.getElementById('push').value
-            if push_strategy == 'never':
-                die_player = calc_pool_simple('p')
-                die_push = icepool.Die([icepool.vectorize(die_player.marginals[0] - die_opposition.marginals[0], 0)])
-            elif push_strategy == 'fail_no_bane':
+            if push_strategy == 'fail_no_bane':
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
             elif push_strategy == 'fail':
@@ -297,6 +314,7 @@
             else:
                 die_player = calc_pool('p')
                 die_push = icepool.apply(calc_pool_always, die_player, die_opposition.marginals[0])
+            die_no_push = icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1)
             die_push = die_push.map(lambda s, b: icepool.vectorize(max(s, -1), b))
             `);
         }
@@ -313,8 +331,10 @@
             die_success = die_push.marginals[0]
             die_bane = die_push.marginals[1]
             
-            for success_count in die_success.outcomes():
-                data = [None] * 5 + [die_push.marginals[0].probability(success_count) * 100.0]
+            for success_count in reversed(die_success.outcomes()):
+                data = [None] * 5 
+                data.append(die_push.marginals[0].probability(success_count) * 100.0)
+                data.append(die_no_push.probability(success_count) * 100.0)
                 if success_count == -1:
                     dataset = {
                         'label' : '-1 or less (fail)',
@@ -339,15 +359,19 @@
                 
             bane_datasets = []
             
-            for success_count, success_probability in zip(die_success.outcomes(), die_success.probabilities()):
+            for success_count, success_probability in zip(reversed(die_success.outcomes()), reversed(die_success.probabilities())):
                 bane_data = []
                 no_bane_data = []
                 for bane_count in bane_counts:
                     banes = die_push.map(lambda s, b: b if s == success_count else icepool.Reroll)
-                    bane_data.append(success_probability * (banes >= bane_count).mean() * 100.0)
-                    no_bane_data.append(success_probability * (banes < bane_count).mean() * 100.0)
-                bane_data.append(None)
-                no_bane_data.append(None)
+                    if banes.denominator() > 0:
+                        bane_data.append(success_probability * (banes >= bane_count).mean() * 100.0)
+                        no_bane_data.append(success_probability * (banes < bane_count).mean() * 100.0)
+                    else:
+                        bane_data.append(None)
+                        no_bane_data.append(None)
+                bane_data += [None, None]
+                no_bane_data += [None, None]
                 bane_dataset = {
                     'label' : 'At least X bane(s)',
                     'data' : bane_data,
@@ -358,23 +382,46 @@
                     'data' : no_bane_data,
                     'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
                 }
-                bane_datasets += [bane_dataset, no_bane_dataset]
+                bane_datasets += [no_bane_dataset, bane_dataset]
                 
             datasets = success_datasets + bane_datasets
             
             js.successChart.data.datasets = pyodide.ffi.to_js(datasets, dict_converter=js.Object.fromEntries)
             
+            labels = []
+            for bane_count in bane_counts:
+                chance = (die_bane >= bane_count).mean()
+                if bane_count > 1:
+                    labels.append(f'{bane_count}+ banes ({chance:0.2%})')
+                else:
+                    labels.append(f'1+ bane ({chance:0.2%})')
+            
+            labels.append('Net successes (push)')
+            labels.append('Net successes (no push)')
+            
+            js.successChart.data.labels = pyodide.ffi.to_js(labels)
+            
             if has_opposition:
                 js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_success > 0).mean() * 100.0)
                 js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_success == 0).mean() * 100.0)
                 js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((die_success < 0).mean() * 100.0)
+                
+                js.document.getElementById('successChanceNoPush').innerHTML = '%0.2f%%' % ((die_no_push > 0).mean() * 100.0)
+                js.document.getElementById('tieChanceNoPush').innerHTML = '%0.2f%%' % ((die_no_push == 0).mean() * 100.0)
+                js.document.getElementById('loseChanceNoPush').innerHTML = '%0.2f%%' % ((die_no_push < 0).mean() * 100.0)
             else:
                 js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_success > 0).mean() * 100.0)
                 js.document.getElementById('tieChance').innerHTML = 'n/a'
                 js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((die_success <= 0).mean() * 100.0)
                 
+                js.document.getElementById('successChanceNoPush').innerHTML = '%0.2f%%' % ((die_no_push > 0).mean() * 100.0)
+                js.document.getElementById('tieChanceNoPush').innerHTML = 'n/a'
+                js.document.getElementById('loseChanceNoPush').innerHTML = '%0.2f%%' % ((die_no_push <= 0).mean() * 100.0)
+                
             js.document.getElementById('meanSuccesses').innerHTML = '%0.3f' % die_success.clip(0).mean()
             js.document.getElementById('meanBanes').innerHTML = '%0.3f' % die_bane.mean()
+            
+            js.document.getElementById('meanSuccessesNoPush').innerHTML = '%0.3f' % die_no_push.clip(0).mean()
             `);
 
             successChart.update();
