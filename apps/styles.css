@@ -79,6 +79,15 @@ ul {
     max-height: 60vw;
 }
 
+.chart_container_wide {
+    position: relative;
+    margin: auto;
+    width: 90vw;
+    max-width: 400vh;
+    height: 75vh;
+    max-height: 25vw;
+}
+
 .text_content {
     max-width: 720px;
     margin: auto;
