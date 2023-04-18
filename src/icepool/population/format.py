@@ -23,7 +23,7 @@ def split_format_spec(col_spec: str) -> Sequence[str]:
     """Splits the col_spec into its components."""
     result = re.findall(TOTAL_PATTERN, col_spec)
     if sum(len(t) for t in result) != len(col_spec):
-        raise ValueError(f"Invalid col_spec '{col_spec}")
+        raise ValueError(f"Invalid col_spec '{col_spec}'")
     return result
 
 

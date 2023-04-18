@@ -635,9 +635,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         * `p==`, `p<=`, `p>=`: Probabilities (0-1) ==, <=, or >= each outcome.
         * `%==`, `%<=`, `%>=`: Probabilities (0%-100%) ==, <=, or >= each outcome.
 
-        Columns may optionally be separated using ` ` (space) or `|` characters.
+        Columns may optionally be separated using `|` characters.
 
-        The default columns are `*o|q==|%=='`, which are the unpacked outcomes,
+        The default columns are `*o|q==|%==`, which are the unpacked outcomes,
         the quantities, and the probabilities. The quantities are omitted from
         the default columns if any individual quantity is 10**30 or greater.
         """
