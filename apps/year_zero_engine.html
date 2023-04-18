@@ -35,7 +35,7 @@
                     <th>d8</th>
                     <th>d10</th>
                     <th>d12</th>
-                    <th style="text-align:left;">Push (if winning is possible) if</th>
+                    <th style="text-align:left;">Push if initial roll is...</th>
                 </tr>
                 <tr id="pinputs">
                     <th style="text-align:left;">Active player</th>
@@ -44,9 +44,9 @@
                     <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td style="text-align:left;"><select name="push" id="push">
-                        <option value="fail_no_bane">Initial roll fails but has no banes</option>
-                        <option value="fail" selected>Initial roll fails</option>
-                        <option value="always">Always</option>
+                        <option value="fail_no_bane">not a success, but no banes either</option>
+                        <option value="fail" selected>not a success</option>
+                        <option value="always">always</option>
                     </select></td>
                 </tr>
                 <tr id="oinputs">
@@ -139,7 +139,6 @@
                 datasets: {
                     bar: {
                         barPercentage: 1.0,
-                        categoryPercentage: 0.8,
                         borderWidth: 1,
                     },
                 },
@@ -337,18 +336,21 @@
                         'label' : '-1 or less (fail)',
                         'data' : data,
                         'backgroundColor' : 'rgba(255, 127, 63, 0.75)',
+                        'categoryPercentage' : 0.9,
                     }
                 elif success_count == 0:
                     dataset = {
                         'label' : '0 (tie)' if has_opposition else '0 (fail)',
                         'data' : data,
                         'backgroundColor' : 'rgba(127, 127, 127, 0.75)' if has_opposition else 'rgba(255, 127, 63, 0.75)',
+                        'categoryPercentage' : 0.9,
                     }
                 else:
                     dataset = {
                         'label' : str(success_count),
                         'data' : data,
                         'backgroundColor' : success_color(success_count),
+                        'categoryPercentage' : 0.9,
                     }
                 success_datasets.append(dataset)
                 
@@ -373,11 +375,13 @@
                     'label' : 'At least X bane(s)',
                     'data' : bane_data,
                     'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
+                    'categoryPercentage' : 0.6,
                 }
                 no_bane_dataset = {
                     'label' : 'Less than X bane(s)',
                     'data' : no_bane_data,
                     'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
+                    'categoryPercentage' : 0.6,
                 }
                 bane_datasets += [no_bane_dataset, bane_dataset]
                 
@@ -460,7 +464,7 @@
             <li>This is based on the rules as laid out in the <i>Year Zero Engine Standard Reference Document v1.0</i>. In particular, banes (1s) cannot be rerolled.</li>
             <li>"Mean net successes" treats negative net successes as 0.</li>
             <li>Only the active player can push, and they can choose whether to do so after seeing the opposition roll.</li>
-            <li>We assume the player chooses to reroll the dice that rolled between 2 and 5.</li>
+            <li>We assume the player chooses to reroll the dice that rolled between 2 and 5, and will not push if there is no chance of success.</li>
             <li>On an opposed roll, ties may be treated as fails, rerolled, or have some other effect. Consult your specific ruleset for details.</li>
         </ul>
 

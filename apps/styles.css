@@ -83,8 +83,8 @@ ul {
     position: relative;
     margin: auto;
     width: 90vw;
-    max-width: 300vh;
-    height: 60vh;
+    # max-width: 400vh;
+    height: 50vh;
     max-height: 25vw;
 }
 
