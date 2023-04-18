@@ -8,14 +8,14 @@
 
     <meta property="og:title" content="Year Zero Engine calculator" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/year_zero.html" />
-    <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_preview.png" />
+    <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/year_zero_engine.html" />
+    <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_engine_preview.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Year Zero Engine calculator" />
     <meta name="twitter:site" content="@highdiceroller" />
     <meta name="twitter:creator" content="@highdiceroller" />
-    <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_preview.png" />
+    <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/year_zero_engine_preview.png" />
 
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
@@ -327,8 +327,10 @@
             die_success = die_push.marginals[0]
             die_bane = die_push.marginals[1]
             
+            bane_counts = [5, 4, 3, 2, 1]
+            
             for success_count in reversed(die_success.outcomes()):
-                data = [None] * 5 
+                data = [None] * bane_counts[0]
                 data.append(die_push.marginals[0].probability(success_count) * 100.0)
                 data.append(die_no_push.probability(success_count) * 100.0)
                 if success_count == -1:
@@ -353,8 +355,6 @@
                         'categoryPercentage' : 0.9,
                     }
                 success_datasets.append(dataset)
-                
-            bane_counts = [5, 4, 3, 2, 1]
                 
             bane_datasets = []
             
