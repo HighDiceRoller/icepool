@@ -616,14 +616,17 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         index = bisect.bisect_right(self.quantities_le(), r)
         return self.outcomes()[index]
 
-    def format(self, format_spec: str, **kwargs) -> str:
+    def format(self, format_spec: str, /, **kwargs) -> str:
         """Formats this mapping as a string.
 
         `format_spec` should start with the output format,
-        which is either `md` (Markdown) or `csv` (comma-separated values),
-        followed by a ':' character.
+        which can be:
+        * `md` for Markdown (default)
+        * `bbcode` for BBCode
+        * `csv` for comma-separated values
 
-        After this, zero or more columns should follow. Options are:
+        After this, you may optionally add a `:` followed by a series of
+        requested columns. Allowed columns are:
 
         * `o`: Outcomes.
         * `*o`: Outcomes, unpacked if applicable.
@@ -633,26 +636,40 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         Columns may optionally be separated using ` ` (space) or `|` characters.
 
-        The default is `'md:*o|q==|%=='`, with the quantity column being omitted
-        if any quantity exceeds 10**30.
+        The default columns are `*o|q==|%=='`, which are the unpacked outcomes,
+        the quantities, and the probabilities. The quantities are omitted from
+        the default columns if any individual quantity is 10**30 or greater.
         """
+        if not self.is_empty() and self.modal_quantity() < 10**30:
+            default_column_spec = '*oq==%=='
+        else:
+            default_column_spec = '*o%=='
         if len(format_spec) == 0:
-            format_spec = 'md:*o'
-            if not self.is_empty() and self.modal_quantity() < 10**30:
-                format_spec += 'q=='
-            format_spec += '%=='
+            format_spec = 'md:' + default_column_spec
 
         format_spec = format_spec.replace('|', '')
 
-        output_format, format_spec = format_spec.split(':')
+        parts = format_spec.split(':')
+
+        if len(parts) == 1:
+            output_format = parts[0]
+            col_spec = default_column_spec
+        elif len(parts) == 2:
+            output_format = parts[0]
+            col_spec = parts[1]
+        else:
+            raise ValueError('format_spec has too many colons.')
+
         if output_format == 'md':
-            return icepool.population.format.markdown(self, format_spec)
+            return icepool.population.format.markdown(self, col_spec)
         elif output_format == 'csv':
-            return icepool.population.format.csv(self, format_spec, **kwargs)
+            return icepool.population.format.csv(self, col_spec, **kwargs)
+        elif output_format == 'bbcode':
+            return icepool.population.format.bbcode(self, col_spec)
         else:
             raise ValueError(f"Unsupported output format '{output_format}'")
 
-    def __format__(self, format_spec: str) -> str:
+    def __format__(self, format_spec: str, /) -> str:
         return self.format(format_spec)
 
     def __str__(self) -> str:

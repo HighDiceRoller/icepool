@@ -18,11 +18,11 @@ COMPARATOR_PATTERN = f'(?:[%pq](?:{COMPARATOR_OPTIONS}))'
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
 
-def split_format_spec(format_spec: str) -> Sequence[str]:
-    """Splits the format_spec into its components."""
-    result = re.findall(TOTAL_PATTERN, format_spec)
-    if sum(len(t) for t in result) != len(format_spec):
-        raise ValueError(f"Invalid format spec '{format_spec}")
+def split_format_spec(col_spec: str) -> Sequence[str]:
+    """Splits the col_spec into its components."""
+    result = re.findall(TOTAL_PATTERN, col_spec)
+    if sum(len(t) for t in result) != len(col_spec):
+        raise ValueError(f"Invalid col_spec '{col_spec}")
     return result
 
 
@@ -126,19 +126,19 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     return result
 
 
-def markdown(mapping: Population, format_spec: str) -> str:
-    """Formats the mapping as a Markdown table."""
-    if mapping.is_empty():
-        return f'Empty {type(mapping).__name__}\n'
+def markdown(population: Population, col_spec: str) -> str:
+    """Formats the Population as a Markdown table."""
+    if population.is_empty():
+        return f'Empty {type(population).__name__}\n'
 
-    format_tokens = split_format_spec(format_spec)
+    format_tokens = split_format_spec(col_spec)
 
-    headers = make_headers(mapping, format_tokens)
-    rows = make_rows(mapping, format_tokens)
+    headers = make_headers(population, format_tokens)
+    rows = make_rows(population, format_tokens)
     col_widths = compute_col_widths(headers, rows)
     alignments = compute_alignments(rows)
 
-    result = f'{type(mapping).__name__} with denominator {mapping.denominator()}\n\n'
+    result = f'{type(population).__name__} with denominator {population.denominator()}\n\n'
     result += '|'
     for header, alignment, col_width in zip(headers, alignments, col_widths):
         result += f' {header:{alignment}{col_width}} |'
@@ -163,14 +163,10 @@ def markdown(mapping: Population, format_spec: str) -> str:
     return result
 
 
-def csv(mapping,
-        format_spec: str,
-        *,
-        dialect: str = 'excel',
-        **fmtparams) -> str:
+def csv(mapping, col_spec: str, *, dialect: str = 'excel', **fmtparams) -> str:
     """Formats the mapping as a comma-separated-values string."""
 
-    format_tokens = split_format_spec(format_spec)
+    format_tokens = split_format_spec(col_spec)
 
     headers = make_headers(mapping, format_tokens)
     rows = make_rows(mapping, format_tokens)
@@ -182,3 +178,38 @@ def csv(mapping,
             writer.writerow(row)
 
         return out.getvalue()
+
+
+def bbcode(population: Population, col_spec: str) -> str:
+    """Formats the Population as a BBCode table."""
+    if population.is_empty():
+        return f'Empty {type(population).__name__}\n'
+
+    format_tokens = split_format_spec(col_spec)
+
+    headers = make_headers(population, format_tokens)
+    rows = make_rows(population, format_tokens)
+    alignments = compute_alignments(rows)
+
+    result = f'{type(population).__name__} with denominator {population.denominator()}\n\n'
+    result += '[table]\n'
+    result += '[tr]'
+    for header, alignment in zip(headers, alignments):
+        if alignment == '<':
+            result += f'[th]{header}[/th]'
+        else:
+            result += f'[th][right]{header}[/right][/th]'
+    result += '[/tr]\n'
+
+    for row in rows:
+        result += '[tr]'
+        for s, alignment in zip(row, alignments):
+            if alignment == '<':
+                result += f'[th]{s}[/th]'
+            else:
+                result += f'[th][right]{s}[/right][/th]'
+        result += '[/tr]\n'
+
+    result += '[/table]\n'
+
+    return result
