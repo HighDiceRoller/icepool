@@ -376,14 +376,14 @@
                         'label' : f'{overall_bane:0.3f}% chance of at least {bane_count} banes' if bane_count > 1 else f'{overall_bane:0.3f}% chance of at least 1 bane',
                         'data' : bane_data,
                         'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
-                        'barPercentage' : 0.3,
+                        'barPercentage' : 0.45,
                         'stack' : f'bane {bane_count}',
                     }
                     no_bane_dataset = {
                         'label' : f'{overall_no_bane:0.3f}% chance of less than {bane_count} banes' if bane_count > 1 else f'{overall_no_bane:0.3f}% chance of no banes',
                         'data' : no_bane_data,
                         'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
-                        'barPercentage' : 0.3,
+                        'barPercentage' : 0.45,
                         'stack' : f'bane {bane_count}',
                     }
                     bane_datasets += [no_bane_dataset, bane_dataset]
