@@ -138,7 +138,7 @@
                 },
                 datasets: {
                     bar: {
-                        barPercentage: 1.0,
+                        categoryPercentage: 1.0,
                         borderWidth: 1,
                     },
                 },
@@ -330,75 +330,58 @@
             bane_counts = [5, 4, 3, 2, 1]
             
             for success_count in reversed(die_success.outcomes()):
-                data = [None] * bane_counts[0]
+                data = []
                 data.append(die_push.marginals[0].probability(success_count) * 100.0)
                 data.append(die_no_push.probability(success_count) * 100.0)
+                dataset = {
+                    'data' : data,
+                    'barPercentage' : 0.9,
+                    'stack' : 'success',
+                }
                 if success_count == -1:
-                    dataset = {
-                        'label' : '-1 or less (fail)',
-                        'data' : data,
-                        'backgroundColor' : 'rgba(255, 127, 63, 0.75)',
-                        'categoryPercentage' : 0.9,
-                    }
+                    dataset['label'] = '-1 or less (fail)'
+                    dataset['backgroundColor'] = 'rgba(255, 127, 63, 0.75)'
                 elif success_count == 0:
-                    dataset = {
-                        'label' : '0 (tie)' if has_opposition else '0 (fail)',
-                        'data' : data,
-                        'backgroundColor' : 'rgba(255, 255, 159, 0.75)' if has_opposition else 'rgba(255, 127, 63, 0.75)',
-                        'categoryPercentage' : 0.9,
-                    }
+                    dataset['label'] = '0 (tie)' if has_opposition else '0 (fail)'
+                    dataset['backgroundColor'] = 'rgba(255, 255, 159, 0.75)' if has_opposition else 'rgba(255, 127, 63, 0.75)'
                 else:
-                    dataset = {
-                        'label' : str(success_count),
-                        'data' : data,
-                        'backgroundColor' : success_color(success_count),
-                        'categoryPercentage' : 0.9,
-                    }
+                    dataset['label'] = str(success_count)
+                    dataset['backgroundColor'] = success_color(success_count)
                 success_datasets.append(dataset)
                 
             bane_datasets = []
             
             for success_count, success_probability in zip(reversed(die_success.outcomes()), reversed(die_success.probabilities())):
-                bane_data = []
-                no_bane_data = []
                 for bane_count in bane_counts:
                     banes = die_push.map(lambda s, b: b if s == success_count else icepool.Reroll)
                     if banes.denominator() > 0:
-                        bane_data.append(success_probability * (banes >= bane_count).mean() * 100.0)
-                        no_bane_data.append(success_probability * (banes < bane_count).mean() * 100.0)
+                        bane_data = [success_probability * (banes >= bane_count).mean() * 100.0, None]
+                        no_bane_data = [success_probability * (banes < bane_count).mean() * 100.0, None]
                     else:
-                        bane_data.append(None)
-                        no_bane_data.append(None)
-                bane_data += [None, None]
-                no_bane_data += [None, None]
-                bane_dataset = {
-                    'label' : 'At least X bane(s)',
-                    'data' : bane_data,
-                    'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
-                    'categoryPercentage' : 0.6,
-                }
-                no_bane_dataset = {
-                    'label' : 'Less than X bane(s)',
-                    'data' : no_bane_data,
-                    'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
-                    'categoryPercentage' : 0.6,
-                }
-                bane_datasets += [no_bane_dataset, bane_dataset]
+                        bane_data = [None, None]
+                        no_bane_data = [None, None]
+
+                    bane_dataset = {
+                        'label' : f'At least {bane_count} banes' if bane_count > 1 else 'At least 1 bane',
+                        'data' : bane_data,
+                        'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
+                        'barPercentage' : 0.3,
+                        'stack' : f'bane {bane_count}',
+                    }
+                    no_bane_dataset = {
+                        'label' : f'Less than {bane_count} banes' if bane_count > 1 else 'No banes',
+                        'data' : no_bane_data,
+                        'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
+                        'barPercentage' : 0.3,
+                        'stack' : f'bane {bane_count}',
+                    }
+                    bane_datasets += [no_bane_dataset, bane_dataset]
                 
-            datasets = success_datasets + bane_datasets
+            datasets = bane_datasets + success_datasets
             
             js.successChart.data.datasets = pyodide.ffi.to_js(datasets, dict_converter=js.Object.fromEntries)
             
-            labels = []
-            for bane_count in bane_counts:
-                chance = (die_bane >= bane_count).mean()
-                if bane_count > 1:
-                    labels.append(f'{bane_count}+ banes ({chance:0.2%})')
-                else:
-                    labels.append(f'1+ bane ({chance:0.2%})')
-            
-            labels.append('Net successes (after push)')
-            labels.append('Net successes (before push)')
+            labels = ['After push', 'Before push']
             
             js.successChart.data.labels = pyodide.ffi.to_js(labels)
             
