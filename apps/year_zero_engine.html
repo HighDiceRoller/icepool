@@ -67,7 +67,7 @@
         <div class="chart_container_wide" style="height:25vw;"><canvas id="successChart"></canvas></div>
         
         <div>
-            <h3>Push</h3>
+            <h3>After push</h3>
             <table style="max-width:960px;margin:auto;">
                 <tr>
                     <td style="width:35%;text-align:left;">Player wins: <span id="successChance"
@@ -84,7 +84,7 @@
                             style="color:red;"></span></td>
                 </tr>
             </table>
-            <h3>No push</h3>
+            <h3>Before push</h3>
             <table style="max-width:960px;margin:auto;">
                 <tr>
                     <td style="width:35%;text-align:left;">Player wins: <span id="successChanceNoPush"
@@ -397,8 +397,8 @@
                 else:
                     labels.append(f'1+ bane ({chance:0.2%})')
             
-            labels.append('Net successes (push)')
-            labels.append('Net successes (no push)')
+            labels.append('Net successes (after push)')
+            labels.append('Net successes (before push)')
             
             js.successChart.data.labels = pyodide.ffi.to_js(labels)
             
