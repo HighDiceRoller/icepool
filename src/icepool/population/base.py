@@ -624,6 +624,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         * `md` for Markdown (default)
         * `bbcode` for BBCode
         * `csv` for comma-separated values
+        * `html` for HTML
 
         After this, you may optionally add a `:` followed by a series of
         requested columns. Allowed columns are:
@@ -662,10 +663,12 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         if output_format == 'md':
             return icepool.population.format.markdown(self, col_spec)
-        elif output_format == 'csv':
-            return icepool.population.format.csv(self, col_spec, **kwargs)
         elif output_format == 'bbcode':
             return icepool.population.format.bbcode(self, col_spec)
+        elif output_format == 'csv':
+            return icepool.population.format.csv(self, col_spec, **kwargs)
+        elif output_format == 'html':
+            return icepool.population.format.html(self, col_spec)
         else:
             raise ValueError(f"Unsupported output format '{output_format}'")
 

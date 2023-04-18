@@ -4,6 +4,7 @@ import icepool
 from icepool.population.base import Population
 
 import csv as csv_lib
+import html as html_lib
 import io
 import re
 
@@ -163,13 +164,17 @@ def markdown(population: Population, col_spec: str) -> str:
     return result
 
 
-def csv(mapping, col_spec: str, *, dialect: str = 'excel', **fmtparams) -> str:
-    """Formats the mapping as a comma-separated-values string."""
+def csv(population: Population,
+        col_spec: str,
+        *,
+        dialect: str = 'excel',
+        **fmtparams) -> str:
+    """Formats the `Population` as a comma-separated-values table."""
 
     format_tokens = split_format_spec(col_spec)
 
-    headers = make_headers(mapping, format_tokens)
-    rows = make_rows(mapping, format_tokens)
+    headers = make_headers(population, format_tokens)
+    rows = make_rows(population, format_tokens)
 
     with io.StringIO() as out:
         writer = csv_lib.writer(out, dialect=dialect, **fmtparams)
@@ -181,7 +186,7 @@ def csv(mapping, col_spec: str, *, dialect: str = 'excel', **fmtparams) -> str:
 
 
 def bbcode(population: Population, col_spec: str) -> str:
-    """Formats the Population as a BBCode table."""
+    """Formats the `Population` as a BBCode table."""
     if population.is_empty():
         return f'Empty {type(population).__name__}\n'
 
@@ -205,11 +210,48 @@ def bbcode(population: Population, col_spec: str) -> str:
         result += '[tr]'
         for s, alignment in zip(row, alignments):
             if alignment == '<':
-                result += f'[th]{s}[/th]'
+                result += f'[td]{s}[/td]'
             else:
-                result += f'[th][right]{s}[/right][/th]'
+                result += f'[td][right]{s}[/right][/td]'
         result += '[/tr]\n'
 
     result += '[/table]\n'
+
+    return result
+
+
+def html(population: Population, col_spec: str) -> str:
+    """Formats the `Population` as a HTML table."""
+    if population.is_empty():
+        return f'Empty {type(population).__name__}\n'
+
+    format_tokens = split_format_spec(col_spec)
+
+    headers = make_headers(population, format_tokens)
+    rows = make_rows(population, format_tokens)
+    alignments = compute_alignments(rows)
+
+    result = '<table>\n'
+    result += f'<caption>{type(population).__name__} with denominator {population.denominator()}</caption>\n'
+    result += '<tr>'
+    for header, alignment in zip(headers, alignments):
+        header = html_lib.escape(header)
+        if alignment == '<':
+            result += f'<th>{header}</th>'
+        else:
+            result += f'<th style="text-align:right;">{header}</th>'
+    result += '</tr>\n'
+
+    for row in rows:
+        result += '<tr>'
+        for s, alignment in zip(row, alignments):
+            s = html_lib.escape(s)
+            if alignment == '<':
+                result += f'<td>{s}</td>'
+            else:
+                result += f'<td style="text-align:right;">{s}</td>'
+        result += '</tr>\n'
+
+    result += '</table>\n'
 
     return result
