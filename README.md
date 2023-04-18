@@ -49,8 +49,9 @@ These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps y
 * [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing.
 * Alex Recarey's [Face 2 Face Calculator](https://infinitythecalculator.com/) for *Infinity the Game N4*---including the ability to function as a progressive web app on Android and iOS.
 * [Ability score rolling method calculator.](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
-* [*Cortex Prime* calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
+* [Cortex Prime calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator.](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
+* [Year Zero Engine calculator.](https://highdiceroller.github.io/icepool/apps/year_zero_engine.html)
 
 ## Paper on algorithm
 
