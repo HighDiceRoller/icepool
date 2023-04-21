@@ -325,7 +325,7 @@ def iter_cartesian_product(
 
 def map(
     func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -374,6 +374,19 @@ def map(
                        final_quantities,
                        again_depth=again_depth,
                        again_end=again_end)
+
+def starmap(func:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    arg: 'Outcome | icepool.Die | icepool.MultisetExpression',
+    /,
+    *,
+    again_depth: int = 1,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None)-> 'icepool.Die[T]':
+    """As `map()`, but unpacks the argument before sending it to the function.
+
+    This only accepts one argument other than the function.
+    """
+    return map(lambda o: func(*o), arg, again_depth=again_depth, again_end=again_end)
 
 
 @overload
