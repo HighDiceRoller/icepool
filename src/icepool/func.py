@@ -321,6 +321,7 @@ def die_map(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+    star: bool = False,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
@@ -329,7 +330,7 @@ def die_map(
     This is called `die_map` rather than `map` to avoid collision with the
     built-in conventional `map()` function.
 
-    See `outcome_function` for a decorator version of this.
+    See `die_function` for a decorator version of this.
 
     Example: `die_map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
@@ -348,6 +349,8 @@ def die_map(
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
                 to `func`, as `MultisetExpression.expand()`. The expression must
                 be fully bound.
+        star: If `True`, arguments will be unpacked before giving it to the
+            function.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
@@ -355,6 +358,10 @@ def die_map(
         raise TypeError(
             'The first argument must be callable. Did you forget to provide a function?'
         )
+
+    if star:
+        func = lambda o: func(*o)
+
     if len(args) == 0:
         return icepool.Die([func()],
                            again_depth=again_depth,
@@ -372,22 +379,9 @@ def die_map(
                        again_depth=again_depth,
                        again_end=again_end)
 
-def die_starmap(func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
-    arg: 'Outcome | icepool.Die | icepool.MultisetExpression',
-    /,
-    *,
-    again_depth: int = 1,
-    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None)-> 'icepool.Die[T]':
-    """As `die_map()`, but unpacks the argument before sending it to the function.
-
-    This only accepts one argument other than the function.
-    """
-    return die_map(lambda o: func(*o), arg, again_depth=again_depth, again_end=again_end)
-
 
 @overload
-def outcome_function(
+def die_function(
         func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
         /) -> 'Callable[..., icepool.Die[T]]':
@@ -395,10 +389,11 @@ def outcome_function(
 
 
 @overload
-def outcome_function(
+def die_function(
     func: None,
     /,
     *,
+    star: bool = False,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
@@ -406,22 +401,24 @@ def outcome_function(
 
 
 @overload
-def outcome_function(
+def die_function(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
+    star: bool = False,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     ...
 
 
-def outcome_function(
+def die_function(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
+    star: bool = False,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
@@ -433,10 +430,10 @@ def outcome_function(
     similar to AnyDice functions, though Icepool has different typing rules
     among other differences.
 
-    `outcome_function` can either be used with no arguments:
+    `die_function` can either be used with no arguments:
 
     ```
-    @outcome_function
+    @die_function
     def explode_six(x):
         if x == 6:
             return 6 + Again
@@ -449,7 +446,7 @@ def outcome_function(
     Or with keyword arguments, in which case the extra arguments are bound:
 
     ```
-    @outcome_function(again_depth=2)
+    @die_function(again_depth=2)
     def explode_six(x):
         if x == 6:
             return 6 + Again
@@ -476,6 +473,7 @@ def outcome_function(
             return update_wrapper(
                 partial(die_map,
                         func,
+                        star = star,
                         again_depth=again_depth,
                         again_end=again_end), func)
 
