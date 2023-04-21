@@ -1,4 +1,10 @@
-"""Free functions."""
+"""Free functions.
+
+Some of these are not imported by `from icepool import *` to help avoid
+accidental name collisions with Python standard library functions of the same
+names. If you really want them, you can import them individually or use
+`from icepool.func import *`.
+"""
 
 __docformat__ = 'google'
 
@@ -228,24 +234,24 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
     [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce).
 
     Args:
-        func: The function to apply. The function should take two arguments,
+        func: The function to map. The function should take two arguments,
             which are an outcome from each of two dice, and produce an outcome
             of the same type. It may also return `Reroll`, in which case the
             entire sequence is effectively rerolled.
-        dice: A sequence of dice to apply the function to, from left to right.
+        dice: A sequence of dice to map the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    # Conversion to dice is not necessary since apply() takes care of that.
+    # Conversion to dice is not necessary since map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
     else:
         result = icepool.implicit_convert_to_die(next(iter_dice))
     for die in iter_dice:
-        result = apply(func, result, die)
+        result = map(func, result, die)
     return result
 
 
@@ -266,13 +272,13 @@ def accumulate(
     one additional element if `initial` is provided.
 
     Args:
-        func: The function to apply. The function should take two arguments,
+        func: The function to map. The function should take two arguments,
             which are an outcome from each of two dice.
-        dice: A sequence of dice to apply the function to, from left to right.
+        dice: A sequence of dice to map the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
     """
-    # Conversion to dice is not necessary since apply() takes care of that.
+    # Conversion to dice is not necessary since map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
@@ -283,7 +289,7 @@ def accumulate(
             return
     yield result
     for die in iter_dice:
-        result = apply(func, result, die)
+        result = map(func, result, die)
         yield result
 
 
@@ -317,7 +323,7 @@ def iter_cartesian_product(
         yield outcomes, final_quantity
 
 
-def apply(
+def map(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
@@ -328,12 +334,12 @@ def apply(
 
     See `outcome_function` for a decorator version of this.
 
-    Example: `apply(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
+    Example: `map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
-    `apply()` is flexible but not very efficient for more than a few dice.
+    `map()` is flexible but not very efficient for more than a few dice.
     If at all possible, use `reduce()`, `MultisetExpression` methods, and/or
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
-    efficient than using `apply` on the dice in order.
+    efficient than using `map` on the dice in order.
 
     Args:
         func: A function that takes one argument per input `Die` and returns an
@@ -413,7 +419,7 @@ def outcome_function(
 
     The result must be a `Die`.
 
-    This is basically a decorator version of `apply()` and produces behavior
+    This is basically a decorator version of `map()` and produces behavior
     similar to AnyDice functions, though Icepool has different typing rules
     among other differences.
 
@@ -449,7 +455,7 @@ def outcome_function(
     """
 
     if func is not None:
-        return update_wrapper(partial(apply, func), func)
+        return update_wrapper(partial(map, func), func)
     else:
 
         def decorator(
@@ -458,7 +464,7 @@ def outcome_function(
         ) -> 'Callable[..., icepool.Die[T]]':
 
             return update_wrapper(
-                partial(apply,
+                partial(map,
                         func,
                         again_depth=again_depth,
                         again_end=again_end), func)

@@ -14,7 +14,7 @@ def bf_explode_basic(die, depth):
                 break
         return result
 
-    return icepool.apply(func, *([die] * (depth + 1)))
+    return icepool.map(func, *([die] * (depth + 1)))
 
 
 @pytest.mark.parametrize('depth', range(6))

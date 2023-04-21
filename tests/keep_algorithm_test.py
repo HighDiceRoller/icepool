@@ -30,7 +30,7 @@ def test_lowest(dice, keep, drop):
         stop = drop + keep
         return sum(s[start:stop])
 
-    expected = icepool.apply(expected_lowest, *dice)
+    expected = icepool.map(expected_lowest, *dice)
     assert result.equals(expected)
 
 
@@ -48,7 +48,7 @@ def test_highest(dice, keep, drop):
         stop = -drop or None
         return sum(s[start:stop])
 
-    expected = icepool.apply(expected_highest, *dice)
+    expected = icepool.map(expected_highest, *dice)
     assert result.equals(expected)
 
 
@@ -79,7 +79,7 @@ def test_pool_lowest(dice, keep, drop):
         stop = drop + keep
         return sum(s[start:stop])
 
-    expected = icepool.apply(expected_lowest, *dice)
+    expected = icepool.map(expected_lowest, *dice)
     assert result.equals(expected)
 
 
@@ -97,5 +97,5 @@ def test_pool_highest(dice, keep, drop):
         stop = -drop or None
         return sum(s[start:stop])
 
-    expected = icepool.apply(expected_highest, *dice)
+    expected = icepool.map(expected_highest, *dice)
     assert result.equals(expected)

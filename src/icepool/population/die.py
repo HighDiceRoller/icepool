@@ -617,10 +617,10 @@ class Die(Population[T_co]):
             # T_co and U should be the same in this case.
             result: 'Die[U]' = cast(Die[U], self)
             for _ in range(repeat):
-                result = icepool.apply(transition_function,
-                                       result,
-                                       again_depth=again_depth,
-                                       again_end=again_end)
+                result = icepool.map(transition_function,
+                                     result,
+                                     again_depth=again_depth,
+                                     again_end=again_end)
             return result
         else:
             # Infinite repeat.
@@ -705,7 +705,7 @@ class Die(Population[T_co]):
                 return icepool.tupleize(next_outcome, steps + 1)
 
         for _ in range(repeat):
-            next_result: 'Die[tuple[U, int]]' = icepool.apply(
+            next_result: 'Die[tuple[U, int]]' = icepool.map(
                 transition_with_steps, result)
             if result == next_result:
                 return next_result

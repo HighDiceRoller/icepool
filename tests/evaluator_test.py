@@ -89,7 +89,7 @@ def test_runs():
         else:
             return 1, outcomes[2]
 
-    expected = icepool.apply(func, icepool.d12, icepool.d10, icepool.d8)
+    expected = icepool.map(func, icepool.d12, icepool.d10, icepool.d8)
     assert result.equals(expected)
 
 

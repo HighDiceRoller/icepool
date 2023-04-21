@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, apply
+from icepool import d6, map
 
 
 def test_keep_highest_expression():
@@ -11,6 +11,6 @@ def test_keep_highest_expression():
     def drop_lowest(*outcomes):
         return sum(outcomes) - min(outcomes)
 
-    expected = apply(drop_lowest, d6, d6, d6, d6)
+    expected = map(drop_lowest, d6, d6, d6, d6)
 
     assert result == expected
