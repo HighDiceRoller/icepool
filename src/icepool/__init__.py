@@ -46,11 +46,10 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-import icepool.func as func
 from icepool.func import (d, __getattr__, coin, one_hot, iter_cartesian_product,
                           from_cumulative, from_rv, min_outcome, max_outcome,
                           align, align_range, commonize_denominator,
-                          reduce, accumulate, map, outcome_function)
+                          reduce, accumulate, die_map, outcome_function)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
@@ -102,7 +101,9 @@ __all__ = [
     'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
     'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
     'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',
-    'commonize_denominator', 'outcome_function', 'Reroll', 'RerollType', 'Pool',
+    'commonize_denominator',
+    'reduce', 'accumulate', 'die_map', 'outcome_function',
+    'Reroll', 'RerollType', 'Pool',
     'standard_pool', 'MultisetGenerator', 'Alignment', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function', 'func',
     'typing', 'evaluator'

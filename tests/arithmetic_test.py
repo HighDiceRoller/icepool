@@ -10,7 +10,7 @@ test_dice = [icepool.d6, icepool.d8, icepool.d10.explode(depth=2)]
 @pytest.mark.parametrize('i', range(-5, 5))
 def test_die_int_add(a, i):
     result = a + i
-    expected = icepool.map(lambda x, y: x + y, a, i)
+    expected = icepool.die_map(lambda x, y: x + y, a, i)
     assert result.equals(expected)
 
 
@@ -18,7 +18,7 @@ def test_die_int_add(a, i):
 @pytest.mark.parametrize('a', test_dice)
 def test_int_die_add(i, a):
     result = i + a
-    expected = icepool.map(lambda x, y: x + y, i, a)
+    expected = icepool.die_map(lambda x, y: x + y, i, a)
     assert result.equals(expected)
 
 
@@ -26,7 +26,7 @@ def test_int_die_add(i, a):
 @pytest.mark.parametrize('b', test_dice)
 def test_die_die_add(a, b):
     result = a + b
-    expected = icepool.map(lambda x, y: x + y, a, b)
+    expected = icepool.die_map(lambda x, y: x + y, a, b)
     assert result.equals(expected)
 
 
@@ -34,7 +34,7 @@ def test_die_die_add(a, b):
 @pytest.mark.parametrize('i', range(-5, 5))
 def test_die_int_sub(a, i):
     result = a - i
-    expected = icepool.map(lambda x, y: x - y, a, i)
+    expected = icepool.die_map(lambda x, y: x - y, a, i)
     assert result.equals(expected)
 
 
@@ -42,7 +42,7 @@ def test_die_int_sub(a, i):
 @pytest.mark.parametrize('a', test_dice)
 def test_int_die_sub(i, a):
     result = i - a
-    expected = icepool.map(lambda x, y: x - y, i, a)
+    expected = icepool.die_map(lambda x, y: x - y, i, a)
     assert result.equals(expected)
 
 
@@ -50,7 +50,7 @@ def test_int_die_sub(i, a):
 @pytest.mark.parametrize('b', test_dice)
 def test_die_die_sub(a, b):
     result = a - b
-    expected = icepool.map(lambda x, y: x - y, a, b)
+    expected = icepool.die_map(lambda x, y: x - y, a, b)
     assert result.equals(expected)
 
 

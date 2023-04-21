@@ -26,7 +26,7 @@ def test_mix_empty():
 
 
 def test_map_empty():
-    result = icepool.map(lambda x, y: 0, icepool.Die({}), icepool.Die({}))
+    result = icepool.die_map(lambda x, y: 0, icepool.Die({}), icepool.Die({}))
     expected = icepool.Die({})
     assert result.equals(expected)
 

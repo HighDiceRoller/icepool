@@ -1,10 +1,4 @@
-"""Free functions.
-
-Some of these are not imported by `from icepool import *` to help avoid
-accidental name collisions with Python standard library functions of the same
-names. If you really want them, you can import them individually or use
-`from icepool.func import *`.
-"""
+"""Free functions."""
 
 __docformat__ = 'google'
 
@@ -244,14 +238,14 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    # Conversion to dice is not necessary since map() takes care of that.
+    # Conversion to dice is not necessary since die_map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
     else:
         result = icepool.implicit_convert_to_die(next(iter_dice))
     for die in iter_dice:
-        result = map(func, result, die)
+        result = die_map(func, result, die)
     return result
 
 
@@ -278,7 +272,7 @@ def accumulate(
         initial: If provided, this will be placed at the front of the sequence
             of dice.
     """
-    # Conversion to dice is not necessary since map() takes care of that.
+    # Conversion to dice is not necessary since die_map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
@@ -289,7 +283,7 @@ def accumulate(
             return
     yield result
     for die in iter_dice:
-        result = map(func, result, die)
+        result = die_map(func, result, die)
         yield result
 
 
@@ -323,23 +317,26 @@ def iter_cartesian_product(
         yield outcomes, final_quantity
 
 
-def map(
+def die_map(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
-    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all outcomes of the dice.
+    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes.
+
+    This is called `die_map` rather than `map` to avoid collision with the
+    built-in conventional `map()` function.
 
     See `outcome_function` for a decorator version of this.
 
-    Example: `map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
+    Example: `die_map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
-    `map()` is flexible but not very efficient for more than a few dice.
+    `die_map()` is flexible but not very efficient for more than a few dice.
     If at all possible, use `reduce()`, `MultisetExpression` methods, and/or
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
-    efficient than using `map` on the dice in order.
+    efficient than using `die_map` on the dice in order.
 
     Args:
         func: A function that takes one argument per input `Die` and returns an
@@ -375,18 +372,18 @@ def map(
                        again_depth=again_depth,
                        again_end=again_end)
 
-def starmap(func:
+def die_starmap(func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
     arg: 'Outcome | icepool.Die | icepool.MultisetExpression',
     /,
     *,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None)-> 'icepool.Die[T]':
-    """As `map()`, but unpacks the argument before sending it to the function.
+    """As `die_map()`, but unpacks the argument before sending it to the function.
 
     This only accepts one argument other than the function.
     """
-    return map(lambda o: func(*o), arg, again_depth=again_depth, again_end=again_end)
+    return die_map(lambda o: func(*o), arg, again_depth=again_depth, again_end=again_end)
 
 
 @overload
@@ -432,7 +429,7 @@ def outcome_function(
 
     The result must be a `Die`.
 
-    This is basically a decorator version of `map()` and produces behavior
+    This is basically a decorator version of `die_map()` and produces behavior
     similar to AnyDice functions, though Icepool has different typing rules
     among other differences.
 
@@ -468,7 +465,7 @@ def outcome_function(
     """
 
     if func is not None:
-        return update_wrapper(partial(map, func), func)
+        return update_wrapper(partial(die_map, func), func)
     else:
 
         def decorator(
@@ -477,7 +474,7 @@ def outcome_function(
         ) -> 'Callable[..., icepool.Die[T]]':
 
             return update_wrapper(
-                partial(map,
+                partial(die_map,
                         func,
                         again_depth=again_depth,
                         again_end=again_end), func)
