@@ -46,8 +46,8 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-import icepool.population.func
-from icepool.population.func import (d, __getattr__, coin, one_hot, iter_cartesian_product,
+import icepool.func as func
+from icepool.func import (d, __getattr__, coin, one_hot, iter_cartesian_product,
                                      from_cumulative,
                                      from_rv, min_outcome, max_outcome, align,
                                      align_range, commonize_denominator, reduce,
@@ -106,5 +106,5 @@ __all__ = [
     'commonize_denominator', 'reduce', 'accumulate', 'apply',
     'outcome_function', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
     'MultisetGenerator', 'Alignment', 'MultisetExpression', 'MultisetEvaluator',
-    'Order', 'Deck', 'Deal', 'multiset_function', 'typing', 'evaluator'
+    'Order', 'Deck', 'Deal', 'multiset_function', 'func', 'typing', 'evaluator'
 ]
