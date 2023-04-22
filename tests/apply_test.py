@@ -5,26 +5,25 @@ from icepool import d6, Pool, die_function, Again
 
 
 def test_map_reroll():
-    result = icepool.die_map(lambda x: icepool.Reroll
-                             if x > 4 else x, icepool.d6)
+    result = icepool.map(lambda x: icepool.Reroll if x > 4 else x, icepool.d6)
     expected = icepool.d4
     assert result.equals(expected)
 
 
 def test_map_die():
-    result = icepool.die_map(lambda x: icepool.d6 + x, icepool.d6)
+    result = icepool.map(lambda x: icepool.d6 + x, icepool.d6)
     expected = 2 @ icepool.d6
     assert result.equals(expected)
 
 
 def test_map_pool():
-    result = icepool.die_map(lambda x: sum(x[-2:]), Pool([d6, d6, d6]))
+    result = icepool.map(lambda x: sum(x[-2:]), Pool([d6, d6, d6]))
     expected = icepool.d6.highest(3, 2)
     assert result.equals(expected)
 
 
 def test_map_no_dice():
-    result = icepool.die_map(lambda: 1)
+    result = icepool.map(lambda: 1)
     expected = icepool.Die({1: 1})
     assert result.equals(expected)
 

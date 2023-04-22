@@ -238,14 +238,14 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    # Conversion to dice is not necessary since die_map() takes care of that.
+    # Conversion to dice is not necessary since map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
     else:
         result = icepool.implicit_convert_to_die(next(iter_dice))
     for die in iter_dice:
-        result = die_map(func, result, die)
+        result = map(func, result, die)
     return result
 
 
@@ -272,7 +272,7 @@ def accumulate(
         initial: If provided, this will be placed at the front of the sequence
             of dice.
     """
-    # Conversion to dice is not necessary since die_map() takes care of that.
+    # Conversion to dice is not necessary since map() takes care of that.
     iter_dice = iter(dice)
     if initial is not None:
         result: 'icepool.Die[T]' = icepool.implicit_convert_to_die(initial)
@@ -283,7 +283,7 @@ def accumulate(
             return
     yield result
     for die in iter_dice:
-        result = die_map(func, result, die)
+        result = map(func, result, die)
         yield result
 
 
@@ -317,7 +317,7 @@ def iter_cartesian_product(
         yield outcomes, final_quantity
 
 
-def die_map(
+def map(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
@@ -327,17 +327,14 @@ def die_map(
 ) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes.
 
-    This is called `die_map` rather than `map` to avoid collision with the
-    built-in conventional `map()` function.
-
     See `die_function` for a decorator version of this.
 
-    Example: `die_map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
+    Example: `map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
-    `die_map()` is flexible but not very efficient for more than a few dice.
+    `map()` is flexible but not very efficient for more than a few dice.
     If at all possible, use `reduce()`, `MultisetExpression` methods, and/or
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
-    efficient than using `die_map` on the dice in order.
+    efficient than using `map` on the dice in order.
 
     Args:
         func: A function that takes one argument per input `Die` and returns an
@@ -352,7 +349,7 @@ def die_map(
         star: If `True` and exactly one argument is provided, outcomes will be
             unpacked before giving them to `func`.
             If not provided, this will be guessed based on the function
-            signature. Since `die_map` accepts more than one argument, this is
+            signature. Since `map` accepts more than one argument, this is
             ambiguous in the case of a variadic `func`, so in this case `star`
             must be specified explicitly.
         again_depth: Forwarded to the final die constructor.
@@ -434,7 +431,7 @@ def die_function(
 
     The result must be a `Die`.
 
-    This is basically a decorator version of `die_map()` and produces behavior
+    This is basically a decorator version of `map()` and produces behavior
     similar to AnyDice functions, though Icepool has different typing rules
     among other differences.
 
@@ -470,7 +467,7 @@ def die_function(
     """
 
     if func is not None:
-        return update_wrapper(partial(die_map, func), func)
+        return update_wrapper(partial(map, func), func)
     else:
 
         def decorator(
@@ -479,7 +476,7 @@ def die_function(
         ) -> 'Callable[..., icepool.Die[T]]':
 
             return update_wrapper(
-                partial(die_map,
+                partial(map,
                         func,
                         star = star,
                         again_depth=again_depth,
