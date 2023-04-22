@@ -631,11 +631,11 @@ class Die(Population[T_co]):
     def map_and_time(
             self,
             repl:
-        'Callable[..., U | Die[U] | icepool.RerollType] | Mapping[T_co, U | Die[U] | icepool.RerollType]',
+        'Callable[..., T_co | Die[T_co] | icepool.RerollType] | Mapping[T_co, T_co | Die[T_co] | icepool.RerollType]',
             /,
             *,
             star: bool | None = None,
-            repeat: int) -> 'Die[tuple[U, int]]':
+            repeat: int) -> 'Die[tuple[T_co, int]]':
         """Maps outcomes of the `Die` to other outcomes, while also counting
         timesteps.
 
@@ -693,7 +693,7 @@ class Die(Population[T_co]):
                 else:
                     return outcome
 
-        result: 'Die[tuple[U, int]]' = self.map(lambda x: (x, 0))
+        result: 'Die[tuple[T_co, int]]' = self.map(lambda x: (x, 0))
 
         def transition_with_steps(outcome_and_steps):
             outcome, steps = outcome_and_steps
@@ -705,7 +705,7 @@ class Die(Population[T_co]):
                 return icepool.tupleize(next_outcome, steps + 1)
 
         for _ in range(repeat):
-            next_result: 'Die[tuple[U, int]]' = icepool.map(
+            next_result: 'Die[tuple[T_co, int]]' = icepool.map(
                 transition_with_steps, result)
             if result == next_result:
                 return next_result
