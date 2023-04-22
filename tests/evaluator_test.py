@@ -89,7 +89,11 @@ def test_runs():
         else:
             return 1, outcomes[2]
 
-    expected = icepool.die_map(func, icepool.d12, icepool.d10, icepool.d8)
+    expected = icepool.die_map(func,
+                               icepool.d12,
+                               icepool.d10,
+                               icepool.d8,
+                               star=False)
     assert result.equals(expected)
 
 

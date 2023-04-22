@@ -135,12 +135,12 @@ class Deck(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
         """
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl)
+                star = guess_star(repl, variadic=True)
             if star:
 
                 def transition_function(outcome):

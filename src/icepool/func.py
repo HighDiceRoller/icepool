@@ -3,7 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.typing import Outcome, T, U
+from icepool.typing import Outcome, T, U, guess_star
 
 from collections import defaultdict
 from functools import cache, partial, update_wrapper, wraps
@@ -321,7 +321,7 @@ def die_map(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-    star: bool = False,
+    star: bool | None = None,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
@@ -349,8 +349,12 @@ def die_map(
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
                 to `func`, as `MultisetExpression.expand()`. The expression must
                 be fully bound.
-        star: If `True`, arguments will be unpacked before giving it to the
-            function.
+        star: If `True` and exactly one argument is provided, outcomes will be
+            unpacked before giving them to `func`.
+            If not provided, this will be guessed based on the function
+            signature. Since `die_map` accepts more than one argument, this is
+            ambiguous in the case of a variadic `func`, so in this case `star`
+            must be specified explicitly.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
@@ -359,13 +363,17 @@ def die_map(
             'The first argument must be callable. Did you forget to provide a function?'
         )
 
-    if star:
-        func = lambda o: func(*o)
-
     if len(args) == 0:
         return icepool.Die([func()],
                            again_depth=again_depth,
                            again_end=again_end)
+
+    if len(args) == 1:
+        if star is None:
+            star = guess_star(func, variadic='error')
+        if star:
+            func = lambda o: func(*o)
+
     final_outcomes = []
     final_quantities = []
     for outcomes, final_quantity in iter_cartesian_product(*args):
@@ -393,7 +401,7 @@ def die_function(
     func: None,
     /,
     *,
-    star: bool = False,
+    star: bool | None = None,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
@@ -406,7 +414,7 @@ def die_function(
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
-    star: bool = False,
+    star: bool | None = None,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
@@ -418,7 +426,7 @@ def die_function(
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
-    star: bool = False,
+    star: bool | None = None,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':

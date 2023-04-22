@@ -339,7 +339,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -352,7 +352,7 @@ class Die(Population[T_co]):
             outcome_set = {self.min_outcome()}
         elif callable(which):
             if star is None:
-                star = guess_star(which)
+                star = guess_star(which, variadic=True)
             if star:
 
                 # Need TypeVarTuple to check this.
@@ -407,7 +407,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
             depth: The maximum number of times to reroll.
                 If omitted, rerolls an unlimited number of times.
 
@@ -418,7 +418,7 @@ class Die(Population[T_co]):
 
         if callable(which):
             if star is None:
-                star = guess_star(which)
+                star = guess_star(which, variadic=True)
             if star:
 
                 not_outcomes = {
@@ -574,7 +574,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
             repeat: This will be repeated with the same arguments on the
                 result this many times.
 
@@ -594,7 +594,7 @@ class Die(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl)
+                star = guess_star(repl, variadic=True)
             if star:
 
                 def transition_function(outcome):
@@ -664,7 +664,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `repl`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
             repeat: This will be repeated with the same arguments on the result
                 this many times.
             again_depth: Forwarded to the final die constructor.
@@ -676,7 +676,7 @@ class Die(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl)
+                star = guess_star(repl, variadic=True)
             if star:
 
                 def transition_function(outcome):
@@ -730,7 +730,7 @@ class Die(Population[T_co]):
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
-                signature according to `guess_star()`.
+                signature.
             depth: The maximum number of additional dice to roll.
                 If not supplied, a default value will be used.
             end: Once depth is reached, further explosions will be treated
@@ -741,7 +741,7 @@ class Die(Population[T_co]):
             outcome_set = {self.max_outcome()}
         elif callable(which):
             if star is None:
-                star = guess_star(which)
+                star = guess_star(which, variadic=True)
             if star:
                 # Need TypeVarTuple to type-check this.
                 outcome_set = {

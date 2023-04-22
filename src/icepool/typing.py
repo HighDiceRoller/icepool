@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import enum
 import inspect
 
-from typing import Any, Callable, Hashable, Literal, Mapping, Protocol, Sequence, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
+from typing import Any, Callable, Hashable, Iterable, Literal, Mapping, Protocol, Sequence, Sized, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
@@ -95,7 +95,7 @@ def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
                 break
     return required, total
 
-def guess_star(func: Callable) -> bool:
+def guess_star(func: Callable, /, *, variadic: bool | Literal['error']) -> bool:
     """Guesses whether outcomes should be unpacked before giving them to the given callable.
 
     This is `True` if:
@@ -106,12 +106,15 @@ def guess_star(func: Callable) -> bool:
 
     And `False` otherwise.
     """
+
     required, total = count_positional_parameters(func)
     if required > 1:
         return True
     if total == 0:
         return True
     if total is None:
-        return True
+        if variadic == 'error':
+            raise ValueError('Ambiguous whether argument to a variadic function should be unpacked. Set the star argument explicitly.')
+        return variadic
 
     return False
