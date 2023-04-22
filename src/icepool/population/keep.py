@@ -4,11 +4,13 @@ import icepool
 
 import math
 
-from icepool.typing import Outcome, T_contra
+from icepool.typing import Outcome, T
 from typing import Literal, cast
 
 
-def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+def lowest(*dice: 'T | icepool.Die[T]',
+           keep: int = 1,
+           drop: int = 0) -> 'icepool.Die[T]':
     """The lowest outcome among the rolls, or the sum of some of the lowest.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -29,7 +31,9 @@ def lowest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     return _sum_slice(*dice, start=start, stop=stop)
 
 
-def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
+def highest(*dice: 'T | icepool.Die[T]',
+            keep: int = 1,
+            drop: int = 0) -> 'icepool.Die[T]':
     """The highest outcome among the rolls, or the sum of some of the highest.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -50,9 +54,9 @@ def highest(*dice, keep: int = 1, drop: int = 0) -> 'icepool.Die':
     return _sum_slice(*dice, start=start, stop=stop)
 
 
-def middle(*dice,
+def middle(*dice: 'T | icepool.Die[T]',
            keep: int = 1,
-           tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+           tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die[T]':
     """The middle of the outcomes among the rolls, or the sum of some of the middle.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -105,8 +109,7 @@ def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
     return icepool.Pool(dice)[start:stop].sum()  # type: ignore
 
 
-def _lowest_single(
-        *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
+def _lowest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
     """Roll all the dice and take the lowest single one.
 
     The maximum outcome is equal to the least maximum outcome among all
@@ -123,8 +126,7 @@ def _lowest_single(
                                    reverse=True)
 
 
-def _highest_single(
-        *args: 'T_contra | icepool.Die[T_contra]') -> 'icepool.Die[T_contra]':
+def _highest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
     """Roll all the dice and take the highest single one.
 
     The minimum outcome is equal to the greatest minimum outcome among all
