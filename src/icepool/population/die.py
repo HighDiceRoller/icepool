@@ -374,13 +374,16 @@ class Die(Population[T_co]):
                 for outcome, quantity in self.items()
                 if outcome not in outcome_set
             }
+        elif depth < 0:
+            raise ValueError('reroll depth cannot be negative.')
         else:
             total_reroll_quantity = sum(
                 quantity for outcome, quantity in self.items()
                 if outcome in outcome_set)
+            total_stop_quantity = self.denominator() - total_reroll_quantity
             rerollable_factor = total_reroll_quantity**depth
-            stop_factor = (self.denominator()**depth +
-                           total_reroll_quantity**depth)
+            stop_factor = (self.denominator()**(depth + 1) - rerollable_factor *
+                           total_reroll_quantity) // total_stop_quantity
             data = {
                 outcome:
                 (rerollable_factor *
