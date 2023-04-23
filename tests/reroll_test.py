@@ -44,6 +44,16 @@ def test_reroll_until_func():
     assert result.equals(expected)
 
 
+def test_reroll_depth_0():
+    assert icepool.d4.reroll(depth=0) == icepool.d4
+
+
+def test_reroll_depth_3():
+    result = icepool.d4.reroll(depth=3)
+    expected = icepool.d4.reroll(depth=1).reroll(depth=1)
+    assert result.equals(expected)
+
+
 def test_infinite_reroll():
     assert icepool.d4.reroll([1, 2, 3, 4]).is_empty()
 
