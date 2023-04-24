@@ -54,6 +54,13 @@ def test_reroll_depth_3():
     assert result.equals(expected)
 
 
+def test_reroll_depth_3_mixed():
+    die = 2 @ icepool.d6
+    result = die.reroll([2, 3], depth=3)
+    expected = die.reroll([2, 3], depth=1).reroll([2, 3], depth=1)
+    assert result.equals(expected)
+
+
 def test_infinite_reroll():
     assert icepool.d4.reroll([1, 2, 3, 4]).is_empty()
 
