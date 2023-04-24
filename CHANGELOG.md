@@ -1,3 +1,7 @@
+## v0.28.1
+
+Fix mathematical bug in `Die.reroll` for limited depth.
+
 ## v0.28.0
 
 Retired implicit elementwise operations on tuples. This is now handled by a new explicit `Vector` container.
