@@ -257,13 +257,9 @@ class Die(Population[T_co]):
         ```
 
         This is used for the standard binary operators
-        `+, -, *, /, //, %, **, <<, >>, &, |, ^`.
-        Note that `*` multiplies outcomes directly;
-        it is not the same as `@`, which rolls the right side multiple times,
-        or `d()`, which creates a standard die.
-
-        For non-tuples, the comparators (`<, <=, >=, >, ==, !=, cmp`) use a
-        linear algorithm using the fact that outcomes are totally ordered.
+        `+, -, *, /, //, %, **, <<, >>, &, |, ^`
+        and the standard binary comparators
+        `<, <=, >=, >, ==, !=, cmp`.
 
         `==` and `!=` additionally set the truth value of the `Die` according to
         whether the dice themselves are the same or not.

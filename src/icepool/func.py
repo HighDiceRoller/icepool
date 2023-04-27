@@ -24,6 +24,9 @@ def d(sides: int, /) -> 'icepool.Die[int]':
 
     * `icepool.Die([6])`: A `Die` that always rolls the integer 6.
     * `icepool.d(6)`: A d6.
+
+    You can also import individual standard dice from the `icepool` module, e.g.
+    `from icepool import d6`.
     """
     if not isinstance(sides, int):
         raise TypeError('Argument to standard() must be an int.')

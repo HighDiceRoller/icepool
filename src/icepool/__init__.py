@@ -1,5 +1,8 @@
 """Package for computing dice and card probabilities.
 
+Starting with `v0.25.1`, you can replace `latest` in the URL with an old version
+number to get the documentation for that version.
+
 See [this JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html)
 for examples.
 
