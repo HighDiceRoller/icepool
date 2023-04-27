@@ -25,7 +25,7 @@ def test_vampire():
 
     # Summing the dice produces the total number of each symbol rolled.
     # The @ operator means roll the left die, then roll that many of the right die and sum.
-    # For outcomes that are tuples, sums are performed element-wise.
+    # For outcomes that are vectors, sums are performed element-wise.
     total = 3 @ normal_die + 2 @ hunger_die
 
     # Then we can use a function to compute the final result.

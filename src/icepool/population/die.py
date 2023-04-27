@@ -267,7 +267,6 @@ class Die(Population[T_co]):
         The `@` operator does NOT use this method directly.
         It rolls the left `Die`, which must have integer outcomes,
         then rolls the right `Die` that many times and sums the outcomes.
-        Only the sum is performed element-wise.
 
         Returns:
             A `Die` representing the result.
