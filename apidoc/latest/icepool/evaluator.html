@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 13.1.0"/>
+    <meta name="generator" content="pdoc 13.1.1"/>
     <title>icepool.evaluator API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -2036,26 +2036,26 @@ If <code>None</code>, no filtering will be done.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
-<p>These will be seen by <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code> even if they have zero count or do
-not appear in the generator(s) at all.</p>
+<p>There is no expectation that a subclass be able to handle
+an arbitrary number of generators. Thus, you are free to rename any of
+the parameters in a subclass, or to replace <code>*generators</code> with a fixed
+set of parameters.</p>
 
-<p>The default implementation returns <code>()</code>; this means outcomes with zero
-count may or may not be seen by <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code>.</p>
+<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
 
-<p>If you want <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
-<code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
-See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()</a></code> below.</p>
+<h6 id="returns">Returns:</h6>
 
-<p>If you want <code><a href="#LargestStraightEvaluator.next_state">next_state</a></code> to see all generator outcomes, you can return
-<code>outcomes</code> as-is.</p>
+<blockquote>
+  <p>All <code>int</code>s from the min outcome to the max outcome among the generators,
+  inclusive.</p>
+</blockquote>
 
-<h6 id="arguments">Arguments:</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
-<li><strong>outcomes:</strong>  The outcomes that could be produced by the generators, in</li>
-<li>ascending order.</li>
+<li><strong>TypeError:</strong>  if any generator has any non-<code>int</code> outcome.</li>
 </ul>
 </div>
 
@@ -2226,26 +2226,26 @@ See <code><a href="#LargestStraightEvaluator.range_alignment">range_alignment()<
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightAndOutcomeEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
-<p>These will be seen by <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code> even if they have zero count or do
-not appear in the generator(s) at all.</p>
+<p>There is no expectation that a subclass be able to handle
+an arbitrary number of generators. Thus, you are free to rename any of
+the parameters in a subclass, or to replace <code>*generators</code> with a fixed
+set of parameters.</p>
 
-<p>The default implementation returns <code>()</code>; this means outcomes with zero
-count may or may not be seen by <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code>.</p>
+<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
 
-<p>If you want <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
-<code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
-See <code><a href="#LargestStraightAndOutcomeEvaluator.range_alignment">range_alignment()</a></code> below.</p>
+<h6 id="returns">Returns:</h6>
 
-<p>If you want <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state</a></code> to see all generator outcomes, you can return
-<code>outcomes</code> as-is.</p>
+<blockquote>
+  <p>All <code>int</code>s from the min outcome to the max outcome among the generators,
+  inclusive.</p>
+</blockquote>
 
-<h6 id="arguments">Arguments:</h6>
+<h6 id="raises">Raises:</h6>
 
 <ul>
-<li><strong>outcomes:</strong>  The outcomes that could be produced by the generators, in</li>
-<li>ascending order.</li>
+<li><strong>TypeError:</strong>  if any generator has any non-<code>int</code> outcome.</li>
 </ul>
 </div>
 
