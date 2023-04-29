@@ -58,12 +58,12 @@
                     <td style="text-align:left;">(only the active player can push)</td>
                 </tr>
             </table>
+            <input name="merge_banes" id="merge_banes" type="checkbox"> Merge bane bars
         </form>
     </div>
     
     <h2>Probability distribution</h2>
     <div style="width: 90%; margin: auto;">
-
         <div class="chart_container_wide"><canvas id="successChart"></canvas></div>
         
         <div>
@@ -126,9 +126,7 @@
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 0,
-                },
+                animation: false,
                 scales: {
                     x: {
                         title: {
@@ -198,7 +196,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.28.0')
+                await micropip.install('icepool==0.28.1')
                 
                 import js
                 import pyodide
@@ -367,37 +365,57 @@
                     dataset['label'] = f'{success_count} successes' if success_count > 1 else '1 success'
                     dataset['backgroundColor'] = success_color(success_count)
                 success_datasets.append(dataset)
-                
-            bane_datasets = []
             
-            for success_count, success_probability in zip(reversed(die_success.outcomes()), reversed(die_success.probabilities())):
+            bane_datasets = []
+            if js.document.getElementById('merge_banes').checked:
                 for bane_count in bane_counts:
                     overall_bane = (die_bane >= bane_count).mean() * 100.0
                     overall_no_bane = (die_bane < bane_count).mean() * 100.0
                 
-                    banes = die_push.map(lambda s, b: b if s == success_count else icepool.Reroll)
-                    if banes.denominator() > 0:
-                        bane_data = [success_probability * (banes >= bane_count).mean() * 100.0, None]
-                        no_bane_data = [success_probability * (banes < bane_count).mean() * 100.0, None]
-                    else:
-                        bane_data = [None, None]
-                        no_bane_data = [None, None]
-
                     bane_dataset = {
-                        'label' : f'{overall_bane:0.3f}% chance of at least {bane_count} banes' if bane_count > 1 else f'{overall_bane:0.3f}% chance of at least 1 bane',
-                        'data' : bane_data,
+                        'label' : f'at least {bane_count} banes' if bane_count > 1 else f'at least 1 bane',
+                        'data' : [overall_bane, None],
                         'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
                         'barPercentage' : 0.5,
                         'stack' : f'bane {bane_count}',
                     }
                     no_bane_dataset = {
-                        'label' : f'{overall_no_bane:0.3f}% chance of less than {bane_count} banes' if bane_count > 1 else f'{overall_no_bane:0.3f}% chance of no banes',
-                        'data' : no_bane_data,
+                        'label' : f'less than {bane_count} banes' if bane_count > 1 else f'no banes',
+                        'data' : [overall_no_bane, None],
                         'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
                         'barPercentage' : 0.5,
                         'stack' : f'bane {bane_count}',
                     }
                     bane_datasets += [no_bane_dataset, bane_dataset]
+            else:
+                for success_count, success_probability in zip(reversed(die_success.outcomes()), reversed(die_success.probabilities())):
+                    for bane_count in bane_counts:
+                        overall_bane = (die_bane >= bane_count).mean() * 100.0
+                        overall_no_bane = (die_bane < bane_count).mean() * 100.0
+                    
+                        banes = die_push.map(lambda s, b: b if s == success_count else icepool.Reroll)
+                        if banes.denominator() > 0:
+                            bane_data = [success_probability * (banes >= bane_count).mean() * 100.0, None]
+                            no_bane_data = [success_probability * (banes < bane_count).mean() * 100.0, None]
+                        else:
+                            bane_data = [None, None]
+                            no_bane_data = [None, None]
+
+                        bane_dataset = {
+                            'label' : f'{overall_bane:0.3f}% chance of at least {bane_count} banes' if bane_count > 1 else f'{overall_bane:0.3f}% chance of at least 1 bane',
+                            'data' : bane_data,
+                            'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
+                            'barPercentage' : 0.5,
+                            'stack' : f'bane {bane_count}',
+                        }
+                        no_bane_dataset = {
+                            'label' : f'{overall_no_bane:0.3f}% chance of less than {bane_count} banes' if bane_count > 1 else f'{overall_no_bane:0.3f}% chance of no banes',
+                            'data' : no_bane_data,
+                            'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
+                            'barPercentage' : 0.5,
+                            'stack' : f'bane {bane_count}',
+                        }
+                        bane_datasets += [no_bane_dataset, bane_dataset]
                 
             datasets = bane_datasets + success_datasets
             
@@ -453,13 +471,9 @@
         updateChart();
         updateSearchQueryFromForms();
 
-        let pinputs = document.querySelector('#pinputs');
-        pinputs.addEventListener('change', validateInputsAndUpdate);
-        pinputs.addEventListener('input', updateIfValid);
-
-        let oinputs = document.querySelector('#oinputs');
-        oinputs.addEventListener('change', validateInputsAndUpdate);
-        oinputs.addEventListener('input', updateIfValid);
+        let inputs = document.querySelector('#inputs');
+        inputs.addEventListener('change', validateInputsAndUpdate);
+        inputs.addEventListener('input', updateIfValid);
     </script>
     
     <div class="text_content">
