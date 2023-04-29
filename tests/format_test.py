@@ -24,6 +24,12 @@ format_specs = [
     'csv:q==|q<=|q>=',
     'csv:p==|p<=|p>=',
     'csv:%==|%>=|%>=',
+    'bbcode:q==|q<=|q>=',
+    'bbcode:p==|p<=|p>=',
+    'bbcode:%==|%>=|%>=',
+    'html:q==|q<=|q>=',
+    'html:p==|p<=|p>=',
+    'html:%==|%>=|%>=',
 ]
 
 
