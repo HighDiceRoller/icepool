@@ -105,6 +105,16 @@
     
     <script type="text/javascript">
         setInputsFromSearchQuery();
+        
+        Chart.Tooltip.positioners.barCenter = function (elements, eventPosition) {
+            if (elements.length == 0) {
+                return {x: eventPosition.x, y: eventPosition.y};
+            }
+            var element = elements[0].element;
+            var x = element.x - element.width / 2;
+            var y = element.y;
+            return {x: x, y: y};
+        };
 
         var successChartContext = document.getElementById('successChart').getContext('2d');
         var successChart = new Chart(successChartContext, {
@@ -160,6 +170,7 @@
                                 return Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem) + '%';
                             },
                         },
+                        position: 'barCenter',
                     },
                 },
             },
