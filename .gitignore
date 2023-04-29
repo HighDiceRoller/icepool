@@ -18,3 +18,4 @@
 *.ps1
 /.vscode
 /misc/*.svg
+/*.coverage
