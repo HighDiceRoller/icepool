@@ -373,14 +373,14 @@
                     overall_no_bane = (die_bane < bane_count).mean() * 100.0
                 
                     bane_dataset = {
-                        'label' : f'at least {bane_count} banes' if bane_count > 1 else f'at least 1 bane',
+                        'label' : f'At least {bane_count} banes' if bane_count > 1 else f'At least 1 bane',
                         'data' : [overall_bane, None],
                         'backgroundColor' : 'rgba(255, 63, 63, 0.75)',
                         'barPercentage' : 0.5,
                         'stack' : f'bane {bane_count}',
                     }
                     no_bane_dataset = {
-                        'label' : f'less than {bane_count} banes' if bane_count > 1 else f'no banes',
+                        'label' : f'Less than {bane_count} banes' if bane_count > 1 else f'No banes',
                         'data' : [overall_no_bane, None],
                         'backgroundColor' : 'rgba(255, 255, 255, 0.5)',
                         'barPercentage' : 0.5,
