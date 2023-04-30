@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, Pool, die_function, Again
+from icepool import d6, Pool, map_function, Again
 
 
 def test_map_reroll():
@@ -62,7 +62,7 @@ def test_accumulate_initial():
 
 def test_outcome_function():
 
-    @die_function
+    @map_function
     def explode_six(x):
         if x == 6:
             return 6 + Again
@@ -71,7 +71,7 @@ def test_outcome_function():
 
     a = explode_six(d6, again_depth=2)
 
-    @die_function(again_depth=2)
+    @map_function(again_depth=2)
     def explode_six(x):
         if x == 6:
             return 6 + Again
@@ -86,7 +86,7 @@ def test_outcome_function():
 
 def test_expression_to_outcome_function():
 
-    @die_function
+    @map_function
     def test(x):
         return sum(x)
 

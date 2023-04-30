@@ -330,7 +330,7 @@ def map(
 ) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes.
 
-    See `die_function` for a decorator version of this.
+    See `map_function` for a decorator version of this.
 
     Example: `map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.
 
@@ -389,7 +389,7 @@ def map(
 
 
 @overload
-def die_function(
+def map_function(
         func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
         /) -> 'Callable[..., icepool.Die[T]]':
@@ -397,7 +397,7 @@ def die_function(
 
 
 @overload
-def die_function(
+def map_function(
     func: None,
     /,
     *,
@@ -409,7 +409,7 @@ def die_function(
 
 
 @overload
-def die_function(
+def map_function(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
@@ -421,7 +421,7 @@ def die_function(
     ...
 
 
-def die_function(
+def map_function(
     func:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
@@ -438,10 +438,10 @@ def die_function(
     similar to AnyDice functions, though Icepool has different typing rules
     among other differences.
 
-    `die_function` can either be used with no arguments:
+    `map_function` can either be used with no arguments:
 
     ```
-    @die_function
+    @map_function
     def explode_six(x):
         if x == 6:
             return 6 + Again
@@ -454,7 +454,7 @@ def die_function(
     Or with keyword arguments, in which case the extra arguments are bound:
 
     ```
-    @die_function(again_depth=2)
+    @map_function(again_depth=2)
     def explode_six(x):
         if x == 6:
             return 6 + Again
