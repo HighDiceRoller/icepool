@@ -450,7 +450,7 @@
                     <a class="function" href="#map">map</a>
             </li>
             <li>
-                    <a class="function" href="#die_function">die_function</a>
+                    <a class="function" href="#map_function">map_function</a>
             </li>
             <li>
                     <a class="variable" href="#Reroll">Reroll</a>
@@ -866,7 +866,7 @@ are considered.</li>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="kn">from</span> <span class="nn">icepool.func</span> <span class="kn">import</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span> <span class="n">one_hot</span><span class="p">,</span> <span class="n">iter_cartesian_product</span><span class="p">,</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>                          <span class="n">from_cumulative</span><span class="p">,</span> <span class="n">from_rv</span><span class="p">,</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>                          <span class="n">align</span><span class="p">,</span> <span class="n">align_range</span><span class="p">,</span> <span class="n">commonize_denominator</span><span class="p">,</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>                          <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">die_function</span><span class="p">)</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>                          <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">map_function</span><span class="p">)</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="kn">from</span> <span class="nn">icepool.population.base</span> <span class="kn">import</span> <span class="n">Population</span>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="kn">from</span> <span class="nn">icepool.population.die</span> <span class="kn">import</span> <span class="n">implicit_convert_to_die</span><span class="p">,</span> <span class="n">Die</span>
@@ -919,7 +919,7 @@ are considered.</li>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span> <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;die_function&#39;</span><span class="p">,</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;map_function&#39;</span><span class="p">,</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Alignment&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;func&#39;</span><span class="p">,</span>
@@ -8315,7 +8315,7 @@ of dice.</li>
 </span><span id="map-331"><a href="#map-331"><span class="linenos">331</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="map-332"><a href="#map-332"><span class="linenos">332</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes.</span>
 </span><span id="map-333"><a href="#map-333"><span class="linenos">333</span></a>
-</span><span id="map-334"><a href="#map-334"><span class="linenos">334</span></a><span class="sd">    See `die_function` for a decorator version of this.</span>
+</span><span id="map-334"><a href="#map-334"><span class="linenos">334</span></a><span class="sd">    See `map_function` for a decorator version of this.</span>
 </span><span id="map-335"><a href="#map-335"><span class="linenos">335</span></a>
 </span><span id="map-336"><a href="#map-336"><span class="linenos">336</span></a><span class="sd">    Example: `map(lambda a, b: a + b, d6, d6)` is the same as d6 + d6.</span>
 </span><span id="map-337"><a href="#map-337"><span class="linenos">337</span></a>
@@ -8376,7 +8376,7 @@ of dice.</li>
 
             <div class="docstring"><p>Applies <code>func(outcome_of_die_0, outcome_of_die_1, ...)</code> for all joint outcomes.</p>
 
-<p>See <code><a href="#die_function">die_function</a></code> for a decorator version of this.</p>
+<p>See <code><a href="#map_function">map_function</a></code> for a decorator version of this.</p>
 
 <p>Example: <code>map(lambda a, b: a + b, d6, d6)</code> is the same as d6 + d6.</p>
 
@@ -8412,82 +8412,82 @@ must be specified explicitly.</li>
 
 
                 </section>
-                <section id="die_function">
-                            <input id="die_function-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="map_function">
+                            <input id="map_function-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">die_function</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">AgainExpression</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]]]</span>:</span></span>
+        <span class="name">map_function</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">AgainExpression</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>,</span><span class="param">	<span class="n">again_end</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">icepool.RerollType</a></span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n"><a href="#Die">icepool.Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]]]</span>:</span></span>
 
-                <label class="view-source-button" for="die_function-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="map_function-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#die_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="die_function-425"><a href="#die_function-425"><span class="linenos">425</span></a><span class="k">def</span> <span class="nf">die_function</span><span class="p">(</span>
-</span><span id="die_function-426"><a href="#die_function-426"><span class="linenos">426</span></a>    <span class="n">func</span><span class="p">:</span>
-</span><span id="die_function-427"><a href="#die_function-427"><span class="linenos">427</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="die_function-428"><a href="#die_function-428"><span class="linenos">428</span></a>    <span class="o">/</span><span class="p">,</span>
-</span><span id="die_function-429"><a href="#die_function-429"><span class="linenos">429</span></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="die_function-430"><a href="#die_function-430"><span class="linenos">430</span></a>    <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="die_function-431"><a href="#die_function-431"><span class="linenos">431</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="die_function-432"><a href="#die_function-432"><span class="linenos">432</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="die_function-433"><a href="#die_function-433"><span class="linenos">433</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]&#39;</span><span class="p">:</span>
-</span><span id="die_function-434"><a href="#die_function-434"><span class="linenos">434</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator that turns a function that takes outcomes into a function that takes dice.</span>
-</span><span id="die_function-435"><a href="#die_function-435"><span class="linenos">435</span></a>
-</span><span id="die_function-436"><a href="#die_function-436"><span class="linenos">436</span></a><span class="sd">    The result must be a `Die`.</span>
-</span><span id="die_function-437"><a href="#die_function-437"><span class="linenos">437</span></a>
-</span><span id="die_function-438"><a href="#die_function-438"><span class="linenos">438</span></a><span class="sd">    This is basically a decorator version of `map()` and produces behavior</span>
-</span><span id="die_function-439"><a href="#die_function-439"><span class="linenos">439</span></a><span class="sd">    similar to AnyDice functions, though Icepool has different typing rules</span>
-</span><span id="die_function-440"><a href="#die_function-440"><span class="linenos">440</span></a><span class="sd">    among other differences.</span>
-</span><span id="die_function-441"><a href="#die_function-441"><span class="linenos">441</span></a>
-</span><span id="die_function-442"><a href="#die_function-442"><span class="linenos">442</span></a><span class="sd">    `die_function` can either be used with no arguments:</span>
-</span><span id="die_function-443"><a href="#die_function-443"><span class="linenos">443</span></a>
-</span><span id="die_function-444"><a href="#die_function-444"><span class="linenos">444</span></a><span class="sd">    ```</span>
-</span><span id="die_function-445"><a href="#die_function-445"><span class="linenos">445</span></a><span class="sd">    @die_function</span>
-</span><span id="die_function-446"><a href="#die_function-446"><span class="linenos">446</span></a><span class="sd">    def explode_six(x):</span>
-</span><span id="die_function-447"><a href="#die_function-447"><span class="linenos">447</span></a><span class="sd">        if x == 6:</span>
-</span><span id="die_function-448"><a href="#die_function-448"><span class="linenos">448</span></a><span class="sd">            return 6 + Again</span>
-</span><span id="die_function-449"><a href="#die_function-449"><span class="linenos">449</span></a><span class="sd">        else:</span>
-</span><span id="die_function-450"><a href="#die_function-450"><span class="linenos">450</span></a><span class="sd">            return x</span>
-</span><span id="die_function-451"><a href="#die_function-451"><span class="linenos">451</span></a>
-</span><span id="die_function-452"><a href="#die_function-452"><span class="linenos">452</span></a><span class="sd">    explode_six(d6, again_depth=2)</span>
-</span><span id="die_function-453"><a href="#die_function-453"><span class="linenos">453</span></a><span class="sd">    ```</span>
-</span><span id="die_function-454"><a href="#die_function-454"><span class="linenos">454</span></a>
-</span><span id="die_function-455"><a href="#die_function-455"><span class="linenos">455</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
-</span><span id="die_function-456"><a href="#die_function-456"><span class="linenos">456</span></a>
-</span><span id="die_function-457"><a href="#die_function-457"><span class="linenos">457</span></a><span class="sd">    ```</span>
-</span><span id="die_function-458"><a href="#die_function-458"><span class="linenos">458</span></a><span class="sd">    @die_function(again_depth=2)</span>
-</span><span id="die_function-459"><a href="#die_function-459"><span class="linenos">459</span></a><span class="sd">    def explode_six(x):</span>
-</span><span id="die_function-460"><a href="#die_function-460"><span class="linenos">460</span></a><span class="sd">        if x == 6:</span>
-</span><span id="die_function-461"><a href="#die_function-461"><span class="linenos">461</span></a><span class="sd">            return 6 + Again</span>
-</span><span id="die_function-462"><a href="#die_function-462"><span class="linenos">462</span></a><span class="sd">        else:</span>
-</span><span id="die_function-463"><a href="#die_function-463"><span class="linenos">463</span></a><span class="sd">            return x</span>
-</span><span id="die_function-464"><a href="#die_function-464"><span class="linenos">464</span></a>
-</span><span id="die_function-465"><a href="#die_function-465"><span class="linenos">465</span></a><span class="sd">    explode_six(d6)</span>
-</span><span id="die_function-466"><a href="#die_function-466"><span class="linenos">466</span></a><span class="sd">    ```</span>
-</span><span id="die_function-467"><a href="#die_function-467"><span class="linenos">467</span></a>
-</span><span id="die_function-468"><a href="#die_function-468"><span class="linenos">468</span></a><span class="sd">    Args:</span>
-</span><span id="die_function-469"><a href="#die_function-469"><span class="linenos">469</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
-</span><span id="die_function-470"><a href="#die_function-470"><span class="linenos">470</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
-</span><span id="die_function-471"><a href="#die_function-471"><span class="linenos">471</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="die_function-472"><a href="#die_function-472"><span class="linenos">472</span></a>
-</span><span id="die_function-473"><a href="#die_function-473"><span class="linenos">473</span></a>    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="die_function-474"><a href="#die_function-474"><span class="linenos">474</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">func</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
-</span><span id="die_function-475"><a href="#die_function-475"><span class="linenos">475</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="die_function-476"><a href="#die_function-476"><span class="linenos">476</span></a>
-</span><span id="die_function-477"><a href="#die_function-477"><span class="linenos">477</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
-</span><span id="die_function-478"><a href="#die_function-478"><span class="linenos">478</span></a>            <span class="n">func</span><span class="p">:</span>
-</span><span id="die_function-479"><a href="#die_function-479"><span class="linenos">479</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span>
-</span><span id="die_function-480"><a href="#die_function-480"><span class="linenos">480</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
-</span><span id="die_function-481"><a href="#die_function-481"><span class="linenos">481</span></a>
-</span><span id="die_function-482"><a href="#die_function-482"><span class="linenos">482</span></a>            <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span>
-</span><span id="die_function-483"><a href="#die_function-483"><span class="linenos">483</span></a>                <span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span>
-</span><span id="die_function-484"><a href="#die_function-484"><span class="linenos">484</span></a>                        <span class="n">func</span><span class="p">,</span>
-</span><span id="die_function-485"><a href="#die_function-485"><span class="linenos">485</span></a>                        <span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span>
-</span><span id="die_function-486"><a href="#die_function-486"><span class="linenos">486</span></a>                        <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
-</span><span id="die_function-487"><a href="#die_function-487"><span class="linenos">487</span></a>                        <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
-</span><span id="die_function-488"><a href="#die_function-488"><span class="linenos">488</span></a>
-</span><span id="die_function-489"><a href="#die_function-489"><span class="linenos">489</span></a>        <span class="k">return</span> <span class="n">decorator</span>
+    <a class="headerlink" href="#map_function"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="map_function-425"><a href="#map_function-425"><span class="linenos">425</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+</span><span id="map_function-426"><a href="#map_function-426"><span class="linenos">426</span></a>    <span class="n">func</span><span class="p">:</span>
+</span><span id="map_function-427"><a href="#map_function-427"><span class="linenos">427</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="map_function-428"><a href="#map_function-428"><span class="linenos">428</span></a>    <span class="o">/</span><span class="p">,</span>
+</span><span id="map_function-429"><a href="#map_function-429"><span class="linenos">429</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="map_function-430"><a href="#map_function-430"><span class="linenos">430</span></a>    <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="map_function-431"><a href="#map_function-431"><span class="linenos">431</span></a>    <span class="n">again_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="map_function-432"><a href="#map_function-432"><span class="linenos">432</span></a>    <span class="n">again_end</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T] | icepool.RerollType | None&#39;</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="map_function-433"><a href="#map_function-433"><span class="linenos">433</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]&#39;</span><span class="p">:</span>
+</span><span id="map_function-434"><a href="#map_function-434"><span class="linenos">434</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator that turns a function that takes outcomes into a function that takes dice.</span>
+</span><span id="map_function-435"><a href="#map_function-435"><span class="linenos">435</span></a>
+</span><span id="map_function-436"><a href="#map_function-436"><span class="linenos">436</span></a><span class="sd">    The result must be a `Die`.</span>
+</span><span id="map_function-437"><a href="#map_function-437"><span class="linenos">437</span></a>
+</span><span id="map_function-438"><a href="#map_function-438"><span class="linenos">438</span></a><span class="sd">    This is basically a decorator version of `map()` and produces behavior</span>
+</span><span id="map_function-439"><a href="#map_function-439"><span class="linenos">439</span></a><span class="sd">    similar to AnyDice functions, though Icepool has different typing rules</span>
+</span><span id="map_function-440"><a href="#map_function-440"><span class="linenos">440</span></a><span class="sd">    among other differences.</span>
+</span><span id="map_function-441"><a href="#map_function-441"><span class="linenos">441</span></a>
+</span><span id="map_function-442"><a href="#map_function-442"><span class="linenos">442</span></a><span class="sd">    `map_function` can either be used with no arguments:</span>
+</span><span id="map_function-443"><a href="#map_function-443"><span class="linenos">443</span></a>
+</span><span id="map_function-444"><a href="#map_function-444"><span class="linenos">444</span></a><span class="sd">    ```</span>
+</span><span id="map_function-445"><a href="#map_function-445"><span class="linenos">445</span></a><span class="sd">    @map_function</span>
+</span><span id="map_function-446"><a href="#map_function-446"><span class="linenos">446</span></a><span class="sd">    def explode_six(x):</span>
+</span><span id="map_function-447"><a href="#map_function-447"><span class="linenos">447</span></a><span class="sd">        if x == 6:</span>
+</span><span id="map_function-448"><a href="#map_function-448"><span class="linenos">448</span></a><span class="sd">            return 6 + Again</span>
+</span><span id="map_function-449"><a href="#map_function-449"><span class="linenos">449</span></a><span class="sd">        else:</span>
+</span><span id="map_function-450"><a href="#map_function-450"><span class="linenos">450</span></a><span class="sd">            return x</span>
+</span><span id="map_function-451"><a href="#map_function-451"><span class="linenos">451</span></a>
+</span><span id="map_function-452"><a href="#map_function-452"><span class="linenos">452</span></a><span class="sd">    explode_six(d6, again_depth=2)</span>
+</span><span id="map_function-453"><a href="#map_function-453"><span class="linenos">453</span></a><span class="sd">    ```</span>
+</span><span id="map_function-454"><a href="#map_function-454"><span class="linenos">454</span></a>
+</span><span id="map_function-455"><a href="#map_function-455"><span class="linenos">455</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
+</span><span id="map_function-456"><a href="#map_function-456"><span class="linenos">456</span></a>
+</span><span id="map_function-457"><a href="#map_function-457"><span class="linenos">457</span></a><span class="sd">    ```</span>
+</span><span id="map_function-458"><a href="#map_function-458"><span class="linenos">458</span></a><span class="sd">    @map_function(again_depth=2)</span>
+</span><span id="map_function-459"><a href="#map_function-459"><span class="linenos">459</span></a><span class="sd">    def explode_six(x):</span>
+</span><span id="map_function-460"><a href="#map_function-460"><span class="linenos">460</span></a><span class="sd">        if x == 6:</span>
+</span><span id="map_function-461"><a href="#map_function-461"><span class="linenos">461</span></a><span class="sd">            return 6 + Again</span>
+</span><span id="map_function-462"><a href="#map_function-462"><span class="linenos">462</span></a><span class="sd">        else:</span>
+</span><span id="map_function-463"><a href="#map_function-463"><span class="linenos">463</span></a><span class="sd">            return x</span>
+</span><span id="map_function-464"><a href="#map_function-464"><span class="linenos">464</span></a>
+</span><span id="map_function-465"><a href="#map_function-465"><span class="linenos">465</span></a><span class="sd">    explode_six(d6)</span>
+</span><span id="map_function-466"><a href="#map_function-466"><span class="linenos">466</span></a><span class="sd">    ```</span>
+</span><span id="map_function-467"><a href="#map_function-467"><span class="linenos">467</span></a>
+</span><span id="map_function-468"><a href="#map_function-468"><span class="linenos">468</span></a><span class="sd">    Args:</span>
+</span><span id="map_function-469"><a href="#map_function-469"><span class="linenos">469</span></a><span class="sd">        again_depth: Forwarded to the final die constructor.</span>
+</span><span id="map_function-470"><a href="#map_function-470"><span class="linenos">470</span></a><span class="sd">        again_end: Forwarded to the final die constructor.</span>
+</span><span id="map_function-471"><a href="#map_function-471"><span class="linenos">471</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="map_function-472"><a href="#map_function-472"><span class="linenos">472</span></a>
+</span><span id="map_function-473"><a href="#map_function-473"><span class="linenos">473</span></a>    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="map_function-474"><a href="#map_function-474"><span class="linenos">474</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">func</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
+</span><span id="map_function-475"><a href="#map_function-475"><span class="linenos">475</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="map_function-476"><a href="#map_function-476"><span class="linenos">476</span></a>
+</span><span id="map_function-477"><a href="#map_function-477"><span class="linenos">477</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
+</span><span id="map_function-478"><a href="#map_function-478"><span class="linenos">478</span></a>            <span class="n">func</span><span class="p">:</span>
+</span><span id="map_function-479"><a href="#map_function-479"><span class="linenos">479</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span>
+</span><span id="map_function-480"><a href="#map_function-480"><span class="linenos">480</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
+</span><span id="map_function-481"><a href="#map_function-481"><span class="linenos">481</span></a>
+</span><span id="map_function-482"><a href="#map_function-482"><span class="linenos">482</span></a>            <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span>
+</span><span id="map_function-483"><a href="#map_function-483"><span class="linenos">483</span></a>                <span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span>
+</span><span id="map_function-484"><a href="#map_function-484"><span class="linenos">484</span></a>                        <span class="n">func</span><span class="p">,</span>
+</span><span id="map_function-485"><a href="#map_function-485"><span class="linenos">485</span></a>                        <span class="n">star</span> <span class="o">=</span> <span class="n">star</span><span class="p">,</span>
+</span><span id="map_function-486"><a href="#map_function-486"><span class="linenos">486</span></a>                        <span class="n">again_depth</span><span class="o">=</span><span class="n">again_depth</span><span class="p">,</span>
+</span><span id="map_function-487"><a href="#map_function-487"><span class="linenos">487</span></a>                        <span class="n">again_end</span><span class="o">=</span><span class="n">again_end</span><span class="p">),</span> <span class="n">func</span><span class="p">)</span>
+</span><span id="map_function-488"><a href="#map_function-488"><span class="linenos">488</span></a>
+</span><span id="map_function-489"><a href="#map_function-489"><span class="linenos">489</span></a>        <span class="k">return</span> <span class="n">decorator</span>
 </span></pre></div>
 
 
@@ -8499,9 +8499,9 @@ must be specified explicitly.</li>
 similar to AnyDice functions, though Icepool has different typing rules
 among other differences.</p>
 
-<p><code><a href="#die_function">die_function</a></code> can either be used with no arguments:</p>
+<p><code><a href="#map_function">map_function</a></code> can either be used with no arguments:</p>
 
-<pre><code>@die_function
+<pre><code>@map_function
 def explode_six(x):
     if x == 6:
         return 6 + Again
@@ -8513,7 +8513,7 @@ explode_six(d6, again_depth=2)
 
 <p>Or with keyword arguments, in which case the extra arguments are bound:</p>
 
-<pre><code>@die_function(again_depth=2)
+<pre><code>@map_function(again_depth=2)
 def explode_six(x):
     if x == 6:
         return 6 + Again
