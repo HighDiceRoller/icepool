@@ -1,3 +1,10 @@
+## v0.29.0
+
+* Add HTML and BBCode options for population formatting.
+* Renamed `apply` to `map` and the decorator version to `map_function`.
+* The above now uses `guess_star`.
+* Add default of 1 die for `Die.pool()`.
+
 ## v0.28.1
 
 Fix mathematical bug in `Die.reroll` for limited depth.
