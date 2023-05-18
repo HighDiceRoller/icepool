@@ -209,25 +209,14 @@
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                <span class="k">break</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">variadic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether outcomes should be unpacked before giving them to the given callable.</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">    Args:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        variadic: If the function is variadic with 0-1 required positional</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">            arguments, this will be the result. &#39;error&#39; will throw an error.</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="n">required</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="k">if</span> <span class="n">required</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="k">if</span> <span class="n">variadic</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Ambiguous whether argument to a variadic function should be unpacked. Set the star argument explicitly.&#39;</span><span class="p">)</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="n">variadic</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
@@ -616,41 +605,29 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">guess_star</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">variadic</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
+        <span class="name">guess_star</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">func</span>, </span><span class="param"><span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
                 <label class="view-source-button" for="guess_star-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#guess_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="guess_star-99"><a href="#guess_star-99"><span class="linenos"> 99</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">variadic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="guess_star-100"><a href="#guess_star-100"><span class="linenos">100</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether outcomes should be unpacked before giving them to the given callable.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="guess_star-99"><a href="#guess_star-99"><span class="linenos"> 99</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="guess_star-100"><a href="#guess_star-100"><span class="linenos">100</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
 </span><span id="guess_star-101"><a href="#guess_star-101"><span class="linenos">101</span></a>
 </span><span id="guess_star-102"><a href="#guess_star-102"><span class="linenos">102</span></a><span class="sd">    Args:</span>
-</span><span id="guess_star-103"><a href="#guess_star-103"><span class="linenos">103</span></a><span class="sd">        variadic: If the function is variadic with 0-1 required positional</span>
-</span><span id="guess_star-104"><a href="#guess_star-104"><span class="linenos">104</span></a><span class="sd">            arguments, this will be the result. &#39;error&#39; will throw an error.</span>
-</span><span id="guess_star-105"><a href="#guess_star-105"><span class="linenos">105</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="guess_star-106"><a href="#guess_star-106"><span class="linenos">106</span></a>
-</span><span id="guess_star-107"><a href="#guess_star-107"><span class="linenos">107</span></a>    <span class="n">required</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-</span><span id="guess_star-108"><a href="#guess_star-108"><span class="linenos">108</span></a>    <span class="k">if</span> <span class="n">required</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="guess_star-109"><a href="#guess_star-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="guess_star-110"><a href="#guess_star-110"><span class="linenos">110</span></a>    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="guess_star-111"><a href="#guess_star-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="kc">True</span>
-</span><span id="guess_star-112"><a href="#guess_star-112"><span class="linenos">112</span></a>    <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="guess_star-113"><a href="#guess_star-113"><span class="linenos">113</span></a>        <span class="k">if</span> <span class="n">variadic</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span>
-</span><span id="guess_star-114"><a href="#guess_star-114"><span class="linenos">114</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Ambiguous whether argument to a variadic function should be unpacked. Set the star argument explicitly.&#39;</span><span class="p">)</span>
-</span><span id="guess_star-115"><a href="#guess_star-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="n">variadic</span>
-</span><span id="guess_star-116"><a href="#guess_star-116"><span class="linenos">116</span></a>
-</span><span id="guess_star-117"><a href="#guess_star-117"><span class="linenos">117</span></a>    <span class="k">return</span> <span class="kc">False</span>
+</span><span id="guess_star-103"><a href="#guess_star-103"><span class="linenos">103</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="guess_star-104"><a href="#guess_star-104"><span class="linenos">104</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="guess_star-105"><a href="#guess_star-105"><span class="linenos">105</span></a>    <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</span><span id="guess_star-106"><a href="#guess_star-106"><span class="linenos">106</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Guesses whether outcomes should be unpacked before giving them to the given callable.</p>
+            <div class="docstring"><p>Guesses whether the first argument should be unpacked before giving it to the function.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
 <ul>
-<li><strong>variadic:</strong>  If the function is variadic with 0-1 required positional
-arguments, this will be the result. 'error' will throw an error.</li>
+<li><strong>arg_count:</strong>  The number of arguments that will be provided to the function.</li>
 </ul>
 </div>
 
