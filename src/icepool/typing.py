@@ -95,22 +95,11 @@ def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
                 break
     return required, total
 
-def guess_star(func: Callable, /, *, variadic: bool | Literal['error']) -> bool:
-    """Guesses whether outcomes should be unpacked before giving them to the given callable.
+def guess_star(func, arg_count=1) -> bool:
+    """Guesses whether the first argument should be unpacked before giving it to the function.
 
     Args:
-        variadic: If the function is variadic with 0-1 required positional
-            arguments, this will be the result. 'error' will throw an error.
+        arg_count: The number of arguments that will be provided to the function.
     """
-
-    required, total = count_positional_parameters(func)
-    if required > 1:
-        return True
-    if total == 0:
-        return True
-    if total is None:
-        if variadic == 'error':
-            raise TypeError('Ambiguous whether argument to a variadic function should be unpacked. Set the star argument explicitly.')
-        return variadic
-
-    return False
+    required_count, _ = count_positional_parameters(func)
+    return required_count > arg_count

@@ -347,7 +347,7 @@ class Die(Population[T_co]):
             outcome_set = {self.min_outcome()}
         elif callable(which):
             if star is None:
-                star = guess_star(which, variadic=True)
+                star = guess_star(which)
             if star:
 
                 # Need TypeVarTuple to check this.
@@ -416,7 +416,7 @@ class Die(Population[T_co]):
 
         if callable(which):
             if star is None:
-                star = guess_star(which, variadic=True)
+                star = guess_star(which)
             if star:
 
                 not_outcomes = {
@@ -548,7 +548,7 @@ class Die(Population[T_co]):
             repl:
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.AgainExpression]',
             /,
-            *,
+            *extra_args,
             star: bool | None = None,
             repeat: int | None = 1,
             again_depth: int = 1,
@@ -558,73 +558,15 @@ class Die(Population[T_co]):
 
         This is also useful for representing processes.
 
-        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
-        `Die()` constructor. It is not advised to use these with `repeat` other
-        than 1.
-
-        Args:
-            repl: One of the following:
-                * A callable returning a new outcome for each old outcome.
-                * A mapping from old outcomes to new outcomes.
-                    Unmapped old outcomes stay the same.
-                The new outcomes may be dice rather than just single outcomes.
-                The special value `icepool.Reroll` will reroll that old outcome.
-            star: Whether outcomes should be unpacked into separate arguments
-                before sending them to a callable `repl`.
-                If not provided, this will be guessed based on the function
-                signature.
-            repeat: This will be repeated with the same arguments on the
-                result this many times.
-
-                EXPERIMENTAL: If set to `None`, the result will be as if this
-                    were repeated an infinite number of times. In this case, the
-                    result will be in simplest form.
-            again_depth: Forwarded to the final die constructor.
-            again_end: Forwarded to the final die constructor.
-
-        Returns:
-            The `Die` after the modification.
+        As `icepool.map(repl, self, ...)`.
         """
-        if repeat == 0:
-            # In this case, U and T_co better be equal.
-            return cast(Die[U], self)
-
-        # Convert to a single-argument function.
-        if callable(repl):
-            if star is None:
-                star = guess_star(repl, variadic=True)
-            if star:
-
-                def transition_function(outcome):
-                    return repl(*outcome)
-            else:
-
-                def transition_function(outcome):
-                    return repl(outcome)
-        else:
-            # repl is a mapping.
-            def transition_function(outcome):
-                if outcome in repl:
-                    return repl[outcome]
-                else:
-                    return outcome
-
-        if repeat is not None:
-            if repeat < 0:
-                raise ValueError('repeat cannot be negative.')
-            # T_co and U should be the same in this case.
-            result: 'Die[U]' = cast(Die[U], self)
-            for _ in range(repeat):
-                result = icepool.map(transition_function,
-                                     result,
-                                     again_depth=again_depth,
-                                     again_end=again_end)
-            return result
-        else:
-            # Infinite repeat.
-            # T_co and U should be the same in this case.
-            return icepool.population.markov_chain.absorbing_markov_chain(
-                cast(Die[U], self), transition_function)
+        return icepool.map(repl,
+                           self,
+                           *extra_args,
+                           star=star,
+                           repeat=repeat,
+                           again_depth=again_depth,
+                           again_end=again_end)
 
     def map_and_time(
             self,
@@ -674,7 +616,7 @@ class Die(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl, variadic=True)
+                star = guess_star(repl)
             if star:
 
                 def transition_function(outcome):
@@ -739,7 +681,7 @@ class Die(Population[T_co]):
             outcome_set = {self.max_outcome()}
         elif callable(which):
             if star is None:
-                star = guess_star(which, variadic=True)
+                star = guess_star(which)
             if star:
                 # Need TypeVarTuple to type-check this.
                 outcome_set = {

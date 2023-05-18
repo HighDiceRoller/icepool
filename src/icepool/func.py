@@ -3,6 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.population.markov_chain
 from icepool.typing import Outcome, T, U, guess_star
 
 from collections import defaultdict
@@ -10,7 +11,7 @@ from functools import cache, partial, update_wrapper, wraps
 import itertools
 import math
 
-from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Sequence, TypeAlias, cast, overload
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Mapping, Sequence, TypeAlias, cast, overload
 
 
 @cache
@@ -321,10 +322,12 @@ def iter_cartesian_product(
 
 
 def map(
-    func:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]', /,
+    repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
+    repeat: int | None = 1,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
@@ -340,8 +343,14 @@ def map(
     efficient than using `map` on the dice in order.
 
     Args:
-        func: A function that takes one argument per input `Die` and returns an
-            argument to `Die()`.
+        repl: One of the following:
+            * A callable that takes in one outcome per element of args and
+                produces a new outcome.
+            * A mapping from old outcomes to new outcomes.
+                Unmapped old outcomes stay the same.
+                In this case args must have exactly one element.
+            The new outcomes may be dice rather than just single outcomes.
+            The special value `icepool.Reroll` will reroll that old outcome.
         *args: `func` will be called with all joint outcomes of these.
             Allowed arg types are:
             * Single outcome.
@@ -349,43 +358,78 @@ def map(
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
                 to `func`, as `MultisetExpression.expand()`. The expression must
                 be fully bound.
-        star: If `True` and exactly one argument is provided, outcomes will be
-            unpacked before giving them to `func`.
-            If not provided, this will be guessed based on the function
-            signature. Since `map` accepts more than one argument, this is
-            ambiguous in the case of a variadic `func`, so in this case `star`
-            must be specified explicitly.
+        star: If `True` and exactly one argument is provided, the first of the
+            args will be unpacked before giving them to `func`.
+            If not provided, it will be guessed.
+        repeat: This will be repeated with the same arguments on the
+            result this many times, except the first of args will be replaced
+            by the result of the previous iteration.
+
+            EXPERIMENTAL: If set to `None`, the result will be as if this
+            were repeated an infinite number of times. In this case, the
+            result will be in simplest form.
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    if not callable(func):
-        raise TypeError(
-            'The first argument must be callable. Did you forget to provide a function?'
-        )
+    transition_function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]'
 
-    if len(args) == 0:
-        return icepool.Die([func()],
-                           again_depth=again_depth,
-                           again_end=again_end)
-
-    if len(args) == 1:
+    if callable(repl):
+        if len(args) == 0:
+            return icepool.Die([repl()],
+                            again_depth=again_depth,
+                            again_end=again_end)
         if star is None:
-            star = guess_star(func, variadic='error')
+            star = guess_star(repl, len(args))
         if star:
-            func = lambda o: func(*o)
+            func = cast(Callable, repl)
+            transition_function = lambda o, *extra_args: func(*o, *extra_args)
+        else:
+            transition_function = repl
+    elif isinstance(repl, Mapping):
+        if len(args) != 1:
+            raise ValueError('If a mapping is provided for repl, len(args) must be 1.')
+        mapping = cast(Mapping, repl)
+        transition_function = lambda o: mapping.get(o, o)
+    else:
+        raise TypeError('repl must be a callable or a mapping.')
 
-    final_outcomes = []
-    final_quantities = []
-    for outcomes, final_quantity in iter_cartesian_product(*args):
-        final_outcome = func(*outcomes)
-        if final_outcome is not icepool.Reroll:
-            final_outcomes.append(final_outcome)
-            final_quantities.append(final_quantity)
+    # Here len(args) is at least 1.
 
-    return icepool.Die(final_outcomes,
+    first_arg = args[0]
+    extra_args = args[1:]
+
+    if repeat is not None:
+        if repeat < 0:
+            raise ValueError('repeat cannot be negative.')
+        elif repeat == 0:
+            return icepool.Die([first_arg])
+        elif repeat == 1:
+            final_outcomes: 'list[T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]' = []
+            final_quantities: list[int] = []
+            for outcomes, final_quantity in iter_cartesian_product(*args):
+                final_outcome = transition_function(*outcomes)
+                if final_outcome is not icepool.Reroll:
+                    final_outcomes.append(final_outcome)
+                    final_quantities.append(final_quantity)
+            return icepool.Die(final_outcomes,
                        final_quantities,
                        again_depth=again_depth,
                        again_end=again_end)
+        else:
+            result: 'icepool.Die[T]' = icepool.Die([first_arg])
+            for _ in range(repeat):
+                result = icepool.map(transition_function,
+                                     result, *extra_args,
+                                     star=False,
+                                     again_depth=again_depth,
+                                     again_end=again_end)
+            return result
+    else:
+        # Infinite repeat.
+        # T_co and U should be the same in this case.
+        def unary_transition_function(state):
+            return map(transition_function, state, *extra_args, star=False, again_depth=again_depth, again_end=again_end)
+        return icepool.population.markov_chain.absorbing_markov_chain(icepool.Die([args[0]]), unary_transition_function)
 
 
 @overload
@@ -402,6 +446,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
+    repeat: int | None = 1,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
@@ -415,6 +460,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
+    repeat: int | None = 1,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
@@ -427,6 +473,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
+    repeat: int | None = 1,
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
@@ -481,7 +528,8 @@ def map_function(
             return update_wrapper(
                 partial(map,
                         func,
-                        star = star,
+                        star=star,
+                        repeat=repeat,
                         again_depth=again_depth,
                         again_end=again_end), func)
 

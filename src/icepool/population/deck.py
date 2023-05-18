@@ -140,7 +140,7 @@ class Deck(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl, variadic=True)
+                star = guess_star(repl)
             if star:
 
                 def transition_function(outcome):
