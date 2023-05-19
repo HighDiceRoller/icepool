@@ -573,84 +573,21 @@ class Die(Population[T_co]):
             repl:
         'Callable[..., T_co | Die[T_co] | icepool.RerollType] | Mapping[T_co, T_co | Die[T_co] | icepool.RerollType]',
             /,
-            *,
+            *extra_args,
             star: bool | None = None,
             repeat: int) -> 'Die[tuple[T_co, int]]':
-        """Maps outcomes of the `Die` to other outcomes, while also counting
-        timesteps.
+        """Repeatedly map outcomes of the state to other outcomes, while also
+        counting timesteps.
 
         This is useful for representing processes.
 
-        The outcomes of the result are  `(outcome, time)`, where `time` is the
-        number of repeats needed to reach an absorbing outcome (an outcome that
-        only leads to itself), or `repeat`, whichever is lesser.
-
-        This will return early if it reaches a fixed point.
-        Therefore, you can set `repeat` equal to the maximum number of
-        time you could possibly be interested in without worrying about
-        it causing extra computations after the fixed point.
-
-        EXPERIMENTAL: `Again`, `again_depth`, and `again_end` can be used as the
-        `Die()` constructor. It is not advised to use these with `repeat` other
-        than 1.
-
-        Args:
-            repl: One of the following:
-                * A callable returning a new outcome for each old outcome.
-                * A mapping from old outcomes to new outcomes.
-                    Unmapped old outcomes stay the same.
-                The new outcomes may be dice rather than just single outcomes.
-                The special value `icepool.Reroll` will reroll that old outcome.
-            star: Whether outcomes should be unpacked into separate arguments
-                before sending them to a callable `repl`.
-                If not provided, this will be guessed based on the function
-                signature.
-            repeat: This will be repeated with the same arguments on the result
-                this many times.
-            again_depth: Forwarded to the final die constructor.
-            again_end: Forwarded to the final die constructor.
-
-        Returns:
-            The `Die` after the modification.
+        As `map_and_time(repl, self, ...)`.
         """
-        # Convert to a single-argument function.
-        if callable(repl):
-            if star is None:
-                star = guess_star(repl)
-            if star:
-
-                def transition_function(outcome):
-                    return repl(*outcome)
-            else:
-
-                def transition_function(outcome):
-                    return repl(outcome)
-        else:
-            # repl is a mapping.
-            def transition_function(outcome):
-                if outcome in repl:
-                    return repl[outcome]
-                else:
-                    return outcome
-
-        result: 'Die[tuple[T_co, int]]' = self.map(lambda x: (x, 0))
-
-        def transition_with_steps(outcome_and_steps):
-            outcome, steps = outcome_and_steps
-            next_outcome = transition_function(outcome)
-            if icepool.population.markov_chain.is_absorbing(
-                    outcome, next_outcome):
-                return outcome, steps
-            else:
-                return icepool.tupleize(next_outcome, steps + 1)
-
-        for _ in range(repeat):
-            next_result: 'Die[tuple[T_co, int]]' = icepool.map(
-                transition_with_steps, result)
-            if result == next_result:
-                return next_result
-            result = next_result
-        return result
+        return icepool.map_and_time(repl,
+                                    self,
+                                    *extra_args,
+                                    star=star,
+                                    repeat=repeat)
 
     def explode(self,
                 which: Collection[T_co] | Callable[..., bool] | None = None,

@@ -320,6 +320,25 @@ def iter_cartesian_product(
         final_quantity = math.prod(quantities)
         yield outcomes, final_quantity
 
+def _canonicalize_transition_function(repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    arg_count: int,
+    star: bool | None) -> 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]':
+    if callable(repl):
+        if star is None:
+            star = guess_star(repl, arg_count)
+        if star:
+            func = cast(Callable, repl)
+            return lambda o, *extra_args: func(*o, *extra_args)
+        else:
+            return repl
+    elif isinstance(repl, Mapping):
+        if arg_count != 1:
+            raise ValueError('If a mapping is provided for repl, len(args) must be 1.')
+        mapping = cast(Mapping, repl)
+        return lambda o: mapping.get(o, o)
+    else:
+        raise TypeError('repl must be a callable or a mapping.')
 
 def map(
     repl:
@@ -371,27 +390,12 @@ def map(
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    transition_function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]'
+    transition_function = _canonicalize_transition_function(repl, len(args), star)
 
-    if callable(repl):
-        if len(args) == 0:
-            return icepool.Die([repl()],
-                            again_depth=again_depth,
-                            again_end=again_end)
-        if star is None:
-            star = guess_star(repl, len(args))
-        if star:
-            func = cast(Callable, repl)
-            transition_function = lambda o, *extra_args: func(*o, *extra_args)
-        else:
-            transition_function = repl
-    elif isinstance(repl, Mapping):
-        if len(args) != 1:
-            raise ValueError('If a mapping is provided for repl, len(args) must be 1.')
-        mapping = cast(Mapping, repl)
-        transition_function = lambda o: mapping.get(o, o)
-    else:
-        raise TypeError('repl must be a callable or a mapping.')
+    if len(args) == 0:
+        if repeat != 1:
+            raise ValueError('If no arguments are given, repeat must be 1.')
+        return icepool.Die([transition_function()], again_depth=again_depth, again_end=again_end)
 
     # Here len(args) is at least 1.
 
@@ -534,3 +538,63 @@ def map_function(
                         again_end=again_end), func)
 
         return decorator
+
+def map_and_time(
+        repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+        state,
+        /,
+        *extra_args,
+        star: bool | None = None,
+        repeat: int) -> 'icepool.Die[tuple[T, int]]':
+    """Repeatedly map outcomes of the state to other outcomes, while also
+    counting timesteps.
+
+    This is useful for representing processes.
+
+    The outcomes of the result are  `(outcome, time)`, where `time` is the
+    number of repeats needed to reach an absorbing outcome (an outcome that
+    only leads to itself), or `repeat`, whichever is lesser.
+
+    This will return early if it reaches a fixed point.
+    Therefore, you can set `repeat` equal to the maximum number of
+    time you could possibly be interested in without worrying about
+    it causing extra computations after the fixed point.
+
+    Args:
+        repl: One of the following:
+            * A callable returning a new outcome for each old outcome.
+            * A mapping from old outcomes to new outcomes.
+                Unmapped old outcomes stay the same.
+            The new outcomes may be dice rather than just single outcomes.
+            The special value `icepool.Reroll` will reroll that old outcome.
+        star: Whether outcomes should be unpacked into separate arguments
+            before sending them to a callable `repl`.
+            If not provided, this will be guessed based on the function
+            signature.
+        repeat: This will be repeated with the same arguments on the result
+            this many times.
+
+    Returns:
+        The `Die` after the modification.
+    """
+    transition_function = _canonicalize_transition_function(repl, 1 + len(extra_args), star)
+
+    result: 'icepool.Die[tuple[T, int]]' = state.map(lambda x: (x, 0))
+
+    def transition_with_steps(outcome_and_steps):
+        outcome, steps = outcome_and_steps
+        next_outcome = transition_function(outcome, *extra_args)
+        if icepool.population.markov_chain.is_absorbing(
+                outcome, next_outcome):
+            return outcome, steps
+        else:
+            return icepool.tupleize(next_outcome, steps + 1)
+
+    for _ in range(repeat):
+        next_result: 'icepool.Die[tuple[T, int]]' = map(
+            transition_with_steps, result)
+        if result == next_result:
+            return next_result
+        result = next_result
+    return result
