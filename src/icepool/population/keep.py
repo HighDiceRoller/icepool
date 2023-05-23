@@ -5,7 +5,7 @@ import icepool
 import math
 
 from icepool.typing import Outcome, T
-from typing import Iterable, Literal, cast, overload
+from typing import Iterable, Literal, Sequence, cast, overload
 
 
 @overload
@@ -29,8 +29,8 @@ def lowest(arg0,
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
-        args: Either a single iterable argument containing the dice, or two
-            or more dice. Similar to the built-in `min()`.
+        args: Dice or individual outcomes in a single iterable, or as two or
+            more separate arguments. Similar to the built-in `min()`.
         keep: The number of lowest dice will be summed.
         drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
@@ -71,8 +71,8 @@ def highest(arg0,
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
-        args: Either a single iterable argument containing the dice, or two
-            or more dice.  Similar to the built-in `max()`.
+        args: Dice or individual outcomes in a single iterable, or as two or
+            more separate arguments. Similar to the built-in `max()`.
         keep: The number of highest dice will be summed.
         drop: This number of highest dice will be dropped before keeping dice
             to be summed.
@@ -113,12 +113,11 @@ def middle(arg0,
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
-        args: Either a single iterable argument containing the dice, or two
-            or more dice.
-        keep: The number of outcomes to sum. If this is greater than the
-            current keep_size, all are kept.
-        tie: What to do if `keep` is odd but the current keep_size
-            is even, or vice versa.
+        args: Dice or individual outcomes in a single iterable, or as two or
+            more separate arguments.
+        keep: The number of outcomes to sum.
+        tie: What to do if `keep` is odd but the the number of args is even, or
+            vice versa.
             * 'error' (default): Raises `IndexError`.
             * 'high': The higher outcome is taken.
             * 'low': The lower outcome is taken.
@@ -131,16 +130,17 @@ def middle(arg0,
     return icepool.Pool(args).middle(keep, tie=tie).sum()  # type: ignore
 
 
-def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
+def _sum_slice(*args, start: int, stop: int) -> 'icepool.Die':
     """Common code for `lowest` and `highest`.
 
     Args:
-        *dice: The dice (not converted to `Die` yet).
+        *args: The dice (not converted to `Die` yet).
         start, stop: The slice `start:stop` will be kept. These will be between
             0 and len(dice) inclusive.
     """
 
-    dice = tuple(icepool.implicit_convert_to_die(die) for die in dice)
+    dice: 'Sequence[icepool.Die]' = tuple(
+        icepool.implicit_convert_to_die(arg) for arg in args)
 
     if len(dice) == 0:
         raise ValueError('At least one die must be provided.')
