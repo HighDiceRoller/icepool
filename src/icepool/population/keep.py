@@ -5,10 +5,23 @@ import icepool
 import math
 
 from icepool.typing import Outcome, T
-from typing import Literal, cast
+from typing import Iterable, Literal, cast, overload
 
 
-def lowest(*dice: 'T | icepool.Die[T]',
+@overload
+def lowest(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
+    ...
+
+
+@overload
+def lowest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
+           *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+
+def lowest(arg0,
+           /,
+           *more_args: 'T | icepool.Die[T]',
            keep: int = 1,
            drop: int = 0) -> 'icepool.Die[T]':
     """The lowest outcome among the rolls, or the sum of some of the lowest.
@@ -16,22 +29,41 @@ def lowest(*dice: 'T | icepool.Die[T]',
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
-        *dice: The dice to be considered. At least one `Die` must be provided.
+        args: Either a single iterable argument containing the dice, or two
+            or more dice. Similar to the built-in `min()`.
         keep: The number of lowest dice will be summed.
         drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
     """
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0,) + more_args
+
     if keep < 0:
         raise ValueError(f'keep={keep} cannot be negative.')
     if drop < 0:
         raise ValueError(f'drop={drop} cannot be negative.')
 
-    start = min(drop, len(dice))
-    stop = min(keep + drop, len(dice))
-    return _sum_slice(*dice, start=start, stop=stop)
+    start = min(drop, len(args))
+    stop = min(keep + drop, len(args))
+    return _sum_slice(*args, start=start, stop=stop)
 
 
-def highest(*dice: 'T | icepool.Die[T]',
+@overload
+def highest(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
+    ...
+
+
+@overload
+def highest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
+            *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+
+def highest(arg0,
+            /,
+            *more_args: 'T | icepool.Die[T]',
             keep: int = 1,
             drop: int = 0) -> 'icepool.Die[T]':
     """The highest outcome among the rolls, or the sum of some of the highest.
@@ -39,22 +71,41 @@ def highest(*dice: 'T | icepool.Die[T]',
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
-        *dice: The dice to be considered. At least one `Die` must be provided.
+        args: Either a single iterable argument containing the dice, or two
+            or more dice.  Similar to the built-in `max()`.
         keep: The number of highest dice will be summed.
         drop: This number of highest dice will be dropped before keeping dice
             to be summed.
     """
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0,) + more_args
+
     if keep < 0:
         raise ValueError(f'keep={keep} cannot be negative.')
     if drop < 0:
         raise ValueError(f'drop={drop} cannot be negative.')
 
-    start = len(dice) - min(keep + drop, len(dice))
-    stop = len(dice) - min(drop, len(dice))
-    return _sum_slice(*dice, start=start, stop=stop)
+    start = len(args) - min(keep + drop, len(args))
+    stop = len(args) - min(drop, len(args))
+    return _sum_slice(*args, start=start, stop=stop)
 
 
-def middle(*dice: 'T | icepool.Die[T]',
+@overload
+def middle(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
+    ...
+
+
+@overload
+def middle(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
+           *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+
+def middle(arg0,
+           /,
+           *more_args: 'T | icepool.Die[T]',
            keep: int = 1,
            tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die[T]':
     """The middle of the outcomes among the rolls, or the sum of some of the middle.
@@ -62,6 +113,8 @@ def middle(*dice: 'T | icepool.Die[T]',
     The outcomes should support addition and multiplication if `keep != 1`.
 
     Args:
+        args: Either a single iterable argument containing the dice, or two
+            or more dice.
         keep: The number of outcomes to sum. If this is greater than the
             current keep_size, all are kept.
         tie: What to do if `keep` is odd but the current keep_size
@@ -70,8 +123,12 @@ def middle(*dice: 'T | icepool.Die[T]',
             * 'high': The higher outcome is taken.
             * 'low': The lower outcome is taken.
     """
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0,) + more_args
     # Expression evaluators are difficult to type.
-    return icepool.Pool(dice).middle(keep, tie=tie).sum()  # type: ignore
+    return icepool.Pool(args).middle(keep, tie=tie).sum()  # type: ignore
 
 
 def _sum_slice(*dice, start: int, stop: int) -> 'icepool.Die':
