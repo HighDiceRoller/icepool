@@ -54,7 +54,7 @@ def test_largest_matching_set_and_outcome() -> None:
 def test_all_matching_sets() -> None:
     pool: Pool[int] = Pool([1, 1, 2, 4, 4])
     result = pool.all_counts().simplify()
-    expected = Die([(1, 2, 2)])
+    expected = Die([(2, 2, 1)])
     assert result == expected
 
 
@@ -84,5 +84,5 @@ def test_largest_straight_include_outcome_tiebreaker():
 
 def test_all_straights():
     result = Pool([1, 1, 2, 3, 3, 5]).all_straights().simplify()
-    expected = Die([(1, 1, 1, 3)])
+    expected = Die([(3, 1, 1, 1)])
     assert result == expected

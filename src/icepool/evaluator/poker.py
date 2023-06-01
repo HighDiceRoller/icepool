@@ -35,7 +35,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
 
 
 class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
-    """All counts in ascending order.
+    """All counts in descending order.
 
     In other words, this produces tuples of the sizes of all matching sets.
     """
@@ -54,7 +54,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         state = state or ()
         if self._filter is None or count >= self._filter:
             state = state + (count,)
-            return tuple(sorted(state))
+            return tuple(sorted(state, reverse=True))
         else:
             return state
 
@@ -148,7 +148,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
 
 
 class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
-    """The sizes of all straights in ascending order.
+    """The sizes of all straights in descending order.
 
     Each element can only contribute to one straight, though duplicates can
     produce overlapping straights.
@@ -157,22 +157,20 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
     def next_state(self, state, _, count):
         """Implementation."""
         current_runs, ended_runs = state or ((), ())
-        if count == 0:
-            next_current_runs = ()
-            next_ended_runs = tuple(sorted(ended_runs + current_runs))
-        elif count < len(current_runs):
-            next_current_runs = tuple(x + 1 for x in current_runs[-count:])
-            next_ended_runs = tuple(sorted(ended_runs + current_runs[:-count]))
+        if count < len(current_runs):
+            next_current_runs = tuple(x + 1 for x in current_runs[:count])
+            next_ended_runs = tuple(sorted(ended_runs + current_runs[count:]))
         else:
-            next_current_runs = (1,) * (count - len(current_runs)) + tuple(
-                x + 1 for x in current_runs)
+            next_current_runs = tuple(
+                x + 1
+                for x in current_runs) + (1,) * (count - len(current_runs))
             next_ended_runs = ended_runs
         return next_current_runs, next_ended_runs
 
     def final_outcome(self, final_state) -> tuple[int, ...]:
         """Implementation."""
         current_runs, ended_runs = final_state or ((), ())
-        return tuple(sorted(current_runs + ended_runs))
+        return tuple(sorted(current_runs + ended_runs, reverse=True))
 
     def order(self) -> Literal[Order.Ascending]:
         """Ascending order."""

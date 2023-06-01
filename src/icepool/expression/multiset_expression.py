@@ -613,7 +613,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self,
         filter: int | None = 1
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T_contra, tuple[int, ...]]':
-        """Produces a tuple of all counts, i.e. the sizes of all matching sets.
+        """Produces a sorted tuple of all counts, i.e. the sizes of all matching sets.
+
+        The sizes are in **descending** order.
 
         Args:
             filter: Any counts below this value will not be in the output.
@@ -666,7 +668,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def all_straights(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[int, tuple[int, ...]]':
-        """The sizes of all straights in ascending order.
+        """The sizes of all straights.
+
+        The sizes are in **descending** order.
 
         Each element can only contribute to one straight, though duplicates can
         produce overlapping straights.
