@@ -19,3 +19,4 @@
 /.vscode
 /misc/*.svg
 /*.coverage
+/apps/favicon.png
