@@ -221,6 +221,24 @@
 
             </li>
             <li>
+                    <a class="class" href="#AllStraightsEvaluator">AllStraightsEvaluator</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AllStraightsEvaluator.next_state">next_state</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllStraightsEvaluator.final_outcome">final_outcome</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllStraightsEvaluator.order">order</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AllStraightsEvaluator.alignment">alignment</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#ComparisonEvaluator">ComparisonEvaluator</a>
                             <ul class="memberlist">
                         <li>
@@ -416,29 +434,29 @@
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>                                     <span class="n">sum_evaluator</span><span class="p">,</span> <span class="n">CountEvaluator</span><span class="p">,</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>                                     <span class="n">count_evaluator</span><span class="p">,</span> <span class="n">AnyEvaluator</span><span class="p">,</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>                                     <span class="n">any_evaluator</span><span class="p">)</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.poker</span> <span class="kn">import</span> <span class="p">(</span><span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">,</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>                                     <span class="n">LargestCountEvaluator</span><span class="p">,</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>                                     <span class="n">LargestCountAndOutcomeEvaluator</span><span class="p">,</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>                                     <span class="n">AllCountsEvaluator</span><span class="p">,</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>                                     <span class="n">LargestStraightEvaluator</span><span class="p">,</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>                                     <span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">)</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.comparison</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.constant</span> <span class="kn">import</span> <span class="n">ConstantEvaluator</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.keep</span> <span class="kn">import</span> <span class="n">KeepEvaluator</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.expression</span> <span class="kn">import</span> <span class="n">ExpressionEvaluator</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;CountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;count_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;any_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.poker</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">,</span> <span class="n">LargestCountEvaluator</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">LargestCountAndOutcomeEvaluator</span><span class="p">,</span> <span class="n">AllCountsEvaluator</span><span class="p">,</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">LargestStraightEvaluator</span><span class="p">,</span> <span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">,</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">AllStraightsEvaluator</span><span class="p">)</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.comparison</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.joint</span> <span class="kn">import</span> <span class="n">JointEvaluator</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.constant</span> <span class="kn">import</span> <span class="n">ConstantEvaluator</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.keep</span> <span class="kn">import</span> <span class="n">KeepEvaluator</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.expression</span> <span class="kn">import</span> <span class="n">ExpressionEvaluator</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="s1">&#39;JointEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="s1">&#39;CountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;count_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;any_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="s1">&#39;AllStraightsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ConstantEvaluator&#39;</span><span class="p">,</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s1">&#39;KeepEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ExpressionEvaluator&#39;</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="p">]</span>
@@ -2260,6 +2278,216 @@ set of parameters.</p>
                 <dd id="LargestStraightAndOutcomeEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.sample" class="function">sample</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="AllStraightsEvaluator">
+                            <input id="AllStraightsEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">AllStraightsEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[int, tuple[int, ...]]</span>):
+
+                <label class="view-source-button" for="AllStraightsEvaluator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllStraightsEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator-151"><a href="#AllStraightsEvaluator-151"><span class="linenos">151</span></a><span class="k">class</span> <span class="nc">AllStraightsEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]):</span>
+</span><span id="AllStraightsEvaluator-152"><a href="#AllStraightsEvaluator-152"><span class="linenos">152</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The sizes of all straights in ascending order.</span>
+</span><span id="AllStraightsEvaluator-153"><a href="#AllStraightsEvaluator-153"><span class="linenos">153</span></a>
+</span><span id="AllStraightsEvaluator-154"><a href="#AllStraightsEvaluator-154"><span class="linenos">154</span></a><span class="sd">    Each element can only contribute to one straight, though duplicates can</span>
+</span><span id="AllStraightsEvaluator-155"><a href="#AllStraightsEvaluator-155"><span class="linenos">155</span></a><span class="sd">    produce overlapping straights.</span>
+</span><span id="AllStraightsEvaluator-156"><a href="#AllStraightsEvaluator-156"><span class="linenos">156</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator-157"><a href="#AllStraightsEvaluator-157"><span class="linenos">157</span></a>
+</span><span id="AllStraightsEvaluator-158"><a href="#AllStraightsEvaluator-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator-159"><a href="#AllStraightsEvaluator-159"><span class="linenos">159</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator-160"><a href="#AllStraightsEvaluator-160"><span class="linenos">160</span></a>        <span class="n">current_runs</span><span class="p">,</span> <span class="n">ended_runs</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((),</span> <span class="p">())</span>
+</span><span id="AllStraightsEvaluator-161"><a href="#AllStraightsEvaluator-161"><span class="linenos">161</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator-162"><a href="#AllStraightsEvaluator-162"><span class="linenos">162</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator-163"><a href="#AllStraightsEvaluator-163"><span class="linenos">163</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="n">current_runs</span><span class="p">))</span>
+</span><span id="AllStraightsEvaluator-164"><a href="#AllStraightsEvaluator-164"><span class="linenos">164</span></a>        <span class="k">elif</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_runs</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator-165"><a href="#AllStraightsEvaluator-165"><span class="linenos">165</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">current_runs</span><span class="p">[</span><span class="o">-</span><span class="n">count</span><span class="p">:])</span>
+</span><span id="AllStraightsEvaluator-166"><a href="#AllStraightsEvaluator-166"><span class="linenos">166</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="n">current_runs</span><span class="p">[:</span><span class="o">-</span><span class="n">count</span><span class="p">]))</span>
+</span><span id="AllStraightsEvaluator-167"><a href="#AllStraightsEvaluator-167"><span class="linenos">167</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator-168"><a href="#AllStraightsEvaluator-168"><span class="linenos">168</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_runs</span><span class="p">))</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator-169"><a href="#AllStraightsEvaluator-169"><span class="linenos">169</span></a>                <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">current_runs</span><span class="p">)</span>
+</span><span id="AllStraightsEvaluator-170"><a href="#AllStraightsEvaluator-170"><span class="linenos">170</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="n">ended_runs</span>
+</span><span id="AllStraightsEvaluator-171"><a href="#AllStraightsEvaluator-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="n">next_current_runs</span><span class="p">,</span> <span class="n">next_ended_runs</span>
+</span><span id="AllStraightsEvaluator-172"><a href="#AllStraightsEvaluator-172"><span class="linenos">172</span></a>
+</span><span id="AllStraightsEvaluator-173"><a href="#AllStraightsEvaluator-173"><span class="linenos">173</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator-174"><a href="#AllStraightsEvaluator-174"><span class="linenos">174</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator-175"><a href="#AllStraightsEvaluator-175"><span class="linenos">175</span></a>        <span class="n">current_runs</span><span class="p">,</span> <span class="n">ended_runs</span> <span class="o">=</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="p">((),</span> <span class="p">())</span>
+</span><span id="AllStraightsEvaluator-176"><a href="#AllStraightsEvaluator-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">current_runs</span> <span class="o">+</span> <span class="n">ended_runs</span><span class="p">))</span>
+</span><span id="AllStraightsEvaluator-177"><a href="#AllStraightsEvaluator-177"><span class="linenos">177</span></a>
+</span><span id="AllStraightsEvaluator-178"><a href="#AllStraightsEvaluator-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator-179"><a href="#AllStraightsEvaluator-179"><span class="linenos">179</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator-180"><a href="#AllStraightsEvaluator-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span><span id="AllStraightsEvaluator-181"><a href="#AllStraightsEvaluator-181"><span class="linenos">181</span></a>
+</span><span id="AllStraightsEvaluator-182"><a href="#AllStraightsEvaluator-182"><span class="linenos">182</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The sizes of all straights in ascending order.</p>
+
+<p>Each element can only contribute to one straight, though duplicates can
+produce overlapping straights.</p>
+</div>
+
+
+                            <div id="AllStraightsEvaluator.next_state" class="classattr">
+                                        <input id="AllStraightsEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">_</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="AllStraightsEvaluator.next_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllStraightsEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.next_state-158"><a href="#AllStraightsEvaluator.next_state-158"><span class="linenos">158</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.next_state-159"><a href="#AllStraightsEvaluator.next_state-159"><span class="linenos">159</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.next_state-160"><a href="#AllStraightsEvaluator.next_state-160"><span class="linenos">160</span></a>        <span class="n">current_runs</span><span class="p">,</span> <span class="n">ended_runs</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">((),</span> <span class="p">())</span>
+</span><span id="AllStraightsEvaluator.next_state-161"><a href="#AllStraightsEvaluator.next_state-161"><span class="linenos">161</span></a>        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.next_state-162"><a href="#AllStraightsEvaluator.next_state-162"><span class="linenos">162</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator.next_state-163"><a href="#AllStraightsEvaluator.next_state-163"><span class="linenos">163</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="n">current_runs</span><span class="p">))</span>
+</span><span id="AllStraightsEvaluator.next_state-164"><a href="#AllStraightsEvaluator.next_state-164"><span class="linenos">164</span></a>        <span class="k">elif</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_runs</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.next_state-165"><a href="#AllStraightsEvaluator.next_state-165"><span class="linenos">165</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">current_runs</span><span class="p">[</span><span class="o">-</span><span class="n">count</span><span class="p">:])</span>
+</span><span id="AllStraightsEvaluator.next_state-166"><a href="#AllStraightsEvaluator.next_state-166"><span class="linenos">166</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="n">current_runs</span><span class="p">[:</span><span class="o">-</span><span class="n">count</span><span class="p">]))</span>
+</span><span id="AllStraightsEvaluator.next_state-167"><a href="#AllStraightsEvaluator.next_state-167"><span class="linenos">167</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.next_state-168"><a href="#AllStraightsEvaluator.next_state-168"><span class="linenos">168</span></a>            <span class="n">next_current_runs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="p">(</span><span class="n">count</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_runs</span><span class="p">))</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator.next_state-169"><a href="#AllStraightsEvaluator.next_state-169"><span class="linenos">169</span></a>                <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">current_runs</span><span class="p">)</span>
+</span><span id="AllStraightsEvaluator.next_state-170"><a href="#AllStraightsEvaluator.next_state-170"><span class="linenos">170</span></a>            <span class="n">next_ended_runs</span> <span class="o">=</span> <span class="n">ended_runs</span>
+</span><span id="AllStraightsEvaluator.next_state-171"><a href="#AllStraightsEvaluator.next_state-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="n">next_current_runs</span><span class="p">,</span> <span class="n">next_ended_runs</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="AllStraightsEvaluator.final_outcome" class="classattr">
+                                        <input id="AllStraightsEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="AllStraightsEvaluator.final_outcome-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllStraightsEvaluator.final_outcome"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.final_outcome-173"><a href="#AllStraightsEvaluator.final_outcome-173"><span class="linenos">173</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.final_outcome-174"><a href="#AllStraightsEvaluator.final_outcome-174"><span class="linenos">174</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.final_outcome-175"><a href="#AllStraightsEvaluator.final_outcome-175"><span class="linenos">175</span></a>        <span class="n">current_runs</span><span class="p">,</span> <span class="n">ended_runs</span> <span class="o">=</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="p">((),</span> <span class="p">())</span>
+</span><span id="AllStraightsEvaluator.final_outcome-176"><a href="#AllStraightsEvaluator.final_outcome-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">current_runs</span> <span class="o">+</span> <span class="n">ended_runs</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="AllStraightsEvaluator.order" class="classattr">
+                                        <input id="AllStraightsEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">Literal</span><span class="p">[</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span><span class="p">:</span> <span class="mi">1</span><span class="o">&gt;</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="AllStraightsEvaluator.order-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllStraightsEvaluator.order"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.order-178"><a href="#AllStraightsEvaluator.order-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.order-179"><a href="#AllStraightsEvaluator.order-179"><span class="linenos">179</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.order-180"><a href="#AllStraightsEvaluator.order-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Ascending order.</p>
+</div>
+
+
+                            </div>
+                            <div id="AllStraightsEvaluator.alignment" class="classattr">
+                                        <input id="AllStraightsEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="AllStraightsEvaluator.alignment-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AllStraightsEvaluator.alignment"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.alignment-167"><a href="#AllStraightsEvaluator.alignment-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.alignment-168"><a href="#AllStraightsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsEvaluator.alignment-169"><a href="#AllStraightsEvaluator.alignment-169"><span class="linenos">169</span></a>
+</span><span id="AllStraightsEvaluator.alignment-170"><a href="#AllStraightsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="AllStraightsEvaluator.alignment-171"><a href="#AllStraightsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="AllStraightsEvaluator.alignment-172"><a href="#AllStraightsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="AllStraightsEvaluator.alignment-173"><a href="#AllStraightsEvaluator.alignment-173"><span class="linenos">173</span></a><span class="sd">        set of parameters.</span>
+</span><span id="AllStraightsEvaluator.alignment-174"><a href="#AllStraightsEvaluator.alignment-174"><span class="linenos">174</span></a>
+</span><span id="AllStraightsEvaluator.alignment-175"><a href="#AllStraightsEvaluator.alignment-175"><span class="linenos">175</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="AllStraightsEvaluator.alignment-176"><a href="#AllStraightsEvaluator.alignment-176"><span class="linenos">176</span></a>
+</span><span id="AllStraightsEvaluator.alignment-177"><a href="#AllStraightsEvaluator.alignment-177"><span class="linenos">177</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsEvaluator.alignment-178"><a href="#AllStraightsEvaluator.alignment-178"><span class="linenos">178</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="AllStraightsEvaluator.alignment-179"><a href="#AllStraightsEvaluator.alignment-179"><span class="linenos">179</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsEvaluator.alignment-180"><a href="#AllStraightsEvaluator.alignment-180"><span class="linenos">180</span></a>
+</span><span id="AllStraightsEvaluator.alignment-181"><a href="#AllStraightsEvaluator.alignment-181"><span class="linenos">181</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsEvaluator.alignment-182"><a href="#AllStraightsEvaluator.alignment-182"><span class="linenos">182</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="AllStraightsEvaluator.alignment-183"><a href="#AllStraightsEvaluator.alignment-183"><span class="linenos">183</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.alignment-184"><a href="#AllStraightsEvaluator.alignment-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.alignment-185"><a href="#AllStraightsEvaluator.alignment-185"><span class="linenos">185</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator.alignment-186"><a href="#AllStraightsEvaluator.alignment-186"><span class="linenos">186</span></a>
+</span><span id="AllStraightsEvaluator.alignment-187"><a href="#AllStraightsEvaluator.alignment-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.alignment-188"><a href="#AllStraightsEvaluator.alignment-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator.alignment-189"><a href="#AllStraightsEvaluator.alignment-189"><span class="linenos">189</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsEvaluator.alignment-190"><a href="#AllStraightsEvaluator.alignment-190"><span class="linenos">190</span></a>            <span class="p">)</span>
+</span><span id="AllStraightsEvaluator.alignment-191"><a href="#AllStraightsEvaluator.alignment-191"><span class="linenos">191</span></a>
+</span><span id="AllStraightsEvaluator.alignment-192"><a href="#AllStraightsEvaluator.alignment-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Example implementation of <code><a href="#AllStraightsEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
+
+<p>There is no expectation that a subclass be able to handle
+an arbitrary number of generators. Thus, you are free to rename any of
+the parameters in a subclass, or to replace <code>*generators</code> with a fixed
+set of parameters.</p>
+
+<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>All <code>int</code>s from the min outcome to the max outcome among the generators,
+  inclusive.</p>
+</blockquote>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>TypeError:</strong>  if any generator has any non-<code>int</code> outcome.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
+                                <dd id="AllStraightsEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="AllStraightsEvaluator.prefix_generators" class="function">prefix_generators</dd>
+                <dd id="AllStraightsEvaluator.validate_arity" class="function">validate_arity</dd>
+                <dd id="AllStraightsEvaluator.evaluate" class="function">evaluate</dd>
+                <dd id="AllStraightsEvaluator.sample" class="function">sample</dd>
 
             </div>
                                 </dl>
