@@ -541,10 +541,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
         """Attaches a final `MultisetEvaluator` to expressions.
 
-        All of the `MultisetExpression` methods following this are evaluations.
+        All of the `MultisetExpression` methods below are evaluations,
+        as are the operators `<, <=, >, >=, !=, ==`. This means if the
+        expression is fully bound, it will be evaluated to a `Die`.
 
         Returns:
-            A `Die` if all expressions are fully bound.
+            A `Die` if the expression is are fully bound.
             A `MultisetEvaluator` otherwise.
         """
         if all(
@@ -561,7 +563,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def expand(
         self
     ) -> 'icepool.Die[tuple[T_contra, ...]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, ...]]':
-        """All elements of the multiset.
+        """Evaluation: All elements of the multiset.
 
         This is expensive and not recommended unless there are few possibilities.
         """
@@ -571,7 +573,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self,
         map: Callable[[T_contra], U] | Mapping[T_contra, U] | None = None
     ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T_contra, U]':
-        """The sum of all elements."""
+        """Evaluation: The sum of all elements."""
         if map is None:
             return self.evaluate(evaluator=icepool.evaluator.sum_evaluator)
         else:
@@ -580,7 +582,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def count(
             self
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        """The total number of elements in the multiset.
+        """Evaluation: The total number of elements in the multiset.
 
         This is usually not very interesting unless some other operation is
         performed first. Examples:
@@ -595,13 +597,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def any(
         self
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether the multiset has at least one positive count."""
+        """Evaluation: Whether the multiset has at least one positive count."""
         return self.evaluate(evaluator=icepool.evaluator.any_evaluator)
 
     def highest_outcome_and_count(
         self
     ) -> 'icepool.Die[tuple[T_contra, int]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, int]]':
-        """The highest outcome with positive count, along with that count.
+        """Evaluation: The highest outcome with positive count, along with that count.
 
         If no outcomes have positive count, an arbitrary outcome will be
         produced with a 0 count.
@@ -613,7 +615,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self,
         filter: int | None = 1
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T_contra, tuple[int, ...]]':
-        """Produces a sorted tuple of all counts, i.e. the sizes of all matching sets.
+        """Evaluation: Sorted tuple of all counts, i.e. the sizes of all matching sets.
 
         The sizes are in **descending** order.
 
@@ -634,21 +636,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def largest_count(
             self
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        """The size of the largest matching set among the elements."""
+        """Evaluation: The size of the largest matching set among the elements."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountEvaluator())
 
     def largest_count_and_outcome(
         self
     ) -> 'icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]':
-        """The largest matching set among the elements and the corresponding outcome."""
+        """Evaluation: The largest matching set among the elements and the corresponding outcome."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
 
     def largest_straight(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
-        """The size of the largest straight among the elements.
+        """Evaluation: The size of the largest straight among the elements.
 
         Outcomes must be `int`s.
         """
@@ -658,7 +660,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def largest_straight_and_outcome(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
-        """The size of the largest straight among the elements and the highest outcome in that straight.
+        """Evaluation: The size of the largest straight among the elements and the highest outcome in that straight.
 
         Outcomes must be `int`s.
         """
@@ -668,7 +670,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def all_straights(
         self: 'MultisetExpression[int]'
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[int, tuple[int, ...]]':
-        """The sizes of all straights.
+        """Evaluation: The sizes of all straights.
 
         The sizes are in **descending** order.
 
@@ -726,7 +728,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether this multiset is a subset of the other multiset.
+        """Evaluation: Whether this multiset is a subset of the other multiset.
 
         Same as `self <= other`.
         """
@@ -758,7 +760,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether this multiset is a superset of the other multiset.
+        """Evaluation: Whether this multiset is a superset of the other multiset.
 
         Same as `self >= other`.
         """
@@ -792,5 +794,5 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Whether this multiset is disjoint from the other multiset."""
+        """Evaluation: Whether this multiset is disjoint from the other multiset."""
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
