@@ -145,3 +145,37 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         return Order.Ascending
 
     alignment = MultisetEvaluator.range_alignment
+
+
+class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
+    """The sizes of all straights in ascending order.
+
+    Each element can only contribute to one straight, though duplicates can
+    produce overlapping straights.
+    """
+
+    def next_state(self, state, _, count):
+        """Implementation."""
+        current_runs, ended_runs = state or ((), ())
+        if count == 0:
+            next_current_runs = ()
+            next_ended_runs = tuple(sorted(ended_runs + current_runs))
+        elif count < len(current_runs):
+            next_current_runs = tuple(x + 1 for x in current_runs[-count:])
+            next_ended_runs = tuple(sorted(ended_runs + current_runs[:-count]))
+        else:
+            next_current_runs = (1,) * (count - len(current_runs)) + tuple(
+                x + 1 for x in current_runs)
+            next_ended_runs = ended_runs
+        return next_current_runs, next_ended_runs
+
+    def final_outcome(self, final_state) -> tuple[int, ...]:
+        """Implementation."""
+        current_runs, ended_runs = final_state or ((), ())
+        return tuple(sorted(current_runs + ended_runs))
+
+    def order(self) -> Literal[Order.Ascending]:
+        """Ascending order."""
+        return Order.Ascending
+
+    alignment = MultisetEvaluator.range_alignment

@@ -663,6 +663,17 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return self.evaluate(
             evaluator=icepool.evaluator.LargestStraightAndOutcomeEvaluator())
 
+    def all_straights(
+        self: 'MultisetExpression[int]'
+    ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[int, tuple[int, ...]]':
+        """The sizes of all straights in ascending order.
+
+        Each element can only contribute to one straight, though duplicates can
+        produce overlapping straights.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.AllStraightsEvaluator())
+
     # Comparators.
 
     def _compare(

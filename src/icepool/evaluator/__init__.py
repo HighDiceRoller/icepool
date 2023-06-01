@@ -6,12 +6,11 @@ from icepool.evaluator.basic import (ExpandEvaluator, SumEvaluator,
                                      sum_evaluator, CountEvaluator,
                                      count_evaluator, AnyEvaluator,
                                      any_evaluator)
-from icepool.evaluator.poker import (HighestOutcomeAndCountEvaluator,
-                                     LargestCountEvaluator,
-                                     LargestCountAndOutcomeEvaluator,
-                                     AllCountsEvaluator,
-                                     LargestStraightEvaluator,
-                                     LargestStraightAndOutcomeEvaluator)
+from icepool.evaluator.poker import (
+    HighestOutcomeAndCountEvaluator, LargestCountEvaluator,
+    LargestCountAndOutcomeEvaluator, AllCountsEvaluator,
+    LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator,
+    AllStraightsEvaluator)
 from icepool.evaluator.comparison import (
     ComparisonEvaluator, IsSubsetEvaluator, IsProperSubsetEvaluator,
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
@@ -27,8 +26,9 @@ __all__ = [
     'HighestOutcomeAndCountEvaluator', 'LargestCountEvaluator',
     'LargestCountAndOutcomeEvaluator', 'AllCountsEvaluator',
     'LargestStraightEvaluator', 'LargestStraightAndOutcomeEvaluator',
-    'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
-    'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
+    'AllStraightsEvaluator', 'ComparisonEvaluator', 'IsSubsetEvaluator',
+    'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
+    'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'ConstantEvaluator',
     'KeepEvaluator', 'ExpressionEvaluator'
 ]

@@ -80,3 +80,9 @@ def test_largest_straight_include_outcome_tiebreaker():
     result = Pool([1, 2, 5, 10, 11]).largest_straight_and_outcome().simplify()
     expected = Die([(2, 11)])
     assert result == expected
+
+
+def test_all_straights():
+    result = Pool([1, 1, 2, 3, 3, 5]).all_straights().simplify()
+    expected = Die([(1, 1, 1, 3)])
+    assert result == expected
