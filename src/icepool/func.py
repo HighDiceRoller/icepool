@@ -361,6 +361,9 @@ def map(
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
     efficient than using `map` on the dice in order.
 
+    `Again` can be used but is not recommended with `repeat` other than 1.
+    It will re-roll the current stage, not the entire series.
+
     Args:
         repl: One of the following:
             * A callable that takes in one outcome per element of args and
@@ -377,9 +380,10 @@ def map(
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
                 to `func`, as `MultisetExpression.expand()`. The expression must
                 be fully bound.
-        star: If `True` and exactly one argument is provided, the first of the
-            args will be unpacked before giving them to `func`.
-            If not provided, it will be guessed.
+        star: If `True`, the first of the args will be unpacked before giving
+            them to `func`.
+            If not provided, it will be guessed based on the signature of `func`
+            and the number of arguments.
         repeat: This will be repeated with the same arguments on the
             result this many times, except the first of args will be replaced
             by the result of the previous iteration.
@@ -568,10 +572,10 @@ def map_and_time(
                 Unmapped old outcomes stay the same.
             The new outcomes may be dice rather than just single outcomes.
             The special value `icepool.Reroll` will reroll that old outcome.
-        star: Whether outcomes should be unpacked into separate arguments
-            before sending them to a callable `repl`.
-            If not provided, this will be guessed based on the function
-            signature.
+        star: If `True`, the first of the args will be unpacked before giving
+            them to `func`.
+            If not provided, it will be guessed based on the signature of `func`
+            and the number of arguments.
         repeat: This will be repeated with the same arguments on the result
             this many times.
 
