@@ -83,6 +83,18 @@ def test_random_walk():
     assert result.equals(icepool.Die([-2, 2]))
 
 
+def test_random_walk_extra_arg():
+
+    def repl(x, step):
+        if abs(x) >= 2:
+            return x
+        else:
+            return x + step
+
+    result = icepool.map(repl, 0, Die([-1, 1]), repeat=None).simplify()
+    assert result == Die([-2, 2])
+
+
 def test_random_walk_biased():
 
     def repl(x):
@@ -92,6 +104,18 @@ def test_random_walk_biased():
 
     result = icepool.Die([0]).map(repl, repeat=None).simplify()
     assert result.equals(icepool.Die([-2, 2], times=[1, 4]))
+
+
+def test_random_walk_biased_extra_arg():
+
+    def repl(x, step):
+        if abs(x) >= 2:
+            return x
+        else:
+            return x + step
+
+    result = icepool.map(repl, 0, Die([-1, 1, 1]), repeat=None).simplify()
+    assert result == icepool.Die([-2, 2], times=[1, 4])
 
 
 def test_is_in():
