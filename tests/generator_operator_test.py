@@ -68,13 +68,13 @@ def test_example_divide_counts():
     assert result == Die([expected])
 
 
-def test_example_filter_counts():
-    expected = Pool([1, 2, 2, 3]).filter_counts(2).expand()
+def test_example_keep_counts():
+    expected = Pool([1, 2, 2, 3]).keep_counts(2).expand()
     result = Die([(2, 2)])
     assert result == Die([expected])
 
 
-def test_example_filter_counts_using_map():
+def test_example_keep_counts_using_map():
     expected = Pool([1, 2, 2,
                      3]).map_counts(lambda o, c: c if c >= 2 else 0).expand()
     result = Die([(2, 2)])

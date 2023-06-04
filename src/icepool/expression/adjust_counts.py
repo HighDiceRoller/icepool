@@ -146,7 +146,7 @@ class FilterCountsExpression(AdjustCountsExpression):
             return count
 
     def __str__(self) -> str:
-        return f'{self._inner}.filter_counts({self._constant})'
+        return f'{self._inner}.keep_counts({self._constant})'
 
 
 class UniqueExpression(AdjustCountsExpression):

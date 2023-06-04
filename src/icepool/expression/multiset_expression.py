@@ -414,15 +414,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return self // constant
 
-    def filter_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
+    def keep_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
         """Counts less than `min_count` are treated as zero.
 
-        For example, `generator.filter_counts(2)` would only produce
+        For example, `generator.keep_counts(2)` would only produce
         pairs and better.
 
         Example:
         ```
-        Pool([1, 2, 2, 3]).filter_counts(2) -> [2, 2]
+        Pool([1, 2, 2, 3]).keep_counts(2) -> [2, 2]
         ```
         """
         return icepool.expression.FilterCountsExpression(self, min_count)
@@ -624,8 +624,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 For example, `filter=2` will only produce pairs and better.
                 If `None`, no filtering will be done.
 
-                Why not just place `filter_counts()` before this?
-                `filter_counts()` operates by setting counts to zero, so you
+                Why not just place `keep_counts()` before this?
+                `keep_counts()` operates by setting counts to zero, so you
                 would still need an argument to specify whether you want to
                 output zero counts. So we might as well use the argument to do
                 both.
