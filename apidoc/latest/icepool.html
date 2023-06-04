@@ -606,7 +606,7 @@
                                 <a class="function" href="#MultisetExpression.divide_counts">divide_counts</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultisetExpression.filter_counts">filter_counts</a>
+                                <a class="function" href="#MultisetExpression.keep_counts">keep_counts</a>
                         </li>
                         <li>
                                 <a class="function" href="#MultisetExpression.unique">unique</a>
@@ -9820,7 +9820,7 @@ instead of merging the rolls after the fact.</p>
                 <dd id="Pool.drop_outcomes" class="function"><a href="#MultisetExpression.drop_outcomes">drop_outcomes</a></dd>
                 <dd id="Pool.map_counts" class="function"><a href="#MultisetExpression.map_counts">map_counts</a></dd>
                 <dd id="Pool.divide_counts" class="function"><a href="#MultisetExpression.divide_counts">divide_counts</a></dd>
-                <dd id="Pool.filter_counts" class="function"><a href="#MultisetExpression.filter_counts">filter_counts</a></dd>
+                <dd id="Pool.keep_counts" class="function"><a href="#MultisetExpression.keep_counts">keep_counts</a></dd>
                 <dd id="Pool.unique" class="function"><a href="#MultisetExpression.unique">unique</a></dd>
                 <dd id="Pool.evaluate" class="function"><a href="#MultisetExpression.evaluate">evaluate</a></dd>
                 <dd id="Pool.expand" class="function"><a href="#MultisetExpression.expand">expand</a></dd>
@@ -10331,7 +10331,7 @@ secure.</p>
                 <dd id="MultisetGenerator.map_counts" class="function"><a href="#MultisetExpression.map_counts">map_counts</a></dd>
                 <dd id="MultisetGenerator.multiply_counts" class="function"><a href="#MultisetExpression.multiply_counts">multiply_counts</a></dd>
                 <dd id="MultisetGenerator.divide_counts" class="function"><a href="#MultisetExpression.divide_counts">divide_counts</a></dd>
-                <dd id="MultisetGenerator.filter_counts" class="function"><a href="#MultisetExpression.filter_counts">filter_counts</a></dd>
+                <dd id="MultisetGenerator.keep_counts" class="function"><a href="#MultisetExpression.keep_counts">keep_counts</a></dd>
                 <dd id="MultisetGenerator.unique" class="function"><a href="#MultisetExpression.unique">unique</a></dd>
                 <dd id="MultisetGenerator.keep" class="function"><a href="#MultisetExpression.keep">keep</a></dd>
                 <dd id="MultisetGenerator.lowest" class="function"><a href="#MultisetExpression.lowest">lowest</a></dd>
@@ -10522,7 +10522,7 @@ affecting a multiset evaluation.</p>
                 <dd id="Alignment.map_counts" class="function"><a href="#MultisetExpression.map_counts">map_counts</a></dd>
                 <dd id="Alignment.multiply_counts" class="function"><a href="#MultisetExpression.multiply_counts">multiply_counts</a></dd>
                 <dd id="Alignment.divide_counts" class="function"><a href="#MultisetExpression.divide_counts">divide_counts</a></dd>
-                <dd id="Alignment.filter_counts" class="function"><a href="#MultisetExpression.filter_counts">filter_counts</a></dd>
+                <dd id="Alignment.keep_counts" class="function"><a href="#MultisetExpression.keep_counts">keep_counts</a></dd>
                 <dd id="Alignment.unique" class="function"><a href="#MultisetExpression.unique">unique</a></dd>
                 <dd id="Alignment.keep" class="function"><a href="#MultisetExpression.keep">keep</a></dd>
                 <dd id="Alignment.lowest" class="function"><a href="#MultisetExpression.lowest">lowest</a></dd>
@@ -10939,15 +10939,15 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-415"><a href="#MultisetExpression-415"><span class="linenos">415</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-416"><a href="#MultisetExpression-416"><span class="linenos">416</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">//</span> <span class="n">constant</span>
 </span><span id="MultisetExpression-417"><a href="#MultisetExpression-417"><span class="linenos">417</span></a>
-</span><span id="MultisetExpression-418"><a href="#MultisetExpression-418"><span class="linenos">418</span></a>    <span class="k">def</span> <span class="nf">filter_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetExpression[T_contra]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-418"><a href="#MultisetExpression-418"><span class="linenos">418</span></a>    <span class="k">def</span> <span class="nf">keep_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetExpression[T_contra]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression-419"><a href="#MultisetExpression-419"><span class="linenos">419</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts less than `min_count` are treated as zero.</span>
 </span><span id="MultisetExpression-420"><a href="#MultisetExpression-420"><span class="linenos">420</span></a>
-</span><span id="MultisetExpression-421"><a href="#MultisetExpression-421"><span class="linenos">421</span></a><span class="sd">        For example, `generator.filter_counts(2)` would only produce</span>
+</span><span id="MultisetExpression-421"><a href="#MultisetExpression-421"><span class="linenos">421</span></a><span class="sd">        For example, `generator.keep_counts(2)` would only produce</span>
 </span><span id="MultisetExpression-422"><a href="#MultisetExpression-422"><span class="linenos">422</span></a><span class="sd">        pairs and better.</span>
 </span><span id="MultisetExpression-423"><a href="#MultisetExpression-423"><span class="linenos">423</span></a>
 </span><span id="MultisetExpression-424"><a href="#MultisetExpression-424"><span class="linenos">424</span></a><span class="sd">        Example:</span>
 </span><span id="MultisetExpression-425"><a href="#MultisetExpression-425"><span class="linenos">425</span></a><span class="sd">        ```</span>
-</span><span id="MultisetExpression-426"><a href="#MultisetExpression-426"><span class="linenos">426</span></a><span class="sd">        Pool([1, 2, 2, 3]).filter_counts(2) -&gt; [2, 2]</span>
+</span><span id="MultisetExpression-426"><a href="#MultisetExpression-426"><span class="linenos">426</span></a><span class="sd">        Pool([1, 2, 2, 3]).keep_counts(2) -&gt; [2, 2]</span>
 </span><span id="MultisetExpression-427"><a href="#MultisetExpression-427"><span class="linenos">427</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-428"><a href="#MultisetExpression-428"><span class="linenos">428</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-429"><a href="#MultisetExpression-429"><span class="linenos">429</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">FilterCountsExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">)</span>
@@ -11149,8 +11149,8 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-625"><a href="#MultisetExpression-625"><span class="linenos">625</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression-626"><a href="#MultisetExpression-626"><span class="linenos">626</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression-627"><a href="#MultisetExpression-627"><span class="linenos">627</span></a>
-</span><span id="MultisetExpression-628"><a href="#MultisetExpression-628"><span class="linenos">628</span></a><span class="sd">                Why not just place `filter_counts()` before this?</span>
-</span><span id="MultisetExpression-629"><a href="#MultisetExpression-629"><span class="linenos">629</span></a><span class="sd">                `filter_counts()` operates by setting counts to zero, so you</span>
+</span><span id="MultisetExpression-628"><a href="#MultisetExpression-628"><span class="linenos">628</span></a><span class="sd">                Why not just place `keep_counts()` before this?</span>
+</span><span id="MultisetExpression-629"><a href="#MultisetExpression-629"><span class="linenos">629</span></a><span class="sd">                `keep_counts()` operates by setting counts to zero, so you</span>
 </span><span id="MultisetExpression-630"><a href="#MultisetExpression-630"><span class="linenos">630</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
 </span><span id="MultisetExpression-631"><a href="#MultisetExpression-631"><span class="linenos">631</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression-632"><a href="#MultisetExpression-632"><span class="linenos">632</span></a><span class="sd">                both.</span>
@@ -11784,40 +11784,40 @@ a modified count.</li>
 
 
                             </div>
-                            <div id="MultisetExpression.filter_counts" class="classattr">
-                                        <input id="MultisetExpression.filter_counts-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="MultisetExpression.keep_counts" class="classattr">
+                                        <input id="MultisetExpression.keep_counts-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">filter_counts</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetExpression">icepool.MultisetExpression</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
+        <span class="name">keep_counts</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetExpression">icepool.MultisetExpression</a></span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="MultisetExpression.filter_counts-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MultisetExpression.keep_counts-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#MultisetExpression.filter_counts"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.filter_counts-418"><a href="#MultisetExpression.filter_counts-418"><span class="linenos">418</span></a>    <span class="k">def</span> <span class="nf">filter_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetExpression[T_contra]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression.filter_counts-419"><a href="#MultisetExpression.filter_counts-419"><span class="linenos">419</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts less than `min_count` are treated as zero.</span>
-</span><span id="MultisetExpression.filter_counts-420"><a href="#MultisetExpression.filter_counts-420"><span class="linenos">420</span></a>
-</span><span id="MultisetExpression.filter_counts-421"><a href="#MultisetExpression.filter_counts-421"><span class="linenos">421</span></a><span class="sd">        For example, `generator.filter_counts(2)` would only produce</span>
-</span><span id="MultisetExpression.filter_counts-422"><a href="#MultisetExpression.filter_counts-422"><span class="linenos">422</span></a><span class="sd">        pairs and better.</span>
-</span><span id="MultisetExpression.filter_counts-423"><a href="#MultisetExpression.filter_counts-423"><span class="linenos">423</span></a>
-</span><span id="MultisetExpression.filter_counts-424"><a href="#MultisetExpression.filter_counts-424"><span class="linenos">424</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.filter_counts-425"><a href="#MultisetExpression.filter_counts-425"><span class="linenos">425</span></a><span class="sd">        ```</span>
-</span><span id="MultisetExpression.filter_counts-426"><a href="#MultisetExpression.filter_counts-426"><span class="linenos">426</span></a><span class="sd">        Pool([1, 2, 2, 3]).filter_counts(2) -&gt; [2, 2]</span>
-</span><span id="MultisetExpression.filter_counts-427"><a href="#MultisetExpression.filter_counts-427"><span class="linenos">427</span></a><span class="sd">        ```</span>
-</span><span id="MultisetExpression.filter_counts-428"><a href="#MultisetExpression.filter_counts-428"><span class="linenos">428</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.filter_counts-429"><a href="#MultisetExpression.filter_counts-429"><span class="linenos">429</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">FilterCountsExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">)</span>
+    <a class="headerlink" href="#MultisetExpression.keep_counts"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.keep_counts-418"><a href="#MultisetExpression.keep_counts-418"><span class="linenos">418</span></a>    <span class="k">def</span> <span class="nf">keep_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetExpression[T_contra]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression.keep_counts-419"><a href="#MultisetExpression.keep_counts-419"><span class="linenos">419</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts less than `min_count` are treated as zero.</span>
+</span><span id="MultisetExpression.keep_counts-420"><a href="#MultisetExpression.keep_counts-420"><span class="linenos">420</span></a>
+</span><span id="MultisetExpression.keep_counts-421"><a href="#MultisetExpression.keep_counts-421"><span class="linenos">421</span></a><span class="sd">        For example, `generator.keep_counts(2)` would only produce</span>
+</span><span id="MultisetExpression.keep_counts-422"><a href="#MultisetExpression.keep_counts-422"><span class="linenos">422</span></a><span class="sd">        pairs and better.</span>
+</span><span id="MultisetExpression.keep_counts-423"><a href="#MultisetExpression.keep_counts-423"><span class="linenos">423</span></a>
+</span><span id="MultisetExpression.keep_counts-424"><a href="#MultisetExpression.keep_counts-424"><span class="linenos">424</span></a><span class="sd">        Example:</span>
+</span><span id="MultisetExpression.keep_counts-425"><a href="#MultisetExpression.keep_counts-425"><span class="linenos">425</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts-426"><a href="#MultisetExpression.keep_counts-426"><span class="linenos">426</span></a><span class="sd">        Pool([1, 2, 2, 3]).keep_counts(2) -&gt; [2, 2]</span>
+</span><span id="MultisetExpression.keep_counts-427"><a href="#MultisetExpression.keep_counts-427"><span class="linenos">427</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts-428"><a href="#MultisetExpression.keep_counts-428"><span class="linenos">428</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression.keep_counts-429"><a href="#MultisetExpression.keep_counts-429"><span class="linenos">429</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">FilterCountsExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_count</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Counts less than <code>min_count</code> are treated as zero.</p>
 
-<p>For example, <code>generator.filter_counts(2)</code> would only produce
+<p>For example, <code>generator.keep_counts(2)</code> would only produce
 pairs and better.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]).filter_counts(2) -&gt; [2, 2]
+<pre><code>Pool([1, 2, 2, 3]).keep_counts(2) -&gt; [2, 2]
 </code></pre>
 </div>
 
@@ -12253,8 +12253,8 @@ produced with a 0 count.</p>
 </span><span id="MultisetExpression.all_counts-625"><a href="#MultisetExpression.all_counts-625"><span class="linenos">625</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression.all_counts-626"><a href="#MultisetExpression.all_counts-626"><span class="linenos">626</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression.all_counts-627"><a href="#MultisetExpression.all_counts-627"><span class="linenos">627</span></a>
-</span><span id="MultisetExpression.all_counts-628"><a href="#MultisetExpression.all_counts-628"><span class="linenos">628</span></a><span class="sd">                Why not just place `filter_counts()` before this?</span>
-</span><span id="MultisetExpression.all_counts-629"><a href="#MultisetExpression.all_counts-629"><span class="linenos">629</span></a><span class="sd">                `filter_counts()` operates by setting counts to zero, so you</span>
+</span><span id="MultisetExpression.all_counts-628"><a href="#MultisetExpression.all_counts-628"><span class="linenos">628</span></a><span class="sd">                Why not just place `keep_counts()` before this?</span>
+</span><span id="MultisetExpression.all_counts-629"><a href="#MultisetExpression.all_counts-629"><span class="linenos">629</span></a><span class="sd">                `keep_counts()` operates by setting counts to zero, so you</span>
 </span><span id="MultisetExpression.all_counts-630"><a href="#MultisetExpression.all_counts-630"><span class="linenos">630</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
 </span><span id="MultisetExpression.all_counts-631"><a href="#MultisetExpression.all_counts-631"><span class="linenos">631</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression.all_counts-632"><a href="#MultisetExpression.all_counts-632"><span class="linenos">632</span></a><span class="sd">                both.</span>
@@ -12275,8 +12275,8 @@ produced with a 0 count.</p>
 For example, <code>filter=2</code> will only produce pairs and better.
 If <code>None</code>, no filtering will be done.</p>
 
-<p>Why not just place <code><a href="#MultisetExpression.filter_counts">filter_counts()</a></code> before this?
-<code><a href="#MultisetExpression.filter_counts">filter_counts()</a></code> operates by setting counts to zero, so you
+<p>Why not just place <code><a href="#MultisetExpression.keep_counts">keep_counts()</a></code> before this?
+<code><a href="#MultisetExpression.keep_counts">keep_counts()</a></code> operates by setting counts to zero, so you
 would still need an argument to specify whether you want to
 output zero counts. So we might as well use the argument to do
 both.</p></li>
@@ -14643,7 +14643,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
                 <dd id="Deal.map_counts" class="function"><a href="#MultisetExpression.map_counts">map_counts</a></dd>
                 <dd id="Deal.multiply_counts" class="function"><a href="#MultisetExpression.multiply_counts">multiply_counts</a></dd>
                 <dd id="Deal.divide_counts" class="function"><a href="#MultisetExpression.divide_counts">divide_counts</a></dd>
-                <dd id="Deal.filter_counts" class="function"><a href="#MultisetExpression.filter_counts">filter_counts</a></dd>
+                <dd id="Deal.keep_counts" class="function"><a href="#MultisetExpression.keep_counts">keep_counts</a></dd>
                 <dd id="Deal.unique" class="function"><a href="#MultisetExpression.unique">unique</a></dd>
                 <dd id="Deal.keep" class="function"><a href="#MultisetExpression.keep">keep</a></dd>
                 <dd id="Deal.lowest" class="function"><a href="#MultisetExpression.lowest">lowest</a></dd>
