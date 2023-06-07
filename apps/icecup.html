@@ -261,6 +261,12 @@ class OutputManager():
         
     def append_print(self, args, kwargs):
         self.outputs.append(PrintOutput(args, kwargs))
+        
+    @staticmethod
+    def outcome_to_js(outcome, a, b):
+        if isinstance(outcome, icepool.Vector):
+            return js.Array.from_(outcome)
+        return str(outcome)
     
     def chart_data(self, probability_type):
         """
@@ -285,7 +291,7 @@ class OutputManager():
         for output in self.outputs:
             output.print(probability_type)
         
-        return pyodide.ffi.to_js({'labels': outcomes, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries)
+        return pyodide.ffi.to_js({'labels': outcomes, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries, default_converter=self.outcome_to_js)
     
     def used_random(self):
         import random
