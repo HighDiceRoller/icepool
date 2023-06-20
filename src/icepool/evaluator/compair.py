@@ -16,24 +16,36 @@ class CompairEvalautor(MultisetEvaluator[Any, int]):
     """
 
     def __init__(self,
+                 op: Literal['<', '<=', '>', '>=', '==', '!='] | None = None,
                  *,
+                 order: Order = Order.Descending,
                  initial=None,
                  tie=None,
                  left=None,
                  right=None,
                  extra_left=None,
-                 extra_right=None,
-                 order: Order = Order.Descending):
+                 extra_right=None):
         """Compares sorted pairs of two multisets and scores wins, ties, and extra elements.
 
         For example, `left=1` would count how many pairs were won by the left
         side, and `left=1, right=-1` would give the difference in the number of
         pairs won by each side.
 
-        Any score argument not provided will be set to a zero value determined 
-        from another score argument times `0`.
+        Any score argument 
+        (`initial, tie, left, right, extra_left, extra_right`) 
+        not provided will be set to a zero value determined from another score 
+        argument times `0`.
 
         Args:
+            op: Sets the score values based on the given operator and `order`.
+                Allowed values are `'<', '<=', '>', '>=', '==', '!='`.
+                Each pair that fits the comparator counts as 1.
+                If one side has more elements than the other, the extra
+                elements are ignored.
+            order: If descending (default), pairs are made in descending order
+                and the higher element wins. If ascending, pairs are made in
+                ascending order and the lower element wins.
+            
             initial: The initial score.
             tie: The score for each pair that is a tie.
             left: The score for each pair that left wins.
@@ -42,29 +54,52 @@ class CompairEvalautor(MultisetEvaluator[Any, int]):
                 this much.
             extra_right: If right has more elements, each extra element scores
                 this much.
-            
-            order: If descending (default), pairs are made in descending order
-                and the higher element wins. If ascending, pairs are made in
-                ascending order and the lower element wins.
         """
-        all_scores = (tie, left, right, extra_left, extra_right, initial)
-        default_score = None
-        if None in all_scores:
-            for score in all_scores:
-                if score is not None:
-                    default_score = score * 0
-                    break
-            else:
-                raise TypeError('At least one score must be provided.')
+        if order == Order.Any:
+            order = Order.Descending
+        self._order = order
 
-        self._left = left if left is not None else default_score
+        if op is not None:
+            if not all(x is None for x in [tie, left, right]):
+                raise TypeError(
+                    'Named operators cannot be combined with tie, left, or right.'
+                )
+            default_score = 0
+            if op == '<':
+                right = 1
+            elif op == '<=':
+                tie = 1
+                right = 1
+            elif op == '>':
+                left = 1
+            elif op == '>=':
+                tie = 1
+                left = 1
+            elif op == '==':
+                tie = 1
+            elif op == '!=':
+                left = 1
+                right = 1
+            if order > 0:
+                left, right = right, left
+        else:
+            all_scores = (initial, tie, left, right, extra_left, extra_right)
+            default_score = None
+            if None in all_scores:
+                for score in all_scores:
+                    if score is not None:
+                        default_score = score * 0
+                        break
+                else:
+                    raise TypeError(
+                        'An operator or at least one score must be specified.')
+
+        self._initial = initial if initial is not None else default_score
         self._tie = tie if tie is not None else default_score
+        self._left = left if left is not None else default_score
         self._right = right if right is not None else default_score
         self._extra_left = extra_left if extra_left is not None else default_score
         self._extra_right = extra_right if extra_right is not None else default_score
-        self._initial = initial if initial is not None else default_score
-
-        self._order = order
 
     def next_state(self, state, _, left, right):
         if left < 0 or right < 0:

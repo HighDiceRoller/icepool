@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from functools import cached_property, reduce
 
 from icepool.typing import T, U, Order, Outcome, T_contra
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, Sequence, Type, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Literal, Mapping, Sequence, Type, overload
 
 
 def implicit_convert_to_expression(
@@ -44,8 +44,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
     """
 
     @abstractmethod
-    def _next_state(self, state, outcome: T_contra,
-                    *counts: int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, *counts:
+                    int) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:
@@ -796,3 +796,63 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Evaluation: Whether this multiset is disjoint from the other multiset."""
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
+
+    def compair(
+        self,
+        other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+        op: Literal['<', '<=', '>', '>=', '==', '!='] | None = None,
+        /,
+        *,
+        order: Order = Order.Descending,
+        initial=None,
+        tie=None,
+        left=None,
+        right=None,
+        extra_left=None,
+        extra_right=None
+    ) -> 'icepool.Die | icepool.MultisetEvaluator[T_contra, Any]':
+        """EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.
+
+        For example, `left=1` would count how many pairs were won by the left
+        side, and `left=1, right=-1` would give the difference in the number of
+        pairs won by each side.
+
+        Any score argument 
+        (`initial, tie, left, right, extra_left, extra_right`) 
+        not provided will be set to a zero value determined from another score 
+        argument times `0`.
+
+        Args:
+            op: Sets the score values based on the given operator and `order`.
+                Allowed values are `'<', '<=', '>', '>=', '==', '!='`.
+                Each pair that fits the comparator counts as 1.
+                If one side has more elements than the other, the extra
+                elements are ignored.
+            order: If descending (default), pairs are made in descending order
+                and the higher element wins. If ascending, pairs are made in
+                ascending order and the lower element wins.
+            
+            initial: The initial score.
+            tie: The score for each pair that is a tie.
+            left: The score for each pair that left wins.
+            right: The score for each pair that right wins.
+            extra_left: If left has more elements, each extra element scores
+                this much.
+            extra_right: If right has more elements, each extra element scores
+                this much.
+        """
+        try:
+            other = implicit_convert_to_expression(other)
+        except TypeError:
+            return NotImplemented
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 op=op,
+                                 order=order,
+                                 initial=initial,
+                                 tie=tie,
+                                 left=left,
+                                 right=right,
+                                 extra_left=extra_left,
+                                 extra_right=extra_right))
