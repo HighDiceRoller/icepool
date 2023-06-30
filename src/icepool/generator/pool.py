@@ -175,7 +175,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return tuple(sorted(outcome_set))
 
     def outcomes(self) -> Sequence[T]:
-        """The union of possible outcomes among all dice in this pool."""
+        """The union of possible outcomes among all dice in this pool in ascending order."""
         return self._outcomes
 
     def output_arity(self) -> int:
@@ -439,10 +439,9 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         return self[start:stop]
 
     def middle(self,
-                   keep: int = 1,
-                   *,
-                   tie: Literal['error', 'high',
-                                'low'] = 'error') -> 'Pool[T]':
+               keep: int = 1,
+               *,
+               tie: Literal['error', 'high', 'low'] = 'error') -> 'Pool[T]':
         """Keep some of the middle elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
@@ -468,14 +467,18 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             # Need to consult the tiebreaker.
             match tie:
                 case 'error':
-                    raise IndexError(f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
-                    " Specify tie='low' or tie='high' to determine what to pick.")
+                    raise IndexError(
+                        f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
+                        " Specify tie='low' or tie='high' to determine what to pick."
+                    )
                 case 'high':
                     start = (self.keep_size() + 1 - keep) // 2
                 case 'low':
                     start = (self.keep_size() - 1 - keep) // 2
                 case _:
-                    raise ValueError(f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'.")
+                    raise ValueError(
+                        f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'."
+                    )
         stop = start + keep
         return self[start:stop]
 
@@ -523,8 +526,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                         dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
         return icepool.expression.MultisetExpression.disjoint_union(*args)
-
-
 
     def __mul__(self, other: int) -> 'Pool[T]':
         if not isinstance(other, int):

@@ -43,7 +43,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     @abstractmethod
     def outcomes(self) -> Sequence[T]:
-        """The set of outcomes, in sorted order."""
+        """The possible outcomes that could be generated, in ascending order."""
 
     @abstractmethod
     def output_arity(self) -> int:
@@ -165,8 +165,8 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     # Expression API.
 
-    def _next_state(self, state, outcome: Outcome,
-                    *counts: int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: Outcome, *counts:
+                    int) -> tuple[Hashable, int]:
         raise RuntimeError(
             'Internal error: Expressions should be unbound before evaluation.')
 

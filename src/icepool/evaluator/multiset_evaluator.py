@@ -55,8 +55,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     """
 
     @abstractmethod
-    def next_state(self, state: Hashable, outcome: T_contra, /,
-                   *counts: int) -> Hashable:
+    def next_state(self, state: Hashable, outcome: T_contra, /, *counts:
+                   int) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -128,8 +128,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     def order(self) -> Order:
         """Optional function to determine the order in which `next_state()` will see outcomes.
 
-        The default is ascending order. This works well with mixed standard dice,
-        and other dice that differ only by right-truncation.
+        The default is ascending order. This has better caching behavior with 
+        mixed standard dice.
 
         Returns:
             * Order.Ascending (= 1)

@@ -65,7 +65,7 @@ class Deal(MultisetGenerator[T, Qs]):
         return sum(self.hand_sizes())
 
     def outcomes(self) -> CountsKeysView[T]:
-        """The outcomes of the `Deck` in sorted order.
+        """The outcomes of the `Deck` in ascending order.
 
         These are also the `keys` of the `Deck` as a `Mapping`.
         Prefer to use the name `outcomes`.

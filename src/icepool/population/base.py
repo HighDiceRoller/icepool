@@ -58,7 +58,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     # Outcomes.
 
     def outcomes(self) -> CountsKeysView[T_co]:
-        """The sorted outcomes of the mapping.
+        """The outcomes of the mapping in ascending order.
 
         These are also the `keys` of the mapping.
         Prefer to use the name `outcomes`.

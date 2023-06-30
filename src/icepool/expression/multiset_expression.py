@@ -812,7 +812,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         extra_left=None,
         extra_right=None
     ) -> 'icepool.Die | icepool.MultisetEvaluator[T_contra, Any]':
-        """EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.
+        """Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.
 
         For example, `left=1` would count how many pairs were won by the left
         side, and `left=1, right=-1` would give the difference in the number of
