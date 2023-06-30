@@ -2,7 +2,7 @@ import operator
 import icepool
 import pytest
 
-from icepool import d6, Pool, Deck, Die
+from icepool import d6, Pool, Deck, Die, Order
 
 
 def test_difference():
@@ -46,48 +46,51 @@ ops_and_expected = [
 
 @pytest.mark.parametrize('op,expected', ops_and_expected)
 def test_operator_examples(op, expected):
-    result = op(Pool([1, 2, 2, 3]), Pool([1, 2, 4])).expand()
+    result = op(Pool([1, 2, 2, 3]), Pool([1, 2, 4])).expand(Order.Ascending)
     assert result == Die([expected])
 
 
 @pytest.mark.parametrize('op,expected', ops_and_expected)
 def test_operator_examples_deal(op, expected):
-    result = op(Deck([1, 2, 2, 3]).deal(4), Deck([1, 2, 4]).deal(3)).expand()
+    result = op(Deck([1, 2, 2, 3]).deal(4),
+                Deck([1, 2, 4]).deal(3)).expand(Order.Ascending)
     assert result == Die([expected])
 
 
 def test_example_multiply_counts():
-    expected = (Pool([1, 2, 2, 3]) * 2).expand()
+    expected = (Pool([1, 2, 2, 3]) * 2).expand(Order.Ascending)
     result = Die([(1, 1, 2, 2, 2, 2, 3, 3)])
     assert result == Die([expected])
 
 
 def test_example_divide_counts():
-    expected = (Pool([1, 2, 2, 3]) // 2).expand()
+    expected = (Pool([1, 2, 2, 3]) // 2).expand(Order.Ascending)
     result = Die([(2,)])
     assert result == Die([expected])
 
 
 def test_example_keep_counts():
-    expected = Pool([1, 2, 2, 3]).keep_counts(2).expand()
+    expected = Pool([1, 2, 2, 3]).keep_counts(2).expand(Order.Ascending)
     result = Die([(2, 2)])
     assert result == Die([expected])
 
 
 def test_example_keep_counts_using_map():
     expected = Pool([1, 2, 2,
-                     3]).map_counts(lambda o, c: c if c >= 2 else 0).expand()
+                     3]).map_counts(lambda o, c: c if c >= 2 else 0).expand(
+                         Order.Ascending)
     result = Die([(2, 2)])
     assert result == Die([expected])
 
 
 def test_example_unique():
-    expected = Pool([1, 2, 2, 3]).unique().expand()
+    expected = Pool([1, 2, 2, 3]).unique().expand(Order.Ascending)
     result = Die([(1, 2, 3)])
     assert result == Die([expected])
 
 
 def test_example_unique_using_map() -> None:
-    expected = Pool([1, 2, 2, 3]).map_counts(lambda c: min(c, 1)).expand()
+    expected = Pool([1, 2, 2,
+                     3]).map_counts(lambda c: min(c, 1)).expand(Order.Ascending)
     result = Die([(1, 2, 3)])
     assert result == Die([expected])

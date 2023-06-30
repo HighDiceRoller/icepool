@@ -561,13 +561,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
             return evaluator
 
     def expand(
-        self
+        self,
+        order: Order = Order.Descending
     ) -> 'icepool.Die[tuple[T_contra, ...]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, ...]]':
-        """Evaluation: All elements of the multiset.
+        """Evaluation: All elements of the multiset in descending order.
 
         This is expensive and not recommended unless there are few possibilities.
+
+        Args:
+            order: Whether the elements are in descending (default) or ascending
+                order.
         """
-        return self.evaluate(evaluator=icepool.evaluator.ExpandEvaluator())
+        return self.evaluate(evaluator=icepool.evaluator.ExpandEvaluator(
+            order=order))
 
     def sum(
         self,

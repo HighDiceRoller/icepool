@@ -11,12 +11,15 @@ from typing import Any, Callable, Final, Literal, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
-    """Expands all results of a generator.
+    """All elements of the multiset in descending order.
 
     This is expensive and not recommended unless there are few possibilities.
 
     Outcomes with negative count will be treated as 0 count.
     """
+
+    def __init__(self, order: Order = Order.Descending):
+        self._order = order
 
     def next_state(self, state, outcome, count):
         """Implementation."""
@@ -30,7 +33,8 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         """Implementation."""
         if final_state is None:
             return ()
-        return tuple(sorted(final_state))
+        reverse = self._order != Order.Ascending
+        return tuple(sorted(final_state, reverse=reverse))
 
 
 class SumEvaluator(MultisetEvaluator[Any, Any]):
