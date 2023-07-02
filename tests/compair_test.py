@@ -34,7 +34,7 @@ def test_operators(op, name):
     @map_function
     def compute_expected(left, right):
         result = 0
-        for l, r in zip(left, right):
+        for l, r in zip(reversed(left), reversed(right)):
             if op(l, r):
                 result += 1
         return result
@@ -50,7 +50,7 @@ def test_operators_extra_left(op, name):
     @map_function
     def compute_expected(left, right):
         result = 0
-        for l, r in zip(left, right):
+        for l, r in zip(reversed(left), reversed(right)):
             if op(l, r):
                 result += 1
         return result
@@ -66,7 +66,7 @@ def test_operators_extra_right(op, name):
     @map_function
     def compute_expected(left, right):
         result = 0
-        for l, r in zip(left, right):
+        for l, r in zip(reversed(left), reversed(right)):
             if op(l, r):
                 result += 1
         return result
@@ -82,7 +82,7 @@ def test_operators_ascending(op, name):
     @map_function
     def compute_expected(left, right):
         result = 0
-        for l, r in zip(reversed(left), reversed(right)):
+        for l, r in zip(left, right):
             if op(l, r):
                 result += 1
         return result

@@ -11,14 +11,14 @@ from typing import Any, Callable, Final, Literal, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
-    """All elements of the multiset in descending order.
+    """All elements of the multiset.
 
     This is expensive and not recommended unless there are few possibilities.
 
     Outcomes with negative count will be treated as 0 count.
     """
 
-    def __init__(self, order: Order = Order.Descending):
+    def __init__(self, order: Order = Order.Ascending):
         self._order = order
 
     def next_state(self, state, outcome, count):

@@ -147,8 +147,7 @@ def test_joint_evaluate():
 
 def test_enumerate_pool_vs_outer_product():
     result = icepool.evaluator.ExpandEvaluator()(d6.pool(3))
-    expected = icepool.vectorize(
-        d6, d6, d6).map(lambda x: tuple(sorted(x, reverse=True)))
+    expected = icepool.vectorize(d6, d6, d6).map(lambda x: tuple(sorted(x)))
     assert result.equals(expected)
 
 

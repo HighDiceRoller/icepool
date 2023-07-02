@@ -21,7 +21,7 @@ def test_unique_vs_expand(pool):
         pytest.skip()
 
     def unique(x):
-        return tuple(sorted(set(x), reverse=True))
+        return tuple(sorted(set(x)))
 
     result = pool.unique().expand()
     expected = pool.expand().map(unique)
