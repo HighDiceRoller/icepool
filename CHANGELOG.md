@@ -1,3 +1,13 @@
+## v0.29.1
+
+* `highest`, `lowest`, and `middle` can now take a single iterable argument.
+* Add `all_straights` evaluation.
+* `all_counts` and `all_straights` now output sizes in descending order.
+* Harmonize method and free function versions of `map`. Both now allow extra arguments and repeat.
+* Rename `filter_counts` to `keep_counts`.
+* `expand` evaluator now allows order to be set.
+* Experimental `compair` evaluation.
+
 ## v0.29.0
 
 * Add HTML and BBCode options for population formatting.
