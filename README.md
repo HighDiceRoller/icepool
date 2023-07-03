@@ -14,7 +14,7 @@ Try coding in your browser using [Icecup](https://highdiceroller.github.io/icepo
 * Dice support all standard operators (+, -, <, >, etc.) as well as an extensive library of functions (rerolling, exploding, etc.)
 * Efficient dice pool algorithm can solve keep-highest, finding sets and/or straights, *RISK*-like mechanics, and more in milliseconds, even for large pools.
 * Exact fractional probabilities using Python `int`s.
-* Experimental support for decks (aka sampling without replacement).
+* Some support for decks (aka sampling without replacement).
 
 ## Installing
 
@@ -94,17 +94,18 @@ What's the chance that the sum of player A's six ability scores is greater than 
 ```python
 import icepool
 
-single_ability = icepool.d6.keep_highest(4, 3)
+single_ability = icepool.d6.highest(4, 3)
 
 # The @ operator means: compute the left side, and then roll the right side that many times and sum.
 print(6 @ single_ability >= 6 @ single_ability)
 ```
 
-Denominator: 22452257707354557240087211123792674816
-| Outcome |                                 Weight | Probability |
-|--------:|---------------------------------------:|------------:|
-|   False | 10773601417436608285167797336637018642 |  47.984490% |
-|    True | 11678656289917948954919413787155656174 |  52.015510% |
+Die with denominator 22452257707354557240087211123792674816
+
+| Outcome | Probability |
+|:--------|------------:|
+| False   |  47.984490% |
+| True    |  52.015510% |
 
 ### All matching sets
 
