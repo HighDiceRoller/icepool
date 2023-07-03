@@ -14,19 +14,19 @@ from icepool.typing import Order, Outcome, T_contra
 
 class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, *prevs: MultisetExpression[T_contra]) -> None:
+    def __init__(self, *inners: MultisetExpression[T_contra]) -> None:
         """Constructor.
 
         Args:
-            *prevs: Any number of expressions to feed into the operator.
+            *inners: Any number of expressions to feed into the operator.
                 If zero expressions are provided, the result will have all zero
                 counts.
                 If more than two expressions are provided, the counts will be
                 `reduce`d.
         """
-        for prev in prevs:
-            self._validate_output_arity(prev)
-        self._prevs = prevs
+        for inner in inners:
+            self._validate_output_arity(inner)
+        self._inners = inners
 
     @staticmethod
     @abstractmethod
@@ -38,26 +38,26 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def symbol() -> str:
         """A symbol representing this operation."""
 
-    def _next_state(self, state, outcome: T_contra,
-                    *counts: int) -> tuple[Hashable, int]:
-        if len(self._prevs) == 0:
+    def _next_state(self, state, outcome: T_contra, *counts:
+                    int) -> tuple[Hashable, int]:
+        if len(self._inners) == 0:
             return (), 0
-        prev_states = state or (None,) * len(self._prevs)
+        inner_states = state or (None,) * len(self._inners)
 
-        prev_states, prev_counts = zip(
-            *(prev._next_state(prev_state, outcome, *counts)
-              for prev, prev_state in zip(self._prevs, prev_states)))
+        inner_states, inner_counts = zip(
+            *(inner._next_state(inner_state, outcome, *counts)
+              for inner, inner_state in zip(self._inners, inner_states)))
 
-        count = reduce(self.merge_counts, prev_counts)
+        count = reduce(self.merge_counts, inner_counts)
         count = max(count, 0)
-        return prev_states, count
+        return inner_states, count
 
     def _order(self) -> Order:
-        return Order.merge(*(prev._order() for prev in self._prevs))
+        return Order.merge(*(inner._order() for inner in self._inners))
 
     @cached_property
     def _cached_arity(self) -> int:
-        return max(prev._free_arity() for prev in self._prevs)
+        return max(inner._free_arity() for inner in self._inners)
 
     def _free_arity(self) -> int:
         return self._cached_arity
@@ -66,23 +66,24 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def _cached_bound_generators(
             self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return reduce(operator.add,
-                      (prev._bound_generators() for prev in self._prevs))
+                      (inner._bound_generators() for inner in self._inners))
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._cached_bound_generators
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_prevs = []
-        for prev in self._prevs:
-            unbound_prev, prefix_start = prev._unbind(prefix_start, free_start)
-            unbound_prevs.append(unbound_prev)
-        unbound_expression = type(self)(*unbound_prevs)
+        unbound_inners = []
+        for inner in self._inners:
+            unbound_inner, prefix_start = inner._unbind(prefix_start,
+                                                        free_start)
+            unbound_inners.append(unbound_inner)
+        unbound_expression = type(self)(*unbound_inners)
         return unbound_expression, prefix_start
 
     def __str__(self) -> str:
         return '(' + (' ' + self.symbol() + ' ').join(
-            str(prev) for prev in self._prevs) + ')'
+            str(inner) for inner in self._inners) + ')'
 
 
 class IntersectionExpression(BinaryOperatorExpression):
