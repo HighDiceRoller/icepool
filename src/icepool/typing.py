@@ -72,7 +72,7 @@ class Outcome(Hashable, Protocol[T_contra]):
     def __lt__(self, other: T_contra) -> bool:
         ...
 
-def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
+def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.
 
     Returns:
@@ -82,7 +82,7 @@ def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
     """
     required = 0
     total = 0
-    parameters = inspect.signature(func, follow_wrapped=False).parameters
+    parameters = inspect.signature(function, follow_wrapped=False).parameters
     for parameter in parameters.values():
         match parameter.kind:
             case inspect.Parameter.POSITIONAL_ONLY | inspect.Parameter.POSITIONAL_OR_KEYWORD:
@@ -95,11 +95,11 @@ def count_positional_parameters(func: Callable) -> tuple[int, int | None]:
                 break
     return required, total
 
-def guess_star(func, arg_count=1) -> bool:
+def guess_star(function, arg_count=1) -> bool:
     """Guesses whether the first argument should be unpacked before giving it to the function.
 
     Args:
         arg_count: The number of arguments that will be provided to the function.
     """
-    required_count, _ = count_positional_parameters(func)
+    required_count, _ = count_positional_parameters(function)
     return required_count > arg_count

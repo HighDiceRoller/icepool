@@ -36,13 +36,13 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         else:
             target_set = frozenset(target)
 
-            def func(outcome: T_contra) -> bool:
+            def function(outcome: T_contra) -> bool:
                 return outcome in target_set
 
-            self._func = func
+            self._func = function
 
-    def _next_state(self, state, outcome: T_contra,
-                    *counts: int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, *counts:
+                    int) -> tuple[Hashable, int]:
         state, count = self._inner._next_state(state, outcome, *counts)
         if bool(self._func(outcome)) != self._invert:
             return state, count

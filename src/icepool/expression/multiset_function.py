@@ -33,35 +33,36 @@ def replace_tuples_with_joint_evaluator(
 
 @overload
 def multiset_function(
-        func: Callable[[MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        function: Callable[[MV], NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
+        function: Callable[[MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
 @overload
 def multiset_function(
-        func: Callable[[MV, MV, MV], NestedTupleOrEvaluator[T_contra, U_co]],
-        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
-    ...
-
-
-@overload
-def multiset_function(
-        func: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluator[T_contra,
+        function: Callable[[MV, MV, MV], NestedTupleOrEvaluator[T_contra,
                                                                 U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     ...
 
 
+@overload
 def multiset_function(
-        func: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
+        function: Callable[[MV, MV, MV, MV], NestedTupleOrEvaluator[T_contra,
+                                                                    U_co]],
+        /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
+    ...
+
+
+def multiset_function(
+        function: Callable[..., NestedTupleOrEvaluator[T_contra, U_co]],
         /) -> MultisetEvaluator[T_contra, NestedTupleOrOutcome[U_co]]:
     """EXPERIMENTAL: A decorator that turns a function into a `MultisetEvaluator`.
 
@@ -79,7 +80,7 @@ def multiset_function(
         return (a - b).expand(), (b - a).expand()
     ```
 
-    Any globals inside `func` are effectively bound at the time
+    Any globals inside `function` are effectively bound at the time
     `multiset_function` is invoked. Note that this is different than how
     ordinary Python closures behave. For example,
 
@@ -116,11 +117,11 @@ def multiset_function(
     implementing your own subclass of `MultisetEvaluator` directly.
 
     Args:
-        func: This should take in a fixed number of multiset variables and
+        function: This should take in a fixed number of multiset variables and
             output an evaluator or a nested tuple of evaluators. Tuples will
             result in a `JointEvaluator`.
     """
-    parameters = inspect.signature(func, follow_wrapped=False).parameters
+    parameters = inspect.signature(function, follow_wrapped=False).parameters
     for parameter in parameters.values():
         if parameter.kind not in [
                 inspect.Parameter.POSITIONAL_ONLY,
@@ -129,6 +130,6 @@ def multiset_function(
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
             )
-    tuple_or_evaluator = func(*(MV(i) for i in range(len(parameters))))
+    tuple_or_evaluator = function(*(MV(i) for i in range(len(parameters))))
     evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
-    return update_wrapper(evaluator, func)
+    return update_wrapper(evaluator, function)

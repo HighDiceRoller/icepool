@@ -25,7 +25,7 @@ class AgainExpression():
     """
 
     def __init__(self,
-                 func: Callable | None = None,
+                 function: Callable | None = None,
                  /,
                  *args,
                  truth_value: bool | None = None):
@@ -35,15 +35,15 @@ class AgainExpression():
         considered to be at the same level for purposes of `again_depth`.
 
         Args:
-            func: The function to apply. If not provided, the returned object
+            function: The function to apply. If not provided, the returned object
                 represents the again roll directly.
-            args: The arguments that will be sent to `func`, except that any
+            args: The arguments that will be sent to `function`, except that any
                 of type `Again` will have resolved to the `Die` resulting
-                from rolling again. Only applicable if `func` is provided.
+                from rolling again. Only applicable if `function` is provided.
             truth_value: The truth value of the resulting object, if applicable.
                 You probably don't need to use this externally.
         """
-        self._func = func
+        self._func = function
         self._args = args
         self._truth_value = truth_value
 

@@ -76,9 +76,8 @@ def test_example_keep_counts():
 
 
 def test_example_keep_counts_using_map():
-    result = Pool([1, 2, 2,
-                   3]).map_counts(func=lambda o, c: c if c >= 2 else 0).expand(
-                       Order.Ascending)
+    result = Pool([1, 2, 2, 3]).map_counts(
+        function=lambda o, c: c if c >= 2 else 0).expand(Order.Ascending)
     expected = Die([(2, 2)])
     assert result == expected
 
@@ -90,8 +89,9 @@ def test_example_unique():
 
 
 def test_example_unique_using_map() -> None:
-    result = Pool([1, 2, 2, 3]).map_counts(func=lambda _, c: min(c, 1)).expand(
-        Order.Ascending)
+    result = Pool([1, 2, 2,
+                   3]).map_counts(function=lambda _, c: min(c, 1)).expand(
+                       Order.Ascending)
     expected = Die([(1, 2, 3)])
     assert result == expected
 
@@ -101,6 +101,6 @@ def test_example_intersect_using_map() -> None:
     def intersect(_, a, b):
         return min(a, b)
 
-    result = Pool.map_counts(d6.pool(3), d6.pool(3), func=intersect).count()
+    result = Pool.map_counts(d6.pool(3), d6.pool(3), function=intersect).count()
     expected = (d6.pool(3) & d6.pool(3)).count()
     assert result == expected

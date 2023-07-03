@@ -6,7 +6,7 @@ abs_tol = 1e-9
 
 def bf_explode_basic(die, depth):
 
-    def func(*outcomes):
+    def function(*outcomes):
         result = 0
         for outcome in outcomes:
             result += outcome
@@ -14,7 +14,7 @@ def bf_explode_basic(die, depth):
                 break
         return result
 
-    return icepool.map(func, *([die] * (depth + 1)), star=False)
+    return icepool.map(function, *([die] * (depth + 1)), star=False)
 
 
 @pytest.mark.parametrize('depth', range(6))

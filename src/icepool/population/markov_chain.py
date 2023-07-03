@@ -81,7 +81,7 @@ def is_absorbing(outcome, next_outcome) -> bool:
 
 def absorbing_markov_chain(
     die: 'icepool.Die[T]',
-    func: 'Callable[..., T | icepool.Die[T] | icepool.RerollType]'
+    function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType]'
 ) -> 'icepool.Die[T]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
@@ -89,7 +89,7 @@ def absorbing_markov_chain(
 
     Args:
         die: A die representing the initial state.
-        func: A transition function. Any state that leads only to itself will
+        function: A transition function. Any state that leads only to itself will
             be considered absorbing.
 
     Returns:
@@ -104,7 +104,7 @@ def absorbing_markov_chain(
     frontier = list(die.outcomes())
     while frontier:
         outcome = frontier.pop()
-        next_outcome: icepool.Die[T] = icepool.Die([func(outcome)])
+        next_outcome: icepool.Die[T] = icepool.Die([function(outcome)])
         if is_absorbing(outcome, next_outcome):
             continue
         if outcome not in transients:

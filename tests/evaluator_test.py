@@ -76,7 +76,7 @@ def test_runs():
     result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
         icepool.standard_pool([12, 10, 8]))
 
-    def func(*outcomes):
+    def function(*outcomes):
         outcomes = sorted(outcomes)
         a = outcomes[1] == outcomes[0] + 1
         b = outcomes[2] == outcomes[1] + 1
@@ -89,7 +89,7 @@ def test_runs():
         else:
             return 1, outcomes[2]
 
-    expected = icepool.map(func,
+    expected = icepool.map(function,
                            icepool.d12,
                            icepool.d10,
                            icepool.d8,

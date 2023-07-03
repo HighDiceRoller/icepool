@@ -11,36 +11,36 @@ def bf_keep_highest(die, num_dice, keep, drop=0):
     if keep == 0:
         return icepool.Die([0])
 
-    def func(*outcomes):
+    def function(*outcomes):
         return sum(sorted(outcomes)[-(keep + drop):len(outcomes) - drop])
 
-    return icepool.map(func, *([die] * num_dice))
+    return icepool.map(function, *([die] * num_dice))
 
 
 def bf_keep_lowest(die, num_dice, keep, drop=0):
     if keep == 0:
         return icepool.Die([0])
 
-    def func(*outcomes):
+    def function(*outcomes):
         return sum(sorted(outcomes)[drop:keep + drop])
 
-    return icepool.map(func, *([die] * num_dice))
+    return icepool.map(function, *([die] * num_dice))
 
 
 def bf_keep(die, num_dice, keep_indexes):
 
-    def func(*outcomes):
+    def function(*outcomes):
         return sorted(outcomes)[keep_indexes]
 
-    return icepool.map(func, *([die] * num_dice))
+    return icepool.map(function, *([die] * num_dice))
 
 
 def bf_diff_highest_lowest(die, num_dice):
 
-    def func(*outcomes):
+    def function(*outcomes):
         return max(outcomes) - min(outcomes)
 
-    return icepool.map(func, *([die] * num_dice))
+    return icepool.map(function, *([die] * num_dice))
 
 
 @pytest.mark.parametrize('keep', range(1, 6))

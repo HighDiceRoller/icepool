@@ -19,20 +19,20 @@ class MapCountsExpression(MultisetExpression[T_contra]):
     _func: Callable[..., int]
 
     def __init__(
-            self, *inners: MultisetExpression[T_contra],
-            func: Callable[[int], int] | Callable[[T_contra, int], int]
+        self, *inners: MultisetExpression[T_contra],
+        function: Callable[[int], int] | Callable[[T_contra, int], int]
     ) -> None:
         """Constructor.
 
         Args:
             inner: The inner expression.
-            func: A function that takes `outcome, *counts` and produces a
+            function: A function that takes `outcome, *counts` and produces a
                 combined count.
         """
         for inner in inners:
             self._validate_output_arity(inner)
         self._inners = inners
-        self._func = func
+        self._func = function
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -71,7 +71,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
             unbound_inner, prefix_start = inner._unbind(prefix_start,
                                                         free_start)
             unbound_inners.append(unbound_inner)
-        unbound_expression = type(self)(*unbound_inners, func=self._func)
+        unbound_expression = type(self)(*unbound_inners, function=self._func)
         return unbound_expression, prefix_start
 
 
