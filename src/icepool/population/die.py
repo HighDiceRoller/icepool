@@ -380,10 +380,9 @@ class Die(Population[T_co]):
             stop_factor = (self.denominator()**(depth + 1) - rerollable_factor *
                            total_reroll_quantity) // total_stop_quantity
             data = {
-                outcome:
-                (rerollable_factor *
-                 quantity if outcome in outcome_set else stop_factor * quantity)
-                for outcome, quantity in self.items()
+                outcome: (rerollable_factor *
+                          quantity if outcome in outcome_set else stop_factor *
+                          quantity) for outcome, quantity in self.items()
             }
         return icepool.Die(data)
 
@@ -1139,8 +1138,11 @@ class Die(Population[T_co]):
     def __bool__(self) -> bool:
         raise TypeError(
             'A `Die` only has a truth value if it is the result of == or !=. '
-            'If this is in the conditional of an if-statement, you probably '
-            'want to use die.if_else() instead.')
+            'This could result from trying to use a die in an if-statement, '
+            'in which case you should use `die.if_else()` instead. '
+            'Or it could result from trying to use a `Die` inside a tuple or '
+            'vector outcome, '
+            'in which case you should use `tupleize()` or `vectorize().')
 
     @cached_property
     def _key_tuple(self) -> tuple:

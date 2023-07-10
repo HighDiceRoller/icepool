@@ -87,7 +87,7 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
     """Returns the total count of outcomes.
 
     Usually not very interesting unless the counts are adjusted by
-    `AdjustIntCountEvaluator`.
+    `unique` etc.
     """
 
     def next_state(self, state, outcome, count):
