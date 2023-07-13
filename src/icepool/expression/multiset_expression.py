@@ -320,9 +320,10 @@ class MultisetExpression(ABC, Generic[T_contra]):
         other = implicit_convert_to_expression(other)
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
-    def keep_outcomes(self,
-                      target: Callable[[T_contra], bool] | Collection[T_contra],
-                      /) -> 'MultisetExpression[T_contra]':
+    def keep_outcomes(
+            self, target:
+        'Callable[[T_contra], bool] | Collection[T_contra] | MultisetExpression[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         """Keeps the elements in the target set of outcomes, and drops the rest by setting their counts to zero.
 
         This is similar to `intersection()`, except the right side is considered
@@ -330,13 +331,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Args:
             target: A callable returning `True` iff the outcome should be kept,
-                or a collection of outcomes to keep.
+                or an expression or collection of outcomes to keep.
         """
-        return icepool.expression.FilterOutcomesExpression(self, target)
+        if isinstance(target, MultisetExpression):
+            return icepool.expression.FilterOutcomesBinaryExpression(
+                self, target)
+        else:
+            return icepool.expression.FilterOutcomesExpression(self, target)
 
-    def drop_outcomes(self,
-                      target: Callable[[T_contra], bool] | Collection[T_contra],
-                      /) -> 'MultisetExpression[T_contra]':
+    def drop_outcomes(
+            self, target:
+        'Callable[[T_contra], bool] | Collection[T_contra] | MultisetExpression[T_contra]',
+            /) -> 'MultisetExpression[T_contra]':
         """Drops the elements in the target set of outcomes by setting their counts to zero, and keeps the rest.
 
         This is similar to `difference()`, except the right side is considered
@@ -344,11 +350,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Args:
             target: A callable returning `True` iff the outcome should be
-                dropped, or a collection of outcomes to drop.
+                dropped, or an expression or collection of outcomes to drop.
         """
-        return icepool.expression.FilterOutcomesExpression(self,
-                                                           target,
-                                                           invert=True)
+        if isinstance(target, MultisetExpression):
+            return icepool.expression.FilterOutcomesBinaryExpression(
+                self, target, invert=True)
+        else:
+            return icepool.expression.FilterOutcomesExpression(self,
+                                                               target,
+                                                               invert=True)
 
     # Adjust counts.
 

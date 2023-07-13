@@ -47,3 +47,17 @@ def test_using_multiset_function():
 
     result = mid_result(d6.pool(6), d6.pool(6)).map(final_score)
     assert result == expected
+
+
+def test_keep_outcomes():
+    using_keep = (d6.pool(6).keep_outcomes(
+        d6.pool(6))).highest_outcome_and_count()
+    using_mul = (d6.pool(6) & (100 * d6.pool(6))).highest_outcome_and_count()
+    assert using_keep == using_mul
+
+
+def test_drop_outcomes():
+    using_drop = (d6.pool(6).drop_outcomes(
+        d6.pool(6))).highest_outcome_and_count()
+    using_mul = (d6.pool(6) - (100 * d6.pool(6))).highest_outcome_and_count()
+    assert using_drop == using_mul
