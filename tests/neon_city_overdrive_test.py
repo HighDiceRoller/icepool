@@ -61,3 +61,24 @@ def test_drop_outcomes():
         d6.pool(6))).highest_outcome_and_count()
     using_mul = (d6.pool(6) - (100 * d6.pool(6))).highest_outcome_and_count()
     assert using_drop == using_mul
+
+
+def test_technoir():
+
+    @multiset_function
+    def technoir_drop(action, push, hurt):
+        surviving_action = action.drop_outcomes(hurt)
+        surviving_push = push.drop_outcomes(hurt)
+        return (surviving_action + surviving_push
+               ).unique(2).highest_outcome_and_count(), surviving_push.count()
+
+    @multiset_function
+    def technoir_mul(action, push, hurt):
+        surviving_action = action - hurt * 100
+        surviving_push = push - hurt * 100
+        return (surviving_action + surviving_push
+               ).unique(2).highest_outcome_and_count(), surviving_push.count()
+
+    using_drop = technoir_drop(d6.pool(3), d6.pool(2), d6.pool(4))
+    using_mul = technoir_mul(d6.pool(3), d6.pool(2), d6.pool(4))
+    assert using_drop == using_mul

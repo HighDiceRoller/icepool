@@ -142,7 +142,7 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
                 free_start: int) -> 'tuple[MultisetExpression, int]':
         unbound_inner, prefix_start = self._inner._unbind(
             prefix_start, free_start)
-        unbound_target, prefix_start = self._inner._unbind(
+        unbound_target, prefix_start = self._target._unbind(
             prefix_start, free_start)
         unbound_expression = type(self)(unbound_inner,
                                         unbound_target,
