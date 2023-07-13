@@ -1,3 +1,7 @@
+## v0.29.3
+
+Fix a bug in `MultisetExpression.keep_outcomes()` and `drop_outcomes()` regarding unbinding variables.
+
 ## v0.29.2
 
 * `MultisetExpression.map_counts()` now accepts multiple arguments.
