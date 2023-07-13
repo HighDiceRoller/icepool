@@ -605,8 +605,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[tuple[T_contra, int]] | icepool.MultisetEvaluator[T_contra, tuple[T_contra, int]]':
         """Evaluation: The highest outcome with positive count, along with that count.
 
-        If no outcomes have positive count, an arbitrary outcome will be
-        produced with a 0 count.
+        If no outcomes have positive count, the min outcome will be returned with 0 count.
         """
         return self.evaluate(
             evaluator=icepool.evaluator.HighestOutcomeAndCountEvaluator())

@@ -12,26 +12,31 @@ from typing import Any, Collection, Literal, Sequence
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
     """The highest outcome that has positive count, along with that count.
 
-    If no outcomes have positive count, an arbitrary outcome will be produced
-    with a 0 count.
+    If no outcomes have positive count, the result is the min outcome with a count of 0.
     """
 
     def next_state(self, state, outcome, count):
         """Implementation."""
         count = max(count, 0)
+
         if state is None:
             return outcome, count
-        elif count > 0:
-            if state[1] > 0:
-                return max(state, (outcome, count))
-            else:
-                return outcome, count
-        else:
-            return state
+
+        if count > 0 and outcome > state[0]:
+            return outcome, count
+
+        if count == 0 and state[1] == 0:
+            return min(outcome, state[0]), 0
+
+        return state
 
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
+
+    def alignment(self, outcomes: Sequence) -> Collection:
+        """Always sees zero counts."""
+        return outcomes
 
 
 class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
@@ -70,7 +75,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         return Order.Any
 
     def alignment(self, outcomes: Sequence) -> Collection:
-        """Always sees zeros."""
+        """Always sees zero counts."""
         return outcomes
 
 
