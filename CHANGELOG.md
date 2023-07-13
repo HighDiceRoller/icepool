@@ -1,3 +1,9 @@
+## v0.29.2
+
+* `MultisetExpression.map_counts()` now accepts multiple arguments.
+* `MultisetExpression.keep_outcomes()` and `drop_outcomes()` now accept an expression as an argument.
+* `MultisetExpression.highest_outcome_and_count()` now returns the min outcome if no outcomes have positive count.
+
 ## v0.29.1
 
 * `highest`, `lowest`, and `middle` can now take a single iterable argument.
