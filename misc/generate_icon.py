@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 
-final_size = 192
+final_size = 512
 upscale = 16
 image_size = final_size * upscale
 cell_count = 64
@@ -16,6 +16,7 @@ def draw_i():
     img = Image.new('RGBA', (image_size, image_size), color=(0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     ice = (7 * 9, 7 * 27, 7 * 35, 255)
+    ice = red
 
     # Background.
 
@@ -54,7 +55,7 @@ def draw_i():
     img.save('favicon.png')
 
 
-    circle_size = 256
+    circle_size = final_size * 3 // 2
     circle_border = (circle_size - final_size) // 2
     circle_img = Image.new('RGBA', (circle_size, circle_size), color=(0, 0, 0, 0))
     circle_img.paste(img, box=(circle_border,
