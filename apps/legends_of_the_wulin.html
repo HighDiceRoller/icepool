@@ -167,7 +167,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.23.3')
+                await micropip.install('icepool==0.29.3')
                 
                 import js
                 import pyodide
@@ -178,7 +178,7 @@
                 die_player_unaligned = icepool.Die([0])
                 die_opposition_unaligned = icepool.Die([0])
                 
-                class WulinEvaluator(icepool.OutcomeCountEvaluator):
+                class WulinEvaluator(icepool.MultisetEvaluator):
                     def next_state(self, state, outcome, count):
                         if state is None:
                             state = 0
