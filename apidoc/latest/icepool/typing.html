@@ -215,8 +215,11 @@
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">    Args:</span>
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function. You may need to specify star explicitly.&#39;</span><span class="p">)</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
@@ -617,8 +620,11 @@
 </span><span id="guess_star-102"><a href="#guess_star-102"><span class="linenos">102</span></a><span class="sd">    Args:</span>
 </span><span id="guess_star-103"><a href="#guess_star-103"><span class="linenos">103</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
 </span><span id="guess_star-104"><a href="#guess_star-104"><span class="linenos">104</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="guess_star-105"><a href="#guess_star-105"><span class="linenos">105</span></a>    <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="guess_star-106"><a href="#guess_star-106"><span class="linenos">106</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+</span><span id="guess_star-105"><a href="#guess_star-105"><span class="linenos">105</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="guess_star-106"><a href="#guess_star-106"><span class="linenos">106</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="guess_star-107"><a href="#guess_star-107"><span class="linenos">107</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="guess_star-108"><a href="#guess_star-108"><span class="linenos">108</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function. You may need to specify star explicitly.&#39;</span><span class="p">)</span>
+</span><span id="guess_star-109"><a href="#guess_star-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
