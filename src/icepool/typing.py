@@ -101,5 +101,8 @@ def guess_star(function, arg_count=1) -> bool:
     Args:
         arg_count: The number of arguments that will be provided to the function.
     """
-    required_count, _ = count_positional_parameters(function)
+    try:
+        required_count, _ = count_positional_parameters(function)
+    except ValueError:
+        raise ValueError(f'Could not guess whether to unpack the first argument to the function. You may need to specify star explicitly.')
     return required_count > arg_count
