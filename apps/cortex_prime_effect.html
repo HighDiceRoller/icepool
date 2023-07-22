@@ -173,7 +173,9 @@
                 indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.0/full/",
             });
 
-            await pyodide.loadPackage(["micropip"], setLoadingText);
+            await pyodide.loadPackage(["micropip"], 
+				{messageCallback : setLoadingText}
+			);
 
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
