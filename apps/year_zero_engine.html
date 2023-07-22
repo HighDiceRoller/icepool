@@ -196,7 +196,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.28.1')
+                await micropip.install('icepool==0.29.3')
                 
                 import js
                 import pyodide
@@ -320,13 +320,13 @@
             push_strategy = js.document.getElementById('push').value
             if push_strategy == 'fail_no_bane':
                 die_player = calc_pool('p')
-                die_push = icepool.apply(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0])
+                die_push = icepool.map(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0], star=False)
             elif push_strategy == 'fail':
                 die_player = calc_pool('p')
-                die_push = icepool.apply(calc_push_if_fail, die_player, die_opposition.marginals[0])
+                die_push = icepool.map(calc_push_if_fail, die_player, die_opposition.marginals[0], star=False)
             else:
                 die_player = calc_pool('p')
-                die_push = icepool.apply(calc_pool_always, die_player, die_opposition.marginals[0])
+                die_push = icepool.map(calc_pool_always, die_player, die_opposition.marginals[0], star=False)
             die_no_push = icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1)
             die_push = die_push.map(lambda s, b: icepool.vectorize(max(s, -1), b))
             `);

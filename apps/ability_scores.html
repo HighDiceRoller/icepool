@@ -397,7 +397,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==0.23.3')
+                await micropip.install('icepool==0.29.3')
                 
                 import js
                 import pyodide
@@ -453,10 +453,10 @@
             if reroll_dice >= die_size:
                 reroll_dice = die_size - 1
             
-            single_die = icepool.d(die_size).reroll(outcomes=range(1, reroll_dice+1), depth=reroll_times)
-            single_ability = single_die.sum_highest(num_dice, num_keep) + modifier
+            single_die = icepool.d(die_size).reroll(range(1, reroll_dice+1), depth=reroll_times)
+            single_ability = single_die.highest(num_dice, num_keep) + modifier
             single_ability = single_ability.clip(min_ability, max_ability)
-            single_ability = single_ability.sum_highest(num_ability_repeat)
+            single_ability = single_ability.highest(num_ability_repeat)
             
             max_prob = 0.0
             ranks = []
@@ -539,7 +539,7 @@
                 for i in range(3, 19):
                     prices[i] = int(js.document.getElementById('p%d' % i).value)
                 single_ability_price = single_ability.map(lambda outcome: prices[outcome])
-                total_price = single_ability_price.sum_highest(num_abilities, 6).sum_highest(num_arrays)
+                total_price = single_ability_price.highest(num_abilities, 6).highest(num_arrays)
                 js.document.getElementById('price_mean').innerHTML = '%0.2f' % total_price.mean()
                 js.document.getElementById('price_sd').innerHTML = '%0.2f' % total_price.standard_deviation()
             `);
