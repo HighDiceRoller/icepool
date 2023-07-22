@@ -1,3 +1,7 @@
+## v1.0.0
+
+Improve some error messages.
+
 ## v0.29.3
 
 Fix a bug in `MultisetExpression.keep_outcomes()` and `drop_outcomes()` regarding unbinding variables.

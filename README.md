@@ -1,6 +1,6 @@
 # <img width="32" height="32" src="https://highdiceroller.github.io/icepool/favicon.png" /> Icepool
 
-A Python package for computing dice probabilities.
+Python dice probability package.
 
 [GitHub repository.](https://github.com/HighDiceRoller/icepool)
 
@@ -10,7 +10,7 @@ Try coding in your browser using [Icecup](https://highdiceroller.github.io/icepo
 
 ## Features
 
-* Pure Python implementation using only the Standard Library. Run it anywhere Python runs: program locally, share Jupyter notebooks, or build your own client-side web apps using Pyodide.
+* Pure Python implementation using only the Standard Library. Run it almost anywhere Python runs: program locally, share Jupyter notebooks, or build your own client-side web apps using Pyodide.
 * Dice support all standard operators (+, -, <, >, etc.) as well as an extensive library of functions (rerolling, exploding, etc.)
 * Efficient dice pool algorithm can solve keep-highest, finding sets and/or straights, *RISK*-like mechanics, and more in milliseconds, even for large pools.
 * Exact fractional probabilities using Python `int`s.
