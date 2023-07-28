@@ -134,7 +134,7 @@ class SymmetricDifferenceExpression(BinaryOperatorExpression):
 
     @staticmethod
     def merge_counts(left: int, right: int) -> int:
-        return abs(max(left, 0) - max(right, 0))
+        return abs(left - right)
 
     @staticmethod
     def symbol() -> str:
