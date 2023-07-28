@@ -51,5 +51,5 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
         return 0
 
     @cached_property
-    def _key_tuple(self) -> tuple[Hashable, ...]:
+    def _hash_key(self) -> Hashable:
         return Alignment, self._outcomes

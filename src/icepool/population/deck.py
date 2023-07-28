@@ -162,17 +162,17 @@ class Deck(Population[T_co]):
             times=self.quantities())
 
     @cached_property
-    def _key_tuple(self) -> tuple:
+    def _hash_key(self) -> tuple:
         return Deck, tuple(self.items())
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Deck):
             return False
-        return self._key_tuple == other._key_tuple
+        return self._hash_key == other._hash_key
 
     @cached_property
     def _hash(self) -> int:
-        return hash(self._key_tuple)
+        return hash(self._hash_key)
 
     def __hash__(self) -> int:
         return self._hash

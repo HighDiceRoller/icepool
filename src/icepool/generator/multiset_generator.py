@@ -106,8 +106,8 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     @property
     @abstractmethod
-    def _key_tuple(self) -> tuple[Hashable, ...]:
-        """A tuple that logically identifies this object among MultisetGenerators.
+    def _hash_key(self) -> Hashable:
+        """A hash key that logically identifies this object among MultisetGenerators.
 
         Used to implement `equals()` and `__hash__()`
         """
@@ -116,11 +116,11 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         """Whether this generator is logically equal to another object."""
         if not isinstance(other, MultisetGenerator):
             return False
-        return self._key_tuple == other._key_tuple
+        return self._hash_key == other._hash_key
 
     @cached_property
     def _hash(self) -> int:
-        return hash(self._key_tuple)
+        return hash(self._hash_key)
 
     def __hash__(self) -> int:
         return self._hash
@@ -141,7 +141,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         def truth_value_callback() -> bool:
             if not isinstance(other, MultisetGenerator):
                 return False
-            return self._key_tuple == other._key_tuple
+            return self._hash_key == other._hash_key
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
@@ -159,7 +159,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         def truth_value_callback() -> bool:
             if not isinstance(other, MultisetGenerator):
                 return True
-            return self._key_tuple != other._key_tuple
+            return self._hash_key != other._hash_key
 
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 

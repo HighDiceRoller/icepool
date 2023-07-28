@@ -130,7 +130,7 @@ class Deal(MultisetGenerator[T, Qs]):
         return result, result
 
     @cached_property
-    def _key_tuple(self) -> tuple[Hashable, ...]:
+    def _hash_key(self) -> Hashable:
         return Deal, self.deck(), self.hand_sizes()
 
     def __repr__(self) -> str:
