@@ -48,7 +48,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     |:--------------------------|:-----------------------------------|
     | `disjoint_union, +`       | `l + r`                            |
     | `difference, -`           | `l - r`                            |
-    | `union, |`                | `max(l, r)`                        |
+    | `union, \|`               | `max(l, r)`                        |
     | `intersection, & `        | `min(l, r)`                        |
     | `symmetric_difference, ^` | `abs(l - r)`                       |
     | `multiply_counts, *`      | `count * n`                        |
