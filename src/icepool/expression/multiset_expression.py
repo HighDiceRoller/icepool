@@ -44,7 +44,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     Operations include:
 
-    | Operation                 | Count                              |
+    | Operation                 | Count / notes                      |
     |:--------------------------|:-----------------------------------|
     | `disjoint_union, +`       | `l + r`                            |
     | `difference, -`           | `l - r`                            |
@@ -53,11 +53,35 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `symmetric_difference, ^` | `abs(l - r)`                       |
     | `multiply_counts, *`      | `count * n`                        |
     | `divide_counts, //`       | `count // n`                       |
-    | `keep_outcomes(t)`        | `count if outcome in t else 0`     |
-    | `drop_outcomes(t)`        | `count if outcome not in t else 0` |
     | `keep_counts(n)`          | `count if count >= n else 0`       |
     | `unique(n=1)`             | `min(count, n)`                    |
+    | `keep_outcomes(t)`        | `count if outcome in t else 0`     |
+    | `drop_outcomes(t)`        | `count if outcome not in t else 0` |
     | `map_counts(f)`           | `f(outcome, *counts)`              |
+    | `keep, []`                | less capable than `Pool` version   |
+    | `highest`                 | less capable than `Pool` version   |
+    | `lowest`                  | less capable than `Pool` version   |
+
+    | Evaluator                      | Summary                                                                    |
+    |:-------------------------------|:---------------------------------------------------------------------------|
+    | `issubset, <=`                 | Whether the left side is a subset of the right side                        |
+    | `issuperset, >=`               | Whether the left side is a superset of the right side                      |
+    | `isdisjoint`                   | Whether the left side has no positive counts in common with the right side |
+    | `<`                            | Whether the left side is a proper subset of the right side                 |
+    | `>`                            | Whether the left side is a proper superset of the right side               |
+    | `==`                           | Whether the left side has all the same counts as the right side            |
+    | `!=`                           | Whether the left side has any different counts to the right side           |
+    | `expand`                       | All elements in ascending order                                            |
+    | `sum`                          | Sum of all elements                                                        |
+    | `count`                        | The number of elements                                                     |
+    | `any`                          | If there is at least 1 element                                             |
+    | `highest_outcome_and_count`    | The highest outcome and how many of that outcome                           |
+    | `all_counts`                   | All counts in descending order                                             |
+    | `largest_count`                | The single largest count, aka x-of-a-kind                                  |
+    | `largest_count_and_outcome`    | Same but also with the corresponding outcome                               |
+    | `largest_straight`             | Length of longest consecutive sequence                                     |
+    | `largest_straight_and_outcome` | Same but also with the corresponding outcome                               |
+    | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
     @abstractmethod
@@ -482,8 +506,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         This is less capable and less efficient than the `Pool` version.
         In particular, it does not know how many elements it is selecting from,
-        so it must be anchored at either the lowest or highest end. On the other
-        hand, this can be applied to any expression.
+        so it must be anchored at the starting end. The advantage is that it
+        can be applied to any expression.
 
         The valid types of argument are:
 
@@ -531,6 +555,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         automatically sum the dice. Use `.sum()` afterwards if you want to sum.
         Alternatively, you can perform some other evaluation.
 
+        This requires the outcomes to be evaluated in ascending order.
+
         Args:
             keep: The number of lowest elements will be kept.
             drop: This number of lowest elements will be dropped before keeping.
@@ -546,6 +572,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         In contrast to the die and free function versions, this does not
         automatically sum the dice. Use `.sum()` afterwards if you want to sum.
         Alternatively, you can perform some other evaluation.
+
+        This requires the outcomes to be evaluated in descending order.
 
         Args:
             keep: The number of highest elements will be kept.
