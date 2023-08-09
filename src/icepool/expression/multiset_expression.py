@@ -39,8 +39,25 @@ class MultisetExpression(ABC, Generic[T_contra]):
     Expression methods can be applied to `MultisetGenerator`s to do simple
     evaluations. For joint evaluations, try `multiset_function`.
 
-    Use the provided operators and methods to build up more complicated
+    Use the provided operations to build up more complicated
     expressions, or to attach a final evaluator.
+
+    Operations include:
+
+    | Operation                 | Count                              |
+    |:--------------------------|:-----------------------------------|
+    | `disjoint_union, +`       | `l + r`                            |
+    | `difference, -`           | `l - r`                            |
+    | `union, |`                | `max(l, r)`                        |
+    | `intersection, & `        | `min(l, r)`                        |
+    | `symmetric_difference, ^` | `abs(l - r)`                       |
+    | `multiply_counts, *`      | `count * n`                        |
+    | `divide_counts, //`       | `count // n`                       |
+    | `keep_outcomes(t)`        | `count if outcome in t else 0`     |
+    | `drop_outcomes(t)`        | `count if outcome not in t else 0` |
+    | `keep_counts(n)`          | `count if count >= n else 0`       |
+    | `unique(n=1)`             | `min(count, n)`                    |
+    | `map_counts(f)`           | `f(outcome, *counts)`              |
     """
 
     @abstractmethod
