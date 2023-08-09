@@ -10559,28 +10559,28 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-45"><a href="#MultisetExpression-45"><span class="linenos"> 45</span></a>
 </span><span id="MultisetExpression-46"><a href="#MultisetExpression-46"><span class="linenos"> 46</span></a><span class="sd">    Operations include:</span>
 </span><span id="MultisetExpression-47"><a href="#MultisetExpression-47"><span class="linenos"> 47</span></a>
-</span><span id="MultisetExpression-48"><a href="#MultisetExpression-48"><span class="linenos"> 48</span></a><span class="sd">    | Operation                 | Count / notes                      |</span>
-</span><span id="MultisetExpression-49"><a href="#MultisetExpression-49"><span class="linenos"> 49</span></a><span class="sd">    |:--------------------------|:-----------------------------------|</span>
-</span><span id="MultisetExpression-50"><a href="#MultisetExpression-50"><span class="linenos"> 50</span></a><span class="sd">    | `disjoint_union, +`       | `l + r`                            |</span>
-</span><span id="MultisetExpression-51"><a href="#MultisetExpression-51"><span class="linenos"> 51</span></a><span class="sd">    | `difference, -`           | `l - r`                            |</span>
-</span><span id="MultisetExpression-52"><a href="#MultisetExpression-52"><span class="linenos"> 52</span></a><span class="sd">    | `union, \|`               | `max(l, r)`                        |</span>
-</span><span id="MultisetExpression-53"><a href="#MultisetExpression-53"><span class="linenos"> 53</span></a><span class="sd">    | `intersection, &amp; `        | `min(l, r)`                        |</span>
-</span><span id="MultisetExpression-54"><a href="#MultisetExpression-54"><span class="linenos"> 54</span></a><span class="sd">    | `symmetric_difference, ^` | `abs(l - r)`                       |</span>
-</span><span id="MultisetExpression-55"><a href="#MultisetExpression-55"><span class="linenos"> 55</span></a><span class="sd">    | `multiply_counts, *`      | `count * n`                        |</span>
-</span><span id="MultisetExpression-56"><a href="#MultisetExpression-56"><span class="linenos"> 56</span></a><span class="sd">    | `divide_counts, //`       | `count // n`                       |</span>
-</span><span id="MultisetExpression-57"><a href="#MultisetExpression-57"><span class="linenos"> 57</span></a><span class="sd">    | `keep_counts(n)`          | `count if count &gt;= n else 0`       |</span>
-</span><span id="MultisetExpression-58"><a href="#MultisetExpression-58"><span class="linenos"> 58</span></a><span class="sd">    | `unique(n=1)`             | `min(count, n)`                    |</span>
-</span><span id="MultisetExpression-59"><a href="#MultisetExpression-59"><span class="linenos"> 59</span></a><span class="sd">    | `keep_outcomes(t)`        | `count if outcome in t else 0`     |</span>
-</span><span id="MultisetExpression-60"><a href="#MultisetExpression-60"><span class="linenos"> 60</span></a><span class="sd">    | `drop_outcomes(t)`        | `count if outcome not in t else 0` |</span>
-</span><span id="MultisetExpression-61"><a href="#MultisetExpression-61"><span class="linenos"> 61</span></a><span class="sd">    | `map_counts(f)`           | `f(outcome, *counts)`              |</span>
-</span><span id="MultisetExpression-62"><a href="#MultisetExpression-62"><span class="linenos"> 62</span></a><span class="sd">    | `keep, []`                | less capable than `Pool` version   |</span>
-</span><span id="MultisetExpression-63"><a href="#MultisetExpression-63"><span class="linenos"> 63</span></a><span class="sd">    | `highest`                 | less capable than `Pool` version   |</span>
-</span><span id="MultisetExpression-64"><a href="#MultisetExpression-64"><span class="linenos"> 64</span></a><span class="sd">    | `lowest`                  | less capable than `Pool` version   |</span>
+</span><span id="MultisetExpression-48"><a href="#MultisetExpression-48"><span class="linenos"> 48</span></a><span class="sd">    | Operation                   | Count / notes                      |</span>
+</span><span id="MultisetExpression-49"><a href="#MultisetExpression-49"><span class="linenos"> 49</span></a><span class="sd">    |:----------------------------|:-----------------------------------|</span>
+</span><span id="MultisetExpression-50"><a href="#MultisetExpression-50"><span class="linenos"> 50</span></a><span class="sd">    | `disjoint_union`, `+`       | `l + r`                            |</span>
+</span><span id="MultisetExpression-51"><a href="#MultisetExpression-51"><span class="linenos"> 51</span></a><span class="sd">    | `difference`, `-`           | `l - r`                            |</span>
+</span><span id="MultisetExpression-52"><a href="#MultisetExpression-52"><span class="linenos"> 52</span></a><span class="sd">    | `union`, `\|`               | `max(l, r)`                        |</span>
+</span><span id="MultisetExpression-53"><a href="#MultisetExpression-53"><span class="linenos"> 53</span></a><span class="sd">    | `intersection`, `&amp;`         | `min(l, r)`                        |</span>
+</span><span id="MultisetExpression-54"><a href="#MultisetExpression-54"><span class="linenos"> 54</span></a><span class="sd">    | `symmetric_difference`, `^` | `abs(l - r)`                       |</span>
+</span><span id="MultisetExpression-55"><a href="#MultisetExpression-55"><span class="linenos"> 55</span></a><span class="sd">    | `multiply_counts`, `*`      | `count * n`                        |</span>
+</span><span id="MultisetExpression-56"><a href="#MultisetExpression-56"><span class="linenos"> 56</span></a><span class="sd">    | `divide_counts`, `//`       | `count // n`                       |</span>
+</span><span id="MultisetExpression-57"><a href="#MultisetExpression-57"><span class="linenos"> 57</span></a><span class="sd">    | `keep_counts`               | `count if count &gt;= n else 0`       |</span>
+</span><span id="MultisetExpression-58"><a href="#MultisetExpression-58"><span class="linenos"> 58</span></a><span class="sd">    | `unique`                    | `min(count, n)`                    |</span>
+</span><span id="MultisetExpression-59"><a href="#MultisetExpression-59"><span class="linenos"> 59</span></a><span class="sd">    | `keep_outcomes`             | `count if outcome in t else 0`     |</span>
+</span><span id="MultisetExpression-60"><a href="#MultisetExpression-60"><span class="linenos"> 60</span></a><span class="sd">    | `drop_outcomes`             | `count if outcome not in t else 0` |</span>
+</span><span id="MultisetExpression-61"><a href="#MultisetExpression-61"><span class="linenos"> 61</span></a><span class="sd">    | `map_counts`                | `f(outcome, *counts)`              |</span>
+</span><span id="MultisetExpression-62"><a href="#MultisetExpression-62"><span class="linenos"> 62</span></a><span class="sd">    | `keep`, `[]`                | less capable than `Pool` version   |</span>
+</span><span id="MultisetExpression-63"><a href="#MultisetExpression-63"><span class="linenos"> 63</span></a><span class="sd">    | `highest`                   | less capable than `Pool` version   |</span>
+</span><span id="MultisetExpression-64"><a href="#MultisetExpression-64"><span class="linenos"> 64</span></a><span class="sd">    | `lowest`                    | less capable than `Pool` version   |</span>
 </span><span id="MultisetExpression-65"><a href="#MultisetExpression-65"><span class="linenos"> 65</span></a>
 </span><span id="MultisetExpression-66"><a href="#MultisetExpression-66"><span class="linenos"> 66</span></a><span class="sd">    | Evaluator                      | Summary                                                                    |</span>
 </span><span id="MultisetExpression-67"><a href="#MultisetExpression-67"><span class="linenos"> 67</span></a><span class="sd">    |:-------------------------------|:---------------------------------------------------------------------------|</span>
-</span><span id="MultisetExpression-68"><a href="#MultisetExpression-68"><span class="linenos"> 68</span></a><span class="sd">    | `issubset, &lt;=`                 | Whether the left side is a subset of the right side                        |</span>
-</span><span id="MultisetExpression-69"><a href="#MultisetExpression-69"><span class="linenos"> 69</span></a><span class="sd">    | `issuperset, &gt;=`               | Whether the left side is a superset of the right side                      |</span>
+</span><span id="MultisetExpression-68"><a href="#MultisetExpression-68"><span class="linenos"> 68</span></a><span class="sd">    | `issubset`, `&lt;=`               | Whether the left side is a subset of the right side                        |</span>
+</span><span id="MultisetExpression-69"><a href="#MultisetExpression-69"><span class="linenos"> 69</span></a><span class="sd">    | `issuperset`, `&gt;=`             | Whether the left side is a superset of the right side                      |</span>
 </span><span id="MultisetExpression-70"><a href="#MultisetExpression-70"><span class="linenos"> 70</span></a><span class="sd">    | `isdisjoint`                   | Whether the left side has no positive counts in common with the right side |</span>
 </span><span id="MultisetExpression-71"><a href="#MultisetExpression-71"><span class="linenos"> 71</span></a><span class="sd">    | `&lt;`                            | Whether the left side is a proper subset of the right side                 |</span>
 </span><span id="MultisetExpression-72"><a href="#MultisetExpression-72"><span class="linenos"> 72</span></a><span class="sd">    | `&gt;`                            | Whether the left side is a proper superset of the right side               |</span>
@@ -11449,55 +11449,55 @@ expressions, or to attach a final evaluator.</p>
 </thead>
 <tbody>
 <tr>
-  <td style="text-align:left;"><code>disjoint_union, +</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.disjoint_union">disjoint_union</a></code>, <code>+</code></td>
   <td style="text-align:left;"><code>l + r</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>difference, -</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.difference">difference</a></code>, <code>-</code></td>
   <td style="text-align:left;"><code>l - r</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>union, |</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.union">union</a></code>, <code>|</code></td>
   <td style="text-align:left;"><code>max(l, r)</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>intersection, &amp;</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.intersection">intersection</a></code>, <code>&amp;</code></td>
   <td style="text-align:left;"><code>min(l, r)</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>symmetric_difference, ^</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.symmetric_difference">symmetric_difference</a></code>, <code>^</code></td>
   <td style="text-align:left;"><code>abs(l - r)</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>multiply_counts, *</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.multiply_counts">multiply_counts</a></code>, <code>*</code></td>
   <td style="text-align:left;"><code>count * n</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>divide_counts, //</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.divide_counts">divide_counts</a></code>, <code>//</code></td>
   <td style="text-align:left;"><code>count // n</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>keep_counts(n)</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.keep_counts">keep_counts</a></code></td>
   <td style="text-align:left;"><code>count if count &gt;= n else 0</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>unique(n=1)</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.unique">unique</a></code></td>
   <td style="text-align:left;"><code>min(count, n)</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>keep_outcomes(t)</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.keep_outcomes">keep_outcomes</a></code></td>
   <td style="text-align:left;"><code>count if outcome in t else 0</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>drop_outcomes(t)</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.drop_outcomes">drop_outcomes</a></code></td>
   <td style="text-align:left;"><code>count if outcome not in t else 0</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>map_counts(f)</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.map_counts">map_counts</a></code></td>
   <td style="text-align:left;"><code>f(outcome, *counts)</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>keep, []</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.keep">keep</a></code>, <code>[]</code></td>
   <td style="text-align:left;">less capable than <code><a href="#Pool">Pool</a></code> version</td>
 </tr>
 <tr>
@@ -11520,11 +11520,11 @@ expressions, or to attach a final evaluator.</p>
 </thead>
 <tbody>
 <tr>
-  <td style="text-align:left;"><code>issubset, &lt;=</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.issubset">issubset</a></code>, <code>&lt;=</code></td>
   <td style="text-align:left;">Whether the left side is a subset of the right side</td>
 </tr>
 <tr>
-  <td style="text-align:left;"><code>issuperset, &gt;=</code></td>
+  <td style="text-align:left;"><code><a href="#MultisetExpression.issuperset">issuperset</a></code>, <code>&gt;=</code></td>
   <td style="text-align:left;">Whether the left side is a superset of the right side</td>
 </tr>
 <tr>
