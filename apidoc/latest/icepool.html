@@ -10559,7 +10559,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-49"><a href="#MultisetExpression-49"><span class="linenos"> 49</span></a><span class="sd">    |:--------------------------|:-----------------------------------|</span>
 </span><span id="MultisetExpression-50"><a href="#MultisetExpression-50"><span class="linenos"> 50</span></a><span class="sd">    | `disjoint_union, +`       | `l + r`                            |</span>
 </span><span id="MultisetExpression-51"><a href="#MultisetExpression-51"><span class="linenos"> 51</span></a><span class="sd">    | `difference, -`           | `l - r`                            |</span>
-</span><span id="MultisetExpression-52"><a href="#MultisetExpression-52"><span class="linenos"> 52</span></a><span class="sd">    | `union, |`                | `max(l, r)`                        |</span>
+</span><span id="MultisetExpression-52"><a href="#MultisetExpression-52"><span class="linenos"> 52</span></a><span class="sd">    | `union, \|`               | `max(l, r)`                        |</span>
 </span><span id="MultisetExpression-53"><a href="#MultisetExpression-53"><span class="linenos"> 53</span></a><span class="sd">    | `intersection, &amp; `        | `min(l, r)`                        |</span>
 </span><span id="MultisetExpression-54"><a href="#MultisetExpression-54"><span class="linenos"> 54</span></a><span class="sd">    | `symmetric_difference, ^` | `abs(l - r)`                       |</span>
 </span><span id="MultisetExpression-55"><a href="#MultisetExpression-55"><span class="linenos"> 55</span></a><span class="sd">    | `multiply_counts, *`      | `count * n`                        |</span>
@@ -11425,9 +11425,8 @@ expressions, or to attach a final evaluator.</p>
   <td style="text-align:left;"><code>l - r</code></td>
 </tr>
 <tr>
-  <td style="text-align:left;">`union,</td>
-  <td style="text-align:left;">`</td>
-  <td><code>max(l, r)</code></td>
+  <td style="text-align:left;"><code>union, |</code></td>
+  <td style="text-align:left;"><code>max(l, r)</code></td>
 </tr>
 <tr>
   <td style="text-align:left;"><code>intersection, &amp;</code></td>
