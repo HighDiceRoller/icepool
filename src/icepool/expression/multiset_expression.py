@@ -44,28 +44,28 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     Operations include:
 
-    | Operation                 | Count / notes                      |
-    |:--------------------------|:-----------------------------------|
-    | `disjoint_union, +`       | `l + r`                            |
-    | `difference, -`           | `l - r`                            |
-    | `union, \|`               | `max(l, r)`                        |
-    | `intersection, & `        | `min(l, r)`                        |
-    | `symmetric_difference, ^` | `abs(l - r)`                       |
-    | `multiply_counts, *`      | `count * n`                        |
-    | `divide_counts, //`       | `count // n`                       |
-    | `keep_counts(n)`          | `count if count >= n else 0`       |
-    | `unique(n=1)`             | `min(count, n)`                    |
-    | `keep_outcomes(t)`        | `count if outcome in t else 0`     |
-    | `drop_outcomes(t)`        | `count if outcome not in t else 0` |
-    | `map_counts(f)`           | `f(outcome, *counts)`              |
-    | `keep, []`                | less capable than `Pool` version   |
-    | `highest`                 | less capable than `Pool` version   |
-    | `lowest`                  | less capable than `Pool` version   |
+    | Operation                   | Count / notes                      |
+    |:----------------------------|:-----------------------------------|
+    | `disjoint_union`, `+`       | `l + r`                            |
+    | `difference`, `-`           | `l - r`                            |
+    | `union`, `\|`               | `max(l, r)`                        |
+    | `intersection`, `&`         | `min(l, r)`                        |
+    | `symmetric_difference`, `^` | `abs(l - r)`                       |
+    | `multiply_counts`, `*`      | `count * n`                        |
+    | `divide_counts`, `//`       | `count // n`                       |
+    | `keep_counts`               | `count if count >= n else 0`       |
+    | `unique`                    | `min(count, n)`                    |
+    | `keep_outcomes`             | `count if outcome in t else 0`     |
+    | `drop_outcomes`             | `count if outcome not in t else 0` |
+    | `map_counts`                | `f(outcome, *counts)`              |
+    | `keep`, `[]`                | less capable than `Pool` version   |
+    | `highest`                   | less capable than `Pool` version   |
+    | `lowest`                    | less capable than `Pool` version   |
 
     | Evaluator                      | Summary                                                                    |
     |:-------------------------------|:---------------------------------------------------------------------------|
-    | `issubset, <=`                 | Whether the left side is a subset of the right side                        |
-    | `issuperset, >=`               | Whether the left side is a superset of the right side                      |
+    | `issubset`, `<=`               | Whether the left side is a subset of the right side                        |
+    | `issuperset`, `>=`             | Whether the left side is a superset of the right side                      |
     | `isdisjoint`                   | Whether the left side has no positive counts in common with the right side |
     | `<`                            | Whether the left side is a proper subset of the right side                 |
     | `>`                            | Whether the left side is a proper superset of the right side               |
