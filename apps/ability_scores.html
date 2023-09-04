@@ -45,9 +45,9 @@
             max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br />
         Generate <input name="num_abilities" id="num_abilities" type="number" min="6" max="24" value="6" required
             onwheel="" /> ability scores, keeping the 6 highest.<br />
-        Scores not between <input name="min_ability" id="min_ability" type="number" min="3" max="18" value="3" required
+        Scores not between <input name="min_ability" id="min_ability" type="number" min="1" max="20" value="3" required
             onwheel="" /> and
-        <input name="max_ability" id="max_ability" type="number" min="3" max="18" value="18" required onwheel="" />
+        <input name="max_ability" id="max_ability" type="number" min="1" max="20" value="18" required onwheel="" />
         are
         set to the nearest value within that range.
 
@@ -72,6 +72,8 @@
         <tr id="rankTableHeader">
             <th style="width: 8em; text-align: left;">Rank</th>
             <th style="width: 4em;">Mean</th>
+            <th style="width: 4em;">1</th>
+            <th style="width: 4em;">2</th>
             <th style="width: 4em;">3</th>
             <th style="width: 4em;">4</th>
             <th style="width: 4em;">5</th>
@@ -88,6 +90,8 @@
             <th style="width: 4em;">16</th>
             <th style="width: 4em;">17</th>
             <th style="width: 4em;">18</th>
+            <th style="width: 4em;">19</th>
+            <th style="width: 4em;">20</th>
         </tr>
         <tr id="rankTableRow0">
             <td style="text-align: left;">Highest</td>
@@ -135,32 +139,38 @@
             </select>
             <table>
                 <tr>
-                    <td>3: <input name="p3" id="p3" type="number" min="-25" max="50" value="3" required onwheel="" /></td>
-                    <td>4: <input name="p4" id="p4" type="number" min="-25" max="50" value="4" required onwheel="" /></td>
-                    <td>5: <input name="p5" id="p5" type="number" min="-25" max="50" value="5" required onwheel="" /></td>
-                    <td>6: <input name="p6" id="p6" type="number" min="-25" max="50" value="6" required onwheel="" /></td>
-                    <td>7: <input name="p7" id="p7" type="number" min="-25" max="50" value="7" required onwheel="" /></td>
-                    <td>8: <input name="p8" id="p8" type="number" min="-25" max="50" value="8" required onwheel="" /></td>
-                    <td>9: <input name="p9" id="p9" type="number" min="-25" max="50" value="9" required onwheel="" /></td>
-                    <td>10: <input name="p10" id="p10" type="number" min="-25" max="50" value="10" required onwheel="" />
+                    <td>1: <input name="p1" id="p1" type="number" min="-50" max="50" value="1" required onwheel="" /></td>
+                    <td>2: <input name="p2" id="p2" type="number" min="-50" max="50" value="2" required onwheel="" /></td>
+                    <td>3: <input name="p3" id="p3" type="number" min="-50" max="50" value="3" required onwheel="" /></td>
+                    <td>4: <input name="p4" id="p4" type="number" min="-50" max="50" value="4" required onwheel="" /></td>
+                    <td>5: <input name="p5" id="p5" type="number" min="-50" max="50" value="5" required onwheel="" /></td>
+                    <td>6: <input name="p6" id="p6" type="number" min="-50" max="50" value="6" required onwheel="" /></td>
+                    <td>7: <input name="p7" id="p7" type="number" min="-50" max="50" value="7" required onwheel="" /></td>
+                    <td>8: <input name="p8" id="p8" type="number" min="-50" max="50" value="8" required onwheel="" /></td>
+                    <td>9: <input name="p9" id="p9" type="number" min="-50" max="50" value="9" required onwheel="" /></td>
+                    <td>10: <input name="p10" id="p10" type="number" min="-50" max="50" value="10" required onwheel="" />
                     </td>
                 </tr>
                 <tr>
-                    <td>11: <input name="p11" id="p11" type="number" min="-25" max="50" value="11" required onwheel="" />
+                    <td>11: <input name="p11" id="p11" type="number" min="-50" max="50" value="11" required onwheel="" />
                     </td>
-                    <td>12: <input name="p12" id="p12" type="number" min="-25" max="50" value="12" required onwheel="" />
+                    <td>12: <input name="p12" id="p12" type="number" min="-50" max="50" value="12" required onwheel="" />
                     </td>
-                    <td>13: <input name="p13" id="p13" type="number" min="-25" max="50" value="13" required onwheel="" />
+                    <td>13: <input name="p13" id="p13" type="number" min="-50" max="50" value="13" required onwheel="" />
                     </td>
-                    <td>14: <input name="p14" id="p14" type="number" min="-25" max="50" value="14" required onwheel="" />
+                    <td>14: <input name="p14" id="p14" type="number" min="-50" max="50" value="14" required onwheel="" />
                     </td>
-                    <td>15: <input name="p15" id="p15" type="number" min="-25" max="50" value="15" required onwheel="" />
+                    <td>15: <input name="p15" id="p15" type="number" min="-50" max="50" value="15" required onwheel="" />
                     </td>
-                    <td>16: <input name="p16" id="p16" type="number" min="-25" max="50" value="16" required onwheel="" />
+                    <td>16: <input name="p16" id="p16" type="number" min="-50" max="50" value="16" required onwheel="" />
                     </td>
-                    <td>17: <input name="p17" id="p17" type="number" min="-25" max="50" value="17" required onwheel="" />
+                    <td>17: <input name="p17" id="p17" type="number" min="-50" max="50" value="17" required onwheel="" />
                     </td>
-                    <td>18: <input name="p18" id="p18" type="number" min="-25" max="50" value="18" required onwheel="" />
+                    <td>18: <input name="p18" id="p18" type="number" min="-50" max="50" value="18" required onwheel="" />
+                    </td>
+                    <td>19: <input name="p19" id="p19" type="number" min="-50" max="50" value="19" required onwheel="" />
+                    </td>
+                    <td>20: <input name="p20" id="p20" type="number" min="-50" max="50" value="20" required onwheel="" />
                     </td>
                 </tr>
             </table>
@@ -260,7 +270,7 @@
         var rankChart = new Chart(rankChartContext, {
             type: 'line',
             data: {
-                labels: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+                labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
                 datasets: [],
             },
             options: {
@@ -393,8 +403,8 @@
             });
 
             await pyodide.loadPackage(["micropip"], 
-				{messageCallback : setLoadingText}
-			);
+                {messageCallback : setLoadingText}
+            );
 
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
@@ -403,15 +413,20 @@
                 
                 import js
                 import pyodide
+                import math
                 import icepool
                 
                 def set_rank_data(rank, die):
-                    data = (0,) * 16
+                    data = (0,) * 20
                     selected_dist = js.document.getElementById('rankDistSelect').value
                     if selected_dist == 'pmf':
                         data = [100.0 * x for x in die.probabilities()]
                     else:
                         data = [100.0 * x for x in die.probabilities_ge()]
+                    for i in range(1, min_ability):
+                        data[i - 1] = math.nan
+                    for i in range(max_ability + 1, 21):
+                        data[i - 1] = math.nan
                     js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
                     table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
@@ -465,7 +480,7 @@
             
             for i in range(6):
                 rank_ability = single_ability.pool(num_abilities)[num_abilities - 1 - i]
-                rank_ability, _ = icepool.align_range(rank_ability, 3 @ icepool.d6)
+                rank_ability, _, _ = icepool.align_range(rank_ability, 1, 20)
                 ranks.append(rank_ability)
                 
                 max_prob = max(max_prob, max(rank_ability.probabilities()))
@@ -487,12 +502,12 @@
         }
 
         const PRICING_PRESETS = {
-            "raw": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-            "mod": [-4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4],
-            "mod_dcc": [-3, -2, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3],
-            "mod_swn": [-2, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2],
-            "pb_5e": [-9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19],
-            "pb_pf": [-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17]
+            "raw": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+            "mod": [-5, -4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5],
+            "mod_dcc": [-4, -3, -3, -2, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 4],
+            "mod_swn": [-2, -2, -2, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2],
+            "pb_5e": [-16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 4, 5, 7, 9, 12, 15, 19, 23, 28],
+            "pb_pf": [-25, -20, -16, -12, -9, -6, -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17, 21, 26]
         };
 
         async function setPricingPreset() {
@@ -501,9 +516,9 @@
                 return;
             }
             let prices = PRICING_PRESETS[pricingPresetSelect.value];
-            for (let i = 3; i < 19; i++) {
+            for (let i = 1; i < 21; i++) {
                 let e = document.getElementById('p' + i);
-                e.value = prices[i - 3];
+                e.value = prices[i - 1];
             }
         }
 
@@ -511,9 +526,9 @@
             let pricingPresetSelect = document.getElementById('pricingPresetSelect');
 
             let prices = [];
-            for (let i = 3; i < 19; i++) {
+            for (let i = 1; i < 21; i++) {
                 let e = document.getElementById('p' + i);
-                prices[i - 3] = parseInt(e.value);
+                prices[i - 1] = parseInt(e.value);
             }
 
             pricingPresetSelect.value = "custom";
@@ -526,8 +541,8 @@
 
             let monotonicityWarning = document.getElementById('monotonicityWarning');
             monotonicityWarning.style.display = 'none';
-            for (let i = 3; i < 18; i++) {
-                if (prices[i - 3] > prices[i - 2]) {
+            for (let i = 1; i < 20; i++) {
+                if (prices[i - 1] > prices[i]) {
                     monotonicityWarning.style.display = 'inline';
                     break;
                 }
@@ -538,7 +553,7 @@
 
             pyodide.runPython(`
                 prices = {}
-                for i in range(3, 19):
+                for i in range(1, 21):
                     prices[i] = int(js.document.getElementById('p%d' % i).value)
                 single_ability_price = single_ability.map(lambda outcome: prices[outcome])
                 total_price = single_ability_price.highest(num_abilities, 6).highest(num_arrays)
