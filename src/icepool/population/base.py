@@ -316,10 +316,30 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def _probabilities(self) -> Sequence[Fraction]:
         return tuple(Fraction(v, self.denominator()) for v in self.values())
 
+    @overload
     def probabilities(self,
                       outcomes: Sequence | None = None,
                       *,
-                      percent: bool = False) -> Sequence[Fraction]:
+                      percent: Literal[False]) -> Sequence[Fraction]:
+        ...
+
+    @overload
+    def probabilities(self,
+                      outcomes: Sequence | None = None,
+                      *,
+                      percent: Literal[True]) -> Sequence[float]:
+        ...
+
+    @overload
+    def probabilities(self,
+                      outcomes: Sequence | None = None) -> Sequence[Fraction]:
+        ...
+
+    def probabilities(
+            self,
+            outcomes: Sequence | None = None,
+            *,
+            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
         """The probability of each outcome in order.
 
         Also known as the probability mass function (PMF).
@@ -327,8 +347,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         Args:
             outcomes: If provided, the probabilities corresponding to these
                 outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
+            percent: If set, the results will be in percent 
+                (i.e. total of 100.0) and the values are `float`s.
+                Otherwise, the total will be 1 and the values are `Fraction`s.
         """
         if outcomes is None:
             result = self._probabilities
@@ -336,7 +357,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability(x) for x in outcomes)
 
         if percent:
-            return tuple(100 * x for x in result)
+            return tuple(100.0 * x for x in result)
         else:
             return result
 
@@ -346,10 +367,31 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             Fraction(quantity, self.denominator())
             for quantity in self.quantities_le())
 
+    @overload
     def probabilities_le(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[Fraction]:
+                         percent: Literal[False]) -> Sequence[Fraction]:
+        ...
+
+    @overload
+    def probabilities_le(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: Literal[True]) -> Sequence[float]:
+        ...
+
+    @overload
+    def probabilities_le(self,
+                         outcomes: Sequence |
+                         None = None) -> Sequence[Fraction]:
+        ...
+
+    def probabilities_le(
+            self,
+            outcomes: Sequence | None = None,
+            *,
+            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
         """The probability of rolling <= each outcome in order.
 
         Also known as the cumulative distribution function (CDF),
@@ -358,8 +400,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         Args:
             outcomes: If provided, the probabilities corresponding to these
                 outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
+            percent: If set, the results will be in percent 
+                (i.e. total of 100.0) and the values are `float`s.
+                Otherwise, the total will be 1 and the values are `Fraction`s.
         """
         if outcomes is None:
             result = self._probabilities_le
@@ -367,7 +410,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability_le(x) for x in outcomes)
 
         if percent:
-            return tuple(100 * x for x in result)
+            return tuple(100.0 * x for x in result)
         else:
             return result
 
@@ -377,10 +420,31 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             Fraction(quantity, self.denominator())
             for quantity in self.quantities_ge())
 
+    @overload
     def probabilities_ge(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[Fraction]:
+                         percent: Literal[False]) -> Sequence[Fraction]:
+        ...
+
+    @overload
+    def probabilities_ge(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: Literal[True]) -> Sequence[float]:
+        ...
+
+    @overload
+    def probabilities_ge(self,
+                         outcomes: Sequence |
+                         None = None) -> Sequence[Fraction]:
+        ...
+
+    def probabilities_ge(
+            self,
+            outcomes: Sequence | None = None,
+            *,
+            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
         """The probability of rolling >= each outcome in order.
 
         Also known as the survival function (SF) or
@@ -390,8 +454,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         Args:
             outcomes: If provided, the probabilities corresponding to these
                 outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
+            percent: If set, the results will be in percent 
+                (i.e. total of 100.0) and the values are `float`s.
+                Otherwise, the total will be 1 and the values are `Fraction`s.
         """
         if outcomes is None:
             result = self._probabilities_ge
@@ -399,21 +464,43 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability_ge(x) for x in outcomes)
 
         if percent:
-            return tuple(100 * x for x in result)
+            return tuple(100.0 * x for x in result)
         else:
             return result
 
+    @overload
     def probabilities_lt(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[Fraction]:
+                         percent: Literal[False]) -> Sequence[Fraction]:
+        ...
+
+    @overload
+    def probabilities_lt(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: Literal[True]) -> Sequence[float]:
+        ...
+
+    @overload
+    def probabilities_lt(self,
+                         outcomes: Sequence |
+                         None = None) -> Sequence[Fraction]:
+        ...
+
+    def probabilities_lt(
+            self,
+            outcomes: Sequence | None = None,
+            *,
+            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
         """The probability of rolling < each outcome in order.
 
         Args:
             outcomes: If provided, the probabilities corresponding to these
                 outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
+            percent: If set, the results will be in percent 
+                (i.e. total of 100.0) and the values are `float`s.
+                Otherwise, the total will be 1 and the values are `Fraction`s.
         """
         if outcomes is None:
             result = tuple(1 - x for x in self._probabilities_ge)
@@ -421,21 +508,43 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(1 - self.probability_ge(x) for x in outcomes)
 
         if percent:
-            return tuple(100 * x for x in result)
+            return tuple(100.0 * x for x in result)
         else:
             return result
 
+    @overload
     def probabilities_gt(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[Fraction]:
+                         percent: Literal[False]) -> Sequence[Fraction]:
+        ...
+
+    @overload
+    def probabilities_gt(self,
+                         outcomes: Sequence | None = None,
+                         *,
+                         percent: Literal[True]) -> Sequence[float]:
+        ...
+
+    @overload
+    def probabilities_gt(self,
+                         outcomes: Sequence |
+                         None = None) -> Sequence[Fraction]:
+        ...
+
+    def probabilities_gt(
+            self,
+            outcomes: Sequence | None = None,
+            *,
+            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
         """The probability of rolling > each outcome in order.
 
         Args:
             outcomes: If provided, the probabilities corresponding to these
                 outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent (i.e. total of 100.0).
-                Otherwise, the total will be 1.0.
+            percent: If set, the results will be in percent 
+                (i.e. total of 100.0) and the values are `float`s.
+                Otherwise, the total will be 1 and the values are `Fraction`s.
         """
         if outcomes is None:
             result = tuple(1 - x for x in self._probabilities_le)
@@ -443,7 +552,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(1 - self.probability_le(x) for x in outcomes)
 
         if percent:
-            return tuple(100 * x for x in result)
+            return tuple(100.0 * x for x in result)
         else:
             return result
 
