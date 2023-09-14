@@ -1,5 +1,7 @@
 __docformat__ = 'google'
 
+from fractions import Fraction
+import numbers
 from typing import Iterator, MutableMapping
 
 # b -> list of rows
@@ -54,3 +56,13 @@ def iter_hypergeom(
         weight = comb(draws, count)
         for tail_count, tail_weight in iter_hypergeom(deck[1:], draws - count):
             yield (count,) + tail_count, weight * tail_weight
+
+def try_fraction(numerator, denominator) -> Fraction | float:
+    """Attempts to form a `Fraction` from the arguments.
+    
+    If the arguments are not rational, returns a `float` instead.
+    """
+    try:
+        return Fraction(numerator, denominator)
+    except TypeError:
+        return numerator / denominator

@@ -1,12 +1,14 @@
 __docformat__ = 'google'
 
-from collections import defaultdict
 import icepool
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.math import try_fraction
 from icepool.typing import U, Outcome, T_co, count_positional_parameters
 
 from abc import ABC, abstractmethod
 import bisect
+from collections import defaultdict
+from fractions import Fraction
 from functools import cached_property
 import itertools
 import math
@@ -14,7 +16,7 @@ import numbers
 import operator
 import random
 
-from typing import Any, Callable, Generic, Hashable, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
+from typing import Any, Callable, Generic, Hashable, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
@@ -290,34 +292,34 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Probabilities.
 
-    def probability(self, outcome: Hashable) -> float:
+    def probability(self, outcome: Hashable) -> Fraction:
         """The probability of a single outcome, or 0.0 if not present. """
-        return self.quantity(outcome) / self.denominator()
+        return Fraction(self.quantity(outcome), self.denominator())
 
-    def probability_le(self, outcome: Hashable) -> float:
+    def probability_le(self, outcome: Hashable) -> Fraction:
         """The probability <= a single outcome. """
-        return self.quantity_le(outcome) / self.denominator()
+        return Fraction(self.quantity_le(outcome), self.denominator())
 
-    def probability_lt(self, outcome: Hashable) -> float:
+    def probability_lt(self, outcome: Hashable) -> Fraction:
         """The probability < a single outcome. """
-        return self.quantity_lt(outcome) / self.denominator()
+        return Fraction(self.quantity_lt(outcome), self.denominator())
 
-    def probability_ge(self, outcome: Hashable) -> float:
+    def probability_ge(self, outcome: Hashable) -> Fraction:
         """The probability >= a single outcome. """
-        return self.quantity_ge(outcome) / self.denominator()
+        return Fraction(self.quantity_ge(outcome), self.denominator())
 
-    def probability_gt(self, outcome: Hashable) -> float:
+    def probability_gt(self, outcome: Hashable) -> Fraction:
         """The probability > a single outcome. """
-        return self.quantity_gt(outcome) / self.denominator()
+        return Fraction(self.quantity_gt(outcome), self.denominator())
 
     @cached_property
-    def _probabilities(self) -> Sequence[float]:
-        return tuple(v / self.denominator() for v in self.values())
+    def _probabilities(self) -> Sequence[Fraction]:
+        return tuple(Fraction(v, self.denominator()) for v in self.values())
 
     def probabilities(self,
                       outcomes: Sequence | None = None,
                       *,
-                      percent: bool = False) -> Sequence[float]:
+                      percent: bool = False) -> Sequence[Fraction]:
         """The probability of each outcome in order.
 
         Also known as the probability mass function (PMF).
@@ -334,19 +336,20 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability(x) for x in outcomes)
 
         if percent:
-            return tuple(100.0 * x for x in result)
+            return tuple(100 * x for x in result)
         else:
             return result
 
     @cached_property
-    def _probabilities_le(self) -> Sequence[float]:
+    def _probabilities_le(self) -> Sequence[Fraction]:
         return tuple(
-            quantity / self.denominator() for quantity in self.quantities_le())
+            Fraction(quantity, self.denominator())
+            for quantity in self.quantities_le())
 
     def probabilities_le(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[float]:
+                         percent: bool = False) -> Sequence[Fraction]:
         """The probability of rolling <= each outcome in order.
 
         Also known as the cumulative distribution function (CDF),
@@ -364,19 +367,20 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability_le(x) for x in outcomes)
 
         if percent:
-            return tuple(100.0 * x for x in result)
+            return tuple(100 * x for x in result)
         else:
             return result
 
     @cached_property
-    def _probabilities_ge(self) -> Sequence[float]:
+    def _probabilities_ge(self) -> Sequence[Fraction]:
         return tuple(
-            quantity / self.denominator() for quantity in self.quantities_ge())
+            Fraction(quantity, self.denominator())
+            for quantity in self.quantities_ge())
 
     def probabilities_ge(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[float]:
+                         percent: bool = False) -> Sequence[Fraction]:
         """The probability of rolling >= each outcome in order.
 
         Also known as the survival function (SF) or
@@ -395,14 +399,14 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             result = tuple(self.probability_ge(x) for x in outcomes)
 
         if percent:
-            return tuple(100.0 * x for x in result)
+            return tuple(100 * x for x in result)
         else:
             return result
 
     def probabilities_lt(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[float]:
+                         percent: bool = False) -> Sequence[Fraction]:
         """The probability of rolling < each outcome in order.
 
         Args:
@@ -412,19 +416,19 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
                 Otherwise, the total will be 1.0.
         """
         if outcomes is None:
-            result = tuple(1.0 - x for x in self._probabilities_ge)
+            result = tuple(1 - x for x in self._probabilities_ge)
         else:
-            result = tuple(1.0 - self.probability_ge(x) for x in outcomes)
+            result = tuple(1 - self.probability_ge(x) for x in outcomes)
 
         if percent:
-            return tuple(100.0 * x for x in result)
+            return tuple(100 * x for x in result)
         else:
             return result
 
     def probabilities_gt(self,
                          outcomes: Sequence | None = None,
                          *,
-                         percent: bool = False) -> Sequence[float]:
+                         percent: bool = False) -> Sequence[Fraction]:
         """The probability of rolling > each outcome in order.
 
         Args:
@@ -434,12 +438,12 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
                 Otherwise, the total will be 1.0.
         """
         if outcomes is None:
-            result = tuple(1.0 - x for x in self._probabilities_le)
+            result = tuple(1 - x for x in self._probabilities_le)
         else:
-            result = tuple(1.0 - self.probability_le(x) for x in outcomes)
+            result = tuple(1 - self.probability_le(x) for x in outcomes)
 
         if percent:
-            return tuple(100.0 * x for x in result)
+            return tuple(100 * x for x in result)
         else:
             return result
 
@@ -457,18 +461,20 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The highest quantity of any single outcome. """
         return max(self.quantities())
 
-    def kolmogorov_smirnov(self, other) -> float:
+    def kolmogorov_smirnov(self, other) -> Fraction:
         """Kolmogorov–Smirnov statistic. The maximum absolute difference between CDFs. """
         a, b = icepool.align(self, other)
         return max(
             abs(a - b)
             for a, b in zip(a.probabilities_le(), b.probabilities_le()))
 
-    def cramer_von_mises(self, other) -> float:
+    def cramer_von_mises(self, other) -> Fraction:
         """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
         a, b = icepool.align(self, other)
-        return sum((a - b)**2
-                   for a, b in zip(a.probabilities_le(), b.probabilities_le()))
+        return sum(
+            ((a - b)**2
+             for a, b in zip(a.probabilities_le(), b.probabilities_le())),
+            start=Fraction(0, 1))
 
     def median(self):
         """The median, taking the mean in case of a tie.
@@ -512,34 +518,60 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             return self.max_outcome()
         return self.outcomes()[index]
 
-    def mean(self: 'Population[numbers.Real]') -> float:
-        return sum(outcome * quantity
-                   for outcome, quantity in self.items()) / self.denominator()
+    @overload
+    def mean(self: 'Population[numbers.Rational]') -> Fraction:
+        ...
 
-    def variance(self: 'Population[numbers.Real]') -> float:
+    @overload
+    def mean(self: 'Population[float]') -> float:
+        ...
+
+    def mean(
+        self: 'Population[numbers.Rational] | Population[float]'
+    ) -> Fraction | float:
+        return try_fraction(
+            sum(outcome * quantity for outcome, quantity in self.items()),
+            self.denominator())
+
+    @overload
+    def variance(self: 'Population[numbers.Rational]') -> Fraction:
+        ...
+
+    @overload
+    def variance(self: 'Population[float]') -> float:
+        ...
+
+    def variance(
+        self: 'Population[numbers.Rational] | Population[float]'
+    ) -> Fraction | float:
         """This is the population variance, not the sample variance."""
         mean = self.mean()
-        mean_of_squares = sum(
-            quantity * outcome**2
-            for outcome, quantity in self.items()) / self.denominator()
+        mean_of_squares = try_fraction(
+            sum(quantity * outcome**2 for outcome, quantity in self.items()),
+            self.denominator())
         return mean_of_squares - mean * mean
 
-    def standard_deviation(self: 'Population[numbers.Real]') -> float:
+    def standard_deviation(
+            self: 'Population[numbers.Rational] | Population[float]') -> float:
         return math.sqrt(self.variance())
 
     sd = standard_deviation
 
-    def standardized_moment(self: 'Population[numbers.Real]', k: int) -> float:
+    def standardized_moment(
+            self: 'Population[numbers.Rational] | Population[float]',
+            k: int) -> float:
         sd = self.standard_deviation()
         mean = self.mean()
-        ev = sum(p * (outcome - mean)**k
+        ev = sum(p * (outcome - mean)**k  # type: ignore 
                  for outcome, p in zip(self.outcomes(), self.probabilities()))
         return ev / (sd**k)
 
-    def skewness(self: 'Population[numbers.Real]') -> float:
+    def skewness(
+            self: 'Population[numbers.Rational] | Population[float]') -> float:
         return self.standardized_moment(3)
 
-    def excess_kurtosis(self: 'Population[numbers.Real]') -> float:
+    def excess_kurtosis(
+            self: 'Population[numbers.Rational] | Population[float]') -> float:
         return self.standardized_moment(4) - 3.0
 
     # Joint statistics.
@@ -567,15 +599,30 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         return Population._Marginals(self)
 
-    def covariance(self: 'Population[tuple[numbers.Real, ...]]', i: int,
+    @overload
+    def covariance(self: 'Population[tuple[numbers.Rational, ...]]', i: int,
+                   j: int) -> Fraction:
+        ...
+
+    @overload
+    def covariance(self: 'Population[tuple[float, ...]]', i: int,
                    j: int) -> float:
+        ...
+
+    def covariance(
+            self:
+        'Population[tuple[numbers.Rational, ...]] | Population[tuple[float, ...]]',
+            i: int, j: int) -> Fraction | float:
         mean_i = self.marginals[i].mean()
         mean_j = self.marginals[j].mean()
-        return sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * quantity
-                   for outcome, quantity in self.items()) / self.denominator()
+        return try_fraction(
+            sum((outcome[i] - mean_i) * (outcome[j] - mean_j) * quantity
+                for outcome, quantity in self.items()), self.denominator())
 
-    def correlation(self: 'Population[tuple[numbers.Real, ...]]', i: int,
-                    j: int) -> float:
+    def correlation(
+            self:
+        'Population[tuple[numbers.Rational, ...]] | Population[tuple[float, ...]]',
+            i: int, j: int) -> float:
         sd_i = self.marginals[i].standard_deviation()
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)

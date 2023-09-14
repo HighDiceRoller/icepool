@@ -73,7 +73,7 @@ def gather_cols(mapping: Population,
         else:
             comparator = token[1:]
             denom_type = token[0]
-            col: Sequence[int] | Sequence[float]
+            col: Sequence
             if denom_type == 'q':
                 if comparator == '==':
                     col = list(mapping.values())
@@ -94,9 +94,9 @@ def gather_cols(mapping: Population,
                         col = mapping.probabilities_ge()
 
                     if denom_type == 'p':
-                        result.append([f'{x:0.6f}' for x in col])
+                        result.append([f'{float(x):0.6f}' for x in col])
                     else:
-                        result.append([f'{x:0.6%}' for x in col])
+                        result.append([f'{float(x):0.6%}' for x in col])
     return result
 
 
