@@ -64,17 +64,17 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     | Evaluator                      | Summary                                                                    |
     |:-------------------------------|:---------------------------------------------------------------------------|
-    | `issubset`, `<=`               | Whether the left side is a subset of the right side                        |
-    | `issuperset`, `>=`             | Whether the left side is a superset of the right side                      |
+    | `issubset`, `<=`               | Whether the left side's counts are all <= their counterparts on the right  |
+    | `issuperset`, `>=`             | Whether the left side's counts are all >= their counterparts on the right  |
     | `isdisjoint`                   | Whether the left side has no positive counts in common with the right side |
-    | `<`                            | Whether the left side is a proper subset of the right side                 |
-    | `>`                            | Whether the left side is a proper superset of the right side               |
+    | `<`                            | As `<=`, but `False` if the two multisets are equal                        |
+    | `>`                            | As `>=`, but `False` if the two multisets are equal                        |
     | `==`                           | Whether the left side has all the same counts as the right side            |
     | `!=`                           | Whether the left side has any different counts to the right side           |
     | `expand`                       | All elements in ascending order                                            |
     | `sum`                          | Sum of all elements                                                        |
     | `count`                        | The number of elements                                                     |
-    | `any`                          | If there is at least 1 element                                             |
+    | `any`                          | Whether there is at least 1 element                                        |
     | `highest_outcome_and_count`    | The highest outcome and how many of that outcome                           |
     | `all_counts`                   | All counts in descending order                                             |
     | `largest_count`                | The single largest count, aka x-of-a-kind                                  |
@@ -85,8 +85,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
     """
 
     @abstractmethod
-    def _next_state(self, state, outcome: T_contra, *counts:
-                    int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra,
+                    *counts: int) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:
@@ -784,7 +784,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Evaluation: Whether this multiset is a subset of the other multiset.
 
-        Same as `self <= other`.
+        Specifically, if this multiset has a lesser or equal count for each
+        outcome than the other multiset, this evaluates to `True`; 
+        if there is some outcome for which this multiset has a greater count 
+        than the other multiset, this evaluates to `False`.
+
+        `issubset` is the same as `self <= other`.
+        
+        `self < other` evaluates a proper subset relation, which is the same
+        except the result is `False` if the two multisets are exactly equal.
         """
         return self._compare(other, icepool.evaluator.IsSubsetEvaluator)
 
@@ -816,7 +824,25 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
         """Evaluation: Whether this multiset is a superset of the other multiset.
 
-        Same as `self >= other`.
+        Specifically, if this multiset has a greater or equal count for each
+        outcome than the other multiset, this evaluates to `True`; 
+        if there is some  outcome for which this multiset has a lesser count 
+        than the other multiset, this evaluates to `False`.
+        
+        A typical use of this evaluation is testing for the presence of a
+        combo of cards in a hand, e.g.
+
+        ```
+        deck.deal(5) >= ['a', 'a', 'b']
+        ```
+
+        represents the chance that a deal of 5 cards contains at least two 'a's
+        and one 'b'.
+
+        `issuperset` is the same as `self >= other`.
+
+        `self > other` evaluates a proper superset relation, which is the same
+        except the result is `False` if the two multisets are exactly equal.
         """
         return self._compare(other, icepool.evaluator.IsSupersetEvaluator)
 
@@ -848,7 +874,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Evaluation: Whether this multiset is disjoint from the other multiset."""
+        """Evaluation: Whether this multiset is disjoint from the other multiset.
+        
+        Specifically, this evaluates to `False` if there is any outcome for
+        which both multisets have positive count, and `True` if there is not.
+        """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
 
     def compair(
