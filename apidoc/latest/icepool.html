@@ -10766,17 +10766,17 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-65"><a href="#MultisetExpression-65"><span class="linenos"> 65</span></a>
 </span><span id="MultisetExpression-66"><a href="#MultisetExpression-66"><span class="linenos"> 66</span></a><span class="sd">    | Evaluator                      | Summary                                                                    |</span>
 </span><span id="MultisetExpression-67"><a href="#MultisetExpression-67"><span class="linenos"> 67</span></a><span class="sd">    |:-------------------------------|:---------------------------------------------------------------------------|</span>
-</span><span id="MultisetExpression-68"><a href="#MultisetExpression-68"><span class="linenos"> 68</span></a><span class="sd">    | `issubset`, `&lt;=`               | Whether the left side is a subset of the right side                        |</span>
-</span><span id="MultisetExpression-69"><a href="#MultisetExpression-69"><span class="linenos"> 69</span></a><span class="sd">    | `issuperset`, `&gt;=`             | Whether the left side is a superset of the right side                      |</span>
+</span><span id="MultisetExpression-68"><a href="#MultisetExpression-68"><span class="linenos"> 68</span></a><span class="sd">    | `issubset`, `&lt;=`               | Whether the left side&#39;s counts are all &lt;= their counterparts on the right  |</span>
+</span><span id="MultisetExpression-69"><a href="#MultisetExpression-69"><span class="linenos"> 69</span></a><span class="sd">    | `issuperset`, `&gt;=`             | Whether the left side&#39;s counts are all &gt;= their counterparts on the right  |</span>
 </span><span id="MultisetExpression-70"><a href="#MultisetExpression-70"><span class="linenos"> 70</span></a><span class="sd">    | `isdisjoint`                   | Whether the left side has no positive counts in common with the right side |</span>
-</span><span id="MultisetExpression-71"><a href="#MultisetExpression-71"><span class="linenos"> 71</span></a><span class="sd">    | `&lt;`                            | Whether the left side is a proper subset of the right side                 |</span>
-</span><span id="MultisetExpression-72"><a href="#MultisetExpression-72"><span class="linenos"> 72</span></a><span class="sd">    | `&gt;`                            | Whether the left side is a proper superset of the right side               |</span>
+</span><span id="MultisetExpression-71"><a href="#MultisetExpression-71"><span class="linenos"> 71</span></a><span class="sd">    | `&lt;`                            | As `&lt;=`, but `False` if the two multisets are equal                        |</span>
+</span><span id="MultisetExpression-72"><a href="#MultisetExpression-72"><span class="linenos"> 72</span></a><span class="sd">    | `&gt;`                            | As `&gt;=`, but `False` if the two multisets are equal                        |</span>
 </span><span id="MultisetExpression-73"><a href="#MultisetExpression-73"><span class="linenos"> 73</span></a><span class="sd">    | `==`                           | Whether the left side has all the same counts as the right side            |</span>
 </span><span id="MultisetExpression-74"><a href="#MultisetExpression-74"><span class="linenos"> 74</span></a><span class="sd">    | `!=`                           | Whether the left side has any different counts to the right side           |</span>
 </span><span id="MultisetExpression-75"><a href="#MultisetExpression-75"><span class="linenos"> 75</span></a><span class="sd">    | `expand`                       | All elements in ascending order                                            |</span>
 </span><span id="MultisetExpression-76"><a href="#MultisetExpression-76"><span class="linenos"> 76</span></a><span class="sd">    | `sum`                          | Sum of all elements                                                        |</span>
 </span><span id="MultisetExpression-77"><a href="#MultisetExpression-77"><span class="linenos"> 77</span></a><span class="sd">    | `count`                        | The number of elements                                                     |</span>
-</span><span id="MultisetExpression-78"><a href="#MultisetExpression-78"><span class="linenos"> 78</span></a><span class="sd">    | `any`                          | If there is at least 1 element                                             |</span>
+</span><span id="MultisetExpression-78"><a href="#MultisetExpression-78"><span class="linenos"> 78</span></a><span class="sd">    | `any`                          | Whether there is at least 1 element                                        |</span>
 </span><span id="MultisetExpression-79"><a href="#MultisetExpression-79"><span class="linenos"> 79</span></a><span class="sd">    | `highest_outcome_and_count`    | The highest outcome and how many of that outcome                           |</span>
 </span><span id="MultisetExpression-80"><a href="#MultisetExpression-80"><span class="linenos"> 80</span></a><span class="sd">    | `all_counts`                   | All counts in descending order                                             |</span>
 </span><span id="MultisetExpression-81"><a href="#MultisetExpression-81"><span class="linenos"> 81</span></a><span class="sd">    | `largest_count`                | The single largest count, aka x-of-a-kind                                  |</span>
@@ -10787,8 +10787,8 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-86"><a href="#MultisetExpression-86"><span class="linenos"> 86</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-87"><a href="#MultisetExpression-87"><span class="linenos"> 87</span></a>
 </span><span id="MultisetExpression-88"><a href="#MultisetExpression-88"><span class="linenos"> 88</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="MultisetExpression-89"><a href="#MultisetExpression-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">:</span>
-</span><span id="MultisetExpression-90"><a href="#MultisetExpression-90"><span class="linenos"> 90</span></a>                    <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="MultisetExpression-89"><a href="#MultisetExpression-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">_next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">,</span>
+</span><span id="MultisetExpression-90"><a href="#MultisetExpression-90"><span class="linenos"> 90</span></a>                    <span class="o">*</span><span class="n">counts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 </span><span id="MultisetExpression-91"><a href="#MultisetExpression-91"><span class="linenos"> 91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the state for this expression and does any necessary count modification.</span>
 </span><span id="MultisetExpression-92"><a href="#MultisetExpression-92"><span class="linenos"> 92</span></a>
 </span><span id="MultisetExpression-93"><a href="#MultisetExpression-93"><span class="linenos"> 93</span></a><span class="sd">        Args:</span>
@@ -11486,134 +11486,164 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-785"><a href="#MultisetExpression-785"><span class="linenos">785</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression-786"><a href="#MultisetExpression-786"><span class="linenos">786</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a subset of the other multiset.</span>
 </span><span id="MultisetExpression-787"><a href="#MultisetExpression-787"><span class="linenos">787</span></a>
-</span><span id="MultisetExpression-788"><a href="#MultisetExpression-788"><span class="linenos">788</span></a><span class="sd">        Same as `self &lt;= other`.</span>
-</span><span id="MultisetExpression-789"><a href="#MultisetExpression-789"><span class="linenos">789</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression-790"><a href="#MultisetExpression-790"><span class="linenos">790</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSubsetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-791"><a href="#MultisetExpression-791"><span class="linenos">791</span></a>
-</span><span id="MultisetExpression-792"><a href="#MultisetExpression-792"><span class="linenos">792</span></a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span>
-</span><span id="MultisetExpression-793"><a href="#MultisetExpression-793"><span class="linenos">793</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-794"><a href="#MultisetExpression-794"><span class="linenos">794</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-795"><a href="#MultisetExpression-795"><span class="linenos">795</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-796"><a href="#MultisetExpression-796"><span class="linenos">796</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-797"><a href="#MultisetExpression-797"><span class="linenos">797</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression-798"><a href="#MultisetExpression-798"><span class="linenos">798</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
-</span><span id="MultisetExpression-799"><a href="#MultisetExpression-799"><span class="linenos">799</span></a>                                 <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsProperSupersetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-800"><a href="#MultisetExpression-800"><span class="linenos">800</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression-801"><a href="#MultisetExpression-801"><span class="linenos">801</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression-802"><a href="#MultisetExpression-802"><span class="linenos">802</span></a>
-</span><span id="MultisetExpression-803"><a href="#MultisetExpression-803"><span class="linenos">803</span></a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span>
-</span><span id="MultisetExpression-804"><a href="#MultisetExpression-804"><span class="linenos">804</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-805"><a href="#MultisetExpression-805"><span class="linenos">805</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-806"><a href="#MultisetExpression-806"><span class="linenos">806</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-807"><a href="#MultisetExpression-807"><span class="linenos">807</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-808"><a href="#MultisetExpression-808"><span class="linenos">808</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression-809"><a href="#MultisetExpression-809"><span class="linenos">809</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-810"><a href="#MultisetExpression-810"><span class="linenos">810</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression-811"><a href="#MultisetExpression-811"><span class="linenos">811</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression-812"><a href="#MultisetExpression-812"><span class="linenos">812</span></a>
-</span><span id="MultisetExpression-813"><a href="#MultisetExpression-813"><span class="linenos">813</span></a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span>
-</span><span id="MultisetExpression-814"><a href="#MultisetExpression-814"><span class="linenos">814</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-815"><a href="#MultisetExpression-815"><span class="linenos">815</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-816"><a href="#MultisetExpression-816"><span class="linenos">816</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-817"><a href="#MultisetExpression-817"><span class="linenos">817</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-818"><a href="#MultisetExpression-818"><span class="linenos">818</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a superset of the other multiset.</span>
-</span><span id="MultisetExpression-819"><a href="#MultisetExpression-819"><span class="linenos">819</span></a>
-</span><span id="MultisetExpression-820"><a href="#MultisetExpression-820"><span class="linenos">820</span></a><span class="sd">        Same as `self &gt;= other`.</span>
-</span><span id="MultisetExpression-821"><a href="#MultisetExpression-821"><span class="linenos">821</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression-822"><a href="#MultisetExpression-822"><span class="linenos">822</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-823"><a href="#MultisetExpression-823"><span class="linenos">823</span></a>
-</span><span id="MultisetExpression-824"><a href="#MultisetExpression-824"><span class="linenos">824</span></a>    <span class="c1"># The result has no truth value.</span>
-</span><span id="MultisetExpression-825"><a href="#MultisetExpression-825"><span class="linenos">825</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="MultisetExpression-826"><a href="#MultisetExpression-826"><span class="linenos">826</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-827"><a href="#MultisetExpression-827"><span class="linenos">827</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-828"><a href="#MultisetExpression-828"><span class="linenos">828</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-829"><a href="#MultisetExpression-829"><span class="linenos">829</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-830"><a href="#MultisetExpression-830"><span class="linenos">830</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression-831"><a href="#MultisetExpression-831"><span class="linenos">831</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsEqualSetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-832"><a href="#MultisetExpression-832"><span class="linenos">832</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression-833"><a href="#MultisetExpression-833"><span class="linenos">833</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression-834"><a href="#MultisetExpression-834"><span class="linenos">834</span></a>
-</span><span id="MultisetExpression-835"><a href="#MultisetExpression-835"><span class="linenos">835</span></a>    <span class="c1"># The result has no truth value.</span>
-</span><span id="MultisetExpression-836"><a href="#MultisetExpression-836"><span class="linenos">836</span></a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="MultisetExpression-837"><a href="#MultisetExpression-837"><span class="linenos">837</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-838"><a href="#MultisetExpression-838"><span class="linenos">838</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-839"><a href="#MultisetExpression-839"><span class="linenos">839</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-840"><a href="#MultisetExpression-840"><span class="linenos">840</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-841"><a href="#MultisetExpression-841"><span class="linenos">841</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression-842"><a href="#MultisetExpression-842"><span class="linenos">842</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
-</span><span id="MultisetExpression-843"><a href="#MultisetExpression-843"><span class="linenos">843</span></a>                                 <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsNotEqualSetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-844"><a href="#MultisetExpression-844"><span class="linenos">844</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression-845"><a href="#MultisetExpression-845"><span class="linenos">845</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression-846"><a href="#MultisetExpression-846"><span class="linenos">846</span></a>
-</span><span id="MultisetExpression-847"><a href="#MultisetExpression-847"><span class="linenos">847</span></a>    <span class="k">def</span> <span class="nf">isdisjoint</span><span class="p">(</span>
-</span><span id="MultisetExpression-848"><a href="#MultisetExpression-848"><span class="linenos">848</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-849"><a href="#MultisetExpression-849"><span class="linenos">849</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-850"><a href="#MultisetExpression-850"><span class="linenos">850</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression-851"><a href="#MultisetExpression-851"><span class="linenos">851</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-852"><a href="#MultisetExpression-852"><span class="linenos">852</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is disjoint from the other multiset.&quot;&quot;&quot;</span>
-</span><span id="MultisetExpression-853"><a href="#MultisetExpression-853"><span class="linenos">853</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
-</span><span id="MultisetExpression-854"><a href="#MultisetExpression-854"><span class="linenos">854</span></a>
-</span><span id="MultisetExpression-855"><a href="#MultisetExpression-855"><span class="linenos">855</span></a>    <span class="k">def</span> <span class="nf">compair</span><span class="p">(</span>
-</span><span id="MultisetExpression-856"><a href="#MultisetExpression-856"><span class="linenos">856</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetExpression-857"><a href="#MultisetExpression-857"><span class="linenos">857</span></a>        <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression-858"><a href="#MultisetExpression-858"><span class="linenos">858</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression-859"><a href="#MultisetExpression-859"><span class="linenos">859</span></a>        <span class="n">op</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-860"><a href="#MultisetExpression-860"><span class="linenos">860</span></a>        <span class="o">/</span><span class="p">,</span>
-</span><span id="MultisetExpression-861"><a href="#MultisetExpression-861"><span class="linenos">861</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="MultisetExpression-862"><a href="#MultisetExpression-862"><span class="linenos">862</span></a>        <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
-</span><span id="MultisetExpression-863"><a href="#MultisetExpression-863"><span class="linenos">863</span></a>        <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-864"><a href="#MultisetExpression-864"><span class="linenos">864</span></a>        <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-865"><a href="#MultisetExpression-865"><span class="linenos">865</span></a>        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-866"><a href="#MultisetExpression-866"><span class="linenos">866</span></a>        <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-867"><a href="#MultisetExpression-867"><span class="linenos">867</span></a>        <span class="n">extra_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression-868"><a href="#MultisetExpression-868"><span class="linenos">868</span></a>        <span class="n">extra_right</span><span class="o">=</span><span class="kc">None</span>
-</span><span id="MultisetExpression-869"><a href="#MultisetExpression-869"><span class="linenos">869</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die | icepool.MultisetEvaluator[T_contra, Any]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-870"><a href="#MultisetExpression-870"><span class="linenos">870</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.</span>
-</span><span id="MultisetExpression-871"><a href="#MultisetExpression-871"><span class="linenos">871</span></a>
-</span><span id="MultisetExpression-872"><a href="#MultisetExpression-872"><span class="linenos">872</span></a><span class="sd">        Interface is not stable yet.</span>
-</span><span id="MultisetExpression-873"><a href="#MultisetExpression-873"><span class="linenos">873</span></a>
-</span><span id="MultisetExpression-874"><a href="#MultisetExpression-874"><span class="linenos">874</span></a><span class="sd">        For example, `left=1` would count how many pairs were won by the left</span>
-</span><span id="MultisetExpression-875"><a href="#MultisetExpression-875"><span class="linenos">875</span></a><span class="sd">        side, and `left=1, right=-1` would give the difference in the number of</span>
-</span><span id="MultisetExpression-876"><a href="#MultisetExpression-876"><span class="linenos">876</span></a><span class="sd">        pairs won by each side.</span>
-</span><span id="MultisetExpression-877"><a href="#MultisetExpression-877"><span class="linenos">877</span></a>
-</span><span id="MultisetExpression-878"><a href="#MultisetExpression-878"><span class="linenos">878</span></a><span class="sd">        Any score argument </span>
-</span><span id="MultisetExpression-879"><a href="#MultisetExpression-879"><span class="linenos">879</span></a><span class="sd">        (`initial, tie, left, right, extra_left, extra_right`) </span>
-</span><span id="MultisetExpression-880"><a href="#MultisetExpression-880"><span class="linenos">880</span></a><span class="sd">        not provided will be set to a zero value determined from another score </span>
-</span><span id="MultisetExpression-881"><a href="#MultisetExpression-881"><span class="linenos">881</span></a><span class="sd">        argument times `0`.</span>
-</span><span id="MultisetExpression-882"><a href="#MultisetExpression-882"><span class="linenos">882</span></a>
-</span><span id="MultisetExpression-883"><a href="#MultisetExpression-883"><span class="linenos">883</span></a><span class="sd">        Args:</span>
-</span><span id="MultisetExpression-884"><a href="#MultisetExpression-884"><span class="linenos">884</span></a><span class="sd">            op: Sets the score values based on the given operator and `order`.</span>
-</span><span id="MultisetExpression-885"><a href="#MultisetExpression-885"><span class="linenos">885</span></a><span class="sd">                Allowed values are `&#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;&#39;, &#39;&gt;=&#39;, &#39;==&#39;, &#39;!=&#39;`.</span>
-</span><span id="MultisetExpression-886"><a href="#MultisetExpression-886"><span class="linenos">886</span></a><span class="sd">                Each pair that fits the comparator counts as 1.</span>
-</span><span id="MultisetExpression-887"><a href="#MultisetExpression-887"><span class="linenos">887</span></a><span class="sd">                If one side has more elements than the other, the extra</span>
-</span><span id="MultisetExpression-888"><a href="#MultisetExpression-888"><span class="linenos">888</span></a><span class="sd">                elements are ignored.</span>
-</span><span id="MultisetExpression-889"><a href="#MultisetExpression-889"><span class="linenos">889</span></a><span class="sd">            order: If descending (default), pairs are made in descending order</span>
-</span><span id="MultisetExpression-890"><a href="#MultisetExpression-890"><span class="linenos">890</span></a><span class="sd">                and the higher element wins. If ascending, pairs are made in</span>
-</span><span id="MultisetExpression-891"><a href="#MultisetExpression-891"><span class="linenos">891</span></a><span class="sd">                ascending order and the lower element wins.</span>
-</span><span id="MultisetExpression-892"><a href="#MultisetExpression-892"><span class="linenos">892</span></a><span class="sd">            </span>
-</span><span id="MultisetExpression-893"><a href="#MultisetExpression-893"><span class="linenos">893</span></a><span class="sd">            initial: The initial score.</span>
-</span><span id="MultisetExpression-894"><a href="#MultisetExpression-894"><span class="linenos">894</span></a><span class="sd">            tie: The score for each pair that is a tie.</span>
-</span><span id="MultisetExpression-895"><a href="#MultisetExpression-895"><span class="linenos">895</span></a><span class="sd">            left: The score for each pair that left wins.</span>
-</span><span id="MultisetExpression-896"><a href="#MultisetExpression-896"><span class="linenos">896</span></a><span class="sd">            right: The score for each pair that right wins.</span>
-</span><span id="MultisetExpression-897"><a href="#MultisetExpression-897"><span class="linenos">897</span></a><span class="sd">            extra_left: If left has more elements, each extra element scores</span>
-</span><span id="MultisetExpression-898"><a href="#MultisetExpression-898"><span class="linenos">898</span></a><span class="sd">                this much.</span>
-</span><span id="MultisetExpression-899"><a href="#MultisetExpression-899"><span class="linenos">899</span></a><span class="sd">            extra_right: If right has more elements, each extra element scores</span>
-</span><span id="MultisetExpression-900"><a href="#MultisetExpression-900"><span class="linenos">900</span></a><span class="sd">                this much.</span>
-</span><span id="MultisetExpression-901"><a href="#MultisetExpression-901"><span class="linenos">901</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression-902"><a href="#MultisetExpression-902"><span class="linenos">902</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression-903"><a href="#MultisetExpression-903"><span class="linenos">903</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">implicit_convert_to_expression</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="MultisetExpression-904"><a href="#MultisetExpression-904"><span class="linenos">904</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression-905"><a href="#MultisetExpression-905"><span class="linenos">905</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression-906"><a href="#MultisetExpression-906"><span class="linenos">906</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
-</span><span id="MultisetExpression-907"><a href="#MultisetExpression-907"><span class="linenos">907</span></a>                             <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">CompairEvalautor</span><span class="p">(</span>
-</span><span id="MultisetExpression-908"><a href="#MultisetExpression-908"><span class="linenos">908</span></a>                                 <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span>
-</span><span id="MultisetExpression-909"><a href="#MultisetExpression-909"><span class="linenos">909</span></a>                                 <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
-</span><span id="MultisetExpression-910"><a href="#MultisetExpression-910"><span class="linenos">910</span></a>                                 <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
-</span><span id="MultisetExpression-911"><a href="#MultisetExpression-911"><span class="linenos">911</span></a>                                 <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span>
-</span><span id="MultisetExpression-912"><a href="#MultisetExpression-912"><span class="linenos">912</span></a>                                 <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
-</span><span id="MultisetExpression-913"><a href="#MultisetExpression-913"><span class="linenos">913</span></a>                                 <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
-</span><span id="MultisetExpression-914"><a href="#MultisetExpression-914"><span class="linenos">914</span></a>                                 <span class="n">extra_left</span><span class="o">=</span><span class="n">extra_left</span><span class="p">,</span>
-</span><span id="MultisetExpression-915"><a href="#MultisetExpression-915"><span class="linenos">915</span></a>                                 <span class="n">extra_right</span><span class="o">=</span><span class="n">extra_right</span><span class="p">))</span>
+</span><span id="MultisetExpression-788"><a href="#MultisetExpression-788"><span class="linenos">788</span></a><span class="sd">        Specifically, if this multiset has a lesser or equal count for each</span>
+</span><span id="MultisetExpression-789"><a href="#MultisetExpression-789"><span class="linenos">789</span></a><span class="sd">        outcome than the other multiset, this evaluates to `True`; </span>
+</span><span id="MultisetExpression-790"><a href="#MultisetExpression-790"><span class="linenos">790</span></a><span class="sd">        if there is some outcome for which this multiset has a greater count </span>
+</span><span id="MultisetExpression-791"><a href="#MultisetExpression-791"><span class="linenos">791</span></a><span class="sd">        than the other multiset, this evaluates to `False`.</span>
+</span><span id="MultisetExpression-792"><a href="#MultisetExpression-792"><span class="linenos">792</span></a>
+</span><span id="MultisetExpression-793"><a href="#MultisetExpression-793"><span class="linenos">793</span></a><span class="sd">        `issubset` is the same as `self &lt;= other`.</span>
+</span><span id="MultisetExpression-794"><a href="#MultisetExpression-794"><span class="linenos">794</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression-795"><a href="#MultisetExpression-795"><span class="linenos">795</span></a><span class="sd">        `self &lt; other` evaluates a proper subset relation, which is the same</span>
+</span><span id="MultisetExpression-796"><a href="#MultisetExpression-796"><span class="linenos">796</span></a><span class="sd">        except the result is `False` if the two multisets are exactly equal.</span>
+</span><span id="MultisetExpression-797"><a href="#MultisetExpression-797"><span class="linenos">797</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression-798"><a href="#MultisetExpression-798"><span class="linenos">798</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSubsetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-799"><a href="#MultisetExpression-799"><span class="linenos">799</span></a>
+</span><span id="MultisetExpression-800"><a href="#MultisetExpression-800"><span class="linenos">800</span></a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span>
+</span><span id="MultisetExpression-801"><a href="#MultisetExpression-801"><span class="linenos">801</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-802"><a href="#MultisetExpression-802"><span class="linenos">802</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-803"><a href="#MultisetExpression-803"><span class="linenos">803</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-804"><a href="#MultisetExpression-804"><span class="linenos">804</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-805"><a href="#MultisetExpression-805"><span class="linenos">805</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression-806"><a href="#MultisetExpression-806"><span class="linenos">806</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
+</span><span id="MultisetExpression-807"><a href="#MultisetExpression-807"><span class="linenos">807</span></a>                                 <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsProperSupersetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-808"><a href="#MultisetExpression-808"><span class="linenos">808</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression-809"><a href="#MultisetExpression-809"><span class="linenos">809</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression-810"><a href="#MultisetExpression-810"><span class="linenos">810</span></a>
+</span><span id="MultisetExpression-811"><a href="#MultisetExpression-811"><span class="linenos">811</span></a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span>
+</span><span id="MultisetExpression-812"><a href="#MultisetExpression-812"><span class="linenos">812</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-813"><a href="#MultisetExpression-813"><span class="linenos">813</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-814"><a href="#MultisetExpression-814"><span class="linenos">814</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-815"><a href="#MultisetExpression-815"><span class="linenos">815</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-816"><a href="#MultisetExpression-816"><span class="linenos">816</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression-817"><a href="#MultisetExpression-817"><span class="linenos">817</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-818"><a href="#MultisetExpression-818"><span class="linenos">818</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression-819"><a href="#MultisetExpression-819"><span class="linenos">819</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression-820"><a href="#MultisetExpression-820"><span class="linenos">820</span></a>
+</span><span id="MultisetExpression-821"><a href="#MultisetExpression-821"><span class="linenos">821</span></a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span>
+</span><span id="MultisetExpression-822"><a href="#MultisetExpression-822"><span class="linenos">822</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-823"><a href="#MultisetExpression-823"><span class="linenos">823</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-824"><a href="#MultisetExpression-824"><span class="linenos">824</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-825"><a href="#MultisetExpression-825"><span class="linenos">825</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-826"><a href="#MultisetExpression-826"><span class="linenos">826</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a superset of the other multiset.</span>
+</span><span id="MultisetExpression-827"><a href="#MultisetExpression-827"><span class="linenos">827</span></a>
+</span><span id="MultisetExpression-828"><a href="#MultisetExpression-828"><span class="linenos">828</span></a><span class="sd">        Specifically, if this multiset has a greater or equal count for each</span>
+</span><span id="MultisetExpression-829"><a href="#MultisetExpression-829"><span class="linenos">829</span></a><span class="sd">        outcome than the other multiset, this evaluates to `True`; </span>
+</span><span id="MultisetExpression-830"><a href="#MultisetExpression-830"><span class="linenos">830</span></a><span class="sd">        if there is some  outcome for which this multiset has a lesser count </span>
+</span><span id="MultisetExpression-831"><a href="#MultisetExpression-831"><span class="linenos">831</span></a><span class="sd">        than the other multiset, this evaluates to `False`.</span>
+</span><span id="MultisetExpression-832"><a href="#MultisetExpression-832"><span class="linenos">832</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression-833"><a href="#MultisetExpression-833"><span class="linenos">833</span></a><span class="sd">        A typical use of this evaluation is testing for the presence of a</span>
+</span><span id="MultisetExpression-834"><a href="#MultisetExpression-834"><span class="linenos">834</span></a><span class="sd">        combo of cards in a hand, e.g.</span>
+</span><span id="MultisetExpression-835"><a href="#MultisetExpression-835"><span class="linenos">835</span></a>
+</span><span id="MultisetExpression-836"><a href="#MultisetExpression-836"><span class="linenos">836</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-837"><a href="#MultisetExpression-837"><span class="linenos">837</span></a><span class="sd">        deck.deal(5) &gt;= [&#39;a&#39;, &#39;a&#39;, &#39;b&#39;]</span>
+</span><span id="MultisetExpression-838"><a href="#MultisetExpression-838"><span class="linenos">838</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-839"><a href="#MultisetExpression-839"><span class="linenos">839</span></a>
+</span><span id="MultisetExpression-840"><a href="#MultisetExpression-840"><span class="linenos">840</span></a><span class="sd">        represents the chance that a deal of 5 cards contains at least two &#39;a&#39;s</span>
+</span><span id="MultisetExpression-841"><a href="#MultisetExpression-841"><span class="linenos">841</span></a><span class="sd">        and one &#39;b&#39;.</span>
+</span><span id="MultisetExpression-842"><a href="#MultisetExpression-842"><span class="linenos">842</span></a>
+</span><span id="MultisetExpression-843"><a href="#MultisetExpression-843"><span class="linenos">843</span></a><span class="sd">        `issuperset` is the same as `self &gt;= other`.</span>
+</span><span id="MultisetExpression-844"><a href="#MultisetExpression-844"><span class="linenos">844</span></a>
+</span><span id="MultisetExpression-845"><a href="#MultisetExpression-845"><span class="linenos">845</span></a><span class="sd">        `self &gt; other` evaluates a proper superset relation, which is the same</span>
+</span><span id="MultisetExpression-846"><a href="#MultisetExpression-846"><span class="linenos">846</span></a><span class="sd">        except the result is `False` if the two multisets are exactly equal.</span>
+</span><span id="MultisetExpression-847"><a href="#MultisetExpression-847"><span class="linenos">847</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression-848"><a href="#MultisetExpression-848"><span class="linenos">848</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-849"><a href="#MultisetExpression-849"><span class="linenos">849</span></a>
+</span><span id="MultisetExpression-850"><a href="#MultisetExpression-850"><span class="linenos">850</span></a>    <span class="c1"># The result has no truth value.</span>
+</span><span id="MultisetExpression-851"><a href="#MultisetExpression-851"><span class="linenos">851</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="MultisetExpression-852"><a href="#MultisetExpression-852"><span class="linenos">852</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-853"><a href="#MultisetExpression-853"><span class="linenos">853</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-854"><a href="#MultisetExpression-854"><span class="linenos">854</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-855"><a href="#MultisetExpression-855"><span class="linenos">855</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-856"><a href="#MultisetExpression-856"><span class="linenos">856</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression-857"><a href="#MultisetExpression-857"><span class="linenos">857</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsEqualSetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-858"><a href="#MultisetExpression-858"><span class="linenos">858</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression-859"><a href="#MultisetExpression-859"><span class="linenos">859</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression-860"><a href="#MultisetExpression-860"><span class="linenos">860</span></a>
+</span><span id="MultisetExpression-861"><a href="#MultisetExpression-861"><span class="linenos">861</span></a>    <span class="c1"># The result has no truth value.</span>
+</span><span id="MultisetExpression-862"><a href="#MultisetExpression-862"><span class="linenos">862</span></a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="MultisetExpression-863"><a href="#MultisetExpression-863"><span class="linenos">863</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-864"><a href="#MultisetExpression-864"><span class="linenos">864</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-865"><a href="#MultisetExpression-865"><span class="linenos">865</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-866"><a href="#MultisetExpression-866"><span class="linenos">866</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-867"><a href="#MultisetExpression-867"><span class="linenos">867</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression-868"><a href="#MultisetExpression-868"><span class="linenos">868</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
+</span><span id="MultisetExpression-869"><a href="#MultisetExpression-869"><span class="linenos">869</span></a>                                 <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsNotEqualSetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-870"><a href="#MultisetExpression-870"><span class="linenos">870</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression-871"><a href="#MultisetExpression-871"><span class="linenos">871</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression-872"><a href="#MultisetExpression-872"><span class="linenos">872</span></a>
+</span><span id="MultisetExpression-873"><a href="#MultisetExpression-873"><span class="linenos">873</span></a>    <span class="k">def</span> <span class="nf">isdisjoint</span><span class="p">(</span>
+</span><span id="MultisetExpression-874"><a href="#MultisetExpression-874"><span class="linenos">874</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-875"><a href="#MultisetExpression-875"><span class="linenos">875</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-876"><a href="#MultisetExpression-876"><span class="linenos">876</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression-877"><a href="#MultisetExpression-877"><span class="linenos">877</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-878"><a href="#MultisetExpression-878"><span class="linenos">878</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is disjoint from the other multiset.</span>
+</span><span id="MultisetExpression-879"><a href="#MultisetExpression-879"><span class="linenos">879</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression-880"><a href="#MultisetExpression-880"><span class="linenos">880</span></a><span class="sd">        Specifically, this evaluates to `False` if there is any outcome for</span>
+</span><span id="MultisetExpression-881"><a href="#MultisetExpression-881"><span class="linenos">881</span></a><span class="sd">        which both multisets have positive count, and `True` if there is not.</span>
+</span><span id="MultisetExpression-882"><a href="#MultisetExpression-882"><span class="linenos">882</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression-883"><a href="#MultisetExpression-883"><span class="linenos">883</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression-884"><a href="#MultisetExpression-884"><span class="linenos">884</span></a>
+</span><span id="MultisetExpression-885"><a href="#MultisetExpression-885"><span class="linenos">885</span></a>    <span class="k">def</span> <span class="nf">compair</span><span class="p">(</span>
+</span><span id="MultisetExpression-886"><a href="#MultisetExpression-886"><span class="linenos">886</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetExpression-887"><a href="#MultisetExpression-887"><span class="linenos">887</span></a>        <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression-888"><a href="#MultisetExpression-888"><span class="linenos">888</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression-889"><a href="#MultisetExpression-889"><span class="linenos">889</span></a>        <span class="n">op</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-890"><a href="#MultisetExpression-890"><span class="linenos">890</span></a>        <span class="o">/</span><span class="p">,</span>
+</span><span id="MultisetExpression-891"><a href="#MultisetExpression-891"><span class="linenos">891</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="MultisetExpression-892"><a href="#MultisetExpression-892"><span class="linenos">892</span></a>        <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
+</span><span id="MultisetExpression-893"><a href="#MultisetExpression-893"><span class="linenos">893</span></a>        <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-894"><a href="#MultisetExpression-894"><span class="linenos">894</span></a>        <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-895"><a href="#MultisetExpression-895"><span class="linenos">895</span></a>        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-896"><a href="#MultisetExpression-896"><span class="linenos">896</span></a>        <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-897"><a href="#MultisetExpression-897"><span class="linenos">897</span></a>        <span class="n">extra_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression-898"><a href="#MultisetExpression-898"><span class="linenos">898</span></a>        <span class="n">extra_right</span><span class="o">=</span><span class="kc">None</span>
+</span><span id="MultisetExpression-899"><a href="#MultisetExpression-899"><span class="linenos">899</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die | icepool.MultisetEvaluator[T_contra, Any]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-900"><a href="#MultisetExpression-900"><span class="linenos">900</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.</span>
+</span><span id="MultisetExpression-901"><a href="#MultisetExpression-901"><span class="linenos">901</span></a>
+</span><span id="MultisetExpression-902"><a href="#MultisetExpression-902"><span class="linenos">902</span></a><span class="sd">        Interface is not stable yet.</span>
+</span><span id="MultisetExpression-903"><a href="#MultisetExpression-903"><span class="linenos">903</span></a>
+</span><span id="MultisetExpression-904"><a href="#MultisetExpression-904"><span class="linenos">904</span></a><span class="sd">        For example, `left=1` would count how many pairs were won by the left</span>
+</span><span id="MultisetExpression-905"><a href="#MultisetExpression-905"><span class="linenos">905</span></a><span class="sd">        side, and `left=1, right=-1` would give the difference in the number of</span>
+</span><span id="MultisetExpression-906"><a href="#MultisetExpression-906"><span class="linenos">906</span></a><span class="sd">        pairs won by each side.</span>
+</span><span id="MultisetExpression-907"><a href="#MultisetExpression-907"><span class="linenos">907</span></a>
+</span><span id="MultisetExpression-908"><a href="#MultisetExpression-908"><span class="linenos">908</span></a><span class="sd">        Any score argument </span>
+</span><span id="MultisetExpression-909"><a href="#MultisetExpression-909"><span class="linenos">909</span></a><span class="sd">        (`initial, tie, left, right, extra_left, extra_right`) </span>
+</span><span id="MultisetExpression-910"><a href="#MultisetExpression-910"><span class="linenos">910</span></a><span class="sd">        not provided will be set to a zero value determined from another score </span>
+</span><span id="MultisetExpression-911"><a href="#MultisetExpression-911"><span class="linenos">911</span></a><span class="sd">        argument times `0`.</span>
+</span><span id="MultisetExpression-912"><a href="#MultisetExpression-912"><span class="linenos">912</span></a>
+</span><span id="MultisetExpression-913"><a href="#MultisetExpression-913"><span class="linenos">913</span></a><span class="sd">        Args:</span>
+</span><span id="MultisetExpression-914"><a href="#MultisetExpression-914"><span class="linenos">914</span></a><span class="sd">            op: Sets the score values based on the given operator and `order`.</span>
+</span><span id="MultisetExpression-915"><a href="#MultisetExpression-915"><span class="linenos">915</span></a><span class="sd">                Allowed values are `&#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;&#39;, &#39;&gt;=&#39;, &#39;==&#39;, &#39;!=&#39;`.</span>
+</span><span id="MultisetExpression-916"><a href="#MultisetExpression-916"><span class="linenos">916</span></a><span class="sd">                Each pair that fits the comparator counts as 1.</span>
+</span><span id="MultisetExpression-917"><a href="#MultisetExpression-917"><span class="linenos">917</span></a><span class="sd">                If one side has more elements than the other, the extra</span>
+</span><span id="MultisetExpression-918"><a href="#MultisetExpression-918"><span class="linenos">918</span></a><span class="sd">                elements are ignored.</span>
+</span><span id="MultisetExpression-919"><a href="#MultisetExpression-919"><span class="linenos">919</span></a><span class="sd">            order: If descending (default), pairs are made in descending order</span>
+</span><span id="MultisetExpression-920"><a href="#MultisetExpression-920"><span class="linenos">920</span></a><span class="sd">                and the higher element wins. If ascending, pairs are made in</span>
+</span><span id="MultisetExpression-921"><a href="#MultisetExpression-921"><span class="linenos">921</span></a><span class="sd">                ascending order and the lower element wins.</span>
+</span><span id="MultisetExpression-922"><a href="#MultisetExpression-922"><span class="linenos">922</span></a><span class="sd">            </span>
+</span><span id="MultisetExpression-923"><a href="#MultisetExpression-923"><span class="linenos">923</span></a><span class="sd">            initial: The initial score.</span>
+</span><span id="MultisetExpression-924"><a href="#MultisetExpression-924"><span class="linenos">924</span></a><span class="sd">            tie: The score for each pair that is a tie.</span>
+</span><span id="MultisetExpression-925"><a href="#MultisetExpression-925"><span class="linenos">925</span></a><span class="sd">            left: The score for each pair that left wins.</span>
+</span><span id="MultisetExpression-926"><a href="#MultisetExpression-926"><span class="linenos">926</span></a><span class="sd">            right: The score for each pair that right wins.</span>
+</span><span id="MultisetExpression-927"><a href="#MultisetExpression-927"><span class="linenos">927</span></a><span class="sd">            extra_left: If left has more elements, each extra element scores</span>
+</span><span id="MultisetExpression-928"><a href="#MultisetExpression-928"><span class="linenos">928</span></a><span class="sd">                this much.</span>
+</span><span id="MultisetExpression-929"><a href="#MultisetExpression-929"><span class="linenos">929</span></a><span class="sd">            extra_right: If right has more elements, each extra element scores</span>
+</span><span id="MultisetExpression-930"><a href="#MultisetExpression-930"><span class="linenos">930</span></a><span class="sd">                this much.</span>
+</span><span id="MultisetExpression-931"><a href="#MultisetExpression-931"><span class="linenos">931</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression-932"><a href="#MultisetExpression-932"><span class="linenos">932</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression-933"><a href="#MultisetExpression-933"><span class="linenos">933</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">implicit_convert_to_expression</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="MultisetExpression-934"><a href="#MultisetExpression-934"><span class="linenos">934</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression-935"><a href="#MultisetExpression-935"><span class="linenos">935</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression-936"><a href="#MultisetExpression-936"><span class="linenos">936</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
+</span><span id="MultisetExpression-937"><a href="#MultisetExpression-937"><span class="linenos">937</span></a>                             <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">CompairEvalautor</span><span class="p">(</span>
+</span><span id="MultisetExpression-938"><a href="#MultisetExpression-938"><span class="linenos">938</span></a>                                 <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span>
+</span><span id="MultisetExpression-939"><a href="#MultisetExpression-939"><span class="linenos">939</span></a>                                 <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+</span><span id="MultisetExpression-940"><a href="#MultisetExpression-940"><span class="linenos">940</span></a>                                 <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
+</span><span id="MultisetExpression-941"><a href="#MultisetExpression-941"><span class="linenos">941</span></a>                                 <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span>
+</span><span id="MultisetExpression-942"><a href="#MultisetExpression-942"><span class="linenos">942</span></a>                                 <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
+</span><span id="MultisetExpression-943"><a href="#MultisetExpression-943"><span class="linenos">943</span></a>                                 <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
+</span><span id="MultisetExpression-944"><a href="#MultisetExpression-944"><span class="linenos">944</span></a>                                 <span class="n">extra_left</span><span class="o">=</span><span class="n">extra_left</span><span class="p">,</span>
+</span><span id="MultisetExpression-945"><a href="#MultisetExpression-945"><span class="linenos">945</span></a>                                 <span class="n">extra_right</span><span class="o">=</span><span class="n">extra_right</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -11708,11 +11738,11 @@ expressions, or to attach a final evaluator.</p>
 <tbody>
 <tr>
   <td style="text-align:left;"><code><a href="#MultisetExpression.issubset">issubset</a></code>, <code>&lt;=</code></td>
-  <td style="text-align:left;">Whether the left side is a subset of the right side</td>
+  <td style="text-align:left;">Whether the left side's counts are all &lt;= their counterparts on the right</td>
 </tr>
 <tr>
   <td style="text-align:left;"><code><a href="#MultisetExpression.issuperset">issuperset</a></code>, <code>&gt;=</code></td>
-  <td style="text-align:left;">Whether the left side is a superset of the right side</td>
+  <td style="text-align:left;">Whether the left side's counts are all &gt;= their counterparts on the right</td>
 </tr>
 <tr>
   <td style="text-align:left;"><code><a href="#MultisetExpression.isdisjoint">isdisjoint</a></code></td>
@@ -11720,11 +11750,11 @@ expressions, or to attach a final evaluator.</p>
 </tr>
 <tr>
   <td style="text-align:left;"><code>&lt;</code></td>
-  <td style="text-align:left;">Whether the left side is a proper subset of the right side</td>
+  <td style="text-align:left;">As <code>&lt;=</code>, but <code>False</code> if the two multisets are equal</td>
 </tr>
 <tr>
   <td style="text-align:left;"><code>&gt;</code></td>
-  <td style="text-align:left;">Whether the left side is a proper superset of the right side</td>
+  <td style="text-align:left;">As <code>&gt;=</code>, but <code>False</code> if the two multisets are equal</td>
 </tr>
 <tr>
   <td style="text-align:left;"><code>==</code></td>
@@ -11748,7 +11778,7 @@ expressions, or to attach a final evaluator.</p>
 </tr>
 <tr>
   <td style="text-align:left;"><code><a href="#MultisetExpression.any">any</a></code></td>
-  <td style="text-align:left;">If there is at least 1 element</td>
+  <td style="text-align:left;">Whether there is at least 1 element</td>
 </tr>
 <tr>
   <td style="text-align:left;"><code><a href="#MultisetExpression.highest_outcome_and_count">highest_outcome_and_count</a></code></td>
@@ -12931,15 +12961,31 @@ produce overlapping straights.</p>
 </span><span id="MultisetExpression.issubset-785"><a href="#MultisetExpression.issubset-785"><span class="linenos">785</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression.issubset-786"><a href="#MultisetExpression.issubset-786"><span class="linenos">786</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a subset of the other multiset.</span>
 </span><span id="MultisetExpression.issubset-787"><a href="#MultisetExpression.issubset-787"><span class="linenos">787</span></a>
-</span><span id="MultisetExpression.issubset-788"><a href="#MultisetExpression.issubset-788"><span class="linenos">788</span></a><span class="sd">        Same as `self &lt;= other`.</span>
-</span><span id="MultisetExpression.issubset-789"><a href="#MultisetExpression.issubset-789"><span class="linenos">789</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.issubset-790"><a href="#MultisetExpression.issubset-790"><span class="linenos">790</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSubsetEvaluator</span><span class="p">)</span>
+</span><span id="MultisetExpression.issubset-788"><a href="#MultisetExpression.issubset-788"><span class="linenos">788</span></a><span class="sd">        Specifically, if this multiset has a lesser or equal count for each</span>
+</span><span id="MultisetExpression.issubset-789"><a href="#MultisetExpression.issubset-789"><span class="linenos">789</span></a><span class="sd">        outcome than the other multiset, this evaluates to `True`; </span>
+</span><span id="MultisetExpression.issubset-790"><a href="#MultisetExpression.issubset-790"><span class="linenos">790</span></a><span class="sd">        if there is some outcome for which this multiset has a greater count </span>
+</span><span id="MultisetExpression.issubset-791"><a href="#MultisetExpression.issubset-791"><span class="linenos">791</span></a><span class="sd">        than the other multiset, this evaluates to `False`.</span>
+</span><span id="MultisetExpression.issubset-792"><a href="#MultisetExpression.issubset-792"><span class="linenos">792</span></a>
+</span><span id="MultisetExpression.issubset-793"><a href="#MultisetExpression.issubset-793"><span class="linenos">793</span></a><span class="sd">        `issubset` is the same as `self &lt;= other`.</span>
+</span><span id="MultisetExpression.issubset-794"><a href="#MultisetExpression.issubset-794"><span class="linenos">794</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression.issubset-795"><a href="#MultisetExpression.issubset-795"><span class="linenos">795</span></a><span class="sd">        `self &lt; other` evaluates a proper subset relation, which is the same</span>
+</span><span id="MultisetExpression.issubset-796"><a href="#MultisetExpression.issubset-796"><span class="linenos">796</span></a><span class="sd">        except the result is `False` if the two multisets are exactly equal.</span>
+</span><span id="MultisetExpression.issubset-797"><a href="#MultisetExpression.issubset-797"><span class="linenos">797</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression.issubset-798"><a href="#MultisetExpression.issubset-798"><span class="linenos">798</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSubsetEvaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Evaluation: Whether this multiset is a subset of the other multiset.</p>
 
-<p>Same as <code>self &lt;= other</code>.</p>
+<p>Specifically, if this multiset has a lesser or equal count for each
+outcome than the other multiset, this evaluates to <code>True</code>; 
+if there is some outcome for which this multiset has a greater count 
+than the other multiset, this evaluates to <code>False</code>.</p>
+
+<p><code><a href="#MultisetExpression.issubset">issubset</a></code> is the same as <code>self &lt;= other</code>.</p>
+
+<p><code>self &lt; other</code> evaluates a proper subset relation, which is the same
+except the result is <code>False</code> if the two multisets are exactly equal.</p>
 </div>
 
 
@@ -12955,22 +13001,57 @@ produce overlapping straights.</p>
 
     </div>
     <a class="headerlink" href="#MultisetExpression.issuperset"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.issuperset-813"><a href="#MultisetExpression.issuperset-813"><span class="linenos">813</span></a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span>
-</span><span id="MultisetExpression.issuperset-814"><a href="#MultisetExpression.issuperset-814"><span class="linenos">814</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression.issuperset-815"><a href="#MultisetExpression.issuperset-815"><span class="linenos">815</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression.issuperset-816"><a href="#MultisetExpression.issuperset-816"><span class="linenos">816</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression.issuperset-817"><a href="#MultisetExpression.issuperset-817"><span class="linenos">817</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression.issuperset-818"><a href="#MultisetExpression.issuperset-818"><span class="linenos">818</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a superset of the other multiset.</span>
-</span><span id="MultisetExpression.issuperset-819"><a href="#MultisetExpression.issuperset-819"><span class="linenos">819</span></a>
-</span><span id="MultisetExpression.issuperset-820"><a href="#MultisetExpression.issuperset-820"><span class="linenos">820</span></a><span class="sd">        Same as `self &gt;= other`.</span>
-</span><span id="MultisetExpression.issuperset-821"><a href="#MultisetExpression.issuperset-821"><span class="linenos">821</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.issuperset-822"><a href="#MultisetExpression.issuperset-822"><span class="linenos">822</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.issuperset-821"><a href="#MultisetExpression.issuperset-821"><span class="linenos">821</span></a>    <span class="k">def</span> <span class="nf">issuperset</span><span class="p">(</span>
+</span><span id="MultisetExpression.issuperset-822"><a href="#MultisetExpression.issuperset-822"><span class="linenos">822</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression.issuperset-823"><a href="#MultisetExpression.issuperset-823"><span class="linenos">823</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression.issuperset-824"><a href="#MultisetExpression.issuperset-824"><span class="linenos">824</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression.issuperset-825"><a href="#MultisetExpression.issuperset-825"><span class="linenos">825</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression.issuperset-826"><a href="#MultisetExpression.issuperset-826"><span class="linenos">826</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is a superset of the other multiset.</span>
+</span><span id="MultisetExpression.issuperset-827"><a href="#MultisetExpression.issuperset-827"><span class="linenos">827</span></a>
+</span><span id="MultisetExpression.issuperset-828"><a href="#MultisetExpression.issuperset-828"><span class="linenos">828</span></a><span class="sd">        Specifically, if this multiset has a greater or equal count for each</span>
+</span><span id="MultisetExpression.issuperset-829"><a href="#MultisetExpression.issuperset-829"><span class="linenos">829</span></a><span class="sd">        outcome than the other multiset, this evaluates to `True`; </span>
+</span><span id="MultisetExpression.issuperset-830"><a href="#MultisetExpression.issuperset-830"><span class="linenos">830</span></a><span class="sd">        if there is some  outcome for which this multiset has a lesser count </span>
+</span><span id="MultisetExpression.issuperset-831"><a href="#MultisetExpression.issuperset-831"><span class="linenos">831</span></a><span class="sd">        than the other multiset, this evaluates to `False`.</span>
+</span><span id="MultisetExpression.issuperset-832"><a href="#MultisetExpression.issuperset-832"><span class="linenos">832</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression.issuperset-833"><a href="#MultisetExpression.issuperset-833"><span class="linenos">833</span></a><span class="sd">        A typical use of this evaluation is testing for the presence of a</span>
+</span><span id="MultisetExpression.issuperset-834"><a href="#MultisetExpression.issuperset-834"><span class="linenos">834</span></a><span class="sd">        combo of cards in a hand, e.g.</span>
+</span><span id="MultisetExpression.issuperset-835"><a href="#MultisetExpression.issuperset-835"><span class="linenos">835</span></a>
+</span><span id="MultisetExpression.issuperset-836"><a href="#MultisetExpression.issuperset-836"><span class="linenos">836</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.issuperset-837"><a href="#MultisetExpression.issuperset-837"><span class="linenos">837</span></a><span class="sd">        deck.deal(5) &gt;= [&#39;a&#39;, &#39;a&#39;, &#39;b&#39;]</span>
+</span><span id="MultisetExpression.issuperset-838"><a href="#MultisetExpression.issuperset-838"><span class="linenos">838</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.issuperset-839"><a href="#MultisetExpression.issuperset-839"><span class="linenos">839</span></a>
+</span><span id="MultisetExpression.issuperset-840"><a href="#MultisetExpression.issuperset-840"><span class="linenos">840</span></a><span class="sd">        represents the chance that a deal of 5 cards contains at least two &#39;a&#39;s</span>
+</span><span id="MultisetExpression.issuperset-841"><a href="#MultisetExpression.issuperset-841"><span class="linenos">841</span></a><span class="sd">        and one &#39;b&#39;.</span>
+</span><span id="MultisetExpression.issuperset-842"><a href="#MultisetExpression.issuperset-842"><span class="linenos">842</span></a>
+</span><span id="MultisetExpression.issuperset-843"><a href="#MultisetExpression.issuperset-843"><span class="linenos">843</span></a><span class="sd">        `issuperset` is the same as `self &gt;= other`.</span>
+</span><span id="MultisetExpression.issuperset-844"><a href="#MultisetExpression.issuperset-844"><span class="linenos">844</span></a>
+</span><span id="MultisetExpression.issuperset-845"><a href="#MultisetExpression.issuperset-845"><span class="linenos">845</span></a><span class="sd">        `self &gt; other` evaluates a proper superset relation, which is the same</span>
+</span><span id="MultisetExpression.issuperset-846"><a href="#MultisetExpression.issuperset-846"><span class="linenos">846</span></a><span class="sd">        except the result is `False` if the two multisets are exactly equal.</span>
+</span><span id="MultisetExpression.issuperset-847"><a href="#MultisetExpression.issuperset-847"><span class="linenos">847</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression.issuperset-848"><a href="#MultisetExpression.issuperset-848"><span class="linenos">848</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsSupersetEvaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Evaluation: Whether this multiset is a superset of the other multiset.</p>
 
-<p>Same as <code>self &gt;= other</code>.</p>
+<p>Specifically, if this multiset has a greater or equal count for each
+outcome than the other multiset, this evaluates to <code>True</code>; 
+if there is some  outcome for which this multiset has a lesser count 
+than the other multiset, this evaluates to <code>False</code>.</p>
+
+<p>A typical use of this evaluation is testing for the presence of a
+combo of cards in a hand, e.g.</p>
+
+<pre><code>deck.deal(5) &gt;= ['a', 'a', 'b']
+</code></pre>
+
+<p>represents the chance that a deal of 5 cards contains at least two 'a's
+and one 'b'.</p>
+
+<p><code><a href="#MultisetExpression.issuperset">issuperset</a></code> is the same as <code>self &gt;= other</code>.</p>
+
+<p><code>self &gt; other</code> evaluates a proper superset relation, which is the same
+except the result is <code>False</code> if the two multisets are exactly equal.</p>
 </div>
 
 
@@ -12986,17 +13067,24 @@ produce overlapping straights.</p>
 
     </div>
     <a class="headerlink" href="#MultisetExpression.isdisjoint"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.isdisjoint-847"><a href="#MultisetExpression.isdisjoint-847"><span class="linenos">847</span></a>    <span class="k">def</span> <span class="nf">isdisjoint</span><span class="p">(</span>
-</span><span id="MultisetExpression.isdisjoint-848"><a href="#MultisetExpression.isdisjoint-848"><span class="linenos">848</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression.isdisjoint-849"><a href="#MultisetExpression.isdisjoint-849"><span class="linenos">849</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression.isdisjoint-850"><a href="#MultisetExpression.isdisjoint-850"><span class="linenos">850</span></a>            <span class="o">/</span>
-</span><span id="MultisetExpression.isdisjoint-851"><a href="#MultisetExpression.isdisjoint-851"><span class="linenos">851</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression.isdisjoint-852"><a href="#MultisetExpression.isdisjoint-852"><span class="linenos">852</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is disjoint from the other multiset.&quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.isdisjoint-853"><a href="#MultisetExpression.isdisjoint-853"><span class="linenos">853</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.isdisjoint-873"><a href="#MultisetExpression.isdisjoint-873"><span class="linenos">873</span></a>    <span class="k">def</span> <span class="nf">isdisjoint</span><span class="p">(</span>
+</span><span id="MultisetExpression.isdisjoint-874"><a href="#MultisetExpression.isdisjoint-874"><span class="linenos">874</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression.isdisjoint-875"><a href="#MultisetExpression.isdisjoint-875"><span class="linenos">875</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression.isdisjoint-876"><a href="#MultisetExpression.isdisjoint-876"><span class="linenos">876</span></a>            <span class="o">/</span>
+</span><span id="MultisetExpression.isdisjoint-877"><a href="#MultisetExpression.isdisjoint-877"><span class="linenos">877</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression.isdisjoint-878"><a href="#MultisetExpression.isdisjoint-878"><span class="linenos">878</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: Whether this multiset is disjoint from the other multiset.</span>
+</span><span id="MultisetExpression.isdisjoint-879"><a href="#MultisetExpression.isdisjoint-879"><span class="linenos">879</span></a><span class="sd">        </span>
+</span><span id="MultisetExpression.isdisjoint-880"><a href="#MultisetExpression.isdisjoint-880"><span class="linenos">880</span></a><span class="sd">        Specifically, this evaluates to `False` if there is any outcome for</span>
+</span><span id="MultisetExpression.isdisjoint-881"><a href="#MultisetExpression.isdisjoint-881"><span class="linenos">881</span></a><span class="sd">        which both multisets have positive count, and `True` if there is not.</span>
+</span><span id="MultisetExpression.isdisjoint-882"><a href="#MultisetExpression.isdisjoint-882"><span class="linenos">882</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression.isdisjoint-883"><a href="#MultisetExpression.isdisjoint-883"><span class="linenos">883</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Evaluation: Whether this multiset is disjoint from the other multiset.</p>
+
+<p>Specifically, this evaluates to <code>False</code> if there is any outcome for
+which both multisets have positive count, and <code>True</code> if there is not.</p>
 </div>
 
 
@@ -13012,67 +13100,67 @@ produce overlapping straights.</p>
 
     </div>
     <a class="headerlink" href="#MultisetExpression.compair"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.compair-855"><a href="#MultisetExpression.compair-855"><span class="linenos">855</span></a>    <span class="k">def</span> <span class="nf">compair</span><span class="p">(</span>
-</span><span id="MultisetExpression.compair-856"><a href="#MultisetExpression.compair-856"><span class="linenos">856</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-857"><a href="#MultisetExpression.compair-857"><span class="linenos">857</span></a>        <span class="n">other</span><span class="p">:</span>
-</span><span id="MultisetExpression.compair-858"><a href="#MultisetExpression.compair-858"><span class="linenos">858</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-859"><a href="#MultisetExpression.compair-859"><span class="linenos">859</span></a>        <span class="n">op</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-860"><a href="#MultisetExpression.compair-860"><span class="linenos">860</span></a>        <span class="o">/</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-861"><a href="#MultisetExpression.compair-861"><span class="linenos">861</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-862"><a href="#MultisetExpression.compair-862"><span class="linenos">862</span></a>        <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-863"><a href="#MultisetExpression.compair-863"><span class="linenos">863</span></a>        <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-864"><a href="#MultisetExpression.compair-864"><span class="linenos">864</span></a>        <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-865"><a href="#MultisetExpression.compair-865"><span class="linenos">865</span></a>        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-866"><a href="#MultisetExpression.compair-866"><span class="linenos">866</span></a>        <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-867"><a href="#MultisetExpression.compair-867"><span class="linenos">867</span></a>        <span class="n">extra_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-868"><a href="#MultisetExpression.compair-868"><span class="linenos">868</span></a>        <span class="n">extra_right</span><span class="o">=</span><span class="kc">None</span>
-</span><span id="MultisetExpression.compair-869"><a href="#MultisetExpression.compair-869"><span class="linenos">869</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die | icepool.MultisetEvaluator[T_contra, Any]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression.compair-870"><a href="#MultisetExpression.compair-870"><span class="linenos">870</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.</span>
-</span><span id="MultisetExpression.compair-871"><a href="#MultisetExpression.compair-871"><span class="linenos">871</span></a>
-</span><span id="MultisetExpression.compair-872"><a href="#MultisetExpression.compair-872"><span class="linenos">872</span></a><span class="sd">        Interface is not stable yet.</span>
-</span><span id="MultisetExpression.compair-873"><a href="#MultisetExpression.compair-873"><span class="linenos">873</span></a>
-</span><span id="MultisetExpression.compair-874"><a href="#MultisetExpression.compair-874"><span class="linenos">874</span></a><span class="sd">        For example, `left=1` would count how many pairs were won by the left</span>
-</span><span id="MultisetExpression.compair-875"><a href="#MultisetExpression.compair-875"><span class="linenos">875</span></a><span class="sd">        side, and `left=1, right=-1` would give the difference in the number of</span>
-</span><span id="MultisetExpression.compair-876"><a href="#MultisetExpression.compair-876"><span class="linenos">876</span></a><span class="sd">        pairs won by each side.</span>
-</span><span id="MultisetExpression.compair-877"><a href="#MultisetExpression.compair-877"><span class="linenos">877</span></a>
-</span><span id="MultisetExpression.compair-878"><a href="#MultisetExpression.compair-878"><span class="linenos">878</span></a><span class="sd">        Any score argument </span>
-</span><span id="MultisetExpression.compair-879"><a href="#MultisetExpression.compair-879"><span class="linenos">879</span></a><span class="sd">        (`initial, tie, left, right, extra_left, extra_right`) </span>
-</span><span id="MultisetExpression.compair-880"><a href="#MultisetExpression.compair-880"><span class="linenos">880</span></a><span class="sd">        not provided will be set to a zero value determined from another score </span>
-</span><span id="MultisetExpression.compair-881"><a href="#MultisetExpression.compair-881"><span class="linenos">881</span></a><span class="sd">        argument times `0`.</span>
-</span><span id="MultisetExpression.compair-882"><a href="#MultisetExpression.compair-882"><span class="linenos">882</span></a>
-</span><span id="MultisetExpression.compair-883"><a href="#MultisetExpression.compair-883"><span class="linenos">883</span></a><span class="sd">        Args:</span>
-</span><span id="MultisetExpression.compair-884"><a href="#MultisetExpression.compair-884"><span class="linenos">884</span></a><span class="sd">            op: Sets the score values based on the given operator and `order`.</span>
-</span><span id="MultisetExpression.compair-885"><a href="#MultisetExpression.compair-885"><span class="linenos">885</span></a><span class="sd">                Allowed values are `&#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;&#39;, &#39;&gt;=&#39;, &#39;==&#39;, &#39;!=&#39;`.</span>
-</span><span id="MultisetExpression.compair-886"><a href="#MultisetExpression.compair-886"><span class="linenos">886</span></a><span class="sd">                Each pair that fits the comparator counts as 1.</span>
-</span><span id="MultisetExpression.compair-887"><a href="#MultisetExpression.compair-887"><span class="linenos">887</span></a><span class="sd">                If one side has more elements than the other, the extra</span>
-</span><span id="MultisetExpression.compair-888"><a href="#MultisetExpression.compair-888"><span class="linenos">888</span></a><span class="sd">                elements are ignored.</span>
-</span><span id="MultisetExpression.compair-889"><a href="#MultisetExpression.compair-889"><span class="linenos">889</span></a><span class="sd">            order: If descending (default), pairs are made in descending order</span>
-</span><span id="MultisetExpression.compair-890"><a href="#MultisetExpression.compair-890"><span class="linenos">890</span></a><span class="sd">                and the higher element wins. If ascending, pairs are made in</span>
-</span><span id="MultisetExpression.compair-891"><a href="#MultisetExpression.compair-891"><span class="linenos">891</span></a><span class="sd">                ascending order and the lower element wins.</span>
-</span><span id="MultisetExpression.compair-892"><a href="#MultisetExpression.compair-892"><span class="linenos">892</span></a><span class="sd">            </span>
-</span><span id="MultisetExpression.compair-893"><a href="#MultisetExpression.compair-893"><span class="linenos">893</span></a><span class="sd">            initial: The initial score.</span>
-</span><span id="MultisetExpression.compair-894"><a href="#MultisetExpression.compair-894"><span class="linenos">894</span></a><span class="sd">            tie: The score for each pair that is a tie.</span>
-</span><span id="MultisetExpression.compair-895"><a href="#MultisetExpression.compair-895"><span class="linenos">895</span></a><span class="sd">            left: The score for each pair that left wins.</span>
-</span><span id="MultisetExpression.compair-896"><a href="#MultisetExpression.compair-896"><span class="linenos">896</span></a><span class="sd">            right: The score for each pair that right wins.</span>
-</span><span id="MultisetExpression.compair-897"><a href="#MultisetExpression.compair-897"><span class="linenos">897</span></a><span class="sd">            extra_left: If left has more elements, each extra element scores</span>
-</span><span id="MultisetExpression.compair-898"><a href="#MultisetExpression.compair-898"><span class="linenos">898</span></a><span class="sd">                this much.</span>
-</span><span id="MultisetExpression.compair-899"><a href="#MultisetExpression.compair-899"><span class="linenos">899</span></a><span class="sd">            extra_right: If right has more elements, each extra element scores</span>
-</span><span id="MultisetExpression.compair-900"><a href="#MultisetExpression.compair-900"><span class="linenos">900</span></a><span class="sd">                this much.</span>
-</span><span id="MultisetExpression.compair-901"><a href="#MultisetExpression.compair-901"><span class="linenos">901</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetExpression.compair-902"><a href="#MultisetExpression.compair-902"><span class="linenos">902</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="MultisetExpression.compair-903"><a href="#MultisetExpression.compair-903"><span class="linenos">903</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">implicit_convert_to_expression</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="MultisetExpression.compair-904"><a href="#MultisetExpression.compair-904"><span class="linenos">904</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-</span><span id="MultisetExpression.compair-905"><a href="#MultisetExpression.compair-905"><span class="linenos">905</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
-</span><span id="MultisetExpression.compair-906"><a href="#MultisetExpression.compair-906"><span class="linenos">906</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-907"><a href="#MultisetExpression.compair-907"><span class="linenos">907</span></a>                             <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">CompairEvalautor</span><span class="p">(</span>
-</span><span id="MultisetExpression.compair-908"><a href="#MultisetExpression.compair-908"><span class="linenos">908</span></a>                                 <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-909"><a href="#MultisetExpression.compair-909"><span class="linenos">909</span></a>                                 <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-910"><a href="#MultisetExpression.compair-910"><span class="linenos">910</span></a>                                 <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-911"><a href="#MultisetExpression.compair-911"><span class="linenos">911</span></a>                                 <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-912"><a href="#MultisetExpression.compair-912"><span class="linenos">912</span></a>                                 <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-913"><a href="#MultisetExpression.compair-913"><span class="linenos">913</span></a>                                 <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-914"><a href="#MultisetExpression.compair-914"><span class="linenos">914</span></a>                                 <span class="n">extra_left</span><span class="o">=</span><span class="n">extra_left</span><span class="p">,</span>
-</span><span id="MultisetExpression.compair-915"><a href="#MultisetExpression.compair-915"><span class="linenos">915</span></a>                                 <span class="n">extra_right</span><span class="o">=</span><span class="n">extra_right</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetExpression.compair-885"><a href="#MultisetExpression.compair-885"><span class="linenos">885</span></a>    <span class="k">def</span> <span class="nf">compair</span><span class="p">(</span>
+</span><span id="MultisetExpression.compair-886"><a href="#MultisetExpression.compair-886"><span class="linenos">886</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-887"><a href="#MultisetExpression.compair-887"><span class="linenos">887</span></a>        <span class="n">other</span><span class="p">:</span>
+</span><span id="MultisetExpression.compair-888"><a href="#MultisetExpression.compair-888"><span class="linenos">888</span></a>        <span class="s1">&#39;MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]&#39;</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-889"><a href="#MultisetExpression.compair-889"><span class="linenos">889</span></a>        <span class="n">op</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-890"><a href="#MultisetExpression.compair-890"><span class="linenos">890</span></a>        <span class="o">/</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-891"><a href="#MultisetExpression.compair-891"><span class="linenos">891</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-892"><a href="#MultisetExpression.compair-892"><span class="linenos">892</span></a>        <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-893"><a href="#MultisetExpression.compair-893"><span class="linenos">893</span></a>        <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-894"><a href="#MultisetExpression.compair-894"><span class="linenos">894</span></a>        <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-895"><a href="#MultisetExpression.compair-895"><span class="linenos">895</span></a>        <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-896"><a href="#MultisetExpression.compair-896"><span class="linenos">896</span></a>        <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-897"><a href="#MultisetExpression.compair-897"><span class="linenos">897</span></a>        <span class="n">extra_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-898"><a href="#MultisetExpression.compair-898"><span class="linenos">898</span></a>        <span class="n">extra_right</span><span class="o">=</span><span class="kc">None</span>
+</span><span id="MultisetExpression.compair-899"><a href="#MultisetExpression.compair-899"><span class="linenos">899</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die | icepool.MultisetEvaluator[T_contra, Any]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression.compair-900"><a href="#MultisetExpression.compair-900"><span class="linenos">900</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.</span>
+</span><span id="MultisetExpression.compair-901"><a href="#MultisetExpression.compair-901"><span class="linenos">901</span></a>
+</span><span id="MultisetExpression.compair-902"><a href="#MultisetExpression.compair-902"><span class="linenos">902</span></a><span class="sd">        Interface is not stable yet.</span>
+</span><span id="MultisetExpression.compair-903"><a href="#MultisetExpression.compair-903"><span class="linenos">903</span></a>
+</span><span id="MultisetExpression.compair-904"><a href="#MultisetExpression.compair-904"><span class="linenos">904</span></a><span class="sd">        For example, `left=1` would count how many pairs were won by the left</span>
+</span><span id="MultisetExpression.compair-905"><a href="#MultisetExpression.compair-905"><span class="linenos">905</span></a><span class="sd">        side, and `left=1, right=-1` would give the difference in the number of</span>
+</span><span id="MultisetExpression.compair-906"><a href="#MultisetExpression.compair-906"><span class="linenos">906</span></a><span class="sd">        pairs won by each side.</span>
+</span><span id="MultisetExpression.compair-907"><a href="#MultisetExpression.compair-907"><span class="linenos">907</span></a>
+</span><span id="MultisetExpression.compair-908"><a href="#MultisetExpression.compair-908"><span class="linenos">908</span></a><span class="sd">        Any score argument </span>
+</span><span id="MultisetExpression.compair-909"><a href="#MultisetExpression.compair-909"><span class="linenos">909</span></a><span class="sd">        (`initial, tie, left, right, extra_left, extra_right`) </span>
+</span><span id="MultisetExpression.compair-910"><a href="#MultisetExpression.compair-910"><span class="linenos">910</span></a><span class="sd">        not provided will be set to a zero value determined from another score </span>
+</span><span id="MultisetExpression.compair-911"><a href="#MultisetExpression.compair-911"><span class="linenos">911</span></a><span class="sd">        argument times `0`.</span>
+</span><span id="MultisetExpression.compair-912"><a href="#MultisetExpression.compair-912"><span class="linenos">912</span></a>
+</span><span id="MultisetExpression.compair-913"><a href="#MultisetExpression.compair-913"><span class="linenos">913</span></a><span class="sd">        Args:</span>
+</span><span id="MultisetExpression.compair-914"><a href="#MultisetExpression.compair-914"><span class="linenos">914</span></a><span class="sd">            op: Sets the score values based on the given operator and `order`.</span>
+</span><span id="MultisetExpression.compair-915"><a href="#MultisetExpression.compair-915"><span class="linenos">915</span></a><span class="sd">                Allowed values are `&#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;&#39;, &#39;&gt;=&#39;, &#39;==&#39;, &#39;!=&#39;`.</span>
+</span><span id="MultisetExpression.compair-916"><a href="#MultisetExpression.compair-916"><span class="linenos">916</span></a><span class="sd">                Each pair that fits the comparator counts as 1.</span>
+</span><span id="MultisetExpression.compair-917"><a href="#MultisetExpression.compair-917"><span class="linenos">917</span></a><span class="sd">                If one side has more elements than the other, the extra</span>
+</span><span id="MultisetExpression.compair-918"><a href="#MultisetExpression.compair-918"><span class="linenos">918</span></a><span class="sd">                elements are ignored.</span>
+</span><span id="MultisetExpression.compair-919"><a href="#MultisetExpression.compair-919"><span class="linenos">919</span></a><span class="sd">            order: If descending (default), pairs are made in descending order</span>
+</span><span id="MultisetExpression.compair-920"><a href="#MultisetExpression.compair-920"><span class="linenos">920</span></a><span class="sd">                and the higher element wins. If ascending, pairs are made in</span>
+</span><span id="MultisetExpression.compair-921"><a href="#MultisetExpression.compair-921"><span class="linenos">921</span></a><span class="sd">                ascending order and the lower element wins.</span>
+</span><span id="MultisetExpression.compair-922"><a href="#MultisetExpression.compair-922"><span class="linenos">922</span></a><span class="sd">            </span>
+</span><span id="MultisetExpression.compair-923"><a href="#MultisetExpression.compair-923"><span class="linenos">923</span></a><span class="sd">            initial: The initial score.</span>
+</span><span id="MultisetExpression.compair-924"><a href="#MultisetExpression.compair-924"><span class="linenos">924</span></a><span class="sd">            tie: The score for each pair that is a tie.</span>
+</span><span id="MultisetExpression.compair-925"><a href="#MultisetExpression.compair-925"><span class="linenos">925</span></a><span class="sd">            left: The score for each pair that left wins.</span>
+</span><span id="MultisetExpression.compair-926"><a href="#MultisetExpression.compair-926"><span class="linenos">926</span></a><span class="sd">            right: The score for each pair that right wins.</span>
+</span><span id="MultisetExpression.compair-927"><a href="#MultisetExpression.compair-927"><span class="linenos">927</span></a><span class="sd">            extra_left: If left has more elements, each extra element scores</span>
+</span><span id="MultisetExpression.compair-928"><a href="#MultisetExpression.compair-928"><span class="linenos">928</span></a><span class="sd">                this much.</span>
+</span><span id="MultisetExpression.compair-929"><a href="#MultisetExpression.compair-929"><span class="linenos">929</span></a><span class="sd">            extra_right: If right has more elements, each extra element scores</span>
+</span><span id="MultisetExpression.compair-930"><a href="#MultisetExpression.compair-930"><span class="linenos">930</span></a><span class="sd">                this much.</span>
+</span><span id="MultisetExpression.compair-931"><a href="#MultisetExpression.compair-931"><span class="linenos">931</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetExpression.compair-932"><a href="#MultisetExpression.compair-932"><span class="linenos">932</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="MultisetExpression.compair-933"><a href="#MultisetExpression.compair-933"><span class="linenos">933</span></a>            <span class="n">other</span> <span class="o">=</span> <span class="n">implicit_convert_to_expression</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="MultisetExpression.compair-934"><a href="#MultisetExpression.compair-934"><span class="linenos">934</span></a>        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+</span><span id="MultisetExpression.compair-935"><a href="#MultisetExpression.compair-935"><span class="linenos">935</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="MultisetExpression.compair-936"><a href="#MultisetExpression.compair-936"><span class="linenos">936</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">other</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-937"><a href="#MultisetExpression.compair-937"><span class="linenos">937</span></a>                             <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">CompairEvalautor</span><span class="p">(</span>
+</span><span id="MultisetExpression.compair-938"><a href="#MultisetExpression.compair-938"><span class="linenos">938</span></a>                                 <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-939"><a href="#MultisetExpression.compair-939"><span class="linenos">939</span></a>                                 <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-940"><a href="#MultisetExpression.compair-940"><span class="linenos">940</span></a>                                 <span class="n">initial</span><span class="o">=</span><span class="n">initial</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-941"><a href="#MultisetExpression.compair-941"><span class="linenos">941</span></a>                                 <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-942"><a href="#MultisetExpression.compair-942"><span class="linenos">942</span></a>                                 <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-943"><a href="#MultisetExpression.compair-943"><span class="linenos">943</span></a>                                 <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-944"><a href="#MultisetExpression.compair-944"><span class="linenos">944</span></a>                                 <span class="n">extra_left</span><span class="o">=</span><span class="n">extra_left</span><span class="p">,</span>
+</span><span id="MultisetExpression.compair-945"><a href="#MultisetExpression.compair-945"><span class="linenos">945</span></a>                                 <span class="n">extra_right</span><span class="o">=</span><span class="n">extra_right</span><span class="p">))</span>
 </span></pre></div>
 
 
