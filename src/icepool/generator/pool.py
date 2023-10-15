@@ -499,13 +499,18 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             return NotImplemented
 
     def disjoint_union(
-        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
-    ) -> 'MultisetExpression[T]':
+            *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            keep_negative_counts: bool = False) -> 'MultisetExpression[T]':
         """The combined elements from all the multisets.
 
         We have an optimization here if all arguments are pools with all sorted
         positions counted the same. In this case we can merge the pools directly
         instead of merging the rolls after the fact.
+
+        keep_negative_counts: If set, if the result would have a negative 
+                count, it is preserved. Otherwise, negative counts in the result
+                are set to zero, similar to the behavior of
+                `collections.Counter`.
         """
         args = tuple(
             icepool.expression.implicit_convert_to_expression(arg)
@@ -520,12 +525,16 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             if all(x == keep_tuple[0] for x in keep_tuple):
                 # All sorted positions count the same, so we can merge the
                 # pools.
-                dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
-                for pool in pools:
-                    for die, die_count in pool._dice:
-                        dice[die] += die_count
+                if keep_tuple[0] < 0 and not keep_negative_counts:
+                    return Pool._new_empty()
+                else:
+                    dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
+                    for pool in pools:
+                        for die, die_count in pool._dice:
+                            dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
-        return icepool.expression.MultisetExpression.disjoint_union(*args)
+        return icepool.expression.MultisetExpression.disjoint_union(
+            *args, keep_negative_counts=keep_negative_counts)
 
     def __mul__(self, other: int) -> 'Pool[T]':
         if not isinstance(other, int):

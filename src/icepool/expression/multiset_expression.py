@@ -48,7 +48,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     |:----------------------------|:-----------------------------------|
     | `disjoint_union`, `+`       | `l + r`                            |
     | `difference`, `-`           | `l - r`                            |
-    | `union`, `\|`               | `max(l, r)`                        |
+    | `union`, `\\|`               | `max(l, r)`                        |
     | `intersection`, `&`         | `min(l, r)`                        |
     | `symmetric_difference`, `^` | `abs(l - r)`                       |
     | `multiply_counts`, `*`      | `count * n`                        |
@@ -165,7 +165,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.DisjointUnionExpression(self, other)
+        return icepool.expression.DisjointUnionExpression(
+            self, other, keep_negative_counts=False)
 
     def __radd__(
             self, other:
@@ -175,11 +176,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.DisjointUnionExpression(other, self)
+        return icepool.expression.DisjointUnionExpression(
+            other, self, keep_negative_counts=False)
 
     def disjoint_union(
-        *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+            *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            keep_negative_counts: bool = False
     ) -> 'MultisetExpression[T_contra]':
         """The combined elements from all of the multisets.
 
@@ -191,9 +194,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         [1, 2, 2, 3] + [1, 2, 4] -> [1, 1, 2, 2, 2, 3, 4]
         ```
+
+        Args:
+            keep_negative_counts: If set, if the result would have a negative 
+                count, it is preserved. Otherwise, negative counts in the result
+                are set to zero, similar to the behavior of
+                `collections.Counter`.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
-        return icepool.expression.DisjointUnionExpression(*expressions)
+        return icepool.expression.DisjointUnionExpression(
+            *expressions, keep_negative_counts=keep_negative_counts)
 
     def __sub__(
             self, other:
@@ -203,7 +213,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.DifferenceExpression(self, other)
+        return icepool.expression.DifferenceExpression(
+            self, other, keep_negative_counts=False)
 
     def __rsub__(
             self, other:
@@ -213,11 +224,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.DifferenceExpression(other, self)
+        return icepool.expression.DifferenceExpression(
+            other, self, keep_negative_counts=False)
 
     def difference(
-        *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+            *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            keep_negative_counts: bool = False
     ) -> 'MultisetExpression[T_contra]':
         """The elements from the left multiset that are not in any of the others.
 
@@ -237,9 +250,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
         If you want to drop all elements in a set of outcomes regardless of
         count, either use `drop_outcomes()` instead, or use a large number of
         counts on the right side.
+
+        Args:
+            keep_negative_counts: If set, if the result would have a negative 
+                count, it is preserved. Otherwise, negative counts in the result
+                are set to zero, similar to the behavior of
+                `collections.Counter`.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
-        return icepool.expression.DifferenceExpression(*expressions)
+        return icepool.expression.DifferenceExpression(
+            *expressions, keep_negative_counts=keep_negative_counts)
 
     def __and__(
             self, other:
@@ -249,7 +269,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.IntersectionExpression(self, other)
+        return icepool.expression.IntersectionExpression(
+            self, other, keep_negative_counts=False)
 
     def __rand__(
             self, other:
@@ -259,11 +280,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.IntersectionExpression(other, self)
+        return icepool.expression.IntersectionExpression(
+            other, self, keep_negative_counts=False)
 
     def intersection(
-        *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+            *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            keep_negative_counts: bool = False
     ) -> 'MultisetExpression[T_contra]':
         """The elements that all the multisets have in common.
 
@@ -281,9 +304,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
         If you want to keep all elements in a set of outcomes regardless of
         count, either use `keep_outcomes()` instead, or use a large number of
         counts on the right side.
+
+        Args:
+            keep_negative_counts: If set, if the result would have a negative 
+                count, it is preserved. Otherwise, negative counts in the result
+                are set to zero, similar to the behavior of
+                `collections.Counter`.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
-        return icepool.expression.IntersectionExpression(*expressions)
+        return icepool.expression.IntersectionExpression(
+            *expressions, keep_negative_counts=keep_negative_counts)
 
     def __or__(
             self, other:
@@ -293,7 +323,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.UnionExpression(self, other)
+        return icepool.expression.UnionExpression(self,
+                                                  other,
+                                                  keep_negative_counts=False)
 
     def __ror__(
             self, other:
@@ -303,11 +335,14 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.UnionExpression(other, self)
+        return icepool.expression.UnionExpression(other,
+                                                  self,
+                                                  keep_negative_counts=False)
 
     def union(
-        *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+            *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            keep_negative_counts: bool = False
     ) -> 'MultisetExpression[T_contra]':
         """The most of each outcome that appear in any of the multisets.
 
@@ -319,9 +354,16 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         [1, 2, 2, 3] | [1, 2, 4] -> [1, 2, 2, 3, 4]
         ```
+
+        Args:
+            keep_negative_counts: If set, if the result would have a negative 
+                count, it is preserved. Otherwise, negative counts in the result
+                are set to zero, similar to the behavior of
+                `collections.Counter`.
         """
         expressions = tuple(implicit_convert_to_expression(arg) for arg in args)
-        return icepool.expression.UnionExpression(*expressions)
+        return icepool.expression.UnionExpression(
+            *expressions, keep_negative_counts=keep_negative_counts)
 
     def __xor__(
             self, other:
@@ -331,7 +373,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.SymmetricDifferenceExpression(self, other)
+        return icepool.expression.SymmetricDifferenceExpression(
+            self, other, keep_negative_counts=False)
 
     def __rxor__(
             self, other:
@@ -341,7 +384,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             other = implicit_convert_to_expression(other)
         except TypeError:
             return NotImplemented
-        return icepool.expression.SymmetricDifferenceExpression(other, self)
+        return icepool.expression.SymmetricDifferenceExpression(
+            other, self, keep_negative_counts=False)
 
     def symmetric_difference(
             self, other:
@@ -351,7 +395,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Same as `a ^ b`.
 
-        Any negative counts are treated as zero.
+        Specifically, this produces the absolute difference between counts.
+        If you don't want negative counts to be used from the inputs, you can
+        do `left.keep_counts(0) ^ right.keep_counts(0)`.
 
         Example:
         ```
@@ -359,7 +405,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         """
         other = implicit_convert_to_expression(other)
-        return icepool.expression.SymmetricDifferenceExpression(self, other)
+        return icepool.expression.SymmetricDifferenceExpression(
+            self, other, keep_negative_counts=False)
 
     def keep_outcomes(
             self, target:
@@ -464,6 +511,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         For example, `generator.keep_counts(2)` would only produce
         pairs and better.
+        
+        `keep_counts(0)` is useful for removing negative counts.
 
         Example:
         ```
