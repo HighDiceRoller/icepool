@@ -1,6 +1,8 @@
 import icepool
 import pytest
 
+from fractions import Fraction
+
 
 def test_d6_mean():
     assert icepool.d6.mean() == 3.5
@@ -11,12 +13,12 @@ def test_d8_variance():
 
 
 def test_kolmogorov_smirnov_standard_dice():
-    assert icepool.d10.kolmogorov_smirnov(icepool.d20) == pytest.approx(0.5)
+    assert icepool.d10.kolmogorov_smirnov(icepool.d20) == Fraction(1, 2)
 
 
 def test_kolmogorov_smirnov_flat_number():
-    assert icepool.Die([10]).kolmogorov_smirnov(icepool.Die([10])) == 0.0
-    assert icepool.Die([10]).kolmogorov_smirnov(icepool.Die([9])) == 1.0
+    assert icepool.Die([10]).kolmogorov_smirnov(icepool.Die([10])) == 0
+    assert icepool.Die([10]).kolmogorov_smirnov(icepool.Die([9])) == 1
 
 
 def test_d6_median():

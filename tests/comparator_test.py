@@ -11,8 +11,8 @@ def test_lt():
 
 
 def test_lt_fixed():
-    assert (icepool.d6 < 1).mean() == 0.0
-    assert (icepool.d6 < 7).mean() == 1.0
+    assert (icepool.d6 < 1).mean() == 0
+    assert (icepool.d6 < 7).mean() == 1
 
 
 def test_lt_len():
@@ -27,8 +27,8 @@ def test_gt():
 
 
 def test_gt_fixed():
-    assert (icepool.d6 > 0).mean() == 1.0
-    assert (icepool.d6 > 6).mean() == 0.0
+    assert (icepool.d6 > 0).mean() == 1
+    assert (icepool.d6 > 6).mean() == 0
 
 
 def test_gt_len():
@@ -43,8 +43,8 @@ def test_leq():
 
 
 def test_leq_fixed():
-    assert (icepool.d6 <= 0).mean() == 0.0
-    assert (icepool.d6 <= 6).mean() == 1.0
+    assert (icepool.d6 <= 0).mean() == 0
+    assert (icepool.d6 <= 6).mean() == 1
 
 
 def test_leq_len():
@@ -59,8 +59,8 @@ def test_geq():
 
 
 def test_geq_fixed():
-    assert (icepool.d6 >= 1).mean() == 1.0
-    assert (icepool.d6 >= 7).mean() == 0.0
+    assert (icepool.d6 >= 1).mean() == 1
+    assert (icepool.d6 >= 7).mean() == 0
 
 
 def test_geq_len():

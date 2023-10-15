@@ -1,26 +1,25 @@
 import icepool
 import pytest
 
+from fractions import Fraction
+
 
 def test_invert():
     assert (~icepool.coin(1, 4)).mean() < 0
 
 
 def test_and():
-    assert (icepool.coin(1, 4) & icepool.coin(1, 4)).mean() == pytest.approx(1 /
-                                                                             16)
+    assert (icepool.coin(1, 4) & icepool.coin(1, 4)).mean() == Fraction(1, 16)
 
 
 def test_or():
-    assert (icepool.coin(1, 4) | icepool.coin(1, 4)).mean() == pytest.approx(7 /
-                                                                             16)
+    assert (icepool.coin(1, 4) | icepool.coin(1, 4)).mean() == Fraction(7, 16)
 
 
 def test_xor():
     print(icepool.coin(1, 4) ^ icepool.coin(1, 4))
     print((icepool.coin(1, 4) ^ icepool.coin(1, 4)).probability(1))
-    assert (icepool.coin(1, 4) ^ icepool.coin(1, 4)).mean() == pytest.approx(6 /
-                                                                             16)
+    assert (icepool.coin(1, 4) ^ icepool.coin(1, 4)).mean() == Fraction(6, 16)
 
 
 def test_ifelse():
