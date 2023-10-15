@@ -85,8 +85,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
     """
 
     @abstractmethod
-    def _next_state(self, state, outcome: T_contra,
-                    *counts: int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, *counts:
+                    int) -> tuple[Hashable, int]:
         """Updates the state for this expression and does any necessary count modification.
 
         Args:
@@ -506,13 +506,17 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return self // constant
 
+    def __pos__(self) -> 'MultisetExpression[T_contra]':
+        return icepool.expression.FilterCountsExpression(self, 0)
+
     def keep_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
         """Counts less than `min_count` are treated as zero.
 
-        For example, `generator.keep_counts(2)` would only produce
+        For example, `expression.keep_counts(2)` would only produce
         pairs and better.
         
-        `keep_counts(0)` is useful for removing negative counts.
+        `expression.keep_counts(0)` is useful for removing negative counts. 
+        You can use the unary operator `+expression` for the same effect.
 
         Example:
         ```

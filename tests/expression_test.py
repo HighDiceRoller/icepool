@@ -48,3 +48,7 @@ def test_union_keep_negative_counts():
     assert (d6.pool(4)[-1, -1, -1, -1].union(d6.pool(2)[-1, -1],
                                              keep_negative_counts=True).sum()
             < 0).mean() > 0
+
+
+def test_pos():
+    assert (+d6.pool(2)[-1, -1] ^ +d6.pool(2)[-1, -1]).sum().probability(0) == 1
