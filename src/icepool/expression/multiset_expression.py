@@ -48,12 +48,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
     |:----------------------------|:-----------------------------------|
     | `additive_union`, `+`       | `l + r`                            |
     | `difference`, `-`           | `l - r`                            |
-    | `union`, `\\|`               | `max(l, r)`                        |
     | `intersection`, `&`         | `min(l, r)`                        |
+    | `union`, `\\|`               | `max(l, r)`                        |
     | `symmetric_difference`, `^` | `abs(l - r)`                       |
     | `multiply_counts`, `*`      | `count * n`                        |
     | `divide_counts`, `//`       | `count // n`                       |
     | `keep_counts`               | `count if count >= n else 0`       |
+    | unary `+`                   | same as `keep_counts(0)`           |
     | `unique`                    | `min(count, n)`                    |
     | `keep_outcomes`             | `count if outcome in t else 0`     |
     | `drop_outcomes`             | `count if outcome not in t else 0` |
