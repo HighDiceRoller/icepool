@@ -46,7 +46,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     | Operation                   | Count / notes                      |
     |:----------------------------|:-----------------------------------|
-    | `disjoint_union`, `+`       | `l + r`                            |
+    | `additive_union`, `+`       | `l + r`                            |
     | `difference`, `-`           | `l - r`                            |
     | `union`, `\\|`               | `max(l, r)`                        |
     | `intersection`, `&`         | `min(l, r)`                        |
@@ -179,7 +179,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.DisjointUnionExpression(
             other, self, keep_negative_counts=False)
 
-    def disjoint_union(
+    def additive_union(
             *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             keep_negative_counts: bool = False

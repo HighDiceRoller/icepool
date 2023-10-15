@@ -16,11 +16,11 @@ def test_keep_highest_expression():
     assert result == expected
 
 
-def test_disjoint_union_keep_negative_counts():
-    assert (d6.pool(4).disjoint_union(d6.pool(2)[-1, -1],
+def test_additive_union_keep_negative_counts():
+    assert (d6.pool(4).additive_union(d6.pool(2)[-1, -1],
                                       keep_negative_counts=False).sum()
             < 0).mean() == 0
-    assert (d6.pool(4).disjoint_union(d6.pool(2)[-1, -1],
+    assert (d6.pool(4).additive_union(d6.pool(2)[-1, -1],
                                       keep_negative_counts=True).sum()
             < 0).mean() > 0
 

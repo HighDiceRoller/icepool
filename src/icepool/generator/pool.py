@@ -486,7 +486,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         try:
-            return self.disjoint_union(other)
+            return self.additive_union(other)
         except TypeError:
             return NotImplemented
 
@@ -494,11 +494,11 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         try:
-            return self.disjoint_union(other)
+            return self.additive_union(other)
         except TypeError:
             return NotImplemented
 
-    def disjoint_union(
+    def additive_union(
             *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             keep_negative_counts: bool = False) -> 'MultisetExpression[T]':
         """The combined elements from all the multisets.
@@ -533,7 +533,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                         for die, die_count in pool._dice:
                             dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
-        return icepool.expression.MultisetExpression.disjoint_union(
+        return icepool.expression.MultisetExpression.additive_union(
             *args, keep_negative_counts=keep_negative_counts)
 
     def __mul__(self, other: int) -> 'Pool[T]':
