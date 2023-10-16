@@ -242,7 +242,7 @@ class OutputManager():
             label = str(label)
             
         try:
-            label += f' (Mean: {die.mean():.2f} SD: {die.standard_deviation():.2f})'
+            label += f' (Mean: {float(die.mean()):.2f} SD: {die.standard_deviation():.2f})'
         except:
             pass
             
