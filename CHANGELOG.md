@@ -1,3 +1,11 @@
+## v1.1.0
+
+* `mean()`, `variance()`, etc. now return an exact `fractions.Fraction` when possible. (Note that `Fraction`s only support float-style formatting from 3.12.)
+* Rename `disjoint_union` to `additive_union`.
+* Add `keep_negative_counts` keyword argument to `+, -, &, |` binary operators for multiset expressions (default `False`).
+* Symmetric difference (`^`) for multiset expressions is now a straight absolute difference of counts.
+* Add unary `+` operator for multiset expressions, which is the same as `keep_counts(0)`.
+
 ## v1.0.0
 
 Improve some error messages.
