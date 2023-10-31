@@ -1,6 +1,7 @@
 import icepool
 import pytest
 
+from icepool import Die
 from fractions import Fraction
 
 
@@ -41,3 +42,7 @@ def test_min_quantile():
 def test_max_quantile():
     assert icepool.d6.quantile_low(100) == 6
     assert icepool.d6.quantile_high(100) == 6
+
+
+def test_entropy_with_zeros():
+    assert Die({1: 1, 2: 0, 3: 1}).entropy() == 1.0

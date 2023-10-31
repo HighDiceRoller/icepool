@@ -683,6 +683,16 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             self: 'Population[numbers.Rational] | Population[float]') -> float:
         return self.standardized_moment(4) - 3.0
 
+    def entropy(self, base: float = 2.0) -> float:
+        """The entropy of a random sample from this population.
+        
+        Args:
+            base: The logarithm base to use. Default is 2.0, which gives the 
+                entropy in bits.
+        """
+        return -sum(
+            p * math.log(p, base) for p in self.probabilities() if p > 0.0)
+
     # Joint statistics.
 
     class _Marginals(Sequence):
