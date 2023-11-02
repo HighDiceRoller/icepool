@@ -468,8 +468,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             match tie:
                 case 'error':
                     raise IndexError(
-                        f'The middle {keep} of {self.keep_size()} elements is ambiguous.'
-                        " Specify tie='low' or tie='high' to determine what to pick."
+                        f'The middle {keep} of {self.keep_size()} elements is ambiguous.\n'
+                        "Specify tie='low' or tie='high' to determine what to pick."
                     )
                 case 'high':
                     start = (self.keep_size() + 1 - keep) // 2

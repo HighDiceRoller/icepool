@@ -104,5 +104,6 @@ def guess_star(function, arg_count=1) -> bool:
     try:
         required_count, _ = count_positional_parameters(function)
     except ValueError:
-        raise ValueError(f'Could not guess whether to unpack the first argument to the function. You may need to specify star explicitly.')
+        raise ValueError(f'Could not guess whether to unpack the first argument to the function.\n'
+                         'You may need to specify `star` explicitly.')
     return required_count > arg_count

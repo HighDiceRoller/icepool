@@ -1137,11 +1137,10 @@ class Die(Population[T_co]):
 
     def __bool__(self) -> bool:
         raise TypeError(
-            'A `Die` only has a truth value if it is the result of == or !=. '
-            'This could result from trying to use a die in an if-statement, '
-            'in which case you should use `die.if_else()` instead. '
-            'Or it could result from trying to use a `Die` inside a tuple or '
-            'vector outcome, '
+            'A `Die` only has a truth value if it is the result of == or !=.\n'
+            'This could result from trying to use a die in an if-statement,\n'
+            'in which case you should use `die.if_else()` instead.\n'
+            'Or it could result from trying to use a `Die` inside a tuple or vector outcome,\n'
             'in which case you should use `tupleize()` or `vectorize().')
 
     @cached_property

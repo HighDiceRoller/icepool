@@ -34,10 +34,10 @@ class Counts(Mapping[T, int]):
                 bool(first_key < first_key)
         except TypeError:
             raise TypeError(
-                'Items do not appear to be sortable. '
-                'Tip: Sequences containing dice or decks are not sortable. '
-                'Use tupleize() or vectorize() to transform '
-                'a sequence of dice into a die with sequence outcomes '
+                'Items do not appear to be sortable.\n'
+                'Tip: Sequences containing dice or decks are not sortable.\n'
+                'Use tupleize() or vectorize() to transform\n'
+                'a sequence of dice into a die with sequence outcomes\n'
                 'according to the Cartesian product.')
 
         mapping: MutableMapping[T, int] = {}

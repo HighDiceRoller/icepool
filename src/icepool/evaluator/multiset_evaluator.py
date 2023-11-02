@@ -271,7 +271,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             outcome = self.final_outcome(state)
             if outcome is None:
                 raise TypeError(
-                    "None is not a valid final outcome. "
+                    "None is not a valid final outcome.\n"
                     "This may have been a result of not supplying any generator with an outcome."
                 )
             if outcome is not icepool.Reroll:
