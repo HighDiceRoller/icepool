@@ -429,7 +429,7 @@
                         data[i - 1] = math.nan
                     js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
                     table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
-                    table_text += ''.join('<td>%0.2f%%</td>' % x for x in data)
+                    table_text += ''.join(('<td></td>' if math.isnan(x) else '<td>%0.2f%%</td>' % x) for x in data)
                     js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
             `);
 
