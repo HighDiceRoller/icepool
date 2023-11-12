@@ -35,7 +35,8 @@
                     <th>d8</th>
                     <th>d10</th>
                     <th>d12</th>
-                    <th style="border-left: 2px solid #bfbfbf;">Keep</th>
+                    <th style="border-left: 2px solid #bfbfbf;">Drop</th>
+                    <th>Keep</th>
                 </tr>
                 <tr id="pinputs">
                     <td><input name="p4" id="p4" type="number" min="0" max="10" value="0" required onwheel="" /></td>
@@ -43,7 +44,8 @@
                     <td><input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
                     <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td style="border-left: 2px solid #bfbfbf;"><input name="pk" id="pk" type="number" min="1" max="10" value="2" required onwheel="" /></td>
+                    <td style="border-left: 2px solid #bfbfbf;"><input name="pd" id="pd" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="pk" id="pk" type="number" min="1" max="10" value="2" required onwheel="" /></td>
                 </tr>
             </table>
         </form>
@@ -179,69 +181,93 @@
 
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
-                import micropip
-                await micropip.install('icepool==1.0.0')
-                
-                import js
-                import pyodide
-                from bisect import bisect_left
-                from icepool import Die, Pool, multiset_function
-                from functools import cache
-                
-                possible_die_sizes = [4, 6, 8, 10, 12]
-                
-                @cache
-                def hitch_die(die_size):
-                    return Die({0:1, die_size: die_size - 1})
-                
-                @cache
-                def number_die(die_size):
-                    return Die(range(2, die_size + 1))
-                
-                # Dropping from the bottom helps caching.
-                @cache
-                def low_high_evaluator(drop):
-                    return multiset_function(lambda a, b: (a+b)[drop:].sum())
-                
-                def updateResults():
-                    die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
-                    hitch_pool = Pool([hitch_die(die_size) for die_size in die_sizes])
-                    non_hitch = hitch_pool.drop_outcomes([0]).expand()
-                    
-                    keep = int(js.document.getElementById('pk').value)
-                    
-                    # d4.
-                    def total_d4(non_hitch_outcome):
-                        if len(non_hitch_outcome) == 0:
-                            return 0
-                        pool = Pool([number_die(x) for x in non_hitch_outcome]).highest(keep=keep)
-                        return pool.sum()
-                    result = non_hitch.map(total_d4).clip(3, 25).set_range(3, 25)
-                    js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
-                    
-                    for effect_die in [6, 8, 10, 12]:
-                        data_set_index = effect_die // 2 - 2
-                        if effect_die not in die_sizes:
-                            js.effectChart.data.datasets[data_set_index].data = js.effectChart.data.datasets[data_set_index-1].data
-                            js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(True)
-                            continue
-                            
-                        def total_with_effect(non_hitch_outcome):
-                            if len(non_hitch_outcome) < 2:
-                                return 0
-                            if non_hitch_outcome[-1] < effect_die:
-                                return 0
-                            index = bisect_left(non_hitch_outcome, effect_die)
-                            low_pool = Pool([number_die(x) for x in non_hitch_outcome[:index]])
-                            high_pool = Pool([number_die(x) for x in non_hitch_outcome[index:]])[1:]
-                            drop = max(len(non_hitch_outcome) - keep - 1, 0)
-                            evaluator = low_high_evaluator(drop)
-                            return evaluator(low_pool, high_pool)
+import micropip
+await micropip.install('icepool==1.0.0')
 
-                        result = non_hitch.map(total_with_effect).clip(3, 25).set_range(3, 25)
-                        
-                        js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
-                        js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(False)
+import js
+import pyodide
+from bisect import bisect_left
+from icepool import Die, MultisetEvaluator, Order, Pool, highest
+from functools import cache
+
+possible_die_sizes = [4, 6, 8, 10, 12]
+
+class CortexEffectEvaluator(MultisetEvaluator):
+    def __init__(self, drop_lowest, keep):
+        self._drop_lowest = drop_lowest
+        self._keep = keep
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            drop = self._drop_lowest
+            keep = self._keep
+            total = 0
+            got_effect = False
+        else:
+            drop, keep, total, got_effect = state
+        
+        value, ineffective = outcome
+        if count > 0:
+            if not ineffective and not got_effect:
+                count -= 1
+                got_effect = True
+            to_drop = min(count, drop)
+            count -= to_drop
+            drop -= to_drop
+            to_keep = min(count, keep)
+            keep -= to_keep
+            total += to_keep * value
+        return drop, keep, total, got_effect
+        
+
+    def final_outcome(self, final_state):
+        if final_state is None:
+            return 0
+        drop, keep, total, got_effect = final_state
+        if not got_effect:
+            return 0
+        return total
+
+    def order(self):
+        return Order.Ascending
+        
+@cache
+def cached_evaluator(drop_lowest, keep):
+    return CortexEffectEvaluator(drop_lowest, keep)
+
+def c(die_size):
+    return Die([0] + [i for i in range(2, die_size+1)])
+
+@cache
+def ci(die_size, ineffective):
+    return Die([(0, True)] + [(i, ineffective) for i in range(2, die_size+1)])
+
+def updateResults():
+    die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+    
+    drop = int(js.document.getElementById('pd').value)
+    keep = int(js.document.getElementById('pk').value)
+    
+    # d4.
+    result = highest([0] + [c(n) for n in die_sizes], drop=drop, keep=keep)
+    result = result.clip(3, 25).set_range(3, 25)
+    js.effectChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
+    
+    for effect_die in [6, 8, 10, 12]:
+        data_set_index = effect_die // 2 - 2
+        if effect_die not in die_sizes:
+            js.effectChart.data.datasets[data_set_index].data = js.effectChart.data.datasets[data_set_index-1].data
+            js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(True)
+            continue
+            
+        pool = Pool([ci(n, n < effect_die) for n in die_sizes]).lowest(len(die_sizes) - drop)
+        drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
+        evaluator = cached_evaluator(drop_lowest, keep)
+        result = evaluator(pool)
+        result = result.clip(3, 25).set_range(3, 25)
+        
+        js.effectChart.data.datasets[data_set_index].data = pyodide.ffi.to_js([float(x) * 100.0 for x in result.probabilities_ge()[1:-1]])
+        js.effectChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(False)
             `);
 
             effectChart.options.plugins.title = {
