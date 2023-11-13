@@ -177,7 +177,6 @@
                         label: 'Difficulty',
                         order: 5,
                         borderColor: 'rgba(15, 15, 15, 1.0)',
-                        backgroundColor: 'rgba(15, 15, 15, 1.0)',
                         pointStyle: 'circle',
                         radius: 0,
                         data: [],
@@ -202,7 +201,18 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Chance (%)',
+                            text: 'Chance total at least',
+                        },
+                    },
+                    y1: {
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Chance difficulty exactly',
+                        },
+                        grid: {
+                          drawOnChartArea: false, // only want the grid lines for one axis to show up
                         },
                     },
                 },
@@ -457,8 +467,11 @@ def total_data(die, selected_dist):
                 }
                 totalChart.data.datasets[1].borderColor = 'rgba(220, 200, 0, 0.25)';
                 totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 0.125)';
-                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 0.125)';;
-                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 0.125)'
+                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 0.125)';
+                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 0.125)';
+                totalChart.options.scales.y.title.text = 'Chance total exactly';
+                totalChart.options.scales.y1.display = false;
+                totalChart.data.datasets[5].yAxisID = 'y';
             } else {
                 for (let i = 0; i < 4; i++) {
                     totalChart.data.datasets[i].fill = '+1';
@@ -468,6 +481,9 @@ def total_data(die, selected_dist):
                 totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 1.0)';
                 totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 1.0)';
                 totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 1.0)';
+                totalChart.options.scales.y.title.text = 'Chance total at least';
+                totalChart.options.scales.y1.display = true;
+                totalChart.data.datasets[5].yAxisID = 'y1';
             }
             
             let pyodide = await pyodideReadyPromise;
@@ -495,7 +511,7 @@ def total_data(die, selected_dist):
             js.totalChart.data.datasets[2].data = total_data(d8_effect, selected_dist)
             js.totalChart.data.datasets[3].data = total_data(d10_effect, selected_dist)
             js.totalChart.data.datasets[4].data = total_data(d12_effect, selected_dist)
-            js.totalChart.data.datasets[5].data = total_data(opposition, selected_dist)
+            js.totalChart.data.datasets[5].data = total_data(opposition, 'pmf')
             
             player_die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
             for effect_die in [6, 8, 10, 12]:
