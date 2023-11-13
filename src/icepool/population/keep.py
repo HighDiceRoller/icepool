@@ -14,8 +14,8 @@ def lowest(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
 
 
 @overload
-def lowest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
-           *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+def lowest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /, *args:
+           'T | icepool.Die[T]') -> 'icepool.Die[T]':
     ...
 
 
@@ -23,7 +23,8 @@ def lowest(arg0,
            /,
            *more_args: 'T | icepool.Die[T]',
            keep: int = 1,
-           drop: int = 0) -> 'icepool.Die[T]':
+           drop: int = 0,
+           default: T | None = None) -> 'icepool.Die[T]':
     """The lowest outcome among the rolls, or the sum of some of the lowest.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -38,7 +39,15 @@ def lowest(arg0,
     if len(more_args) == 0:
         args = arg0
     else:
-        args = (arg0,) + more_args
+        args = (arg0, ) + more_args
+
+    if len(args) == 0:
+        if default is None:
+            raise ValueError(
+                "lowest() arg is an empty sequence and no default was provided."
+            )
+        else:
+            return icepool.Die([default])
 
     if keep < 0:
         raise ValueError(f'keep={keep} cannot be negative.')
@@ -56,8 +65,8 @@ def highest(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
 
 
 @overload
-def highest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
-            *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+def highest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /, *args:
+            'T | icepool.Die[T]') -> 'icepool.Die[T]':
     ...
 
 
@@ -65,7 +74,8 @@ def highest(arg0,
             /,
             *more_args: 'T | icepool.Die[T]',
             keep: int = 1,
-            drop: int = 0) -> 'icepool.Die[T]':
+            drop: int = 0,
+            default: T | None = None) -> 'icepool.Die[T]':
     """The highest outcome among the rolls, or the sum of some of the highest.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -80,7 +90,15 @@ def highest(arg0,
     if len(more_args) == 0:
         args = arg0
     else:
-        args = (arg0,) + more_args
+        args = (arg0, ) + more_args
+
+    if len(args) == 0:
+        if default is None:
+            raise ValueError(
+                "highest() arg is an empty sequence and no default was provided."
+            )
+        else:
+            return icepool.Die([default])
 
     if keep < 0:
         raise ValueError(f'keep={keep} cannot be negative.')
@@ -98,8 +116,8 @@ def middle(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
 
 
 @overload
-def middle(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /,
-           *args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
+def middle(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /, *args:
+           'T | icepool.Die[T]') -> 'icepool.Die[T]':
     ...
 
 
@@ -107,7 +125,8 @@ def middle(arg0,
            /,
            *more_args: 'T | icepool.Die[T]',
            keep: int = 1,
-           tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die[T]':
+           tie: Literal['error', 'high', 'low'] = 'error',
+           default: T | None = None) -> 'icepool.Die[T]':
     """The middle of the outcomes among the rolls, or the sum of some of the middle.
 
     The outcomes should support addition and multiplication if `keep != 1`.
@@ -125,7 +144,16 @@ def middle(arg0,
     if len(more_args) == 0:
         args = arg0
     else:
-        args = (arg0,) + more_args
+        args = (arg0, ) + more_args
+
+    if len(args) == 0:
+        if default is None:
+            raise ValueError(
+                "middle() arg is an empty sequence and no default was provided."
+            )
+        else:
+            return icepool.Die([default])
+
     # Expression evaluators are difficult to type.
     return icepool.Pool(args).middle(keep, tie=tie).sum()  # type: ignore
 
