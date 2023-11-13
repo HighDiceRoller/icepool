@@ -64,11 +64,11 @@
             </table>
         </form>
         <form id="options">
-            <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s), but still can't be effect dice.
+            <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s), but still can't be used for effect.
         </form>
     </div>
 
-    <h2>Probability distribution of the total</h2>
+    <h2>Total and effect die</h2>
     <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -78,13 +78,31 @@
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
-        <div style="font-size: 150%;">
-            Mean totals: <span id="pmean"></span> vs. <span id="omean"></span><br />
-            Chance of rolling greater than difficulty: <span id="successChance"></span>
-        </div>
+        <table style="margin: auto; text-align:right;">
+            <tr>
+                <th style="width:12%;">Mean roll</th>
+                <th style="width:12%;">Mean difficulty</th>
+                <th style="width:12%; border-left: 2px solid #bfbfbf;">Fail</th>
+                <th style="width:12%; color:rgba(140, 0, 0, 1.0);">d4 effect</th>
+                <th style="width:12%; color:rgba(140, 120, 0, 1.0);">d6 effect</th>
+                <th style="width:12%; color:rgba(0, 120, 0, 1.0);">d8 effect</th>
+                <th style="width:12%; color:rgba(0, 120, 160, 1.0);">d10 effect</th>
+                <th style="width:12%; color:rgba(140, 0, 160, 1.0);">d12 effect</th>
+            </tr>
+            <tr>
+                <td><span id="pmean"></span></td>
+                <td><span id="omean"></span></td>
+                <td style="border-left: 2px solid #bfbfbf;"><span id="failChance">%</span></td>
+                <td><span id="d4Chance" style="color:rgba(140, 0, 0, 1.0)">%</span></td>
+                <td><span id="d6Chance" style="color:rgba(140, 120, 0, 1.0)">%</span></td>
+                <td><span id="d8Chance" style="color:rgba(0, 120, 0, 1.0)">%</span></td>
+                <td><span id="d10Chance" style="color:rgba(0, 120, 160, 1.0)">%</span></td>
+                <td><span id="d12Chance" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
+            </tr>
+        </table>
     </div>
 
-    <h2>Probability distribution of hitches</h2>
+    <h2>Hitches</h2>
     <div style="width: 90%; margin: auto;">
         <div style="font-size: 150%;">
             Show:
@@ -427,7 +445,18 @@ def total_data(die, selected_dist):
             pyodide.runPython(`
             js.document.getElementById('pmean').innerHTML = '%0.2f' % any_effect.mean()
             js.document.getElementById('omean').innerHTML = '%0.2f' % opposition.mean()
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((any_effect > opposition).mean() * 100.0)
+            d4_chance = (any_effect > opposition).mean() - (d6_effect > opposition).mean()
+            d6_chance = (d6_effect > opposition).mean() - (d8_effect > opposition).mean()
+            d8_chance = (d8_effect > opposition).mean() - (d10_effect > opposition).mean()
+            d10_chance = (d10_effect > opposition).mean() - (d12_effect > opposition).mean()
+            d12_chance = (d12_effect > opposition).mean()
+            
+            js.document.getElementById('failChance').innerHTML = '%0.2f%%' % ((any_effect <= opposition).mean() * 100.0)
+            js.document.getElementById('d4Chance').innerHTML = '%0.2f%%' % (d4_chance * 100.0)
+            js.document.getElementById('d6Chance').innerHTML = '%0.2f%%' % (d6_chance * 100.0)
+            js.document.getElementById('d8Chance').innerHTML = '%0.2f%%' % (d8_chance * 100.0)
+            js.document.getElementById('d10Chance').innerHTML = '%0.2f%%' % (d10_chance * 100.0)
+            js.document.getElementById('d12Chance').innerHTML = '%0.2f%%' % (d12_chance * 100.0)
             
             selected_dist = js.document.getElementById('distSelect').value
             
@@ -446,7 +475,7 @@ def total_data(die, selected_dist):
             if selected_dist == 'pmf':
                 for i in range(5):
                     js.totalChart.data.datasets[i].fill = pyodide.ffi.to_js(False)
-                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 0.125)')
+                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 0.25)')
                 js.totalChart.data.datasets[2].borderColor = pyodide.ffi.to_js('rgba(0, 200, 0, 0.125)')
                 js.totalChart.data.datasets[3].borderColor = pyodide.ffi.to_js('rgba(0, 0, 240, 0.125)')
                 js.totalChart.data.datasets[4].borderColor = pyodide.ffi.to_js('rgba(220, 0, 240, 0.125)')
@@ -554,15 +583,14 @@ def total_data(die, selected_dist):
         <h2>Notes</h2>
 
         <ul>
-            <li>Remember that the second roller loses ties.</li>
-            <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "at least" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "at least" plot, The vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
-            <li>The area above the d4 curve represents failure.</li>
             <li>This does not take heroic successes into account.</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
             <li>"Drop" is used for e.g. the Burst SFX and removes the highest-rolling dice before keeping among the rest. In case of a tie, the smaller die is removed.</li>
             <li>Remember that the second roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
+            <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>On the "at least" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>On the "at least" plot, the vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
+            <li>On the "at least" plot, the area above the d4 curve represents failure.</li>
         </ul>
 
         <h3>How does it work?</h3>
