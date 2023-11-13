@@ -64,8 +64,7 @@
             </table>
         </form>
         <form id="options">
-            <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s). If checked, the
-            dice act as standard dice.
+            <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s), but still can't be effect dice.
         </form>
     </div>
 
@@ -104,18 +103,63 @@
         var totalChart = new Chart(totalChartContext, {
             type: 'line',
             data: {
-                labels: [],
+                labels: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
                 datasets: [
                     {
-                        label: 'Roller',
-                        borderColor: 'rgba(0, 0, 255, 1.0)',
-                        backgroundColor: 'rgba(0, 0, 255, 1.0)',
+                        label: 'Any effect',
+                        order: 4,
+                        // fill: '+1',
+                        borderColor: 'rgba(220, 0, 0, 1.0)',
+                        backgroundColor: 'rgba(220, 0, 0, 0.25)',
+                        pointStyle: 'triangle',
+                        radius: 5,
+                        data: [],
+                    },
+                    {
+                        label: 'd6+ effect',
+                        order: 3,
+                        // fill: '+1',
+                        borderColor: 'rgba(220, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(220, 200, 0, 0.25)',
+                        pointStyle: 'rect',
+                        radius: 4,
+                        data: [],
+                    },
+                    {
+                        label: 'd8+ effect',
+                        order: 2,
+                        // fill: '+1',
+                        borderColor: 'rgba(0, 200, 0, 1.0)',
+                        backgroundColor: 'rgba(0, 200, 0, 0.25)',
+                        pointStyle: 'rectRot',
+                        radius: 4,
+                        data: [],
+                    },
+                    {
+                        label: 'd10+ effect',
+                        order: 1,
+                        // fill: '+1',
+                        borderColor: 'rgba(0, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(0, 0, 240, 0.25)',
+                        pointStyle: 'crossRot',
+                        radius: 5,
+                        data: [],
+                    },
+                    {
+                        label: 'd12 effect',
+                        order: 0,
+                        // fill: {value: 0},
+                        borderColor: 'rgba(220, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(220, 0, 240, 0.25)',
+                        pointStyle: 'circle',
+                        radius: 4,
                         data: [],
                     },
                     {
                         label: 'Difficulty',
-                        borderColor: 'rgba(215, 0, 0, 1.0)',
-                        backgroundColor: 'rgba(215, 0, 0, 1.0)',
+                        order: 5,
+                        borderColor: 'rgba(15, 15, 15, 1.0)',
+                        backgroundColor: 'rgba(15, 15, 15, 1.0)',
                         data: [],
                     },
                 ],
@@ -161,12 +205,12 @@
                 datasets: [
                     {
                         label: 'Roller',
-                        borderColor: 'rgba(0, 0, 255, 1.0)',
+                        borderColor: 'rgba(220, 0, 0, 1.0)',
                         data: [],
                     },
                     {
                         label: 'Opposition',
-                        borderColor: 'rgba(215, 0, 0, 1.0)',
+                        borderColor: 'rgba(15, 15, 15, 1.0)',
                         data: [],
                     },
                 ],
@@ -228,36 +272,123 @@
 
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
-                import micropip
-                await micropip.install('icepool==1.0.0')
-                
-                import js
-                import pyodide
-                import icepool
-                
-                possible_die_sizes = [4, 6, 8, 10, 12]
-                
-                die_player_unaligned, hitch_player_unaligned = icepool.Die([0]), icepool.Die([0])
-                die_opposition_unaligned, hitch_opposition_unaligned = icepool.Die([0]), icepool.Die([0])
-                
-                def calc_pool(prefix):
-                    def c(die_size):
-                        if js.document.getElementById('hitch1').checked:
-                            return icepool.d(die_size)
-                        else:
-                            return icepool.d(die_size).map({1: 0})
-                            
-                    die_sizes = sum(([die_size] * int(js.document.getElementById('%s%d' % (prefix, die_size)).value) for die_size in possible_die_sizes), [])
-                    dice = [c(die_size) for die_size in die_sizes]
-                    num_dice = len(dice)
-                    num_drop = int(js.document.getElementById(prefix + 'd').value)
-                    num_keep = int(js.document.getElementById(prefix + 'k').value)
-                    total = icepool.Pool(dice)[num_dice-num_drop-num_keep:num_dice-num_drop].sum()
+import micropip
+await micropip.install('icepool==1.0.0')
 
-                    hitch = icepool.Die([0])
-                    for n in die_sizes:
-                        hitch += icepool.coin(1, n)
-                    return total, hitch
+import js
+import pyodide
+import icepool
+from bisect import bisect_left
+from icepool import Die, MultisetEvaluator, Order, Pool, highest, coin
+from functools import cache
+
+possible_die_sizes = [4, 6, 8, 10, 12]
+zero_die = Die([0])
+
+class CortexEffectEvaluator(MultisetEvaluator):
+    def __init__(self, drop_lowest, keep):
+        self._drop_lowest = drop_lowest
+        self._keep = keep
+
+    def next_state(self, state, outcome, count):
+        if state is None:
+            drop = self._drop_lowest
+            keep = self._keep
+            total = 0
+            got_effect = False
+        else:
+            drop, keep, total, got_effect = state
+        
+        value, ineffective = outcome
+        if count > 0:
+            if not ineffective and not got_effect:
+                count -= 1
+                got_effect = True
+            to_drop = min(count, drop)
+            count -= to_drop
+            drop -= to_drop
+            to_keep = min(count, keep)
+            keep -= to_keep
+            total += to_keep * value
+        return drop, keep, total, got_effect
+        
+
+    def final_outcome(self, final_state):
+        if final_state is None:
+            return 0
+        drop, keep, total, got_effect = final_state
+        if not got_effect:
+            return 0
+        return total
+
+    def order(self):
+        return Order.Ascending
+        
+@cache
+def cached_evaluator(drop_lowest, keep):
+    return CortexEffectEvaluator(drop_lowest, keep)
+
+def c(die_size, hitch_1):
+    return Die([int(hitch_1)] + [i for i in range(2, die_size+1)])
+
+@cache
+def ci(die_size, ineffective, hitch_1):
+    return Die([(int(hitch_1), True)] + [(i, ineffective) for i in range(2, die_size+1)])
+    
+def calc_any_effect(die_sizes, drop, keep, hitch_1):
+    dice = [c(die_size, hitch_1) for die_size in die_sizes]
+    return highest([0] + dice, drop=drop, keep=keep)
+    
+def calc_hitches(die_sizes):
+    hitch = zero_die
+    for n in die_sizes:
+        hitch += coin(1, n)
+    return hitch
+
+any_effect, d6_effect, d8_effect, d10_effect, d12_effect, hitch_player_unaligned = (zero_die,) * 6
+die_opposition_unaligned, hitch_opposition_unaligned = (zero_die,) * 2
+
+def calc_player():
+    hitch_1 = js.document.getElementById('hitch1').checked
+    die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+    
+    if len(die_sizes) == 0:
+        return (zero_die,) * 6
+    
+    drop = int(js.document.getElementById('pd').value)
+    keep = int(js.document.getElementById('pk').value)
+    
+    any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+    
+    result = [any_effect]
+    for effect_die in [6, 8, 10, 12]:
+        pool = Pool([ci(n, n < effect_die, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
+        drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
+        evaluator = cached_evaluator(drop_lowest, keep)
+        result.append(evaluator(pool))
+    
+    hitch = calc_hitches(die_sizes)
+    result.append(hitch)
+    
+    return result
+
+def calc_opposition():
+    hitch_1 = js.document.getElementById('hitch1').checked
+    die_sizes = sum(([die_size] * int(js.document.getElementById(f'o{die_size}').value) for die_size in possible_die_sizes), [])
+    
+    drop = int(js.document.getElementById('od').value)
+    keep = int(js.document.getElementById('ok').value)
+    
+    any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+    hitch = calc_hitches(die_sizes)
+    
+    return any_effect, hitch
+
+def total_data(die, selected_dist):
+    if selected_dist == 'pmf':
+        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities(range(4, 25))])
+    else:
+        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_ge(range(4, 25))])
             `);
 
             totalChart.options.plugins.title = {
@@ -278,7 +409,7 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            die_player_unaligned, hitch_player_unaligned = calc_pool('p')
+            any_effect, d6_effect, d8_effect, d10_effect, d12_effect, hitch_player_unaligned = calc_player()
             `);
         }
 
@@ -286,7 +417,7 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            die_opposition_unaligned, hitch_opposition_unaligned = calc_pool('o')
+            opposition, hitch_opposition_unaligned = calc_opposition()
             `);
         }
 
@@ -294,24 +425,39 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            
-            die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
-            
-            js.document.getElementById('pmean').innerHTML = '%0.2f' % die_player.mean()
-            js.document.getElementById('omean').innerHTML = '%0.2f' % die_opposition.mean()
-            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
-            
-            js.totalChart.data.labels = pyodide.ffi.to_js([float(x) for x in die_player.outcomes()])
+            js.document.getElementById('pmean').innerHTML = '%0.2f' % any_effect.mean()
+            js.document.getElementById('omean').innerHTML = '%0.2f' % opposition.mean()
+            js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((any_effect > opposition).mean() * 100.0)
             
             selected_dist = js.document.getElementById('distSelect').value
             
+            js.totalChart.data.datasets[0].data = total_data(any_effect, selected_dist)
+            js.totalChart.data.datasets[1].data = total_data(d6_effect, selected_dist)
+            js.totalChart.data.datasets[2].data = total_data(d8_effect, selected_dist)
+            js.totalChart.data.datasets[3].data = total_data(d10_effect, selected_dist)
+            js.totalChart.data.datasets[4].data = total_data(d12_effect, selected_dist)
+            js.totalChart.data.datasets[5].data = total_data(opposition, selected_dist)
+            
+            player_die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+            for effect_die in [6, 8, 10, 12]:
+                data_set_index = effect_die // 2 - 2
+                js.totalChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(effect_die not in player_die_sizes)
+            
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
+                for i in range(5):
+                    js.totalChart.data.datasets[i].fill = pyodide.ffi.to_js(False)
+                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 0.125)')
+                js.totalChart.data.datasets[2].borderColor = pyodide.ffi.to_js('rgba(0, 200, 0, 0.125)')
+                js.totalChart.data.datasets[3].borderColor = pyodide.ffi.to_js('rgba(0, 0, 240, 0.125)')
+                js.totalChart.data.datasets[4].borderColor = pyodide.ffi.to_js('rgba(220, 0, 240, 0.125)')
             else:
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
-                
+                for i in range(4):
+                    js.totalChart.data.datasets[i].fill = pyodide.ffi.to_js('+1')
+                js.totalChart.data.datasets[4].fill = pyodide.ffi.to_js('origin')
+                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 1.0)')
+                js.totalChart.data.datasets[2].borderColor = pyodide.ffi.to_js('rgba(0, 200, 0, 1.0)')
+                js.totalChart.data.datasets[3].borderColor = pyodide.ffi.to_js('rgba(0, 0, 240, 1.0)')
+                js.totalChart.data.datasets[4].borderColor = pyodide.ffi.to_js('rgba(220, 0, 240, 1.0)')
             `);
 
             totalChart.update();
@@ -409,8 +555,14 @@
 
         <ul>
             <li>Remember that the second roller loses ties.</li>
+            <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>On the "at least" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>On the "at least" plot, The vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
+            <li>The area above the d4 curve represents failure.</li>
+            <li>This does not take heroic successes into account.</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
             <li>"Drop" is used for e.g. the Burst SFX and removes the highest-rolling dice before keeping among the rest. In case of a tie, the smaller die is removed.</li>
+            <li>Remember that the second roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
         </ul>
 
         <h3>How does it work?</h3>
