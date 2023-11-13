@@ -73,8 +73,8 @@
         <div style="font-size: 150%;">
             Show:
             <select id="distSelect">
-                <option value="pmf">Chance of exactly</option>
-                <option value="ccdf"><i>Chance of at least</option>
+                <option value="pmf">Chance of total exactly</option>
+                <option value="ccdf" selected="selected"><i>Chance of total at least</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
@@ -450,6 +450,26 @@ def total_data(die, selected_dist):
         }
 
         async function updateTotalResults() {
+            let selected_dist = document.getElementById('distSelect').value;
+            if (selected_dist === 'pmf') {
+                for (let i = 0; i < 5; i++) {
+                    totalChart.data.datasets[i].fill = false;
+                }
+                totalChart.data.datasets[1].borderColor = 'rgba(220, 200, 0, 0.25)';
+                totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 0.125)';
+                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 0.125)';;
+                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 0.125)'
+            } else {
+                for (let i = 0; i < 4; i++) {
+                    totalChart.data.datasets[i].fill = '+1';
+                }
+                totalChart.data.datasets[4].fill = 'origin';
+                totalChart.data.datasets[1].borderColor = 'rgba(220, 200, 0, 1.0)';
+                totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 1.0)';
+                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 1.0)';
+                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 1.0)';
+            }
+            
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
@@ -481,22 +501,6 @@ def total_data(die, selected_dist):
             for effect_die in [6, 8, 10, 12]:
                 data_set_index = effect_die // 2 - 2
                 js.totalChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(effect_die not in player_die_sizes)
-            
-            if selected_dist == 'pmf':
-                for i in range(5):
-                    js.totalChart.data.datasets[i].fill = pyodide.ffi.to_js(False)
-                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 0.25)')
-                js.totalChart.data.datasets[2].borderColor = pyodide.ffi.to_js('rgba(0, 200, 0, 0.125)')
-                js.totalChart.data.datasets[3].borderColor = pyodide.ffi.to_js('rgba(0, 0, 240, 0.125)')
-                js.totalChart.data.datasets[4].borderColor = pyodide.ffi.to_js('rgba(220, 0, 240, 0.125)')
-            else:
-                for i in range(4):
-                    js.totalChart.data.datasets[i].fill = pyodide.ffi.to_js('+1')
-                js.totalChart.data.datasets[4].fill = pyodide.ffi.to_js('origin')
-                js.totalChart.data.datasets[1].borderColor = pyodide.ffi.to_js('rgba(220, 200, 0, 1.0)')
-                js.totalChart.data.datasets[2].borderColor = pyodide.ffi.to_js('rgba(0, 200, 0, 1.0)')
-                js.totalChart.data.datasets[3].borderColor = pyodide.ffi.to_js('rgba(0, 0, 240, 1.0)')
-                js.totalChart.data.datasets[4].borderColor = pyodide.ffi.to_js('rgba(220, 0, 240, 1.0)')
             `);
 
             totalChart.update();
