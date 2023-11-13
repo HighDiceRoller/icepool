@@ -80,24 +80,37 @@
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
         <table style="margin: auto; text-align:right;">
             <tr>
-                <th style="width:12%;">Mean roll</th>
-                <th style="width:12%;">Mean difficulty</th>
-                <th style="width:12%; border-left: 2px solid #bfbfbf;">Fail</th>
-                <th style="width:12%; color:rgba(140, 0, 0, 1.0);">d4 effect</th>
-                <th style="width:12%; color:rgba(140, 120, 0, 1.0);">d6 effect</th>
-                <th style="width:12%; color:rgba(0, 120, 0, 1.0);">d8 effect</th>
-                <th style="width:12%; color:rgba(0, 120, 160, 1.0);">d10 effect</th>
-                <th style="width:12%; color:rgba(140, 0, 160, 1.0);">d12 effect</th>
+                <th style="width:120px;">Mean roll</th>
+                <th style="width:120px;">Mean difficulty</th>
+                <th style="width:140px; border-left: 2px solid #bfbfbf;"></th>
+                <th style="width:60px;">Fail</th>
+                <th style="width:60px; color:rgba(140, 0, 0, 1.0);">d4</th>
+                <th style="width:60px; color:rgba(140, 120, 0, 1.0);">d6</th>
+                <th style="width:60px; color:rgba(0, 120, 0, 1.0);">d8</th>
+                <th style="width:60px; color:rgba(0, 120, 160, 1.0);">d10</th>
+                <th style="width:60px; color:rgba(140, 0, 160, 1.0);">d12</th>
             </tr>
             <tr>
                 <td><span id="pmean"></span></td>
                 <td><span id="omean"></span></td>
-                <td style="border-left: 2px solid #bfbfbf;"><span id="failChance">%</span></td>
+                <td style="border-left: 2px solid #bfbfbf;">Effect die exactly:</td>
+                <td><span id="failChance">%</span></td>
                 <td><span id="d4Chance" style="color:rgba(140, 0, 0, 1.0)">%</span></td>
                 <td><span id="d6Chance" style="color:rgba(140, 120, 0, 1.0)">%</span></td>
                 <td><span id="d8Chance" style="color:rgba(0, 120, 0, 1.0)">%</span></td>
                 <td><span id="d10Chance" style="color:rgba(0, 120, 160, 1.0)">%</span></td>
                 <td><span id="d12Chance" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
+            </tr>
+            <tr>
+                <td><span></span></td>
+                <td></td>
+                <td style="border-left: 2px solid #bfbfbf;">Effect die at least:</td>
+                <td><span></span></td>
+                <td><span id="d4Plus" style="color:rgba(140, 0, 0, 1.0)">%</span></td>
+                <td><span id="d6Plus" style="color:rgba(140, 120, 0, 1.0)">%</span></td>
+                <td><span id="d8Plus" style="color:rgba(0, 120, 0, 1.0)">%</span></td>
+                <td><span id="d10Plus" style="color:rgba(0, 120, 160, 1.0)">%</span></td>
+                <td><span id="d12Plus" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
             </tr>
         </table>
     </div>
@@ -503,6 +516,12 @@ def total_data(die, selected_dist):
             js.document.getElementById('d8Chance').innerHTML = '%0.2f%%' % (d8_chance * 100.0)
             js.document.getElementById('d10Chance').innerHTML = '%0.2f%%' % (d10_chance * 100.0)
             js.document.getElementById('d12Chance').innerHTML = '%0.2f%%' % (d12_chance * 100.0)
+            
+            js.document.getElementById('d4Plus').innerHTML = '%0.2f%%' % ((any_effect > opposition).mean() * 100.0)
+            js.document.getElementById('d6Plus').innerHTML = '%0.2f%%' % ((d6_effect > opposition).mean() * 100.0)
+            js.document.getElementById('d8Plus').innerHTML = '%0.2f%%' % ((d8_effect > opposition).mean() * 100.0)
+            js.document.getElementById('d10Plus').innerHTML = '%0.2f%%' % ((d10_effect > opposition).mean() * 100.0)
+            js.document.getElementById('d12Plus').innerHTML = '%0.2f%%' % ((d12_effect > opposition).mean() * 100.0)
             
             selected_dist = js.document.getElementById('distSelect').value
             
