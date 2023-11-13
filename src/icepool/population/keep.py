@@ -35,6 +35,11 @@ def lowest(arg0,
         keep: The number of lowest dice will be summed.
         drop: This number of lowest dice will be dropped before keeping dice
             to be summed.
+        default: If an empty iterable is provided, the result will be a die that
+            always rolls this value.
+
+    Raises:
+        ValueError if an empty iterable is provided with no `default`.
     """
     if len(more_args) == 0:
         args = arg0
@@ -86,6 +91,11 @@ def highest(arg0,
         keep: The number of highest dice will be summed.
         drop: This number of highest dice will be dropped before keeping dice
             to be summed.
+        default: If an empty iterable is provided, the result will be a die that
+            always rolls this value.
+
+    Raises:
+        ValueError if an empty iterable is provided with no `default`.
     """
     if len(more_args) == 0:
         args = arg0
@@ -140,6 +150,11 @@ def middle(arg0,
             * 'error' (default): Raises `IndexError`.
             * 'high': The higher outcome is taken.
             * 'low': The lower outcome is taken.
+        default: If an empty iterable is provided, the result will be a die that
+            always rolls this value.
+
+    Raises:
+        ValueError if an empty iterable is provided with no `default`.
     """
     if len(more_args) == 0:
         args = arg0
