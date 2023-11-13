@@ -134,7 +134,7 @@
         var totalChart = new Chart(totalChartContext, {
             type: 'line',
             data: {
-                labels: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+                labels: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
                 datasets: [
                     {
                         label: 'Any effect',
@@ -437,9 +437,9 @@ def calc_opposition():
 
 def total_data(die, selected_dist):
     if selected_dist == 'pmf':
-        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities(range(4, 25))])
+        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities(range(2, 26))])
     else:
-        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_ge(range(4, 25))])
+        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_ge(range(2, 26))])
             `);
 
             totalChart.options.plugins.title = {
