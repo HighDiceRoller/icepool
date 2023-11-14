@@ -75,7 +75,7 @@
             Show:
             <select id="distSelect">
                 <option value="pmf">Chance of total exactly</option>
-                <option value="ccdf" selected="selected"><i>Chance of total greater than</option>
+                <option value="ccdf" selected="selected"><i>Chance of beating difficulty</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
@@ -221,14 +221,13 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Total',
                         },
                     },
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Chance total at least',
+                            text: 'Chance of beating difficulty',
                         },
                     },
                     y1: {
@@ -236,7 +235,7 @@
                         position: 'right',
                         title: {
                             display: true,
-                            text: 'Chance difficulty exactly',
+                            text: 'Chance of difficulty exactly',
                         },
                         grid: {
                           drawOnChartArea: false, // only want the grid lines for one axis to show up
@@ -538,7 +537,7 @@ def total_data(die, selected_dist):
                 totalChart.data.datasets[3].borderColor = 'rgba(0, 200, 240, 0.125)';
                 totalChart.data.datasets[4].borderColor = 'rgba(0, 0, 240, 0.125)';
                 totalChart.data.datasets[5].borderColor = 'rgba(220, 0, 240, 0.125)';
-                totalChart.options.scales.y.title.text = 'Chance total exactly';
+                totalChart.options.scales.y.title.text = 'Chance of exactly';
                 totalChart.options.scales.y1.display = false;
                 totalChart.data.datasets[6].yAxisID = 'y';
             } else {
@@ -551,7 +550,7 @@ def total_data(die, selected_dist):
                 totalChart.data.datasets[3].borderColor = 'rgba(0, 200, 240, 1.0)';
                 totalChart.data.datasets[4].borderColor = 'rgba(0, 0, 240, 1.0)';
                 totalChart.data.datasets[5].borderColor = 'rgba(220, 0, 240, 1.0)';
-                totalChart.options.scales.y.title.text = 'Chance total at least';
+                totalChart.options.scales.y.title.text = 'Chance of beating difficulty';
                 totalChart.options.scales.y1.display = true;
                 totalChart.data.datasets[6].yAxisID = 'y1';
             }
@@ -705,9 +704,12 @@ def total_data(die, selected_dist):
             <li>Remember that the roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
             <li>Because the roller loses ties, the difference between a normal success and the first heroic success is 4 rather than 5.</li>
             <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "greater than" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "greater than" plot, the vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
-            <li>On the "greater than" plot, the area above the d4 curve represents failure.</li>
+            <li>On the "beating difficulty" plot:
+            <ul>
+                <li>The vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of beating that difficulty while keeping an effect die of <b>at least</b> that size.</li>
+                <li>The vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of beating that difficulty while keeping an effect die of <b>exactly</b> that size.</li>
+                <li>The area above the d4 curve represents failure.</li>
+            </ul>
         </ul>
 
         <h3>How does it work?</h3>
