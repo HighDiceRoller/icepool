@@ -75,7 +75,7 @@
             Show:
             <select id="distSelect">
                 <option value="pmf">Chance of total exactly</option>
-                <option value="ccdf" selected="selected"><i>Chance of total at least</option>
+                <option value="ccdf" selected="selected"><i>Chance of total greater than</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
@@ -494,7 +494,7 @@ def total_data(die, selected_dist):
     if selected_dist == 'pmf':
         return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities(range(2, 26))])
     else:
-        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_ge(range(2, 26))])
+        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_gt(range(2, 26))])
             `);
 
             totalChart.options.plugins.title = {
@@ -705,9 +705,9 @@ def total_data(die, selected_dist):
             <li>Remember that the roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
             <li>Because the roller loses ties, the difference between a normal success and the first heroic success is 4 rather than 5.</li>
             <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "at least" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
-            <li>On the "at least" plot, the vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
-            <li>On the "at least" plot, the area above the d4 curve represents failure.</li>
+            <li>On the "greater than" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
+            <li>On the "greater than" plot, the vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
+            <li>On the "greater than" plot, the area above the d4 curve represents failure.</li>
         </ul>
 
         <h3>How does it work?</h3>
