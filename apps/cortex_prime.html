@@ -64,6 +64,7 @@
             </table>
         </form>
         <form id="options">
+            <input name="heroic" , id="heroic" , type="checkbox"> Account for heroic successes (experimental).<br/>
             <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s), but still can't be used for effect.
         </form>
     </div>
@@ -330,16 +331,18 @@ import js
 import pyodide
 import icepool
 from bisect import bisect_left
-from icepool import Die, MultisetEvaluator, Order, Pool, highest, coin
+from icepool import Die, MultisetEvaluator, Order, Pool, highest, coin, multiset_function
 from functools import cache
 
 possible_die_sizes = [4, 6, 8, 10, 12]
 zero_die = Die([0])
 
-class CortexEffectEvaluator(MultisetEvaluator):
-    def __init__(self, drop_lowest, keep):
+class CortexEvaluator(MultisetEvaluator):
+    def __init__(self, drop_lowest, keep, target_effect):
+        # drop_lowest doeesn't include the effect die
         self._drop_lowest = drop_lowest
         self._keep = keep
+        self._target_effect = target_effect
 
     def next_state(self, state, outcome, count):
         if state is None:
@@ -347,12 +350,17 @@ class CortexEffectEvaluator(MultisetEvaluator):
             keep = self._keep
             total = 0
             got_effect = False
+            if self._target_effect <= 4:
+                got_effect = True
+                # Can delay keeping by one more die.
+                drop += 1
         else:
             drop, keep, total, got_effect = state
         
-        value, ineffective = outcome
         if count > 0:
-            if not ineffective and not got_effect:
+            value, negative_die_size = outcome
+            is_effective = -negative_die_size >= self._target_effect
+            if is_effective and not got_effect:
                 count -= 1
                 got_effect = True
             to_drop = min(count, drop)
@@ -362,7 +370,6 @@ class CortexEffectEvaluator(MultisetEvaluator):
             keep -= to_keep
             total += to_keep * value
         return drop, keep, total, got_effect
-        
 
     def final_outcome(self, final_state):
         if final_state is None:
@@ -376,15 +383,33 @@ class CortexEffectEvaluator(MultisetEvaluator):
         return Order.Ascending
         
 @cache
-def cached_evaluator(drop_lowest, keep):
-    return CortexEffectEvaluator(drop_lowest, keep)
+def cached_evaluator(drop_lowest, keep, target_effect):
+    return CortexEvaluator(drop_lowest, keep, target_effect)
+    
+@cache
+def joint_evaluator(drop_lowest, keep):
+    d4_evaluator = cached_evaluator(drop_lowest, keep, 4)
+    d6_evaluator = cached_evaluator(drop_lowest, keep, 6)
+    d8_evaluator = cached_evaluator(drop_lowest, keep, 8)
+    d10_evaluator = cached_evaluator(drop_lowest, keep, 10)
+    d12_evaluator = cached_evaluator(drop_lowest, keep, 12)
+    @multiset_function
+    def evaluator(rolls):
+        return (
+            rolls.evaluate(evaluator=d4_evaluator),
+            rolls.evaluate(evaluator=d6_evaluator),
+            rolls.evaluate(evaluator=d8_evaluator),
+            rolls.evaluate(evaluator=d10_evaluator),
+            rolls.evaluate(evaluator=d12_evaluator),
+            )
+    return evaluator
 
 def c(die_size, hitch_1):
     return Die([int(hitch_1)] + [i for i in range(2, die_size+1)])
 
 @cache
-def ci(die_size, ineffective, hitch_1):
-    return Die([(int(hitch_1), True)] + [(i, ineffective) for i in range(2, die_size+1)])
+def ci(die_size, hitch_1):
+    return Die([(int(hitch_1), 0)] + [(i, -die_size) for i in range(2, die_size+1)])
     
 def calc_any_effect(die_sizes, drop, keep, hitch_1):
     dice = [c(die_size, hitch_1) for die_size in die_sizes]
@@ -396,11 +421,20 @@ def calc_hitches(die_sizes):
         hitch += coin(1, n)
     return hitch
 
+HEROIC_MARGINS = [0, 4, 9, 14, 19]
+
+def apply_heroic_successes(totals):
+    result = [0] * 5
+    for i in range(5):
+        result[i] = max(totals[i - j] - HEROIC_MARGINS[j] for j in range(i + 1))
+    return tuple(result)
+
 any_effect, d6_effect, d8_effect, d10_effect, d12_effect, hitch_player_unaligned = (zero_die,) * 6
 die_opposition_unaligned, hitch_opposition_unaligned = (zero_die,) * 2
 
 def calc_player():
     hitch_1 = js.document.getElementById('hitch1').checked
+    heroic = js.document.getElementById('heroic').checked
     die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
     
     if len(die_sizes) == 0:
@@ -409,14 +443,20 @@ def calc_player():
     drop = int(js.document.getElementById('pd').value)
     keep = int(js.document.getElementById('pk').value)
     
-    any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+    pool = Pool([ci(n, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
+    drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
     
-    result = [any_effect]
-    for effect_die in [6, 8, 10, 12]:
-        pool = Pool([ci(n, n < effect_die, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
-        drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
-        evaluator = cached_evaluator(drop_lowest, keep)
-        result.append(evaluator(pool))
+    if not heroic:
+        any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+        
+        result = [any_effect]
+        for effect_die in [6, 8, 10, 12]:
+            evaluator = cached_evaluator(drop_lowest, keep, effect_die)
+            result.append(evaluator(pool))
+    else:
+        evaluator = joint_evaluator(drop_lowest, keep)
+        joint_result = evaluator(pool).map(apply_heroic_successes)
+        result = [joint_result.marginals[i] for i in range(5)]
     
     hitch = calc_hitches(die_sizes)
     result.append(hitch)
