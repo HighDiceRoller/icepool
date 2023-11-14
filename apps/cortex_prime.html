@@ -351,7 +351,8 @@ zero_die = Die([0])
 
 class CortexEvaluator(MultisetEvaluator):
     def __init__(self, drop_lowest, keep, target_effect):
-        # drop_lowest doeesn't include the effect die
+        # drop_lowest doesn't include the effect die
+        # it may be negative, will be rectified at start
         self._drop_lowest = drop_lowest
         self._keep = keep
         self._target_effect = target_effect
@@ -366,6 +367,7 @@ class CortexEvaluator(MultisetEvaluator):
                 got_effect = True
                 # Can delay keeping by one more die.
                 drop += 1
+            drop = max(drop, 0)
         else:
             drop, keep, total, got_effect = state
         
@@ -457,7 +459,7 @@ def calc_player():
     keep = int(js.document.getElementById('pk').value)
     
     pool = Pool([ci(n, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
-    drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
+    drop_lowest = len(die_sizes) - 1 - keep - drop
     
     if not heroic:
         any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
