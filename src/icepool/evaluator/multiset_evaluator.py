@@ -12,7 +12,7 @@ from functools import cached_property
 import itertools
 import math
 
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING, overload
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
@@ -212,10 +212,29 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """A cache of (order, generators) -> weight distribution over states. """
         return {}
 
+    @overload
+    def evaluate(
+        self, *args: 'Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[U_co]':
+        ...
+
+    @overload
+    def evaluate(
+        self, *args: 'MultisetExpression[T_contra]'
+    ) -> 'MultisetEvaluator[T_contra, U_co]':
+        ...
+
+    @overload
     def evaluate(
         self, *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'icepool.Die[U_co]':
+    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T_contra, U_co]':
+        ...
+
+    def evaluate(
+        self, *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T_contra, U_co]':
         """Evaluates generator(s).
 
         You can call the `MultisetEvaluator` object directly for the same effect,
@@ -232,7 +251,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                 * A sequence of outcomes.
 
         Returns:
-            A `Die` representing the distribution of the final score.
+            A `Die` representing the distribution of the final outcome if no
+            arg contains a free variable. Otherwise, returns a new evaluator.
         """
         from icepool.generator.alignment import Alignment
 
@@ -240,11 +260,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         expressions = tuple(
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
-        if not all(
-                isinstance(expression, icepool.MultisetGenerator)
-                for expression in expressions):
+        if any(expression._free_arity() > 0 for expression in expressions):
             from icepool.evaluator.expression import ExpressionEvaluator
-            return ExpressionEvaluator(*expressions, evaluator=self).evaluate()
+            return ExpressionEvaluator(*expressions, evaluator=self)
 
         generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
 
@@ -259,8 +277,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         algorithm, order = self._select_algorithm(*generators)
 
         # We use a separate class to guarantee all outcomes are visited.
-        outcomes = sorted_union(
-            *(generator.outcomes() for generator in generators))
+        outcomes = sorted_union(*(generator.outcomes()
+                                  for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
 
         dist = algorithm(order, alignment, generators)
@@ -280,12 +298,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         return icepool.Die(final_outcomes, final_weights)
 
-    def __call__(
-        self, *generators:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'icepool.Die[U_co]':
-        """Same as `self.evaluate()`."""
-        return self.evaluate(*generators)
+    __call__ = evaluate
 
     def _select_algorithm(
         self, *generators: 'icepool.MultisetGenerator[T_contra, Any]'
@@ -305,8 +318,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             # No generators.
             return self._eval_internal, eval_order
 
-        pop_min_costs, pop_max_costs = zip(
-            *(generator._estimate_order_costs() for generator in generators))
+        pop_min_costs, pop_max_costs = zip(*(generator._estimate_order_costs()
+                                             for generator in generators))
 
         pop_min_cost = math.prod(pop_min_costs)
         pop_max_cost = math.prod(pop_max_costs)
@@ -431,7 +444,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             * The remaining alignment.
             * A tuple of iterators over the resulting generators, counts, and weights.
         """
-        alignment_and_generators = (alignment,) + generators
+        alignment_and_generators = (alignment, ) + generators
         if side >= 0:
             outcome = max(generator.max_outcome()
                           for generator in alignment_and_generators
@@ -459,7 +472,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         # Convert non-`Pool` arguments to `Pool`.
         converted_generators = tuple(
             generator if isinstance(generator, icepool.MultisetGenerator
-                                   ) else icepool.Pool(generator)
+                                    ) else icepool.Pool(generator)
             for generator in generators)
 
         result = self.evaluate(*itertools.chain.from_iterable(
