@@ -64,6 +64,7 @@
             </table>
         </form>
         <form id="options">
+            <input name="heroic" , id="heroic" , type="checkbox"> Account for heroic successes (experimental).<br/>
             <input name="hitch1" , id="hitch1" , type="checkbox"> Hitches count as 1s (rather than 0s), but still can't be used for effect.
         </form>
     </div>
@@ -88,7 +89,8 @@
                 <th style="width:60px; color:rgba(140, 120, 0, 1.0);">d6</th>
                 <th style="width:60px; color:rgba(0, 120, 0, 1.0);">d8</th>
                 <th style="width:60px; color:rgba(0, 120, 160, 1.0);">d10</th>
-                <th style="width:60px; color:rgba(140, 0, 160, 1.0);">d12</th>
+                <th style="width:60px; color:rgba(0, 0, 160, 1.0);">d12</th>
+                <th style="width:60px; color:rgba(140, 0, 160, 1.0);">Beyond</th>
             </tr>
             <tr>
                 <td><span id="pmean"></span></td>
@@ -99,7 +101,8 @@
                 <td><span id="d6Chance" style="color:rgba(140, 120, 0, 1.0)">%</span></td>
                 <td><span id="d8Chance" style="color:rgba(0, 120, 0, 1.0)">%</span></td>
                 <td><span id="d10Chance" style="color:rgba(0, 120, 160, 1.0)">%</span></td>
-                <td><span id="d12Chance" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
+                <td><span id="d12Chance" style="color:rgba(0, 0, 160, 1.0)">%</span></td>
+                <td><span id="beyondChance" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
             </tr>
             <tr>
                 <td><span></span></td>
@@ -110,7 +113,8 @@
                 <td><span id="d6Plus" style="color:rgba(140, 120, 0, 1.0)">%</span></td>
                 <td><span id="d8Plus" style="color:rgba(0, 120, 0, 1.0)">%</span></td>
                 <td><span id="d10Plus" style="color:rgba(0, 120, 160, 1.0)">%</span></td>
-                <td><span id="d12Plus" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
+                <td><span id="d12Plus" style="color:rgba(0, 0, 160, 1.0)">%</span></td>
+                <td><span id="beyondPlus" style="color:rgba(140, 0, 160, 1.0)">%</span></td>
             </tr>
         </table>
     </div>
@@ -138,7 +142,7 @@
                 datasets: [
                     {
                         label: 'Any effect',
-                        order: 4,
+                        order: 5,
                         // fill: '+1',
                         borderColor: 'rgba(220, 0, 0, 1.0)',
                         backgroundColor: 'rgba(220, 0, 0, 0.25)',
@@ -148,7 +152,7 @@
                     },
                     {
                         label: 'd6+ effect',
-                        order: 3,
+                        order: 4,
                         // fill: '+1',
                         borderColor: 'rgba(220, 200, 0, 1.0)',
                         backgroundColor: 'rgba(220, 200, 0, 0.25)',
@@ -158,7 +162,7 @@
                     },
                     {
                         label: 'd8+ effect',
-                        order: 2,
+                        order: 3,
                         // fill: '+1',
                         borderColor: 'rgba(0, 200, 0, 1.0)',
                         backgroundColor: 'rgba(0, 200, 0, 0.25)',
@@ -168,27 +172,37 @@
                     },
                     {
                         label: 'd10+ effect',
-                        order: 1,
+                        order: 2,
                         // fill: '+1',
-                        borderColor: 'rgba(0, 0, 240, 1.0)',
-                        backgroundColor: 'rgba(0, 0, 240, 0.25)',
+                        borderColor: 'rgba(0, 200, 240, 1.0)',
+                        backgroundColor: 'rgba(0, 200, 240, 0.25)',
                         pointStyle: 'crossRot',
                         radius: 5,
                         data: [],
                     },
                     {
-                        label: 'd12 effect',
-                        order: 0,
+                        label: 'd12+ effect',
+                        order: 1,
                         // fill: {value: 0},
-                        borderColor: 'rgba(220, 0, 240, 1.0)',
-                        backgroundColor: 'rgba(220, 0, 240, 0.25)',
+                        borderColor: 'rgba(0, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(0, 0, 240, 0.25)',
                         pointStyle: 'circle',
                         radius: 4,
                         data: [],
                     },
                     {
+                        label: 'Beyond',
+                        order: 0,
+                        // fill: {value: 0},
+                        borderColor: 'rgba(220, 0, 240, 1.0)',
+                        backgroundColor: 'rgba(220, 0, 240, 0.25)',
+                        pointStyle: 'star',
+                        radius: 4,
+                        data: [],
+                    },
+                    {
                         label: 'Difficulty',
-                        order: 5,
+                        order: 6,
                         borderColor: 'rgba(15, 15, 15, 1.0)',
                         pointStyle: 'circle',
                         radius: 0,
@@ -330,16 +344,18 @@ import js
 import pyodide
 import icepool
 from bisect import bisect_left
-from icepool import Die, MultisetEvaluator, Order, Pool, highest, coin
+from icepool import Die, MultisetEvaluator, Order, Pool, highest, coin, multiset_function
 from functools import cache
 
 possible_die_sizes = [4, 6, 8, 10, 12]
 zero_die = Die([0])
 
-class CortexEffectEvaluator(MultisetEvaluator):
-    def __init__(self, drop_lowest, keep):
+class CortexEvaluator(MultisetEvaluator):
+    def __init__(self, drop_lowest, keep, target_effect):
+        # drop_lowest doeesn't include the effect die
         self._drop_lowest = drop_lowest
         self._keep = keep
+        self._target_effect = target_effect
 
     def next_state(self, state, outcome, count):
         if state is None:
@@ -347,12 +363,17 @@ class CortexEffectEvaluator(MultisetEvaluator):
             keep = self._keep
             total = 0
             got_effect = False
+            if self._target_effect <= 4:
+                got_effect = True
+                # Can delay keeping by one more die.
+                drop += 1
         else:
             drop, keep, total, got_effect = state
         
-        value, ineffective = outcome
         if count > 0:
-            if not ineffective and not got_effect:
+            value, negative_die_size = outcome
+            is_effective = -negative_die_size >= self._target_effect
+            if is_effective and not got_effect:
                 count -= 1
                 got_effect = True
             to_drop = min(count, drop)
@@ -362,7 +383,6 @@ class CortexEffectEvaluator(MultisetEvaluator):
             keep -= to_keep
             total += to_keep * value
         return drop, keep, total, got_effect
-        
 
     def final_outcome(self, final_state):
         if final_state is None:
@@ -376,15 +396,33 @@ class CortexEffectEvaluator(MultisetEvaluator):
         return Order.Ascending
         
 @cache
-def cached_evaluator(drop_lowest, keep):
-    return CortexEffectEvaluator(drop_lowest, keep)
+def cached_evaluator(drop_lowest, keep, target_effect):
+    return CortexEvaluator(drop_lowest, keep, target_effect)
+    
+@cache
+def joint_evaluator(drop_lowest, keep):
+    d4_evaluator = cached_evaluator(drop_lowest, keep, 4)
+    d6_evaluator = cached_evaluator(drop_lowest, keep, 6)
+    d8_evaluator = cached_evaluator(drop_lowest, keep, 8)
+    d10_evaluator = cached_evaluator(drop_lowest, keep, 10)
+    d12_evaluator = cached_evaluator(drop_lowest, keep, 12)
+    @multiset_function
+    def evaluator(rolls):
+        return (
+            rolls.evaluate(evaluator=d4_evaluator),
+            rolls.evaluate(evaluator=d6_evaluator),
+            rolls.evaluate(evaluator=d8_evaluator),
+            rolls.evaluate(evaluator=d10_evaluator),
+            rolls.evaluate(evaluator=d12_evaluator),
+            )
+    return evaluator
 
 def c(die_size, hitch_1):
     return Die([int(hitch_1)] + [i for i in range(2, die_size+1)])
 
 @cache
-def ci(die_size, ineffective, hitch_1):
-    return Die([(int(hitch_1), True)] + [(i, ineffective) for i in range(2, die_size+1)])
+def ci(die_size, hitch_1):
+    return Die([(int(hitch_1), 0)] + [(i, -die_size) for i in range(2, die_size+1)])
     
 def calc_any_effect(die_sizes, drop, keep, hitch_1):
     dice = [c(die_size, hitch_1) for die_size in die_sizes]
@@ -396,11 +434,21 @@ def calc_hitches(die_sizes):
         hitch += coin(1, n)
     return hitch
 
-any_effect, d6_effect, d8_effect, d10_effect, d12_effect, hitch_player_unaligned = (zero_die,) * 6
+HEROIC_MARGINS = [0, 4, 9, 14, 19, 24]
+
+def apply_heroic_successes(totals):
+    result = [0] * 6
+    for i in range(5):
+        result[i] = max(totals[i - j] - HEROIC_MARGINS[j] for j in range(i + 1))
+    result[5] = max(totals[5 - j] - HEROIC_MARGINS[j] for j in range(1, 6))
+    return tuple(result)
+
+any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player_unaligned = (zero_die,) * 7
 die_opposition_unaligned, hitch_opposition_unaligned = (zero_die,) * 2
 
 def calc_player():
     hitch_1 = js.document.getElementById('hitch1').checked
+    heroic = js.document.getElementById('heroic').checked
     die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
     
     if len(die_sizes) == 0:
@@ -409,14 +457,21 @@ def calc_player():
     drop = int(js.document.getElementById('pd').value)
     keep = int(js.document.getElementById('pk').value)
     
-    any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+    pool = Pool([ci(n, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
+    drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
     
-    result = [any_effect]
-    for effect_die in [6, 8, 10, 12]:
-        pool = Pool([ci(n, n < effect_die, hitch_1) for n in die_sizes]).lowest(len(die_sizes) - drop)
-        drop_lowest = max(len(die_sizes) - 1 - keep - drop, 0)
-        evaluator = cached_evaluator(drop_lowest, keep)
-        result.append(evaluator(pool))
+    if not heroic:
+        any_effect = calc_any_effect(die_sizes, drop, keep, hitch_1)
+        
+        result = [any_effect]
+        for effect_die in [6, 8, 10, 12]:
+            evaluator = cached_evaluator(drop_lowest, keep, effect_die)
+            result.append(evaluator(pool))
+        result.append(zero_die)
+    else:
+        evaluator = joint_evaluator(drop_lowest, keep)
+        joint_result = evaluator(pool).map(apply_heroic_successes)
+        result = [joint_result.marginals[i] for i in range(6)]
     
     hitch = calc_hitches(die_sizes)
     result.append(hitch)
@@ -460,7 +515,7 @@ def total_data(die, selected_dist):
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            any_effect, d6_effect, d8_effect, d10_effect, d12_effect, hitch_player_unaligned = calc_player()
+            any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player_unaligned = calc_player()
             `);
         }
 
@@ -475,28 +530,30 @@ def total_data(die, selected_dist):
         async function updateTotalResults() {
             let selected_dist = document.getElementById('distSelect').value;
             if (selected_dist === 'pmf') {
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 6; i++) {
                     totalChart.data.datasets[i].fill = false;
                 }
                 totalChart.data.datasets[1].borderColor = 'rgba(220, 200, 0, 0.25)';
                 totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 0.125)';
-                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 0.125)';
-                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 0.125)';
+                totalChart.data.datasets[3].borderColor = 'rgba(0, 200, 240, 0.125)';
+                totalChart.data.datasets[4].borderColor = 'rgba(0, 0, 240, 0.125)';
+                totalChart.data.datasets[5].borderColor = 'rgba(220, 0, 240, 0.125)';
                 totalChart.options.scales.y.title.text = 'Chance total exactly';
                 totalChart.options.scales.y1.display = false;
-                totalChart.data.datasets[5].yAxisID = 'y';
+                totalChart.data.datasets[6].yAxisID = 'y';
             } else {
-                for (let i = 0; i < 4; i++) {
+                for (let i = 0; i < 5; i++) {
                     totalChart.data.datasets[i].fill = '+1';
                 }
-                totalChart.data.datasets[4].fill = 'origin';
+                totalChart.data.datasets[5].fill = 'origin';
                 totalChart.data.datasets[1].borderColor = 'rgba(220, 200, 0, 1.0)';
                 totalChart.data.datasets[2].borderColor = 'rgba(0, 200, 0, 1.0)';
-                totalChart.data.datasets[3].borderColor = 'rgba(0, 0, 240, 1.0)';
-                totalChart.data.datasets[4].borderColor = 'rgba(220, 0, 240, 1.0)';
+                totalChart.data.datasets[3].borderColor = 'rgba(0, 200, 240, 1.0)';
+                totalChart.data.datasets[4].borderColor = 'rgba(0, 0, 240, 1.0)';
+                totalChart.data.datasets[5].borderColor = 'rgba(220, 0, 240, 1.0)';
                 totalChart.options.scales.y.title.text = 'Chance total at least';
                 totalChart.options.scales.y1.display = true;
-                totalChart.data.datasets[5].yAxisID = 'y1';
+                totalChart.data.datasets[6].yAxisID = 'y1';
             }
             
             let pyodide = await pyodideReadyPromise;
@@ -508,7 +565,8 @@ def total_data(die, selected_dist):
             d6_chance = (d6_effect > opposition).mean() - (d8_effect > opposition).mean()
             d8_chance = (d8_effect > opposition).mean() - (d10_effect > opposition).mean()
             d10_chance = (d10_effect > opposition).mean() - (d12_effect > opposition).mean()
-            d12_chance = (d12_effect > opposition).mean()
+            d12_chance = (d12_effect > opposition).mean() - (beyond_effect > opposition).mean()
+            beyond_chance = (beyond_effect > opposition).mean()
             
             js.document.getElementById('failChance').innerHTML = '%0.2f%%' % ((any_effect <= opposition).mean() * 100.0)
             js.document.getElementById('d4Chance').innerHTML = '%0.2f%%' % (d4_chance * 100.0)
@@ -516,12 +574,14 @@ def total_data(die, selected_dist):
             js.document.getElementById('d8Chance').innerHTML = '%0.2f%%' % (d8_chance * 100.0)
             js.document.getElementById('d10Chance').innerHTML = '%0.2f%%' % (d10_chance * 100.0)
             js.document.getElementById('d12Chance').innerHTML = '%0.2f%%' % (d12_chance * 100.0)
+            js.document.getElementById('beyondChance').innerHTML = '%0.2f%%' % (beyond_chance * 100.0)
             
             js.document.getElementById('d4Plus').innerHTML = '%0.2f%%' % ((any_effect > opposition).mean() * 100.0)
             js.document.getElementById('d6Plus').innerHTML = '%0.2f%%' % ((d6_effect > opposition).mean() * 100.0)
             js.document.getElementById('d8Plus').innerHTML = '%0.2f%%' % ((d8_effect > opposition).mean() * 100.0)
             js.document.getElementById('d10Plus').innerHTML = '%0.2f%%' % ((d10_effect > opposition).mean() * 100.0)
             js.document.getElementById('d12Plus').innerHTML = '%0.2f%%' % ((d12_effect > opposition).mean() * 100.0)
+            js.document.getElementById('beyondPlus').innerHTML = '%0.2f%%' % ((beyond_effect > opposition).mean() * 100.0)
             
             selected_dist = js.document.getElementById('distSelect').value
             
@@ -530,12 +590,20 @@ def total_data(die, selected_dist):
             js.totalChart.data.datasets[2].data = total_data(d8_effect, selected_dist)
             js.totalChart.data.datasets[3].data = total_data(d10_effect, selected_dist)
             js.totalChart.data.datasets[4].data = total_data(d12_effect, selected_dist)
-            js.totalChart.data.datasets[5].data = total_data(opposition, 'pmf')
+            js.totalChart.data.datasets[5].data = total_data(beyond_effect, selected_dist)
+            js.totalChart.data.datasets[6].data = total_data(opposition, 'pmf')
             
-            player_die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
-            for effect_die in [6, 8, 10, 12]:
-                data_set_index = effect_die // 2 - 2
-                js.totalChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(effect_die not in player_die_sizes)
+            heroic = js.document.getElementById('heroic').checked;
+            
+            if heroic:
+                for i in range(6):
+                    js.totalChart.data.datasets[i].hidden = pyodide.ffi.to_js(False)
+            else:
+                player_die_sizes = sum(([die_size] * int(js.document.getElementById(f'p{die_size}').value) for die_size in possible_die_sizes), [])
+                for effect_die in [6, 8, 10, 12]:
+                    data_set_index = effect_die // 2 - 2
+                    js.totalChart.data.datasets[data_set_index].hidden = pyodide.ffi.to_js(effect_die not in player_die_sizes)
+                js.totalChart.data.datasets[5].hidden = pyodide.ffi.to_js(True)
             `);
 
             totalChart.update();
@@ -632,10 +700,10 @@ def total_data(die, selected_dist):
         <h2>Notes</h2>
 
         <ul>
-            <li>This does not take heroic successes into account.</li>
             <li>If more dice are specified to be dropped and/or kept than there are in the pool, the excess kept dice do not contribute to the total.</li>
             <li>"Drop" is used for e.g. the Burst SFX and removes the highest-rolling dice before keeping among the rest. In case of a tie, the smaller die is removed.</li>
-            <li>Remember that the second roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
+            <li>Remember that the roller loses ties, dice that roll a 1 (hitch) can't be used for the total or effect, and there is always the option to have a "free" d4 effect.</li>
+            <li>Because the roller loses ties, the difference between a normal success and the first heroic success is 4 rather than 5.</li>
             <li>On the "exactly" plot, the effect die curves show the chance of rolling exactly a total while keeping an effect die of <b>at least</b> that size.</li>
             <li>On the "at least" plot, the vertical <b>position</b> of each effect die <b>curve</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>at least</b> that size.</li>
             <li>On the "at least" plot, the vertical <b>extent</b> of each effect die <b>area</b> at a particular total is the chance of achieving that total while keeping an effect die of <b>exactly</b> that size.</li>
