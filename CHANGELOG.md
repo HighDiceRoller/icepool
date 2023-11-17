@@ -1,3 +1,9 @@
+## v1.1.1
+
+* Fix non-fully-bound case of `MultisetEvaluator.evaluate()`.
+* Add `default` argument to `lowest(), highest(), middle()`.
+* Add `Population.entropy()`.
+
 ## v1.1.0
 
 * `mean()`, `variance()`, etc. now return an exact `fractions.Fraction` when possible. (Note that `Fraction`s only support float-style formatting from 3.12.)
