@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
+from icepool.collection.vector import Vector
 from icepool.math import try_fraction
 from icepool.typing import U, Outcome, T_co, count_positional_parameters
 
@@ -185,13 +186,14 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         return self._denominator
 
-    # Quantities.
-
     def scale_quantities(self: C, scale: int) -> C:
         """Scales all quantities by an integer."""
         if scale == 1:
             return self
-        data = {outcome: quantity * scale for outcome, quantity in self.items()}
+        data = {
+            outcome: quantity * scale
+            for outcome, quantity in self.items()
+        }
         return self._new_type(data)
 
     def has_zero_quantities(self) -> bool:
@@ -277,8 +279,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             outcomes: If provided, the quantities corresponding to these
                 outcomes will be returned (or 0 if not present).
         """
-        return tuple(
-            self.denominator() - x for x in self.quantities_ge(outcomes))
+        return tuple(self.denominator() - x
+                     for x in self.quantities_ge(outcomes))
 
     def quantities_gt(self, outcomes: Sequence | None = None) -> Sequence[int]:
         """The quantity > each outcome in order.
@@ -287,8 +289,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             outcomes: If provided, the quantities corresponding to these
                 outcomes will be returned (or 0 if not present).
         """
-        return tuple(
-            self.denominator() - x for x in self.quantities_le(outcomes))
+        return tuple(self.denominator() - x
+                     for x in self.quantities_le(outcomes))
 
     # Probabilities.
 
@@ -383,8 +385,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     @overload
     def probabilities_le(self,
-                         outcomes: Sequence |
-                         None = None) -> Sequence[Fraction]:
+                         outcomes: Sequence | None = None
+                         ) -> Sequence[Fraction]:
         ...
 
     def probabilities_le(
@@ -436,8 +438,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     @overload
     def probabilities_ge(self,
-                         outcomes: Sequence |
-                         None = None) -> Sequence[Fraction]:
+                         outcomes: Sequence | None = None
+                         ) -> Sequence[Fraction]:
         ...
 
     def probabilities_ge(
@@ -484,8 +486,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     @overload
     def probabilities_lt(self,
-                         outcomes: Sequence |
-                         None = None) -> Sequence[Fraction]:
+                         outcomes: Sequence | None = None
+                         ) -> Sequence[Fraction]:
         ...
 
     def probabilities_lt(
@@ -528,8 +530,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     @overload
     def probabilities_gt(self,
-                         outcomes: Sequence |
-                         None = None) -> Sequence[Fraction]:
+                         outcomes: Sequence | None = None
+                         ) -> Sequence[Fraction]:
         ...
 
     def probabilities_gt(
@@ -690,8 +692,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             base: The logarithm base to use. Default is 2.0, which gives the 
                 entropy in bits.
         """
-        return -sum(
-            p * math.log(p, base) for p in self.probabilities() if p > 0.0)
+        return -sum(p * math.log(p, base)
+                    for p in self.probabilities() if p > 0.0)
 
     # Joint statistics.
 
@@ -745,6 +747,29 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         sd_i = self.marginals[i].standard_deviation()
         sd_j = self.marginals[j].standard_deviation()
         return self.covariance(i, j) / (sd_i * sd_j)
+
+    # Transformations.
+
+    def to_one_hot(self: C, outcomes: Sequence[T_co] | None = None) -> C:
+        """Converts the outcomes of this population to a one-hot representation.
+
+        Args:
+            outcomes: If provided, each outcome will be mapped to a `Vector`
+                where the element at `outcomes.index(outcome)` is set to `True`
+                and the rest to `False`, or all `False` if the outcome is not
+                in `outcomes`.
+                If not provided, `self.outcomes()` is used.
+        """
+        if outcomes is None:
+            outcomes = self.outcomes()
+
+        data: MutableMapping[Vector[bool], int] = defaultdict(int)
+        for outcome, quantity in zip(self.outcomes(), self.quantities()):
+            value = [False] * len(outcomes)
+            if outcome in outcomes:
+                value[outcomes.index(outcome)] = True
+            data[Vector(value)] += quantity
+        return self._new_type(data)
 
     def sample(self) -> T_co:
         """A single random sample from this population.

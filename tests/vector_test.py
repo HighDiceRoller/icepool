@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d6, d8, vectorize, Die, Vector
+from icepool import d4, d6, d8, vectorize, Die, Vector
 
 
 def test_cartesian_product():
@@ -31,17 +31,17 @@ def test_vector_matmul():
 
 
 def test_nested_unary_elementwise():
-    result = icepool.Die([vectorize(vectorize(vectorize(1,),),)])
+    result = icepool.Die([vectorize(vectorize(vectorize(1, ), ), )])
     result = -result
     assert result.marginals[0].marginals[0].marginals[0].equals(
         icepool.Die([-1]))
 
 
 def test_nested_binary_elementwise():
-    result = icepool.Die([vectorize(vectorize(vectorize(1,),),)])
+    result = icepool.Die([vectorize(vectorize(vectorize(1, ), ), )])
     result = result + result
-    assert result.marginals[0].marginals[0].marginals[0].equals(icepool.Die([2
-                                                                            ]))
+    assert result.marginals[0].marginals[0].marginals[0].equals(
+        icepool.Die([2]))
 
 
 def test_binary_op_mismatch_outcome_len():
@@ -92,7 +92,7 @@ def test_one_hot():
         def next_state(self, state, _, count):
             if state is None:
                 state = ()
-            return state + (count,)
+            return state + (count, )
 
         def final_outcome(self, final_state):
             return icepool.Vector(final_state)
@@ -129,3 +129,12 @@ def test_vector_append():
 
 def test_vector_concatenate():
     assert Vector((1, 2)).concatenate(range(2)) == Vector((1, 2, 0, 1))
+
+
+def test_to_one_hot():
+    assert d4.to_one_hot() == Die([
+        Vector([1, 0, 0, 0]),
+        Vector([0, 1, 0, 0]),
+        Vector([0, 0, 1, 0]),
+        Vector([0, 0, 0, 1]),
+    ])
