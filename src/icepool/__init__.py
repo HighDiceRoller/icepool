@@ -48,7 +48,7 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-from icepool.function import (d, __getattr__, coin, one_hot,
+from icepool.function import (d, z, __getattr__, coin, one_hot,
                               iter_cartesian_product, from_cumulative, from_rv,
                               min_outcome, max_outcome, align, align_range,
                               commonize_denominator, reduce, accumulate, map,
@@ -100,7 +100,7 @@ import icepool.evaluator as evaluator
 import icepool.typing as typing
 
 __all__ = [
-    'd', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
+    'd', 'z', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
     'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
     'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
     'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',

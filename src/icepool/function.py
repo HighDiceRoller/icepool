@@ -16,10 +16,7 @@ from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, 
 
 @cache
 def d(sides: int, /) -> 'icepool.Die[int]':
-    """A standard die.
-
-    Specifically, the outcomes are `int`s from `1` to `sides` inclusive,
-    with quantity 1 each.
+    """A standard die, uniformly distributed from `1` to `sides` inclusive.
 
     Don't confuse this with `icepool.Die()`:
 
@@ -30,10 +27,23 @@ def d(sides: int, /) -> 'icepool.Die[int]':
     `from icepool import d6`.
     """
     if not isinstance(sides, int):
-        raise TypeError('Argument to standard() must be an int.')
+        raise TypeError('sides must be an int.')
     elif sides < 1:
-        raise ValueError('Standard die must have at least one side.')
+        raise ValueError('sides must be at least 1.')
     return icepool.Die(range(1, sides + 1))
+
+
+@cache
+def z(sides: int, /) -> 'icepool.Die[int]':
+    """A die uniformly distributed from `0` to `sides - 1` inclusive.
+    
+    Equal to d(sides) - 1.
+    """
+    if not isinstance(sides, int):
+        raise TypeError('sides must be an int.')
+    elif sides < 1:
+        raise ValueError('sides must be at least 1.')
+    return icepool.Die(range(0, sides))
 
 
 def __getattr__(key: str) -> 'icepool.Die[int]':
@@ -150,8 +160,8 @@ def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
         # Continuous distributions use midpoints.
         midpoints = [(a + b) / 2 for a, b in zip(outcomes[:-1], outcomes[1:])]
         cdf = rv.cdf(midpoints, **kwargs)
-        quantities_le = tuple(
-            int(round(x * denominator)) for x in cdf) + (denominator,)
+        quantities_le = tuple(int(round(x * denominator))
+                              for x in cdf) + (denominator, )
     else:
         cdf = rv.cdf(outcomes, **kwargs)
         quantities_le = tuple(int(round(x * denominator)) for x in cdf)
@@ -181,7 +191,8 @@ def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
     outcomes = set(
-        itertools.chain.from_iterable(die.outcomes() for die in converted_dice))
+        itertools.chain.from_iterable(die.outcomes()
+                                      for die in converted_dice))
     return tuple(die.set_outcomes(outcomes) for die in converted_dice)
 
 
@@ -214,8 +225,8 @@ def commonize_denominator(
     converted_dice = [
         icepool.implicit_convert_to_die(die).simplify() for die in dice
     ]
-    denominator_lcm = math.lcm(
-        *(die.denominator() for die in converted_dice if die.denominator() > 0))
+    denominator_lcm = math.lcm(*(die.denominator() for die in converted_dice
+                                 if die.denominator() > 0))
     return tuple(
         die.scale_quantities(denominator_lcm //
                              die.denominator() if die.denominator() > 0 else 1)
@@ -320,10 +331,12 @@ def iter_cartesian_product(
         final_quantity = math.prod(quantities)
         yield outcomes, final_quantity
 
-def _canonicalize_transition_function(repl:
+
+def _canonicalize_transition_function(
+    repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
-    arg_count: int,
-    star: bool | None) -> 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]':
+    arg_count: int, star: bool | None
+) -> 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]':
     if callable(repl):
         if star is None:
             star = guess_star(repl, arg_count)
@@ -334,11 +347,13 @@ def _canonicalize_transition_function(repl:
             return repl
     elif isinstance(repl, Mapping):
         if arg_count != 1:
-            raise ValueError('If a mapping is provided for repl, len(args) must be 1.')
+            raise ValueError(
+                'If a mapping is provided for repl, len(args) must be 1.')
         mapping = cast(Mapping, repl)
         return lambda o: mapping.get(o, o)
     else:
         raise TypeError('repl must be a callable or a mapping.')
+
 
 def map(
     repl:
@@ -394,12 +409,15 @@ def map(
         again_depth: Forwarded to the final die constructor.
         again_end: Forwarded to the final die constructor.
     """
-    transition_function = _canonicalize_transition_function(repl, len(args), star)
+    transition_function = _canonicalize_transition_function(
+        repl, len(args), star)
 
     if len(args) == 0:
         if repeat != 1:
             raise ValueError('If no arguments are given, repeat must be 1.')
-        return icepool.Die([transition_function()], again_depth=again_depth, again_end=again_end)
+        return icepool.Die([transition_function()],
+                           again_depth=again_depth,
+                           again_end=again_end)
 
     # Here len(args) is at least 1.
 
@@ -420,14 +438,15 @@ def map(
                     final_outcomes.append(final_outcome)
                     final_quantities.append(final_quantity)
             return icepool.Die(final_outcomes,
-                       final_quantities,
-                       again_depth=again_depth,
-                       again_end=again_end)
+                               final_quantities,
+                               again_depth=again_depth,
+                               again_end=again_end)
         else:
             result: 'icepool.Die[T]' = icepool.Die([first_arg])
             for _ in range(repeat):
                 result = icepool.map(transition_function,
-                                     result, *extra_args,
+                                     result,
+                                     *extra_args,
                                      star=False,
                                      again_depth=again_depth,
                                      again_end=again_end)
@@ -436,8 +455,15 @@ def map(
         # Infinite repeat.
         # T_co and U should be the same in this case.
         def unary_transition_function(state):
-            return map(transition_function, state, *extra_args, star=False, again_depth=again_depth, again_end=again_end)
-        return icepool.population.markov_chain.absorbing_markov_chain(icepool.Die([args[0]]), unary_transition_function)
+            return map(transition_function,
+                       state,
+                       *extra_args,
+                       star=False,
+                       again_depth=again_depth,
+                       again_end=again_end)
+
+        return icepool.population.markov_chain.absorbing_markov_chain(
+            icepool.Die([args[0]]), unary_transition_function)
 
 
 @overload
@@ -543,6 +569,7 @@ def map_function(
 
         return decorator
 
+
 def map_and_time(
         repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
@@ -582,15 +609,15 @@ def map_and_time(
     Returns:
         The `Die` after the modification.
     """
-    transition_function = _canonicalize_transition_function(repl, 1 + len(extra_args), star)
+    transition_function = _canonicalize_transition_function(
+        repl, 1 + len(extra_args), star)
 
     result: 'icepool.Die[tuple[T, int]]' = state.map(lambda x: (x, 0))
 
     def transition_with_steps(outcome_and_steps):
         outcome, steps = outcome_and_steps
         next_outcome = transition_function(outcome, *extra_args)
-        if icepool.population.markov_chain.is_absorbing(
-                outcome, next_outcome):
+        if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
             return outcome, steps
         else:
             return icepool.tupleize(next_outcome, steps + 1)

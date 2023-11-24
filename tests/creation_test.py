@@ -5,11 +5,15 @@ from icepool import Die, Deck, d6
 
 
 def test_d_syntax():
-    assert icepool.d6.quantities() == (1,) * 6
+    assert icepool.d6.quantities() == (1, ) * 6
     assert icepool.d6.probability(0) == 0.0
     assert icepool.d6.probability(1) == pytest.approx(1.0 / 6.0)
     assert icepool.d6.probability(6) == pytest.approx(1.0 / 6.0)
     assert icepool.d6.probability(7) == 0.0
+
+
+def test_z():
+    assert icepool.d(6) - 1 == icepool.z(6)
 
 
 def test_coin():
