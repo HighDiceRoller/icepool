@@ -53,10 +53,17 @@ def __getattr__(key: str) -> 'icepool.Die[int]':
 
     Note that this behavior can't be imported into the global scope, but the
     function `d()` can be.
+
+    Similar for `zX` and `z()`.
     """
     if key[0] == 'd':
         try:
             return d(int(key[1:]))
+        except ValueError:
+            pass
+    elif key[0] == 'z':
+        try:
+            return z(int(key[1:]))
         except ValueError:
             pass
     raise AttributeError(key)
@@ -239,8 +246,8 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
            initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
-    Analogous to
-    [`functools.reduce()`](https://docs.python.org/3/library/functools.html#functools.reduce).
+    Analogous to the
+    [`functools` function of the same name.](https://docs.python.org/3/library/functools.html#functools.reduce)
 
     Args:
         func: The function to map. The function should take two arguments,
@@ -272,8 +279,8 @@ def accumulate(
 ) -> Iterator['icepool.Die[T]']:
     """Applies a function of two arguments cumulatively to a sequence of dice, yielding each result in turn.
 
-    Analogous to
-    [`itertools.accumulate()`](https://docs.python.org/3/library/itertools.html#itertools.accumulate)
+    Analogous to the
+    [`itertools function of the same name`](https://docs.python.org/3/library/itertools.html#itertools.accumulate)
     , though with no default function and
     the same parameter order as `reduce()`.
 
