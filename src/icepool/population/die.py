@@ -616,12 +616,12 @@ class Die(Population[T_co]):
         if self.min_outcome() < 0:
             raise ValueError(
                 'mean_time_to_sum does not handle negative outcomes.')
-        zero_scale = Fraction(self.denominator(),
-                              self.denominator() - self.quantity(0))
+        time_per_effect = Fraction(self.denominator(),
+                                   self.denominator() - self.quantity(0))
 
         for i in range(len(self._mean_time_to_sum_cache), target + 1):
-            result = zero_scale * 1 + (self.reroll(
-                [0]).map(lambda x: self.mean_time_to_sum(i - x)).mean())
+            result = time_per_effect + self.reroll(
+                [0]).map(lambda x: self.mean_time_to_sum(i - x)).mean()
             self._mean_time_to_sum_cache.append(result)
 
         return result
