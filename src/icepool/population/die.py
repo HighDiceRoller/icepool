@@ -11,6 +11,7 @@ from icepool.typing import U, Outcome, T_co, guess_star
 
 import bisect
 from collections import defaultdict
+from fractions import Fraction
 from functools import cached_property
 import itertools
 import math
@@ -352,12 +353,14 @@ class Die(Population[T_co]):
 
                 # Need TypeVarTuple to check this.
                 outcome_set = {
-                    outcome for outcome in self.outcomes()
+                    outcome
+                    for outcome in self.outcomes()
                     if which(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if which(outcome)
+                    outcome
+                    for outcome in self.outcomes() if which(outcome)
                 }
         else:
             # Collection.
@@ -372,17 +375,18 @@ class Die(Population[T_co]):
         elif depth < 0:
             raise ValueError('reroll depth cannot be negative.')
         else:
-            total_reroll_quantity = sum(
-                quantity for outcome, quantity in self.items()
-                if outcome in outcome_set)
+            total_reroll_quantity = sum(quantity
+                                        for outcome, quantity in self.items()
+                                        if outcome in outcome_set)
             total_stop_quantity = self.denominator() - total_reroll_quantity
             rerollable_factor = total_reroll_quantity**depth
-            stop_factor = (self.denominator()**(depth + 1) - rerollable_factor *
-                           total_reroll_quantity) // total_stop_quantity
+            stop_factor = (self.denominator()**(depth + 1) - rerollable_factor
+                           * total_reroll_quantity) // total_stop_quantity
             data = {
                 outcome: (rerollable_factor *
                           quantity if outcome in outcome_set else stop_factor *
-                          quantity) for outcome, quantity in self.items()
+                          quantity)
+                for outcome, quantity in self.items()
             }
         return icepool.Die(data)
 
@@ -419,17 +423,19 @@ class Die(Population[T_co]):
             if star:
 
                 not_outcomes = {
-                    outcome for outcome in self.outcomes()
+                    outcome
+                    for outcome in self.outcomes()
                     if not which(*outcome)  # type: ignore
                 }
             else:
                 not_outcomes = {
-                    outcome for outcome in self.outcomes() if not which(outcome)
+                    outcome
+                    for outcome in self.outcomes() if not which(outcome)
                 }
         else:
             not_outcomes = {
-                not_outcome for not_outcome in self.outcomes()
-                if not_outcome not in which
+                not_outcome
+                for not_outcome in self.outcomes() if not_outcome not in which
             }
         return self.reroll(not_outcomes, depth=depth)
 
@@ -540,18 +546,18 @@ class Die(Population[T_co]):
         """
         return self._popped_max
 
-    # Mixtures.
+    # Processes.
 
     def map(
-            self,
-            repl:
+        self,
+        repl:
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.AgainExpression]',
-            /,
-            *extra_args,
-            star: bool | None = None,
-            repeat: int | None = 1,
-            again_depth: int = 1,
-            again_end: 'U | Die[U] | icepool.RerollType | None' = None
+        /,
+        *extra_args,
+        star: bool | None = None,
+        repeat: int | None = 1,
+        again_depth: int = 1,
+        again_end: 'U | Die[U] | icepool.RerollType | None' = None
     ) -> 'Die[U]':
         """Maps outcomes of the `Die` to other outcomes.
 
@@ -588,6 +594,38 @@ class Die(Population[T_co]):
                                     star=star,
                                     repeat=repeat)
 
+    @cached_property
+    def _mean_time_to_sum_cache(self) -> list[Fraction]:
+        return [Fraction(0)]
+
+    def mean_time_to_sum(self: 'Die[int]', target: int, /) -> Fraction:
+        """The mean number of rolls until the cumulative sum is greater or equal to the target.
+
+        Args:
+            target: The target sum.
+
+        Raises:
+            ValueError: If `target < 0` or if `self` has negative outcomes.
+            ZeroDivisionError: If `self.mean() == 0`.
+        """
+        target = max(target, 0)
+
+        if target < len(self._mean_time_to_sum_cache):
+            return self._mean_time_to_sum_cache[target]
+
+        if self.min_outcome() < 0:
+            raise ValueError(
+                'mean_time_to_sum does not handle negative outcomes.')
+        zero_scale = Fraction(self.denominator(),
+                              self.denominator() - self.quantity(0))
+
+        for i in range(len(self._mean_time_to_sum_cache), target + 1):
+            result = zero_scale * 1 + (self.reroll(
+                [0]).map(lambda x: self.mean_time_to_sum(i - x)).mean())
+            self._mean_time_to_sum_cache.append(result)
+
+        return result
+
     def explode(self,
                 which: Collection[T_co] | Callable[..., bool] | None = None,
                 *,
@@ -621,12 +659,14 @@ class Die(Population[T_co]):
             if star:
                 # Need TypeVarTuple to type-check this.
                 outcome_set = {
-                    outcome for outcome in self.outcomes()
+                    outcome
+                    for outcome in self.outcomes()
                     if which(*outcome)  # type: ignore
                 }
             else:
                 outcome_set = {
-                    outcome for outcome in self.outcomes() if which(outcome)
+                    outcome
+                    for outcome in self.outcomes() if which(outcome)
                 }
         else:
             if not which:
@@ -647,12 +687,12 @@ class Die(Population[T_co]):
         return self.map(map_final, again_depth=depth, again_end=end)
 
     def if_else(
-            self,
-            outcome_if_true: U | 'Die[U]',
-            outcome_if_false: U | 'Die[U]',
-            *,
-            again_depth: int = 1,
-            again_end: 'U | Die[U] | icepool.RerollType | None' = None
+        self,
+        outcome_if_true: U | 'Die[U]',
+        outcome_if_false: U | 'Die[U]',
+        *,
+        again_depth: int = 1,
+        again_end: 'U | Die[U] | icepool.RerollType | None' = None
     ) -> 'Die[U]':
         """Ternary conditional operator.
 
@@ -780,9 +820,9 @@ class Die(Population[T_co]):
         """Roll this die several times and keep the lowest."""
         if rolls == 0:
             return self.zero().simplify()
-        return icepool.from_cumulative(self.outcomes(),
-                                       [x**rolls for x in self.quantities_ge()],
-                                       reverse=True)
+        return icepool.from_cumulative(
+            self.outcomes(), [x**rolls for x in self.quantities_ge()],
+            reverse=True)
 
     def highest(self,
                 rolls: int,
@@ -814,15 +854,16 @@ class Die(Population[T_co]):
         """Roll this die several times and keep the highest."""
         if rolls == 0:
             return self.zero().simplify()
-        return icepool.from_cumulative(self.outcomes(),
-                                       [x**rolls for x in self.quantities_le()])
+        return icepool.from_cumulative(
+            self.outcomes(), [x**rolls for x in self.quantities_le()])
 
-    def middle(self,
-               rolls: int,
-               /,
-               keep: int = 1,
-               *,
-               tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
+    def middle(
+            self,
+            rolls: int,
+            /,
+            keep: int = 1,
+            *,
+            tie: Literal['error', 'high', 'low'] = 'error') -> 'icepool.Die':
         """Roll several of this `Die` and sum the sorted results in the middle.
 
         The outcomes should support addition and multiplication if `keep != 1`.
@@ -1191,6 +1232,6 @@ class Die(Population[T_co]):
     # Strings.
 
     def __repr__(self) -> str:
-        inner = ', '.join(
-            f'{outcome}: {weight}' for outcome, weight in self.items())
+        inner = ', '.join(f'{outcome}: {weight}'
+                          for outcome, weight in self.items())
         return type(self).__qualname__ + '({' + inner + '})'

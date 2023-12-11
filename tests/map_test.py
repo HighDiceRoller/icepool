@@ -1,7 +1,8 @@
 import icepool
 import pytest
 
-from icepool import d6, Die, coin
+from icepool import d, d6, Die, coin
+from fractions import Fraction
 
 expected_d6x1 = icepool.Die(range(1, 13),
                             times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
@@ -147,3 +148,23 @@ def test_deck_map_size_increase():
     result = icepool.Deck(range(13)).map({12: icepool.Deck(range(12))})
     expected = icepool.Deck(range(12), times=2)
     assert result == expected
+
+
+def test_mean_time_to_sum_d6():
+    cdf = []
+    for i in range(11):
+        cdf.append(i @ d6 >= 10)
+    expected = icepool.from_cumulative(range(11), cdf).mean()
+    assert d6.mean_time_to_sum(10) == expected
+
+
+def test_mean_time_to_sum_z6():
+    cdf = []
+    for i in range(11):
+        cdf.append(i @ d(5) >= 10)
+    expected = icepool.from_cumulative(range(11), cdf).mean() * Fraction(6, 5)
+    assert (d6 - 1).mean_time_to_sum(10) == expected
+
+
+def test_mean_time_to_sum_coin():
+    assert icepool.coin(1, 2).mean_time_to_sum(10) == 20
