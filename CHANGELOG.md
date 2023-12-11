@@ -1,3 +1,9 @@
+## v1.1.2
+
+* Add `z(n)`, which produces a die that runs from 0 to `n - 1` inclusive.
+* Add `Population.to_one_hot()`, which converts the die or deck to a one-hot representation.
+* Add `Die.mean_time_to_sum()`, which computes the mean number of rolls until the cumulative sum is greater or equal to the target.
+
 ## v1.1.1
 
 * Fix non-fully-bound case of `MultisetEvaluator.evaluate()`.
@@ -6,7 +12,7 @@
 
 ## v1.1.0
 
-* `mean()`, `variance()`, etc. now return an exact `fractions.Fraction` when possible. (Note that `Fraction`s only support float-style formatting from 3.12.)
+* `mean()`, `variance()`, etc. now return an exact `fractions.Fraction` when possible. (Note that `Fraction`s only support float-style formatting from Python 3.12.)
 * Rename `disjoint_union` to `additive_union`.
 * Add `keep_negative_counts` keyword argument to `+, -, &, |` binary operators for multiset expressions (default `False`).
 * Symmetric difference (`^`) for multiset expressions is now a straight absolute difference of counts.
