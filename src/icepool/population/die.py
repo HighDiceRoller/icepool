@@ -605,7 +605,7 @@ class Die(Population[T_co]):
             target: The target sum.
 
         Raises:
-            ValueError: If `target < 0` or if `self` has negative outcomes.
+            ValueError: If `self` has negative outcomes.
             ZeroDivisionError: If `self.mean() == 0`.
         """
         target = max(target, 0)
