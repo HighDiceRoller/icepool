@@ -5,7 +5,7 @@ import icepool
 import itertools
 import math
 import operator
-from typing import Callable, Hashable, Iterable, Sequence, Type, cast, overload
+from typing import Callable, Hashable, Iterable, Iterator, Sequence, Type, cast, overload
 
 from icepool.typing import Outcome, S, T, T_co, U
 
@@ -98,6 +98,8 @@ class Vector(Outcome, Sequence[T_co]):
 
     May become a variadic generic type in the future.
     """
+    __slots__ = ['_data']
+
     _data: tuple[T_co, ...]
 
     def __init__(self,
@@ -128,6 +130,9 @@ class Vector(Outcome, Sequence[T_co]):
             return self._data[index]
         else:
             return Vector(self._data[index])
+
+    def __iter__(self) -> Iterator[T_co]:
+        return iter(self._data)
 
     # Unary operators.
 
@@ -350,7 +355,7 @@ class Vector(Outcome, Sequence[T_co]):
     # Sequence manipulation.
 
     def append(self, other) -> 'Vector':
-        return Vector(self._data + (other,))
+        return Vector(self._data + (other, ))
 
     def concatenate(self, other: 'Iterable') -> 'Vector':
         return Vector(itertools.chain(self, other))
