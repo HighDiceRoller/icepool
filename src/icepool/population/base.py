@@ -17,7 +17,7 @@ import numbers
 import operator
 import random
 
-from typing import Any, Callable, Generic, Hashable, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
+from typing import Any, Callable, Generic, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
@@ -51,7 +51,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def items(self) -> CountsItemsView[T_co]:
         """The (outcome, quantity)s of the population in sorted order."""
 
-    def _unary_operator(self, op: Callable[..., U], *args, **kwargs):
+    def _unary_operator(self, op: Callable, *args, **kwargs):
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, quantity in self.items():
             new_outcome = op(outcome, *args, **kwargs)
@@ -697,8 +697,10 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Joint statistics.
 
-    class _Marginals(Sequence):
+    class _Marginals(Generic[C]):
         """Helper class for implementing `marginals()`."""
+
+        _population: C
 
         def __init__(self, population, /):
             self._population = population
@@ -711,8 +713,12 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             """Marginalizes the given dimensions."""
             return self._population._unary_operator(operator.getitem, dims)
 
+        def __iter__(self) -> Iterator[C]:
+            for i in range(len(self)):
+                yield self[i]
+
     @property
-    def marginals(self):
+    def marginals(self: C) -> _Marginals[C]:
         """A property that applies the `[]` operator to outcomes.
 
         For example, `population.marginals[:2]` will marginalize the first two
