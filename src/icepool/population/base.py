@@ -713,16 +713,25 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             """Marginalizes the given dimensions."""
             return self._population._unary_operator(operator.getitem, dims)
 
-        def __iter__(self) -> Iterator[C]:
+        def __iter__(self) -> Iterator:
             for i in range(len(self)):
                 yield self[i]
+
+        def __getattr__(self, key: str):
+            if key[0] == '_':
+                raise AttributeError(key)
+            return self._population._unary_operator(operator.attrgetter(key))
 
     @property
     def marginals(self: C) -> _Marginals[C]:
         """A property that applies the `[]` operator to outcomes.
 
         For example, `population.marginals[:2]` will marginalize the first two
-        elements of the outcomes.
+        elements of sequence outcomes.
+
+        Attributes that do not start with an underscore will also be forwarded.
+        For example, `population.marginals.x` will marginalize the `x` attribute
+        from e.g. `namedtuple` outcomes.
         """
         return Population._Marginals(self)
 

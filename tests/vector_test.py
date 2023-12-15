@@ -1,7 +1,8 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, vectorize, Die, Vector
+from icepool import d, d4, d6, d8, vectorize, Die, Vector
+from collections import namedtuple
 
 
 def test_cartesian_product():
@@ -138,3 +139,10 @@ def test_to_one_hot():
         Vector([0, 0, 1, 0]),
         Vector([0, 0, 0, 1]),
     ])
+
+
+def test_named_tuple():
+    Point = namedtuple('Point', ['x', 'y'])
+    a = Point(0, 1)
+    b = Point(1, 2)
+    assert Die([a, b]).marginals.y == d(2)
