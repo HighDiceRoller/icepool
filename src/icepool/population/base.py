@@ -72,7 +72,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def _common_outcome_length(self) -> int | None:
         result = None
         for outcome in self.outcomes():
-            if isinstance(outcome, Sized):
+            if isinstance(outcome, Mapping):
+                return None
+            elif isinstance(outcome, Sized):
                 if result is None:
                     result = len(outcome)
                 elif len(outcome) != result:
