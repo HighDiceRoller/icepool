@@ -178,6 +178,6 @@ class Deck(Population[T_co]):
         return self._hash
 
     def __repr__(self) -> str:
-        inner = ', '.join(
-            f'{outcome}: {quantity}' for outcome, quantity in self.items())
+        inner = ', '.join(f'{repr(outcome)}: {quantity}'
+                          for outcome, quantity in self.items())
         return type(self).__qualname__ + '({' + inner + '})'

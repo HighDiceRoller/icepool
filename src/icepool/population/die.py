@@ -1232,6 +1232,6 @@ class Die(Population[T_co]):
     # Strings.
 
     def __repr__(self) -> str:
-        inner = ', '.join(f'{outcome}: {weight}'
+        inner = ', '.join(f'{repr(outcome)}: {weight}'
                           for outcome, weight in self.items())
         return type(self).__qualname__ + '({' + inner + '})'
