@@ -24,3 +24,21 @@ def test_add_new():
 
 def test_add_existing():
     assert die + 'b' == Die(['b', 'ab', 'abb', 'aabb']).map(Symbols)
+
+
+def test_mul():
+    assert die * 2 == Die(['', 'aa', 'aabb', 'aaaabb']).map(Symbols)
+
+
+def test_floordiv():
+    assert die // 2 == Die(['', '', '', 'a']).map(Symbols)
+
+
+def test_issubset():
+    assert Symbols('ab').issubset('abc')
+    assert not Symbols('ab').issubset('ac')
+
+
+def test_issuperset():
+    assert Symbols('ab').issuperset('a')
+    assert not Symbols('ab').issuperset('ac')

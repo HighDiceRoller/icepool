@@ -11,6 +11,11 @@ class Symbols(Mapping[str, int]):
     Supports most non-mutating methods that `collections.Counter` does,
     with implicit conversion of `Iterable`s and `Mapping`s.
 
+    Negative counts are not supported.
+    
+    Operators with other multisets are `+, -, &, |, <=, >=, ==, !=`.
+    Operators with `int`s are `*, //` (`int` on right side only for `//`).
+
     Subscripting with a single character returns the count of that character
     as an `int`. E.g. `symbols['a']` -> number of `a`s as an `int`.
     You can also access it as an attribute, e.g.  `symbols.a`.
@@ -20,8 +25,11 @@ class Symbols(Mapping[str, int]):
     E.g. `symbols['ab']` -> number of `a`s and `b`s as a `Symbols`.
     Again you can also access it as an attribute, e.g. `symbols.ab`.
 
+    Duplicate symbols have no extra effect here, except e.g. `symbols.aa`
+    will produce a `Symbols` rather than an `int`.
+
     Note that attribute access only works with valid identifiers that don't
-    start with an underscore, so e.g. emojis will need to use the subscript
+    start with an underscore, so e.g. emojis would need to use the subscript
     method.
     """
     _data: Counter[str]
@@ -104,6 +112,8 @@ class Symbols(Mapping[str, int]):
     def __mul__(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
+        if other < 0:
+            raise ValueError('Negative counts are not supported.')
         return Symbols._new_raw(
             Counter({
                 k: v * other
@@ -113,9 +123,22 @@ class Symbols(Mapping[str, int]):
     def __rmul__(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
+        if other < 0:
+            raise ValueError('Negative counts are not supported.')
         return Symbols._new_raw(
             Counter({
                 k: v * other
+                for k, v in self._data.items()
+            }))
+
+    def __floordiv__(self, other: int):
+        if not isinstance(other, int):
+            return NotImplemented
+        if other < 0:
+            raise ValueError('Negative counts are not supported.')
+        return Symbols._new_raw(
+            Counter({
+                k: v // other
                 for k, v in self._data.items()
             }))
 
