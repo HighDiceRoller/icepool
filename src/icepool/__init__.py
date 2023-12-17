@@ -57,6 +57,7 @@ from icepool.function import (d, z, __getattr__, coin, one_hot,
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
 from icepool.collection.vector import tupleize, vectorize, Vector
+from icepool.collection.symbols import Symbols
 from icepool.population.again import AgainExpression
 
 Again: Final = AgainExpression()
@@ -101,12 +102,12 @@ import icepool.typing as typing
 
 __all__ = [
     'd', 'z', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
-    'vectorize', 'Vector', 'Again', 'CountsKeysView', 'CountsValuesView',
-    'CountsItemsView', 'from_cumulative', 'from_rv', 'lowest', 'highest',
-    'middle', 'min_outcome', 'max_outcome', 'align', 'align_range',
-    'commonize_denominator', 'reduce', 'accumulate', 'map', 'map_function',
-    'map_and_time', 'Reroll', 'RerollType', 'Pool', 'standard_pool',
-    'MultisetGenerator', 'Alignment', 'MultisetExpression',
+    'vectorize', 'Vector', 'Symbols', 'Again', 'CountsKeysView',
+    'CountsValuesView', 'CountsItemsView', 'from_cumulative', 'from_rv',
+    'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome', 'align',
+    'align_range', 'commonize_denominator', 'reduce', 'accumulate', 'map',
+    'map_function', 'map_and_time', 'Reroll', 'RerollType', 'Pool',
+    'standard_pool', 'MultisetGenerator', 'Alignment', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'multiset_function',
     'function', 'typing', 'evaluator'
 ]
