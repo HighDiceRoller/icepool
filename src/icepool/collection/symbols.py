@@ -1,20 +1,26 @@
 __docformat__ = 'google'
 
-from collections import Counter
+import itertools
+import re
+
+from collections import defaultdict
 from functools import cached_property
 from typing import Iterable, Iterator, Mapping
 
 
 class Symbols(Mapping[str, int]):
     """EXPERIMENTAL: Immutable multiset of single characters.
-    
-    Supports most non-mutating methods that `collections.Counter` does,
-    with implicit conversion of `Iterable`s and `Mapping`s.
 
-    Negative counts are not supported.
+    Spaces, dashes, and underscores cannot be used as symbols.
     
-    Operators with other multisets are `+, -, &, |, <=, >=, ==, !=`.
-    Operators with `int`s are `*, //` (`int` on right side only for `//`).
+    Binary operators with other multisets are `+, -, &, |, <=, >=, ==, !=`.
+    The other operand is implicitly converted to Symbols.
+
+    Binary operators with `int`s are `*, //`
+    (`int` on right side only for `//`).
+
+    Unary `+` removes all negative counts.
+    Unary `-` reverses the sign of all counts.
 
     Subscripting with a single character returns the count of that character
     as an `int`. E.g. `symbols['a']` -> number of `a`s as an `int`.
@@ -28,19 +34,49 @@ class Symbols(Mapping[str, int]):
     Duplicate symbols have no extra effect here, except e.g. `symbols.aa`
     will produce a `Symbols` rather than an `int`.
 
-    Note that attribute access only works with valid identifiers that don't
-    start with an underscore, so e.g. emojis would need to use the subscript
-    method.
+    Note that attribute access only works with valid identifiers,
+    so e.g. emojis would need to use the subscript method.
     """
-    _data: Counter[str]
+    _data: defaultdict[str, int]
 
-    def __new__(cls, symbols: Iterable[str] | Mapping[str, int]):
+    def __new__(cls, symbols: str | Iterable[str] | Mapping[str, int]):
+        """Constructor.
+        
+        The argument can be a string, an iterable of characters, or a mapping of
+        characters to counts.
+        
+        If the argument is a string, negative symbols can be specified using a
+        minus sign optionally surrounded by whitespace. For example,
+        `a - b` has one positive a and one negative b.
+        """
         self = super(Symbols, cls).__new__(cls)
-        self._data = Counter(symbols)
+        if isinstance(symbols, str):
+            self._data = defaultdict(int)
+            positive, *negative = re.split(r'\s*-\s*', symbols)
+            for s in positive:
+                self._data[s] += 1
+            if len(negative) > 1:
+                raise ValueError('Multiple dashes not allowed.')
+            if len(negative) == 1:
+                for s in negative[0]:
+                    self._data[s] -= 1
+        elif isinstance(symbols, Mapping):
+            self._data = defaultdict(int, symbols)
+        else:
+            self._data = defaultdict(int)
+            for s in symbols:
+                self._data[s] += 1
+
+        for s in self._data:
+            if len(s) != 1:
+                raise ValueError(f'Symbol {s} is not a single character.')
+            if re.match(r'[\s_-]', s):
+                raise ValueError(
+                    f'{s} (U+{ord(s):04X}) is not a legal symbol.')
         return self
 
     @classmethod
-    def _new_raw(cls, data: Counter[str]) -> 'Symbols':
+    def _new_raw(cls, data: defaultdict[str, int]) -> 'Symbols':
         self = super(Symbols, cls).__new__(cls)
         self._data = data
         return self
@@ -51,7 +87,9 @@ class Symbols(Mapping[str, int]):
         if len(key) == 1:
             return self._data[key]
         else:
-            return Symbols._new_raw(Counter({s: self._data[s] for s in key}))
+            return Symbols._new_raw(
+                defaultdict(int, {s: self._data[s]
+                                  for s in key}))
 
     def __getattr__(self, key: str):
         if key[0] == '_':
@@ -64,13 +102,8 @@ class Symbols(Mapping[str, int]):
     def __len__(self) -> int:
         return len(self._data)
 
-    # Counter interface.
-
-    def most_common(self, n: int | None = None) -> list[tuple[str, int]]:
-        return self._data.most_common(n)
-
     def total(self) -> int:
-        return self._data.total()
+        return sum(self._data.values())
 
     def elements(self) -> str:
         """All symbols, including duplicates, in ascending order as a str.
@@ -78,33 +111,48 @@ class Symbols(Mapping[str, int]):
         Same as str(self)."""
         return str(self)
 
-    # Operators.
+    # Binary operators.
 
     def additive_union(self,
                        other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
-        return Symbols._new_raw(self._data + Counter(other))
+        data = defaultdict(int, self._data)
+        for s, count in Symbols(other).items():
+            data[s] += count
+        return Symbols._new_raw(data)
 
     __add__ = additive_union
     __radd__ = additive_union
 
     def difference(self,
                    other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
-        return Symbols._new_raw(self._data - Counter(other))
+        data = defaultdict(int, self._data)
+        for s, count in Symbols(other).items():
+            data[s] -= count
+        return Symbols._new_raw(data)
 
     __sub__ = difference
 
     def __rsub__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
-        return Symbols._new_raw(Counter(other) - self._data)
+        data = defaultdict(int, Symbols(other)._data)
+        for s, count in self.items():
+            data[s] -= count
+        return Symbols._new_raw(data)
 
     def intersection(self,
                      other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
-        return Symbols._new_raw(self._data & Counter(other))
+        data = defaultdict(int, self._data)
+        for s, count in Symbols(other).items():
+            data[s] = min(data[s], count)
+        return Symbols._new_raw(data)
 
     __and__ = intersection
     __rand__ = intersection
 
     def union(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
-        return Symbols._new_raw(self._data | Counter(other))
+        data = defaultdict(int, self._data)
+        for s, count in Symbols(other).items():
+            data[s] = max(data[s], count)
+        return Symbols._new_raw(data)
 
     __or__ = union
     __ror__ = union
@@ -114,33 +162,24 @@ class Symbols(Mapping[str, int]):
             return NotImplemented
         if other < 0:
             raise ValueError('Negative counts are not supported.')
-        return Symbols._new_raw(
-            Counter({
-                k: v * other
-                for k, v in self._data.items()
-            }))
+        data = defaultdict(int, {
+            s: count * other
+            for s, count in self.items()
+        })
+        return Symbols._new_raw(data)
 
-    def __rmul__(self, other: int) -> 'Symbols':
-        if not isinstance(other, int):
-            return NotImplemented
-        if other < 0:
-            raise ValueError('Negative counts are not supported.')
-        return Symbols._new_raw(
-            Counter({
-                k: v * other
-                for k, v in self._data.items()
-            }))
+    __rmul__ = __mul__
 
     def __floordiv__(self, other: int):
         if not isinstance(other, int):
             return NotImplemented
         if other < 0:
             raise ValueError('Negative counts are not supported.')
-        return Symbols._new_raw(
-            Counter({
-                k: v // other
-                for k, v in self._data.items()
-            }))
+        data = defaultdict(int, {
+            s: count // other
+            for s, count in self.items()
+        })
+        return Symbols._new_raw(data)
 
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
@@ -160,7 +199,9 @@ class Symbols(Mapping[str, int]):
         Note that the `<` and `>` operators are lexicographic orderings,
         not proper subset relations.
         """
-        return self._data <= Counter(other)
+        other = Symbols(other)
+        return all(self[s] <= other[s]  # type: ignore
+                   for s in itertools.chain(self, other))
 
     __le__ = issubset
 
@@ -172,19 +213,36 @@ class Symbols(Mapping[str, int]):
         Note that the `<` and `>` operators are lexicographic orderings,
         not proper subset relations.
         """
-        return self._data >= Counter(other)
+        other = Symbols(other)
+        return all(self[s] >= other[s]  # type: ignore
+                   for s in itertools.chain(self, other))
 
     __ge__ = issuperset
 
     def __eq__(self, other):
         if not isinstance(other, Symbols):
             return False
-        return self._data == other._data
+        return all(self[s] == other[s]  # type: ignore
+                   for s in itertools.chain(self, other))
 
     def __ne__(self, other):
         if not isinstance(other, Symbols):
             return True
-        return self._data != other._data
+        return any(self[s] != other[s]  # type: ignore
+                   for s in itertools.chain(self, other))
+
+    # Unary operators.
+
+    def __pos__(self):
+        data = defaultdict(int, {
+            s: count
+            for s, count in self.items() if count > 0
+        })
+        return Symbols._new_raw(data)
+
+    def __neg__(self):
+        data = defaultdict(int, {s: -count for s, count in self.items()})
+        return Symbols._new_raw(data)
 
     @cached_property
     def _hash(self) -> int:
@@ -195,7 +253,21 @@ class Symbols(Mapping[str, int]):
 
     @cached_property
     def _str(self) -> str:
-        return ''.join(s * self._data[s] for s in sorted(self._data))
+        sorted_keys = sorted(self)
+        positive = ''.join(s * self._data[s] for s in sorted_keys
+                           if self._data[s] > 0)
+        negative = ''.join(s * -self._data[s] for s in sorted_keys
+                           if self._data[s] < 0)
+        if positive:
+            if negative:
+                return positive + ' - ' + negative
+            else:
+                return positive
+        else:
+            if negative:
+                return '-' + negative
+            else:
+                return ''
 
     def __str__(self) -> str:
         return self._str

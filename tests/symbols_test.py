@@ -26,6 +26,11 @@ def test_add_existing():
     assert die + 'b' == Die(['b', 'ab', 'abb', 'aabb']).map(Symbols)
 
 
+def test_sub():
+    assert die - 'ac' == Die(['-ac', '-c', 'b - c', 'ab - c']).map(Symbols)
+    assert +(die - 'ac') == Die(['', '', 'b', 'ab']).map(Symbols)
+
+
 def test_mul():
     assert die * 2 == Die(['', 'aa', 'aabb', 'aaaabb']).map(Symbols)
 
