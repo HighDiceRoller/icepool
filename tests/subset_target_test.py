@@ -4,14 +4,12 @@ import pytest
 
 from icepool import d, Die, Order, Pool
 
-from collections import Counter
-
 targets_to_test = [
     (),
-    (1,),
-    (2,),
-    (4,),
-    (6,),
+    (1, ),
+    (2, ),
+    (4, ),
+    (6, ),
     (1, 6),
     (1, 3, 6),
     (1, 1, 1),

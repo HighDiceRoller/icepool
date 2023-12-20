@@ -90,4 +90,5 @@ def test_expression_to_outcome_function():
     def test(x):
         return sum(x)
 
-    assert test(d6.pool(3) - d6.pool(3)) == (d6.pool(3) - d6.pool(3)).sum()
+    assert test(+(d6.pool(3) - d6.pool(3))) == (
+        +(d6.pool(3) - d6.pool(3))).sum()

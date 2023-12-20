@@ -89,7 +89,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
             dice_counts[die] += qty
-        keep_tuple = (1,) * sum(times)
+        keep_tuple = (1, ) * sum(times)
         return cls._new_from_mapping(dice_counts, keep_tuple)
 
     @classmethod
@@ -125,8 +125,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             dice_counts: A map from dice to rolls.
             keep_tuple: A tuple with length equal to the number of dice.
         """
-        dice = tuple(sorted(dice_counts.items(),
-                            key=lambda kv: kv[0]._hash_key))
+        dice = tuple(
+            sorted(dice_counts.items(), key=lambda kv: kv[0]._hash_key))
         return Pool._new_raw(dice, keep_tuple)
 
     @cached_property
@@ -157,7 +157,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
     @cached_property
     def _dice_tuple(self) -> tuple['icepool.Die[T]', ...]:
-        return sum(((die,) * count for die, count in self._dice), start=())
+        return sum(((die, ) * count for die, count in self._dice), start=())
 
     @cached_property
     def _unique_dice(self) -> Collection['icepool.Die[T]']:
@@ -170,8 +170,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     @cached_property
     def _outcomes(self) -> Sequence[T]:
         outcome_set = set(
-            itertools.chain.from_iterable(
-                die.outcomes() for die in self.unique_dice()))
+            itertools.chain.from_iterable(die.outcomes()
+                                          for die in self.unique_dice()))
         return tuple(sorted(outcome_set))
 
     def outcomes(self) -> Sequence[T]:
@@ -225,7 +225,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, (0,), 1
+            yield self, (0, ), 1
             return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
@@ -255,10 +255,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count,), result_weight
+            yield popped_pool, (result_count, ), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
+            yield Pool._new_empty(), (sum(self.keep_tuple()), ), skip_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
@@ -270,7 +270,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, (0,), 1
+            yield self, (0, ), 1
             return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
@@ -300,10 +300,10 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count,), result_weight
+            yield popped_pool, (result_count, ), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(self.keep_tuple()),), skip_weight
+            yield Pool._new_empty(), (sum(self.keep_tuple()), ), skip_weight
 
     # Overrides to MultisetExpression.
 
@@ -499,18 +499,13 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             return NotImplemented
 
     def additive_union(
-            *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
-            keep_negative_counts: bool = False) -> 'MultisetExpression[T]':
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
         """The combined elements from all the multisets.
 
         We have an optimization here if all arguments are pools with all sorted
         positions counted the same. In this case we can merge the pools directly
         instead of merging the rolls after the fact.
-
-        keep_negative_counts: If set, if the result would have a negative 
-                count, it is preserved. Otherwise, negative counts in the result
-                are set to zero, similar to the behavior of
-                `collections.Counter`.
         """
         args = tuple(
             icepool.expression.implicit_convert_to_expression(arg)
@@ -518,23 +513,20 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         if all(isinstance(arg, Pool) for arg in args):
             pools = cast(tuple[Pool, ...], args)
             keep_tuple: tuple[int, ...] = tuple(
-                reduce(operator.add, (pool.keep_tuple() for pool in pools), ()))
+                reduce(operator.add, (pool.keep_tuple() for pool in pools),
+                       ()))
             if len(keep_tuple) == 0:
                 # All empty.
                 return Pool._new_empty()
             if all(x == keep_tuple[0] for x in keep_tuple):
                 # All sorted positions count the same, so we can merge the
                 # pools.
-                if keep_tuple[0] < 0 and not keep_negative_counts:
-                    return Pool._new_empty()
-                else:
-                    dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
-                    for pool in pools:
-                        for die, die_count in pool._dice:
-                            dice[die] += die_count
+                dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
+                for pool in pools:
+                    for die, die_count in pool._dice:
+                        dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
-        return icepool.expression.MultisetExpression.additive_union(
-            *args, keep_negative_counts=keep_negative_counts)
+        return icepool.expression.MultisetExpression.additive_union(*args)
 
     def __mul__(self, other: int) -> 'Pool[T]':
         if not isinstance(other, int):
@@ -615,14 +607,14 @@ def make_keep_tuple(
             if extra_dice < 0:
                 return tuple(index[-extra_dice:])
             else:
-                return (0,) * extra_dice + tuple(index)
+                return (0, ) * extra_dice + tuple(index)
         elif split == len(index) - 1:
             # Ellipsis on right.
             index = index[:-1]
             if extra_dice < 0:
                 return tuple(index[:extra_dice])
             else:
-                return tuple(index) + (0,) * extra_dice
+                return tuple(index) + (0, ) * extra_dice
         else:
             # Ellipsis in center.
             if extra_dice < 0:
@@ -634,7 +626,7 @@ def make_keep_tuple(
                     result[i] += index[i]
                 return tuple(result)
             else:
-                return tuple(index[:split]) + (0,) * extra_dice + tuple(
+                return tuple(index[:split]) + (0, ) * extra_dice + tuple(
                     index[split + 1:])
 
 
@@ -653,8 +645,8 @@ def standard_pool(
         return Pool({1: 0})
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
-            itertools.chain.from_iterable(
-                [k] * v for k, v in die_sizes.items()))
+            itertools.chain.from_iterable([k] * v
+                                          for k, v in die_sizes.items()))
     return Pool(list(icepool.d(x) for x in die_sizes))
 
 

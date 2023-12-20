@@ -14,8 +14,7 @@ from icepool.typing import Order, T_contra
 
 class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, *inners: MultisetExpression[T_contra],
-                 keep_negative_counts: bool) -> None:
+    def __init__(self, *inners: MultisetExpression[T_contra]) -> None:
         """Constructor.
 
         Args:
@@ -28,7 +27,6 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
         for inner in inners:
             self._validate_output_arity(inner)
         self._inners = inners
-        self._keep_negative_counts = keep_negative_counts
 
     @staticmethod
     @abstractmethod
@@ -44,15 +42,13 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
                     int) -> tuple[Hashable, int]:
         if len(self._inners) == 0:
             return (), 0
-        inner_states = state or (None,) * len(self._inners)
+        inner_states = state or (None, ) * len(self._inners)
 
         inner_states, inner_counts = zip(
             *(inner._next_state(inner_state, outcome, *counts)
               for inner, inner_state in zip(self._inners, inner_states)))
 
         count = reduce(self.merge_counts, inner_counts)
-        if not self._keep_negative_counts:
-            count = max(count, 0)
         return inner_states, count
 
     def _order(self) -> Order:
@@ -78,11 +74,10 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
                 free_start: int) -> 'tuple[MultisetExpression, int]':
         unbound_inners = []
         for inner in self._inners:
-            unbound_inner, prefix_start = inner._unbind(prefix_start,
-                                                        free_start)
+            unbound_inner, prefix_start = inner._unbind(
+                prefix_start, free_start)
             unbound_inners.append(unbound_inner)
-        unbound_expression = type(self)(
-            *unbound_inners, keep_negative_counts=self._keep_negative_counts)
+        unbound_expression = type(self)(*unbound_inners)
         return unbound_expression, prefix_start
 
     def __str__(self) -> str:
