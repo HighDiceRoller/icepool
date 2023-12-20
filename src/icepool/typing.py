@@ -72,6 +72,7 @@ class Outcome(Hashable, Protocol[T_contra]):
     def __lt__(self, other: T_contra) -> bool:
         ...
 
+
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.
 
@@ -95,6 +96,7 @@ def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
                 break
     return required, total
 
+
 def guess_star(function, arg_count=1) -> bool:
     """Guesses whether the first argument should be unpacked before giving it to the function.
 
@@ -104,6 +106,7 @@ def guess_star(function, arg_count=1) -> bool:
     try:
         required_count, _ = count_positional_parameters(function)
     except ValueError:
-        raise ValueError(f'Could not guess whether to unpack the first argument to the function.\n'
-                         'You may need to specify `star` explicitly.')
+        raise ValueError(
+            f'Could not guess whether to unpack the first argument to the function.\n'
+            'You may need to specify `star` explicitly.')
     return required_count > arg_count

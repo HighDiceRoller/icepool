@@ -58,7 +58,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         """Implementation."""
         state = state or ()
         if self._filter is None or count >= self._filter:
-            state = state + (count,)
+            state = state + (count, )
             return tuple(sorted(state, reverse=True))
         else:
             return state
@@ -168,7 +168,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         else:
             next_current_runs = tuple(
                 x + 1
-                for x in current_runs) + (1,) * (count - len(current_runs))
+                for x in current_runs) + (1, ) * (count - len(current_runs))
             next_ended_runs = ended_runs
         return next_current_runs, next_ended_runs
 

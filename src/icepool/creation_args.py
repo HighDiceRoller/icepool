@@ -33,7 +33,7 @@ def itemize(keys: Mapping[Any, int] | Sequence,
         raise TypeError('Argument appears not to be a mapping or sequence.')
 
     if isinstance(times, int):
-        times = (times,) * len(keys)
+        times = (times, ) * len(keys)
     else:
         if len(times) != len(keys):
             raise ValueError(
@@ -69,7 +69,8 @@ def expand_args_for_deck(
 
 
 def expand_arg(
-        arg: T | icepool.Population[T] | icepool.RerollType) -> Mapping[T, int]:
+        arg: T | icepool.Population[T] | icepool.RerollType
+) -> Mapping[T, int]:
     if isinstance(arg, icepool.Population):
         return arg
     elif arg is icepool.Reroll:

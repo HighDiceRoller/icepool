@@ -14,18 +14,19 @@ from typing import Collection, Iterable
 class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     """Assigns an expression to be evaluated first to each input of an evaluator."""
 
-    def __init__(
-            self,
-            *expressions: 'icepool.expression.MultisetExpression[T_contra]',
-            evaluator: MultisetEvaluator[T_contra, U_co],
-            truth_value: bool | None = None) -> None:
+    def __init__(self,
+                 *expressions:
+                 'icepool.expression.MultisetExpression[T_contra]',
+                 evaluator: MultisetEvaluator[T_contra, U_co],
+                 truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
         self._bound_generators = tuple(
-            itertools.chain.from_iterable(
-                expression._bound_generators() for expression in expressions))
+            itertools.chain.from_iterable(expression._bound_generators()
+                                          for expression in expressions))
         self._bound_arity = len(self._bound_generators)
         self._free_arity = max(
-            (expression._free_arity() for expression in expressions), default=0)
+            (expression._free_arity() for expression in expressions),
+            default=0)
 
         unbound_expressions: 'list[icepool.expression.MultisetExpression[T_contra]]' = []
         prefix_start = 0
@@ -39,7 +40,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
     def next_state(self, state, outcome, *counts):
         """Adjusts the counts, then forwards to inner."""
         if state is None:
-            expression_states = (None,) * len(self._expressions)
+            expression_states = (None, ) * len(self._expressions)
             evaluator_state = None
         else:
             expression_states, evaluator_state = state
@@ -67,8 +68,8 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
 
     def order(self) -> Order:
         """Forwards to inner."""
-        expression_order = Order.merge(
-            *(expression._order() for expression in self._expressions))
+        expression_order = Order.merge(*(expression._order()
+                                         for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 
     def alignment(self, *generators) -> Collection[T_contra]:

@@ -23,7 +23,7 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
 
     def next_state(self, state, outcome, count):
         """Implementation."""
-        return (state or ()) + (outcome,) * count
+        return (state or ()) + (outcome, ) * count
 
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""

@@ -132,8 +132,8 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
     @cached_property
     def _cached_bound_generators(
             self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner._bound_generators() + self._target._bound_generators(
-        )
+        return self._inner._bound_generators(
+        ) + self._target._bound_generators()
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._cached_bound_generators

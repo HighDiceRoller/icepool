@@ -41,7 +41,7 @@ class KeepExpression(MultisetExpression[T_contra]):
                     if stop >= 0:
                         # [:+b] keeps from the bottom.
                         self._keep_order = Order.Ascending
-                        self._keep_tuple = (1,) * stop
+                        self._keep_tuple = (1, ) * stop
                         self._drop = None
                     else:
                         # [:-b] drops from the top.
@@ -54,7 +54,7 @@ class KeepExpression(MultisetExpression[T_contra]):
                     if start < 0:
                         # [-a:] keeps from the top.
                         self._keep_order = Order.Descending
-                        self._keep_tuple = (1,) * -start
+                        self._keep_tuple = (1, ) * -start
                         self._drop = None
                     else:
                         # [a:] drops from the bottom.
@@ -66,12 +66,14 @@ class KeepExpression(MultisetExpression[T_contra]):
                     if start >= 0 and stop >= 0:
                         # [a:b]
                         self._keep_order = Order.Ascending
-                        self._keep_tuple = (0,) * start + (1,) * (stop - start)
+                        self._keep_tuple = (0, ) * start + (1, ) * (stop -
+                                                                    start)
                         self._drop = None
                     elif start < 0 and stop < 0:
                         # [-a:-b]
                         self._keep_order = Order.Descending
-                        self._keep_tuple = (0,) * -stop + (1,) * (stop - start)
+                        self._keep_tuple = (0, ) * -stop + (1, ) * (stop -
+                                                                    start)
                         self._drop = None
                     else:
                         raise ValueError(
@@ -110,8 +112,8 @@ class KeepExpression(MultisetExpression[T_contra]):
         self._drop = drop
         return self
 
-    def _next_state(self, state, outcome: T_contra,
-                    *counts: int) -> tuple[Hashable, int]:
+    def _next_state(self, state, outcome: T_contra, *counts:
+                    int) -> tuple[Hashable, int]:
         if self._drop is None:
             # Use _keep_tuple.
             remaining, inner_state = state or (self._keep_tuple, None)

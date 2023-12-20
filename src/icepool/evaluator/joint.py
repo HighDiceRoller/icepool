@@ -80,14 +80,14 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         return Order.merge(*(inner.order() for inner in self._inners))
 
     def alignment(self, outcomes) -> Collection[T_contra]:
-        return sorted_union(
-            *(evaluator.alignment(outcomes) for evaluator in self._inners))
+        return sorted_union(*(evaluator.alignment(outcomes)
+                              for evaluator in self._inners))
 
     @cached_property
     def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return tuple(
-            itertools.chain.from_iterable(
-                expression.prefix_generators() for expression in self._inners))
+            itertools.chain.from_iterable(expression.prefix_generators()
+                                          for expression in self._inners))
 
     def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._prefix_generators
@@ -98,8 +98,8 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
     @cached_property
     def _extra_arity(self) -> int:
-        return sum(
-            generator.output_arity() for generator in self.prefix_generators())
+        return sum(generator.output_arity()
+                   for generator in self.prefix_generators())
 
     @cached_property
     def _prefix_slices(self) -> tuple[slice, ...]:
@@ -107,14 +107,15 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         result = []
         index = 0
         for expression in self._inners:
-            counts_length = sum(generator.output_arity()
-                                for generator in expression.prefix_generators())
+            counts_length = sum(
+                generator.output_arity()
+                for generator in expression.prefix_generators())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)
 
-    def _split_prefix_counts(self,
-                             *extra_counts: int) -> Iterator[tuple[int, ...]]:
+    def _split_prefix_counts(self, *extra_counts:
+                             int) -> Iterator[tuple[int, ...]]:
         for index in self._prefix_slices:
             yield extra_counts[index]
 

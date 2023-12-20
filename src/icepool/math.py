@@ -14,12 +14,12 @@ def comb_row(n: int, b: int) -> tuple[int, ...]:
     The results are cached.
     """
     if b not in comb_row_cache:
-        comb_row_cache[b] = [(1,)]
+        comb_row_cache[b] = [(1, )]
     rows = comb_row_cache[b]
     while len(rows) < n + 1:
         prev = rows[-1]
-        next = (1,) + tuple(
-            x + b * y for x, y in zip(prev[1:], prev[:-1])) + (b * prev[-1],)
+        next = (1, ) + tuple(
+            x + b * y for x, y in zip(prev[1:], prev[:-1])) + (b * prev[-1], )
         rows.append(next)
     return rows[n]
 
@@ -29,9 +29,8 @@ def comb(n: int, k: int, b: int = 1) -> int:
     return comb_row(n, b)[k]
 
 
-def iter_hypergeom(
-        deck: tuple[int, ...],
-        draws: int) -> Iterator[tuple[tuple[int, ...], int]]:
+def iter_hypergeom(deck: tuple[int, ...],
+                   draws: int) -> Iterator[tuple[tuple[int, ...], int]]:
     """Iterates over the (hand, weight)s in the given `Deck`.
 
     Args:
@@ -55,7 +54,8 @@ def iter_hypergeom(
     for count in range(min_count, max_count + 1):
         weight = comb(draws, count)
         for tail_count, tail_weight in iter_hypergeom(deck[1:], draws - count):
-            yield (count,) + tail_count, weight * tail_weight
+            yield (count, ) + tail_count, weight * tail_weight
+
 
 def try_fraction(numerator, denominator) -> Fraction | float:
     """Attempts to form a `Fraction` from the arguments.

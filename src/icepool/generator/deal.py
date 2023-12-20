@@ -46,7 +46,8 @@ class Deal(MultisetGenerator[T, Qs]):
             )
 
     @classmethod
-    def _new_raw(cls, deck: 'icepool.Deck[T]', hand_sizes: Qs) -> 'Deal[T, Qs]':
+    def _new_raw(cls, deck: 'icepool.Deck[T]',
+                 hand_sizes: Qs) -> 'Deal[T, Qs]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes
@@ -109,7 +110,7 @@ class Deal(MultisetGenerator[T, Qs]):
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or min_outcome != self.min_outcome():
-            yield self, (0,), 1
+            yield self, (0, ), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_min()
@@ -118,7 +119,7 @@ class Deal(MultisetGenerator[T, Qs]):
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, (0,), 1
+            yield self, (0, ), 1
             return
 
         popped_deck, deck_count = self.deck()._pop_max()

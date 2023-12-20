@@ -58,8 +58,8 @@ class AgainExpression():
         if self._func is None:
             return die
         else:
-            return self._func(
-                *(self._evaluate_arg(arg, die) for arg in self._args))
+            return self._func(*(self._evaluate_arg(arg, die)
+                                for arg in self._args))
 
     # Unary operators.
 

@@ -37,7 +37,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
 
-        inner_states = state or (None,) * len(self._inners)
+        inner_states = state or (None, ) * len(self._inners)
         inner_states, inner_counts = zip(
             *(inner._next_state(inner_state, outcome, *counts)
               for inner, inner_state in zip(self._inners, inner_states)))
@@ -68,8 +68,8 @@ class MapCountsExpression(MultisetExpression[T_contra]):
                 free_start: int) -> 'tuple[MultisetExpression, int]':
         unbound_inners = []
         for inner in self._inners:
-            unbound_inner, prefix_start = inner._unbind(prefix_start,
-                                                        free_start)
+            unbound_inner, prefix_start = inner._unbind(
+                prefix_start, free_start)
             unbound_inners.append(unbound_inner)
         unbound_expression = type(self)(*unbound_inners, function=self._func)
         return unbound_expression, prefix_start

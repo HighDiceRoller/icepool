@@ -174,7 +174,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         return Order.Any
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return (self,)
+        return (self, )
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
@@ -220,7 +220,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         r = random.randrange(denominator)
         index = bisect.bisect_right(cumulative_weights, r)
         popped_generator, counts, _ = generated[index]
-        head = tuple((outcome,) * count for count in counts)
+        head = tuple((outcome, ) * count for count in counts)
         if popped_generator.outcomes():
             tail = popped_generator.sample()
             return tuple(tuple(sorted(h + t)) for h, t, in zip(head, tail))

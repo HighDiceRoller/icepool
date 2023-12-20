@@ -119,7 +119,8 @@ def absorbing_markov_chain(
         return die.simplify()
 
     outcome_to_index = {
-        outcome: i for i, outcome in enumerate(transients.keys())
+        outcome: i
+        for i, outcome in enumerate(transients.keys())
     }
 
     # [dst_index][src]
