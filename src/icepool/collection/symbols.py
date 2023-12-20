@@ -39,7 +39,8 @@ class Symbols(Mapping[str, int]):
     """
     _data: defaultdict[str, int]
 
-    def __new__(cls, symbols: str | Iterable[str] | Mapping[str, int]):
+    def __new__(cls,
+                symbols: str | Iterable[str] | Mapping[str, int]) -> 'Symbols':
         """Constructor.
         
         The argument can be a string, an iterable of characters, or a mapping of
@@ -91,9 +92,9 @@ class Symbols(Mapping[str, int]):
                 defaultdict(int, {s: self._data[s]
                                   for s in key}))
 
-    def __getattr__(self, key: str):
+    def __getattr__(self, key: str) -> 'int | Symbols':
         if key[0] == '_':
-            return AttributeError(key)
+            raise AttributeError(key)
         return self[key]
 
     def __iter__(self) -> Iterator[str]:
@@ -170,7 +171,7 @@ class Symbols(Mapping[str, int]):
 
     __rmul__ = __mul__
 
-    def __floordiv__(self, other: int):
+    def __floordiv__(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
         if other < 0:
@@ -219,13 +220,13 @@ class Symbols(Mapping[str, int]):
 
     __ge__ = issuperset
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, Symbols):
             return False
         return all(self[s] == other[s]  # type: ignore
                    for s in itertools.chain(self, other))
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         if not isinstance(other, Symbols):
             return True
         return any(self[s] != other[s]  # type: ignore
@@ -233,14 +234,14 @@ class Symbols(Mapping[str, int]):
 
     # Unary operators.
 
-    def __pos__(self):
+    def __pos__(self) -> 'Symbols':
         data = defaultdict(int, {
             s: count
             for s, count in self.items() if count > 0
         })
         return Symbols._new_raw(data)
 
-    def __neg__(self):
+    def __neg__(self) -> 'Symbols':
         data = defaultdict(int, {s: -count for s, count in self.items()})
         return Symbols._new_raw(data)
 
