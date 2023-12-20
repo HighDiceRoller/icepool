@@ -4,7 +4,7 @@ import pytest
 from icepool import d4, d6, d8, d10, d12, d20
 
 test_dice = [
-    (d6,),
+    (d6, ),
     (icepool.Die([]), d6, d6),
     (d6, d6, icepool.Die([])),
     (d20, 10),
@@ -53,7 +53,7 @@ def test_highest(dice, keep, drop):
 
 
 test_dice = [
-    (d6,),
+    (d6, ),
     (icepool.Die([]), d6, d6),
     (d6, d6, icepool.Die([])),
     (d20, 10),

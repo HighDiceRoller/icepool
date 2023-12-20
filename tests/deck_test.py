@@ -20,7 +20,8 @@ class SumEachEvaluator(MultisetEvaluator):
         if state is None:
             return tuple(0 for x in counts)
         else:
-            return tuple(x + outcome * count for x, count in zip(state, counts))
+            return tuple(x + outcome * count
+                         for x, count in zip(state, counts))
 
 
 def test_empty_deal():

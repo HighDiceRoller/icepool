@@ -46,4 +46,4 @@ def test_highest_minus_lowest_slice():
 
 def test_highest_minus_lowest_slice_shorten():
     pool = icepool.d6.pool(1)
-    assert pool[-1, ..., 1].keep_tuple() == (0,)
+    assert pool[-1, ..., 1].keep_tuple() == (0, )
