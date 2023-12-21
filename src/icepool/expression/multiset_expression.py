@@ -55,6 +55,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `divide_counts`, `//`       | `count // n`                       |
     | `keep_counts`               | `count if count >= n else 0`       |
     | unary `+`                   | same as `keep_counts(0)`           |
+    | unary `-`                   | reverses the sign of all counts    |
     | `unique`                    | `min(count, n)`                    |
     | `keep_outcomes`             | `count if outcome in t else 0`     |
     | `drop_outcomes`             | `count if outcome not in t else 0` |
@@ -470,6 +471,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
         return icepool.expression.FilterCountsExpression(self, 0)
+
+    def __neg__(self) -> 'MultisetExpression[T_contra]':
+        return icepool.expression.MultiplyCountsExpression(self, -1)
 
     def keep_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
         """Counts less than `min_count` are treated as zero.
