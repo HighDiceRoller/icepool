@@ -187,10 +187,9 @@ class Symbols(Mapping[str, int]):
     __rxor__ = symmetric_difference
 
     def multiply_counts(self, other: int) -> 'Symbols':
+        """Multiplies all counts by an integer."""
         if not isinstance(other, int):
             return NotImplemented
-        if other < 0:
-            raise ValueError('Negative counts are not supported.')
         data = defaultdict(int, {
             s: count * other
             for s, count in self.items()
@@ -201,10 +200,9 @@ class Symbols(Mapping[str, int]):
     __rmul__ = multiply_counts
 
     def divide_counts(self, other: int) -> 'Symbols':
+        """Divides all counts by an integer, rounding down."""
         if not isinstance(other, int):
             return NotImplemented
-        if other < 0:
-            raise ValueError('Negative counts are not supported.')
         data = defaultdict(int, {
             s: count // other
             for s, count in self.items()
