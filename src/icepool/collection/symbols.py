@@ -252,14 +252,18 @@ class Symbols(Mapping[str, int]):
     __ge__ = issuperset
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, Symbols):
-            return False
+        try:
+            other = Symbols(other)
+        except TypeError:
+            return NotImplemented
         return all(self[s] == other[s]  # type: ignore
                    for s in itertools.chain(self, other))
 
     def __ne__(self, other) -> bool:
-        if not isinstance(other, Symbols):
-            return True
+        try:
+            other = Symbols(other)
+        except TypeError:
+            return NotImplemented
         return any(self[s] != other[s]  # type: ignore
                    for s in itertools.chain(self, other))
 
