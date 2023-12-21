@@ -12,9 +12,27 @@ class Symbols(Mapping[str, int]):
     """EXPERIMENTAL: Immutable multiset of single characters.
 
     Spaces, dashes, and underscores cannot be used as symbols.
+
+    Operations include:
+
+    | Operation                   | Count / notes                      |
+    |:----------------------------|:-----------------------------------|
+    | `additive_union`, `+`       | `l + r`                            |
+    | `difference`, `-`           | `l - r`                            |
+    | `intersection`, `&`         | `min(l, r)`                        |
+    | `union`, `\\|`               | `max(l, r)`                        |
+    | `symmetric_difference`, `^` | `abs(l - r)`                       |
+    | `multiply_counts`, `*`      | `count * n`                        |
+    | `divide_counts`, `//`       | `count // n`                       |
+    | `issubset`, `<=`            | all counts l <= r                  |
+    | `issuperset`, `>=`          | all counts l >= r                  |
+    | `==`                        | all counts l == r                  |
+    | `!=`                        | any count l != r                   |
+    | unary `+`                   | drop all negative counts           |
+    | unary `-`                   | reverses the sign of all counts    |
     
-    Binary operators with other multisets are `+, -, &, |, <=, >=, ==, !=`.
-    The other operand is implicitly converted to Symbols.
+    Binary operators implicitly convert the other argument to `Symbols` using
+    the constructor.
 
     Binary operators with `int`s are `*, //`
     (`int` on right side only for `//`).
@@ -158,7 +176,17 @@ class Symbols(Mapping[str, int]):
     __or__ = union
     __ror__ = union
 
-    def __mul__(self, other: int) -> 'Symbols':
+    def symmetric_difference(
+            self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        data = defaultdict(int, self._data)
+        for s, count in Symbols(other).items():
+            data[s] = abs(data[s] - count)
+        return Symbols._new_raw(data)
+
+    __xor__ = symmetric_difference
+    __rxor__ = symmetric_difference
+
+    def multiply_counts(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
         if other < 0:
@@ -169,9 +197,10 @@ class Symbols(Mapping[str, int]):
         })
         return Symbols._new_raw(data)
 
-    __rmul__ = __mul__
+    __mul__ = multiply_counts
+    __rmul__ = multiply_counts
 
-    def __floordiv__(self, other: int) -> 'Symbols':
+    def divide_counts(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
         if other < 0:
@@ -181,6 +210,8 @@ class Symbols(Mapping[str, int]):
             for s, count in self.items()
         })
         return Symbols._new_raw(data)
+
+    __floordiv__ = divide_counts
 
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
