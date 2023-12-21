@@ -31,14 +31,8 @@ class Symbols(Mapping[str, int]):
     | unary `+`                   | drop all negative counts           |
     | unary `-`                   | reverses the sign of all counts    |
     
-    Binary operators implicitly convert the other argument to `Symbols` using
-    the constructor.
-
-    Binary operators with `int`s are `*, //`
-    (`int` on right side only for `//`).
-
-    Unary `+` removes all negative counts.
-    Unary `-` reverses the sign of all counts.
+    Binary operators other than `*` and `//` implicitly convert the other
+    argument to `Symbols` using the constructor.
 
     Subscripting with a single character returns the count of that character
     as an `int`. E.g. `symbols['a']` -> number of `a`s as an `int`.
@@ -49,7 +43,7 @@ class Symbols(Mapping[str, int]):
     E.g. `symbols['ab']` -> number of `a`s and `b`s as a `Symbols`.
     Again you can also access it as an attribute, e.g. `symbols.ab`.
 
-    Duplicate symbols have no extra effect here, except e.g. `symbols.aa`
+    Duplicate symbols have no extra effect here, except that e.g. `symbols.aa`
     will produce a `Symbols` rather than an `int`.
 
     Note that attribute access only works with valid identifiers,
