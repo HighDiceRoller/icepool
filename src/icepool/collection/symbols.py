@@ -121,15 +121,6 @@ class Symbols(Mapping[str, int]):
     def __len__(self) -> int:
         return len(self._data)
 
-    def total(self) -> int:
-        return sum(self._data.values())
-
-    def elements(self) -> str:
-        """All symbols, including duplicates, in ascending order as a str.
-        
-        Same as str(self)."""
-        return str(self)
-
     # Binary operators.
 
     def additive_union(self,
@@ -285,6 +276,18 @@ class Symbols(Mapping[str, int]):
     def __hash__(self) -> int:
         return self._hash
 
+    def count(self) -> int:
+        """The total number of elements."""
+        return sum(self._data.values())
+
+    def elements(self) -> str:
+        """All symbols, including duplicates, in ascending order as a str.
+
+        If there are negative elements, they are listed following a ` - ` sign.
+        
+        Same as str(self)."""
+        return self._str
+
     @cached_property
     def _str(self) -> str:
         sorted_keys = sorted(self)
@@ -303,8 +306,7 @@ class Symbols(Mapping[str, int]):
             else:
                 return ''
 
-    def __str__(self) -> str:
-        return self._str
+    __str__ = elements
 
     def __repr__(self) -> str:
-        return f"Symbols('{str(self)}')"
+        return type(self).__qualname__ + f"('{str(self)}')"
