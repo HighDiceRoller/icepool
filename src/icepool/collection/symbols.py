@@ -280,14 +280,6 @@ class Symbols(Mapping[str, int]):
         """The total number of elements."""
         return sum(self._data.values())
 
-    def elements(self) -> str:
-        """All symbols, including duplicates, in ascending order as a str.
-
-        If there are negative elements, they are listed following a ` - ` sign.
-        
-        Same as str(self)."""
-        return self._str
-
     @cached_property
     def _str(self) -> str:
         sorted_keys = sorted(self)
@@ -306,7 +298,12 @@ class Symbols(Mapping[str, int]):
             else:
                 return ''
 
-    __str__ = elements
+    def __str__(self) -> str:
+        """All symbols in unary form (i.e. including duplicates) in ascending order.
+
+        If there are negative elements, they are listed following a ` - ` sign.
+        """
+        return self._str
 
     def __repr__(self) -> str:
         return type(self).__qualname__ + f"('{str(self)}')"
