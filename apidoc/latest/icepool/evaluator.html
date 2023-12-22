@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 14.2.0"/>
+    <meta name="generator" content="pdoc 14.3.0"/>
     <title>icepool.evaluator API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -3338,11 +3338,14 @@ bool are <code>True</code>.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="IsDisjointSetEvaluator-111"><a href="#IsDisjointSetEvaluator-111"><span class="linenos">111</span></a><span class="k">class</span> <span class="nc">IsDisjointSetEvaluator</span><span class="p">(</span><span class="n">ComparisonEvaluator</span><span class="p">):</span>
 </span><span id="IsDisjointSetEvaluator-112"><a href="#IsDisjointSetEvaluator-112"><span class="linenos">112</span></a>
 </span><span id="IsDisjointSetEvaluator-113"><a href="#IsDisjointSetEvaluator-113"><span class="linenos">113</span></a>    <span class="k">def</span> <span class="nf">any_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-</span><span id="IsDisjointSetEvaluator-114"><a href="#IsDisjointSetEvaluator-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="ow">not</span> <span class="p">((</span><span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="IsDisjointSetEvaluator-115"><a href="#IsDisjointSetEvaluator-115"><span class="linenos">115</span></a>
-</span><span id="IsDisjointSetEvaluator-116"><a href="#IsDisjointSetEvaluator-116"><span class="linenos">116</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="IsDisjointSetEvaluator-117"><a href="#IsDisjointSetEvaluator-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="nf">default_outcome</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="IsDisjointSetEvaluator-118"><a href="#IsDisjointSetEvaluator-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="IsDisjointSetEvaluator-114"><a href="#IsDisjointSetEvaluator-114"><span class="linenos">114</span></a>        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="IsDisjointSetEvaluator-115"><a href="#IsDisjointSetEvaluator-115"><span class="linenos">115</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="IsDisjointSetEvaluator-116"><a href="#IsDisjointSetEvaluator-116"><span class="linenos">116</span></a>                <span class="s1">&#39;isdisjoint() is not defined for negative counts.&#39;</span><span class="p">)</span>
+</span><span id="IsDisjointSetEvaluator-117"><a href="#IsDisjointSetEvaluator-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="ow">not</span> <span class="p">(</span><span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="IsDisjointSetEvaluator-118"><a href="#IsDisjointSetEvaluator-118"><span class="linenos">118</span></a>
+</span><span id="IsDisjointSetEvaluator-119"><a href="#IsDisjointSetEvaluator-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="IsDisjointSetEvaluator-120"><a href="#IsDisjointSetEvaluator-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="nf">default_outcome</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="IsDisjointSetEvaluator-121"><a href="#IsDisjointSetEvaluator-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="kc">True</span>
 </span></pre></div>
 
 
@@ -3362,7 +3365,10 @@ bool are <code>True</code>.</p>
     </div>
     <a class="headerlink" href="#IsDisjointSetEvaluator.any_all"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="IsDisjointSetEvaluator.any_all-113"><a href="#IsDisjointSetEvaluator.any_all-113"><span class="linenos">113</span></a>    <span class="k">def</span> <span class="nf">any_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">right</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-</span><span id="IsDisjointSetEvaluator.any_all-114"><a href="#IsDisjointSetEvaluator.any_all-114"><span class="linenos">114</span></a>        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="ow">not</span> <span class="p">((</span><span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="IsDisjointSetEvaluator.any_all-114"><a href="#IsDisjointSetEvaluator.any_all-114"><span class="linenos">114</span></a>        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="IsDisjointSetEvaluator.any_all-115"><a href="#IsDisjointSetEvaluator.any_all-115"><span class="linenos">115</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="IsDisjointSetEvaluator.any_all-116"><a href="#IsDisjointSetEvaluator.any_all-116"><span class="linenos">116</span></a>                <span class="s1">&#39;isdisjoint() is not defined for negative counts.&#39;</span><span class="p">)</span>
+</span><span id="IsDisjointSetEvaluator.any_all-117"><a href="#IsDisjointSetEvaluator.any_all-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="ow">not</span> <span class="p">(</span><span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -3386,9 +3392,9 @@ bool are <code>True</code>.</p>
 
     </div>
     <a class="headerlink" href="#IsDisjointSetEvaluator.default_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDisjointSetEvaluator.default_outcome-116"><a href="#IsDisjointSetEvaluator.default_outcome-116"><span class="linenos">116</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="IsDisjointSetEvaluator.default_outcome-117"><a href="#IsDisjointSetEvaluator.default_outcome-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="nf">default_outcome</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="IsDisjointSetEvaluator.default_outcome-118"><a href="#IsDisjointSetEvaluator.default_outcome-118"><span class="linenos">118</span></a>        <span class="k">return</span> <span class="kc">True</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="IsDisjointSetEvaluator.default_outcome-119"><a href="#IsDisjointSetEvaluator.default_outcome-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="IsDisjointSetEvaluator.default_outcome-120"><a href="#IsDisjointSetEvaluator.default_outcome-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="nf">default_outcome</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="IsDisjointSetEvaluator.default_outcome-121"><a href="#IsDisjointSetEvaluator.default_outcome-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="kc">True</span>
 </span></pre></div>
 
 
