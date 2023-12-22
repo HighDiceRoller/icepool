@@ -42,9 +42,15 @@ class Symbols(Mapping[str, int]):
     characters, dropping the rest.
     E.g. `symbols['ab']` -> number of `a`s and `b`s as a `Symbols`.
     Again you can also access it as an attribute, e.g. `symbols.ab`.
+    This is useful for reducing the outcome space, which reduces computational
+    cost for further operations.
 
     Duplicate symbols have no extra effect here, except that e.g. `symbols.aa`
-    will produce a `Symbols` rather than an `int`.
+    will produce a `Symbols` rather than an `int`. In order to avoid confusion
+    with methods, try not to spell words when using attribute-style access.
+
+    `Population.marginals` forwards attribute access, so you can use e.g.
+    `die.marginals.a` to get the marginal distribution of `a`s.
 
     Note that attribute access only works with valid identifiers,
     so e.g. emojis would need to use the subscript method.
@@ -207,7 +213,7 @@ class Symbols(Mapping[str, int]):
         return str(self) > str(other)
 
     def issubset(self, other: Iterable[str] | Mapping[str, int]) -> bool:
-        """Whether this Symbols is a subset of the other.
+        """Whether `self` is a subset of the other.
 
         Same as `<=`.
         
@@ -221,7 +227,7 @@ class Symbols(Mapping[str, int]):
     __le__ = issubset
 
     def issuperset(self, other: Iterable[str] | Mapping[str, int]) -> bool:
-        """Whether this Symbols is a superset of the other.
+        """Whether `self` is a superset of the other.
 
         Same as `>=`.
         
@@ -233,6 +239,19 @@ class Symbols(Mapping[str, int]):
                    for s in itertools.chain(self, other))
 
     __ge__ = issuperset
+
+    def isdisjoint(self, other: Iterable[str] | Mapping[str, int]) -> bool:
+        """Whether `self` has any positive elements in common with the other.
+        
+        Raises:
+            ValueError if either has negative elements.
+        """
+        other = Symbols(other)
+        if self.has_negative_counts() or other.has_negative_counts():
+            raise ValueError(
+                "isdisjoint() is not defined for negative counts.")
+        return any(self[s] > 0 and other[s] > 0  # type: ignore
+                   for s in self)
 
     def __eq__(self, other) -> bool:
         try:
@@ -251,6 +270,10 @@ class Symbols(Mapping[str, int]):
                    for s in itertools.chain(self, other))
 
     # Unary operators.
+
+    def has_negative_counts(self) -> bool:
+        """Whether any counts are negative."""
+        return any(c < 0 for c in self.values())
 
     def __pos__(self) -> 'Symbols':
         data = defaultdict(int, {

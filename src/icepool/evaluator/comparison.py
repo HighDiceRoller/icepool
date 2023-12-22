@@ -110,7 +110,10 @@ class IsNotEqualSetEvaluator(ComparisonEvaluator):
 class IsDisjointSetEvaluator(ComparisonEvaluator):
 
     def any_all(self, left: int, right: int) -> tuple[bool, bool]:
-        return True, not ((left > 0) and right > 0)
+        if left < 0 or right < 0:
+            raise ValueError(
+                'isdisjoint() is not defined for negative counts.')
+        return True, not (left > 0 and right > 0)
 
     @staticmethod
     def default_outcome() -> bool:
