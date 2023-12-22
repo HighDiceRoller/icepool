@@ -30,6 +30,8 @@ class Symbols(Mapping[str, int]):
     | `!=`                        | any count l != r                   |
     | unary `+`                   | drop all negative counts           |
     | unary `-`                   | reverses the sign of all counts    |
+
+    `<` and `>` are lexicographic orderings rather than subset relations.
     
     Binary operators other than `*` and `//` implicitly convert the other
     argument to `Symbols` using the constructor.
@@ -123,21 +125,23 @@ class Symbols(Mapping[str, int]):
 
     # Binary operators.
 
-    def additive_union(self,
-                       other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+    def additive_union(self, *args:
+                       Iterable[str] | Mapping[str, int]) -> 'Symbols':
         data = defaultdict(int, self._data)
-        for s, count in Symbols(other).items():
-            data[s] += count
+        for other in args:
+            for s, count in Symbols(other).items():
+                data[s] += count
         return Symbols._new_raw(data)
 
     __add__ = additive_union
     __radd__ = additive_union
 
-    def difference(self,
-                   other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+    def difference(self, *args:
+                   Iterable[str] | Mapping[str, int]) -> 'Symbols':
         data = defaultdict(int, self._data)
-        for s, count in Symbols(other).items():
-            data[s] -= count
+        for other in args:
+            for s, count in Symbols(other).items():
+                data[s] -= count
         return Symbols._new_raw(data)
 
     __sub__ = difference
@@ -148,20 +152,22 @@ class Symbols(Mapping[str, int]):
             data[s] -= count
         return Symbols._new_raw(data)
 
-    def intersection(self,
-                     other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+    def intersection(self, *args:
+                     Iterable[str] | Mapping[str, int]) -> 'Symbols':
         data = defaultdict(int, self._data)
-        for s, count in Symbols(other).items():
-            data[s] = min(data[s], count)
+        for other in args:
+            for s, count in Symbols(other).items():
+                data[s] = min(data[s], count)
         return Symbols._new_raw(data)
 
     __and__ = intersection
     __rand__ = intersection
 
-    def union(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+    def union(self, *args: Iterable[str] | Mapping[str, int]) -> 'Symbols':
         data = defaultdict(int, self._data)
-        for s, count in Symbols(other).items():
-            data[s] = max(data[s], count)
+        for other in args:
+            for s, count in Symbols(other).items():
+                data[s] = max(data[s], count)
         return Symbols._new_raw(data)
 
     __or__ = union
