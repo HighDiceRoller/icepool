@@ -1,3 +1,15 @@
+## v1.2.0
+
+* Experimental `Symbols` class representing a multiset of characters.
+* `marginals` now forwards `__getattr__` to outcomes, as long as the attribute name doesn't begin with an underscore.
+* Operators on expressions now keep negative counts by default. The `keep_negative_counts` argument is retired.
+* Add unary `-` for `MultisetExpression`.
+* `MultisetExpression.isdisjoint()` now raises an error for negative counts.
+* Small performance optimization for `Vector`.
+* `Population.marginals` is no longer a `Sequence`, since the mixins don't make sense.
+* `Mapping`s are now properly excluded from `Population.common_outcome_length`.
+* Fixed quoting in `repr` for populations.
+
 ## v1.1.2
 
 * Add `z(n)`, which produces a die that runs from 0 to `n - 1` inclusive.
