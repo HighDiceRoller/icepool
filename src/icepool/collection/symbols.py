@@ -1,6 +1,10 @@
 __docformat__ = 'google'
 
+import icepool
+
+import functools
 import itertools
+import operator
 import re
 
 from collections import defaultdict
@@ -127,26 +131,35 @@ class Symbols(Mapping[str, int]):
 
     def additive_union(self, *args:
                        Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        """The sum of counts of each symbol."""
+        return functools.reduce(operator.add, args, initial=self)
+
+    def __add__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, self._data)
-        for other in args:
-            for s, count in Symbols(other).items():
-                data[s] += count
+        for s, count in Symbols(other).items():
+            data[s] += count
         return Symbols._new_raw(data)
 
-    __add__ = additive_union
-    __radd__ = additive_union
+    __radd__ = __add__
 
     def difference(self, *args:
                    Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        """The difference between the counts of each symbol."""
+        return functools.reduce(operator.sub, args, initial=self)
+
+    def __sub__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, self._data)
-        for other in args:
-            for s, count in Symbols(other).items():
-                data[s] -= count
+        for s, count in Symbols(other).items():
+            data[s] -= count
         return Symbols._new_raw(data)
 
-    __sub__ = difference
-
     def __rsub__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, Symbols(other)._data)
         for s, count in self.items():
             data[s] -= count
@@ -154,37 +167,53 @@ class Symbols(Mapping[str, int]):
 
     def intersection(self, *args:
                      Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        """The min count of each symbol."""
+        return functools.reduce(operator.and_, args, initial=self)
+
+    def __and__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, self._data)
-        for other in args:
-            for s, count in Symbols(other).items():
-                data[s] = min(data[s], count)
+        for s, count in Symbols(other).items():
+            data[s] = min(data[s], count)
         return Symbols._new_raw(data)
 
-    __and__ = intersection
-    __rand__ = intersection
+    __rand__ = __and__
 
     def union(self, *args: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        """The max count of each symbol."""
+        return functools.reduce(operator.or_, args, initial=self)
+
+    def __or__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, self._data)
-        for other in args:
-            for s, count in Symbols(other).items():
-                data[s] = max(data[s], count)
+        for s, count in Symbols(other).items():
+            data[s] = max(data[s], count)
         return Symbols._new_raw(data)
 
-    __or__ = union
-    __ror__ = union
+    __ror__ = __or__
 
     def symmetric_difference(
             self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        """The absolute difference in symbol counts between the two sets."""
+        return self ^ other
+
+    def __xor__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         data = defaultdict(int, self._data)
         for s, count in Symbols(other).items():
             data[s] = abs(data[s] - count)
         return Symbols._new_raw(data)
 
-    __xor__ = symmetric_difference
-    __rxor__ = symmetric_difference
+    __rxor__ = __xor__
 
     def multiply_counts(self, other: int) -> 'Symbols':
         """Multiplies all counts by an integer."""
+        return self * other
+
+    def __mul__(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
         data = defaultdict(int, {
@@ -193,11 +222,13 @@ class Symbols(Mapping[str, int]):
         })
         return Symbols._new_raw(data)
 
-    __mul__ = multiply_counts
-    __rmul__ = multiply_counts
+    __rmul__ = __mul__
 
     def divide_counts(self, other: int) -> 'Symbols':
         """Divides all counts by an integer, rounding down."""
+        return self // other
+
+    def __floordiv__(self, other: int) -> 'Symbols':
         if not isinstance(other, int):
             return NotImplemented
         data = defaultdict(int, {
@@ -205,8 +236,6 @@ class Symbols(Mapping[str, int]):
             for s, count in self.items()
         })
         return Symbols._new_raw(data)
-
-    __floordiv__ = divide_counts
 
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
@@ -226,11 +255,14 @@ class Symbols(Mapping[str, int]):
         Note that the `<` and `>` operators are lexicographic orderings,
         not proper subset relations.
         """
+        return self <= other
+
+    def __le__(self, other: Iterable[str] | Mapping[str, int]) -> bool:
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         other = Symbols(other)
         return all(self[s] <= other[s]  # type: ignore
                    for s in itertools.chain(self, other))
-
-    __le__ = issubset
 
     def issuperset(self, other: Iterable[str] | Mapping[str, int]) -> bool:
         """Whether `self` is a superset of the other.
@@ -240,11 +272,14 @@ class Symbols(Mapping[str, int]):
         Note that the `<` and `>` operators are lexicographic orderings,
         not proper subset relations.
         """
+        return self >= other
+
+    def __ge__(self, other: Iterable[str] | Mapping[str, int]) -> bool:
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         other = Symbols(other)
         return all(self[s] >= other[s]  # type: ignore
                    for s in itertools.chain(self, other))
-
-    __ge__ = issuperset
 
     def isdisjoint(self, other: Iterable[str] | Mapping[str, int]) -> bool:
         """Whether `self` has any positive elements in common with the other.
@@ -260,6 +295,8 @@ class Symbols(Mapping[str, int]):
                    for s in self)
 
     def __eq__(self, other) -> bool:
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         try:
             other = Symbols(other)
         except TypeError:
@@ -268,6 +305,8 @@ class Symbols(Mapping[str, int]):
                    for s in itertools.chain(self, other))
 
     def __ne__(self, other) -> bool:
+        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         try:
             other = Symbols(other)
         except TypeError:
