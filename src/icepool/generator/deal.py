@@ -5,7 +5,7 @@ from icepool.typing import Outcome, Qs, T
 from typing import Any, Hashable, cast
 import icepool
 from icepool.collection.counts import CountsKeysView
-from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
+from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.math import iter_hypergeom
 
 from functools import cached_property
@@ -90,6 +90,9 @@ class Deal(MultisetGenerator[T, Qs]):
 
     def denominator(self) -> int:
         return self._denomiator
+
+    def _generate_initial(self) -> InitialMultisetGenerator:
+        yield self, 1
 
     def _generate_common(self, popped_deck: 'icepool.Deck[T]',
                          deck_count: int) -> NextMultisetGenerator:

@@ -281,7 +281,14 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                                   for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
 
-        dist = algorithm(order, alignment, generators)
+        dist: MutableMapping[Any, int] = defaultdict(int)
+        iterators = MultisetEvaluator._initialize_generators(generators)
+        for p in itertools.product(*iterators):
+            sub_generators, sub_weights = zip(*p)
+            prod_weight = math.prod(sub_weights)
+            sub_result = algorithm(order, alignment, sub_generators)
+            for sub_state, sub_weight in sub_result.items():
+                dist[sub_state] += sub_weight * prod_weight
 
         final_outcomes = []
         final_weights = []
@@ -431,6 +438,12 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                                       generators] += weight * prod_weight
             dist = next_dist
         return final_dist
+
+    @staticmethod
+    def _initialize_generators(
+        generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
+    ) -> 'tuple[icepool.InitialMultisetGenerator, ...]':
+        return tuple(generator._generate_initial() for generator in generators)
 
     @staticmethod
     def _pop_generators(

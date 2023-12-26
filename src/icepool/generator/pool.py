@@ -6,7 +6,7 @@ import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collection.counts import Counts
-from icepool.generator.multiset_generator import NextMultisetGenerator, MultisetGenerator
+from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 
 import itertools
 import math
@@ -214,6 +214,9 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def max_outcome(self) -> T:
         """The max outcome among all dice in this pool."""
         return self._max_outcome
+
+    def _generate_initial(self) -> InitialMultisetGenerator:
+        yield self, 1
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the min outcome.

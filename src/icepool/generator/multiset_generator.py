@@ -18,6 +18,8 @@ from functools import cached_property
 
 from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, cast
 
+InitialMultisetGenerator: TypeAlias = Iterator[tuple[
+    'icepool.MultisetGenerator', int]]
 NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
                                                   Sequence, int]]
 """The generator type returned by `_generate_min` and `_generate_max`."""
@@ -55,6 +57,17 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
         For example, a dice `Pool` will return `False` if it contains any dice
         with no outcomes.
+        """
+
+    @abstractmethod
+    def _generate_initial(self) -> InitialMultisetGenerator:
+        """Initialize the generator before any outcomes are emitted.
+
+        Yields:
+            * A sub-generator.
+            * The weight for selecting that sub-generator.
+        
+        Unitary generators can just yield `(self, 1)` and return.
         """
 
     @abstractmethod

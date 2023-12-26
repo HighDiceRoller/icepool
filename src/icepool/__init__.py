@@ -84,7 +84,7 @@ from icepool.population.keep import lowest, highest, middle
 
 from icepool.generator.pool import Pool, standard_pool
 
-from icepool.generator.multiset_generator import MultisetGenerator, NextMultisetGenerator
+from icepool.generator.multiset_generator import MultisetGenerator, InitialMultisetGenerator, NextMultisetGenerator
 from icepool.generator.alignment import Alignment
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 

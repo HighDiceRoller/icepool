@@ -7,6 +7,8 @@ from functools import cached_property
 
 from typing import Collection, Hashable, Iterator, Sequence, TypeAlias
 
+InitialAlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', int]]
+
 AlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', Sequence[int],
                                                int]]
 
@@ -29,6 +31,9 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
 
     def _is_resolvable(self) -> bool:
         return True
+
+    def _generate_initial(self) -> InitialAlignmentGenerator:
+        yield self, 1
 
     def _generate_min(self, min_outcome) -> AlignmentGenerator:
         """`Alignment` only outputs 0 counts with weight 1."""
