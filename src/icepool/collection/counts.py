@@ -185,7 +185,7 @@ class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
         return self._mapping._items == other
 
 
-def sorted_union(*args: Collection[T]) -> Sequence[T]:
+def sorted_union(*args: Iterable[T]) -> Sequence[T]:
     """Merge sets into a sorted sequence."""
     if not args:
         return ()

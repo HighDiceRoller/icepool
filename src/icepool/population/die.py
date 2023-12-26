@@ -17,7 +17,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast
+from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, cast
 
 
 def implicit_convert_to_die(
@@ -317,6 +317,27 @@ class Die(Population[T_co]):
 
     # Rerolls and other outcome management.
 
+    def _select_outcomes(self, which: Callable[..., bool] | Collection[T_co],
+                         star: bool | None) -> Set[T_co]:
+        if callable(which):
+            if star is None:
+                star = guess_star(which)
+            if star:
+                # Need TypeVarTuple to check this.
+                return {
+                    outcome
+                    for outcome in self.outcomes()
+                    if which(*outcome)  # type: ignore
+                }
+            else:
+                return {
+                    outcome
+                    for outcome in self.outcomes() if which(outcome)
+                }
+        else:
+            # Collection.
+            return set(which)
+
     def reroll(self,
                which: Callable[..., bool] | Collection[T_co] | None = None,
                /,
@@ -346,25 +367,8 @@ class Die(Population[T_co]):
 
         if which is None:
             outcome_set = {self.min_outcome()}
-        elif callable(which):
-            if star is None:
-                star = guess_star(which)
-            if star:
-
-                # Need TypeVarTuple to check this.
-                outcome_set = {
-                    outcome
-                    for outcome in self.outcomes()
-                    if which(*outcome)  # type: ignore
-                }
-            else:
-                outcome_set = {
-                    outcome
-                    for outcome in self.outcomes() if which(outcome)
-                }
         else:
-            # Collection.
-            outcome_set = set(which)
+            outcome_set = self._select_outcomes(which, star)
 
         if depth is None:
             data = {
@@ -438,6 +442,42 @@ class Die(Population[T_co]):
                 for not_outcome in self.outcomes() if not_outcome not in which
             }
         return self.reroll(not_outcomes, depth=depth)
+
+    def split(self,
+              which: Callable[..., bool] | Collection[T_co] | None = None,
+              /,
+              *,
+              star: bool | None = None):
+        """Splits this die into one containing selected items and another containing the rest.
+
+        The total denominator is preserved.
+        
+        Equivalent to `self.filter(), self.reroll()`.
+
+        Args:
+            which: Selects which outcomes to reroll until. Options:
+                * A callable that takes an outcome and returns `True` if it
+                    should be accepted.
+                * A collection of outcomes to reroll until.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature.
+        """
+        if which is None:
+            outcome_set = {self.min_outcome()}
+        else:
+            outcome_set = self._select_outcomes(which, star)
+
+        selected = {}
+        not_selected = {}
+        for outcome, count in self.items():
+            if outcome in outcome_set:
+                selected[outcome] = count
+            else:
+                not_selected[outcome] = count
+
+        return Die(selected), Die(not_selected)
 
     def truncate(self, min_outcome=None, max_outcome=None) -> 'Die[T_co]':
         """Truncates the outcomes of this `Die` to the given range.
@@ -653,25 +693,8 @@ class Die(Population[T_co]):
 
         if which is None:
             outcome_set = {self.max_outcome()}
-        elif callable(which):
-            if star is None:
-                star = guess_star(which)
-            if star:
-                # Need TypeVarTuple to type-check this.
-                outcome_set = {
-                    outcome
-                    for outcome in self.outcomes()
-                    if which(*outcome)  # type: ignore
-                }
-            else:
-                outcome_set = {
-                    outcome
-                    for outcome in self.outcomes() if which(outcome)
-                }
         else:
-            if not which:
-                return self
-            outcome_set = set(which)
+            outcome_set = self._select_outcomes(which, star)
 
         if depth < 0:
             raise ValueError('depth cannot be negative.')
@@ -880,6 +903,55 @@ class Die(Population[T_co]):
         """
         # Expression evaluators are difficult to type.
         return self.pool(rolls).middle(keep, tie=tie).sum()  # type: ignore
+
+    def pool_explode(
+            self,
+            rolls: int,
+            /,
+            which: Collection[T_co] | Callable[..., bool] | None = None,
+            *,
+            star: bool | None = None,
+            depth: int = 9) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
+        """EXPERIMENTAL: Causes outcomes to be rolled again, keeping that outcome as an individual die in a pool.
+        
+        Args:
+            which: Which outcomes to explode. Options:
+                * A single outcome to explode.
+                * An collection of outcomes to explode.
+                * A callable that takes an outcome and returns `True` if it
+                    should be exploded.
+                * If not supplied, the max outcome will explode.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature.
+            depth: The maximum number of explosions.
+        """
+        if which is None:
+            explode_set = {self.max_outcome()}
+        else:
+            explode_set = self._select_outcomes(which, star)
+        explode, not_explode = self.split(explode_set)
+
+        single_data: 'MutableMapping[icepool.Vector[int], int]' = defaultdict(
+            int)
+        for i in range(depth):
+            weight = explode.denominator()**i * self.denominator()**(depth - i)
+            single_data[icepool.Vector((i, 1, 0))] += weight
+        end_weight = explode.denominator()**depth
+        single_data[icepool.Vector((depth, 0, 1))] += end_weight
+
+        single_count_die: 'Die[icepool.Vector[int]]' = Die(single_data)
+        count_die = rolls @ single_count_die
+
+        data: 'MutableMapping[icepool.Pool[T_co], int]' = defaultdict(int)
+        for (x, nx, f), weight in count_die.items():
+            pool = icepool.Pool([explode] * x + [not_explode] * nx +
+                                [self] * f)
+            data[pool] += weight
+
+        # type inference fails here
+        return icepool.MixtureMultisetGenerator(data)  # type: ignore
 
     # Unary operators.
 
