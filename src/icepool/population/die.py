@@ -904,7 +904,21 @@ class Die(Population[T_co]):
         # Expression evaluators are difficult to type.
         return self.pool(rolls).middle(keep, tie=tie).sum()  # type: ignore
 
-    def pool_explode(
+    def map_to_pool(
+        self,
+        repl:
+        'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.Reroll]',
+        /,
+        *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+        star: bool | None = None
+    ) -> 'icepool.MultisetGenerator[U, tuple[int]]':
+        """Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
+
+        As `icepool.map_to_pool(repl, self, ...)`.
+        """
+        return icepool.map_to_pool(repl, self, *extra_args, star=star)
+
+    def explode_to_pool(
             self,
             rolls: int,
             /,
@@ -944,14 +958,8 @@ class Die(Population[T_co]):
         single_count_die: 'Die[icepool.Vector[int]]' = Die(single_data)
         count_die = rolls @ single_count_die
 
-        data: 'MutableMapping[icepool.Pool[T_co], int]' = defaultdict(int)
-        for (x, nx, f), weight in count_die.items():
-            pool = icepool.Pool([explode] * x + [not_explode] * nx +
-                                [self] * f)
-            data[pool] += weight
-
-        # type inference fails here
-        return icepool.MixtureMultisetGenerator(data)  # type: ignore
+        return count_die.map_to_pool(
+            lambda x, nx, f: [explode] * x + [not_explode] * nx + [self] * f)
 
     # Unary operators.
 

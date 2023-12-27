@@ -11,7 +11,7 @@ from functools import cache, partial, update_wrapper, wraps
 import itertools
 import math
 
-from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Mapping, Sequence, TypeAlias, cast, overload
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeAlias, cast, overload
 
 
 @cache
@@ -344,6 +344,7 @@ def _canonicalize_transition_function(
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
     arg_count: int, star: bool | None
 ) -> 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]':
+    """Expresses repl as a function that takes arg_count variables."""
     if callable(repl):
         if star is None:
             star = guess_star(repl, arg_count)
@@ -372,7 +373,7 @@ def map(
     again_depth: int = 1,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
-    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes.
+    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, returning a Die.
 
     See `map_function` for a decorator version of this.
 
@@ -636,3 +637,38 @@ def map_and_time(
             return next_result
         result = next_result
     return result
+
+
+def map_to_pool(
+        repl:
+    'Callable[..., Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
+        /,
+        *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+        star: bool | None = None
+) -> 'icepool.MultisetGenerator[T, tuple[int]]':
+    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
+    
+    Args:
+        repl: One of the following:
+            * A callable that takes in one outcome per element of args and
+                produces a `Pool` (or something convertible to such).
+            * A mapping from old outcomes to `Pool` 
+                (or something convertible to such).
+                In this case args must have exactly one element.
+            The new outcomes may be dice rather than just single outcomes.
+            The special value `icepool.Reroll` will reroll that old outcome.
+    """
+    if star is None:
+        star = guess_star(repl, len(args))
+    if star:
+        transition_function = lambda o, *extra_args: repl(*o, *extra_args)
+    else:
+        transition_function = repl
+
+    data: 'MutableMapping[icepool.Pool[T], int]' = defaultdict(int)
+    for outcomes, quantity in iter_cartesian_product(*args):
+        pool = transition_function(*outcomes)
+        if pool is not icepool.Reroll:
+            data[icepool.Pool(pool)] += quantity
+    # I couldn't get the covariance / contravariance to work.
+    return icepool.MixtureMultisetGenerator(data)  # type: ignore
