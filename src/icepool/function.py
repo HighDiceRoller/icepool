@@ -646,7 +646,7 @@ def map_to_pool(
         *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
         star: bool | None = None
 ) -> 'icepool.MultisetGenerator[T, tuple[int]]':
-    """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
+    """EXPERIMENTAL: Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
     
     Args:
         repl: One of the following:

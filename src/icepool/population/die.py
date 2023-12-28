@@ -912,7 +912,7 @@ class Die(Population[T_co]):
         *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
         star: bool | None = None
     ) -> 'icepool.MultisetGenerator[U, tuple[int]]':
-        """Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
+        """EXPERIMENTAL: Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
 
         As `icepool.map_to_pool(repl, self, ...)`.
         """
@@ -929,6 +929,7 @@ class Die(Population[T_co]):
         """EXPERIMENTAL: Causes outcomes to be rolled again, keeping that outcome as an individual die in a pool.
         
         Args:
+            rolls: The number of initial dice.
             which: Which outcomes to explode. Options:
                 * A single outcome to explode.
                 * An collection of outcomes to explode.
@@ -939,7 +940,7 @@ class Die(Population[T_co]):
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
-            depth: The maximum number of explosions.
+            depth: The maximum depth of explosions for an individual dice.
         """
         if which is None:
             explode_set = {self.max_outcome()}
@@ -951,15 +952,16 @@ class Die(Population[T_co]):
             int)
         for i in range(depth):
             weight = explode.denominator()**i * self.denominator()**(depth - i)
-            single_data[icepool.Vector((i, 1, 0))] += weight
+            single_data[icepool.Vector((i, 1))] += weight
         end_weight = explode.denominator()**depth
-        single_data[icepool.Vector((depth, 0, 1))] += end_weight
+        single_data[icepool.Vector((depth, 1))] += end_weight
+        single_data[icepool.Vector((depth + 1, 0))] += end_weight
 
         single_count_die: 'Die[icepool.Vector[int]]' = Die(single_data)
         count_die = rolls @ single_count_die
 
         return count_die.map_to_pool(
-            lambda x, nx, f: [explode] * x + [not_explode] * nx + [self] * f)
+            lambda x, nx: [explode] * x + [not_explode] * nx)
 
     # Unary operators.
 
