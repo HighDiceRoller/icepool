@@ -900,64 +900,152 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
 
-    def compair(
-        self,
-        other:
+    def compair_lt(
+            self,
+            other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
-        op: Literal['<', '<=', '>', '>=', '==', '!='] | None = None,
-        /,
-        *,
-        order: Order = Order.Descending,
-        initial=None,
-        tie=None,
-        left=None,
-        right=None,
-        extra_left=None,
-        extra_right=None
-    ) -> 'icepool.Die | icepool.MultisetEvaluator[T_contra, Any]':
-        """Evaluation: EXPERIMENTAL: Compares sorted pairs of two multisets and scores wins, ties, and extra elements.
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is < `other`.
 
-        Interface is not stable yet.
-
-        For example, `left=1` would count how many pairs were won by the left
-        side, and `left=1, right=-1` would give the difference in the number of
-        pairs won by each side.
-
-        Any score argument 
-        (`initial, tie, left, right, extra_left, extra_right`) 
-        not provided will be set to a zero value determined from another score 
-        argument times `0`.
+        Any extra unpaired elements do not affect the result.
 
         Args:
-            op: Sets the score values based on the given operator and `order`.
-                Allowed values are `'<', '<=', '>', '>=', '==', '!='`.
-                Each pair that fits the comparator counts as 1.
-                If one side has more elements than the other, the extra
-                elements are ignored.
-            order: If descending (default), pairs are made in descending order
-                and the higher element wins. If ascending, pairs are made in
-                ascending order and the lower element wins.
-            
-            initial: The initial score.
-            tie: The score for each pair that is a tie.
-            left: The score for each pair that left wins.
-            right: The score for each pair that right wins.
-            extra_left: If left has more elements, each extra element scores
-                this much.
-            extra_right: If right has more elements, each extra element scores
-                this much.
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
         """
-        try:
-            other = implicit_convert_to_expression(other)
-        except TypeError:
-            return NotImplemented
+        other = implicit_convert_to_expression(other)
         return self.evaluate(other,
                              evaluator=icepool.evaluator.CompairEvalautor(
-                                 op=op,
                                  order=order,
-                                 initial=initial,
-                                 tie=tie,
-                                 left=left,
-                                 right=right,
-                                 extra_left=extra_left,
-                                 extra_right=extra_right))
+                                 tie=0,
+                                 left_greater=0,
+                                 right_greater=1))
+
+    def compair_le(
+            self,
+            other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is <= `other`.
+
+        Any extra unpaired elements do not affect the result.
+
+        Example: number of armies destroyed by the defender in a 
+        3v2 attack in *RISK*:
+        ```
+        d6.pool(3).compair_le(d6.pool(2))
+        ```
+
+        Args:
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 order=order,
+                                 tie=1,
+                                 left_greater=0,
+                                 right_greater=1))
+
+    def compair_gt(
+            self,
+            other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is > `other`.
+
+        Any extra unpaired elements do not affect the result.
+
+        Example: number of armies destroyed by the attacker in a 
+        3v2 attack in *RISK*:
+        ```
+        d6.pool(3).compair_gt(d6.pool(2))
+        ```
+
+        Args:
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 order=order,
+                                 tie=0,
+                                 left_greater=1,
+                                 right_greater=0))
+
+    def compair_ge(
+            self,
+            other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is >= `other`.
+
+        Any extra unpaired elements do not affect the result.
+
+        Args:
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 order=order,
+                                 tie=1,
+                                 left_greater=1,
+                                 right_greater=0))
+
+    def compair_eq(
+            self,
+            other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is >= `other`.
+
+        Any extra unpaired elements do not affect the result.
+
+        Args:
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 order=order,
+                                 tie=1,
+                                 left_greater=0,
+                                 right_greater=0))
+
+    def compair_ne(
+            self,
+            other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *,
+            order: Order = Order.Descending):
+        """Evaluation: EXPERIMENTAL: Compare pairs of elements in sorted order, counting how many pairs `self` is >= `other`.
+
+        Any extra unpaired elements do not affect the result.
+
+        Args:
+            other: The other multiset to compare.
+            order: Which order elements will be matched in.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+        return self.evaluate(other,
+                             evaluator=icepool.evaluator.CompairEvalautor(
+                                 order=order,
+                                 tie=0,
+                                 left_greater=1,
+                                 right_greater=1))
