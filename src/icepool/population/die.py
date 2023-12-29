@@ -907,7 +907,7 @@ class Die(Population[T_co]):
     def map_to_pool(
         self,
         repl:
-        'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.Reroll]',
+        'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.Reroll] | None' = None,
         /,
         *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
         star: bool | None = None
@@ -915,7 +915,14 @@ class Die(Population[T_co]):
         """EXPERIMENTAL: Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
 
         As `icepool.map_to_pool(repl, self, ...)`.
+
+        If no argument is provided, the outcomes will be used to construct a
+        mixture of pools directly, similar to the inverse of `pool.expand()`.
+        Note that both are typically not particularly efficient since they do
+        not make much use of dynamic programming.
         """
+        if repl is None:
+            repl = lambda x: x
         return icepool.map_to_pool(repl, self, *extra_args, star=star)
 
     def explode_to_pool(
