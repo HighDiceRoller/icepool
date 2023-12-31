@@ -16,6 +16,8 @@ from typing import Hashable, Mapping, Sequence
 class MixtureMultisetGenerator(MultisetGenerator[T, Qs]):
     """EXPERIMENTAL: Represents a mixture of multiset generators."""
 
+    # Note that the weight here effectively multiplies the denominator of the
+    # corresponding subgenerator itself.
     _sub_generators: Mapping[MultisetGenerator[T, Qs], int]
 
     def __init__(self, sub_generators: Sequence[MultisetGenerator[T, Qs]]
