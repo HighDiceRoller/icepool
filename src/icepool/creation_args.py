@@ -84,15 +84,15 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],
     """Merge for dice.
 
     Every subdata gets total weight proportional to the corresponding element of `weights`.
-
-    The final denominator is equal to the primary denominator times the LCM of the secondary denominators.
     """
     if any(x < 0 for x in weights):
         raise ValueError('weights cannot be negative.')
 
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
 
-    denominator_lcm = math.lcm(*(d for d in subdata_denominators if d > 0))
+    denominator_lcm = math.lcm(*(d // math.gcd(d, w)
+                                 for d, w in zip(subdata_denominators, weights)
+                                 if d > 0 and w > 0))
 
     data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,

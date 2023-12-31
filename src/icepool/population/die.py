@@ -129,12 +129,8 @@ class Die(Population[T_co]):
 
         Denominator: For a flat set of outcomes, the denominator is just the
         sum of the corresponding quantities. If the outcomes themselves have
-        secondary denominators, then the overall denominator is the primary
-        denominator times the LCM of the outcome denominators.
-
-        For example, `Die([d3, d4, d6])` has a final denominator of 36: 3 for
-        the primary selection between the three secondary dice, times 12 for
-        the LCM of 3, 4, and 6.
+        secondary denominators, then the overall denominator will be minimized
+        while preserving the relative weighting of the primary outcomes.
 
         Args:
             outcomes: The faces of the `Die`. This can be one of the following:

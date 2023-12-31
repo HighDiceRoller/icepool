@@ -32,9 +32,11 @@ class MixtureMultisetGenerator(MultisetGenerator[T, Qs]):
             for sub_generator in sub_generators:
                 data[sub_generator] += 1
 
-        denominator_lcm = math.lcm(*(sub_generator.denominator()
-                                     for sub_generator in data.keys()
-                                     if sub_generator.denominator() > 0))
+        denominator_lcm = math.lcm(
+            *(sub_generator.denominator() //
+              math.gcd(sub_generator.denominator(), weight)
+              for sub_generator, weight in data.items()
+              if sub_generator.denominator() > 0 and weight > 0))
 
         self._sub_generators = defaultdict(int)
         for sub_generator, weight in data.items():
