@@ -957,12 +957,12 @@ class Die(Population[T_co]):
 
         single_data: 'MutableMapping[icepool.Vector[int], int]' = defaultdict(
             int)
-        for i in range(depth):
-            weight = explode.denominator()**i * self.denominator()**(depth - i)
+        for i in range(depth + 1):
+            weight = explode.denominator()**i * self.denominator()**(
+                depth - i) * not_explode.denominator()
             single_data[icepool.Vector((i, 1))] += weight
-        end_weight = explode.denominator()**depth
-        single_data[icepool.Vector((depth, 1))] += end_weight
-        single_data[icepool.Vector((depth + 1, 0))] += end_weight
+        single_data[icepool.Vector(
+            (depth + 1, 0))] += explode.denominator()**(depth + 1)
 
         single_count_die: 'Die[icepool.Vector[int]]' = Die(single_data)
         count_die = rolls @ single_count_die

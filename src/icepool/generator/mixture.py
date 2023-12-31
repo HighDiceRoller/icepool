@@ -6,7 +6,10 @@ from icepool.collection.counts import sorted_union
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome, Qs, T
 
+import math
+
 from collections import defaultdict
+from functools import cached_property
 from typing import Hashable, Mapping, Sequence
 
 
@@ -17,15 +20,27 @@ class MixtureMultisetGenerator(MultisetGenerator[T, Qs]):
 
     def __init__(self, sub_generators: Sequence[MultisetGenerator[T, Qs]]
                  | Mapping[MultisetGenerator[T, Qs], int]):
+        data: Mapping[MultisetGenerator[T, Qs], int]
+
         if isinstance(sub_generators, Mapping):
-            self._sub_generators = {
+            data = {
                 sub_generator: weight
                 for sub_generator, weight in sub_generators.items()
             }
         else:
-            self._sub_generators = defaultdict(int)
+            data = defaultdict(int)
             for sub_generator in sub_generators:
-                self._sub_generators[sub_generator] += 1
+                data[sub_generator] += 1
+
+        denominator_lcm = math.lcm(*(sub_generator.denominator()
+                                     for sub_generator in data.keys()
+                                     if sub_generator.denominator() > 0))
+
+        self._sub_generators = defaultdict(int)
+        for sub_generator, weight in data.items():
+            factor = denominator_lcm * weight // sub_generator.denominator(
+            ) if sub_generator.denominator() else 0
+            self._sub_generators[sub_generator] += factor
 
     def outcomes(self) -> Sequence[T]:
         return sorted_union(*(sub_generator.outcomes()
@@ -71,11 +86,15 @@ class MixtureMultisetGenerator(MultisetGenerator[T, Qs]):
             total_pop_max_cost += pop_max_cost
         return total_pop_min_cost, total_pop_max_cost
 
-    def denominator(self) -> int:
+    @cached_property
+    def _denominator(self) -> int:
         result = 0
         for sub_generator, weight in self._sub_generators.items():
             result += weight * sub_generator.denominator()
         return result
+
+    def denominator(self) -> int:
+        return self._denominator
 
     @property
     def _hash_key(self) -> Hashable:

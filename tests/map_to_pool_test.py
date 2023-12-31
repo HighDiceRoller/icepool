@@ -5,7 +5,14 @@ from icepool import d6
 
 
 def test_explode_to_pool():
-    assert d6.explode_to_pool(3, depth=4).sum() == 3 @ d6.explode(depth=4)
+    assert d6.explode_to_pool(
+        3, depth=4).sum().simplify() == 3 @ d6.explode(depth=4)
+
+
+def test_explode_to_pool_multi():
+    assert d6.explode_to_pool(
+        3, which=[5, 6],
+        depth=4).sum().simplify() == 3 @ d6.explode(which=[5, 6], depth=4)
 
 
 def test_map_to_pool():
