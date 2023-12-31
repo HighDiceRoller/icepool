@@ -1,3 +1,10 @@
+## v1.3.0
+
+* Fix `Symbols` operator priority with `Population`, `AgainExpression`.
+* Added experimental `map_to_pool` and `explode_to_pool` methods.
+* Split `compair` into `compare_lt` etc.
+* Constructing a mixture of dice now effectively uses the old `lcm_joint` method, which reduces the denominator more aggressively.
+
 ## v1.2.0
 
 * Experimental `Symbols` class representing a multiset of characters.
