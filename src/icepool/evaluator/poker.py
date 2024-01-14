@@ -4,9 +4,10 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
+from icepool.population.die import Die
 
-from icepool.typing import Outcome, Order
-from typing import Any, Collection, Literal, Sequence
+from icepool.typing import Outcome, Order, RerollType
+from typing import Any, Collection, Hashable, Literal, Sequence
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
@@ -101,6 +102,43 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
+
+
+class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
+    """The number of times the right side is contained in the left side."""
+
+    def __init__(self, *, empty_divisor_outcome: int | None = None):
+        """
+        Args:
+            empty_divisor_outcome: If the divisor is empty, the outcome will be
+                this.
+                If not set, `ZeroDivisionError` will be raised for an empty
+                right side.
+        """
+        self._empty_divisor = empty_divisor_outcome
+
+    def next_state(self, state, _, left, right):
+        if right == 0:
+            return state
+        current = left // right
+        if state is None:
+            return current
+        else:
+            return min(state, current)
+
+    def order(self) -> Literal[Order.Any]:
+        """Allows any order."""
+        return Order.Any
+
+    def final_outcome(self, final_state):
+        if final_state is None:
+            if self._empty_divisor is None:
+                raise ZeroDivisionError(
+                    'Empty divisor. Set empty_divisor_outcome if you want a particular value in this case.'
+                )
+            else:
+                return self._empty_divisor
+        return final_state
 
 
 class LargestStraightEvaluator(MultisetEvaluator[int, int]):

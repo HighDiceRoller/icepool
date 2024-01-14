@@ -84,3 +84,13 @@ def test_all_straights():
     result = Pool([1, 1, 2, 3, 3, 5]).all_straights().simplify()
     expected = Die([(3, 1, 1, 1)])
     assert result == expected
+
+
+def test_count_subsets():
+    result = (d(6).pool(6) // [1, 2, 3]) > 0
+    expected = d(6).pool(6) >= [1, 2, 3]
+    assert result == expected
+
+    result = (d(6).pool(6) // [1, 2, 3]) > 1
+    expected = d(6).pool(6) >= [1, 2, 3] * 2
+    assert result == expected

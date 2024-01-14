@@ -81,6 +81,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `all_counts`                   | All counts in descending order                                             |
     | `largest_count`                | The single largest count, aka x-of-a-kind                                  |
     | `largest_count_and_outcome`    | Same but also with the corresponding outcome                               |
+    | `count_subset`, `//`           | The number of times the right side is contained in the left side           |
     | `largest_straight`             | Length of longest consecutive sequence                                     |
     | `largest_straight_and_outcome` | Same but also with the corresponding outcome                               |
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
@@ -451,10 +452,32 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return self * constant
 
+    @overload
     def __floordiv__(self, other: int) -> 'MultisetExpression[T_contra]':
-        if not isinstance(other, int):
-            return NotImplemented
-        return icepool.expression.FloorDivCountsExpression(self, other)
+        ...
+
+    @overload
+    def __floordiv__(
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
+        ...
+
+    @overload
+    def __floordiv__(
+        self, other:
+        'int | MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra] | icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
+        ...
+
+    def __floordiv__(
+        self, other:
+        'int | MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'MultisetExpression[T_contra] | icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
+        if isinstance(other, int):
+            return self.divide_counts(other)
+        else:
+            return self.count_subset(other)
 
     def divide_counts(self, constant: int,
                       /) -> 'MultisetExpression[T_contra]':
@@ -467,7 +490,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]) // 2 -> [2]
         ```
         """
-        return self // constant
+        return icepool.expression.FloorDivCountsExpression(self, constant)
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
         return icepool.expression.FilterCountsExpression(self, 0)
@@ -719,6 +742,38 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """Evaluation: The largest matching set among the elements and the corresponding outcome."""
         return self.evaluate(
             evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
+
+    def __rfloordiv__(
+        self, other:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
+        return self.count_subset(other)
+
+    def count_subset(
+        self,
+        divisor:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+        /,
+        *,
+        empty_divisor_outcome: int | None = None
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
+        """Evaluation: The number of times the divisor is contained in this multiset.
+        
+        Args:
+            divisor: The multiset to divide by.
+            empty_divisor_outcome: If the divisor is empty, the outcome will be
+                this.
+                If not set, `ZeroDivisionError` will be raised for an empty
+                right side.
+
+        Raises:
+            ZeroDivisionError: If the divisor may be empty and 
+                empty_divisor_outcome is not set.
+        """
+        divisor = implicit_convert_to_expression(divisor)
+        return self.evaluate(divisor,
+                             evaluator=icepool.evaluator.CountSubsetEvaluator(
+                                 empty_divisor_outcome=empty_divisor_outcome))
 
     def largest_straight(
         self: 'MultisetExpression[int]'
