@@ -49,11 +49,12 @@ class Symbols(Mapping[str, int]):
     E.g. `symbols['ab']` -> number of `a`s and `b`s as a `Symbols`.
     Again you can also access it as an attribute, e.g. `symbols.ab`.
     This is useful for reducing the outcome space, which reduces computational
-    cost for further operations.
+    cost for further operations. If you want to keep only a single character
+    while keeping the type as `Symbols`, you can subscript with that character
+    plus an unused character.
 
-    Duplicate symbols have no extra effect here, except that e.g. `symbols.aa`
-    will produce a `Symbols` rather than an `int`. In order to avoid confusion
-    with methods, try not to spell words when using attribute-style access.
+    Subscripting with duplicate characters currently has no further effect, but
+    this may change in the future.
 
     `Population.marginals` forwards attribute access, so you can use e.g.
     `die.marginals.a` to get the marginal distribution of `a`s.
