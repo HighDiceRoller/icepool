@@ -41,6 +41,8 @@
         <label for="probability_ge">At least</label>
         <input type="radio" name="probability" id="probability_le" />
         <label for="probability_le">At most</label>
+        <input type="checkbox" name="log_scale" id="log_scale" />
+        <label for="log_scale">Log scale</label>
         <button type="button" id="copy_url" style="font-size: 100%; width: 150px;">Copy URL</button>
     </form>
 </div>
@@ -545,6 +547,17 @@ function updateComputationTime(computationTime) {
     document.getElementById("computation_time").textContent = 'Computation time: ' + computationTime.toFixed(3) + ' s';
 }
 
+function updateLogScale() {
+    if (document.getElementById('log_scale').checked) {
+        chart.options.scales.y.type = 'logarithmic';
+        chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
+    } else {
+        chart.options.scales.y.type = 'linear';
+        delete chart.options.scales.y.ticks.callback;
+    }
+    chart.update();
+}
+
 document.getElementById("run").addEventListener("click", runCode);
 document.getElementById("stop").addEventListener("click", interruptExecution);
 document.body.addEventListener('keydown', function (e) {
@@ -556,6 +569,7 @@ document.body.addEventListener('keydown', function (e) {
 document.getElementById("probability_eq").addEventListener("change", runCode);
 document.getElementById("probability_ge").addEventListener("change", runCode);
 document.getElementById("probability_le").addEventListener("change", runCode);
+document.getElementById("log_scale").addEventListener("change", updateLogScale);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
     navigator.clipboard.writeText(window.location.href);
