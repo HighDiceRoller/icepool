@@ -342,7 +342,7 @@ class Symbols(Mapping[str, int]):
             return NotImplemented  # delegate to the other
         try:
             other = Symbols(other)
-        except TypeError:
+        except ValueError:
             return NotImplemented
         return all(self[s] == other[s]  # type: ignore
                    for s in itertools.chain(self, other))
@@ -352,7 +352,7 @@ class Symbols(Mapping[str, int]):
             return NotImplemented  # delegate to the other
         try:
             other = Symbols(other)
-        except TypeError:
+        except ValueError:
             return NotImplemented
         return any(self[s] != other[s]  # type: ignore
                    for s in itertools.chain(self, other))

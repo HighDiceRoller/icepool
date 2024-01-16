@@ -7,7 +7,7 @@ import icepool.creation_args
 import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
-from icepool.typing import U, Outcome, T_co, guess_star
+from icepool.typing import U, ImplicitConversionError, Outcome, T_co, guess_star
 
 import bisect
 from collections import defaultdict
@@ -33,7 +33,7 @@ def implicit_convert_to_die(
     if isinstance(outcome, Die):
         return outcome
     if isinstance(outcome, icepool.AgainExpression):
-        raise TypeError(
+        raise ImplicitConversionError(
             'Again expression cannot be implicitly converted to a Die.')
     return Die([outcome])
 

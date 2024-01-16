@@ -8,7 +8,7 @@ import operator
 
 from abc import ABC, abstractmethod
 
-from icepool.typing import T, U, Order, Outcome, T_contra
+from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T_contra
 from typing import Any, Callable, Collection, Generic, Hashable, Literal, Mapping, Sequence, Type, overload
 
 
@@ -27,7 +27,7 @@ def implicit_convert_to_expression(
     elif isinstance(arg, (Mapping, Sequence)):
         return icepool.Pool(arg)
     else:
-        raise TypeError(
+        raise ImplicitConversionError(
             f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a MultisetGenerator.'
         )
 
@@ -165,7 +165,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(self, other)
 
@@ -175,7 +175,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.DisjointUnionExpression(other, self)
 
@@ -204,7 +204,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.DifferenceExpression(self, other)
 
@@ -214,7 +214,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.DifferenceExpression(other, self)
 
@@ -251,7 +251,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.IntersectionExpression(self, other)
 
@@ -261,7 +261,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.IntersectionExpression(other, self)
 
@@ -296,7 +296,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.UnionExpression(self, other)
 
@@ -306,7 +306,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.UnionExpression(other, self)
 
@@ -335,7 +335,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.SymmetricDifferenceExpression(self, other)
 
@@ -345,7 +345,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             /) -> 'MultisetExpression[T_contra]':
         try:
             other = implicit_convert_to_expression(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
         return icepool.expression.SymmetricDifferenceExpression(other, self)
 
@@ -822,7 +822,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             evaluator = icepool.evaluator.ExpressionEvaluator(
                 self, right_expression, evaluator=operation_class())
         else:
-            raise TypeError('Right side is not comparable.')
+            raise TypeError('Operand not comparable with expression.')
 
         if evaluator._free_arity == 0:
             return evaluator.evaluate()

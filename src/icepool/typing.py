@@ -73,6 +73,10 @@ class Outcome(Hashable, Protocol[T_contra]):
         ...
 
 
+class ImplicitConversionError(TypeError):
+    """Indicates that an implicit conversion failed."""
+
+
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.
 

@@ -14,7 +14,7 @@ import operator
 from collections import defaultdict
 from functools import cache, cached_property, reduce
 
-from icepool.typing import Outcome, T
+from icepool.typing import ImplicitConversionError, Outcome, T
 from types import EllipsisType
 from typing import Any, Collection, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
 
@@ -490,7 +490,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     ) -> 'MultisetExpression[T]':
         try:
             return self.additive_union(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
 
     def __radd__(
@@ -498,7 +498,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     ) -> 'MultisetExpression[T]':
         try:
             return self.additive_union(other)
-        except TypeError:
+        except ImplicitConversionError:
             return NotImplemented
 
     def additive_union(
