@@ -7,9 +7,9 @@ import itertools
 import operator
 import re
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from functools import cached_property
-from typing import Iterable, Iterator, Mapping
+from typing import Iterable, Iterator, Mapping, overload
 
 
 class Symbols(Mapping[str, int]):
@@ -227,16 +227,58 @@ class Symbols(Mapping[str, int]):
 
     def divide_counts(self, other: int) -> 'Symbols':
         """Divides all counts by an integer, rounding down."""
-        return self // other
-
-    def __floordiv__(self, other: int) -> 'Symbols':
-        if not isinstance(other, int):
-            return NotImplemented
         data = defaultdict(int, {
             s: count // other
             for s, count in self.items()
         })
         return Symbols._new_raw(data)
+
+    def count_subset(self,
+                     divisor: Iterable[str] | Mapping[str, int],
+                     *,
+                     empty_divisor: int | None = None) -> int:
+        """The number of times the divisor is contained in this multiset."""
+        if not isinstance(divisor, Mapping):
+            divisor = Counter(divisor)
+        result = None
+        for s, count in divisor.items():
+            current = self._data[s] // count
+            if result is None or current < result:
+                result = current
+        if result is None:
+            if empty_divisor is None:
+                raise ZeroDivisionError('Divisor is empty.')
+            else:
+                return empty_divisor
+        else:
+            return result
+
+    @overload
+    def __floordiv__(self, other: int) -> 'Symbols':
+        """Same as divide_counts()."""
+
+    @overload
+    def __floordiv__(self, other: Iterable[str] | Mapping[str, int]) -> int:
+        """Same as count_subset()."""
+
+    @overload
+    def __floordiv__(
+            self,
+            other: int | Iterable[str] | Mapping[str, int]) -> 'Symbols | int':
+        ...
+
+    def __floordiv__(
+            self,
+            other: int | Iterable[str] | Mapping[str, int]) -> 'Symbols | int':
+        if isinstance(other, int):
+            return self.divide_counts(other)
+        elif isinstance(other, Iterable):
+            return self.count_subset(other)
+        else:
+            return NotImplemented
+
+    def __rfloordiv__(self, other: Iterable[str] | Mapping[str, int]) -> int:
+        return Symbols(other).count_subset(self)
 
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
