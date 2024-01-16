@@ -7,7 +7,6 @@ import icepool.evaluator
 import operator
 
 from abc import ABC, abstractmethod
-from functools import cached_property, reduce
 
 from icepool.typing import T, U, Order, Outcome, T_contra
 from typing import Any, Callable, Collection, Generic, Hashable, Literal, Mapping, Sequence, Type, overload
@@ -461,14 +460,14 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        ...
+        """Same as divide_counts()."""
 
     @overload
     def __floordiv__(
         self, other:
         'int | MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'MultisetExpression[T_contra] | icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        ...
+        """Same as count_subset()."""
 
     def __floordiv__(
         self, other:
@@ -747,7 +746,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
-        return self.count_subset(other)
+        other = implicit_convert_to_expression(other)
+        return other.count_subset(self)
 
     def count_subset(
         self,
@@ -755,14 +755,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
         /,
         *,
-        empty_divisor_outcome: int | None = None
+        empty_divisor: int | None = None
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
         """Evaluation: The number of times the divisor is contained in this multiset.
         
         Args:
             divisor: The multiset to divide by.
-            empty_divisor_outcome: If the divisor is empty, the outcome will be
-                this.
+            empty_divisor: If the divisor is empty, the outcome will be this.
                 If not set, `ZeroDivisionError` will be raised for an empty
                 right side.
 
@@ -773,7 +772,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         divisor = implicit_convert_to_expression(divisor)
         return self.evaluate(divisor,
                              evaluator=icepool.evaluator.CountSubsetEvaluator(
-                                 empty_divisor_outcome=empty_divisor_outcome))
+                                 empty_divisor=empty_divisor))
 
     def largest_straight(
         self: 'MultisetExpression[int]'

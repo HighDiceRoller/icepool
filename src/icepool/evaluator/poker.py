@@ -107,15 +107,14 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
 class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
     """The number of times the right side is contained in the left side."""
 
-    def __init__(self, *, empty_divisor_outcome: int | None = None):
+    def __init__(self, *, empty_divisor: int | None = None):
         """
         Args:
-            empty_divisor_outcome: If the divisor is empty, the outcome will be
-                this.
+            empty_divisor: If the divisor is empty, the outcome will be this.
                 If not set, `ZeroDivisionError` will be raised for an empty
                 right side.
         """
-        self._empty_divisor = empty_divisor_outcome
+        self._empty_divisor = empty_divisor
 
     def next_state(self, state, _, left, right):
         if right == 0:
