@@ -245,8 +245,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         Args:
             *args: Each may be one of the following:
-                * A `GeneratorsWithExpression`.
-                * A `MultisetGenerator`.
+                * A `MultisetExpression`.
                 * A mappable mapping outcomes to the number of those outcomes.
                 * A sequence of outcomes.
 
@@ -263,6 +262,12 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         if any(expression._free_arity() > 0 for expression in expressions):
             from icepool.evaluator.expression import ExpressionEvaluator
             return ExpressionEvaluator(*expressions, evaluator=self)
+
+        if not all(
+                isinstance(expression, icepool.MultisetGenerator)
+                for expression in expressions):
+            from icepool.evaluator.expression import ExpressionEvaluator
+            return ExpressionEvaluator(*expressions, evaluator=self).evaluate()
 
         generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
 

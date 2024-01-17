@@ -19,7 +19,7 @@ def implicit_convert_to_expression(
     """Implcitly converts the argument to a `MultisetExpression`.
 
     Args:
-        arg: The argument must either already be a `MultisetGenerator`;
+        arg: The argument must either already be a `MultisetExpression`;
             or a `Mapping` or `Collection`.
     """
     if isinstance(arg, MultisetExpression):
@@ -28,7 +28,7 @@ def implicit_convert_to_expression(
         return icepool.Pool(arg)
     else:
         raise ImplicitConversionError(
-            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a MultisetGenerator.'
+            f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a Pool.'
         )
 
 
