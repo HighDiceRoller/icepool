@@ -251,42 +251,42 @@
                         result += count @ year_zero_die_opposition(die_size)
                     return result
                     
-                def can_win(success, bane, r6, r8, r10, r12, c10, c12):
-                    return success + r6 + r8 + r10 * 2 + r12 * 2 + c10 + c12 > 0
+                def can_win(success, bane, z6, z8, z10, z12, s10, s12):
+                    return success + z6 + z8 + z10 * 2 + z12 * 2 + s10 + s12 > 0
                 
                 @cache
-                def calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12):
+                def calc_push_everything(success, bane, z6, z8, z10, z12, s10, s12):
                     """Push every die that did not roll bane or maximum."""
-                    if not can_win(success, bane, r6, r8, r10, r12, c10, c12):
+                    if not can_win(success, bane, z6, z8, z10, z12, s10, s12):
                         return icepool.vectorize(success, 0)
 
                     result = icepool.vectorize(success, bane)
-                    result += r6 @ year_zero_die_simple(6)
-                    result += r8 @ year_zero_die_simple(8)
-                    result += r10 @ year_zero_die_simple(10)
-                    result += r12 @ year_zero_die_simple(12)
-                    result += c10 @ year_zero_die_simple(10) - icepool.vectorize(c10, 0)
-                    result += c12 @ year_zero_die_simple(12) - icepool.vectorize(c12, 0)
+                    result += z6 @ year_zero_die_simple(6)
+                    result += z8 @ year_zero_die_simple(8)
+                    result += z10 @ year_zero_die_simple(10)
+                    result += z12 @ year_zero_die_simple(12)
+                    result += s10 @ year_zero_die_simple(10) - icepool.vectorize(s10, 0)
+                    result += s12 @ year_zero_die_simple(12) - icepool.vectorize(s12, 0)
                     return result
                 
                 @cache
-                def calc_maximize_win(success, bane, r6, r8, r10, r12, c10, c12):
+                def calc_maximize_win(success, bane, z6, z8, z10, z12, s10, s12):
                     """Try to maximize the chance of winning."""
                     if success > 0:
                         return icepool.vectorize(success, 0)
-                    if not can_win(success, bane, r6, r8, r10, r12, c10, c12):
+                    if not can_win(success, bane, z6, z8, z10, z12, s10, s12):
                         return icepool.vectorize(success, 0)
                     
-                    best = calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12)
+                    best = calc_push_everything(success, bane, z6, z8, z10, z12, s10, s12)
                     best_win = icepool.Die([best]).marginals[0].probability_gt(0)
                     while True:
-                        if c10 > 0:
-                            c10 -= 1
-                        elif c12 > 0:
-                            c12 -= 1
+                        if s10 > 0:
+                            s10 -= 1
+                        elif s12 > 0:
+                            s12 -= 1
                         else:
                             break
-                        candidate = calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12)
+                        candidate = calc_push_everything(success, bane, z6, z8, z10, z12, s10, s12)
                         candidate_win = icepool.Die([candidate]).marginals[0].probability_gt(0)
                         if candidate_win >= best_win:
                             # candidate wins ties, since it has fewer rerolls = fewer banes
@@ -296,35 +296,35 @@
                     return best
                     
                 @cache
-                def calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12):
+                def calc_push_zeros(success, bane, z6, z8, z10, z12, s10, s12):
                     """Push every die that rolled zero successes (2-5 raw)."""
-                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                    if not can_win(success, bane, z6, z8, z10, z12, 0, 0):
                         return icepool.vectorize(success, 0)
 
                     result = icepool.vectorize(success, bane)
-                    result += r6 @ year_zero_die_simple(6)
-                    result += r8 @ year_zero_die_simple(8)
-                    result += r10 @ year_zero_die_simple(10)
-                    result += r12 @ year_zero_die_simple(12)
+                    result += z6 @ year_zero_die_simple(6)
+                    result += z8 @ year_zero_die_simple(8)
+                    result += z10 @ year_zero_die_simple(10)
+                    result += z12 @ year_zero_die_simple(12)
                     return result
                 
                 @cache
-                def calc_push_zeros_if_fail(success, bane, r6, r8, r10, r12, c10, c12):
+                def calc_push_zeros_if_fail(success, bane, z6, z8, z10, z12, s10, s12):
                     if success > 0:
                         return icepool.vectorize(success, 0)
-                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                    if not can_win(success, bane, z6, z8, z10, z12, 0, 0):
                         return icepool.vectorize(success, 0)
 
-                    return calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12)
+                    return calc_push_zeros(success, bane, z6, z8, z10, z12, s10, s12)
                 
                 @cache
-                def calc_push_zeros_if_fail_and_no_initial_bane(success, bane, r6, r8, r10, r12, c10, c12):
+                def calc_push_zeros_if_fail_and_no_initial_bane(success, bane, z6, z8, z10, z12, s10, s12):
                     if success > 0 or bane > 0:
                         return icepool.vectorize(success, 0)
-                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                    if not can_win(success, bane, z6, z8, z10, z12, 0, 0):
                         return icepool.vectorize(success, 0)
                     
-                    return calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12)
+                    return calc_push_zeros(success, bane, z6, z8, z10, z12, s10, s12)
                     
                 PUSH_FUNCTIONS = {
                     'maximize_win' : calc_maximize_win,
