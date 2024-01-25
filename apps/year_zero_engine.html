@@ -35,26 +35,28 @@
                     <th>d8</th>
                     <th>d10</th>
                     <th>d12</th>
-                    <th style="text-align:left;">Push if initial roll is...</th>
+                    <th style="text-align:left;">Push...</th>
                 </tr>
                 <tr id="pinputs">
                     <th style="text-align:left;">Active player</th>
-                    <td><input name="p6" id="p6" type="number" min="0" max="20" value="4" required onwheel="" /></td>
-                    <td><input name="p8" id="p8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td><input name="p10" id="p10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td><input name="p12" id="p12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="p6" id="p6" type="number" min="0" max="10" value="4" required onwheel="" /></td>
+                    <td><input name="p8" id="p8" type="number" min="0" max="5" value="0" required onwheel="" /></td>
+                    <td><input name="p10" id="p10" type="number" min="0" max="5" value="0" required onwheel="" /></td>
+                    <td><input name="p12" id="p12" type="number" min="0" max="5" value="0" required onwheel="" /></td>
                     <td style="text-align:left;"><select name="push" id="push">
-                        <option value="fail_no_bane">not a success, but no banes either</option>
-                        <option value="fail" selected>not a success</option>
-                        <option value="always">always</option>
+                        <option value="maximize_win" selected>to maximize the chance of winning</option>
+                        <option value="zeros_if_fail_and_no_initial_bane">zeros if initial roll is not a win, but no banes either</option>
+                        <option value="zeros_if_fail">zeros if initial roll is not a win</option>
+                        <option value="zeros">all zeros</option>
+                        <option value="everything">everything</option>
                     </select></td>
                 </tr>
                 <tr id="oinputs">
                     <th style="text-align:left;">Opposition</th>
-                    <td><input name="o6" id="o6" type="number" min="0" max="20" value="0" required onwheel="" /></td>
-                    <td><input name="o8" id="o8" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td><input name="o10" id="o10" type="number" min="0" max="10" value="0" required onwheel="" /></td>
-                    <td><input name="o12" id="o12" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="o6" id="o6" type="number" min="0" max="10" value="0" required onwheel="" /></td>
+                    <td><input name="o8" id="o8" type="number" min="0" max="5" value="0" required onwheel="" /></td>
+                    <td><input name="o10" id="o10" type="number" min="0" max="5" value="0" required onwheel="" /></td>
+                    <td><input name="o12" id="o12" type="number" min="0" max="5" value="0" required onwheel="" /></td>
                     <td style="text-align:left;">(only the active player can push)</td>
                 </tr>
             </table>
@@ -209,16 +211,17 @@
                 
                 @cache
                 def year_zero_die(sides):
+                    """success, bane, zero on d6, d8, d10, d12, ones on d10, d12."""
                     def func(x):
                         if x == 1:
-                            result = (0, 1, 0, 0, 0, 0)
+                            result = (0, 1, 0, 0, 0, 0, 0, 0)
                         elif x < 6:
-                            result = (0, 0) + (sides == 6, sides == 8, sides == 10, sides == 12)
+                            result = (0, 0, sides == 6, sides == 8, sides == 10, sides == 12, 0, 0)
                         elif x < 10:
-                            result = (1, 0, 0, 0, 0, 0)
+                            result = (1, 0, 0, 0, 0, 0, sides == 10, sides == 12)
                         else:
-                            result = (2, 0, 0, 0, 0, 0)
-                        return icepool.Vector(result) 
+                            result = (2, 0, 0, 0, 0, 0, 0, 0)
+                        return icepool.Vector(result)
                     return icepool.d(sides).map(func)
                     
                 @cache
@@ -226,8 +229,8 @@
                     return year_zero_die(sides).marginals[:2]
                     
                 @cache
-                def year_zero_die_push_always(sides):
-                    return year_zero_die_simple(sides).reroll([icepool.vectorize(0, 0)], depth=1)
+                def year_zero_die_opposition(sides):
+                    return year_zero_die(sides).marginals[0]
                 
                 die_player = icepool.Die([])
                 die_opposition = icepool.Die([])
@@ -235,43 +238,70 @@
                 die_push = icepool.Die([])
                 
                 def calc_pool(prefix):
-                    result = icepool.Die([icepool.vectorize(0, 0, 0, 0, 0, 0)])
+                    result = icepool.Die([icepool.vectorize(0, 0, 0, 0, 0, 0, 0, 0)])
                     for die_size in possible_die_sizes:
                         count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
                         result += count @ year_zero_die(die_size)
                     return result
                     
-                def calc_pool_simple(prefix):
-                    result = icepool.Die([icepool.vectorize(0, 0)])
+                def calc_pool_opposition(prefix):
+                    result = 0
                     for die_size in possible_die_sizes:
                         count = int(js.document.getElementById('%s%d' % (prefix, die_size)).value)
-                        result += count @ year_zero_die_simple(die_size)
+                        result += count @ year_zero_die_opposition(die_size)
                     return result
+                    
+                def can_win(success, bane, r6, r8, r10, r12, c10, c12):
+                    return success + r6 + r8 + r10 * 2 + r12 * 2 + c10 + c12 > 0
                 
                 @cache
-                def calc_pool_always(active, target):
-                    success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
-                        # can't make it, so don't bother trying
-                        return icepool.vectorize(success - target, 0)
+                def calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12):
+                    """Push every die that did not roll bane or maximum."""
+                    if not can_win(success, bane, r6, r8, r10, r12, c10, c12):
+                        return icepool.vectorize(success, 0)
 
-                    result = icepool.vectorize(success - target, bane)
+                    result = icepool.vectorize(success, bane)
                     result += r6 @ year_zero_die_simple(6)
                     result += r8 @ year_zero_die_simple(8)
                     result += r10 @ year_zero_die_simple(10)
                     result += r12 @ year_zero_die_simple(12)
+                    result += c10 @ year_zero_die_simple(10) - icepool.vectorize(c10, 0)
+                    result += c12 @ year_zero_die_simple(12) - icepool.vectorize(c12, 0)
                     return result
                 
                 @cache
-                def calc_push_if_fail(active, target):
-                    success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
-                        # can't make it, so don't bother trying
-                        return icepool.vectorize(success - target, 0)
-                    if success > target:
-                        return icepool.vectorize(success - target, 0)
+                def calc_maximize_win(success, bane, r6, r8, r10, r12, c10, c12):
+                    """Try to maximize the chance of winning."""
+                    if success > 0:
+                        return icepool.vectorize(success, 0)
+                    if not can_win(success, bane, r6, r8, r10, r12, c10, c12):
+                        return icepool.vectorize(success, 0)
+                    
+                    best = calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12)
+                    best_win = icepool.Die([best]).marginals[0].probability_gt(0)
+                    while True:
+                        if c10 > 0:
+                            c10 -= 1
+                        elif c12 > 0:
+                            c12 -= 1
+                        else:
+                            break
+                        candidate = calc_push_everything(success, bane, r6, r8, r10, r12, c10, c12)
+                        candidate_win = icepool.Die([candidate]).marginals[0].probability_gt(0)
+                        if candidate_win >= best_win:
+                            # candidate wins ties, since it has fewer rerolls = fewer banes
+                            best = candidate
+                            best_win = candidate_win
 
-                    result = icepool.vectorize(success - target, bane)
+                    return best
+                    
+                @cache
+                def calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12):
+                    """Push every die that rolled zero successes (2-5 raw)."""
+                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                        return icepool.vectorize(success, 0)
+
+                    result = icepool.vectorize(success, bane)
                     result += r6 @ year_zero_die_simple(6)
                     result += r8 @ year_zero_die_simple(8)
                     result += r10 @ year_zero_die_simple(10)
@@ -279,25 +309,30 @@
                     return result
                 
                 @cache
-                def calc_push_if_fail_and_no_initial_bane(active, target):
-                    success, bane, r6, r8, r10, r12 = active
-                    if success + r6 + r8 + r10 * 2 + r12 * 2 <= target:
-                        # can't make it, so don't bother trying
-                        return icepool.vectorize(success - target, 0)
-                    if success > target or bane > 0:
-                        return icepool.vectorize(success - target, 0)
-                    result = icepool.vectorize(success - target, bane)
-                    result += r6 @ year_zero_die_simple(6)
-                    result += r8 @ year_zero_die_simple(8)
-                    result += r10 @ year_zero_die_simple(10)
-                    result += r12 @ year_zero_die_simple(12)
-                    return result
-                        
-                def without_bane(pushed):
-                    if pushed[1] > 0:
-                        return icepool.Reroll
-                    else:
-                        return pushed[0]
+                def calc_push_zeros_if_fail(success, bane, r6, r8, r10, r12, c10, c12):
+                    if success > 0:
+                        return icepool.vectorize(success, 0)
+                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                        return icepool.vectorize(success, 0)
+
+                    return calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12)
+                
+                @cache
+                def calc_push_zeros_if_fail_and_no_initial_bane(success, bane, r6, r8, r10, r12, c10, c12):
+                    if success > 0 or bane > 0:
+                        return icepool.vectorize(success, 0)
+                    if not can_win(success, bane, r6, r8, r10, r12, 0, 0):
+                        return icepool.vectorize(success, 0)
+                    
+                    return calc_push_zeros(success, bane, r6, r8, r10, r12, c10, c12)
+                    
+                PUSH_FUNCTIONS = {
+                    'maximize_win' : calc_maximize_win,
+                    'zeros_if_fail_and_no_initial_bane' : calc_push_zeros_if_fail_and_no_initial_bane,
+                    'zeros_if_fail' : calc_push_zeros_if_fail,
+                    'zeros' : calc_push_zeros,
+                    'everything' : calc_push_everything,
+                }
                         
                 def success_color(n):
                     a = min(0.25 + 0.75 * (n - 1) / 4, 1.0)
@@ -318,18 +353,12 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            die_opposition = calc_pool_simple('o')
+            die_opposition = calc_pool_opposition('o')
+            die_initial = calc_pool('p') - icepool.vectorize(die_opposition, 0, 0, 0, 0, 0, 0, 0)
             push_strategy = js.document.getElementById('push').value
-            if push_strategy == 'fail_no_bane':
-                die_player = calc_pool('p')
-                die_push = icepool.map(calc_push_if_fail_and_no_initial_bane, die_player, die_opposition.marginals[0], star=False)
-            elif push_strategy == 'fail':
-                die_player = calc_pool('p')
-                die_push = icepool.map(calc_push_if_fail, die_player, die_opposition.marginals[0], star=False)
-            else:
-                die_player = calc_pool('p')
-                die_push = icepool.map(calc_pool_always, die_player, die_opposition.marginals[0], star=False)
-            die_no_push = icepool.highest(die_player.marginals[0] - die_opposition.marginals[0], -1)
+            push_function = PUSH_FUNCTIONS[push_strategy]
+            die_push = icepool.map(push_function, die_initial, star=True)
+            die_no_push = icepool.highest(die_initial.marginals[0], -1)
             die_push = die_push.map(lambda s, b: icepool.vectorize(max(s, -1), b))
             `);
         }
