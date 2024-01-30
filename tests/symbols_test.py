@@ -31,6 +31,10 @@ def test_sub():
     assert +(die - 'ac') == Die(['', '', 'b', 'ab']).map(Symbols)
 
 
+def test_and():
+    assert die & 'abb' == Die(['', 'a', 'ab', 'ab']).map(Symbols)
+
+
 def test_mul():
     assert die * 2 == Die(['', 'aa', 'aabb', 'aaaabb']).map(Symbols)
 

@@ -174,9 +174,9 @@ class Symbols(Mapping[str, int]):
     def __and__(self, other: Iterable[str] | Mapping[str, int]) -> 'Symbols':
         if isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
-        data = defaultdict(int, self._data)
+        data: defaultdict[str, int] = defaultdict(int)
         for s, count in Symbols(other).items():
-            data[s] = min(data[s], count)
+            data[s] = min(self.get(s, 0), count)
         return Symbols._new_raw(data)
 
     __rand__ = __and__
