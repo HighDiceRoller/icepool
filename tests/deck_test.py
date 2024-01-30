@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import MultisetEvaluator
+from icepool import MultisetEvaluator, Deck
 from icepool.evaluator import LargestStraightEvaluator
 
 # no wraparound
@@ -64,3 +64,33 @@ def test_multiple_bind_error():
     deal = deck.deal(2, 2)
     with pytest.raises(ValueError):
         deal.unique()
+
+
+def test_add():
+    deck = Deck([1, 2, 3]) + Deck([3, 4])
+    assert deck == Deck([1, 2, 3, 3, 4])
+
+
+def test_sub():
+    deck = Deck([1, 2, 3]) - Deck([3, 4])
+    assert deck == Deck([1, 2])
+
+
+def test_and():
+    deck = Deck([1, 2, 3]) & Deck([3, 4])
+    assert deck == Deck([3])
+
+
+def test_or():
+    deck = Deck([1, 2, 3]) | Deck([3, 4])
+    assert deck == Deck([1, 2, 3, 4])
+
+
+def test_mul():
+    deck = Deck([1, 2, 3]) * 2
+    assert deck == Deck([1, 1, 2, 2, 3, 3])
+
+
+def test_floordiv():
+    deck = Deck([1, 1, 1, 2, 2, 3]) // 2
+    assert deck == Deck([1, 2])

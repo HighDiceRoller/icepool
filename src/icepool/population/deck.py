@@ -8,9 +8,12 @@ from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, 
 from icepool.population.base import Population
 from icepool.typing import U, Outcome, T_co, guess_star
 
-from functools import cached_property
+import functools
+import operator
 
-from typing import Any, Callable, Iterator, Mapping, Sequence, Type
+from collections import Counter, defaultdict
+from functools import cached_property
+from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence, Type
 
 
 class Deck(Population[T_co]):
@@ -116,6 +119,103 @@ class Deck(Population[T_co]):
         See `Deal()` for details.
         """
         return icepool.Deal(self, *hand_sizes)
+
+    # Binary operators.
+
+    def additive_union(
+            self, *args: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        """Both decks merged together."""
+        return functools.reduce(operator.add, args, initial=self)
+
+    def __add__(self,
+                other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data = Counter(self._data)
+        for outcome, count in Counter(other).items():
+            data[outcome] += count
+        return Deck(+data)
+
+    __radd__ = __add__
+
+    def difference(self, *args:
+                   Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        """This deck with the other cards removed (but not below zero of each card)."""
+        return functools.reduce(operator.sub, args, initial=self)
+
+    def __sub__(self,
+                other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data = Counter(self._data)
+        for outcome, count in Counter(other).items():
+            data[outcome] -= count
+        return Deck(+data)
+
+    def __rsub__(self,
+                 other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data = Counter(other)
+        for outcome, count in self.items():
+            data[outcome] -= count
+        return Deck(+data)
+
+    def intersection(
+            self, *args: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        """The cards that both decks have."""
+        return functools.reduce(operator.and_, args, initial=self)
+
+    def __and__(self,
+                other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data: Counter[T_co] = Counter()
+        for outcome, count in Counter(other).items():
+            data[outcome] = min(self.get(outcome, 0), count)
+        return Deck(+data)
+
+    __rand__ = __and__
+
+    def union(self, *args:
+              Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        """As many of each card as the deck that has more of them."""
+        return functools.reduce(operator.or_, args, initial=self)
+
+    def __or__(self,
+               other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data = Counter(self._data)
+        for outcome, count in Counter(other).items():
+            data[outcome] = max(data[outcome], count)
+        return Deck(+data)
+
+    __ror__ = __or__
+
+    def symmetric_difference(
+            self, other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        """As many of each card as the deck that has more of them."""
+        return self ^ other
+
+    def __xor__(self,
+                other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
+        data = Counter(self._data)
+        for outcome, count in Counter(other).items():
+            data[outcome] = abs(data[outcome] - count)
+        return Deck(+data)
+
+    def multiply_counts(self, other: int) -> 'Deck[T_co]':
+        """Merge multiple copies of the deck."""
+        return self * other
+
+    def __mul__(self, other: int) -> 'Deck[T_co]':
+        if not isinstance(other, int):
+            return NotImplemented
+        data = Counter({s: count * other for s, count in self.items()})
+        return Deck(+data)
+
+    __rmul__ = __mul__
+
+    def divide_counts(self, other: int) -> 'Deck[T_co]':
+        """Divide all card counts, rounding down."""
+        return self // other
+
+    def __floordiv__(self, other: int) -> 'Deck[T_co]':
+        if not isinstance(other, int):
+            return NotImplemented
+        data = Counter({s: count // other for s, count in self.items()})
+        return Deck(+data)
 
     def map(
             self,
