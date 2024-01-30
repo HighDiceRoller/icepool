@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 14.3.0"/>
+    <meta name="generator" content="pdoc 14.4.0"/>
     <title>icepool API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -829,6 +829,27 @@
                         </li>
                         <li>
                                 <a class="function" href="#Deck.deal">deal</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.additive_union">additive_union</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.difference">difference</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.intersection">intersection</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.union">union</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.symmetric_difference">symmetric_difference</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.multiply_counts">multiply_counts</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Deck.divide_counts">divide_counts</a>
                         </li>
                         <li>
                                 <a class="function" href="#Deck.map">map</a>
@@ -8140,9 +8161,9 @@ ordering.</p>
 </span><span id="Symbols-175"><a href="#Symbols-175"><span class="linenos">175</span></a>    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Symbols&#39;</span><span class="p">:</span>
 </span><span id="Symbols-176"><a href="#Symbols-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">Population</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">AgainExpression</span><span class="p">)):</span>
 </span><span id="Symbols-177"><a href="#Symbols-177"><span class="linenos">177</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>  <span class="c1"># delegate to the other</span>
-</span><span id="Symbols-178"><a href="#Symbols-178"><span class="linenos">178</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Symbols-178"><a href="#Symbols-178"><span class="linenos">178</span></a>        <span class="n">data</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </span><span id="Symbols-179"><a href="#Symbols-179"><span class="linenos">179</span></a>        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Symbols</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="Symbols-180"><a href="#Symbols-180"><span class="linenos">180</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Symbols-180"><a href="#Symbols-180"><span class="linenos">180</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">count</span><span class="p">)</span>
 </span><span id="Symbols-181"><a href="#Symbols-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="n">Symbols</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span id="Symbols-182"><a href="#Symbols-182"><span class="linenos">182</span></a>
 </span><span id="Symbols-183"><a href="#Symbols-183"><span class="linenos">183</span></a>    <span class="fm">__rand__</span> <span class="o">=</span> <span class="fm">__and__</span>
@@ -16695,174 +16716,271 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 
     </div>
     <a class="headerlink" href="#Deck"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck-17"><a href="#Deck-17"><span class="linenos"> 17</span></a><span class="k">class</span> <span class="nc">Deck</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">]):</span>
-</span><span id="Deck-18"><a href="#Deck-18"><span class="linenos"> 18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampling without replacement (within a single evaluation).</span>
-</span><span id="Deck-19"><a href="#Deck-19"><span class="linenos"> 19</span></a>
-</span><span id="Deck-20"><a href="#Deck-20"><span class="linenos"> 20</span></a><span class="sd">    Quantities represent duplicates.</span>
-</span><span id="Deck-21"><a href="#Deck-21"><span class="linenos"> 21</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck-20"><a href="#Deck-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">Deck</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">]):</span>
+</span><span id="Deck-21"><a href="#Deck-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampling without replacement (within a single evaluation).</span>
 </span><span id="Deck-22"><a href="#Deck-22"><span class="linenos"> 22</span></a>
-</span><span id="Deck-23"><a href="#Deck-23"><span class="linenos"> 23</span></a>    <span class="n">_data</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span>
-</span><span id="Deck-24"><a href="#Deck-24"><span class="linenos"> 24</span></a>    <span class="n">_deal</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="Deck-23"><a href="#Deck-23"><span class="linenos"> 23</span></a><span class="sd">    Quantities represent duplicates.</span>
+</span><span id="Deck-24"><a href="#Deck-24"><span class="linenos"> 24</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="Deck-25"><a href="#Deck-25"><span class="linenos"> 25</span></a>
-</span><span id="Deck-26"><a href="#Deck-26"><span class="linenos"> 26</span></a>    <span class="nd">@property</span>
-</span><span id="Deck-27"><a href="#Deck-27"><span class="linenos"> 27</span></a>    <span class="k">def</span> <span class="nf">_new_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
-</span><span id="Deck-28"><a href="#Deck-28"><span class="linenos"> 28</span></a>        <span class="k">return</span> <span class="n">Deck</span>
-</span><span id="Deck-29"><a href="#Deck-29"><span class="linenos"> 29</span></a>
-</span><span id="Deck-30"><a href="#Deck-30"><span class="linenos"> 30</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-</span><span id="Deck-31"><a href="#Deck-31"><span class="linenos"> 31</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="Deck-32"><a href="#Deck-32"><span class="linenos"> 32</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
-</span><span id="Deck-33"><a href="#Deck-33"><span class="linenos"> 33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor for a `Deck`.</span>
-</span><span id="Deck-34"><a href="#Deck-34"><span class="linenos"> 34</span></a>
-</span><span id="Deck-35"><a href="#Deck-35"><span class="linenos"> 35</span></a><span class="sd">        Args:</span>
-</span><span id="Deck-36"><a href="#Deck-36"><span class="linenos"> 36</span></a><span class="sd">            outcomes: The cards of the `Deck`. This can be one of the following:</span>
-</span><span id="Deck-37"><a href="#Deck-37"><span class="linenos"> 37</span></a><span class="sd">                * A `Sequence` of outcomes. Duplicates will contribute</span>
-</span><span id="Deck-38"><a href="#Deck-38"><span class="linenos"> 38</span></a><span class="sd">                    quantity for each appearance.</span>
-</span><span id="Deck-39"><a href="#Deck-39"><span class="linenos"> 39</span></a><span class="sd">                * A `Mapping` from outcomes to quantities.</span>
-</span><span id="Deck-40"><a href="#Deck-40"><span class="linenos"> 40</span></a>
-</span><span id="Deck-41"><a href="#Deck-41"><span class="linenos"> 41</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Deck-42"><a href="#Deck-42"><span class="linenos"> 42</span></a><span class="sd">                * An outcome, which must be hashable and totally orderable.</span>
-</span><span id="Deck-43"><a href="#Deck-43"><span class="linenos"> 43</span></a><span class="sd">                * A `Deck`, which will be flattened into the result. If a</span>
-</span><span id="Deck-44"><a href="#Deck-44"><span class="linenos"> 44</span></a><span class="sd">                    `times` is assigned to the `Deck`, the entire `Deck` will</span>
-</span><span id="Deck-45"><a href="#Deck-45"><span class="linenos"> 45</span></a><span class="sd">                    be duplicated that many times.</span>
-</span><span id="Deck-46"><a href="#Deck-46"><span class="linenos"> 46</span></a><span class="sd">            times: Multiplies the number of times each element of `outcomes`</span>
-</span><span id="Deck-47"><a href="#Deck-47"><span class="linenos"> 47</span></a><span class="sd">                will be put into the `Deck`.</span>
-</span><span id="Deck-48"><a href="#Deck-48"><span class="linenos"> 48</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
-</span><span id="Deck-49"><a href="#Deck-49"><span class="linenos"> 49</span></a><span class="sd">                `outcomes` or a single `int` to apply to all elements of</span>
-</span><span id="Deck-50"><a href="#Deck-50"><span class="linenos"> 50</span></a><span class="sd">                `outcomes`.</span>
-</span><span id="Deck-51"><a href="#Deck-51"><span class="linenos"> 51</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck-52"><a href="#Deck-52"><span class="linenos"> 52</span></a>
-</span><span id="Deck-53"><a href="#Deck-53"><span class="linenos"> 53</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-</span><span id="Deck-54"><a href="#Deck-54"><span class="linenos"> 54</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Again cannot be used with Decks.&#39;</span><span class="p">)</span>
+</span><span id="Deck-26"><a href="#Deck-26"><span class="linenos"> 26</span></a>    <span class="n">_data</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span>
+</span><span id="Deck-27"><a href="#Deck-27"><span class="linenos"> 27</span></a>    <span class="n">_deal</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="Deck-28"><a href="#Deck-28"><span class="linenos"> 28</span></a>
+</span><span id="Deck-29"><a href="#Deck-29"><span class="linenos"> 29</span></a>    <span class="nd">@property</span>
+</span><span id="Deck-30"><a href="#Deck-30"><span class="linenos"> 30</span></a>    <span class="k">def</span> <span class="nf">_new_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+</span><span id="Deck-31"><a href="#Deck-31"><span class="linenos"> 31</span></a>        <span class="k">return</span> <span class="n">Deck</span>
+</span><span id="Deck-32"><a href="#Deck-32"><span class="linenos"> 32</span></a>
+</span><span id="Deck-33"><a href="#Deck-33"><span class="linenos"> 33</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+</span><span id="Deck-34"><a href="#Deck-34"><span class="linenos"> 34</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="Deck-35"><a href="#Deck-35"><span class="linenos"> 35</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-36"><a href="#Deck-36"><span class="linenos"> 36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor for a `Deck`.</span>
+</span><span id="Deck-37"><a href="#Deck-37"><span class="linenos"> 37</span></a>
+</span><span id="Deck-38"><a href="#Deck-38"><span class="linenos"> 38</span></a><span class="sd">        Args:</span>
+</span><span id="Deck-39"><a href="#Deck-39"><span class="linenos"> 39</span></a><span class="sd">            outcomes: The cards of the `Deck`. This can be one of the following:</span>
+</span><span id="Deck-40"><a href="#Deck-40"><span class="linenos"> 40</span></a><span class="sd">                * A `Sequence` of outcomes. Duplicates will contribute</span>
+</span><span id="Deck-41"><a href="#Deck-41"><span class="linenos"> 41</span></a><span class="sd">                    quantity for each appearance.</span>
+</span><span id="Deck-42"><a href="#Deck-42"><span class="linenos"> 42</span></a><span class="sd">                * A `Mapping` from outcomes to quantities.</span>
+</span><span id="Deck-43"><a href="#Deck-43"><span class="linenos"> 43</span></a>
+</span><span id="Deck-44"><a href="#Deck-44"><span class="linenos"> 44</span></a><span class="sd">                Each outcome may be one of the following:</span>
+</span><span id="Deck-45"><a href="#Deck-45"><span class="linenos"> 45</span></a><span class="sd">                * An outcome, which must be hashable and totally orderable.</span>
+</span><span id="Deck-46"><a href="#Deck-46"><span class="linenos"> 46</span></a><span class="sd">                * A `Deck`, which will be flattened into the result. If a</span>
+</span><span id="Deck-47"><a href="#Deck-47"><span class="linenos"> 47</span></a><span class="sd">                    `times` is assigned to the `Deck`, the entire `Deck` will</span>
+</span><span id="Deck-48"><a href="#Deck-48"><span class="linenos"> 48</span></a><span class="sd">                    be duplicated that many times.</span>
+</span><span id="Deck-49"><a href="#Deck-49"><span class="linenos"> 49</span></a><span class="sd">            times: Multiplies the number of times each element of `outcomes`</span>
+</span><span id="Deck-50"><a href="#Deck-50"><span class="linenos"> 50</span></a><span class="sd">                will be put into the `Deck`.</span>
+</span><span id="Deck-51"><a href="#Deck-51"><span class="linenos"> 51</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
+</span><span id="Deck-52"><a href="#Deck-52"><span class="linenos"> 52</span></a><span class="sd">                `outcomes` or a single `int` to apply to all elements of</span>
+</span><span id="Deck-53"><a href="#Deck-53"><span class="linenos"> 53</span></a><span class="sd">                `outcomes`.</span>
+</span><span id="Deck-54"><a href="#Deck-54"><span class="linenos"> 54</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck-55"><a href="#Deck-55"><span class="linenos"> 55</span></a>
-</span><span id="Deck-56"><a href="#Deck-56"><span class="linenos"> 56</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck-57"><a href="#Deck-57"><span class="linenos"> 57</span></a>
-</span><span id="Deck-58"><a href="#Deck-58"><span class="linenos"> 58</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-</span><span id="Deck-59"><a href="#Deck-59"><span class="linenos"> 59</span></a>                <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck-60"><a href="#Deck-60"><span class="linenos"> 60</span></a>            <span class="k">return</span> <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="Deck-61"><a href="#Deck-61"><span class="linenos"> 61</span></a>
-</span><span id="Deck-62"><a href="#Deck-62"><span class="linenos"> 62</span></a>        <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span>
-</span><span id="Deck-63"><a href="#Deck-63"><span class="linenos"> 63</span></a>            <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck-56"><a href="#Deck-56"><span class="linenos"> 56</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
+</span><span id="Deck-57"><a href="#Deck-57"><span class="linenos"> 57</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Again cannot be used with Decks.&#39;</span><span class="p">)</span>
+</span><span id="Deck-58"><a href="#Deck-58"><span class="linenos"> 58</span></a>
+</span><span id="Deck-59"><a href="#Deck-59"><span class="linenos"> 59</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck-60"><a href="#Deck-60"><span class="linenos"> 60</span></a>
+</span><span id="Deck-61"><a href="#Deck-61"><span class="linenos"> 61</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span id="Deck-62"><a href="#Deck-62"><span class="linenos"> 62</span></a>                <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck-63"><a href="#Deck-63"><span class="linenos"> 63</span></a>            <span class="k">return</span> <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Deck-64"><a href="#Deck-64"><span class="linenos"> 64</span></a>
-</span><span id="Deck-65"><a href="#Deck-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
-</span><span id="Deck-66"><a href="#Deck-66"><span class="linenos"> 66</span></a>
-</span><span id="Deck-67"><a href="#Deck-67"><span class="linenos"> 67</span></a>    <span class="nd">@classmethod</span>
-</span><span id="Deck-68"><a href="#Deck-68"><span class="linenos"> 68</span></a>    <span class="k">def</span> <span class="nf">_new_raw</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
-</span><span id="Deck-69"><a href="#Deck-69"><span class="linenos"> 69</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new `Deck` using already-processed arguments.</span>
-</span><span id="Deck-70"><a href="#Deck-70"><span class="linenos"> 70</span></a>
-</span><span id="Deck-71"><a href="#Deck-71"><span class="linenos"> 71</span></a><span class="sd">        Args:</span>
-</span><span id="Deck-72"><a href="#Deck-72"><span class="linenos"> 72</span></a><span class="sd">            data: At this point, this is a Counts.</span>
-</span><span id="Deck-73"><a href="#Deck-73"><span class="linenos"> 73</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck-74"><a href="#Deck-74"><span class="linenos"> 74</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Population</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-</span><span id="Deck-75"><a href="#Deck-75"><span class="linenos"> 75</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
-</span><span id="Deck-76"><a href="#Deck-76"><span class="linenos"> 76</span></a>        <span class="k">return</span> <span class="bp">self</span>
-</span><span id="Deck-77"><a href="#Deck-77"><span class="linenos"> 77</span></a>
-</span><span id="Deck-78"><a href="#Deck-78"><span class="linenos"> 78</span></a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="Deck-79"><a href="#Deck-79"><span class="linenos"> 79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</span><span id="Deck-65"><a href="#Deck-65"><span class="linenos"> 65</span></a>        <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span>
+</span><span id="Deck-66"><a href="#Deck-66"><span class="linenos"> 66</span></a>            <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck-67"><a href="#Deck-67"><span class="linenos"> 67</span></a>
+</span><span id="Deck-68"><a href="#Deck-68"><span class="linenos"> 68</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="Deck-69"><a href="#Deck-69"><span class="linenos"> 69</span></a>
+</span><span id="Deck-70"><a href="#Deck-70"><span class="linenos"> 70</span></a>    <span class="nd">@classmethod</span>
+</span><span id="Deck-71"><a href="#Deck-71"><span class="linenos"> 71</span></a>    <span class="k">def</span> <span class="nf">_new_raw</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-72"><a href="#Deck-72"><span class="linenos"> 72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new `Deck` using already-processed arguments.</span>
+</span><span id="Deck-73"><a href="#Deck-73"><span class="linenos"> 73</span></a>
+</span><span id="Deck-74"><a href="#Deck-74"><span class="linenos"> 74</span></a><span class="sd">        Args:</span>
+</span><span id="Deck-75"><a href="#Deck-75"><span class="linenos"> 75</span></a><span class="sd">            data: At this point, this is a Counts.</span>
+</span><span id="Deck-76"><a href="#Deck-76"><span class="linenos"> 76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck-77"><a href="#Deck-77"><span class="linenos"> 77</span></a>        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Population</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+</span><span id="Deck-78"><a href="#Deck-78"><span class="linenos"> 78</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+</span><span id="Deck-79"><a href="#Deck-79"><span class="linenos"> 79</span></a>        <span class="k">return</span> <span class="bp">self</span>
 </span><span id="Deck-80"><a href="#Deck-80"><span class="linenos"> 80</span></a>
-</span><span id="Deck-81"><a href="#Deck-81"><span class="linenos"> 81</span></a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
-</span><span id="Deck-82"><a href="#Deck-82"><span class="linenos"> 82</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</span><span id="Deck-81"><a href="#Deck-81"><span class="linenos"> 81</span></a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
+</span><span id="Deck-82"><a href="#Deck-82"><span class="linenos"> 82</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span><span id="Deck-83"><a href="#Deck-83"><span class="linenos"> 83</span></a>
-</span><span id="Deck-84"><a href="#Deck-84"><span class="linenos"> 84</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="Deck-85"><a href="#Deck-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span id="Deck-84"><a href="#Deck-84"><span class="linenos"> 84</span></a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
+</span><span id="Deck-85"><a href="#Deck-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </span><span id="Deck-86"><a href="#Deck-86"><span class="linenos"> 86</span></a>
-</span><span id="Deck-87"><a href="#Deck-87"><span class="linenos"> 87</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-88"><a href="#Deck-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="Deck-87"><a href="#Deck-87"><span class="linenos"> 87</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
+</span><span id="Deck-88"><a href="#Deck-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span><span id="Deck-89"><a href="#Deck-89"><span class="linenos"> 89</span></a>
-</span><span id="Deck-90"><a href="#Deck-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="Deck-91"><a href="#Deck-91"><span class="linenos"> 91</span></a>        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</span><span id="Deck-90"><a href="#Deck-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-91"><a href="#Deck-91"><span class="linenos"> 91</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
 </span><span id="Deck-92"><a href="#Deck-92"><span class="linenos"> 92</span></a>
-</span><span id="Deck-93"><a href="#Deck-93"><span class="linenos"> 93</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-94"><a href="#Deck-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-93"><a href="#Deck-93"><span class="linenos"> 93</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
+</span><span id="Deck-94"><a href="#Deck-94"><span class="linenos"> 94</span></a>        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 </span><span id="Deck-95"><a href="#Deck-95"><span class="linenos"> 95</span></a>
-</span><span id="Deck-96"><a href="#Deck-96"><span class="linenos"> 96</span></a>    <span class="n">size</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Population</span><span class="o">.</span><span class="n">denominator</span>
-</span><span id="Deck-97"><a href="#Deck-97"><span class="linenos"> 97</span></a>
-</span><span id="Deck-98"><a href="#Deck-98"><span class="linenos"> 98</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-99"><a href="#Deck-99"><span class="linenos"> 99</span></a>    <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="Deck-100"><a href="#Deck-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">remove_min</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="Deck-101"><a href="#Deck-101"><span class="linenos">101</span></a>
-</span><span id="Deck-102"><a href="#Deck-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="Deck-103"><a href="#Deck-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A `Deck` with the min outcome removed.&quot;&quot;&quot;</span>
-</span><span id="Deck-104"><a href="#Deck-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_min</span>
-</span><span id="Deck-105"><a href="#Deck-105"><span class="linenos">105</span></a>
-</span><span id="Deck-106"><a href="#Deck-106"><span class="linenos">106</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-107"><a href="#Deck-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="Deck-108"><a href="#Deck-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">remove_max</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</span><span id="Deck-109"><a href="#Deck-109"><span class="linenos">109</span></a>
-</span><span id="Deck-110"><a href="#Deck-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-</span><span id="Deck-111"><a href="#Deck-111"><span class="linenos">111</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A `Deck` with the max outcome removed.&quot;&quot;&quot;</span>
-</span><span id="Deck-112"><a href="#Deck-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_max</span>
-</span><span id="Deck-113"><a href="#Deck-113"><span class="linenos">113</span></a>
-</span><span id="Deck-114"><a href="#Deck-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Deal[T_co, tuple[int, ...]]&#39;</span><span class="p">:</span>
-</span><span id="Deck-115"><a href="#Deck-115"><span class="linenos">115</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a `Deal` object from this deck.</span>
+</span><span id="Deck-96"><a href="#Deck-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-97"><a href="#Deck-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-98"><a href="#Deck-98"><span class="linenos"> 98</span></a>
+</span><span id="Deck-99"><a href="#Deck-99"><span class="linenos"> 99</span></a>    <span class="n">size</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Population</span><span class="o">.</span><span class="n">denominator</span>
+</span><span id="Deck-100"><a href="#Deck-100"><span class="linenos">100</span></a>
+</span><span id="Deck-101"><a href="#Deck-101"><span class="linenos">101</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-102"><a href="#Deck-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">_popped_min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="Deck-103"><a href="#Deck-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">remove_min</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="Deck-104"><a href="#Deck-104"><span class="linenos">104</span></a>
+</span><span id="Deck-105"><a href="#Deck-105"><span class="linenos">105</span></a>    <span class="k">def</span> <span class="nf">_pop_min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="Deck-106"><a href="#Deck-106"><span class="linenos">106</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A `Deck` with the min outcome removed.&quot;&quot;&quot;</span>
+</span><span id="Deck-107"><a href="#Deck-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_min</span>
+</span><span id="Deck-108"><a href="#Deck-108"><span class="linenos">108</span></a>
+</span><span id="Deck-109"><a href="#Deck-109"><span class="linenos">109</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-110"><a href="#Deck-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="nf">_popped_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="Deck-111"><a href="#Deck-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">remove_max</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="Deck-112"><a href="#Deck-112"><span class="linenos">112</span></a>
+</span><span id="Deck-113"><a href="#Deck-113"><span class="linenos">113</span></a>    <span class="k">def</span> <span class="nf">_pop_max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+</span><span id="Deck-114"><a href="#Deck-114"><span class="linenos">114</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A `Deck` with the max outcome removed.&quot;&quot;&quot;</span>
+</span><span id="Deck-115"><a href="#Deck-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popped_max</span>
 </span><span id="Deck-116"><a href="#Deck-116"><span class="linenos">116</span></a>
-</span><span id="Deck-117"><a href="#Deck-117"><span class="linenos">117</span></a><span class="sd">        See `Deal()` for details.</span>
-</span><span id="Deck-118"><a href="#Deck-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck-119"><a href="#Deck-119"><span class="linenos">119</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">)</span>
-</span><span id="Deck-120"><a href="#Deck-120"><span class="linenos">120</span></a>
-</span><span id="Deck-121"><a href="#Deck-121"><span class="linenos">121</span></a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
-</span><span id="Deck-122"><a href="#Deck-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="Deck-123"><a href="#Deck-123"><span class="linenos">123</span></a>            <span class="n">repl</span><span class="p">:</span>
-</span><span id="Deck-124"><a href="#Deck-124"><span class="linenos">124</span></a>        <span class="s1">&#39;Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]&#39;</span><span class="p">,</span>
-</span><span id="Deck-125"><a href="#Deck-125"><span class="linenos">125</span></a>            <span class="o">/</span><span class="p">,</span>
-</span><span id="Deck-126"><a href="#Deck-126"><span class="linenos">126</span></a>            <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[U]&#39;</span><span class="p">:</span>
-</span><span id="Deck-127"><a href="#Deck-127"><span class="linenos">127</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps outcomes of this `Deck` to other outcomes.</span>
-</span><span id="Deck-128"><a href="#Deck-128"><span class="linenos">128</span></a>
-</span><span id="Deck-129"><a href="#Deck-129"><span class="linenos">129</span></a><span class="sd">        Args:</span>
-</span><span id="Deck-130"><a href="#Deck-130"><span class="linenos">130</span></a><span class="sd">            repl: One of the following:</span>
-</span><span id="Deck-131"><a href="#Deck-131"><span class="linenos">131</span></a><span class="sd">                * A callable returning a new outcome for each old outcome.</span>
-</span><span id="Deck-132"><a href="#Deck-132"><span class="linenos">132</span></a><span class="sd">                * A map from old outcomes to new outcomes.</span>
-</span><span id="Deck-133"><a href="#Deck-133"><span class="linenos">133</span></a><span class="sd">                    Unmapped old outcomes stay the same.</span>
-</span><span id="Deck-134"><a href="#Deck-134"><span class="linenos">134</span></a><span class="sd">                The new outcomes may be `Deck`s, in which case one card is</span>
-</span><span id="Deck-135"><a href="#Deck-135"><span class="linenos">135</span></a><span class="sd">                replaced with several. This is not recommended.</span>
-</span><span id="Deck-136"><a href="#Deck-136"><span class="linenos">136</span></a><span class="sd">            star: Whether outcomes should be unpacked into separate arguments</span>
-</span><span id="Deck-137"><a href="#Deck-137"><span class="linenos">137</span></a><span class="sd">                before sending them to a callable `repl`.</span>
-</span><span id="Deck-138"><a href="#Deck-138"><span class="linenos">138</span></a><span class="sd">                If not provided, this will be guessed based on the function</span>
-</span><span id="Deck-139"><a href="#Deck-139"><span class="linenos">139</span></a><span class="sd">                signature.</span>
-</span><span id="Deck-140"><a href="#Deck-140"><span class="linenos">140</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck-141"><a href="#Deck-141"><span class="linenos">141</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Deck-142"><a href="#Deck-142"><span class="linenos">142</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
-</span><span id="Deck-143"><a href="#Deck-143"><span class="linenos">143</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Deck-144"><a href="#Deck-144"><span class="linenos">144</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
-</span><span id="Deck-145"><a href="#Deck-145"><span class="linenos">145</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
-</span><span id="Deck-146"><a href="#Deck-146"><span class="linenos">146</span></a>
-</span><span id="Deck-147"><a href="#Deck-147"><span class="linenos">147</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck-148"><a href="#Deck-148"><span class="linenos">148</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="Deck-149"><a href="#Deck-149"><span class="linenos">149</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck-150"><a href="#Deck-150"><span class="linenos">150</span></a>
-</span><span id="Deck-151"><a href="#Deck-151"><span class="linenos">151</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck-152"><a href="#Deck-152"><span class="linenos">152</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="Deck-153"><a href="#Deck-153"><span class="linenos">153</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck-154"><a href="#Deck-154"><span class="linenos">154</span></a>            <span class="c1"># repl is a mapping.</span>
-</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>            <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck-156"><a href="#Deck-156"><span class="linenos">156</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span><span class="p">:</span>
-</span><span id="Deck-157"><a href="#Deck-157"><span class="linenos">157</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="Deck-158"><a href="#Deck-158"><span class="linenos">158</span></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck-159"><a href="#Deck-159"><span class="linenos">159</span></a>                    <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="Deck-160"><a href="#Deck-160"><span class="linenos">160</span></a>
-</span><span id="Deck-161"><a href="#Deck-161"><span class="linenos">161</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span>
-</span><span id="Deck-162"><a href="#Deck-162"><span class="linenos">162</span></a>            <span class="p">[</span><span class="n">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()],</span>
-</span><span id="Deck-163"><a href="#Deck-163"><span class="linenos">163</span></a>            <span class="n">times</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">())</span>
-</span><span id="Deck-164"><a href="#Deck-164"><span class="linenos">164</span></a>
-</span><span id="Deck-165"><a href="#Deck-165"><span class="linenos">165</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-166"><a href="#Deck-166"><span class="linenos">166</span></a>    <span class="k">def</span> <span class="nf">_hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="Deck-167"><a href="#Deck-167"><span class="linenos">167</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="Deck-168"><a href="#Deck-168"><span class="linenos">168</span></a>
-</span><span id="Deck-169"><a href="#Deck-169"><span class="linenos">169</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Deck-170"><a href="#Deck-170"><span class="linenos">170</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck-171"><a href="#Deck-171"><span class="linenos">171</span></a>            <span class="k">return</span> <span class="kc">False</span>
-</span><span id="Deck-172"><a href="#Deck-172"><span class="linenos">172</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_hash_key</span>
-</span><span id="Deck-173"><a href="#Deck-173"><span class="linenos">173</span></a>
-</span><span id="Deck-174"><a href="#Deck-174"><span class="linenos">174</span></a>    <span class="nd">@cached_property</span>
-</span><span id="Deck-175"><a href="#Deck-175"><span class="linenos">175</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-176"><a href="#Deck-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span><span class="p">)</span>
+</span><span id="Deck-117"><a href="#Deck-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Deal[T_co, tuple[int, ...]]&#39;</span><span class="p">:</span>
+</span><span id="Deck-118"><a href="#Deck-118"><span class="linenos">118</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a `Deal` object from this deck.</span>
+</span><span id="Deck-119"><a href="#Deck-119"><span class="linenos">119</span></a>
+</span><span id="Deck-120"><a href="#Deck-120"><span class="linenos">120</span></a><span class="sd">        See `Deal()` for details.</span>
+</span><span id="Deck-121"><a href="#Deck-121"><span class="linenos">121</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck-122"><a href="#Deck-122"><span class="linenos">122</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">)</span>
+</span><span id="Deck-123"><a href="#Deck-123"><span class="linenos">123</span></a>
+</span><span id="Deck-124"><a href="#Deck-124"><span class="linenos">124</span></a>    <span class="c1"># Binary operators.</span>
+</span><span id="Deck-125"><a href="#Deck-125"><span class="linenos">125</span></a>
+</span><span id="Deck-126"><a href="#Deck-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">additive_union</span><span class="p">(</span>
+</span><span id="Deck-127"><a href="#Deck-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-128"><a href="#Deck-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Both decks merged together.&quot;&quot;&quot;</span>
+</span><span id="Deck-129"><a href="#Deck-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Deck-130"><a href="#Deck-130"><span class="linenos">130</span></a>
+</span><span id="Deck-131"><a href="#Deck-131"><span class="linenos">131</span></a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-132"><a href="#Deck-132"><span class="linenos">132</span></a>                <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-133"><a href="#Deck-133"><span class="linenos">133</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-134"><a href="#Deck-134"><span class="linenos">134</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-135"><a href="#Deck-135"><span class="linenos">135</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span>
+</span><span id="Deck-136"><a href="#Deck-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-137"><a href="#Deck-137"><span class="linenos">137</span></a>
+</span><span id="Deck-138"><a href="#Deck-138"><span class="linenos">138</span></a>    <span class="fm">__radd__</span> <span class="o">=</span> <span class="fm">__add__</span>
+</span><span id="Deck-139"><a href="#Deck-139"><span class="linenos">139</span></a>
+</span><span id="Deck-140"><a href="#Deck-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="Deck-141"><a href="#Deck-141"><span class="linenos">141</span></a>                   <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-142"><a href="#Deck-142"><span class="linenos">142</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;This deck with the other cards removed (but not below zero of each card).&quot;&quot;&quot;</span>
+</span><span id="Deck-143"><a href="#Deck-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Deck-144"><a href="#Deck-144"><span class="linenos">144</span></a>
+</span><span id="Deck-145"><a href="#Deck-145"><span class="linenos">145</span></a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-146"><a href="#Deck-146"><span class="linenos">146</span></a>                <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-147"><a href="#Deck-147"><span class="linenos">147</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-148"><a href="#Deck-148"><span class="linenos">148</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-149"><a href="#Deck-149"><span class="linenos">149</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">-=</span> <span class="n">count</span>
+</span><span id="Deck-150"><a href="#Deck-150"><span class="linenos">150</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-151"><a href="#Deck-151"><span class="linenos">151</span></a>
+</span><span id="Deck-152"><a href="#Deck-152"><span class="linenos">152</span></a>    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-153"><a href="#Deck-153"><span class="linenos">153</span></a>                 <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-154"><a href="#Deck-154"><span class="linenos">154</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="Deck-155"><a href="#Deck-155"><span class="linenos">155</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-156"><a href="#Deck-156"><span class="linenos">156</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">-=</span> <span class="n">count</span>
+</span><span id="Deck-157"><a href="#Deck-157"><span class="linenos">157</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-158"><a href="#Deck-158"><span class="linenos">158</span></a>
+</span><span id="Deck-159"><a href="#Deck-159"><span class="linenos">159</span></a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span>
+</span><span id="Deck-160"><a href="#Deck-160"><span class="linenos">160</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-161"><a href="#Deck-161"><span class="linenos">161</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The cards that both decks have.&quot;&quot;&quot;</span>
+</span><span id="Deck-162"><a href="#Deck-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Deck-163"><a href="#Deck-163"><span class="linenos">163</span></a>
+</span><span id="Deck-164"><a href="#Deck-164"><span class="linenos">164</span></a>    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-165"><a href="#Deck-165"><span class="linenos">165</span></a>                <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-166"><a href="#Deck-166"><span class="linenos">166</span></a>        <span class="n">data</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+</span><span id="Deck-167"><a href="#Deck-167"><span class="linenos">167</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-168"><a href="#Deck-168"><span class="linenos">168</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-169"><a href="#Deck-169"><span class="linenos">169</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-170"><a href="#Deck-170"><span class="linenos">170</span></a>
+</span><span id="Deck-171"><a href="#Deck-171"><span class="linenos">171</span></a>    <span class="fm">__rand__</span> <span class="o">=</span> <span class="fm">__and__</span>
+</span><span id="Deck-172"><a href="#Deck-172"><span class="linenos">172</span></a>
+</span><span id="Deck-173"><a href="#Deck-173"><span class="linenos">173</span></a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="Deck-174"><a href="#Deck-174"><span class="linenos">174</span></a>              <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-175"><a href="#Deck-175"><span class="linenos">175</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;As many of each card as the deck that has more of them.&quot;&quot;&quot;</span>
+</span><span id="Deck-176"><a href="#Deck-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Deck-177"><a href="#Deck-177"><span class="linenos">177</span></a>
-</span><span id="Deck-178"><a href="#Deck-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Deck-179"><a href="#Deck-179"><span class="linenos">179</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
-</span><span id="Deck-180"><a href="#Deck-180"><span class="linenos">180</span></a>
-</span><span id="Deck-181"><a href="#Deck-181"><span class="linenos">181</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Deck-182"><a href="#Deck-182"><span class="linenos">182</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span id="Deck-183"><a href="#Deck-183"><span class="linenos">183</span></a>                          <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-</span><span id="Deck-184"><a href="#Deck-184"><span class="linenos">184</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
+</span><span id="Deck-178"><a href="#Deck-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-179"><a href="#Deck-179"><span class="linenos">179</span></a>               <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-180"><a href="#Deck-180"><span class="linenos">180</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-181"><a href="#Deck-181"><span class="linenos">181</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-182"><a href="#Deck-182"><span class="linenos">182</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">],</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-183"><a href="#Deck-183"><span class="linenos">183</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-184"><a href="#Deck-184"><span class="linenos">184</span></a>
+</span><span id="Deck-185"><a href="#Deck-185"><span class="linenos">185</span></a>    <span class="fm">__ror__</span> <span class="o">=</span> <span class="fm">__or__</span>
+</span><span id="Deck-186"><a href="#Deck-186"><span class="linenos">186</span></a>
+</span><span id="Deck-187"><a href="#Deck-187"><span class="linenos">187</span></a>    <span class="k">def</span> <span class="nf">symmetric_difference</span><span class="p">(</span>
+</span><span id="Deck-188"><a href="#Deck-188"><span class="linenos">188</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-189"><a href="#Deck-189"><span class="linenos">189</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;As many of each card as the deck that has more of them.&quot;&quot;&quot;</span>
+</span><span id="Deck-190"><a href="#Deck-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">^</span> <span class="n">other</span>
+</span><span id="Deck-191"><a href="#Deck-191"><span class="linenos">191</span></a>
+</span><span id="Deck-192"><a href="#Deck-192"><span class="linenos">192</span></a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-193"><a href="#Deck-193"><span class="linenos">193</span></a>                <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-194"><a href="#Deck-194"><span class="linenos">194</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+</span><span id="Deck-195"><a href="#Deck-195"><span class="linenos">195</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Deck-196"><a href="#Deck-196"><span class="linenos">196</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span> <span class="o">-</span> <span class="n">count</span><span class="p">)</span>
+</span><span id="Deck-197"><a href="#Deck-197"><span class="linenos">197</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-198"><a href="#Deck-198"><span class="linenos">198</span></a>
+</span><span id="Deck-199"><a href="#Deck-199"><span class="linenos">199</span></a>    <span class="k">def</span> <span class="nf">multiply_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-200"><a href="#Deck-200"><span class="linenos">200</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge multiple copies of the deck.&quot;&quot;&quot;</span>
+</span><span id="Deck-201"><a href="#Deck-201"><span class="linenos">201</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">other</span>
+</span><span id="Deck-202"><a href="#Deck-202"><span class="linenos">202</span></a>
+</span><span id="Deck-203"><a href="#Deck-203"><span class="linenos">203</span></a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-204"><a href="#Deck-204"><span class="linenos">204</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="Deck-205"><a href="#Deck-205"><span class="linenos">205</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="Deck-206"><a href="#Deck-206"><span class="linenos">206</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="n">s</span><span class="p">:</span> <span class="n">count</span> <span class="o">*</span> <span class="n">other</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+</span><span id="Deck-207"><a href="#Deck-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-208"><a href="#Deck-208"><span class="linenos">208</span></a>
+</span><span id="Deck-209"><a href="#Deck-209"><span class="linenos">209</span></a>    <span class="fm">__rmul__</span> <span class="o">=</span> <span class="fm">__mul__</span>
+</span><span id="Deck-210"><a href="#Deck-210"><span class="linenos">210</span></a>
+</span><span id="Deck-211"><a href="#Deck-211"><span class="linenos">211</span></a>    <span class="k">def</span> <span class="nf">divide_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-212"><a href="#Deck-212"><span class="linenos">212</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Divide all card counts, rounding down.&quot;&quot;&quot;</span>
+</span><span id="Deck-213"><a href="#Deck-213"><span class="linenos">213</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">//</span> <span class="n">other</span>
+</span><span id="Deck-214"><a href="#Deck-214"><span class="linenos">214</span></a>
+</span><span id="Deck-215"><a href="#Deck-215"><span class="linenos">215</span></a>    <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck-216"><a href="#Deck-216"><span class="linenos">216</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="Deck-217"><a href="#Deck-217"><span class="linenos">217</span></a>            <span class="k">return</span> <span class="bp">NotImplemented</span>
+</span><span id="Deck-218"><a href="#Deck-218"><span class="linenos">218</span></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="n">s</span><span class="p">:</span> <span class="n">count</span> <span class="o">//</span> <span class="n">other</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+</span><span id="Deck-219"><a href="#Deck-219"><span class="linenos">219</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span><span class="o">+</span><span class="n">data</span><span class="p">)</span>
+</span><span id="Deck-220"><a href="#Deck-220"><span class="linenos">220</span></a>
+</span><span id="Deck-221"><a href="#Deck-221"><span class="linenos">221</span></a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+</span><span id="Deck-222"><a href="#Deck-222"><span class="linenos">222</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck-223"><a href="#Deck-223"><span class="linenos">223</span></a>            <span class="n">repl</span><span class="p">:</span>
+</span><span id="Deck-224"><a href="#Deck-224"><span class="linenos">224</span></a>        <span class="s1">&#39;Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]&#39;</span><span class="p">,</span>
+</span><span id="Deck-225"><a href="#Deck-225"><span class="linenos">225</span></a>            <span class="o">/</span><span class="p">,</span>
+</span><span id="Deck-226"><a href="#Deck-226"><span class="linenos">226</span></a>            <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[U]&#39;</span><span class="p">:</span>
+</span><span id="Deck-227"><a href="#Deck-227"><span class="linenos">227</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps outcomes of this `Deck` to other outcomes.</span>
+</span><span id="Deck-228"><a href="#Deck-228"><span class="linenos">228</span></a>
+</span><span id="Deck-229"><a href="#Deck-229"><span class="linenos">229</span></a><span class="sd">        Args:</span>
+</span><span id="Deck-230"><a href="#Deck-230"><span class="linenos">230</span></a><span class="sd">            repl: One of the following:</span>
+</span><span id="Deck-231"><a href="#Deck-231"><span class="linenos">231</span></a><span class="sd">                * A callable returning a new outcome for each old outcome.</span>
+</span><span id="Deck-232"><a href="#Deck-232"><span class="linenos">232</span></a><span class="sd">                * A map from old outcomes to new outcomes.</span>
+</span><span id="Deck-233"><a href="#Deck-233"><span class="linenos">233</span></a><span class="sd">                    Unmapped old outcomes stay the same.</span>
+</span><span id="Deck-234"><a href="#Deck-234"><span class="linenos">234</span></a><span class="sd">                The new outcomes may be `Deck`s, in which case one card is</span>
+</span><span id="Deck-235"><a href="#Deck-235"><span class="linenos">235</span></a><span class="sd">                replaced with several. This is not recommended.</span>
+</span><span id="Deck-236"><a href="#Deck-236"><span class="linenos">236</span></a><span class="sd">            star: Whether outcomes should be unpacked into separate arguments</span>
+</span><span id="Deck-237"><a href="#Deck-237"><span class="linenos">237</span></a><span class="sd">                before sending them to a callable `repl`.</span>
+</span><span id="Deck-238"><a href="#Deck-238"><span class="linenos">238</span></a><span class="sd">                If not provided, this will be guessed based on the function</span>
+</span><span id="Deck-239"><a href="#Deck-239"><span class="linenos">239</span></a><span class="sd">                signature.</span>
+</span><span id="Deck-240"><a href="#Deck-240"><span class="linenos">240</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck-241"><a href="#Deck-241"><span class="linenos">241</span></a>        <span class="c1"># Convert to a single-argument function.</span>
+</span><span id="Deck-242"><a href="#Deck-242"><span class="linenos">242</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Deck-243"><a href="#Deck-243"><span class="linenos">243</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Deck-244"><a href="#Deck-244"><span class="linenos">244</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
+</span><span id="Deck-245"><a href="#Deck-245"><span class="linenos">245</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
+</span><span id="Deck-246"><a href="#Deck-246"><span class="linenos">246</span></a>
+</span><span id="Deck-247"><a href="#Deck-247"><span class="linenos">247</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck-248"><a href="#Deck-248"><span class="linenos">248</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Deck-249"><a href="#Deck-249"><span class="linenos">249</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck-250"><a href="#Deck-250"><span class="linenos">250</span></a>
+</span><span id="Deck-251"><a href="#Deck-251"><span class="linenos">251</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck-252"><a href="#Deck-252"><span class="linenos">252</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Deck-253"><a href="#Deck-253"><span class="linenos">253</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck-254"><a href="#Deck-254"><span class="linenos">254</span></a>            <span class="c1"># repl is a mapping.</span>
+</span><span id="Deck-255"><a href="#Deck-255"><span class="linenos">255</span></a>            <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck-256"><a href="#Deck-256"><span class="linenos">256</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span><span class="p">:</span>
+</span><span id="Deck-257"><a href="#Deck-257"><span class="linenos">257</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="Deck-258"><a href="#Deck-258"><span class="linenos">258</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck-259"><a href="#Deck-259"><span class="linenos">259</span></a>                    <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="Deck-260"><a href="#Deck-260"><span class="linenos">260</span></a>
+</span><span id="Deck-261"><a href="#Deck-261"><span class="linenos">261</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span>
+</span><span id="Deck-262"><a href="#Deck-262"><span class="linenos">262</span></a>            <span class="p">[</span><span class="n">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()],</span>
+</span><span id="Deck-263"><a href="#Deck-263"><span class="linenos">263</span></a>            <span class="n">times</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">())</span>
+</span><span id="Deck-264"><a href="#Deck-264"><span class="linenos">264</span></a>
+</span><span id="Deck-265"><a href="#Deck-265"><span class="linenos">265</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-266"><a href="#Deck-266"><span class="linenos">266</span></a>    <span class="k">def</span> <span class="nf">_hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+</span><span id="Deck-267"><a href="#Deck-267"><span class="linenos">267</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="Deck-268"><a href="#Deck-268"><span class="linenos">268</span></a>
+</span><span id="Deck-269"><a href="#Deck-269"><span class="linenos">269</span></a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Deck-270"><a href="#Deck-270"><span class="linenos">270</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck-271"><a href="#Deck-271"><span class="linenos">271</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="Deck-272"><a href="#Deck-272"><span class="linenos">272</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_hash_key</span>
+</span><span id="Deck-273"><a href="#Deck-273"><span class="linenos">273</span></a>
+</span><span id="Deck-274"><a href="#Deck-274"><span class="linenos">274</span></a>    <span class="nd">@cached_property</span>
+</span><span id="Deck-275"><a href="#Deck-275"><span class="linenos">275</span></a>    <span class="k">def</span> <span class="nf">_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-276"><a href="#Deck-276"><span class="linenos">276</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hash_key</span><span class="p">)</span>
+</span><span id="Deck-277"><a href="#Deck-277"><span class="linenos">277</span></a>
+</span><span id="Deck-278"><a href="#Deck-278"><span class="linenos">278</span></a>    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Deck-279"><a href="#Deck-279"><span class="linenos">279</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
+</span><span id="Deck-280"><a href="#Deck-280"><span class="linenos">280</span></a>
+</span><span id="Deck-281"><a href="#Deck-281"><span class="linenos">281</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deck-282"><a href="#Deck-282"><span class="linenos">282</span></a>        <span class="n">inner</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">quantity</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span id="Deck-283"><a href="#Deck-283"><span class="linenos">283</span></a>                          <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</span><span id="Deck-284"><a href="#Deck-284"><span class="linenos">284</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="s1">&#39;({&#39;</span> <span class="o">+</span> <span class="n">inner</span> <span class="o">+</span> <span class="s1">&#39;})&#39;</span>
 </span></pre></div>
 
 
@@ -16882,42 +17000,42 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 
     </div>
     <a class="headerlink" href="#Deck.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.__init__-30"><a href="#Deck.__init__-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-</span><span id="Deck.__init__-31"><a href="#Deck.__init__-31"><span class="linenos">31</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
-</span><span id="Deck.__init__-32"><a href="#Deck.__init__-32"><span class="linenos">32</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
-</span><span id="Deck.__init__-33"><a href="#Deck.__init__-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor for a `Deck`.</span>
-</span><span id="Deck.__init__-34"><a href="#Deck.__init__-34"><span class="linenos">34</span></a>
-</span><span id="Deck.__init__-35"><a href="#Deck.__init__-35"><span class="linenos">35</span></a><span class="sd">        Args:</span>
-</span><span id="Deck.__init__-36"><a href="#Deck.__init__-36"><span class="linenos">36</span></a><span class="sd">            outcomes: The cards of the `Deck`. This can be one of the following:</span>
-</span><span id="Deck.__init__-37"><a href="#Deck.__init__-37"><span class="linenos">37</span></a><span class="sd">                * A `Sequence` of outcomes. Duplicates will contribute</span>
-</span><span id="Deck.__init__-38"><a href="#Deck.__init__-38"><span class="linenos">38</span></a><span class="sd">                    quantity for each appearance.</span>
-</span><span id="Deck.__init__-39"><a href="#Deck.__init__-39"><span class="linenos">39</span></a><span class="sd">                * A `Mapping` from outcomes to quantities.</span>
-</span><span id="Deck.__init__-40"><a href="#Deck.__init__-40"><span class="linenos">40</span></a>
-</span><span id="Deck.__init__-41"><a href="#Deck.__init__-41"><span class="linenos">41</span></a><span class="sd">                Each outcome may be one of the following:</span>
-</span><span id="Deck.__init__-42"><a href="#Deck.__init__-42"><span class="linenos">42</span></a><span class="sd">                * An outcome, which must be hashable and totally orderable.</span>
-</span><span id="Deck.__init__-43"><a href="#Deck.__init__-43"><span class="linenos">43</span></a><span class="sd">                * A `Deck`, which will be flattened into the result. If a</span>
-</span><span id="Deck.__init__-44"><a href="#Deck.__init__-44"><span class="linenos">44</span></a><span class="sd">                    `times` is assigned to the `Deck`, the entire `Deck` will</span>
-</span><span id="Deck.__init__-45"><a href="#Deck.__init__-45"><span class="linenos">45</span></a><span class="sd">                    be duplicated that many times.</span>
-</span><span id="Deck.__init__-46"><a href="#Deck.__init__-46"><span class="linenos">46</span></a><span class="sd">            times: Multiplies the number of times each element of `outcomes`</span>
-</span><span id="Deck.__init__-47"><a href="#Deck.__init__-47"><span class="linenos">47</span></a><span class="sd">                will be put into the `Deck`.</span>
-</span><span id="Deck.__init__-48"><a href="#Deck.__init__-48"><span class="linenos">48</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
-</span><span id="Deck.__init__-49"><a href="#Deck.__init__-49"><span class="linenos">49</span></a><span class="sd">                `outcomes` or a single `int` to apply to all elements of</span>
-</span><span id="Deck.__init__-50"><a href="#Deck.__init__-50"><span class="linenos">50</span></a><span class="sd">                `outcomes`.</span>
-</span><span id="Deck.__init__-51"><a href="#Deck.__init__-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck.__init__-52"><a href="#Deck.__init__-52"><span class="linenos">52</span></a>
-</span><span id="Deck.__init__-53"><a href="#Deck.__init__-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
-</span><span id="Deck.__init__-54"><a href="#Deck.__init__-54"><span class="linenos">54</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Again cannot be used with Decks.&#39;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.__init__-33"><a href="#Deck.__init__-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+</span><span id="Deck.__init__-34"><a href="#Deck.__init__-34"><span class="linenos">34</span></a>                <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+</span><span id="Deck.__init__-35"><a href="#Deck.__init__-35"><span class="linenos">35</span></a>                <span class="n">times</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.__init__-36"><a href="#Deck.__init__-36"><span class="linenos">36</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor for a `Deck`.</span>
+</span><span id="Deck.__init__-37"><a href="#Deck.__init__-37"><span class="linenos">37</span></a>
+</span><span id="Deck.__init__-38"><a href="#Deck.__init__-38"><span class="linenos">38</span></a><span class="sd">        Args:</span>
+</span><span id="Deck.__init__-39"><a href="#Deck.__init__-39"><span class="linenos">39</span></a><span class="sd">            outcomes: The cards of the `Deck`. This can be one of the following:</span>
+</span><span id="Deck.__init__-40"><a href="#Deck.__init__-40"><span class="linenos">40</span></a><span class="sd">                * A `Sequence` of outcomes. Duplicates will contribute</span>
+</span><span id="Deck.__init__-41"><a href="#Deck.__init__-41"><span class="linenos">41</span></a><span class="sd">                    quantity for each appearance.</span>
+</span><span id="Deck.__init__-42"><a href="#Deck.__init__-42"><span class="linenos">42</span></a><span class="sd">                * A `Mapping` from outcomes to quantities.</span>
+</span><span id="Deck.__init__-43"><a href="#Deck.__init__-43"><span class="linenos">43</span></a>
+</span><span id="Deck.__init__-44"><a href="#Deck.__init__-44"><span class="linenos">44</span></a><span class="sd">                Each outcome may be one of the following:</span>
+</span><span id="Deck.__init__-45"><a href="#Deck.__init__-45"><span class="linenos">45</span></a><span class="sd">                * An outcome, which must be hashable and totally orderable.</span>
+</span><span id="Deck.__init__-46"><a href="#Deck.__init__-46"><span class="linenos">46</span></a><span class="sd">                * A `Deck`, which will be flattened into the result. If a</span>
+</span><span id="Deck.__init__-47"><a href="#Deck.__init__-47"><span class="linenos">47</span></a><span class="sd">                    `times` is assigned to the `Deck`, the entire `Deck` will</span>
+</span><span id="Deck.__init__-48"><a href="#Deck.__init__-48"><span class="linenos">48</span></a><span class="sd">                    be duplicated that many times.</span>
+</span><span id="Deck.__init__-49"><a href="#Deck.__init__-49"><span class="linenos">49</span></a><span class="sd">            times: Multiplies the number of times each element of `outcomes`</span>
+</span><span id="Deck.__init__-50"><a href="#Deck.__init__-50"><span class="linenos">50</span></a><span class="sd">                will be put into the `Deck`.</span>
+</span><span id="Deck.__init__-51"><a href="#Deck.__init__-51"><span class="linenos">51</span></a><span class="sd">                `times` can either be a sequence of the same length as</span>
+</span><span id="Deck.__init__-52"><a href="#Deck.__init__-52"><span class="linenos">52</span></a><span class="sd">                `outcomes` or a single `int` to apply to all elements of</span>
+</span><span id="Deck.__init__-53"><a href="#Deck.__init__-53"><span class="linenos">53</span></a><span class="sd">                `outcomes`.</span>
+</span><span id="Deck.__init__-54"><a href="#Deck.__init__-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck.__init__-55"><a href="#Deck.__init__-55"><span class="linenos">55</span></a>
-</span><span id="Deck.__init__-56"><a href="#Deck.__init__-56"><span class="linenos">56</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
-</span><span id="Deck.__init__-57"><a href="#Deck.__init__-57"><span class="linenos">57</span></a>
-</span><span id="Deck.__init__-58"><a href="#Deck.__init__-58"><span class="linenos">58</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-</span><span id="Deck.__init__-59"><a href="#Deck.__init__-59"><span class="linenos">59</span></a>                <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Deck</span><span class="p">):</span>
-</span><span id="Deck.__init__-60"><a href="#Deck.__init__-60"><span class="linenos">60</span></a>            <span class="k">return</span> <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</span><span id="Deck.__init__-61"><a href="#Deck.__init__-61"><span class="linenos">61</span></a>
-</span><span id="Deck.__init__-62"><a href="#Deck.__init__-62"><span class="linenos">62</span></a>        <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span>
-</span><span id="Deck.__init__-63"><a href="#Deck.__init__-63"><span class="linenos">63</span></a>            <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck.__init__-56"><a href="#Deck.__init__-56"><span class="linenos">56</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">again</span><span class="o">.</span><span class="n">contains_again</span><span class="p">(</span><span class="n">outcomes</span><span class="p">):</span>
+</span><span id="Deck.__init__-57"><a href="#Deck.__init__-57"><span class="linenos">57</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Again cannot be used with Decks.&#39;</span><span class="p">)</span>
+</span><span id="Deck.__init__-58"><a href="#Deck.__init__-58"><span class="linenos">58</span></a>
+</span><span id="Deck.__init__-59"><a href="#Deck.__init__-59"><span class="linenos">59</span></a>        <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">itemize</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck.__init__-60"><a href="#Deck.__init__-60"><span class="linenos">60</span></a>
+</span><span id="Deck.__init__-61"><a href="#Deck.__init__-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span id="Deck.__init__-62"><a href="#Deck.__init__-62"><span class="linenos">62</span></a>                <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Deck</span><span class="p">):</span>
+</span><span id="Deck.__init__-63"><a href="#Deck.__init__-63"><span class="linenos">63</span></a>            <span class="k">return</span> <span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Deck.__init__-64"><a href="#Deck.__init__-64"><span class="linenos">64</span></a>
-</span><span id="Deck.__init__-65"><a href="#Deck.__init__-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+</span><span id="Deck.__init__-65"><a href="#Deck.__init__-65"><span class="linenos">65</span></a>        <span class="n">counts</span><span class="p">:</span> <span class="n">Counts</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">creation_args</span><span class="o">.</span><span class="n">expand_args_for_deck</span><span class="p">(</span>
+</span><span id="Deck.__init__-66"><a href="#Deck.__init__-66"><span class="linenos">66</span></a>            <span class="n">outcomes</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</span><span id="Deck.__init__-67"><a href="#Deck.__init__-67"><span class="linenos">67</span></a>
+</span><span id="Deck.__init__-68"><a href="#Deck.__init__-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="o">.</span><span class="n">_new_raw</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -16963,8 +17081,8 @@ will be put into the <code><a href="#Deck">Deck</a></code>.
 
     </div>
     <a class="headerlink" href="#Deck.keys"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.keys-78"><a href="#Deck.keys-78"><span class="linenos">78</span></a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="Deck.keys-79"><a href="#Deck.keys-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.keys-81"><a href="#Deck.keys-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsKeysView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
+</span><span id="Deck.keys-82"><a href="#Deck.keys-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -16984,8 +17102,8 @@ will be put into the <code><a href="#Deck">Deck</a></code>.
 
     </div>
     <a class="headerlink" href="#Deck.values"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.values-81"><a href="#Deck.values-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
-</span><span id="Deck.values-82"><a href="#Deck.values-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.values-84"><a href="#Deck.values-84"><span class="linenos">84</span></a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsValuesView</span><span class="p">:</span>
+</span><span id="Deck.values-85"><a href="#Deck.values-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -17005,8 +17123,8 @@ will be put into the <code><a href="#Deck">Deck</a></code>.
 
     </div>
     <a class="headerlink" href="#Deck.items"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.items-84"><a href="#Deck.items-84"><span class="linenos">84</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
-</span><span id="Deck.items-85"><a href="#Deck.items-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.items-87"><a href="#Deck.items-87"><span class="linenos">87</span></a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CountsItemsView</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
+</span><span id="Deck.items-88"><a href="#Deck.items-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -17055,18 +17173,177 @@ use <code>len()</code>.</p>
 
     </div>
     <a class="headerlink" href="#Deck.deal"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.deal-114"><a href="#Deck.deal-114"><span class="linenos">114</span></a>    <span class="k">def</span> <span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Deal[T_co, tuple[int, ...]]&#39;</span><span class="p">:</span>
-</span><span id="Deck.deal-115"><a href="#Deck.deal-115"><span class="linenos">115</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a `Deal` object from this deck.</span>
-</span><span id="Deck.deal-116"><a href="#Deck.deal-116"><span class="linenos">116</span></a>
-</span><span id="Deck.deal-117"><a href="#Deck.deal-117"><span class="linenos">117</span></a><span class="sd">        See `Deal()` for details.</span>
-</span><span id="Deck.deal-118"><a href="#Deck.deal-118"><span class="linenos">118</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck.deal-119"><a href="#Deck.deal-119"><span class="linenos">119</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.deal-117"><a href="#Deck.deal-117"><span class="linenos">117</span></a>    <span class="k">def</span> <span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Deal[T_co, tuple[int, ...]]&#39;</span><span class="p">:</span>
+</span><span id="Deck.deal-118"><a href="#Deck.deal-118"><span class="linenos">118</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a `Deal` object from this deck.</span>
+</span><span id="Deck.deal-119"><a href="#Deck.deal-119"><span class="linenos">119</span></a>
+</span><span id="Deck.deal-120"><a href="#Deck.deal-120"><span class="linenos">120</span></a><span class="sd">        See `Deal()` for details.</span>
+</span><span id="Deck.deal-121"><a href="#Deck.deal-121"><span class="linenos">121</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck.deal-122"><a href="#Deck.deal-122"><span class="linenos">122</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hand_sizes</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Creates a <code><a href="#Deal">Deal</a></code> object from this deck.</p>
 
 <p>See <code><a href="#Deal">Deal()</a></code> for details.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.additive_union" class="classattr">
+                                        <input id="Deck.additive_union-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">additive_union</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.additive_union-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.additive_union"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.additive_union-126"><a href="#Deck.additive_union-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">additive_union</span><span class="p">(</span>
+</span><span id="Deck.additive_union-127"><a href="#Deck.additive_union-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.additive_union-128"><a href="#Deck.additive_union-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Both decks merged together.&quot;&quot;&quot;</span>
+</span><span id="Deck.additive_union-129"><a href="#Deck.additive_union-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Both decks merged together.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.difference" class="classattr">
+                                        <input id="Deck.difference-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">difference</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.difference-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.difference"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.difference-140"><a href="#Deck.difference-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="Deck.difference-141"><a href="#Deck.difference-141"><span class="linenos">141</span></a>                   <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.difference-142"><a href="#Deck.difference-142"><span class="linenos">142</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;This deck with the other cards removed (but not below zero of each card).&quot;&quot;&quot;</span>
+</span><span id="Deck.difference-143"><a href="#Deck.difference-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>This deck with the other cards removed (but not below zero of each card).</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.intersection" class="classattr">
+                                        <input id="Deck.intersection-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">intersection</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.intersection-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.intersection"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.intersection-159"><a href="#Deck.intersection-159"><span class="linenos">159</span></a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span>
+</span><span id="Deck.intersection-160"><a href="#Deck.intersection-160"><span class="linenos">160</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.intersection-161"><a href="#Deck.intersection-161"><span class="linenos">161</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The cards that both decks have.&quot;&quot;&quot;</span>
+</span><span id="Deck.intersection-162"><a href="#Deck.intersection-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>The cards that both decks have.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.union" class="classattr">
+                                        <input id="Deck.union-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">union</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.union-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.union"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.union-173"><a href="#Deck.union-173"><span class="linenos">173</span></a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="Deck.union-174"><a href="#Deck.union-174"><span class="linenos">174</span></a>              <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.union-175"><a href="#Deck.union-175"><span class="linenos">175</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;As many of each card as the deck that has more of them.&quot;&quot;&quot;</span>
+</span><span id="Deck.union-176"><a href="#Deck.union-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>As many of each card as the deck that has more of them.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.symmetric_difference" class="classattr">
+                                        <input id="Deck.symmetric_difference-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">symmetric_difference</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.symmetric_difference-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.symmetric_difference"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.symmetric_difference-187"><a href="#Deck.symmetric_difference-187"><span class="linenos">187</span></a>    <span class="k">def</span> <span class="nf">symmetric_difference</span><span class="p">(</span>
+</span><span id="Deck.symmetric_difference-188"><a href="#Deck.symmetric_difference-188"><span class="linenos">188</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T_co</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.symmetric_difference-189"><a href="#Deck.symmetric_difference-189"><span class="linenos">189</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;As many of each card as the deck that has more of them.&quot;&quot;&quot;</span>
+</span><span id="Deck.symmetric_difference-190"><a href="#Deck.symmetric_difference-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">^</span> <span class="n">other</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>As many of each card as the deck that has more of them.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.multiply_counts" class="classattr">
+                                        <input id="Deck.multiply_counts-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">multiply_counts</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.multiply_counts-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.multiply_counts"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.multiply_counts-199"><a href="#Deck.multiply_counts-199"><span class="linenos">199</span></a>    <span class="k">def</span> <span class="nf">multiply_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.multiply_counts-200"><a href="#Deck.multiply_counts-200"><span class="linenos">200</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge multiple copies of the deck.&quot;&quot;&quot;</span>
+</span><span id="Deck.multiply_counts-201"><a href="#Deck.multiply_counts-201"><span class="linenos">201</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">other</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Merge multiple copies of the deck.</p>
+</div>
+
+
+                            </div>
+                            <div id="Deck.divide_counts" class="classattr">
+                                        <input id="Deck.divide_counts-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">divide_counts</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span><span class="p">:</span> <span class="nb">int</span></span><span class="return-annotation">) -> <span class="n"><a href="#Deck">Deck</a></span><span class="p">[</span><span class="o">+</span><span class="n">T_co</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Deck.divide_counts-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Deck.divide_counts"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.divide_counts-211"><a href="#Deck.divide_counts-211"><span class="linenos">211</span></a>    <span class="k">def</span> <span class="nf">divide_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[T_co]&#39;</span><span class="p">:</span>
+</span><span id="Deck.divide_counts-212"><a href="#Deck.divide_counts-212"><span class="linenos">212</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Divide all card counts, rounding down.&quot;&quot;&quot;</span>
+</span><span id="Deck.divide_counts-213"><a href="#Deck.divide_counts-213"><span class="linenos">213</span></a>        <span class="k">return</span> <span class="bp">self</span> <span class="o">//</span> <span class="n">other</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Divide all card counts, rounding down.</p>
 </div>
 
 
@@ -17082,49 +17359,49 @@ use <code>len()</code>.</p>
 
     </div>
     <a class="headerlink" href="#Deck.map"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.map-121"><a href="#Deck.map-121"><span class="linenos">121</span></a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
-</span><span id="Deck.map-122"><a href="#Deck.map-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="Deck.map-123"><a href="#Deck.map-123"><span class="linenos">123</span></a>            <span class="n">repl</span><span class="p">:</span>
-</span><span id="Deck.map-124"><a href="#Deck.map-124"><span class="linenos">124</span></a>        <span class="s1">&#39;Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]&#39;</span><span class="p">,</span>
-</span><span id="Deck.map-125"><a href="#Deck.map-125"><span class="linenos">125</span></a>            <span class="o">/</span><span class="p">,</span>
-</span><span id="Deck.map-126"><a href="#Deck.map-126"><span class="linenos">126</span></a>            <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[U]&#39;</span><span class="p">:</span>
-</span><span id="Deck.map-127"><a href="#Deck.map-127"><span class="linenos">127</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps outcomes of this `Deck` to other outcomes.</span>
-</span><span id="Deck.map-128"><a href="#Deck.map-128"><span class="linenos">128</span></a>
-</span><span id="Deck.map-129"><a href="#Deck.map-129"><span class="linenos">129</span></a><span class="sd">        Args:</span>
-</span><span id="Deck.map-130"><a href="#Deck.map-130"><span class="linenos">130</span></a><span class="sd">            repl: One of the following:</span>
-</span><span id="Deck.map-131"><a href="#Deck.map-131"><span class="linenos">131</span></a><span class="sd">                * A callable returning a new outcome for each old outcome.</span>
-</span><span id="Deck.map-132"><a href="#Deck.map-132"><span class="linenos">132</span></a><span class="sd">                * A map from old outcomes to new outcomes.</span>
-</span><span id="Deck.map-133"><a href="#Deck.map-133"><span class="linenos">133</span></a><span class="sd">                    Unmapped old outcomes stay the same.</span>
-</span><span id="Deck.map-134"><a href="#Deck.map-134"><span class="linenos">134</span></a><span class="sd">                The new outcomes may be `Deck`s, in which case one card is</span>
-</span><span id="Deck.map-135"><a href="#Deck.map-135"><span class="linenos">135</span></a><span class="sd">                replaced with several. This is not recommended.</span>
-</span><span id="Deck.map-136"><a href="#Deck.map-136"><span class="linenos">136</span></a><span class="sd">            star: Whether outcomes should be unpacked into separate arguments</span>
-</span><span id="Deck.map-137"><a href="#Deck.map-137"><span class="linenos">137</span></a><span class="sd">                before sending them to a callable `repl`.</span>
-</span><span id="Deck.map-138"><a href="#Deck.map-138"><span class="linenos">138</span></a><span class="sd">                If not provided, this will be guessed based on the function</span>
-</span><span id="Deck.map-139"><a href="#Deck.map-139"><span class="linenos">139</span></a><span class="sd">                signature.</span>
-</span><span id="Deck.map-140"><a href="#Deck.map-140"><span class="linenos">140</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deck.map-141"><a href="#Deck.map-141"><span class="linenos">141</span></a>        <span class="c1"># Convert to a single-argument function.</span>
-</span><span id="Deck.map-142"><a href="#Deck.map-142"><span class="linenos">142</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
-</span><span id="Deck.map-143"><a href="#Deck.map-143"><span class="linenos">143</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Deck.map-144"><a href="#Deck.map-144"><span class="linenos">144</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
-</span><span id="Deck.map-145"><a href="#Deck.map-145"><span class="linenos">145</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
-</span><span id="Deck.map-146"><a href="#Deck.map-146"><span class="linenos">146</span></a>
-</span><span id="Deck.map-147"><a href="#Deck.map-147"><span class="linenos">147</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck.map-148"><a href="#Deck.map-148"><span class="linenos">148</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="Deck.map-149"><a href="#Deck.map-149"><span class="linenos">149</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck.map-150"><a href="#Deck.map-150"><span class="linenos">150</span></a>
-</span><span id="Deck.map-151"><a href="#Deck.map-151"><span class="linenos">151</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck.map-152"><a href="#Deck.map-152"><span class="linenos">152</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="Deck.map-153"><a href="#Deck.map-153"><span class="linenos">153</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck.map-154"><a href="#Deck.map-154"><span class="linenos">154</span></a>            <span class="c1"># repl is a mapping.</span>
-</span><span id="Deck.map-155"><a href="#Deck.map-155"><span class="linenos">155</span></a>            <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="Deck.map-156"><a href="#Deck.map-156"><span class="linenos">156</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span><span class="p">:</span>
-</span><span id="Deck.map-157"><a href="#Deck.map-157"><span class="linenos">157</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="Deck.map-158"><a href="#Deck.map-158"><span class="linenos">158</span></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="Deck.map-159"><a href="#Deck.map-159"><span class="linenos">159</span></a>                    <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="Deck.map-160"><a href="#Deck.map-160"><span class="linenos">160</span></a>
-</span><span id="Deck.map-161"><a href="#Deck.map-161"><span class="linenos">161</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span>
-</span><span id="Deck.map-162"><a href="#Deck.map-162"><span class="linenos">162</span></a>            <span class="p">[</span><span class="n">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()],</span>
-</span><span id="Deck.map-163"><a href="#Deck.map-163"><span class="linenos">163</span></a>            <span class="n">times</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">())</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck.map-221"><a href="#Deck.map-221"><span class="linenos">221</span></a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+</span><span id="Deck.map-222"><a href="#Deck.map-222"><span class="linenos">222</span></a>            <span class="bp">self</span><span class="p">,</span>
+</span><span id="Deck.map-223"><a href="#Deck.map-223"><span class="linenos">223</span></a>            <span class="n">repl</span><span class="p">:</span>
+</span><span id="Deck.map-224"><a href="#Deck.map-224"><span class="linenos">224</span></a>        <span class="s1">&#39;Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]&#39;</span><span class="p">,</span>
+</span><span id="Deck.map-225"><a href="#Deck.map-225"><span class="linenos">225</span></a>            <span class="o">/</span><span class="p">,</span>
+</span><span id="Deck.map-226"><a href="#Deck.map-226"><span class="linenos">226</span></a>            <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Deck[U]&#39;</span><span class="p">:</span>
+</span><span id="Deck.map-227"><a href="#Deck.map-227"><span class="linenos">227</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Maps outcomes of this `Deck` to other outcomes.</span>
+</span><span id="Deck.map-228"><a href="#Deck.map-228"><span class="linenos">228</span></a>
+</span><span id="Deck.map-229"><a href="#Deck.map-229"><span class="linenos">229</span></a><span class="sd">        Args:</span>
+</span><span id="Deck.map-230"><a href="#Deck.map-230"><span class="linenos">230</span></a><span class="sd">            repl: One of the following:</span>
+</span><span id="Deck.map-231"><a href="#Deck.map-231"><span class="linenos">231</span></a><span class="sd">                * A callable returning a new outcome for each old outcome.</span>
+</span><span id="Deck.map-232"><a href="#Deck.map-232"><span class="linenos">232</span></a><span class="sd">                * A map from old outcomes to new outcomes.</span>
+</span><span id="Deck.map-233"><a href="#Deck.map-233"><span class="linenos">233</span></a><span class="sd">                    Unmapped old outcomes stay the same.</span>
+</span><span id="Deck.map-234"><a href="#Deck.map-234"><span class="linenos">234</span></a><span class="sd">                The new outcomes may be `Deck`s, in which case one card is</span>
+</span><span id="Deck.map-235"><a href="#Deck.map-235"><span class="linenos">235</span></a><span class="sd">                replaced with several. This is not recommended.</span>
+</span><span id="Deck.map-236"><a href="#Deck.map-236"><span class="linenos">236</span></a><span class="sd">            star: Whether outcomes should be unpacked into separate arguments</span>
+</span><span id="Deck.map-237"><a href="#Deck.map-237"><span class="linenos">237</span></a><span class="sd">                before sending them to a callable `repl`.</span>
+</span><span id="Deck.map-238"><a href="#Deck.map-238"><span class="linenos">238</span></a><span class="sd">                If not provided, this will be guessed based on the function</span>
+</span><span id="Deck.map-239"><a href="#Deck.map-239"><span class="linenos">239</span></a><span class="sd">                signature.</span>
+</span><span id="Deck.map-240"><a href="#Deck.map-240"><span class="linenos">240</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Deck.map-241"><a href="#Deck.map-241"><span class="linenos">241</span></a>        <span class="c1"># Convert to a single-argument function.</span>
+</span><span id="Deck.map-242"><a href="#Deck.map-242"><span class="linenos">242</span></a>        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
+</span><span id="Deck.map-243"><a href="#Deck.map-243"><span class="linenos">243</span></a>            <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Deck.map-244"><a href="#Deck.map-244"><span class="linenos">244</span></a>                <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">)</span>
+</span><span id="Deck.map-245"><a href="#Deck.map-245"><span class="linenos">245</span></a>            <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
+</span><span id="Deck.map-246"><a href="#Deck.map-246"><span class="linenos">246</span></a>
+</span><span id="Deck.map-247"><a href="#Deck.map-247"><span class="linenos">247</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck.map-248"><a href="#Deck.map-248"><span class="linenos">248</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="o">*</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Deck.map-249"><a href="#Deck.map-249"><span class="linenos">249</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck.map-250"><a href="#Deck.map-250"><span class="linenos">250</span></a>
+</span><span id="Deck.map-251"><a href="#Deck.map-251"><span class="linenos">251</span></a>                <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck.map-252"><a href="#Deck.map-252"><span class="linenos">252</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Deck.map-253"><a href="#Deck.map-253"><span class="linenos">253</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck.map-254"><a href="#Deck.map-254"><span class="linenos">254</span></a>            <span class="c1"># repl is a mapping.</span>
+</span><span id="Deck.map-255"><a href="#Deck.map-255"><span class="linenos">255</span></a>            <span class="k">def</span> <span class="nf">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="Deck.map-256"><a href="#Deck.map-256"><span class="linenos">256</span></a>                <span class="k">if</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="n">repl</span><span class="p">:</span>
+</span><span id="Deck.map-257"><a href="#Deck.map-257"><span class="linenos">257</span></a>                    <span class="k">return</span> <span class="n">repl</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="Deck.map-258"><a href="#Deck.map-258"><span class="linenos">258</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Deck.map-259"><a href="#Deck.map-259"><span class="linenos">259</span></a>                    <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="Deck.map-260"><a href="#Deck.map-260"><span class="linenos">260</span></a>
+</span><span id="Deck.map-261"><a href="#Deck.map-261"><span class="linenos">261</span></a>        <span class="k">return</span> <span class="n">Deck</span><span class="p">(</span>
+</span><span id="Deck.map-262"><a href="#Deck.map-262"><span class="linenos">262</span></a>            <span class="p">[</span><span class="n">transition_function</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span> <span class="k">for</span> <span class="n">outcome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcomes</span><span class="p">()],</span>
+</span><span id="Deck.map-263"><a href="#Deck.map-263"><span class="linenos">263</span></a>            <span class="n">times</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quantities</span><span class="p">())</span>
 </span></pre></div>
 
 
