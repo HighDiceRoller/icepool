@@ -133,6 +133,17 @@ class FloorDivCountsExpression(AdjustCountsExpression):
         return f'({self._inner} // {self._constant})'
 
 
+class ModuloCountsExpression(AdjustCountsExpression):
+    """Modulo all counts by the constant."""
+
+    @staticmethod
+    def adjust_count(count: int, constant: int) -> int:
+        return count % constant
+
+    def __str__(self) -> str:
+        return f'({self._inner} % {self._constant})'
+
+
 class FilterCountsExpression(AdjustCountsExpression):
     """Counts below a certain value are treated as zero."""
 

@@ -2,7 +2,7 @@ import operator
 import icepool
 import pytest
 
-from icepool import d6, Pool, Deck, Die, Order
+from icepool import d6, Pool, Deck, Die, Order, multiset_function
 
 
 def test_difference():
@@ -105,3 +105,13 @@ def test_example_intersect_using_map() -> None:
                              function=intersect).count()
     expected = (d6.pool(3) & d6.pool(3)).count()
     assert result == expected
+
+
+def test_mod():
+
+    @multiset_function
+    def expected(x):
+        return (x - (x // 2) * 2).expand()
+
+    pool = d6.pool(4)
+    assert (pool % 2).expand() == expected(pool)

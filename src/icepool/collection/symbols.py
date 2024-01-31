@@ -280,6 +280,18 @@ class Symbols(Mapping[str, int]):
     def __rfloordiv__(self, other: Iterable[str] | Mapping[str, int]) -> int:
         return Symbols(other).count_subset(self)
 
+    def modulo_counts(self, other: int) -> 'Symbols':
+        return self % other
+
+    def __mod__(self, other: int) -> 'Symbols':
+        if not isinstance(other, int):
+            return NotImplemented
+        data = defaultdict(int, {
+            s: count % other
+            for s, count in self.items()
+        })
+        return Symbols._new_raw(data)
+
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
             return NotImplemented

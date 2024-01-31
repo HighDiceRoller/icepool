@@ -52,6 +52,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `symmetric_difference`, `^` | `abs(l - r)`                       |
     | `multiply_counts`, `*`      | `count * n`                        |
     | `divide_counts`, `//`       | `count // n`                       |
+    | `modulo_counts`, `%`        | `count % n`                        |
     | `keep_counts`               | `count if count >= n else 0`       |
     | unary `+`                   | same as `keep_counts(0)`           |
     | unary `-`                   | reverses the sign of all counts    |
@@ -490,6 +491,24 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         """
         return icepool.expression.FloorDivCountsExpression(self, constant)
+
+    def __mod__(self, other: int, /) -> 'MultisetExpression[T_contra]':
+        if not isinstance(other, int):
+            return NotImplemented
+        return icepool.expression.ModuloCountsExpression(self, other)
+
+    def modulo_counts(self, constant: int,
+                      /) -> 'MultisetExpression[T_contra]':
+        """Moduos all counts by a constant.
+
+        Same as `self % constant`.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3]) % 2 -> [1, 3]
+        ```
+        """
+        return self % constant
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
         return icepool.expression.FilterCountsExpression(self, 0)

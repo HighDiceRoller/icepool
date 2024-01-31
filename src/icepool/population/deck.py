@@ -217,6 +217,16 @@ class Deck(Population[T_co]):
         data = Counter({s: count // other for s, count in self.items()})
         return Deck(+data)
 
+    def modulo_counts(self, other: int) -> 'Deck[T_co]':
+        """Modulo all card counts."""
+        return self % other
+
+    def __mod__(self, other: int) -> 'Deck[T_co]':
+        if not isinstance(other, int):
+            return NotImplemented
+        data = Counter({s: count % other for s, count in self.items()})
+        return Deck(+data)
+
     def map(
             self,
             repl:
