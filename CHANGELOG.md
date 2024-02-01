@@ -1,3 +1,14 @@
+## v1.4.0
+
+* Rename `keep_counts` to `keep_counts_ge`. Add `le`, `lt`, `gt`, `eq`, and `ne` variants.
+* Add `count_subset` evaluation that counts how many times the right side is contained in the left.
+* Add `ImplicitConversionError` as subclass of `TypeError`.
+* Add binary multiset operators to `Deck`.
+* Add `modulo_counts` / `%` operation on multisets.
+* Rebind generators and evaluate when fully bound non-generator expressions are given to an evaluator.
+* Fix `Symbols` intersection.
+* Fix argument order in `__rfloordiv__`.
+
 ## v1.3.0
 
 * Fix `Symbols` operator priority with `Population`, `AgainExpression`.
