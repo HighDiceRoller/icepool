@@ -69,13 +69,31 @@ def test_example_divide_counts():
     assert result == expected
 
 
-def test_example_keep_counts():
-    result = Pool([1, 2, 2, 3]).keep_counts(2).expand(Order.Ascending)
+def test_example_keep_counts_ge():
+    result = Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2).expand(Order.Ascending)
+    expected = Die([(2, 2, 3, 3, 3)])
+    assert result == expected
+
+
+def test_example_keep_counts_le():
+    result = Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2).expand(Order.Ascending)
+    expected = Die([(1, 2, 2)])
+    assert result == expected
+
+
+def test_example_keep_counts_eq():
+    result = Pool([1, 2, 2, 3, 3, 3]).keep_counts_eq(2).expand(Order.Ascending)
     expected = Die([(2, 2)])
     assert result == expected
 
 
-def test_example_keep_counts_using_map():
+def test_example_keep_counts_ne():
+    result = Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2).expand(Order.Ascending)
+    expected = Die([(1, 3, 3, 3)])
+    assert result == expected
+
+
+def test_example_keep_counts_ge_using_map():
     result = Pool([1, 2, 2, 3]).map_counts(
         function=lambda o, c: c if c >= 2 else 0).expand(Order.Ascending)
     expected = Die([(2, 2)])

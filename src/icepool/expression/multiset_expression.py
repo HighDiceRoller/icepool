@@ -53,8 +53,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `multiply_counts`, `*`      | `count * n`                        |
     | `divide_counts`, `//`       | `count // n`                       |
     | `modulo_counts`, `%`        | `count % n`                        |
-    | `keep_counts`               | `count if count >= n else 0`       |
-    | unary `+`                   | same as `keep_counts(0)`           |
+    | `keep_counts_ge` etc.       | `count if count >= n else 0` etc.  |
+    | unary `+`                   | same as `keep_counts_ge(0)`        |
     | unary `-`                   | reverses the sign of all counts    |
     | `unique`                    | `min(count, n)`                    |
     | `keep_outcomes`             | `count if outcome in t else 0`     |
@@ -360,7 +360,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Specifically, this produces the absolute difference between counts.
         If you don't want negative counts to be used from the inputs, you can
-        do `left.keep_counts(0) ^ right.keep_counts(0)`.
+        do `left.keep_counts_ge(0) ^ right.keep_counts_ge(0)`.
 
         Example:
         ```
@@ -428,29 +428,28 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.MapCountsExpression(*expressions,
                                                       function=function)
 
-    def __mul__(self, other: int) -> 'MultisetExpression[T_contra]':
-        if not isinstance(other, int):
+    def __mul__(self, n: int) -> 'MultisetExpression[T_contra]':
+        if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.MultiplyCountsExpression(self, other)
+        return icepool.expression.MultiplyCountsExpression(self, n)
 
     # Commutable in this case.
-    def __rmul__(self, other: int) -> 'MultisetExpression[T_contra]':
-        if not isinstance(other, int):
+    def __rmul__(self, n: int) -> 'MultisetExpression[T_contra]':
+        if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.MultiplyCountsExpression(self, other)
+        return icepool.expression.MultiplyCountsExpression(self, n)
 
-    def multiply_counts(self, constant: int,
-                        /) -> 'MultisetExpression[T_contra]':
-        """Multiplies all counts by a constant.
+    def multiply_counts(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Multiplies all counts by n.
 
-        Same as `self * constant`.
+        Same as `self * n`.
 
         Example:
         ```
         Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
         ```
         """
-        return self * constant
+        return self * n
 
     @overload
     def __floordiv__(self, other: int) -> 'MultisetExpression[T_contra]':
@@ -479,61 +478,98 @@ class MultisetExpression(ABC, Generic[T_contra]):
         else:
             return self.count_subset(other)
 
-    def divide_counts(self, constant: int,
-                      /) -> 'MultisetExpression[T_contra]':
-        """Divides all counts by a constant (rounding down).
+    def divide_counts(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Divides all counts by n (rounding down).
 
-        Same as `self // constant`.
+        Same as `self // n`.
 
         Example:
         ```
         Pool([1, 2, 2, 3]) // 2 -> [2]
         ```
         """
-        return icepool.expression.FloorDivCountsExpression(self, constant)
+        return icepool.expression.FloorDivCountsExpression(self, n)
 
-    def __mod__(self, other: int, /) -> 'MultisetExpression[T_contra]':
-        if not isinstance(other, int):
+    def __mod__(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.ModuloCountsExpression(self, other)
+        return icepool.expression.ModuloCountsExpression(self, n)
 
-    def modulo_counts(self, constant: int,
-                      /) -> 'MultisetExpression[T_contra]':
-        """Moduos all counts by a constant.
+    def modulo_counts(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Moduos all counts by n.
 
-        Same as `self % constant`.
+        Same as `self % n`.
 
         Example:
         ```
         Pool([1, 2, 2, 3]) % 2 -> [1, 3]
         ```
         """
-        return self % constant
+        return self % n
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
-        return icepool.expression.FilterCountsExpression(self, 0)
+        return icepool.expression.KeepCountsExpression(self, 0, operator.ge)
 
     def __neg__(self) -> 'MultisetExpression[T_contra]':
         return icepool.expression.MultiplyCountsExpression(self, -1)
 
-    def keep_counts(self, min_count: int) -> 'MultisetExpression[T_contra]':
-        """Counts less than `min_count` are treated as zero.
+    def keep_counts_le(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are <= n, treating the rest as zero.
 
-        For example, `expression.keep_counts(2)` would only produce
+        For example, `expression.keep_counts_le(2)` would remove triplets and
+        better.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [1, 2, 2]
+        ```
+        """
+        return icepool.expression.KeepCountsExpression(self, n, operator.le)
+
+    def keep_counts_ge(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are >= n, treating the rest as zero.
+
+        For example, `expression.keep_counts_ge(2)` would only produce
         pairs and better.
         
-        `expression.keep_counts(0)` is useful for removing negative counts. 
+        `expression.keep_countss_ge(0)` is useful for removing negative counts. 
         You can use the unary operator `+expression` for the same effect.
 
         Example:
         ```
-        Pool([1, 2, 2, 3]).keep_counts(2) -> [2, 2]
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -> [2, 2, 3, 3, 3]
         ```
         """
-        return icepool.expression.FilterCountsExpression(self, min_count)
+        return icepool.expression.KeepCountsExpression(self, n, operator.ge)
 
-    def unique(self, max_count: int = 1) -> 'MultisetExpression[T_contra]':
-        """Counts each outcome at most `max_count` times.
+    def keep_counts_eq(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are == n, treating the rest as zero.
+
+        For example, `expression.keep_counts_eq(2)` would keep pairs but not
+        singles or triplets.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [2, 2]
+        ```
+        """
+        return icepool.expression.KeepCountsExpression(self, n, operator.eq)
+
+    def keep_counts_ne(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are != n, treating the rest as zero.
+
+        For example, `expression.keep_counts_eq(2)` would drop pairs but keep
+        singles and triplets.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -> [1, 3, 3, 3]
+        ```
+        """
+        return icepool.expression.KeepCountsExpression(self, n, operator.ne)
+
+    def unique(self, n: int = 1, /) -> 'MultisetExpression[T_contra]':
+        """Counts each outcome at most `n` times.
 
         For example, `generator.unique(2)` would count each outcome at most
         twice.
@@ -543,7 +579,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
         ```
         """
-        return icepool.expression.UniqueExpression(self, max_count)
+        return icepool.expression.UniqueExpression(self, n)
 
     # Keep highest / lowest.
 
@@ -738,8 +774,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 For example, `filter=2` will only produce pairs and better.
                 If `None`, no filtering will be done.
 
-                Why not just place `keep_counts()` before this?
-                `keep_counts()` operates by setting counts to zero, so you
+                Why not just place `keep_countss_ge()` before this?
+                `keep_countss_ge()` operates by setting counts to zero, so you
                 would still need an argument to specify whether you want to
                 output zero counts. So we might as well use the argument to do
                 both.

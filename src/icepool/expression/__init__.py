@@ -7,7 +7,7 @@ from icepool.expression.binary_operator import (
     UnionExpression, DisjointUnionExpression, SymmetricDifferenceExpression)
 from icepool.expression.adjust_counts import (
     MapCountsExpression, AdjustCountsExpression, MultiplyCountsExpression,
-    FloorDivCountsExpression, ModuloCountsExpression, FilterCountsExpression,
+    FloorDivCountsExpression, ModuloCountsExpression, KeepCountsExpression,
     UniqueExpression)
 from icepool.expression.filter_outcomes import FilterOutcomesExpression, FilterOutcomesBinaryExpression
 from icepool.expression.keep import KeepExpression
@@ -21,6 +21,6 @@ __all__ = [
     'SymmetricDifferenceExpression', 'MapCountsExpression',
     'AdjustCountsExpression', 'MultiplyCountsExpression',
     'FloorDivCountsExpression', 'ModuloCountsExpression',
-    'FilterCountsExpression', 'UniqueExpression', 'FilterOutcomesExpression',
+    'KeepCountsExpression', 'UniqueExpression', 'FilterOutcomesExpression',
     'FilterOutcomesBinaryExpression', 'KeepExpression'
 ]

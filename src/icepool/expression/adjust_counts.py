@@ -83,9 +83,8 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
         self._inner = inner
         self._constant = constant
 
-    @staticmethod
     @abstractmethod
-    def adjust_count(count: int, constant: int) -> int:
+    def adjust_count(self, count: int, constant: int) -> int:
         """Adjusts the count."""
 
     def _next_state(self, state, outcome: T_contra, *counts:
@@ -114,8 +113,7 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
 class MultiplyCountsExpression(AdjustCountsExpression):
     """Multiplies all counts by the constant."""
 
-    @staticmethod
-    def adjust_count(count: int, constant: int) -> int:
+    def adjust_count(self, count: int, constant: int) -> int:
         return count * constant
 
     def __str__(self) -> str:
@@ -125,8 +123,7 @@ class MultiplyCountsExpression(AdjustCountsExpression):
 class FloorDivCountsExpression(AdjustCountsExpression):
     """Divides all counts by the constant, rounding down."""
 
-    @staticmethod
-    def adjust_count(count: int, constant: int) -> int:
+    def adjust_count(self, count: int, constant: int) -> int:
         return count // constant
 
     def __str__(self) -> str:
@@ -136,33 +133,42 @@ class FloorDivCountsExpression(AdjustCountsExpression):
 class ModuloCountsExpression(AdjustCountsExpression):
     """Modulo all counts by the constant."""
 
-    @staticmethod
-    def adjust_count(count: int, constant: int) -> int:
+    def adjust_count(self, count: int, constant: int) -> int:
         return count % constant
 
     def __str__(self) -> str:
         return f'({self._inner} % {self._constant})'
 
 
-class FilterCountsExpression(AdjustCountsExpression):
-    """Counts below a certain value are treated as zero."""
+class KeepCountsExpression(AdjustCountsExpression):
 
-    @staticmethod
-    def adjust_count(count: int, constant: int) -> int:
-        if count < constant:
-            return 0
-        else:
+    def __init__(self, inner: MultisetExpression[T_contra], constant: int,
+                 op: Callable[[int, int], bool]):
+        super().__init__(inner, constant)
+        self._op = op
+
+    def adjust_count(self, count: int, constant: int) -> int:
+        if self._op(count, constant):
             return count
+        else:
+            return 0
+
+    def _unbind(self, prefix_start: int,
+                free_start: int) -> 'tuple[MultisetExpression, int]':
+        unbound_inner, prefix_start = self._inner._unbind(
+            prefix_start, free_start)
+        unbound_expression = type(self)(unbound_inner, self._constant,
+                                        self._op)
+        return unbound_expression, prefix_start
 
     def __str__(self) -> str:
-        return f'{self._inner}.keep_counts({self._constant})'
+        return f'{self._inner}.keep_counts_{self._op.__name__}({self._constant})'
 
 
 class UniqueExpression(AdjustCountsExpression):
     """Limits the count produced by each outcome."""
 
-    @staticmethod
-    def adjust_count(count: int, constant: int) -> int:
+    def adjust_count(self, count: int, constant: int) -> int:
         return min(count, constant)
 
     def __str__(self) -> str:
