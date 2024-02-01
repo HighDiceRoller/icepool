@@ -526,6 +526,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         return icepool.expression.KeepCountsExpression(self, n, operator.le)
 
+    def keep_counts_lt(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are < n, treating the rest as zero.
+
+        For example, `expression.keep_counts_lt(2)` would remove doubles,
+        triplets...
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -> [1]
+        ```
+        """
+        return icepool.expression.KeepCountsExpression(self, n, operator.lt)
+
     def keep_counts_ge(self, n: int, /) -> 'MultisetExpression[T_contra]':
         """Keeps counts that are >= n, treating the rest as zero.
 
@@ -541,6 +554,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
         ```
         """
         return icepool.expression.KeepCountsExpression(self, n, operator.ge)
+
+    def keep_counts_gt(self, n: int, /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts that are < n, treating the rest as zero.
+
+        For example, `expression.keep_counts_gt(2)` would remove singles and
+        doubles.
+
+        Example:
+        ```
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -> [3, 3, 3]
+        ```
+        """
+        return icepool.expression.KeepCountsExpression(self, n, operator.gt)
 
     def keep_counts_eq(self, n: int, /) -> 'MultisetExpression[T_contra]':
         """Keeps counts that are == n, treating the rest as zero.
