@@ -506,6 +506,11 @@ var chart = new Chart(chartContext, {
     },
 });
 
+if (document.getElementById('log_scale').checked) {
+    chart.options.scales.y.type = 'logarithmic';
+    chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
+}
+
 function setLoadingText(text) {
     console.log(text);
     let loadingText = text.match(/Loading \w+/);
