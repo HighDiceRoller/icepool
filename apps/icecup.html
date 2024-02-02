@@ -6,6 +6,7 @@
 <title>Icecup</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="shortcut icon" type="image/png" href="favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src-min-noconflict/ace.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
@@ -35,12 +36,12 @@
         <button type="button" id="run" style="font-size: 100%; border: 2px solid green;">Run</button>
         <button type="button" id="stop" style="font-size: 100%; border: 2px solid red;">Stop</button>
         Probability:
-        <input type="radio" name="probability" id="probability_eq" checked="checked" />
-        <label for="probability_eq">Equal to</label>
-        <input type="radio" name="probability" id="probability_ge" />
-        <label for="probability_ge">At least</label>
-        <input type="radio" name="probability" id="probability_le" />
-        <label for="probability_le">At most</label>
+        <input type="radio" name="probability" id="eq" value="eq" checked="checked" />
+        <label for="eq">Equal to</label>
+        <input type="radio" name="probability" id="ge" value="ge" />
+        <label for="ge">At least</label>
+        <input type="radio" name="probability" id="le" value="le" />
+        <label for="le">At most</label>
         <input type="checkbox" name="log_scale" id="log_scale" />
         <label for="log_scale">Log scale</label>
         <button type="button" id="copy_url" style="font-size: 100%; width: 150px;">Copy URL</button>
@@ -399,11 +400,12 @@ function interruptExecution() {
 
 async function runCode() {
     let code = editor.getValue();
-    history.replaceState(null, "", "?c=" + LZString.compressToEncodedURIComponent(code));
+    lastRunCode = code;
+    updateSearchQuery();
     let probabilityType;
-    if (document.getElementById('probability_ge').checked) {
+    if (document.getElementById('ge').checked) {
         probabilityType = 'ge';
-    } else if (document.getElementById('probability_le').checked) {
+    } else if (document.getElementById('le').checked) {
         probabilityType = 'le';
     } else {
         probabilityType = 'eq';
@@ -434,6 +436,15 @@ if (url_code) {
     }
 }
 editor.setValue(initialCode, 1);
+var lastRunCode = initialCode;
+
+var probabilityDisplay = searchParams.get('probability');
+if (probabilityDisplay) {
+    document.getElementById(probabilityDisplay).checked = true;
+}
+if (searchParams.get('log_scale')) {
+    document.getElementById('log_scale').checked = true;
+}
 
 // Setup chart.
 var chartContext = document.getElementById('chart').getContext('2d');
@@ -548,6 +559,7 @@ function updateComputationTime(computationTime) {
 }
 
 function updateLogScale() {
+    updateSearchQuery();
     if (document.getElementById('log_scale').checked) {
         chart.options.scales.y.type = 'logarithmic';
         chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
@@ -558,6 +570,11 @@ function updateLogScale() {
     chart.update();
 }
 
+function updateSearchQuery() {
+    let searchParams = $("form").serialize();
+    history.replaceState(null, "", "?" + searchParams + "&c=" + LZString.compressToEncodedURIComponent(lastRunCode));
+}
+
 document.getElementById("run").addEventListener("click", runCode);
 document.getElementById("stop").addEventListener("click", interruptExecution);
 document.body.addEventListener('keydown', function (e) {
@@ -566,9 +583,9 @@ document.body.addEventListener('keydown', function (e) {
         run();
     }
 });
-document.getElementById("probability_eq").addEventListener("change", runCode);
-document.getElementById("probability_ge").addEventListener("change", runCode);
-document.getElementById("probability_le").addEventListener("change", runCode);
+document.getElementById("eq").addEventListener("change", runCode);
+document.getElementById("ge").addEventListener("change", runCode);
+document.getElementById("le").addEventListener("change", runCode);
 document.getElementById("log_scale").addEventListener("change", updateLogScale);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
