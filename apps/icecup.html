@@ -42,8 +42,8 @@
         <label for="ge">At least</label>
         <input type="radio" name="p" id="le" value="le" />
         <label for="le">At most</label>
-        <input type="checkbox" name="log_scale" id="log_scale" />
-        <label for="log_scale">Log scale</label>
+        <input type="checkbox" name="ls" id="ls" />
+        <label for="ls">Log scale</label>
         <button type="button" id="copy_url" style="font-size: 100%; width: 150px;">Copy URL</button>
     </form>
 </div>
@@ -442,8 +442,8 @@ var probabilityDisplay = searchParams.get('p');
 if (probabilityDisplay) {
     document.getElementById(probabilityDisplay).checked = true;
 }
-if (searchParams.get('log_scale')) {
-    document.getElementById('log_scale').checked = true;
+if (searchParams.get('ls')) {
+    document.getElementById('ls').checked = true;
 }
 
 // Setup chart.
@@ -506,7 +506,7 @@ var chart = new Chart(chartContext, {
     },
 });
 
-if (document.getElementById('log_scale').checked) {
+if (document.getElementById('ls').checked) {
     chart.options.scales.y.type = 'logarithmic';
     chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
 }
@@ -565,7 +565,7 @@ function updateComputationTime(computationTime) {
 
 function updateLogScale() {
     updateSearchQuery();
-    if (document.getElementById('log_scale').checked) {
+    if (document.getElementById('ls').checked) {
         chart.options.scales.y.type = 'logarithmic';
         chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
     } else {
@@ -591,7 +591,7 @@ document.body.addEventListener('keydown', function (e) {
 document.getElementById("eq").addEventListener("change", runCode);
 document.getElementById("ge").addEventListener("change", runCode);
 document.getElementById("le").addEventListener("change", runCode);
-document.getElementById("log_scale").addEventListener("change", updateLogScale);
+document.getElementById("ls").addEventListener("change", updateLogScale);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
     navigator.clipboard.writeText(window.location.href);
