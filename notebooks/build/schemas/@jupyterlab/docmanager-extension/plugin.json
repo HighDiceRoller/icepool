@@ -44,6 +44,10 @@
           {
             "command": "docmanager:rename",
             "rank": 5
+          },
+          {
+            "command": "docmanager:duplicate",
+            "rank": 5
           }
         ]
       },
@@ -56,10 +60,6 @@
           },
           {
             "command": "docmanager:toggle-autosave",
-            "rank": 4
-          },
-          {
-            "command": "docmanager:toggle-name-file-on-save",
             "rank": 4
           },
           {
@@ -76,19 +76,24 @@
         "rank": 20
       },
       {
-        "command": "docmanager:delete",
+        "command": "docmanager:duplicate",
         "selector": "[data-type=\"document-title\"]",
         "rank": 21
       },
       {
-        "command": "docmanager:clone",
+        "command": "docmanager:delete",
         "selector": "[data-type=\"document-title\"]",
         "rank": 22
       },
       {
-        "command": "docmanager:show-in-file-browser",
+        "command": "docmanager:clone",
         "selector": "[data-type=\"document-title\"]",
         "rank": 23
+      },
+      {
+        "command": "docmanager:show-in-file-browser",
+        "selector": "[data-type=\"document-title\"]",
+        "rank": 24
       }
     ]
   },
@@ -116,6 +121,12 @@
       "title": "Autosave Interval",
       "description": "Length of save interval in seconds",
       "default": 120
+    },
+    "confirmClosingDocument": {
+      "type": "boolean",
+      "title": "Ask for confirmation to close a document",
+      "description": "Whether to ask for confirmation to close a document or not.",
+      "default": false
     },
     "lastModifiedCheckMargin": {
       "type": "number",

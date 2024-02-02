@@ -7,10 +7,6 @@
         "id": "jp-mainmenu-file",
         "items": [
           {
-            "command": "filebrowser:create-main-launcher",
-            "rank": 1
-          },
-          {
             "type": "separator",
             "rank": 1
           },
@@ -30,23 +26,6 @@
           {
             "command": "filebrowser:toggle-hidden-files",
             "rank": 9.95
-          }
-        ]
-      },
-      {
-        "id": "jp-mainmenu-settings",
-        "items": [
-          {
-            "type": "separator",
-            "rank": 5
-          },
-          {
-            "command": "filebrowser:toggle-navigate-to-current-directory",
-            "rank": 5
-          },
-          {
-            "type": "separator",
-            "rank": 5
           }
         ]
       }
@@ -84,7 +63,7 @@
       },
       {
         "command": "filebrowser:copy",
-        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "selector": ".jp-DirListing-item[data-isdir]",
         "rank": 8
       },
       {
@@ -123,9 +102,24 @@
         "rank": 14
       },
       {
+        "command": "filebrowser:toggle-file-size",
+        "selector": ".jp-DirListing-header",
+        "rank": 15
+      },
+      {
+        "command": "filebrowser:toggle-file-checkboxes",
+        "selector": ".jp-DirListing-header",
+        "rank": 16
+      },
+      {
+        "command": "filebrowser:toggle-sort-notebooks-first",
+        "selector": ".jp-DirListing-header",
+        "rank": 17
+      },
+      {
         "command": "filebrowser:share-main",
         "selector": ".jp-DirListing-item[data-isdir]",
-        "rank": 15
+        "rank": 17
       },
       {
         "type": "separator",
@@ -148,14 +142,9 @@
   "description": "File Browser settings.",
   "jupyter.lab.shortcuts": [
     {
-      "command": "filebrowser:create-main-launcher",
-      "keys": ["Accel Shift L"],
-      "selector": "body"
-    },
-    {
-      "command": "filebrowser:toggle-main",
-      "keys": ["Accel Shift F"],
-      "selector": "body"
+      "command": "filebrowser:go-up",
+      "keys": ["Backspace"],
+      "selector": ".jp-DirListing:focus"
     },
     {
       "command": "filebrowser:go-up",
@@ -218,10 +207,28 @@
       "description": "Whether to show the last modified column",
       "default": true
     },
+    "showFileSizeColumn": {
+      "type": "boolean",
+      "title": "Show file size column",
+      "description": "Whether to show the file size column",
+      "default": false
+    },
     "showHiddenFiles": {
       "type": "boolean",
       "title": "Show hidden files",
-      "description": "Whether to show hidden files",
+      "description": "Whether to show hidden files. The server parameter `ContentsManager.allow_hidden` must be set to `True` to display hidden files.",
+      "default": false
+    },
+    "showFileCheckboxes": {
+      "type": "boolean",
+      "title": "Use checkboxes to select items",
+      "description": "Whether to show checkboxes next to files and folders",
+      "default": false
+    },
+    "sortNotebooksFirst": {
+      "type": "boolean",
+      "title": "When sorting by name, group notebooks before other files",
+      "description": "Whether to group the notebooks away from files",
       "default": false
     }
   },

@@ -1,6 +1,8 @@
 {
   "title": "TSV Viewer",
   "description": "TSV Viewer settings.",
+  "jupyter.lab.setting-icon": "ui-components:spreadsheet",
+  "jupyter.lab.setting-icon-label": "TSV Viewer",
   "jupyter.lab.toolbars": {
     "TSVTable": [{ "name": "delimiter", "rank": 10 }]
   },
@@ -47,6 +49,11 @@
         "label": {
           "title": "Item label",
           "description": "If defined, it will override the command label",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Item caption",
+          "description": "If defined, it will override the command caption",
           "type": "string"
         },
         "type": {

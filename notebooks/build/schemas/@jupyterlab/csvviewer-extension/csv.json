@@ -1,6 +1,8 @@
 {
   "title": "CSV Viewer",
   "description": "CSV Viewer settings.",
+  "jupyter.lab.setting-icon": "ui-components:spreadsheet",
+  "jupyter.lab.setting-icon-label": "CSV Viewer",
   "jupyter.lab.toolbars": {
     "CSVTable": [{ "name": "delimiter", "rank": 10 }]
   },
@@ -47,6 +49,11 @@
         "label": {
           "title": "Item label",
           "description": "If defined, it will override the command label",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Item caption",
+          "description": "If defined, it will override the command caption",
           "type": "string"
         },
         "type": {
