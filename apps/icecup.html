@@ -36,11 +36,11 @@
         <button type="button" id="run" style="font-size: 100%; border: 2px solid green;">Run</button>
         <button type="button" id="stop" style="font-size: 100%; border: 2px solid red;">Stop</button>
         Probability:
-        <input type="radio" name="probability" id="eq" value="eq" checked="checked" />
+        <input type="radio" name="p" id="eq" value="eq" checked="checked" />
         <label for="eq">Equal to</label>
-        <input type="radio" name="probability" id="ge" value="ge" />
+        <input type="radio" name="p" id="ge" value="ge" />
         <label for="ge">At least</label>
-        <input type="radio" name="probability" id="le" value="le" />
+        <input type="radio" name="p" id="le" value="le" />
         <label for="le">At most</label>
         <input type="checkbox" name="log_scale" id="log_scale" />
         <label for="log_scale">Log scale</label>
@@ -438,7 +438,7 @@ if (url_code) {
 editor.setValue(initialCode, 1);
 var lastRunCode = initialCode;
 
-var probabilityDisplay = searchParams.get('probability');
+var probabilityDisplay = searchParams.get('p');
 if (probabilityDisplay) {
     document.getElementById(probabilityDisplay).checked = true;
 }
