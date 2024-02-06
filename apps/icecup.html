@@ -256,7 +256,18 @@ class OutputManager():
                     'pointStyle': point,
                     'radius': radius,
                 }
-                # fill ignored
+                if probability_type == 'ge':
+                    if i == len(outcomes) - 1:
+                        dataset['fill'] = 'start'
+                    else:
+                        dataset['fill'] = '+1'
+                    dataset['backgroundColor'] = 'rgba(%d, %d, %d, 0.25)' % color
+                elif probability_type == 'le':
+                    if i == 0:
+                        dataset['fill'] = 'start'
+                    else:
+                        dataset['fill'] = '-1'
+                    dataset['backgroundColor'] = 'rgba(%d, %d, %d, 0.25)' % color
                 datasets.append(dataset)
         else:
             x_labels = outcomes
