@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import Die
+from icepool import Die, d6
 from fractions import Fraction
 
 
@@ -46,3 +46,12 @@ def test_max_quantile():
 
 def test_entropy_with_zeros():
     assert Die({1: 1, 2: 0, 3: 1}).entropy() == 1.0
+
+
+def test_percent():
+    die = 3 @ d6
+    assert d6.probability(4, percent=True) == d6.probability(4) * 100.0
+    assert d6.probability_le(4, percent=True) == d6.probability_le(4) * 100.0
+    assert d6.probability_lt(4, percent=True) == d6.probability_lt(4) * 100.0
+    assert d6.probability_ge(4, percent=True) == d6.probability_ge(4) * 100.0
+    assert d6.probability_gt(4, percent=True) == d6.probability_gt(4) * 100.0

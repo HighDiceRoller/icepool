@@ -296,25 +296,115 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Probabilities.
 
+    @overload
+    def probability(self, outcome: Hashable, *,
+                    percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability(self, outcome: Hashable, *,
+                    percent: Literal[True]) -> float:
+        ...
+
+    @overload
     def probability(self, outcome: Hashable) -> Fraction:
+        ...
+
+    def probability(self,
+                    outcome: Hashable,
+                    *,
+                    percent: bool = False) -> Fraction | float:
         """The probability of a single outcome, or 0.0 if not present. """
-        return Fraction(self.quantity(outcome), self.denominator())
+        result = Fraction(self.quantity(outcome), self.denominator())
+        return result * 100.0 if percent else result
 
+    @overload
+    def probability_le(self, outcome: Hashable, *,
+                       percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability_le(self, outcome: Hashable, *,
+                       percent: Literal[True]) -> float:
+        ...
+
+    @overload
     def probability_le(self, outcome: Hashable) -> Fraction:
+        ...
+
+    def probability_le(self,
+                       outcome: Hashable,
+                       *,
+                       percent: bool = False) -> Fraction | float:
         """The probability <= a single outcome. """
-        return Fraction(self.quantity_le(outcome), self.denominator())
+        result = Fraction(self.quantity_le(outcome), self.denominator())
+        return result * 100.0 if percent else result
 
+    @overload
+    def probability_lt(self, outcome: Hashable, *,
+                       percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability_lt(self, outcome: Hashable, *,
+                       percent: Literal[True]) -> float:
+        ...
+
+    @overload
     def probability_lt(self, outcome: Hashable) -> Fraction:
+        ...
+
+    def probability_lt(self,
+                       outcome: Hashable,
+                       *,
+                       percent: bool = False) -> Fraction | float:
         """The probability < a single outcome. """
-        return Fraction(self.quantity_lt(outcome), self.denominator())
+        result = Fraction(self.quantity_lt(outcome), self.denominator())
+        return result * 100.0 if percent else result
 
+    @overload
+    def probability_ge(self, outcome: Hashable, *,
+                       percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability_ge(self, outcome: Hashable, *,
+                       percent: Literal[True]) -> float:
+        ...
+
+    @overload
     def probability_ge(self, outcome: Hashable) -> Fraction:
-        """The probability >= a single outcome. """
-        return Fraction(self.quantity_ge(outcome), self.denominator())
+        ...
 
+    def probability_ge(self,
+                       outcome: Hashable,
+                       *,
+                       percent: bool = False) -> Fraction | float:
+        """The probability >= a single outcome. """
+        result = Fraction(self.quantity_ge(outcome), self.denominator())
+        return result * 100.0 if percent else result
+
+    @overload
+    def probability_gt(self, outcome: Hashable, *,
+                       percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability_gt(self, outcome: Hashable, *,
+                       percent: Literal[True]) -> float:
+        ...
+
+    @overload
     def probability_gt(self, outcome: Hashable) -> Fraction:
+        ...
+
+    def probability_gt(self,
+                       outcome: Hashable,
+                       *,
+                       percent: bool = False) -> Fraction | float:
         """The probability > a single outcome. """
-        return Fraction(self.quantity_gt(outcome), self.denominator())
+        result = Fraction(self.quantity_gt(outcome), self.denominator())
+        return result * 100.0 if percent else result
 
     @cached_property
     def _probabilities(self) -> Sequence[Fraction]:
