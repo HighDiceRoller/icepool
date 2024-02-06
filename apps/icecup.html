@@ -44,6 +44,8 @@
         <label for="le">At most</label>
         <input type="checkbox" name="ls" id="ls" />
         <label for="ls">Log scale</label>
+        <input type="checkbox" name="t" id="t" />
+        <label for="t">Transpose</label>
         <button type="button" id="copy_url" style="font-size: 100%; width: 150px;">Copy URL</button>
     </form>
 </div>
@@ -122,70 +124,7 @@ import icepool
 import pyodide
 import builtins
 import js
-import itertools
-
-class LineOutput():
-    def __init__(self, die, label, color, point, radius, fill=None):
-        self.die = die
-        self.label = label
-        self.color = color
-        self.point = point
-        self.radius = radius
-        self.fill = fill
-    
-    def probabilities(self, outcomes, probability_type):
-        if probability_type == 'ge':
-            return self.die.probabilities_ge(outcomes, percent=True)
-        elif probability_type == 'le':
-            return self.die.probabilities_le(outcomes, percent=True)
-        else:
-            return self.die.probabilities(outcomes, percent=True)
-            
-    def outcomes(self):
-        return set(self.die.outcomes())
-    
-    def datasets(self, outcomes, probability_type):
-        probabilities = self.probabilities(outcomes, probability_type)
-        dataset = {
-            'data': probabilities,
-            'label': self.label,
-            'borderColor': 'rgba(%d, %d, %d, 1.0)' % self.color,
-            'backgroundColor': 'rgba(%d, %d, %d, 1.0)' % self.color,
-            'pointStyle': self.point,
-            'radius': self.radius,
-        }
-        if self.fill:
-            dataset['fill'] = self.fill
-            dataset['backgroundColor'] = 'rgba(%d, %d, %d, 0.25)' % self.color
-        return [dataset]
-        
-    def format_string(self, probability_type):
-        if probability_type == 'ge':
-            return 'md:*o|q>=|%>='
-        elif probability_type == 'le':
-            return 'md:*o|q<=|%<='
-        else:
-            return 'md:*o|q==|%=='
-        
-    def print(self, probability_type):
-        builtins.print(self.label)
-        format_string = self.format_string(probability_type)
-        builtins.print(f'{self.die:{format_string}}')
-        
-class PrintOutput():
-    def __init__(self, args, kwargs):
-        self.args = args
-        self.kwargs = kwargs
-        
-    def datasets(self, outcomes, probability_type):
-        return {}
-        
-    def outcomes(self):
-        return set()
-        
-    def print(self, probability_type):
-        builtins.print(*self.args, **self.kwargs)
-    
+import itertools    
 
 class OutputManager():
 
@@ -214,11 +153,9 @@ class OutputManager():
 
     def reset(self):
         import random
-        # Not including prints.
-        self.series_count = 0
+        self.prints = []
         self.outputs = []
         self.starting_random_state = random.getstate()
-        self.has_fill = False
         self.limit_left = None
         self.limit_right = None
         
@@ -228,73 +165,139 @@ class OutputManager():
             self.limit_right = max(left, right)
         self.limit_left = left
         self.limit_right = right
+        
+    @staticmethod
+    def probability(die, outcome, probability_type):
+        if probability_type == 'ge':
+            return die.probability_ge(outcome) * 100.0
+        elif probability_type == 'le':
+            return die.probability_le(outcome) * 100.0
+        else:
+            return die.probability(outcome) * 100.0
+        
+    @staticmethod
+    def probabilities(die, outcomes, probability_type):
+        if probability_type == 'ge':
+            return die.probabilities_ge(outcomes, percent=True)
+        elif probability_type == 'le':
+            return die.probabilities_le(outcomes, percent=True)
+        else:
+            return die.probabilities(outcomes, percent=True)
             
     @staticmethod
-    def format_string(die, probability_type):
+    def format_string(probability_type):
         if probability_type == 'ge':
             return 'md:*o|q>=|%>='
         elif probability_type == 'le':
             return 'md:*o|q<=|%<='
         else:
             return 'md:*o|q==|%=='
-
-    def append_output(self, die, label, fill=False):
-        if label is None:
-            label = f'Output #{self.series_count}'
-        else:
-            label = str(label)
             
-        try:
-            label += f' (Mean: {float(die.mean()):.2f} SD: {die.standard_deviation():.2f})'
-        except:
-            pass
-            
-        if fill:
-            if self.has_fill:
-                fill = '-1'
-            else:
-                fill = 'origin'
-                self.has_fill = True
-            
-        color = OutputManager.DEFAULT_COLORS[self.series_count % len(OutputManager.DEFAULT_COLORS)]
-        point, radius = OutputManager.DEFAULT_POINTS[self.series_count // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
-        
-        self.outputs.append(LineOutput(die, label, color, point, radius, fill))
-        self.series_count += 1
-        
-    def append_print(self, args, kwargs):
-        self.outputs.append(PrintOutput(args, kwargs))
-        
     @staticmethod
     def outcome_to_js(outcome, a, b):
         if isinstance(outcome, icepool.Vector):
             return js.Array.from_(outcome)
         return str(outcome)
-    
-    def chart_data(self, probability_type):
+
+    def append_output(self, die, label, fill=False):
+        if label is None:
+            label = f'Output #{len(self.outputs)}'
+        else:
+            label = str(label)
+        
+        label_with_stats = label
+        try:
+            label_with_stats += f' (Mean: {float(die.mean()):.2f} SD: {die.standard_deviation():.2f})'
+        except:
+            pass
+        
+        self.outputs.append((die, label, fill))
+        self.append_print(label_with_stats)
+        self.append_print(die)
+        
+    def chart_data(self, probability_type, transpose):
         """
         Returns:
             labels, datasets in js format
         """
-        outcomes = set.union(set(), *(output.outcomes() for output in self.outputs))
-        if outcomes:
-            if self.limit_left is not None:
-                outcomes = {x for x in outcomes if x >= self.limit_left}
-            if self.limit_right is not None:
-                outcomes = {x for x in outcomes if x <= self.limit_right}
-            if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
-                outcomes = list(range(min(outcomes), max(outcomes) + 1))
-            else:
-                outcomes = sorted(outcomes)
-            output_datasets = list(itertools.chain.from_iterable(output.datasets(outcomes, probability_type) for output in self.outputs))
+        outcomes = set()
+        for i, (die, label, fill) in enumerate(self.outputs):
+            outcomes = outcomes.union(die.outcomes())
+        
+        if not outcomes:
+            return pyodide.ffi.to_js({'labels': [], 'datasets': []}, dict_converter=js.Object.fromEntries, default_converter=self.outcome_to_js)
+            
+        if self.limit_left is not None:
+            outcomes = {x for x in outcomes if x >= self.limit_left}
+        if self.limit_right is not None:
+            outcomes = {x for x in outcomes if x <= self.limit_right}
+        
+        if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
+            outcomes = list(range(min(outcomes), max(outcomes) + 1))
         else:
-            outcomes = []
-            output_datasets = []
+            outcomes = sorted(outcomes)
+            
+        if transpose:
+            x_labels = []
+            datasets = []
+            for i, (die, label, fill) in enumerate(self.outputs):
+                x_labels.append(label)
+            for i, outcome in enumerate(outcomes):
+                probabilities = []
+                for die, label, fill in self.outputs:
+                    probabilities.append(self.probability(die, outcome, probability_type))
+                color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
+                point, radius = OutputManager.DEFAULT_POINTS[i // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
+                dataset = {
+                    'data': probabilities,
+                    'label': outcome,
+                    'borderColor': 'rgba(%d, %d, %d, 1.0)' % color,
+                    'backgroundColor': 'rgba(%d, %d, %d, 1.0)' % color,
+                    'pointStyle': point,
+                    'radius': radius,
+                }
+                # fill ignored
+                datasets.append(dataset)
+        else:
+            x_labels = outcomes
+            datasets = []
+            any_fill = False
+            for i, (die, label, fill) in enumerate(self.outputs):
+                dataset = {}
+                color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
+                point, radius = OutputManager.DEFAULT_POINTS[i // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
+                    
+                probabilities = self.probabilities(die, outcomes, probability_type)
+                dataset = {
+                    'data': probabilities,
+                    'label': label,
+                    'borderColor': 'rgba(%d, %d, %d, 1.0)' % color,
+                    'backgroundColor': 'rgba(%d, %d, %d, 1.0)' % color,
+                    'pointStyle': point,
+                    'radius': radius,
+                }
+                if fill:
+                    if any_fill:
+                        fill = '-1'
+                    else:
+                        fill = 'origin'
+                        any_fill = True
+                    dataset['fill'] = fill
+                    dataset['backgroundColor'] = 'rgba(%d, %d, %d, 0.25)' % color
+                datasets.append(dataset)
         
-        for output in self.outputs:
-            output.print(probability_type)
+        return pyodide.ffi.to_js({'labels': x_labels, 'datasets': datasets}, dict_converter=js.Object.fromEntries, default_converter=self.outcome_to_js)
+    
+    def append_print(self, *args, **kwargs):
+        self.prints.append((args, kwargs))
         
-        return pyodide.ffi.to_js({'labels': outcomes, 'datasets': output_datasets}, dict_converter=js.Object.fromEntries, default_converter=self.outcome_to_js)
+    def execute_prints(self, probability_type):
+        for args, kwargs in self.prints:
+            args = (arg.format(self.format_string(probability_type))
+                    if isinstance(arg, icepool.Population)
+                    else arg
+                    for arg in args)
+            builtins.print(*args, **kwargs)
     
     def used_random(self):
         import random
@@ -307,7 +310,7 @@ def output(die, /, label=None):
     _manager.append_output(die, label)
 
 def print(*args, **kwargs):
-    _manager.append_print(args, kwargs)
+    _manager.append_print(*args, **kwargs)
 
 def area(die, /, label=None):
     _manager.append_output(die, label, fill=True)
@@ -322,7 +325,7 @@ var usedRandom = false;
 var computationTime = 0.0;
 var prevCode = '';
 
-async function runCode(code, probabilityType) {
+async function runCode(code, probabilityType, transpose) {
     let pyodide = await pyodideReadyPromise;
     self.postMessage({ cmd: 'clearOutput' });
 
@@ -344,7 +347,8 @@ async function runCode(code, probabilityType) {
     }
     
     try {
-        let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "')");
+        pyodide.runPython("_manager.execute_prints('" + probabilityType + "')");
+        let chart_data = pyodide.runPython("_manager.chart_data('" + probabilityType + "', " + transpose + ")");
         self.postMessage({ cmd: 'updateChart', labels: chart_data.labels, datasets: chart_data.datasets });
     } catch (err) {
         self.postMessage({ cmd: 'appendError', text: err + '\n'});
@@ -355,7 +359,7 @@ self.onmessage = async (msg) => {
     if (msg.data.cmd === "setInterruptBuffer") {
         pyodide.setInterruptBuffer(msg.data.interruptBuffer);
     } else if (msg.data.cmd === "runCode") {
-        runCode(msg.data.code, msg.data.probabilityType);
+        runCode(msg.data.code, msg.data.probabilityType, msg.data.transpose);
     }
 }
 </script>
@@ -410,7 +414,13 @@ async function runCode() {
     } else {
         probabilityType = 'eq';
     }
-    pyodideWorker.postMessage({ cmd: "runCode", code, probabilityType });
+    let transpose;
+    if (document.getElementById('t').checked) {
+        transpose = 'True';
+    } else {
+        transpose = 'False';
+    }
+    pyodideWorker.postMessage({ cmd: "runCode", code, probabilityType, transpose });
 }
 
 // Setup editor.
@@ -444,6 +454,9 @@ if (probabilityDisplay) {
 }
 if (searchParams.get('ls')) {
     document.getElementById('ls').checked = true;
+}
+if (searchParams.get('t')) {
+    document.getElementById('t').checked = true;
 }
 
 // Setup chart.
@@ -592,6 +605,7 @@ document.getElementById("eq").addEventListener("change", runCode);
 document.getElementById("ge").addEventListener("change", runCode);
 document.getElementById("le").addEventListener("change", runCode);
 document.getElementById("ls").addEventListener("change", updateLogScale);
+document.getElementById("t").addEventListener("change", runCode);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
     navigator.clipboard.writeText(window.location.href);
