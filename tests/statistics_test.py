@@ -50,8 +50,8 @@ def test_entropy_with_zeros():
 
 def test_percent():
     die = 3 @ d6
-    assert d6.probability(4, percent=True) == d6.probability(4) * 100.0
-    assert d6.probability_le(4, percent=True) == d6.probability_le(4) * 100.0
-    assert d6.probability_lt(4, percent=True) == d6.probability_lt(4) * 100.0
-    assert d6.probability_ge(4, percent=True) == d6.probability_ge(4) * 100.0
-    assert d6.probability_gt(4, percent=True) == d6.probability_gt(4) * 100.0
+    assert die.probability(4, percent=True) == die.probability(4) * 100.0
+    assert die.probability_le(4, percent=True) == die.probability_le(4) * 100.0
+    assert die.probability_lt(4, percent=True) == die.probability_lt(4) * 100.0
+    assert die.probability_ge(4, percent=True) == die.probability_ge(4) * 100.0
+    assert die.probability_gt(4, percent=True) == die.probability_gt(4) * 100.0
