@@ -413,10 +413,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
     # Adjust counts.
 
     def map_counts(
-        *args:
+            *args:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
-        function: Callable[[int], int] | Callable[[T_contra, int], int]
-    ) -> 'MultisetExpression[T_contra]':
+            function: Callable[..., int]) -> 'MultisetExpression[T_contra]':
         """Maps the counts to new counts.
 
         Args:

@@ -18,10 +18,8 @@ class MapCountsExpression(MultisetExpression[T_contra]):
 
     _func: Callable[..., int]
 
-    def __init__(
-        self, *inners: MultisetExpression[T_contra],
-        function: Callable[[int], int] | Callable[[T_contra, int], int]
-    ) -> None:
+    def __init__(self, *inners: MultisetExpression[T_contra],
+                 function: Callable[..., int]) -> None:
         """Constructor.
 
         Args:
