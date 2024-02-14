@@ -240,17 +240,18 @@ def commonize_denominator(
         for die in converted_dice)
 
 
-def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
-           dice: 'Iterable[T | icepool.Die[T]]',
-           *,
-           initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
+def reduce(
+        function: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
+        dice: 'Iterable[T | icepool.Die[T]]',
+        *,
+        initial: 'T | icepool.Die[T] | None' = None) -> 'icepool.Die[T]':
     """Applies a function of two arguments cumulatively to a sequence of dice.
 
     Analogous to the
     [`functools` function of the same name.](https://docs.python.org/3/library/functools.html#functools.reduce)
 
     Args:
-        func: The function to map. The function should take two arguments,
+        function: The function to map. The function should take two arguments,
             which are an outcome from each of two dice, and produce an outcome
             of the same type. It may also return `Reroll`, in which case the
             entire sequence is effectively rerolled.
@@ -267,12 +268,12 @@ def reduce(func: 'Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]',
     else:
         result = icepool.implicit_convert_to_die(next(iter_dice))
     for die in iter_dice:
-        result = map(func, result, die)
+        result = map(function, result, die)
     return result
 
 
 def accumulate(
-        func: 'Callable[[T, T], T | icepool.Die[T]]',
+        function: 'Callable[[T, T], T | icepool.Die[T]]',
         dice: 'Iterable[T | icepool.Die[T]]',
         *,
         initial: 'T | icepool.Die[T] | None' = None
@@ -288,7 +289,7 @@ def accumulate(
     one additional element if `initial` is provided.
 
     Args:
-        func: The function to map. The function should take two arguments,
+        function: The function to map. The function should take two arguments,
             which are an outcome from each of two dice.
         dice: A sequence of dice to map the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
@@ -305,7 +306,7 @@ def accumulate(
             return
     yield result
     for die in iter_dice:
-        result = map(func, result, die)
+        result = map(function, result, die)
         yield result
 
 
@@ -476,7 +477,7 @@ def map(
 
 @overload
 def map_function(
-        func:
+        function:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
         /) -> 'Callable[..., icepool.Die[T]]':
     ...
@@ -484,7 +485,7 @@ def map_function(
 
 @overload
 def map_function(
-    func: None,
+    function: None,
     /,
     *,
     star: bool | None = None,
@@ -497,7 +498,7 @@ def map_function(
 
 @overload
 def map_function(
-    func:
+    function:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
@@ -510,7 +511,7 @@ def map_function(
 
 
 def map_function(
-    func:
+    function:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None' = None,
     /,
     *,
@@ -558,22 +559,22 @@ def map_function(
         again_end: Forwarded to the final die constructor.
     """
 
-    if func is not None:
-        return update_wrapper(partial(map, func), func)
+    if function is not None:
+        return update_wrapper(partial(map, function), function)
     else:
 
         def decorator(
-            func:
+            function:
             'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]'
         ) -> 'Callable[..., icepool.Die[T]]':
 
             return update_wrapper(
                 partial(map,
-                        func,
+                        function,
                         star=star,
                         repeat=repeat,
                         again_depth=again_depth,
-                        again_end=again_end), func)
+                        again_end=again_end), function)
 
         return decorator
 
