@@ -24,10 +24,10 @@
 <div class="row" id="main" style="border: 1px solid lightgray; resize: vertical; overflow-x: auto; overflow-y: hidden; height: 30vh; min-height: 150px;">
     <div class="col" id="editor"></div>
     <div class="col" style="overflow: auto; height: 100%;">
+        <h3 id="error_header" style="text-align:left; display:none;">Error log</h3>
+        <div id="error" style="color: red; white-space: pre; font-family: monospace; display:none;"></div>
         <h3 style="text-align:left;margin-top:0;">Output log</h3>
         <div id="output" style="white-space: pre; font-family: monospace;"></div>
-        <h3 style="text-align:left;">Error log</h3>
-        <div id="error" style="color: red; white-space: pre; font-family: monospace;"></div>
     </div>
 </div>
 
@@ -566,6 +566,8 @@ function clearOutput() {
 }
 
 function clearError() {
+    document.getElementById("error_header").style.display = 'none';
+    document.getElementById("error").style.display = 'none';
     document.getElementById("error").textContent = '';
 }
 
@@ -574,6 +576,8 @@ function appendOutput(text) {
 }
 
 function appendError(text) {
+    document.getElementById("error_header").style.display = 'block';
+    document.getElementById("error").style.display = 'inline';
     document.getElementById("error").textContent += text;
 }
 
