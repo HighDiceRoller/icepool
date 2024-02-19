@@ -6,8 +6,10 @@ import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.population.die import Die
 
+import operator
+
 from icepool.typing import Outcome, Order, RerollType
-from typing import Any, Collection, Hashable, Literal, Sequence
+from typing import Any, Callable, Collection, Hashable, Literal, Sequence
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
@@ -158,10 +160,6 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             return 0
         return final_state[0]
 
-    def order(self) -> Literal[Order.Ascending]:
-        """Ascending order."""
-        return Order.Ascending
-
     alignment = MultisetEvaluator.range_alignment
 
 
@@ -192,8 +190,9 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
 class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
     """The sizes of all straights in descending order.
 
-    Each element can only contribute to one straight, though duplicates can
-    produce overlapping straights.
+    Each element can only contribute to one straight, though duplicate
+    elements can produces straights that overlap in outcomes. In this case,
+    elements are preferentially assigned to the longer straight.
     """
 
     def next_state(self, state, _, count):
@@ -201,7 +200,8 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         current_runs, ended_runs = state or ((), ())
         if count < len(current_runs):
             next_current_runs = tuple(x + 1 for x in current_runs[:count])
-            next_ended_runs = tuple(sorted(ended_runs + current_runs[count:]))
+            next_ended_runs = tuple(
+                sorted(ended_runs + current_runs[count:], reverse=True))
         else:
             next_current_runs = tuple(
                 x + 1
@@ -217,5 +217,58 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
     def order(self) -> Literal[Order.Ascending]:
         """Ascending order."""
         return Order.Ascending
+
+    alignment = MultisetEvaluator.range_alignment
+
+
+class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
+                                                          tuple[tuple[int,
+                                                                      int],
+                                                                ...]]):
+    """All straights with a reduce operation on the counts.
+
+    This can be used to evaluate e.g. cribbage-style straight counting.
+
+    The result is a tuple of `(run_length, run_score)`s."""
+
+    def __init__(self, reducer: Callable[[int, int], int] = operator.mul):
+        """Constructor.
+
+        Args:
+            reducer: How to reduce the counts within each straight. The default
+                is `operator.mul`, which counts the number of ways to pick
+                elements for each straight, e.g. cribbage.
+        """
+        self._reducer = reducer
+
+    def next_state(self, state, _, count):
+        """Implementation."""
+        current_run_length, current_run_score, ended_runs = state or (None,
+                                                                      None, ())
+        if count > 0:
+            if current_run_length is None:
+                current_run_length = 1
+                current_run_score = count
+            else:
+                current_run_length += 1
+                current_run_score = self._reducer(current_run_score, count)
+        else:
+            if current_run_length is not None:
+                current_run = (current_run_length, current_run_score)
+                ended_runs = tuple(
+                    sorted(ended_runs + (current_run, ), reverse=True))
+            current_run_length = None
+            current_run_score = None
+        return current_run_length, current_run_score, ended_runs
+
+    def final_outcome(self, final_state) -> tuple[tuple[int, int], ...]:
+        """Implementation."""
+        current_run_length, current_run_score, ended_runs = final_state or (
+            None, None, ())
+        if current_run_length is not None:
+            current_run = (current_run_length, current_run_score)
+            ended_runs = tuple(
+                sorted(ended_runs + (current_run, ), reverse=True))
+        return ended_runs
 
     alignment = MultisetEvaluator.range_alignment

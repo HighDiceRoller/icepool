@@ -881,11 +881,26 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         The sizes are in **descending** order.
 
-        Each element can only contribute to one straight, though duplicates can
-        produce overlapping straights.
+        Each element can only contribute to one straight, though duplicate
+        elements can produces straights that overlap in outcomes. In this case,
+        elements are preferentially assigned to the longer straight.
         """
         return self.evaluate(
             evaluator=icepool.evaluator.AllStraightsEvaluator())
+
+    def all_straights_reduce_counts(
+        self: 'MultisetExpression[int]',
+        reducer: Callable[[int, int], int] = operator.mul
+    ) -> 'icepool.Die[tuple[tuple[int, int], ...]] | icepool.MultisetEvaluator[int, tuple[tuple[int, int], ...]]':
+        """All straights with a reduce operation on the counts.
+
+        This can be used to evaluate e.g. cribbage-style straight counting.
+
+        The result is a tuple of `(run_length, run_score)`s.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.AllStraightsReduceCountsEvaluator(
+                reducer=reducer))
 
     # Comparators.
 

@@ -10,7 +10,7 @@ from icepool.evaluator.poker import (
     HighestOutcomeAndCountEvaluator, LargestCountEvaluator,
     LargestCountAndOutcomeEvaluator, CountSubsetEvaluator, AllCountsEvaluator,
     LargestStraightEvaluator, LargestStraightAndOutcomeEvaluator,
-    AllStraightsEvaluator)
+    AllStraightsEvaluator, AllStraightsReduceCountsEvaluator)
 from icepool.evaluator.comparison import (
     ComparisonEvaluator, IsSubsetEvaluator, IsProperSubsetEvaluator,
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
@@ -28,8 +28,9 @@ __all__ = [
     'LargestCountAndOutcomeEvaluator', 'CountSubsetEvaluator',
     'AllCountsEvaluator', 'LargestStraightEvaluator',
     'LargestStraightAndOutcomeEvaluator', 'AllStraightsEvaluator',
-    'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
-    'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
+    'AllStraightsReduceCountsEvaluator', 'ComparisonEvaluator',
+    'IsSubsetEvaluator', 'IsProperSubsetEvaluator', 'IsSupersetEvaluator',
+    'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'ConstantEvaluator',
     'CompairEvalautor', 'KeepEvaluator', 'ExpressionEvaluator'
 ]

@@ -86,6 +86,13 @@ def test_all_straights():
     assert result == expected
 
 
+def test_all_straights_reduce_counts():
+    # cribbage double-double run and an extra
+    result = Pool([1, 1, 2, 3, 3, 5]).all_straights_reduce_counts().simplify()
+    expected = Die([((3, 4), (1, 1))])
+    assert result == expected
+
+
 def test_count_subsets():
     result = (d(6).pool(6) // [1, 2, 3]) > 0
     expected = d(6).pool(6) >= [1, 2, 3]
