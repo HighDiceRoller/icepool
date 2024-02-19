@@ -16,7 +16,7 @@ from typing import Callable, Hashable, Sequence, cast, overload
 class MapCountsExpression(MultisetExpression[T_contra]):
     """Expression that maps outcomes and counts to new counts."""
 
-    _func: Callable[..., int]
+    _function: Callable[..., int]
 
     def __init__(self, *inners: MultisetExpression[T_contra],
                  function: Callable[..., int]) -> None:
@@ -30,7 +30,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         for inner in inners:
             self._validate_output_arity(inner)
         self._inners = inners
-        self._func = function
+        self._function = function
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -40,7 +40,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
             *(inner._next_state(inner_state, outcome, *counts)
               for inner, inner_state in zip(self._inners, inner_states)))
 
-        count = self._func(outcome, *inner_counts)
+        count = self._function(outcome, *inner_counts)
         return state, count
 
     def _order(self) -> Order:
@@ -69,7 +69,8 @@ class MapCountsExpression(MultisetExpression[T_contra]):
             unbound_inner, prefix_start = inner._unbind(
                 prefix_start, free_start)
             unbound_inners.append(unbound_inner)
-        unbound_expression = type(self)(*unbound_inners, function=self._func)
+        unbound_expression = type(self)(*unbound_inners,
+                                        function=self._function)
         return unbound_expression, prefix_start
 
 
