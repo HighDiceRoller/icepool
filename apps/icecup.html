@@ -121,6 +121,7 @@ async function resetIcepool() {
     pyodide.runPython(`
 
 import icepool
+import fractions
 import pyodide
 import builtins
 import js
@@ -169,20 +170,20 @@ class OutputManager():
     @staticmethod
     def probability(die, outcome, probability_type):
         if probability_type == 'ge':
-            return die.probability_ge(outcome) * 100.0
+            return die.probability_ge(outcome)
         elif probability_type == 'le':
-            return die.probability_le(outcome) * 100.0
+            return die.probability_le(outcome)
         else:
-            return die.probability(outcome) * 100.0
+            return die.probability(outcome)
         
     @staticmethod
     def probabilities(die, outcomes, probability_type):
         if probability_type == 'ge':
-            return die.probabilities_ge(outcomes, percent=True)
+            return die.probabilities_ge(outcomes)
         elif probability_type == 'le':
-            return die.probabilities_le(outcomes, percent=True)
+            return die.probabilities_le(outcomes)
         else:
-            return die.probabilities(outcomes, percent=True)
+            return die.probabilities(outcomes)
             
     @staticmethod
     def format_string(probability_type):
@@ -197,6 +198,8 @@ class OutputManager():
     def outcome_to_js(outcome, a, b):
         if isinstance(outcome, icepool.Vector):
             return js.Array.from_(outcome)
+        elif isinstance(outcome, fractions.Fraction):
+            return float(outcome)
         return str(outcome)
 
     def append_output(self, die, label, fill=False):
@@ -498,7 +501,7 @@ var chart = new Chart(chartContext, {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Probability (%)',
+                    text: 'Probability',
                 },
             },
         },
@@ -517,6 +520,7 @@ var chart = new Chart(chartContext, {
             },
             tooltip : {
                 usePointStyle: true,
+                callbacks: {},
             },
             filler: {
                 propagate: true,
@@ -595,10 +599,12 @@ function updateLogScale() {
     updateSearchQuery();
     if (document.getElementById('ls').checked) {
         chart.options.scales.y.type = 'logarithmic';
-        chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
+        chart.options.scales.y.ticks.callback = (val) => val.toExponential(0);
+        chart.options.plugins.tooltip.callbacks.label = (ctx) => ctx.dataset.label + ': ' + ctx.raw.toExponential(2);
     } else {
         chart.options.scales.y.type = 'linear';
-        delete chart.options.scales.y.ticks.callback;
+        chart.options.scales.y.ticks.callback = (val) => ((val * 100.0).toPrecision(3) * 1.0 + '%');
+        chart.options.plugins.tooltip.callbacks.label = (ctx) => ctx.dataset.label + ': ' + (ctx.raw * 100.0).toPrecision(3) + '%';
     }
     chart.update();
 }
@@ -629,6 +635,7 @@ document.getElementById("copy_url").addEventListener("click", function (e) {
 });
 
 // Initial run.
+updateLogScale();
 runCode();
 
 </script>
