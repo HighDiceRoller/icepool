@@ -902,6 +902,37 @@ class MultisetExpression(ABC, Generic[T_contra]):
             evaluator=icepool.evaluator.AllStraightsReduceCountsEvaluator(
                 reducer=reducer))
 
+    def argsort(
+            self:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            *args:
+        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
+            order: Order = Order.Descending,
+            limit: int | None = None):
+        """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
+
+        Example:
+        ```
+        MultisetExpression.argsort([10, 9, 5], [9, 9])
+        ```
+        produces
+        ```
+        ((0,), (0, 1, 1), (0,))
+        ```
+        
+        Args:
+            self, *args: The multiset expressions to be evaluated.
+            order: Which order the ranks are to be emitted. Default is descending.
+            limit: How many ranks to emit. Default will emit all ranks, which
+                makes the length of each outcome equal to
+                `additive_union(+self, +arg1, +arg2, ...).unique().count()`
+        """
+        self = implicit_convert_to_expression(self)
+        converted_args = [implicit_convert_to_expression(arg) for arg in args]
+        return self.evaluate(*converted_args,
+                             evaluator=icepool.evaluator.ArgsortEvaluator(
+                                 order=order, limit=limit))
+
     # Comparators.
 
     def _compare(

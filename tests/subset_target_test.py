@@ -3,6 +3,7 @@ import icepool
 import pytest
 
 from icepool import d, Die, Order, Pool
+from icepool.expression.multiset_expression import MultisetExpression
 
 targets_to_test = [
     (),
@@ -90,6 +91,12 @@ def test_all_straights_reduce_counts():
     # cribbage double-double run and an extra
     result = Pool([1, 1, 2, 3, 3, 5]).all_straights_reduce_counts().simplify()
     expected = Die([((3, 4), (1, 1))])
+    assert result == expected
+
+
+def test_argsort():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9])
+    expected = Die([((0, ), (0, 1, 1), (0, ))])
     assert result == expected
 
 
