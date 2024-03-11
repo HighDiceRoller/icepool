@@ -892,7 +892,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         self: 'MultisetExpression[int]',
         reducer: Callable[[int, int], int] = operator.mul
     ) -> 'icepool.Die[tuple[tuple[int, int], ...]] | icepool.MultisetEvaluator[int, tuple[tuple[int, int], ...]]':
-        """All straights with a reduce operation on the counts.
+        """Experimental: All straights with a reduce operation on the counts.
 
         This can be used to evaluate e.g. cribbage-style straight counting.
 
