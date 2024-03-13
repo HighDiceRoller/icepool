@@ -30,7 +30,8 @@
     <form id="single_array_inputs" class="floating_controls">
         Generate each ability score by rolling
         <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input
-            name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" />,
+            name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" /> +
+        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />,
         rerolling <input name="reroll_dice" id="reroll_dice" type="number" min="0" max="19" value="0" required
             onwheel="" />s and below
         <select name="reroll_times" id="reroll_times">
@@ -38,8 +39,7 @@
             <option value="once">once</option>
         </select>,
         keeping the <input name="num_keep" id="num_keep" type="number" min="1" max="12" value="3" required onwheel="" />
-        highest dice, then adding
-        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />.
+        highest dice.
         <br />
         Generate each ability score <input name="num_ability_repeat" id="num_ability_repeat" type="number" min="1"
             max="24" value="1" required onwheel="" /> time(s) and keep the highest.<br />
@@ -49,8 +49,13 @@
             onwheel="" /> and
         <input name="max_ability" id="max_ability" type="number" min="1" max="20" value="18" required onwheel="" />
         are
-        set to the nearest value within that range.
-
+        <select name="range_action" id="range_action">
+            <option value="clip">set to the nearest value within that range.</option>
+            <option value="reroll">rerolled always.</option>
+        </select><br/>
+        If fewer than <input name="restart_count" id="restart_count" type="number" min="0" max="6" value="0" required onwheel="" />
+        scores are at least <input name="restart_value" id="restart_value" type="number" min="0" max="20" value="15" required onwheel="" />,
+        restart the entire array from the beginning.
     </form>
 
     <h2>Probability distribution of the 6 highest ability scores</h2>
@@ -408,29 +413,77 @@
 
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
-                import micropip
-                await micropip.install('icepool==1.0.0')
-                
-                import js
-                import pyodide
-                import math
-                import icepool
-                
-                def set_rank_data(rank, die):
-                    data = (0,) * 20
-                    selected_dist = js.document.getElementById('rankDistSelect').value
-                    if selected_dist == 'pmf':
-                        data = [100.0 * x for x in die.probabilities()]
-                    else:
-                        data = [100.0 * x for x in die.probabilities_ge()]
-                    for i in range(1, min_ability):
-                        data[i - 1] = math.nan
-                    for i in range(max_ability + 1, 21):
-                        data[i - 1] = math.nan
-                    js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
-                    table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
-                    table_text += ''.join(('<td></td>' if math.isnan(x) else '<td>%0.2f%%</td>' % x) for x in data)
-                    js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
+import micropip
+await micropip.install('icepool==1.0.0')
+
+import js
+import pyodide
+import math
+import icepool
+
+def set_rank_data(rank, die):
+    data = (0,) * 20
+    selected_dist = js.document.getElementById('rankDistSelect').value
+    if selected_dist == 'pmf':
+        data = [100.0 * x for x in die.probabilities()]
+    else:
+        data = [100.0 * x for x in die.probabilities_ge()]
+    for i in range(1, min_ability):
+        data[i - 1] = math.nan
+    for i in range(max_ability + 1, 21):
+        data[i - 1] = math.nan
+    js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
+    table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
+    table_text += ''.join(('<td></td>' if math.isnan(x) else '<td>%0.2f%%</td>' % x) for x in data)
+    js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
+    
+class RankWithRestart(icepool.MultisetEvaluator):
+    def __init__(self, rank, restart_count, restart_value):
+        self._rank = rank
+        self._restart_count = restart_count
+        self._restart_value = restart_value
+
+    def next_state(self, state, outcome, count):
+        total_count, trigger, result = state or (0, 0, None)
+        total_count += count
+        if total_count < self._restart_count and outcome <= self._restart_value:
+            return icepool.Reroll
+        if total_count > self._rank and result is None:
+            result = outcome
+        return total_count, trigger, result
+        
+    def final_outcome(self, final_state):
+        return final_state[-1]
+    
+    def order(self):
+        return icepool.Order.Descending
+        
+    def alignment(self, outcomes):
+        return range(1, 21)
+
+class SumWithRestart(icepool.MultisetEvaluator):
+    def __init__(self, cost_map, restart_count, restart_value):
+        self._cost_map = cost_map
+        self._restart_count = restart_count
+        self._restart_value = restart_value
+
+    def next_state(self, state, outcome, count):
+        total_count, trigger, total_cost = state or (0, 0, 0)
+        total_cost += self._cost_map[outcome] * min(count, 6 - total_count)
+        total_count += count
+        if total_count < self._restart_count and outcome <= self._restart_value:
+            return icepool.Reroll
+        return total_count, trigger, total_cost
+        
+    def final_outcome(self, final_state):
+        return final_state[-1]
+    
+    def order(self):
+        return icepool.Order.Descending
+    
+    def alignment(self, outcomes):
+        return range(1, 21)
+
             `);
 
             rankChart.options.plugins.title = {
@@ -452,42 +505,47 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            num_dice = int(js.document.getElementById('num_dice').value);
-            reroll_dice = int(js.document.getElementById('reroll_dice').value);
-            reroll_times = None if js.document.getElementById('reroll_times').value == 'always' else 1
-            die_size = int(js.document.getElementById('die_size').value);
-            num_keep = int(js.document.getElementById('num_keep').value);
-            num_keep = min(num_keep, num_dice);
-            modifier = int(js.document.getElementById('modifier').value);
-            num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value);
-            num_abilities = int(js.document.getElementById('num_abilities').value);
-            min_ability = int(js.document.getElementById('min_ability').value);
-            max_ability = int(js.document.getElementById('max_ability').value);
-            if min_ability > max_ability:
-                min_ability, max_ability = max_ability, min_ability
-            num_arrays = int(js.document.getElementById('num_arrays').value);
-            
-            if reroll_dice >= die_size:
-                reroll_dice = die_size - 1
-            
-            single_die = icepool.d(die_size).reroll(range(1, reroll_dice+1), depth=reroll_times)
-            single_ability = single_die.highest(num_dice, num_keep) + modifier
-            single_ability = single_ability.clip(min_ability, max_ability)
-            single_ability = single_ability.highest(num_ability_repeat)
-            
-            max_prob = 0.0
-            ranks = []
-            
-            for i in range(6):
-                rank_ability = single_ability.pool(num_abilities)[num_abilities - 1 - i]
-                rank_ability, _, _ = icepool.align_range(rank_ability, 1, 20)
-                ranks.append(rank_ability)
-                
-                max_prob = max(max_prob, max(rank_ability.probabilities()))
-                
-            ranks.append(icepool.Die(ranks))
-            
-            js.maxProb = max_prob * 100.0
+num_dice = int(js.document.getElementById('num_dice').value)
+reroll_dice = int(js.document.getElementById('reroll_dice').value)
+reroll_times = None if js.document.getElementById('reroll_times').value == 'always' else 1
+die_size = int(js.document.getElementById('die_size').value)
+num_keep = int(js.document.getElementById('num_keep').value)
+num_keep = min(num_keep, num_dice)
+modifier = int(js.document.getElementById('modifier').value)
+num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value)
+num_abilities = int(js.document.getElementById('num_abilities').value)
+min_ability = int(js.document.getElementById('min_ability').value)
+max_ability = int(js.document.getElementById('max_ability').value)
+if min_ability > max_ability:
+    min_ability, max_ability = max_ability, min_ability
+num_arrays = int(js.document.getElementById('num_arrays').value)
+restart_count = int(js.document.getElementById('restart_count').value)
+restart_value = int(js.document.getElementById('restart_value').value)
+
+if reroll_dice >= die_size:
+    reroll_dice = die_size - 1
+
+single_die = icepool.d(die_size).reroll(range(1, reroll_dice+1), depth=reroll_times)
+single_ability = single_die.highest(num_dice, num_keep) + modifier
+if js.document.getElementById('range_action').value == 'clip':
+    single_ability = single_ability.clip(min_ability, max_ability)
+else:
+    single_ability = single_ability.reroll(lambda x: x < min_ability or x > max_ability)
+single_ability = single_ability.highest(num_ability_repeat)
+
+max_prob = 0.0
+ranks = []
+
+for i in range(6):
+    rank_ability = RankWithRestart(i, restart_count, restart_value).evaluate(single_ability.pool(num_abilities)[-6:])
+    rank_ability, _, _ = icepool.align_range(rank_ability, 1, 20)
+    ranks.append(rank_ability)
+    
+    max_prob = max(max_prob, max(rank_ability.probabilities()))
+    
+ranks.append(icepool.Die(ranks))
+
+js.maxProb = max_prob * 100.0
             `);
         }
 
@@ -555,8 +613,9 @@
                 prices = {}
                 for i in range(1, 21):
                     prices[i] = int(js.document.getElementById('p%d' % i).value)
-                single_ability_price = single_ability.map(lambda outcome: prices[outcome])
-                total_price = single_ability_price.highest(num_abilities, 6).highest(num_arrays)
+                    
+                total_price = SumWithRestart(prices, restart_count, restart_value).evaluate(single_ability.pool(num_abilities)[-6:])
+                total_price = total_price.highest(num_arrays)
                 js.document.getElementById('price_mean').innerHTML = '%0.2f' % total_price.mean()
                 js.document.getElementById('price_sd').innerHTML = '%0.2f' % total_price.standard_deviation()
             `);
