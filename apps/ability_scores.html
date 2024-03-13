@@ -529,6 +529,10 @@ single_die = icepool.d(die_size).reroll(range(1, reroll_dice+1), depth=reroll_ti
 single_ability = single_die.highest(num_dice, num_keep) + modifier
 if js.document.getElementById('range_action').value == 'clip':
     single_ability = single_ability.clip(min_ability, max_ability)
+elif min_ability >= single_ability.max_outcome():
+    single_ability = icepool.Die([min_ability])
+elif max_ability <= single_ability.min_outcome():
+    single_ability = icepool.Die([max_ability])
 else:
     single_ability = single_ability.reroll(lambda x: x < min_ability or x > max_ability)
 single_ability = single_ability.highest(num_ability_repeat)
