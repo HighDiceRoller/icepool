@@ -10219,7 +10219,7 @@ result will be in simplest form.</p></li>
 </span><span id="map_function-531"><a href="#map_function-531"><span class="linenos">531</span></a>
 </span><span id="map_function-532"><a href="#map_function-532"><span class="linenos">532</span></a><span class="sd">    `map_function` can either be used with no arguments:</span>
 </span><span id="map_function-533"><a href="#map_function-533"><span class="linenos">533</span></a>
-</span><span id="map_function-534"><a href="#map_function-534"><span class="linenos">534</span></a><span class="sd">    ```</span>
+</span><span id="map_function-534"><a href="#map_function-534"><span class="linenos">534</span></a><span class="sd">    ```python</span>
 </span><span id="map_function-535"><a href="#map_function-535"><span class="linenos">535</span></a><span class="sd">    @map_function</span>
 </span><span id="map_function-536"><a href="#map_function-536"><span class="linenos">536</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="map_function-537"><a href="#map_function-537"><span class="linenos">537</span></a><span class="sd">        if x == 6:</span>
@@ -10232,7 +10232,7 @@ result will be in simplest form.</p></li>
 </span><span id="map_function-544"><a href="#map_function-544"><span class="linenos">544</span></a>
 </span><span id="map_function-545"><a href="#map_function-545"><span class="linenos">545</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
 </span><span id="map_function-546"><a href="#map_function-546"><span class="linenos">546</span></a>
-</span><span id="map_function-547"><a href="#map_function-547"><span class="linenos">547</span></a><span class="sd">    ```</span>
+</span><span id="map_function-547"><a href="#map_function-547"><span class="linenos">547</span></a><span class="sd">    ```python</span>
 </span><span id="map_function-548"><a href="#map_function-548"><span class="linenos">548</span></a><span class="sd">    @map_function(again_depth=2)</span>
 </span><span id="map_function-549"><a href="#map_function-549"><span class="linenos">549</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="map_function-550"><a href="#map_function-550"><span class="linenos">550</span></a><span class="sd">        if x == 6:</span>
@@ -10279,27 +10279,31 @@ among other differences.</p>
 
 <p><code><a href="#map_function">map_function</a></code> can either be used with no arguments:</p>
 
-<pre><code>@map_function
-def explode_six(x):
-    if x == 6:
-        return 6 + Again
-    else:
-        return x
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@map_function</span>
+<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
 
-explode_six(d6, again_depth=2)
+<span class="n">explode_six</span><span class="p">(</span><span class="n">d6</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </code></pre>
+</div>
 
 <p>Or with keyword arguments, in which case the extra arguments are bound:</p>
 
-<pre><code>@map_function(again_depth=2)
-def explode_six(x):
-    if x == 6:
-        return 6 + Again
-    else:
-        return x
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@map_function</span><span class="p">(</span><span class="n">again_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
 
-explode_six(d6)
+<span class="n">explode_six</span><span class="p">(</span><span class="n">d6</span><span class="p">)</span>
 </code></pre>
+</div>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -11886,8 +11890,10 @@ instead of merging the rolls after the fact.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]) * 2 -&gt; [1, 1, 2, 2, 2, 2, 3, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -12865,7 +12871,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-192"><a href="#MultisetExpression-192"><span class="linenos"> 192</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression-193"><a href="#MultisetExpression-193"><span class="linenos"> 193</span></a>
 </span><span id="MultisetExpression-194"><a href="#MultisetExpression-194"><span class="linenos"> 194</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-195"><a href="#MultisetExpression-195"><span class="linenos"> 195</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-195"><a href="#MultisetExpression-195"><span class="linenos"> 195</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-196"><a href="#MultisetExpression-196"><span class="linenos"> 196</span></a><span class="sd">        [1, 2, 2, 3] + [1, 2, 4] -&gt; [1, 1, 2, 2, 2, 3, 4]</span>
 </span><span id="MultisetExpression-197"><a href="#MultisetExpression-197"><span class="linenos"> 197</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-198"><a href="#MultisetExpression-198"><span class="linenos"> 198</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -12904,7 +12910,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-231"><a href="#MultisetExpression-231"><span class="linenos"> 231</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression-232"><a href="#MultisetExpression-232"><span class="linenos"> 232</span></a>
 </span><span id="MultisetExpression-233"><a href="#MultisetExpression-233"><span class="linenos"> 233</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-234"><a href="#MultisetExpression-234"><span class="linenos"> 234</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-234"><a href="#MultisetExpression-234"><span class="linenos"> 234</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-235"><a href="#MultisetExpression-235"><span class="linenos"> 235</span></a><span class="sd">        [1, 2, 2, 3] - [1, 2, 4] -&gt; [2, 3]</span>
 </span><span id="MultisetExpression-236"><a href="#MultisetExpression-236"><span class="linenos"> 236</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-237"><a href="#MultisetExpression-237"><span class="linenos"> 237</span></a>
@@ -12951,7 +12957,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-278"><a href="#MultisetExpression-278"><span class="linenos"> 278</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression-279"><a href="#MultisetExpression-279"><span class="linenos"> 279</span></a>
 </span><span id="MultisetExpression-280"><a href="#MultisetExpression-280"><span class="linenos"> 280</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-281"><a href="#MultisetExpression-281"><span class="linenos"> 281</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-281"><a href="#MultisetExpression-281"><span class="linenos"> 281</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-282"><a href="#MultisetExpression-282"><span class="linenos"> 282</span></a><span class="sd">        [1, 2, 2, 3] &amp; [1, 2, 4] -&gt; [1, 2]</span>
 </span><span id="MultisetExpression-283"><a href="#MultisetExpression-283"><span class="linenos"> 283</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-284"><a href="#MultisetExpression-284"><span class="linenos"> 284</span></a>
@@ -12996,7 +13002,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-323"><a href="#MultisetExpression-323"><span class="linenos"> 323</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression-324"><a href="#MultisetExpression-324"><span class="linenos"> 324</span></a>
 </span><span id="MultisetExpression-325"><a href="#MultisetExpression-325"><span class="linenos"> 325</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-326"><a href="#MultisetExpression-326"><span class="linenos"> 326</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-326"><a href="#MultisetExpression-326"><span class="linenos"> 326</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-327"><a href="#MultisetExpression-327"><span class="linenos"> 327</span></a><span class="sd">        [1, 2, 2, 3] | [1, 2, 4] -&gt; [1, 2, 2, 3, 4]</span>
 </span><span id="MultisetExpression-328"><a href="#MultisetExpression-328"><span class="linenos"> 328</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-329"><a href="#MultisetExpression-329"><span class="linenos"> 329</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13037,7 +13043,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-364"><a href="#MultisetExpression-364"><span class="linenos"> 364</span></a><span class="sd">        do `left.keep_counts_ge(0) ^ right.keep_counts_ge(0)`.</span>
 </span><span id="MultisetExpression-365"><a href="#MultisetExpression-365"><span class="linenos"> 365</span></a>
 </span><span id="MultisetExpression-366"><a href="#MultisetExpression-366"><span class="linenos"> 366</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-367"><a href="#MultisetExpression-367"><span class="linenos"> 367</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-367"><a href="#MultisetExpression-367"><span class="linenos"> 367</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-368"><a href="#MultisetExpression-368"><span class="linenos"> 368</span></a><span class="sd">        [1, 2, 2, 3] ^ [1, 2, 4] -&gt; [2, 3, 4]</span>
 </span><span id="MultisetExpression-369"><a href="#MultisetExpression-369"><span class="linenos"> 369</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-370"><a href="#MultisetExpression-370"><span class="linenos"> 370</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13118,7 +13124,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-445"><a href="#MultisetExpression-445"><span class="linenos"> 445</span></a><span class="sd">        Same as `self * n`.</span>
 </span><span id="MultisetExpression-446"><a href="#MultisetExpression-446"><span class="linenos"> 446</span></a>
 </span><span id="MultisetExpression-447"><a href="#MultisetExpression-447"><span class="linenos"> 447</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-448"><a href="#MultisetExpression-448"><span class="linenos"> 448</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-448"><a href="#MultisetExpression-448"><span class="linenos"> 448</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-449"><a href="#MultisetExpression-449"><span class="linenos"> 449</span></a><span class="sd">        Pool([1, 2, 2, 3]) * 2 -&gt; [1, 1, 2, 2, 2, 2, 3, 3]</span>
 </span><span id="MultisetExpression-450"><a href="#MultisetExpression-450"><span class="linenos"> 450</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-451"><a href="#MultisetExpression-451"><span class="linenos"> 451</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13157,7 +13163,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-484"><a href="#MultisetExpression-484"><span class="linenos"> 484</span></a><span class="sd">        Same as `self // n`.</span>
 </span><span id="MultisetExpression-485"><a href="#MultisetExpression-485"><span class="linenos"> 485</span></a>
 </span><span id="MultisetExpression-486"><a href="#MultisetExpression-486"><span class="linenos"> 486</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-487"><a href="#MultisetExpression-487"><span class="linenos"> 487</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-487"><a href="#MultisetExpression-487"><span class="linenos"> 487</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-488"><a href="#MultisetExpression-488"><span class="linenos"> 488</span></a><span class="sd">        Pool([1, 2, 2, 3]) // 2 -&gt; [2]</span>
 </span><span id="MultisetExpression-489"><a href="#MultisetExpression-489"><span class="linenos"> 489</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-490"><a href="#MultisetExpression-490"><span class="linenos"> 490</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13174,7 +13180,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-501"><a href="#MultisetExpression-501"><span class="linenos"> 501</span></a><span class="sd">        Same as `self % n`.</span>
 </span><span id="MultisetExpression-502"><a href="#MultisetExpression-502"><span class="linenos"> 502</span></a>
 </span><span id="MultisetExpression-503"><a href="#MultisetExpression-503"><span class="linenos"> 503</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-504"><a href="#MultisetExpression-504"><span class="linenos"> 504</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-504"><a href="#MultisetExpression-504"><span class="linenos"> 504</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-505"><a href="#MultisetExpression-505"><span class="linenos"> 505</span></a><span class="sd">        Pool([1, 2, 2, 3]) % 2 -&gt; [1, 3]</span>
 </span><span id="MultisetExpression-506"><a href="#MultisetExpression-506"><span class="linenos"> 506</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-507"><a href="#MultisetExpression-507"><span class="linenos"> 507</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13193,7 +13199,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-520"><a href="#MultisetExpression-520"><span class="linenos"> 520</span></a><span class="sd">        better.</span>
 </span><span id="MultisetExpression-521"><a href="#MultisetExpression-521"><span class="linenos"> 521</span></a>
 </span><span id="MultisetExpression-522"><a href="#MultisetExpression-522"><span class="linenos"> 522</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-523"><a href="#MultisetExpression-523"><span class="linenos"> 523</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-523"><a href="#MultisetExpression-523"><span class="linenos"> 523</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-524"><a href="#MultisetExpression-524"><span class="linenos"> 524</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [1, 2, 2]</span>
 </span><span id="MultisetExpression-525"><a href="#MultisetExpression-525"><span class="linenos"> 525</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-526"><a href="#MultisetExpression-526"><span class="linenos"> 526</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13206,7 +13212,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-533"><a href="#MultisetExpression-533"><span class="linenos"> 533</span></a><span class="sd">        triplets...</span>
 </span><span id="MultisetExpression-534"><a href="#MultisetExpression-534"><span class="linenos"> 534</span></a>
 </span><span id="MultisetExpression-535"><a href="#MultisetExpression-535"><span class="linenos"> 535</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-536"><a href="#MultisetExpression-536"><span class="linenos"> 536</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-536"><a href="#MultisetExpression-536"><span class="linenos"> 536</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-537"><a href="#MultisetExpression-537"><span class="linenos"> 537</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -&gt; [1]</span>
 </span><span id="MultisetExpression-538"><a href="#MultisetExpression-538"><span class="linenos"> 538</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-539"><a href="#MultisetExpression-539"><span class="linenos"> 539</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13222,7 +13228,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-549"><a href="#MultisetExpression-549"><span class="linenos"> 549</span></a><span class="sd">        You can use the unary operator `+expression` for the same effect.</span>
 </span><span id="MultisetExpression-550"><a href="#MultisetExpression-550"><span class="linenos"> 550</span></a>
 </span><span id="MultisetExpression-551"><a href="#MultisetExpression-551"><span class="linenos"> 551</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-552"><a href="#MultisetExpression-552"><span class="linenos"> 552</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-552"><a href="#MultisetExpression-552"><span class="linenos"> 552</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-553"><a href="#MultisetExpression-553"><span class="linenos"> 553</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -&gt; [2, 2, 3, 3, 3]</span>
 </span><span id="MultisetExpression-554"><a href="#MultisetExpression-554"><span class="linenos"> 554</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-555"><a href="#MultisetExpression-555"><span class="linenos"> 555</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13235,7 +13241,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-562"><a href="#MultisetExpression-562"><span class="linenos"> 562</span></a><span class="sd">        doubles.</span>
 </span><span id="MultisetExpression-563"><a href="#MultisetExpression-563"><span class="linenos"> 563</span></a>
 </span><span id="MultisetExpression-564"><a href="#MultisetExpression-564"><span class="linenos"> 564</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-565"><a href="#MultisetExpression-565"><span class="linenos"> 565</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-565"><a href="#MultisetExpression-565"><span class="linenos"> 565</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-566"><a href="#MultisetExpression-566"><span class="linenos"> 566</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -&gt; [3, 3, 3]</span>
 </span><span id="MultisetExpression-567"><a href="#MultisetExpression-567"><span class="linenos"> 567</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-568"><a href="#MultisetExpression-568"><span class="linenos"> 568</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13248,7 +13254,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-575"><a href="#MultisetExpression-575"><span class="linenos"> 575</span></a><span class="sd">        singles or triplets.</span>
 </span><span id="MultisetExpression-576"><a href="#MultisetExpression-576"><span class="linenos"> 576</span></a>
 </span><span id="MultisetExpression-577"><a href="#MultisetExpression-577"><span class="linenos"> 577</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-578"><a href="#MultisetExpression-578"><span class="linenos"> 578</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-578"><a href="#MultisetExpression-578"><span class="linenos"> 578</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-579"><a href="#MultisetExpression-579"><span class="linenos"> 579</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [2, 2]</span>
 </span><span id="MultisetExpression-580"><a href="#MultisetExpression-580"><span class="linenos"> 580</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-581"><a href="#MultisetExpression-581"><span class="linenos"> 581</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13261,7 +13267,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-588"><a href="#MultisetExpression-588"><span class="linenos"> 588</span></a><span class="sd">        singles and triplets.</span>
 </span><span id="MultisetExpression-589"><a href="#MultisetExpression-589"><span class="linenos"> 589</span></a>
 </span><span id="MultisetExpression-590"><a href="#MultisetExpression-590"><span class="linenos"> 590</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-591"><a href="#MultisetExpression-591"><span class="linenos"> 591</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-591"><a href="#MultisetExpression-591"><span class="linenos"> 591</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-592"><a href="#MultisetExpression-592"><span class="linenos"> 592</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -&gt; [1, 3, 3, 3]</span>
 </span><span id="MultisetExpression-593"><a href="#MultisetExpression-593"><span class="linenos"> 593</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-594"><a href="#MultisetExpression-594"><span class="linenos"> 594</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13274,7 +13280,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-601"><a href="#MultisetExpression-601"><span class="linenos"> 601</span></a><span class="sd">        twice.</span>
 </span><span id="MultisetExpression-602"><a href="#MultisetExpression-602"><span class="linenos"> 602</span></a>
 </span><span id="MultisetExpression-603"><a href="#MultisetExpression-603"><span class="linenos"> 603</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-604"><a href="#MultisetExpression-604"><span class="linenos"> 604</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-604"><a href="#MultisetExpression-604"><span class="linenos"> 604</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-605"><a href="#MultisetExpression-605"><span class="linenos"> 605</span></a><span class="sd">        Pool([1, 2, 2, 3]).unique() -&gt; [1, 2, 3]</span>
 </span><span id="MultisetExpression-606"><a href="#MultisetExpression-606"><span class="linenos"> 606</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-607"><a href="#MultisetExpression-607"><span class="linenos"> 607</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13615,11 +13621,11 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-942"><a href="#MultisetExpression-942"><span class="linenos"> 942</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Experimental: Returns the indexes of the originating multisets for each rank in their additive union.</span>
 </span><span id="MultisetExpression-943"><a href="#MultisetExpression-943"><span class="linenos"> 943</span></a>
 </span><span id="MultisetExpression-944"><a href="#MultisetExpression-944"><span class="linenos"> 944</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression-945"><a href="#MultisetExpression-945"><span class="linenos"> 945</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-945"><a href="#MultisetExpression-945"><span class="linenos"> 945</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-946"><a href="#MultisetExpression-946"><span class="linenos"> 946</span></a><span class="sd">        MultisetExpression.argsort([10, 9, 5], [9, 9])</span>
 </span><span id="MultisetExpression-947"><a href="#MultisetExpression-947"><span class="linenos"> 947</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-948"><a href="#MultisetExpression-948"><span class="linenos"> 948</span></a><span class="sd">        produces</span>
-</span><span id="MultisetExpression-949"><a href="#MultisetExpression-949"><span class="linenos"> 949</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-949"><a href="#MultisetExpression-949"><span class="linenos"> 949</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-950"><a href="#MultisetExpression-950"><span class="linenos"> 950</span></a><span class="sd">        ((0,), (0, 1, 1), (0,))</span>
 </span><span id="MultisetExpression-951"><a href="#MultisetExpression-951"><span class="linenos"> 951</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-952"><a href="#MultisetExpression-952"><span class="linenos"> 952</span></a><span class="sd">        </span>
@@ -13734,7 +13740,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-1061"><a href="#MultisetExpression-1061"><span class="linenos">1061</span></a><span class="sd">        A typical use of this evaluation is testing for the presence of a</span>
 </span><span id="MultisetExpression-1062"><a href="#MultisetExpression-1062"><span class="linenos">1062</span></a><span class="sd">        combo of cards in a hand, e.g.</span>
 </span><span id="MultisetExpression-1063"><a href="#MultisetExpression-1063"><span class="linenos">1063</span></a>
-</span><span id="MultisetExpression-1064"><a href="#MultisetExpression-1064"><span class="linenos">1064</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-1064"><a href="#MultisetExpression-1064"><span class="linenos">1064</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-1065"><a href="#MultisetExpression-1065"><span class="linenos">1065</span></a><span class="sd">        deck.deal(5) &gt;= [&#39;a&#39;, &#39;a&#39;, &#39;b&#39;]</span>
 </span><span id="MultisetExpression-1066"><a href="#MultisetExpression-1066"><span class="linenos">1066</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-1067"><a href="#MultisetExpression-1067"><span class="linenos">1067</span></a>
@@ -13818,7 +13824,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-1145"><a href="#MultisetExpression-1145"><span class="linenos">1145</span></a>
 </span><span id="MultisetExpression-1146"><a href="#MultisetExpression-1146"><span class="linenos">1146</span></a><span class="sd">        Example: number of armies destroyed by the defender in a </span>
 </span><span id="MultisetExpression-1147"><a href="#MultisetExpression-1147"><span class="linenos">1147</span></a><span class="sd">        3v2 attack in *RISK*:</span>
-</span><span id="MultisetExpression-1148"><a href="#MultisetExpression-1148"><span class="linenos">1148</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-1148"><a href="#MultisetExpression-1148"><span class="linenos">1148</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-1149"><a href="#MultisetExpression-1149"><span class="linenos">1149</span></a><span class="sd">        d6.pool(3).compair_le(d6.pool(2))</span>
 </span><span id="MultisetExpression-1150"><a href="#MultisetExpression-1150"><span class="linenos">1150</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-1151"><a href="#MultisetExpression-1151"><span class="linenos">1151</span></a>
@@ -13847,7 +13853,7 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-1174"><a href="#MultisetExpression-1174"><span class="linenos">1174</span></a>
 </span><span id="MultisetExpression-1175"><a href="#MultisetExpression-1175"><span class="linenos">1175</span></a><span class="sd">        Example: number of armies destroyed by the attacker in a </span>
 </span><span id="MultisetExpression-1176"><a href="#MultisetExpression-1176"><span class="linenos">1176</span></a><span class="sd">        3v2 attack in *RISK*:</span>
-</span><span id="MultisetExpression-1177"><a href="#MultisetExpression-1177"><span class="linenos">1177</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression-1177"><a href="#MultisetExpression-1177"><span class="linenos">1177</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression-1178"><a href="#MultisetExpression-1178"><span class="linenos">1178</span></a><span class="sd">        d6.pool(3).compair_gt(d6.pool(2))</span>
 </span><span id="MultisetExpression-1179"><a href="#MultisetExpression-1179"><span class="linenos">1179</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression-1180"><a href="#MultisetExpression-1180"><span class="linenos">1180</span></a>
@@ -14139,7 +14145,7 @@ expressions, or to attach a final evaluator.</p>
 </span><span id="MultisetExpression.additive_union-192"><a href="#MultisetExpression.additive_union-192"><span class="linenos">192</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression.additive_union-193"><a href="#MultisetExpression.additive_union-193"><span class="linenos">193</span></a>
 </span><span id="MultisetExpression.additive_union-194"><a href="#MultisetExpression.additive_union-194"><span class="linenos">194</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.additive_union-195"><a href="#MultisetExpression.additive_union-195"><span class="linenos">195</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.additive_union-195"><a href="#MultisetExpression.additive_union-195"><span class="linenos">195</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.additive_union-196"><a href="#MultisetExpression.additive_union-196"><span class="linenos">196</span></a><span class="sd">        [1, 2, 2, 3] + [1, 2, 4] -&gt; [1, 1, 2, 2, 2, 3, 4]</span>
 </span><span id="MultisetExpression.additive_union-197"><a href="#MultisetExpression.additive_union-197"><span class="linenos">197</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.additive_union-198"><a href="#MultisetExpression.additive_union-198"><span class="linenos">198</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14157,8 +14163,10 @@ expressions, or to attach a final evaluator.</p>
 
 <p>Example:</p>
 
-<pre><code>[1, 2, 2, 3] + [1, 2, 4] -&gt; [1, 1, 2, 2, 2, 3, 4]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14185,7 +14193,7 @@ expressions, or to attach a final evaluator.</p>
 </span><span id="MultisetExpression.difference-231"><a href="#MultisetExpression.difference-231"><span class="linenos">231</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression.difference-232"><a href="#MultisetExpression.difference-232"><span class="linenos">232</span></a>
 </span><span id="MultisetExpression.difference-233"><a href="#MultisetExpression.difference-233"><span class="linenos">233</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.difference-234"><a href="#MultisetExpression.difference-234"><span class="linenos">234</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.difference-234"><a href="#MultisetExpression.difference-234"><span class="linenos">234</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.difference-235"><a href="#MultisetExpression.difference-235"><span class="linenos">235</span></a><span class="sd">        [1, 2, 2, 3] - [1, 2, 4] -&gt; [2, 3]</span>
 </span><span id="MultisetExpression.difference-236"><a href="#MultisetExpression.difference-236"><span class="linenos">236</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.difference-237"><a href="#MultisetExpression.difference-237"><span class="linenos">237</span></a>
@@ -14211,8 +14219,10 @@ expressions, or to attach a final evaluator.</p>
 
 <p>Example:</p>
 
-<pre><code>[1, 2, 2, 3] - [1, 2, 4] -&gt; [2, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 
 <p>If no arguments are given, the result will be an empty multiset, i.e.
 all zero counts.</p>
@@ -14247,7 +14257,7 @@ counts on the right side.</p>
 </span><span id="MultisetExpression.intersection-278"><a href="#MultisetExpression.intersection-278"><span class="linenos">278</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression.intersection-279"><a href="#MultisetExpression.intersection-279"><span class="linenos">279</span></a>
 </span><span id="MultisetExpression.intersection-280"><a href="#MultisetExpression.intersection-280"><span class="linenos">280</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.intersection-281"><a href="#MultisetExpression.intersection-281"><span class="linenos">281</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.intersection-281"><a href="#MultisetExpression.intersection-281"><span class="linenos">281</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.intersection-282"><a href="#MultisetExpression.intersection-282"><span class="linenos">282</span></a><span class="sd">        [1, 2, 2, 3] &amp; [1, 2, 4] -&gt; [1, 2]</span>
 </span><span id="MultisetExpression.intersection-283"><a href="#MultisetExpression.intersection-283"><span class="linenos">283</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.intersection-284"><a href="#MultisetExpression.intersection-284"><span class="linenos">284</span></a>
@@ -14271,8 +14281,10 @@ counts on the right side.</p>
 
 <p>Example:</p>
 
-<pre><code>[1, 2, 2, 3] &amp; [1, 2, 4] -&gt; [1, 2]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 </code></pre>
+</div>
 
 <p>Note that, as a multiset operation, this will only intersect elements
 1:1.
@@ -14305,7 +14317,7 @@ counts on the right side.</p>
 </span><span id="MultisetExpression.union-323"><a href="#MultisetExpression.union-323"><span class="linenos">323</span></a><span class="sd">        Any resulting counts that would be negative are set to zero.</span>
 </span><span id="MultisetExpression.union-324"><a href="#MultisetExpression.union-324"><span class="linenos">324</span></a>
 </span><span id="MultisetExpression.union-325"><a href="#MultisetExpression.union-325"><span class="linenos">325</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.union-326"><a href="#MultisetExpression.union-326"><span class="linenos">326</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.union-326"><a href="#MultisetExpression.union-326"><span class="linenos">326</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.union-327"><a href="#MultisetExpression.union-327"><span class="linenos">327</span></a><span class="sd">        [1, 2, 2, 3] | [1, 2, 4] -&gt; [1, 2, 2, 3, 4]</span>
 </span><span id="MultisetExpression.union-328"><a href="#MultisetExpression.union-328"><span class="linenos">328</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.union-329"><a href="#MultisetExpression.union-329"><span class="linenos">329</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14323,8 +14335,10 @@ counts on the right side.</p>
 
 <p>Example:</p>
 
-<pre><code>[1, 2, 2, 3] | [1, 2, 4] -&gt; [1, 2, 2, 3, 4]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">|</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14353,7 +14367,7 @@ counts on the right side.</p>
 </span><span id="MultisetExpression.symmetric_difference-364"><a href="#MultisetExpression.symmetric_difference-364"><span class="linenos">364</span></a><span class="sd">        do `left.keep_counts_ge(0) ^ right.keep_counts_ge(0)`.</span>
 </span><span id="MultisetExpression.symmetric_difference-365"><a href="#MultisetExpression.symmetric_difference-365"><span class="linenos">365</span></a>
 </span><span id="MultisetExpression.symmetric_difference-366"><a href="#MultisetExpression.symmetric_difference-366"><span class="linenos">366</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.symmetric_difference-367"><a href="#MultisetExpression.symmetric_difference-367"><span class="linenos">367</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.symmetric_difference-367"><a href="#MultisetExpression.symmetric_difference-367"><span class="linenos">367</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.symmetric_difference-368"><a href="#MultisetExpression.symmetric_difference-368"><span class="linenos">368</span></a><span class="sd">        [1, 2, 2, 3] ^ [1, 2, 4] -&gt; [2, 3, 4]</span>
 </span><span id="MultisetExpression.symmetric_difference-369"><a href="#MultisetExpression.symmetric_difference-369"><span class="linenos">369</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.symmetric_difference-370"><a href="#MultisetExpression.symmetric_difference-370"><span class="linenos">370</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14372,8 +14386,10 @@ do <code>left.keep_counts_ge(0) ^ right.keep_counts_ge(0)</code>.</p>
 
 <p>Example:</p>
 
-<pre><code>[1, 2, 2, 3] ^ [1, 2, 4] -&gt; [2, 3, 4]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">^</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14531,7 +14547,7 @@ combined count.</li>
 </span><span id="MultisetExpression.multiply_counts-445"><a href="#MultisetExpression.multiply_counts-445"><span class="linenos">445</span></a><span class="sd">        Same as `self * n`.</span>
 </span><span id="MultisetExpression.multiply_counts-446"><a href="#MultisetExpression.multiply_counts-446"><span class="linenos">446</span></a>
 </span><span id="MultisetExpression.multiply_counts-447"><a href="#MultisetExpression.multiply_counts-447"><span class="linenos">447</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.multiply_counts-448"><a href="#MultisetExpression.multiply_counts-448"><span class="linenos">448</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.multiply_counts-448"><a href="#MultisetExpression.multiply_counts-448"><span class="linenos">448</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.multiply_counts-449"><a href="#MultisetExpression.multiply_counts-449"><span class="linenos">449</span></a><span class="sd">        Pool([1, 2, 2, 3]) * 2 -&gt; [1, 1, 2, 2, 2, 2, 3, 3]</span>
 </span><span id="MultisetExpression.multiply_counts-450"><a href="#MultisetExpression.multiply_counts-450"><span class="linenos">450</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.multiply_counts-451"><a href="#MultisetExpression.multiply_counts-451"><span class="linenos">451</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14545,8 +14561,10 @@ combined count.</li>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]) * 2 -&gt; [1, 1, 2, 2, 2, 2, 3, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14568,7 +14586,7 @@ combined count.</li>
 </span><span id="MultisetExpression.divide_counts-484"><a href="#MultisetExpression.divide_counts-484"><span class="linenos">484</span></a><span class="sd">        Same as `self // n`.</span>
 </span><span id="MultisetExpression.divide_counts-485"><a href="#MultisetExpression.divide_counts-485"><span class="linenos">485</span></a>
 </span><span id="MultisetExpression.divide_counts-486"><a href="#MultisetExpression.divide_counts-486"><span class="linenos">486</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.divide_counts-487"><a href="#MultisetExpression.divide_counts-487"><span class="linenos">487</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.divide_counts-487"><a href="#MultisetExpression.divide_counts-487"><span class="linenos">487</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.divide_counts-488"><a href="#MultisetExpression.divide_counts-488"><span class="linenos">488</span></a><span class="sd">        Pool([1, 2, 2, 3]) // 2 -&gt; [2]</span>
 </span><span id="MultisetExpression.divide_counts-489"><a href="#MultisetExpression.divide_counts-489"><span class="linenos">489</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.divide_counts-490"><a href="#MultisetExpression.divide_counts-490"><span class="linenos">490</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14582,8 +14600,10 @@ combined count.</li>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]) // 2 -&gt; [2]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14605,7 +14625,7 @@ combined count.</li>
 </span><span id="MultisetExpression.modulo_counts-501"><a href="#MultisetExpression.modulo_counts-501"><span class="linenos">501</span></a><span class="sd">        Same as `self % n`.</span>
 </span><span id="MultisetExpression.modulo_counts-502"><a href="#MultisetExpression.modulo_counts-502"><span class="linenos">502</span></a>
 </span><span id="MultisetExpression.modulo_counts-503"><a href="#MultisetExpression.modulo_counts-503"><span class="linenos">503</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.modulo_counts-504"><a href="#MultisetExpression.modulo_counts-504"><span class="linenos">504</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.modulo_counts-504"><a href="#MultisetExpression.modulo_counts-504"><span class="linenos">504</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.modulo_counts-505"><a href="#MultisetExpression.modulo_counts-505"><span class="linenos">505</span></a><span class="sd">        Pool([1, 2, 2, 3]) % 2 -&gt; [1, 3]</span>
 </span><span id="MultisetExpression.modulo_counts-506"><a href="#MultisetExpression.modulo_counts-506"><span class="linenos">506</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.modulo_counts-507"><a href="#MultisetExpression.modulo_counts-507"><span class="linenos">507</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14619,8 +14639,10 @@ combined count.</li>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]) % 2 -&gt; [1, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14643,7 +14665,7 @@ combined count.</li>
 </span><span id="MultisetExpression.keep_counts_le-520"><a href="#MultisetExpression.keep_counts_le-520"><span class="linenos">520</span></a><span class="sd">        better.</span>
 </span><span id="MultisetExpression.keep_counts_le-521"><a href="#MultisetExpression.keep_counts_le-521"><span class="linenos">521</span></a>
 </span><span id="MultisetExpression.keep_counts_le-522"><a href="#MultisetExpression.keep_counts_le-522"><span class="linenos">522</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_le-523"><a href="#MultisetExpression.keep_counts_le-523"><span class="linenos">523</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_le-523"><a href="#MultisetExpression.keep_counts_le-523"><span class="linenos">523</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_le-524"><a href="#MultisetExpression.keep_counts_le-524"><span class="linenos">524</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [1, 2, 2]</span>
 </span><span id="MultisetExpression.keep_counts_le-525"><a href="#MultisetExpression.keep_counts_le-525"><span class="linenos">525</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_le-526"><a href="#MultisetExpression.keep_counts_le-526"><span class="linenos">526</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14658,8 +14680,10 @@ better.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [1, 2, 2]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_le</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14682,7 +14706,7 @@ better.</p>
 </span><span id="MultisetExpression.keep_counts_lt-533"><a href="#MultisetExpression.keep_counts_lt-533"><span class="linenos">533</span></a><span class="sd">        triplets...</span>
 </span><span id="MultisetExpression.keep_counts_lt-534"><a href="#MultisetExpression.keep_counts_lt-534"><span class="linenos">534</span></a>
 </span><span id="MultisetExpression.keep_counts_lt-535"><a href="#MultisetExpression.keep_counts_lt-535"><span class="linenos">535</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_lt-536"><a href="#MultisetExpression.keep_counts_lt-536"><span class="linenos">536</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_lt-536"><a href="#MultisetExpression.keep_counts_lt-536"><span class="linenos">536</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_lt-537"><a href="#MultisetExpression.keep_counts_lt-537"><span class="linenos">537</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -&gt; [1]</span>
 </span><span id="MultisetExpression.keep_counts_lt-538"><a href="#MultisetExpression.keep_counts_lt-538"><span class="linenos">538</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_lt-539"><a href="#MultisetExpression.keep_counts_lt-539"><span class="linenos">539</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14697,8 +14721,10 @@ triplets...</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -&gt; [1]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_lt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14724,7 +14750,7 @@ triplets...</p>
 </span><span id="MultisetExpression.keep_counts_ge-549"><a href="#MultisetExpression.keep_counts_ge-549"><span class="linenos">549</span></a><span class="sd">        You can use the unary operator `+expression` for the same effect.</span>
 </span><span id="MultisetExpression.keep_counts_ge-550"><a href="#MultisetExpression.keep_counts_ge-550"><span class="linenos">550</span></a>
 </span><span id="MultisetExpression.keep_counts_ge-551"><a href="#MultisetExpression.keep_counts_ge-551"><span class="linenos">551</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_ge-552"><a href="#MultisetExpression.keep_counts_ge-552"><span class="linenos">552</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_ge-552"><a href="#MultisetExpression.keep_counts_ge-552"><span class="linenos">552</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_ge-553"><a href="#MultisetExpression.keep_counts_ge-553"><span class="linenos">553</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -&gt; [2, 2, 3, 3, 3]</span>
 </span><span id="MultisetExpression.keep_counts_ge-554"><a href="#MultisetExpression.keep_counts_ge-554"><span class="linenos">554</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_ge-555"><a href="#MultisetExpression.keep_counts_ge-555"><span class="linenos">555</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14742,8 +14768,10 @@ You can use the unary operator <code>+expression</code> for the same effect.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -&gt; [2, 2, 3, 3, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_ge</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14766,7 +14794,7 @@ You can use the unary operator <code>+expression</code> for the same effect.</p>
 </span><span id="MultisetExpression.keep_counts_gt-562"><a href="#MultisetExpression.keep_counts_gt-562"><span class="linenos">562</span></a><span class="sd">        doubles.</span>
 </span><span id="MultisetExpression.keep_counts_gt-563"><a href="#MultisetExpression.keep_counts_gt-563"><span class="linenos">563</span></a>
 </span><span id="MultisetExpression.keep_counts_gt-564"><a href="#MultisetExpression.keep_counts_gt-564"><span class="linenos">564</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_gt-565"><a href="#MultisetExpression.keep_counts_gt-565"><span class="linenos">565</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_gt-565"><a href="#MultisetExpression.keep_counts_gt-565"><span class="linenos">565</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_gt-566"><a href="#MultisetExpression.keep_counts_gt-566"><span class="linenos">566</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -&gt; [3, 3, 3]</span>
 </span><span id="MultisetExpression.keep_counts_gt-567"><a href="#MultisetExpression.keep_counts_gt-567"><span class="linenos">567</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_gt-568"><a href="#MultisetExpression.keep_counts_gt-568"><span class="linenos">568</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14781,8 +14809,10 @@ doubles.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -&gt; [3, 3, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_gt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14805,7 +14835,7 @@ doubles.</p>
 </span><span id="MultisetExpression.keep_counts_eq-575"><a href="#MultisetExpression.keep_counts_eq-575"><span class="linenos">575</span></a><span class="sd">        singles or triplets.</span>
 </span><span id="MultisetExpression.keep_counts_eq-576"><a href="#MultisetExpression.keep_counts_eq-576"><span class="linenos">576</span></a>
 </span><span id="MultisetExpression.keep_counts_eq-577"><a href="#MultisetExpression.keep_counts_eq-577"><span class="linenos">577</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_eq-578"><a href="#MultisetExpression.keep_counts_eq-578"><span class="linenos">578</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_eq-578"><a href="#MultisetExpression.keep_counts_eq-578"><span class="linenos">578</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_eq-579"><a href="#MultisetExpression.keep_counts_eq-579"><span class="linenos">579</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [2, 2]</span>
 </span><span id="MultisetExpression.keep_counts_eq-580"><a href="#MultisetExpression.keep_counts_eq-580"><span class="linenos">580</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_eq-581"><a href="#MultisetExpression.keep_counts_eq-581"><span class="linenos">581</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14820,8 +14850,10 @@ singles or triplets.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -&gt; [2, 2]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_le</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14844,7 +14876,7 @@ singles or triplets.</p>
 </span><span id="MultisetExpression.keep_counts_ne-588"><a href="#MultisetExpression.keep_counts_ne-588"><span class="linenos">588</span></a><span class="sd">        singles and triplets.</span>
 </span><span id="MultisetExpression.keep_counts_ne-589"><a href="#MultisetExpression.keep_counts_ne-589"><span class="linenos">589</span></a>
 </span><span id="MultisetExpression.keep_counts_ne-590"><a href="#MultisetExpression.keep_counts_ne-590"><span class="linenos">590</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.keep_counts_ne-591"><a href="#MultisetExpression.keep_counts_ne-591"><span class="linenos">591</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.keep_counts_ne-591"><a href="#MultisetExpression.keep_counts_ne-591"><span class="linenos">591</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.keep_counts_ne-592"><a href="#MultisetExpression.keep_counts_ne-592"><span class="linenos">592</span></a><span class="sd">        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -&gt; [1, 3, 3, 3]</span>
 </span><span id="MultisetExpression.keep_counts_ne-593"><a href="#MultisetExpression.keep_counts_ne-593"><span class="linenos">593</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.keep_counts_ne-594"><a href="#MultisetExpression.keep_counts_ne-594"><span class="linenos">594</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14859,8 +14891,10 @@ singles and triplets.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -&gt; [1, 3, 3, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">keep_counts_ne</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -14883,7 +14917,7 @@ singles and triplets.</p>
 </span><span id="MultisetExpression.unique-601"><a href="#MultisetExpression.unique-601"><span class="linenos">601</span></a><span class="sd">        twice.</span>
 </span><span id="MultisetExpression.unique-602"><a href="#MultisetExpression.unique-602"><span class="linenos">602</span></a>
 </span><span id="MultisetExpression.unique-603"><a href="#MultisetExpression.unique-603"><span class="linenos">603</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.unique-604"><a href="#MultisetExpression.unique-604"><span class="linenos">604</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.unique-604"><a href="#MultisetExpression.unique-604"><span class="linenos">604</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.unique-605"><a href="#MultisetExpression.unique-605"><span class="linenos">605</span></a><span class="sd">        Pool([1, 2, 2, 3]).unique() -&gt; [1, 2, 3]</span>
 </span><span id="MultisetExpression.unique-606"><a href="#MultisetExpression.unique-606"><span class="linenos">606</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.unique-607"><a href="#MultisetExpression.unique-607"><span class="linenos">607</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14898,8 +14932,10 @@ twice.</p>
 
 <p>Example:</p>
 
-<pre><code>Pool([1, 2, 2, 3]).unique() -&gt; [1, 2, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Pool</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </code></pre>
+</div>
 </div>
 
 
@@ -15665,11 +15701,11 @@ elements are preferentially assigned to the longer straight.</p>
 </span><span id="MultisetExpression.argsort-942"><a href="#MultisetExpression.argsort-942"><span class="linenos">942</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Experimental: Returns the indexes of the originating multisets for each rank in their additive union.</span>
 </span><span id="MultisetExpression.argsort-943"><a href="#MultisetExpression.argsort-943"><span class="linenos">943</span></a>
 </span><span id="MultisetExpression.argsort-944"><a href="#MultisetExpression.argsort-944"><span class="linenos">944</span></a><span class="sd">        Example:</span>
-</span><span id="MultisetExpression.argsort-945"><a href="#MultisetExpression.argsort-945"><span class="linenos">945</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.argsort-945"><a href="#MultisetExpression.argsort-945"><span class="linenos">945</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.argsort-946"><a href="#MultisetExpression.argsort-946"><span class="linenos">946</span></a><span class="sd">        MultisetExpression.argsort([10, 9, 5], [9, 9])</span>
 </span><span id="MultisetExpression.argsort-947"><a href="#MultisetExpression.argsort-947"><span class="linenos">947</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.argsort-948"><a href="#MultisetExpression.argsort-948"><span class="linenos">948</span></a><span class="sd">        produces</span>
-</span><span id="MultisetExpression.argsort-949"><a href="#MultisetExpression.argsort-949"><span class="linenos">949</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.argsort-949"><a href="#MultisetExpression.argsort-949"><span class="linenos">949</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.argsort-950"><a href="#MultisetExpression.argsort-950"><span class="linenos">950</span></a><span class="sd">        ((0,), (0, 1, 1), (0,))</span>
 </span><span id="MultisetExpression.argsort-951"><a href="#MultisetExpression.argsort-951"><span class="linenos">951</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.argsort-952"><a href="#MultisetExpression.argsort-952"><span class="linenos">952</span></a><span class="sd">        </span>
@@ -15692,13 +15728,17 @@ elements are preferentially assigned to the longer straight.</p>
 
 <p>Example:</p>
 
-<pre><code><a href="#MultisetExpression.argsort">MultisetExpression.argsort</a>([10, 9, 5], [9, 9])
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n"><a href="#MultisetExpression.argsort">MultisetExpression.argsort</a></span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 </code></pre>
+</div>
 
 <p>produces</p>
 
-<pre><code>((0,), (0, 1, 1), (0,))
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
 </code></pre>
+</div>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -15786,7 +15826,7 @@ except the result is <code>False</code> if the two multisets are exactly equal.<
 </span><span id="MultisetExpression.issuperset-1061"><a href="#MultisetExpression.issuperset-1061"><span class="linenos">1061</span></a><span class="sd">        A typical use of this evaluation is testing for the presence of a</span>
 </span><span id="MultisetExpression.issuperset-1062"><a href="#MultisetExpression.issuperset-1062"><span class="linenos">1062</span></a><span class="sd">        combo of cards in a hand, e.g.</span>
 </span><span id="MultisetExpression.issuperset-1063"><a href="#MultisetExpression.issuperset-1063"><span class="linenos">1063</span></a>
-</span><span id="MultisetExpression.issuperset-1064"><a href="#MultisetExpression.issuperset-1064"><span class="linenos">1064</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.issuperset-1064"><a href="#MultisetExpression.issuperset-1064"><span class="linenos">1064</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.issuperset-1065"><a href="#MultisetExpression.issuperset-1065"><span class="linenos">1065</span></a><span class="sd">        deck.deal(5) &gt;= [&#39;a&#39;, &#39;a&#39;, &#39;b&#39;]</span>
 </span><span id="MultisetExpression.issuperset-1066"><a href="#MultisetExpression.issuperset-1066"><span class="linenos">1066</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.issuperset-1067"><a href="#MultisetExpression.issuperset-1067"><span class="linenos">1067</span></a>
@@ -15812,8 +15852,10 @@ than the other multiset, this evaluates to <code>False</code>.</p>
 <p>A typical use of this evaluation is testing for the presence of a
 combo of cards in a hand, e.g.</p>
 
-<pre><code>deck.deal(5) &gt;= ['a', 'a', 'b']
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">deck</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span>
 </code></pre>
+</div>
 
 <p>represents the chance that a deal of 5 cards contains at least two 'a's
 and one 'b'.</p>
@@ -15933,7 +15975,7 @@ Default is descending.</li>
 </span><span id="MultisetExpression.compair_le-1145"><a href="#MultisetExpression.compair_le-1145"><span class="linenos">1145</span></a>
 </span><span id="MultisetExpression.compair_le-1146"><a href="#MultisetExpression.compair_le-1146"><span class="linenos">1146</span></a><span class="sd">        Example: number of armies destroyed by the defender in a </span>
 </span><span id="MultisetExpression.compair_le-1147"><a href="#MultisetExpression.compair_le-1147"><span class="linenos">1147</span></a><span class="sd">        3v2 attack in *RISK*:</span>
-</span><span id="MultisetExpression.compair_le-1148"><a href="#MultisetExpression.compair_le-1148"><span class="linenos">1148</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.compair_le-1148"><a href="#MultisetExpression.compair_le-1148"><span class="linenos">1148</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.compair_le-1149"><a href="#MultisetExpression.compair_le-1149"><span class="linenos">1149</span></a><span class="sd">        d6.pool(3).compair_le(d6.pool(2))</span>
 </span><span id="MultisetExpression.compair_le-1150"><a href="#MultisetExpression.compair_le-1150"><span class="linenos">1150</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.compair_le-1151"><a href="#MultisetExpression.compair_le-1151"><span class="linenos">1151</span></a>
@@ -15959,8 +16001,10 @@ Default is descending.</li>
 <p>Example: number of armies destroyed by the defender in a 
 3v2 attack in <em>RISK</em>:</p>
 
-<pre><code>d6.pool(3).compair_le(d6.pool(2))
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">compair_le</span><span class="p">(</span><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </code></pre>
+</div>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -15996,7 +16040,7 @@ Default is descending.</li>
 </span><span id="MultisetExpression.compair_gt-1174"><a href="#MultisetExpression.compair_gt-1174"><span class="linenos">1174</span></a>
 </span><span id="MultisetExpression.compair_gt-1175"><a href="#MultisetExpression.compair_gt-1175"><span class="linenos">1175</span></a><span class="sd">        Example: number of armies destroyed by the attacker in a </span>
 </span><span id="MultisetExpression.compair_gt-1176"><a href="#MultisetExpression.compair_gt-1176"><span class="linenos">1176</span></a><span class="sd">        3v2 attack in *RISK*:</span>
-</span><span id="MultisetExpression.compair_gt-1177"><a href="#MultisetExpression.compair_gt-1177"><span class="linenos">1177</span></a><span class="sd">        ```</span>
+</span><span id="MultisetExpression.compair_gt-1177"><a href="#MultisetExpression.compair_gt-1177"><span class="linenos">1177</span></a><span class="sd">        ```python</span>
 </span><span id="MultisetExpression.compair_gt-1178"><a href="#MultisetExpression.compair_gt-1178"><span class="linenos">1178</span></a><span class="sd">        d6.pool(3).compair_gt(d6.pool(2))</span>
 </span><span id="MultisetExpression.compair_gt-1179"><a href="#MultisetExpression.compair_gt-1179"><span class="linenos">1179</span></a><span class="sd">        ```</span>
 </span><span id="MultisetExpression.compair_gt-1180"><a href="#MultisetExpression.compair_gt-1180"><span class="linenos">1180</span></a>
@@ -16022,8 +16066,10 @@ Default is descending.</li>
 <p>Example: number of armies destroyed by the attacker in a 
 3v2 attack in <em>RISK</em>:</p>
 
-<pre><code>d6.pool(3).compair_gt(d6.pool(2))
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">compair_gt</span><span class="p">(</span><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </code></pre>
+</div>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -18714,7 +18760,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="multiset_function-75"><a href="#multiset_function-75"><span class="linenos"> 75</span></a><span class="sd">    For example, to create an evaluator which computes the elements each of two</span>
 </span><span id="multiset_function-76"><a href="#multiset_function-76"><span class="linenos"> 76</span></a><span class="sd">    multisets has that the other doesn&#39;t:</span>
 </span><span id="multiset_function-77"><a href="#multiset_function-77"><span class="linenos"> 77</span></a>
-</span><span id="multiset_function-78"><a href="#multiset_function-78"><span class="linenos"> 78</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-78"><a href="#multiset_function-78"><span class="linenos"> 78</span></a><span class="sd">    ```python</span>
 </span><span id="multiset_function-79"><a href="#multiset_function-79"><span class="linenos"> 79</span></a><span class="sd">    @multiset_function</span>
 </span><span id="multiset_function-80"><a href="#multiset_function-80"><span class="linenos"> 80</span></a><span class="sd">    def two_way_difference(a, b):</span>
 </span><span id="multiset_function-81"><a href="#multiset_function-81"><span class="linenos"> 81</span></a><span class="sd">        return (a - b).expand(), (b - a).expand()</span>
@@ -18724,7 +18770,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="multiset_function-85"><a href="#multiset_function-85"><span class="linenos"> 85</span></a><span class="sd">    `multiset_function` is invoked. Note that this is different than how</span>
 </span><span id="multiset_function-86"><a href="#multiset_function-86"><span class="linenos"> 86</span></a><span class="sd">    ordinary Python closures behave. For example,</span>
 </span><span id="multiset_function-87"><a href="#multiset_function-87"><span class="linenos"> 87</span></a>
-</span><span id="multiset_function-88"><a href="#multiset_function-88"><span class="linenos"> 88</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-88"><a href="#multiset_function-88"><span class="linenos"> 88</span></a><span class="sd">    ```python</span>
 </span><span id="multiset_function-89"><a href="#multiset_function-89"><span class="linenos"> 89</span></a><span class="sd">    target = [1, 2, 3]</span>
 </span><span id="multiset_function-90"><a href="#multiset_function-90"><span class="linenos"> 90</span></a>
 </span><span id="multiset_function-91"><a href="#multiset_function-91"><span class="linenos"> 91</span></a><span class="sd">    @multiset_function</span>
@@ -18743,7 +18789,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="multiset_function-104"><a href="#multiset_function-104"><span class="linenos">104</span></a><span class="sd">    Be careful when using control structures: you cannot branch on the value of</span>
 </span><span id="multiset_function-105"><a href="#multiset_function-105"><span class="linenos">105</span></a><span class="sd">    a multiset expression or evaluation, so e.g.</span>
 </span><span id="multiset_function-106"><a href="#multiset_function-106"><span class="linenos">106</span></a>
-</span><span id="multiset_function-107"><a href="#multiset_function-107"><span class="linenos">107</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-107"><a href="#multiset_function-107"><span class="linenos">107</span></a><span class="sd">    ```python</span>
 </span><span id="multiset_function-108"><a href="#multiset_function-108"><span class="linenos">108</span></a><span class="sd">    @multiset_function</span>
 </span><span id="multiset_function-109"><a href="#multiset_function-109"><span class="linenos">109</span></a><span class="sd">    def bad(a, b)</span>
 </span><span id="multiset_function-110"><a href="#multiset_function-110"><span class="linenos">110</span></a><span class="sd">        if a == b:</span>
@@ -18786,26 +18832,30 @@ evaluation.</p>
 <p>For example, to create an evaluator which computes the elements each of two
 multisets has that the other doesn't:</p>
 
-<pre><code>@multiset_function
-def two_way_difference(a, b):
-    return (a - b).expand(), (b - a).expand()
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@multiset_function</span>
+<span class="k">def</span> <span class="nf">two_way_difference</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(),</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
 </code></pre>
+</div>
 
 <p>Any globals inside <code>function</code> are effectively bound at the time
 <code><a href="#multiset_function">multiset_function</a></code> is invoked. Note that this is different than how
 ordinary Python closures behave. For example,</p>
 
-<pre><code>target = [1, 2, 3]
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
-@multiset_function
-def count_intersection(a):
-    return (a &amp; target).count()
+<span class="nd">@multiset_function</span>
+<span class="k">def</span> <span class="nf">count_intersection</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
-print(count_intersection(d6.pool(3)))
+<span class="nb">print</span><span class="p">(</span><span class="n">count_intersection</span><span class="p">(</span><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 
-target = [1]
-print(count_intersection(d6.pool(3)))
+<span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count_intersection</span><span class="p">(</span><span class="n">d6</span><span class="o">.</span><span class="n">pool</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 </code></pre>
+</div>
 
 <p>would produce the same thing both times. Likewise, the function should not
 have any side effects.</p>
@@ -18813,11 +18863,13 @@ have any side effects.</p>
 <p>Be careful when using control structures: you cannot branch on the value of
 a multiset expression or evaluation, so e.g.</p>
 
-<pre><code>@multiset_function
-def bad(a, b)
-    if a == b:
-        ...
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@multiset_function</span>
+<span class="k">def</span> <span class="nf">bad</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+        <span class="o">...</span>
 </code></pre>
+</div>
 
 <p>is not allowed.</p>
 

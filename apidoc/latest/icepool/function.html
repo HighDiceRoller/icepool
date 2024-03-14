@@ -640,7 +640,7 @@
 </span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a>
 </span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a><span class="sd">    `map_function` can either be used with no arguments:</span>
 </span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a>
-</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a><span class="sd">    ```</span>
+</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a><span class="sd">    ```python</span>
 </span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a><span class="sd">    @map_function</span>
 </span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a><span class="sd">        if x == 6:</span>
@@ -653,7 +653,7 @@
 </span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a>
 </span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
 </span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a>
-</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">    ```</span>
+</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">    ```python</span>
 </span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a><span class="sd">    @map_function(again_depth=2)</span>
 </span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a><span class="sd">        if x == 6:</span>
@@ -1654,7 +1654,7 @@ result will be in simplest form.</p></li>
 </span><span id="map_function-531"><a href="#map_function-531"><span class="linenos">531</span></a>
 </span><span id="map_function-532"><a href="#map_function-532"><span class="linenos">532</span></a><span class="sd">    `map_function` can either be used with no arguments:</span>
 </span><span id="map_function-533"><a href="#map_function-533"><span class="linenos">533</span></a>
-</span><span id="map_function-534"><a href="#map_function-534"><span class="linenos">534</span></a><span class="sd">    ```</span>
+</span><span id="map_function-534"><a href="#map_function-534"><span class="linenos">534</span></a><span class="sd">    ```python</span>
 </span><span id="map_function-535"><a href="#map_function-535"><span class="linenos">535</span></a><span class="sd">    @map_function</span>
 </span><span id="map_function-536"><a href="#map_function-536"><span class="linenos">536</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="map_function-537"><a href="#map_function-537"><span class="linenos">537</span></a><span class="sd">        if x == 6:</span>
@@ -1667,7 +1667,7 @@ result will be in simplest form.</p></li>
 </span><span id="map_function-544"><a href="#map_function-544"><span class="linenos">544</span></a>
 </span><span id="map_function-545"><a href="#map_function-545"><span class="linenos">545</span></a><span class="sd">    Or with keyword arguments, in which case the extra arguments are bound:</span>
 </span><span id="map_function-546"><a href="#map_function-546"><span class="linenos">546</span></a>
-</span><span id="map_function-547"><a href="#map_function-547"><span class="linenos">547</span></a><span class="sd">    ```</span>
+</span><span id="map_function-547"><a href="#map_function-547"><span class="linenos">547</span></a><span class="sd">    ```python</span>
 </span><span id="map_function-548"><a href="#map_function-548"><span class="linenos">548</span></a><span class="sd">    @map_function(again_depth=2)</span>
 </span><span id="map_function-549"><a href="#map_function-549"><span class="linenos">549</span></a><span class="sd">    def explode_six(x):</span>
 </span><span id="map_function-550"><a href="#map_function-550"><span class="linenos">550</span></a><span class="sd">        if x == 6:</span>
@@ -1714,27 +1714,31 @@ among other differences.</p>
 
 <p><code><a href="#map_function">map_function</a></code> can either be used with no arguments:</p>
 
-<pre><code>@map_function
-def explode_six(x):
-    if x == 6:
-        return 6 + Again
-    else:
-        return x
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@map_function</span>
+<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
 
-explode_six(d6, again_depth=2)
+<span class="n">explode_six</span><span class="p">(</span><span class="n">d6</span><span class="p">,</span> <span class="n">again_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </code></pre>
+</div>
 
 <p>Or with keyword arguments, in which case the extra arguments are bound:</p>
 
-<pre><code>@map_function(again_depth=2)
-def explode_six(x):
-    if x == 6:
-        return 6 + Again
-    else:
-        return x
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@map_function</span><span class="p">(</span><span class="n">again_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
 
-explode_six(d6)
+<span class="n">explode_six</span><span class="p">(</span><span class="n">d6</span><span class="p">)</span>
 </code></pre>
+</div>
 
 <h6 id="arguments">Arguments:</h6>
 
