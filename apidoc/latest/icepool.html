@@ -1336,7 +1336,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-111"><a href="#Die-111"><span class="linenos"> 111</span></a><span class="sd">        EXPERIMENTAL: Use `icepool.Again` to roll the dice again, usually with</span>
 </span><span id="Die-112"><a href="#Die-112"><span class="linenos"> 112</span></a><span class="sd">        some modification. For example,</span>
 </span><span id="Die-113"><a href="#Die-113"><span class="linenos"> 113</span></a>
-</span><span id="Die-114"><a href="#Die-114"><span class="linenos"> 114</span></a><span class="sd">        ```</span>
+</span><span id="Die-114"><a href="#Die-114"><span class="linenos"> 114</span></a><span class="sd">        ```python</span>
 </span><span id="Die-115"><a href="#Die-115"><span class="linenos"> 115</span></a><span class="sd">        Die([1, 2, 3, 4, 5, 6 + Again])</span>
 </span><span id="Die-116"><a href="#Die-116"><span class="linenos"> 116</span></a><span class="sd">        ```</span>
 </span><span id="Die-117"><a href="#Die-117"><span class="linenos"> 117</span></a>
@@ -1474,7 +1474,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-249"><a href="#Die-249"><span class="linenos"> 249</span></a><span class="sd">        binary operator is applied to each element of the tuple with the</span>
 </span><span id="Die-250"><a href="#Die-250"><span class="linenos"> 250</span></a><span class="sd">        non-tuple side. For example, the following are equivalent:</span>
 </span><span id="Die-251"><a href="#Die-251"><span class="linenos"> 251</span></a>
-</span><span id="Die-252"><a href="#Die-252"><span class="linenos"> 252</span></a><span class="sd">        ```</span>
+</span><span id="Die-252"><a href="#Die-252"><span class="linenos"> 252</span></a><span class="sd">        ```python</span>
 </span><span id="Die-253"><a href="#Die-253"><span class="linenos"> 253</span></a><span class="sd">        cartesian_product(d6, d8) * 2</span>
 </span><span id="Die-254"><a href="#Die-254"><span class="linenos"> 254</span></a><span class="sd">        cartesian_product(d6 * 2, d8 * 2)</span>
 </span><span id="Die-255"><a href="#Die-255"><span class="linenos"> 255</span></a><span class="sd">        ```</span>
@@ -2627,7 +2627,7 @@ though these have little use other than being sentinel values.</p>
 </span><span id="Die.__init__-111"><a href="#Die.__init__-111"><span class="linenos">111</span></a><span class="sd">        EXPERIMENTAL: Use `icepool.Again` to roll the dice again, usually with</span>
 </span><span id="Die.__init__-112"><a href="#Die.__init__-112"><span class="linenos">112</span></a><span class="sd">        some modification. For example,</span>
 </span><span id="Die.__init__-113"><a href="#Die.__init__-113"><span class="linenos">113</span></a>
-</span><span id="Die.__init__-114"><a href="#Die.__init__-114"><span class="linenos">114</span></a><span class="sd">        ```</span>
+</span><span id="Die.__init__-114"><a href="#Die.__init__-114"><span class="linenos">114</span></a><span class="sd">        ```python</span>
 </span><span id="Die.__init__-115"><a href="#Die.__init__-115"><span class="linenos">115</span></a><span class="sd">        Die([1, 2, 3, 4, 5, 6 + Again])</span>
 </span><span id="Die.__init__-116"><a href="#Die.__init__-116"><span class="linenos">116</span></a><span class="sd">        ```</span>
 </span><span id="Die.__init__-117"><a href="#Die.__init__-117"><span class="linenos">117</span></a>
@@ -2760,8 +2760,10 @@ will be done with the default keyword arguments.</p>
 <p>EXPERIMENTAL: Use <code><a href="#Again">icepool.Again</a></code> to roll the dice again, usually with
 some modification. For example,</p>
 
-<pre><code>Die([1, 2, 3, 4, 5, 6 + Again])
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">Die</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span><span class="p">])</span>
 </code></pre>
+</div>
 
 <p>would be an exploding d6. Use the <code>again_depth</code> parameter to control
 the maximum depth. <code>again_depth</code> does not apply to <code><a href="#Reroll">Reroll</a></code>.</p>
@@ -2905,7 +2907,7 @@ outcomes.</p>
 </span><span id="Die.binary_operator-249"><a href="#Die.binary_operator-249"><span class="linenos">249</span></a><span class="sd">        binary operator is applied to each element of the tuple with the</span>
 </span><span id="Die.binary_operator-250"><a href="#Die.binary_operator-250"><span class="linenos">250</span></a><span class="sd">        non-tuple side. For example, the following are equivalent:</span>
 </span><span id="Die.binary_operator-251"><a href="#Die.binary_operator-251"><span class="linenos">251</span></a>
-</span><span id="Die.binary_operator-252"><a href="#Die.binary_operator-252"><span class="linenos">252</span></a><span class="sd">        ```</span>
+</span><span id="Die.binary_operator-252"><a href="#Die.binary_operator-252"><span class="linenos">252</span></a><span class="sd">        ```python</span>
 </span><span id="Die.binary_operator-253"><a href="#Die.binary_operator-253"><span class="linenos">253</span></a><span class="sd">        cartesian_product(d6, d8) * 2</span>
 </span><span id="Die.binary_operator-254"><a href="#Die.binary_operator-254"><span class="linenos">254</span></a><span class="sd">        cartesian_product(d6 * 2, d8 * 2)</span>
 </span><span id="Die.binary_operator-255"><a href="#Die.binary_operator-255"><span class="linenos">255</span></a><span class="sd">        ```</span>
@@ -2949,9 +2951,11 @@ converted to a <code><a href="#Die">Die</a></code>.</p>
 binary operator is applied to each element of the tuple with the
 non-tuple side. For example, the following are equivalent:</p>
 
-<pre><code>cartesian_product(d6, d8) * 2
-cartesian_product(d6 * 2, d8 * 2)
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">cartesian_product</span><span class="p">(</span><span class="n">d6</span><span class="p">,</span> <span class="n">d8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="n">cartesian_product</span><span class="p">(</span><span class="n">d6</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">d8</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 </code></pre>
+</div>
 
 <p>This is used for the standard binary operators
 <code>+, -, *, /, //, %, **, &lt;&lt;, &gt;&gt;, &amp;, |, ^</code>
