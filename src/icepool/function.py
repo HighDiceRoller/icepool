@@ -530,7 +530,7 @@ def map_function(
 
     `map_function` can either be used with no arguments:
 
-    ```
+    ```python
     @map_function
     def explode_six(x):
         if x == 6:
@@ -543,7 +543,7 @@ def map_function(
 
     Or with keyword arguments, in which case the extra arguments are bound:
 
-    ```
+    ```python
     @map_function(again_depth=2)
     def explode_six(x):
         if x == 6:

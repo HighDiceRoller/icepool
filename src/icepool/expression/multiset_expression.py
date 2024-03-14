@@ -191,7 +191,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Any resulting counts that would be negative are set to zero.
 
         Example:
-        ```
+        ```python
         [1, 2, 2, 3] + [1, 2, 4] -> [1, 1, 2, 2, 2, 3, 4]
         ```
         """
@@ -230,7 +230,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Any resulting counts that would be negative are set to zero.
 
         Example:
-        ```
+        ```python
         [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
         ```
 
@@ -277,7 +277,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Any resulting counts that would be negative are set to zero.
 
         Example:
-        ```
+        ```python
         [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
         ```
 
@@ -322,7 +322,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Any resulting counts that would be negative are set to zero.
 
         Example:
-        ```
+        ```python
         [1, 2, 2, 3] | [1, 2, 4] -> [1, 2, 2, 3, 4]
         ```
         """
@@ -363,7 +363,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         do `left.keep_counts_ge(0) ^ right.keep_counts_ge(0)`.
 
         Example:
-        ```
+        ```python
         [1, 2, 2, 3] ^ [1, 2, 4] -> [2, 3, 4]
         ```
         """
@@ -444,7 +444,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Same as `self * n`.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
         ```
         """
@@ -483,7 +483,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Same as `self // n`.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3]) // 2 -> [2]
         ```
         """
@@ -500,7 +500,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Same as `self % n`.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3]) % 2 -> [1, 3]
         ```
         """
@@ -519,7 +519,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         better.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [1, 2, 2]
         ```
         """
@@ -532,7 +532,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         triplets...
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -> [1]
         ```
         """
@@ -548,7 +548,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         You can use the unary operator `+expression` for the same effect.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -> [2, 2, 3, 3, 3]
         ```
         """
@@ -561,7 +561,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         doubles.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -> [3, 3, 3]
         ```
         """
@@ -574,7 +574,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         singles or triplets.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [2, 2]
         ```
         """
@@ -587,7 +587,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         singles and triplets.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -> [1, 3, 3, 3]
         ```
         """
@@ -600,7 +600,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         twice.
 
         Example:
-        ```
+        ```python
         Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
         ```
         """
@@ -941,11 +941,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
 
         Example:
-        ```
+        ```python
         MultisetExpression.argsort([10, 9, 5], [9, 9])
         ```
         produces
-        ```
+        ```python
         ((0,), (0, 1, 1), (0,))
         ```
         
@@ -1060,7 +1060,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         A typical use of this evaluation is testing for the presence of a
         combo of cards in a hand, e.g.
 
-        ```
+        ```python
         deck.deal(5) >= ['a', 'a', 'b']
         ```
 
@@ -1144,7 +1144,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example: number of armies destroyed by the defender in a 
         3v2 attack in *RISK*:
-        ```
+        ```python
         d6.pool(3).compair_le(d6.pool(2))
         ```
 
@@ -1173,7 +1173,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Example: number of armies destroyed by the attacker in a 
         3v2 attack in *RISK*:
-        ```
+        ```python
         d6.pool(3).compair_gt(d6.pool(2))
         ```
 

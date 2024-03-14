@@ -74,7 +74,7 @@ def multiset_function(
     For example, to create an evaluator which computes the elements each of two
     multisets has that the other doesn't:
 
-    ```
+    ```python
     @multiset_function
     def two_way_difference(a, b):
         return (a - b).expand(), (b - a).expand()
@@ -84,7 +84,7 @@ def multiset_function(
     `multiset_function` is invoked. Note that this is different than how
     ordinary Python closures behave. For example,
 
-    ```
+    ```python
     target = [1, 2, 3]
 
     @multiset_function
@@ -103,7 +103,7 @@ def multiset_function(
     Be careful when using control structures: you cannot branch on the value of
     a multiset expression or evaluation, so e.g.
 
-    ```
+    ```python
     @multiset_function
     def bad(a, b)
         if a == b:
