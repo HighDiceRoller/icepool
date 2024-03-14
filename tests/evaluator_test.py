@@ -2,6 +2,7 @@ import icepool
 import pytest
 
 from icepool import d4, d6, d8, d10, d12, Pool, Vector
+from icepool.expression import multiset_function
 
 
 class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
@@ -171,3 +172,14 @@ def test_contains_subset_vs_intersection_size():
 def test_any():
     result = (d6.pool(1) & d6.pool(1)).any()
     assert result == (d6 == d6)
+
+
+def test_joint_reroll():
+
+    @multiset_function
+    def sum_with_no_five_six(x):
+        return x.sum(), x.keep_outcomes([5, 6]).any(reroll=True)
+
+    result = sum_with_no_five_six(d6.pool(3)).marginals[0]
+    expected = 3 @ d4
+    assert result == expected

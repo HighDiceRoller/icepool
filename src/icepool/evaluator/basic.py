@@ -2,6 +2,7 @@
 
 __docformat__ = 'google'
 
+import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order
 
@@ -110,13 +111,22 @@ count_evaluator: Final = CountEvaluator()
 class AnyEvaluator(MultisetEvaluator[Any, bool]):
     """Returns `True` iff at least one count is positive."""
 
+    def __init__(self, *, reroll: bool | None = None):
+        self._reroll = reroll
+
     def next_state(self, state, outcome, count):
         """Implementation."""
-        return state or (count > 0)
+        state = state or (count > 0)
+        if state and self._reroll is True:
+            return icepool.Reroll
+        return state
 
-    def final_outcome(self, final_state) -> bool:
+    def final_outcome(self, final_state) -> bool | icepool.RerollType:
         """Implementation."""
-        return final_state or False
+        result = final_state or False
+        if not result and self._reroll is False:
+            return icepool.Reroll
+        return result
 
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""

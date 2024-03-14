@@ -771,10 +771,39 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return self.evaluate(evaluator=icepool.evaluator.count_evaluator)
 
     def any(
-        self
+        self,
+        *,
+        reroll: bool | None = None
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T_contra, bool]':
-        """Evaluation: Whether the multiset has at least one positive count."""
-        return self.evaluate(evaluator=icepool.evaluator.any_evaluator)
+        """Evaluation: Whether the multiset has at least one positive count.
+        
+        Args:
+            reroll: Experimental. If `reroll=True`, the process will be rerolled 
+                if any positive count is encountered. This is not very useful on 
+                its own since the result will always be `False`. However, this  
+                can be used with a joint evaluation to specify a reroll 
+                condition.
+
+                For example, here is the sum of 3d6, rerolling if any 5s or 6s
+                are rolled, effectively turning it into 3d4:
+
+                ```python
+                @multiset_function
+                def sum_with_no_five_six(x):
+                    return x.sum(), x.keep_outcomes([5, 6]).any(reroll=True)
+
+                result = sum_with_no_five_six(d6.pool(3)).marginals[0]
+                ```
+
+                `reroll=False` works as well for rerolling if no positive count
+                is encountered. However, unlike `reroll=True`, this offers no
+                performance benefit.
+        """
+        if reroll is None:
+            evaluator = icepool.evaluator.any_evaluator
+        else:
+            evaluator = icepool.evaluator.AnyEvaluator(reroll=reroll)
+        return self.evaluate(evaluator=evaluator)
 
     def highest_outcome_and_count(
         self
