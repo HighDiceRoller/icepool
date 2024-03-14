@@ -110,7 +110,7 @@ class Die(Population[T_co]):
         EXPERIMENTAL: Use `icepool.Again` to roll the dice again, usually with
         some modification. For example,
 
-        ```
+        ```python
         Die([1, 2, 3, 4, 5, 6 + Again])
         ```
 
@@ -248,7 +248,7 @@ class Die(Population[T_co]):
         binary operator is applied to each element of the tuple with the
         non-tuple side. For example, the following are equivalent:
 
-        ```
+        ```python
         cartesian_product(d6, d8) * 2
         cartesian_product(d6 * 2, d8 * 2)
         ```
