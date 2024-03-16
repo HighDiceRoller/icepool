@@ -111,22 +111,13 @@ count_evaluator: Final = CountEvaluator()
 class AnyEvaluator(MultisetEvaluator[Any, bool]):
     """Returns `True` iff at least one count is positive."""
 
-    def __init__(self, *, reroll: bool | None = None):
-        self._reroll = reroll
-
     def next_state(self, state, outcome, count):
         """Implementation."""
-        state = state or (count > 0)
-        if state and self._reroll is True:
-            return icepool.Reroll
-        return state
+        return state or (count > 0)
 
-    def final_outcome(self, final_state) -> bool | icepool.RerollType:
+    def final_outcome(self, final_state) -> bool:
         """Implementation."""
-        result = final_state or False
-        if not result and self._reroll is False:
-            return icepool.Reroll
-        return result
+        return final_state or False
 
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
