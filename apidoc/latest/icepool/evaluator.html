@@ -116,9 +116,6 @@
                     <a class="class" href="#AnyEvaluator">AnyEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#AnyEvaluator.__init__">AnyEvaluator</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#AnyEvaluator.next_state">next_state</a>
                         </li>
                         <li>
@@ -1406,26 +1403,17 @@ check redundant.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-112"><a href="#AnyEvaluator-112"><span class="linenos">112</span></a><span class="k">class</span> <span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
 </span><span id="AnyEvaluator-113"><a href="#AnyEvaluator-113"><span class="linenos">113</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
 </span><span id="AnyEvaluator-114"><a href="#AnyEvaluator-114"><span class="linenos">114</span></a>
-</span><span id="AnyEvaluator-115"><a href="#AnyEvaluator-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reroll</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="AnyEvaluator-116"><a href="#AnyEvaluator-116"><span class="linenos">116</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="o">=</span> <span class="n">reroll</span>
-</span><span id="AnyEvaluator-117"><a href="#AnyEvaluator-117"><span class="linenos">117</span></a>
-</span><span id="AnyEvaluator-118"><a href="#AnyEvaluator-118"><span class="linenos">118</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator-119"><a href="#AnyEvaluator-119"><span class="linenos">119</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="n">state</span>
-</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a>
-</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">icepool</span><span class="o">.</span><span class="n">RerollType</span><span class="p">:</span>
-</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
-</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span id="AnyEvaluator-129"><a href="#AnyEvaluator-129"><span class="linenos">129</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="AnyEvaluator-130"><a href="#AnyEvaluator-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">result</span>
-</span><span id="AnyEvaluator-131"><a href="#AnyEvaluator-131"><span class="linenos">131</span></a>
-</span><span id="AnyEvaluator-132"><a href="#AnyEvaluator-132"><span class="linenos">132</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="AnyEvaluator-133"><a href="#AnyEvaluator-133"><span class="linenos">133</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-134"><a href="#AnyEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+</span><span id="AnyEvaluator-115"><a href="#AnyEvaluator-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator-116"><a href="#AnyEvaluator-116"><span class="linenos">116</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-117"><a href="#AnyEvaluator-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="AnyEvaluator-118"><a href="#AnyEvaluator-118"><span class="linenos">118</span></a>
+</span><span id="AnyEvaluator-119"><a href="#AnyEvaluator-119"><span class="linenos">119</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>
+</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
@@ -1433,24 +1421,6 @@ check redundant.</p>
 </div>
 
 
-                            <div id="AnyEvaluator.__init__" class="classattr">
-                                        <input id="AnyEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">AnyEvaluator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">reroll</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
-
-                <label class="view-source-button" for="AnyEvaluator.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#AnyEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.__init__-115"><a href="#AnyEvaluator.__init__-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">reroll</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="AnyEvaluator.__init__-116"><a href="#AnyEvaluator.__init__-116"><span class="linenos">116</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="o">=</span> <span class="n">reroll</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
                             <div id="AnyEvaluator.next_state" class="classattr">
                                         <input id="AnyEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -1462,12 +1432,9 @@ check redundant.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-118"><a href="#AnyEvaluator.next_state-118"><span class="linenos">118</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state-119"><a href="#AnyEvaluator.next_state-119"><span class="linenos">119</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.next_state-120"><a href="#AnyEvaluator.next_state-120"><span class="linenos">120</span></a>        <span class="n">state</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AnyEvaluator.next_state-121"><a href="#AnyEvaluator.next_state-121"><span class="linenos">121</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="AnyEvaluator.next_state-122"><a href="#AnyEvaluator.next_state-122"><span class="linenos">122</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="AnyEvaluator.next_state-123"><a href="#AnyEvaluator.next_state-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="n">state</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-115"><a href="#AnyEvaluator.next_state-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator.next_state-116"><a href="#AnyEvaluator.next_state-116"><span class="linenos">116</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.next_state-117"><a href="#AnyEvaluator.next_state-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1481,18 +1448,15 @@ check redundant.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span></span><span class="return-annotation">) -> <span class="nb">bool</span> <span class="o">|</span> <span class="n"><a href="typing.html#RerollType">icepool.typing.RerollType</a></span>:</span></span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
                 <label class="view-source-button" for="AnyEvaluator.final_outcome-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-125"><a href="#AnyEvaluator.final_outcome-125"><span class="linenos">125</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">icepool</span><span class="o">.</span><span class="n">RerollType</span><span class="p">:</span>
-</span><span id="AnyEvaluator.final_outcome-126"><a href="#AnyEvaluator.final_outcome-126"><span class="linenos">126</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.final_outcome-127"><a href="#AnyEvaluator.final_outcome-127"><span class="linenos">127</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
-</span><span id="AnyEvaluator.final_outcome-128"><a href="#AnyEvaluator.final_outcome-128"><span class="linenos">128</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reroll</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-</span><span id="AnyEvaluator.final_outcome-129"><a href="#AnyEvaluator.final_outcome-129"><span class="linenos">129</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span>
-</span><span id="AnyEvaluator.final_outcome-130"><a href="#AnyEvaluator.final_outcome-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">result</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-119"><a href="#AnyEvaluator.final_outcome-119"><span class="linenos">119</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator.final_outcome-120"><a href="#AnyEvaluator.final_outcome-120"><span class="linenos">120</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.final_outcome-121"><a href="#AnyEvaluator.final_outcome-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -1512,9 +1476,9 @@ check redundant.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.order-132"><a href="#AnyEvaluator.order-132"><span class="linenos">132</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="AnyEvaluator.order-133"><a href="#AnyEvaluator.order-133"><span class="linenos">133</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.order-134"><a href="#AnyEvaluator.order-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.order-123"><a href="#AnyEvaluator.order-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="AnyEvaluator.order-124"><a href="#AnyEvaluator.order-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.order-125"><a href="#AnyEvaluator.order-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span></pre></div>
 
 
