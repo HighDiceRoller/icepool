@@ -3,7 +3,7 @@
         "contents" : ["notebooks"],
         "federated_extensions" : [
             "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_widgets-1.1.1-pyhd8ed1ab_0.tar.bz2",
-            "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.6/jupyterlite_pyodide_kernel-0.0.6-py3-none-any.whl"
+            "https://files.pythonhosted.org/packages/py3/j/jupyterlite_pyodide_kernel/jupyterlite_pyodide_kernel-0.3.1-py3-none-any.whl"
         ],
         "ignore_sys_prefix" : true,
         "output_dir" : "dist"
