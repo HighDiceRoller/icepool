@@ -8,7 +8,7 @@
     "pyodideUrl": {
       "description": "The path to the main pyodide.js entry point",
       "type": "string",
-      "default": "https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js",
+      "default": "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js",
       "format": "uri"
     },
     "disablePyPIFallback": {
@@ -24,6 +24,19 @@
       },
       "default": [],
       "format": "uri"
+    },
+    "loadPyodideOptions": {
+      "type": "object",
+      "description": "additional options to provide to `loadPyodide`, see https://pyodide.org/en/stable/usage/api/js-api.html#globalThis.loadPyodide",
+      "default": {},
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }
