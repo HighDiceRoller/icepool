@@ -2,7 +2,7 @@
   "jupyter-config-data": {
     "appName": "Icepool Examples",
     "appUrl": "./lab",
-    "appVersion": "0.2.3",
+    "appVersion": "0.3.0",
     "baseUrl": "./",
     "collaborative": true,
     "defaultKernelName": "python",

@@ -31,7 +31,6 @@ const disabled = [
   "@jupyterlab/application-extension:tree-resolver",
   "@jupyterlab/apputils-extension:announcements",
   "@jupyterlab/apputils-extension:kernel-status",
-  "@jupyterlab/apputils-extension:notification",
   "@jupyterlab/apputils-extension:palette-restorer",
   "@jupyterlab/apputils-extension:print",
   "@jupyterlab/apputils-extension:resolver",
@@ -48,6 +47,8 @@ const disabled = [
   "@jupyterlab/fileeditor-extension:editor-syntax-status",
   "@jupyterlab/fileeditor-extension:language-server",
   "@jupyterlab/fileeditor-extension:search",
+  "@jupyterlab/help-extension:about",
+  "@jupyterlab/help-extension:open",
   "@jupyterlab/notebook-extension:execution-indicator",
   "@jupyterlab/notebook-extension:kernel-status",
   "@jupyterlab/notebook-extension:language-server",
@@ -57,6 +58,7 @@ const disabled = [
   "@jupyter-notebook/application-extension:logo",
   "@jupyter-notebook/application-extension:opener",
   "@jupyter-notebook/application-extension:path-opener",
+  "@jupyter-notebook/help-extension:about",
 ];
 
 async function createModule(scope, module) {
@@ -282,6 +284,16 @@ export async function main() {
   if (!federatedExtensionNames.has('@jupyterlab/fileeditor-extension')) {
     try {
       let ext = require('@jupyterlab/fileeditor-extension');
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  if (!federatedExtensionNames.has('@jupyterlab/help-extension')) {
+    try {
+      let ext = require('@jupyterlab/help-extension');
       for (let plugin of activePlugins(ext)) {
         pluginsToRegister.push(plugin);
       }

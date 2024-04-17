@@ -16,6 +16,7 @@ import '@jupyterlab/csvviewer-extension/style/index.js';
 import '@jupyterlab/docmanager-extension/style/index.js';
 import '@jupyterlab/filebrowser-extension/style/index.js';
 import '@jupyterlab/fileeditor-extension/style/index.js';
+import '@jupyterlab/help-extension/style/index.js';
 import '@jupyterlab/imageviewer-extension/style/index.js';
 import '@jupyterlab/javascript-extension/style/index.js';
 import '@jupyterlab/json-extension/style/index.js';
