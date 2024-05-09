@@ -95,12 +95,33 @@ def coin(n: int | float | Fraction,
         n = fraction.numerator
         d = fraction.denominator
     data = {}
-    if n != d:
-        data[False] = d - n
-    if n != 0:
-        data[True] = n
+    if n < d:
+        data[False] = min(d - n, d)
+    if n > 0:
+        data[True] = min(n, d)
 
     return icepool.Die(data)
+
+
+def stochastic_round(x,
+                     /,
+                     *,
+                     max_denominator: int | None = None) -> 'icepool.Die[int]':
+    """Randomly rounds a value up or down to the nearest integer according to the two distances.
+        
+    Specificially, rounds `x` up with probability `x - floor(x)` and down
+    otherwise, producing a `Die` with up to two outcomes.
+
+    Args:
+        max_denominator: If provided, each rounding will be performed
+            using `fractions.Fraction.limit_denominator(max_denominator)`.
+            Otherwise, the rounding will be performed without
+            `limit_denominator`.
+    """
+    integer_part = math.floor(x)
+    fractional_part = x - integer_part
+    return integer_part + coin(fractional_part,
+                               max_denominator=max_denominator)
 
 
 def one_hot(sides: int, /) -> 'icepool.Die[tuple[bool, ...]]':

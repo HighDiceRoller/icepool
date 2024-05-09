@@ -48,11 +48,12 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-from icepool.function import (d, z, __getattr__, coin, one_hot,
-                              iter_cartesian_product, from_cumulative, from_rv,
-                              min_outcome, max_outcome, align, align_range,
-                              commonize_denominator, reduce, accumulate, map,
-                              map_function, map_and_time, map_to_pool)
+from icepool.function import (d, z, __getattr__, coin, stochastic_round,
+                              one_hot, iter_cartesian_product, from_cumulative,
+                              from_rv, min_outcome, max_outcome, align,
+                              align_range, commonize_denominator, reduce,
+                              accumulate, map, map_function, map_and_time,
+                              map_to_pool)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
@@ -102,13 +103,13 @@ import icepool.evaluator as evaluator
 import icepool.typing as typing
 
 __all__ = [
-    'd', 'z', 'coin', 'one_hot', 'Outcome', 'Die', 'Population', 'tupleize',
-    'vectorize', 'Vector', 'Symbols', 'Again', 'CountsKeysView',
-    'CountsValuesView', 'CountsItemsView', 'from_cumulative', 'from_rv',
-    'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome', 'align',
-    'align_range', 'commonize_denominator', 'reduce', 'accumulate', 'map',
-    'map_function', 'map_and_time', 'map_to_pool', 'Reroll', 'RerollType',
-    'Pool', 'standard_pool', 'MultisetGenerator', 'Alignment',
+    'd', 'z', 'coin', 'stochastic_round', 'one_hot', 'Outcome', 'Die',
+    'Population', 'tupleize', 'vectorize', 'Vector', 'Symbols', 'Again',
+    'CountsKeysView', 'CountsValuesView', 'CountsItemsView', 'from_cumulative',
+    'from_rv', 'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome',
+    'align', 'align_range', 'commonize_denominator', 'reduce', 'accumulate',
+    'map', 'map_function', 'map_and_time', 'map_to_pool', 'Reroll',
+    'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator', 'Alignment',
     'MultisetExpression', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
     'multiset_function', 'function', 'typing', 'evaluator'
 ]
