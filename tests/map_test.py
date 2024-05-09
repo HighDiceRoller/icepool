@@ -168,3 +168,11 @@ def test_mean_time_to_sum_z6():
 
 def test_mean_time_to_sum_coin():
     assert icepool.coin(1, 2).mean_time_to_sum(10) == 20
+
+
+def test_fractional_coin():
+    assert icepool.coin(Fraction(1, 3)) == (icepool.d(3) == 1)
+
+
+def test_stochastic_round():
+    assert ((6 @ d6) / 2).stochastic_round().mean() == 10.5

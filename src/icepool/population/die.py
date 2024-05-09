@@ -987,6 +987,29 @@ class Die(Population[T_co]):
 
     __round__ = round
 
+    def stochastic_round(self,
+                         *,
+                         max_denominator: int | None = None) -> 'Die[int]':
+        """Rounds the outcomes up or down to the nearest integer while preserving the mean.
+        
+        Specificially, rounds `x` up with probability `x - floor(x)` and down
+        otherwise.
+
+        Args:
+            max_denominator: If provided, each rounding will be performed
+                using `fractions.Fraction.limit_denominator(max_denominator)`.
+                Otherwise, the rounding will be performed without
+                `limit_denominator`.
+        """
+
+        def round_function(x):
+            integer_part = math.floor(x)
+            fractional_part = x - integer_part
+            return integer_part + icepool.coin(fractional_part,
+                                               max_denominator=max_denominator)
+
+        return self.map(round_function)
+
     def trunc(self) -> 'Die':
         return self.unary_operator(math.trunc)
 

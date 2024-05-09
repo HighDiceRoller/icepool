@@ -6,6 +6,7 @@ import icepool
 import icepool.population.markov_chain
 from icepool.typing import Outcome, T, U, guess_star
 
+from fractions import Fraction
 from collections import defaultdict
 from functools import cache, partial, update_wrapper, wraps
 import itertools
@@ -69,16 +70,36 @@ def __getattr__(key: str) -> 'icepool.Die[int]':
     raise AttributeError(key)
 
 
-def coin(n: int, d: int, /) -> 'icepool.Die[bool]':
+def coin(n: int | float | Fraction,
+         d: int = 1,
+         /,
+         *,
+         max_denominator: int | None = None) -> 'icepool.Die[bool]':
     """A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.
 
     If `n == 0` or `n == d` the result will have only one outcome.
+
+    Args:
+        n: An int numerator, or a non-integer probability.
+        d: An int denominator. Should not be provided if the first argument is
+            not an int.
     """
+    if not isinstance(n, int):
+        if d != 1:
+            raise ValueError(
+                'If a non-int numerator is provided, a denominator must not be provided.'
+            )
+        fraction = Fraction(n)
+        if max_denominator is not None:
+            fraction = fraction.limit_denominator(max_denominator)
+        n = fraction.numerator
+        d = fraction.denominator
     data = {}
     if n != d:
         data[False] = d - n
     if n != 0:
         data[True] = n
+
     return icepool.Die(data)
 
 
