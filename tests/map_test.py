@@ -176,3 +176,4 @@ def test_fractional_coin():
 
 def test_stochastic_round():
     assert ((6 @ d6) / 2).stochastic_round().mean() == 10.5
+    assert ((6 @ d6) / Fraction(3)).stochastic_round().mean() == 7
