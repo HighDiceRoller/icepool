@@ -77,7 +77,7 @@ def coin(n: int | float | Fraction,
          max_denominator: int | None = None) -> 'icepool.Die[bool]':
     """A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.
 
-    If `n == 0` or `n == d` the result will have only one outcome.
+    If `n <= 0` or `n >= d` the result will have only one outcome.
 
     Args:
         n: An int numerator, or a non-integer probability.
