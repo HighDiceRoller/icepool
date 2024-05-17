@@ -61,6 +61,7 @@
         If fewer than <input name="restart_count" id="restart_count" type="number" min="0" max="6" value="0" required onwheel="" />
         scores are at least <input name="restart_value" id="restart_value" type="number" min="0" max="20" value="15" required onwheel="" />,
         restart the entire array from the beginning.
+        <span style="float: right"><button name="reset_single_ability" id="reset_single_ability" type="button">Reset</button></span>
     </form>
 
     <h2>Probability distribution of the 6 highest ability scores</h2>
@@ -688,6 +689,15 @@ js.maxProb = max_prob * 100.0
                 updateSearchQueryFromForms();
             }
         }
+        
+        function resetSingleArray() {
+            document.getElementById("single_array_inputs").reset();
+            updateRoll();
+            updateRankChart();
+            updatePrices();
+            updatePricesChart();
+            updateSearchQueryFromForms();
+        }
 
         let rollReadyPromise = updateRoll();
         updateRankChart();
@@ -698,6 +708,9 @@ js.maxProb = max_prob * 100.0
         let single_array_inputs = document.querySelector('#single_array_inputs');
         single_array_inputs.addEventListener('change', validateInputsAndUpdate);
         single_array_inputs.addEventListener('input', updateAllIfValid);
+        
+        let reset_single_ability = document.querySelector('#reset_single_ability');
+        reset_single_ability.addEventListener('click', resetSingleArray);
 
         let multiple_array_inputs = document.querySelector('#multiple_array_inputs');
         multiple_array_inputs.addEventListener('change', validateInputsAndUpdate);
