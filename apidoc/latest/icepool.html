@@ -1181,7 +1181,7 @@ are considered.</li>
 </span><span id="coin-78"><a href="#coin-78"><span class="linenos"> 78</span></a>         <span class="n">max_denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[bool]&#39;</span><span class="p">:</span>
 </span><span id="coin-79"><a href="#coin-79"><span class="linenos"> 79</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `Die` that rolls `True` with probability `n / d`, and `False` otherwise.</span>
 </span><span id="coin-80"><a href="#coin-80"><span class="linenos"> 80</span></a>
-</span><span id="coin-81"><a href="#coin-81"><span class="linenos"> 81</span></a><span class="sd">    If `n == 0` or `n == d` the result will have only one outcome.</span>
+</span><span id="coin-81"><a href="#coin-81"><span class="linenos"> 81</span></a><span class="sd">    If `n &lt;= 0` or `n &gt;= d` the result will have only one outcome.</span>
 </span><span id="coin-82"><a href="#coin-82"><span class="linenos"> 82</span></a>
 </span><span id="coin-83"><a href="#coin-83"><span class="linenos"> 83</span></a><span class="sd">    Args:</span>
 </span><span id="coin-84"><a href="#coin-84"><span class="linenos"> 84</span></a><span class="sd">        n: An int numerator, or a non-integer probability.</span>
@@ -1210,7 +1210,7 @@ are considered.</li>
 
             <div class="docstring"><p>A <code><a href="#Die">Die</a></code> that rolls <code>True</code> with probability <code>n / d</code>, and <code>False</code> otherwise.</p>
 
-<p>If <code>n == 0</code> or <code>n == d</code> the result will have only one outcome.</p>
+<p>If <code>n &lt;= 0</code> or <code>n &gt;= d</code> the result will have only one outcome.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
