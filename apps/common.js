@@ -3,24 +3,26 @@
 function validateInputs() {
     let changed = false;
     $("input").each(function() {
-        if ($(this).attr('type') == 'checkbox') {
-            let is_checked = $(this).attr('checked');
-            $(this).val(is_checked);
-        } else {
-            let originalVal = parseInt($(this).val());
-            let maxVal = parseInt($(this).attr('max'));
-            let minVal = parseInt($(this).attr('min'));
-            if (isNaN(originalVal)) {
-                let defaultVal = parseInt($(this).prop('defaultValue'));
-                $(this).val(defaultVal);
-                changed = true;
-            } else if (originalVal > maxVal) {
-                $(this).val(maxVal);
-                changed = true;
-            } else if (originalVal < minVal) {
-                $(this).val(minVal);
-                changed = true;
-            }
+        switch ($(this).attr('type')) {
+            case 'checkbox':
+                let is_checked = $(this).attr('checked');
+                $(this).val(is_checked);
+                return;
+            case 'number':
+                let originalVal = parseInt($(this).val());
+                let maxVal = parseInt($(this).attr('max'));
+                let minVal = parseInt($(this).attr('min'));
+                if (isNaN(originalVal)) {
+                    let defaultVal = parseInt($(this).prop('defaultValue'));
+                    $(this).val(defaultVal);
+                    changed = true;
+                } else if (originalVal > maxVal) {
+                    $(this).val(maxVal);
+                    changed = true;
+                } else if (originalVal < minVal) {
+                    $(this).val(minVal);
+                    changed = true;
+                }
         }
     });
     
