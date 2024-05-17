@@ -29,9 +29,14 @@
 
     <form id="single_array_inputs" class="floating_controls">
         Generate each ability score by rolling
-        <input name="num_dice" id="num_dice" type="number" min="1" max="12" value="4" required onwheel="" />d<input
-            name="die_size" id="die_size" type="number" min="2" max="20" value="6" required onwheel="" /> +
-        <input name="modifier" id="modifier" type="number" min="-15" max="15" value="0" required onwheel="" />,
+        <input name="d4" id="d4" type="number" min="0" max="10" value="0" required onwheel="" />d4 +
+        <input name="d6" id="d6" type="number" min="0" max="10" value="4" required onwheel="" />d6 +
+        <input name="d8" id="d8" type="number" min="0" max="10" value="0" required onwheel="" />d8 +
+        <input name="d10" id="d10" type="number" min="0" max="10" value="0" required onwheel="" />d10 +
+        <input name="d12" id="d12" type="number" min="0" max="10" value="0" required onwheel="" />d12 +
+        <input name="d20" id="d20" type="number" min="0" max="10" value="0" required onwheel="" />d20 +
+        <input name="modifier" id="modifier" type="number" min="-20" max="20" value="0" required onwheel="" />,
+        <br />
         rerolling <input name="reroll_dice" id="reroll_dice" type="number" min="0" max="19" value="0" required
             onwheel="" />s and below
         <select name="reroll_times" id="reroll_times">
@@ -420,6 +425,7 @@ import js
 import pyodide
 import math
 import icepool
+from icepool import d4, d6, d8, d10, d12, d20
 
 def set_rank_data(rank, die):
     data = (0,) * 20
@@ -505,12 +511,19 @@ class SumWithRestart(icepool.MultisetEvaluator):
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-num_dice = int(js.document.getElementById('num_dice').value)
+
+die_counts = [
+    int(js.document.getElementById('d4').value),
+    int(js.document.getElementById('d6').value),
+    int(js.document.getElementById('d8').value),
+    int(js.document.getElementById('d10').value),
+    int(js.document.getElementById('d12').value),
+    int(js.document.getElementById('d20').value),
+]
+
 reroll_dice = int(js.document.getElementById('reroll_dice').value)
 reroll_times = None if js.document.getElementById('reroll_times').value == 'always' else 1
-die_size = int(js.document.getElementById('die_size').value)
 num_keep = int(js.document.getElementById('num_keep').value)
-num_keep = min(num_keep, num_dice)
 modifier = int(js.document.getElementById('modifier').value)
 num_ability_repeat = int(js.document.getElementById('num_ability_repeat').value)
 num_abilities = int(js.document.getElementById('num_abilities').value)
@@ -522,11 +535,10 @@ num_arrays = int(js.document.getElementById('num_arrays').value)
 restart_count = int(js.document.getElementById('restart_count').value)
 restart_value = int(js.document.getElementById('restart_value').value)
 
-if reroll_dice >= die_size:
-    reroll_dice = die_size - 1
-
-single_die = icepool.d(die_size).reroll(range(1, reroll_dice+1), depth=reroll_times)
-single_ability = single_die.highest(num_dice, num_keep) + modifier
+die_types = [d4, d6, d8, d10, d12, d20]
+die_types = [die.reroll(range(1, min(reroll_dice+1, die.max_outcome())), depth=reroll_times) for die in die_types]
+dice = sum(([die_type] * count for die_type, count in zip(die_types, die_counts)), start = [0])
+single_ability = icepool.Pool(dice).highest(num_keep).sum() + modifier
 if js.document.getElementById('range_action').value == 'clip':
     single_ability = single_ability.clip(min_ability, max_ability)
 elif min_ability >= single_ability.max_outcome():
