@@ -9,6 +9,7 @@ form {
 }
 
 input[type='number'] {
+    text-align: right;
     font-size: 100%;
     width: 2em;
 }
