@@ -214,7 +214,7 @@ class OutputManager():
         except:
             pass
         
-        self.outputs.append((die, label_with_stats, fill))
+        self.outputs.append((die, label, label_with_stats, fill))
         self.append_print(label_with_stats)
         self.append_print(die)
         
@@ -224,7 +224,7 @@ class OutputManager():
             labels, datasets in js format
         """
         outcomes = set()
-        for i, (die, label, fill) in enumerate(self.outputs):
+        for i, (die, label, label_with_stats, fill) in enumerate(self.outputs):
             outcomes = outcomes.union(die.outcomes())
         
         if not outcomes:
@@ -243,11 +243,11 @@ class OutputManager():
         if transpose:
             x_labels = []
             datasets = []
-            for i, (die, label, fill) in enumerate(self.outputs):
+            for i, (die, label, label_with_stats, fill) in enumerate(self.outputs):
                 x_labels.append(label)
             for i, outcome in enumerate(outcomes):
                 probabilities = []
-                for die, label, fill in self.outputs:
+                for die, label, label_with_stats, fill in self.outputs:
                     probabilities.append(self.probability(die, outcome, probability_type))
                 color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
                 point, radius = OutputManager.DEFAULT_POINTS[i // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
@@ -276,7 +276,7 @@ class OutputManager():
             x_labels = outcomes
             datasets = []
             any_fill = False
-            for i, (die, label, fill) in enumerate(self.outputs):
+            for i, (die, label, label_with_stats, fill) in enumerate(self.outputs):
                 dataset = {}
                 color = OutputManager.DEFAULT_COLORS[i % len(OutputManager.DEFAULT_COLORS)]
                 point, radius = OutputManager.DEFAULT_POINTS[i // len(OutputManager.DEFAULT_COLORS) % len(OutputManager.DEFAULT_POINTS)]
@@ -284,7 +284,7 @@ class OutputManager():
                 probabilities = self.probabilities(die, outcomes, probability_type)
                 dataset = {
                     'data': probabilities,
-                    'label': label,
+                    'label': label_with_stats,
                     'borderColor': 'rgba(%d, %d, %d, 1.0)' % color,
                     'backgroundColor': 'rgba(%d, %d, %d, 1.0)' % color,
                     'pointStyle': point,
