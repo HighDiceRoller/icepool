@@ -3,19 +3,19 @@ import pytest
 
 
 def test_reroll_default():
-    result = icepool.d6.reroll()
+    result = icepool.d6.reroll(depth=None)
     expected = icepool.d5 + 1
     assert result.equals(expected)
 
 
 def test_reroll_1():
-    result = icepool.d6.reroll([1])
+    result = icepool.d6.reroll([1], depth=None)
     expected = icepool.d5 + 1
     assert result.equals(expected)
 
 
 def test_reroll_2():
-    result = icepool.d6.reroll([1, 2])
+    result = icepool.d6.reroll([1, 2], depth=None)
     expected = icepool.d4 + 2
     assert result.equals(expected)
 
@@ -62,16 +62,18 @@ def test_reroll_depth_3_mixed():
 
 
 def test_infinite_reroll():
-    assert icepool.d4.reroll([1, 2, 3, 4]).is_empty()
+    assert icepool.d4.reroll([1, 2, 3, 4], depth=None).is_empty()
 
 
 def test_reroll_multidim():
-    result = icepool.Die([(1, 0), (0, 1)]).reroll(lambda x: x[0] == 0)
+    result = icepool.Die([(1, 0), (0, 1)]).reroll(lambda x: x[0] == 0,
+                                                  depth=None)
     expected = icepool.Die([(1, 0)])
     assert result.equals(expected)
 
 
 def test_reroll_until_multidim():
-    result = icepool.Die([(1, 0), (0, 1)]).filter(lambda x: x[0] == 0)
+    result = icepool.Die([(1, 0), (0, 1)]).filter(lambda x: x[0] == 0,
+                                                  depth=None)
     expected = icepool.Die([(0, 1)])
     assert result.equals(expected)

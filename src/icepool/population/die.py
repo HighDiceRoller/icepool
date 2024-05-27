@@ -340,7 +340,7 @@ class Die(Population[T_co]):
                /,
                *,
                star: bool | None = None,
-               depth: int | None = None) -> 'Die[T_co]':
+               depth: int | None) -> 'Die[T_co]':
         """Rerolls the given outcomes.
 
         Args:
@@ -354,7 +354,7 @@ class Die(Population[T_co]):
                 If not provided, this will be guessed based on the function
                 signature.
             depth: The maximum number of times to reroll.
-                If omitted, rerolls an unlimited number of times.
+                If `None`, rerolls an unlimited number of times.
 
         Returns:
             A `Die` representing the reroll.
@@ -395,7 +395,7 @@ class Die(Population[T_co]):
                /,
                *,
                star: bool | None = None,
-               depth: int | None = None) -> 'Die[T_co]':
+               depth: int | None) -> 'Die[T_co]':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -410,7 +410,7 @@ class Die(Population[T_co]):
                 If not provided, this will be guessed based on the function
                 signature.
             depth: The maximum number of times to reroll.
-                If omitted, rerolls an unlimited number of times.
+                If `None`, rerolls an unlimited number of times.
 
         Returns:
             A `Die` representing the reroll.
@@ -657,7 +657,8 @@ class Die(Population[T_co]):
 
         for i in range(len(self._mean_time_to_sum_cache), target + 1):
             result = time_per_effect + self.reroll(
-                [0]).map(lambda x: self.mean_time_to_sum(i - x)).mean()
+                [0],
+                depth=None).map(lambda x: self.mean_time_to_sum(i - x)).mean()
             self._mean_time_to_sum_cache.append(result)
 
         return result
