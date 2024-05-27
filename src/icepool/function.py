@@ -683,13 +683,14 @@ def map_and_time(
 
 
 def map_to_pool(
-        repl:
+    repl:
     'Callable[..., Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
-        /,
-        *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-        star: bool | None = None
+    /,
+    *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+    star: bool | None = None,
+    denominator: int | None = None
 ) -> 'icepool.MultisetGenerator[T, tuple[int]]':
-    """EXPERIMENTAL: Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
+    """EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
     
     Args:
         repl: One of the following:
@@ -700,6 +701,17 @@ def map_to_pool(
                 In this case args must have exactly one element.
             The new outcomes may be dice rather than just single outcomes.
             The special value `icepool.Reroll` will reroll that old outcome.
+        star: If `True`, the first of the args will be unpacked before giving
+            them to `repl`.
+            If not provided, it will be guessed based on the signature of `repl`
+            and the number of arguments.
+        denominator: If provided, the denominator of the result will be this
+            value. Otherwise it will be the minimum to correctly weight the
+            pools.
+
+    Raises:
+        ValueError: If `denominator` cannot be made consistent with the 
+            resulting mixture of pools.
     """
     if star is None:
         star = guess_star(repl, len(args))
@@ -714,4 +726,4 @@ def map_to_pool(
         if pool is not icepool.Reroll:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
-    return icepool.PoolMixture(data)  # type: ignore
+    return icepool.PoolMixture(data, denominator=denominator)  # type: ignore

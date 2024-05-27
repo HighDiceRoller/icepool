@@ -41,6 +41,8 @@ def test_reroll_pool_vs_map():
         else:
             return rolls
 
-    assert d6.reroll_to_pool(3, lambda x: x < 4, 1).expand() == map(
+    result = d6.reroll_to_pool(3, lambda x: x < 4, 1).expand()
+    assert result.simplify() == map(
         expected_function,
         d6.pool(3)).map(lambda rolls: tuple(sorted(rolls))).simplify()
+    assert result.denominator() == 6**4

@@ -915,7 +915,8 @@ class Die(Population[T_co]):
         'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.Reroll] | None' = None,
         /,
         *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-        star: bool | None = None
+        star: bool | None = None,
+        denominator: int | None = None
     ) -> 'icepool.MultisetGenerator[U, tuple[int]]':
         """EXPERIMENTAL: Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
 
@@ -923,12 +924,37 @@ class Die(Population[T_co]):
 
         If no argument is provided, the outcomes will be used to construct a
         mixture of pools directly, similar to the inverse of `pool.expand()`.
-        Note that both are typically not particularly efficient since they do
-        not make much use of dynamic programming.
+        Note that this is not particularly efficient since it does not make much
+        use of dynamic programming.
+
+        Args:
+            repl: One of the following:
+                * A callable that takes in one outcome per element of args and
+                    produces a `Pool` (or something convertible to such).
+                * A mapping from old outcomes to `Pool` 
+                    (or something convertible to such).
+                    In this case args must have exactly one element.
+                The new outcomes may be dice rather than just single outcomes.
+                The special value `icepool.Reroll` will reroll that old outcome.
+            star: If `True`, the first of the args will be unpacked before 
+                giving them to `repl`.
+                If not provided, it will be guessed based on the signature of 
+                `repl` and the number of arguments.
+            denominator: If provided, the denominator of the result will be this
+                value. Otherwise it will be the minimum to correctly weight the
+                pools.
+
+        Raises:
+            ValueError: If `denominator` cannot be made consistent with the 
+                resulting mixture of pools.
         """
         if repl is None:
             repl = lambda x: x
-        return icepool.map_to_pool(repl, self, *extra_args, star=star)
+        return icepool.map_to_pool(repl,
+                                   self,
+                                   *extra_args,
+                                   star=star,
+                                   denominator=denominator)
 
     def explode_to_pool(
             self,
@@ -1017,7 +1043,9 @@ class Die(Population[T_co]):
                     [self] * rerolled_count +
                     [rerollable] * not_rerolled_count)
 
-        return rerollable_count.map_to_pool(make_pool)
+        denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
+
+        return rerollable_count.map_to_pool(make_pool, denominator=denominator)
 
     # Unary operators.
 

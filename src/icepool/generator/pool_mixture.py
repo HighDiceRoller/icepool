@@ -22,7 +22,8 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     # corresponding subgenerator itself.
     _sub_pools: Mapping[Pool[T], int]
 
-    def __init__(self, sub_pools: Sequence[Pool[T]] | Mapping[Pool[T], int]):
+    def __init__(self, sub_pools: Sequence[Pool[T]] | Mapping[Pool[T], int], *,
+                 denominator: int | None):
         data: Mapping[Pool[T], int]
 
         if isinstance(sub_pools, Mapping):
@@ -39,10 +40,21 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
               if sub_pool.denominator() > 0 and weight > 0))
 
         self._sub_pools = defaultdict(int)
+        min_denominator = 0
         for sub_pool, weight in data.items():
             factor = denominator_lcm * weight // sub_pool.denominator(
             ) if sub_pool.denominator() else 0
             self._sub_pools[sub_pool] += factor
+            min_denominator += factor * sub_pool.denominator()
+
+        if denominator is not None:
+            scale, mod = divmod(denominator, min_denominator)
+            if mod != 0:
+                raise ValueError(
+                    f'Specified denominator of {denominator} is not consistent with the minimum possible denominator {min_denominator}.'
+                )
+            for sub_pool in self._sub_pools:
+                self._sub_pools[sub_pool] *= scale
 
     def outcomes(self) -> Sequence[T]:
         return sorted_union(*(sub_pool.outcomes()
