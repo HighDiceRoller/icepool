@@ -18,12 +18,14 @@ from typing import Callable, Hashable, Literal, Mapping, MutableMapping, Sequenc
 class PoolMixture(MultisetGenerator[T, tuple[int]]):
     """EXPERIMENTAL: Represents a mixture of pools."""
 
-    # Note that the weight here effectively multiplies the denominator of the
-    # corresponding subgenerator itself.
+    # Note that the total weight of a subpool is the product of the factor here
+    # and the denominator of the subpool.
     _sub_pools: Mapping[Pool[T], int]
 
-    def __init__(self, sub_pools: Sequence[Pool[T]] | Mapping[Pool[T], int], *,
-                 denominator: int | None):
+    def __init__(self,
+                 sub_pools: Sequence[Pool[T]] | Mapping[Pool[T], int],
+                 *,
+                 denominator: int | None = None):
         data: Mapping[Pool[T], int]
 
         if isinstance(sub_pools, Mapping):
@@ -114,9 +116,9 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     # Mapping pool specializations.
     def unary_operator(self, op: Callable[..., Pool[U]]) -> 'PoolMixture[U]':
         data: MutableMapping = defaultdict(int)
-        for k, v in self._sub_pools.items():
-            data[op(k)] += v
-        return PoolMixture(data)
+        for sub_pool, factor in self._sub_pools.items():
+            data[op(sub_pool)] += sub_pool.denominator() * factor
+        return PoolMixture(data, denominator=self.denominator())
 
     @overload
     def keep(self,
@@ -131,12 +133,12 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'PoolMixture[T] | icepool.Die[T]':
         data: MutableMapping = defaultdict(int)
-        for k, v in self._sub_pools.items():
-            data[k.keep(index)] += v
+        for sub_pool, factor in self._sub_pools.items():
+            data[sub_pool.keep(index)] += sub_pool.denominator() * factor
         if isinstance(index, int):
             return icepool.Die(data)
         else:
-            return PoolMixture(data)
+            return PoolMixture(data, denominator=self.denominator())
 
     @overload
     def __getitem__(

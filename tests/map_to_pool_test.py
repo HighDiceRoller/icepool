@@ -18,7 +18,7 @@ def test_map_to_pool():
     assert d6.pool(3).expand().map_to_pool().expand() == d6.pool(3).expand()
 
 
-def test_reroll_pool_vs_reroll():
+def test_reroll_to_pool_vs_reroll():
     assert d6.reroll_to_pool(3, [1], 3).sum() == 3 @ d6.reroll([1], depth=1)
 
 
