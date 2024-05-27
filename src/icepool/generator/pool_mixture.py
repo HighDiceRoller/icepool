@@ -141,10 +141,14 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     ) -> 'PoolMixture[T] | icepool.Die[T]':
         return self.keep(index)
 
-    def lowest(self, keep: int = 1, drop: int = 0) -> 'PoolMixture[T]':
+    def lowest(self,
+               keep: int | None = None,
+               drop: int | None = None) -> 'PoolMixture[T]':
         return self.unary_operator(lambda p: p.lowest(keep, drop))
 
-    def highest(self, keep: int = 1, drop: int = 0) -> 'PoolMixture[T]':
+    def highest(self,
+                keep: int | None = None,
+                drop: int | None = None) -> 'PoolMixture[T]':
         return self.unary_operator(lambda p: p.highest(keep, drop))
 
     def middle(self,

@@ -8,6 +8,82 @@ from icepool.typing import Outcome, T
 from typing import Iterable, Literal, Sequence, cast, overload
 
 
+def lowest_slice(keep: int | None = None, drop: int | None = None) -> slice:
+    """Converts keep and drop lowest into a slice."""
+    if keep is not None and keep < 0:
+        raise ValueError(f'keep={keep} cannot be negative.')
+    if drop is not None and drop < 0:
+        raise ValueError(f'drop={drop} cannot be negative.')
+    if drop is None:
+        if keep is None:
+            keep = 1
+        start = 0
+        stop = keep
+    else:
+        start = drop
+        if keep is None:
+            stop = None
+        else:
+            stop = drop + keep
+    return slice(start, stop)
+
+
+def highest_slice(keep: int | None = None, drop: int | None = None) -> slice:
+    """Converts keep and drop highest into a slice."""
+    if keep is not None and keep < 0:
+        raise ValueError(f'keep={keep} cannot be negative.')
+    if drop is not None and drop < 0:
+        raise ValueError(f'drop={drop} cannot be negative.')
+    if drop is None:
+        if keep is None:
+            keep = 1
+        if keep > 0:
+            start = -keep
+            stop = None
+        else:
+            start = 0
+            stop = 0
+    else:
+        if drop == 0:
+            stop = None
+        else:
+            stop = -drop
+
+        if keep is None:
+            start = None
+        elif keep > 0:
+            start = -(keep + drop)
+        else:
+            start = 0
+            stop = 0
+    return slice(start, stop)
+
+
+def canonical_slice(original: slice, length: int) -> slice:
+    """Produces a slice that has 0 <= start <= stop <= length.
+    
+    Assumes the original step is positive.
+    """
+
+    if original.start is None:
+        start = 0
+    elif original.start < 0:
+        start = max(0, length + original.start)
+    else:
+        start = min(original.start, length)
+
+    if original.stop is None:
+        stop = length
+    elif original.stop < 0:
+        stop = max(0, length + original.stop)
+    else:
+        stop = min(original.stop, length)
+
+    if start > stop:
+        stop = start
+    return slice(start, stop, original.step)
+
+
 @overload
 def lowest(iterable: 'Iterable[T | icepool.Die[T]]', /) -> 'icepool.Die[T]':
     ...
@@ -22,8 +98,8 @@ def lowest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /, *args:
 def lowest(arg0,
            /,
            *more_args: 'T | icepool.Die[T]',
-           keep: int = 1,
-           drop: int = 0,
+           keep: int | None = None,
+           drop: int | None = None,
            default: T | None = None) -> 'icepool.Die[T]':
     """The lowest outcome among the rolls, or the sum of some of the lowest.
 
@@ -32,9 +108,13 @@ def lowest(arg0,
     Args:
         args: Dice or individual outcomes in a single iterable, or as two or
             more separate arguments. Similar to the built-in `min()`.
-        keep: The number of lowest dice will be summed.
-        drop: This number of lowest dice will be dropped before keeping dice
-            to be summed.
+        keep, drop:
+            * If neither are provided, the single lowest die will be taken.
+            * If only `keep` is provided, the `keep` lowest dice will be summed.
+            * If only `drop` is provided, the `drop` lowest dice will be dropped
+                and the rest will be summed.
+            * If both are provided, `drop` lowest dice will be dropped, then
+                the next `keep` lowest dice will be summed.
         default: If an empty iterable is provided, the result will be a die that
             always rolls this value.
 
@@ -54,14 +134,8 @@ def lowest(arg0,
         else:
             return icepool.Die([default])
 
-    if keep < 0:
-        raise ValueError(f'keep={keep} cannot be negative.')
-    if drop < 0:
-        raise ValueError(f'drop={drop} cannot be negative.')
-
-    start = min(drop, len(args))
-    stop = min(keep + drop, len(args))
-    return _sum_slice(*args, start=start, stop=stop)
+    index_slice = lowest_slice(keep, drop)
+    return _sum_slice(*args, index_slice=index_slice)
 
 
 @overload
@@ -78,8 +152,8 @@ def highest(arg0: 'T | icepool.Die[T]', arg1: 'T | icepool.Die[T]', /, *args:
 def highest(arg0,
             /,
             *more_args: 'T | icepool.Die[T]',
-            keep: int = 1,
-            drop: int = 0,
+            keep: int | None = None,
+            drop: int | None = None,
             default: T | None = None) -> 'icepool.Die[T]':
     """The highest outcome among the rolls, or the sum of some of the highest.
 
@@ -88,7 +162,13 @@ def highest(arg0,
     Args:
         args: Dice or individual outcomes in a single iterable, or as two or
             more separate arguments. Similar to the built-in `max()`.
-        keep: The number of highest dice will be summed.
+        keep, drop:
+            * If neither are provided, the single highest die will be taken.
+            * If only `keep` is provided, the `keep` highest dice will be summed.
+            * If only `drop` is provided, the `drop` highest dice will be dropped
+                and the rest will be summed.
+            * If both are provided, `drop` highest dice will be dropped, then
+                the next `keep` highest dice will be summed.
         drop: This number of highest dice will be dropped before keeping dice
             to be summed.
         default: If an empty iterable is provided, the result will be a die that
@@ -110,14 +190,8 @@ def highest(arg0,
         else:
             return icepool.Die([default])
 
-    if keep < 0:
-        raise ValueError(f'keep={keep} cannot be negative.')
-    if drop < 0:
-        raise ValueError(f'drop={drop} cannot be negative.')
-
-    start = len(args) - min(keep + drop, len(args))
-    stop = len(args) - min(drop, len(args))
-    return _sum_slice(*args, start=start, stop=stop)
+    index_slice = highest_slice(keep, drop)
+    return _sum_slice(*args, index_slice=index_slice)
 
 
 @overload
@@ -173,7 +247,7 @@ def middle(arg0,
     return icepool.Pool(args).middle(keep, tie=tie).sum()  # type: ignore
 
 
-def _sum_slice(*args, start: int, stop: int) -> 'icepool.Die':
+def _sum_slice(*args, index_slice: slice) -> 'icepool.Die':
     """Common code for `lowest` and `highest`.
 
     Args:
@@ -191,22 +265,27 @@ def _sum_slice(*args, start: int, stop: int) -> 'icepool.Die':
     if any(die.is_empty() for die in dice):
         return icepool.Die([])
 
+    # Faster special cases.
+    canonical = canonical_slice(index_slice, len(dice))
+
+    # Zero-size slice.
     # The inputs should support addition.
-    if start == stop:
+    if canonical.start == canonical.stop:
         return sum(die.zero() for die in dice)  # type: ignore
 
-    if start == 0 and stop == len(dice):
+    # All dice selected.
+    if canonical.start == 0 and canonical.stop == len(dice):
         return sum(dice)  # type: ignore
 
-    if stop == 1:
+    if canonical.start == 0 and canonical.stop == 1:
         return _lowest_single(*dice)
 
-    if start == len(dice) - 1:
+    if canonical.start == len(dice) - 1 and canonical.stop == len(dice):
         return _highest_single(*dice)
 
     # Use pool.
     # Expression evaluators are difficult to type.
-    return icepool.Pool(dice)[start:stop].sum()  # type: ignore
+    return icepool.Pool(dice)[index_slice].sum()  # type: ignore
 
 
 def _lowest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':

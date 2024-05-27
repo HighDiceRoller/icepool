@@ -7,6 +7,7 @@ import icepool.creation_args
 import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
+from icepool.population.keep import lowest_slice, highest_slice, canonical_slice
 from icepool.typing import U, ImplicitConversionError, Outcome, T_co, guess_star
 
 import bisect
@@ -810,7 +811,11 @@ class Die(Population[T_co]):
             pool_size = len(rolls)
             return icepool.Pool({self: pool_size})[rolls]
 
-    def lowest(self, rolls: int, /, keep: int = 1, drop: int = 0) -> 'Die':
+    def lowest(self,
+               rolls: int,
+               /,
+               keep: int | None = None,
+               drop: int | None = None) -> 'Die':
         """Roll several of this `Die` and return the lowest result, or the sum of some of the lowest.
 
         The outcomes should support addition and multiplication if `keep != 1`.
@@ -818,19 +823,21 @@ class Die(Population[T_co]):
         Args:
             rolls: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
-            keep: The number of dice to keep.
-            drop: If provided, this many lowest dice will be dropped before
-                keeping.
+            keep, drop:
+                * If neither are provided, the single lowest die will be taken.
+                * If only `keep` is provided, the `keep` lowest dice will be summed.
+                * If only `drop` is provided, the `drop` lowest dice will be dropped
+                    and the rest will be summed.
+                * If both are provided, `drop` lowest dice will be dropped, then
+                    the next `keep` lowest dice will be summed.
 
         Returns:
             A `Die` representing the probability distribution of the sum.
         """
-        if keep == 1 and drop == 0:
+        index = lowest_slice(keep, drop)
+        canonical = canonical_slice(index, rolls)
+        if canonical.start == 0 and canonical.stop == 1:
             return self._lowest_single(rolls)
-
-        start = drop if drop > 0 else None
-        stop = keep + (drop or 0)
-        index = slice(start, stop)
         # Expression evaluators are difficult to type.
         return self.pool(rolls)[index].sum()  # type: ignore
 
@@ -845,26 +852,29 @@ class Die(Population[T_co]):
     def highest(self,
                 rolls: int,
                 /,
-                keep: int = 1,
-                drop: int = 0) -> 'Die[T_co]':
+                keep: int | None = None,
+                drop: int | None = None) -> 'Die[T_co]':
         """Roll several of this `Die` and return the highest result, or the sum of some of the highest.
 
         The outcomes should support addition and multiplication if `keep != 1`.
 
         Args:
             rolls: The number of dice to roll.
-            keep: The number of dice to keep.
-            drop: If provided, this many highest dice will be dropped before
-                keeping.
+            keep, drop:
+                * If neither are provided, the single highest die will be taken.
+                * If only `keep` is provided, the `keep` highest dice will be summed.
+                * If only `drop` is provided, the `drop` highest dice will be dropped
+                    and the rest will be summed.
+                * If both are provided, `drop` highest dice will be dropped, then
+                    the next `keep` highest dice will be summed.
 
         Returns:
             A `Die` representing the probability distribution of the sum.
         """
-        if keep == 1 and drop == 0:
+        index = highest_slice(keep, drop)
+        canonical = canonical_slice(index, rolls)
+        if canonical.start == rolls - 1 and canonical.stop == rolls:
             return self._highest_single(rolls)
-        start = -(keep + (drop or 0))
-        stop = -drop if drop > 0 else None
-        index = slice(start, stop)
         # Expression evaluators are difficult to type.
         return self.pool(rolls)[index].sum()  # type: ignore
 

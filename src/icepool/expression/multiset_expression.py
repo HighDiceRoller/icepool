@@ -8,6 +8,7 @@ import operator
 
 from abc import ABC, abstractmethod
 
+from icepool.population.keep import lowest_slice, highest_slice
 from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T_contra
 from typing import Any, Callable, Collection, Generic, Hashable, Literal, Mapping, Sequence, Type, overload
 
@@ -668,8 +669,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return self.keep(index)
 
     def lowest(self,
-               keep: int = 1,
-               drop: int = 0) -> 'MultisetExpression[T_contra]':
+               keep: int | None = None,
+               drop: int | None = None) -> 'MultisetExpression[T_contra]':
         """Keep some of the lowest elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
@@ -679,15 +680,22 @@ class MultisetExpression(ABC, Generic[T_contra]):
         This requires the outcomes to be evaluated in ascending order.
 
         Args:
-            keep: The number of lowest elements will be kept.
-            drop: This number of lowest elements will be dropped before keeping.
+            keep, drop:
+                * If neither are provided, the single lowest element
+                    will be kept.
+                * If only `keep` is provided, the `keep` lowest elements
+                    will be kept.
+                * If only `drop` is provided, the `drop` lowest elements
+                    will be dropped and the rest will be kept.
+                * If both are provided, `drop` lowest elements will be dropped,
+                    then the next `keep` lowest elements will be kept.
         """
-        t = (0, ) * drop + (1, ) * keep + (..., )
-        return self.keep(t)
+        index = lowest_slice(keep, drop)
+        return self.keep(index)
 
     def highest(self,
-                keep: int = 1,
-                drop: int = 0) -> 'MultisetExpression[T_contra]':
+                keep: int | None = None,
+                drop: int | None = None) -> 'MultisetExpression[T_contra]':
         """Keep some of the highest elements from this multiset and drop the rest.
 
         In contrast to the die and free function versions, this does not
@@ -697,11 +705,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
         This requires the outcomes to be evaluated in descending order.
 
         Args:
-            keep: The number of highest elements will be kept.
-            drop: This number of highest elements will be dropped before keeping.
+            keep, drop:
+                * If neither are provided, the single highest element
+                    will be kept.
+                * If only `keep` is provided, the `keep` highest elements
+                    will be kept.
+                * If only `drop` is provided, the `drop` highest elements
+                    will be dropped and the rest will be kept.
+                * If both are provided, `drop` highest elements will be dropped, 
+                    then the next `keep` highest elements will be kept.
         """
-        t = (..., ) + (1, ) * keep + (0, ) * drop
-        return self.keep(t)
+        index = highest_slice(keep, drop)
+        return self.keep(index)
 
     # Evaluations.
 
