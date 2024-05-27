@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 14.4.0"/>
+    <meta name="generator" content="pdoc 14.5.0"/>
     <title>icepool.function API documentation</title>
             <link rel="icon" href="favicon.png"/>
 
@@ -827,7 +827,7 @@
 </span><span id="L-714"><a href="#L-714"><span class="linenos">714</span></a>        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
 </span><span id="L-715"><a href="#L-715"><span class="linenos">715</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
 </span><span id="L-716"><a href="#L-716"><span class="linenos">716</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
-</span><span id="L-717"><a href="#L-717"><span class="linenos">717</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MixtureMultisetGenerator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="L-717"><a href="#L-717"><span class="linenos">717</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolMixture</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
@@ -2031,7 +2031,7 @@ this many times.</li>
 </span><span id="map_to_pool-715"><a href="#map_to_pool-715"><span class="linenos">715</span></a>        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
 </span><span id="map_to_pool-716"><a href="#map_to_pool-716"><span class="linenos">716</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
 </span><span id="map_to_pool-717"><a href="#map_to_pool-717"><span class="linenos">717</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
-</span><span id="map_to_pool-718"><a href="#map_to_pool-718"><span class="linenos">718</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MixtureMultisetGenerator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="map_to_pool-718"><a href="#map_to_pool-718"><span class="linenos">718</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">PoolMixture</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
