@@ -9769,33 +9769,34 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 </span><span id="lowest-110"><a href="#lowest-110"><span class="linenos">110</span></a><span class="sd">        args: Dice or individual outcomes in a single iterable, or as two or</span>
 </span><span id="lowest-111"><a href="#lowest-111"><span class="linenos">111</span></a><span class="sd">            more separate arguments. Similar to the built-in `min()`.</span>
 </span><span id="lowest-112"><a href="#lowest-112"><span class="linenos">112</span></a><span class="sd">        keep, drop:</span>
-</span><span id="lowest-113"><a href="#lowest-113"><span class="linenos">113</span></a><span class="sd">            * If neither are provided, the single lowest die will be taken.</span>
-</span><span id="lowest-114"><a href="#lowest-114"><span class="linenos">114</span></a><span class="sd">            * If only `keep` is provided, the `keep` lowest dice will be summed.</span>
-</span><span id="lowest-115"><a href="#lowest-115"><span class="linenos">115</span></a><span class="sd">            * If only `drop` is provided, the `drop` lowest dice will be dropped</span>
-</span><span id="lowest-116"><a href="#lowest-116"><span class="linenos">116</span></a><span class="sd">                and the rest will be summed.</span>
-</span><span id="lowest-117"><a href="#lowest-117"><span class="linenos">117</span></a><span class="sd">            * If both are provided, `drop` lowest dice will be dropped, then</span>
-</span><span id="lowest-118"><a href="#lowest-118"><span class="linenos">118</span></a><span class="sd">                the next `keep` lowest dice will be summed.</span>
-</span><span id="lowest-119"><a href="#lowest-119"><span class="linenos">119</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
-</span><span id="lowest-120"><a href="#lowest-120"><span class="linenos">120</span></a><span class="sd">            always rolls this value.</span>
-</span><span id="lowest-121"><a href="#lowest-121"><span class="linenos">121</span></a>
-</span><span id="lowest-122"><a href="#lowest-122"><span class="linenos">122</span></a><span class="sd">    Raises:</span>
-</span><span id="lowest-123"><a href="#lowest-123"><span class="linenos">123</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
-</span><span id="lowest-124"><a href="#lowest-124"><span class="linenos">124</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="lowest-125"><a href="#lowest-125"><span class="linenos">125</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="lowest-126"><a href="#lowest-126"><span class="linenos">126</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
-</span><span id="lowest-127"><a href="#lowest-127"><span class="linenos">127</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="lowest-128"><a href="#lowest-128"><span class="linenos">128</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
-</span><span id="lowest-129"><a href="#lowest-129"><span class="linenos">129</span></a>
-</span><span id="lowest-130"><a href="#lowest-130"><span class="linenos">130</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="lowest-131"><a href="#lowest-131"><span class="linenos">131</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="lowest-132"><a href="#lowest-132"><span class="linenos">132</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="lowest-133"><a href="#lowest-133"><span class="linenos">133</span></a>                <span class="s2">&quot;lowest() arg is an empty sequence and no default was provided.&quot;</span>
-</span><span id="lowest-134"><a href="#lowest-134"><span class="linenos">134</span></a>            <span class="p">)</span>
-</span><span id="lowest-135"><a href="#lowest-135"><span class="linenos">135</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="lowest-136"><a href="#lowest-136"><span class="linenos">136</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
-</span><span id="lowest-137"><a href="#lowest-137"><span class="linenos">137</span></a>
-</span><span id="lowest-138"><a href="#lowest-138"><span class="linenos">138</span></a>    <span class="n">index_slice</span> <span class="o">=</span> <span class="n">lowest_slice</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">drop</span><span class="p">)</span>
-</span><span id="lowest-139"><a href="#lowest-139"><span class="linenos">139</span></a>    <span class="k">return</span> <span class="n">_sum_slice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">index_slice</span><span class="o">=</span><span class="n">index_slice</span><span class="p">)</span>
+</span><span id="lowest-113"><a href="#lowest-113"><span class="linenos">113</span></a>
+</span><span id="lowest-114"><a href="#lowest-114"><span class="linenos">114</span></a><span class="sd">            * If neither are provided, the single lowest die will be taken.</span>
+</span><span id="lowest-115"><a href="#lowest-115"><span class="linenos">115</span></a><span class="sd">            * If only `keep` is provided, the `keep` lowest dice will be summed.</span>
+</span><span id="lowest-116"><a href="#lowest-116"><span class="linenos">116</span></a><span class="sd">            * If only `drop` is provided, the `drop` lowest dice will be dropped</span>
+</span><span id="lowest-117"><a href="#lowest-117"><span class="linenos">117</span></a><span class="sd">                and the rest will be summed.</span>
+</span><span id="lowest-118"><a href="#lowest-118"><span class="linenos">118</span></a><span class="sd">            * If both are provided, `drop` lowest dice will be dropped, then</span>
+</span><span id="lowest-119"><a href="#lowest-119"><span class="linenos">119</span></a><span class="sd">                the next `keep` lowest dice will be summed.</span>
+</span><span id="lowest-120"><a href="#lowest-120"><span class="linenos">120</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
+</span><span id="lowest-121"><a href="#lowest-121"><span class="linenos">121</span></a><span class="sd">            always rolls this value.</span>
+</span><span id="lowest-122"><a href="#lowest-122"><span class="linenos">122</span></a>
+</span><span id="lowest-123"><a href="#lowest-123"><span class="linenos">123</span></a><span class="sd">    Raises:</span>
+</span><span id="lowest-124"><a href="#lowest-124"><span class="linenos">124</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
+</span><span id="lowest-125"><a href="#lowest-125"><span class="linenos">125</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="lowest-126"><a href="#lowest-126"><span class="linenos">126</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="lowest-127"><a href="#lowest-127"><span class="linenos">127</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
+</span><span id="lowest-128"><a href="#lowest-128"><span class="linenos">128</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="lowest-129"><a href="#lowest-129"><span class="linenos">129</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
+</span><span id="lowest-130"><a href="#lowest-130"><span class="linenos">130</span></a>
+</span><span id="lowest-131"><a href="#lowest-131"><span class="linenos">131</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="lowest-132"><a href="#lowest-132"><span class="linenos">132</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="lowest-133"><a href="#lowest-133"><span class="linenos">133</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="lowest-134"><a href="#lowest-134"><span class="linenos">134</span></a>                <span class="s2">&quot;lowest() arg is an empty sequence and no default was provided.&quot;</span>
+</span><span id="lowest-135"><a href="#lowest-135"><span class="linenos">135</span></a>            <span class="p">)</span>
+</span><span id="lowest-136"><a href="#lowest-136"><span class="linenos">136</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="lowest-137"><a href="#lowest-137"><span class="linenos">137</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
+</span><span id="lowest-138"><a href="#lowest-138"><span class="linenos">138</span></a>
+</span><span id="lowest-139"><a href="#lowest-139"><span class="linenos">139</span></a>    <span class="n">index_slice</span> <span class="o">=</span> <span class="n">lowest_slice</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">drop</span><span class="p">)</span>
+</span><span id="lowest-140"><a href="#lowest-140"><span class="linenos">140</span></a>    <span class="k">return</span> <span class="n">_sum_slice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">index_slice</span><span class="o">=</span><span class="n">index_slice</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -9808,7 +9809,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 <ul>
 <li><strong>args:</strong>  Dice or individual outcomes in a single iterable, or as two or
 more separate arguments. Similar to the built-in <code>min()</code>.</li>
-<li><strong>keep, drop:</strong>  * If neither are provided, the single lowest die will be taken.
+<li><strong>keep, drop:</strong>   * If neither are provided, the single lowest die will be taken.
 <ul>
 <li>If only <code>keep</code> is provided, the <code>keep</code> lowest dice will be summed.</li>
 <li>If only <code>drop</code> is provided, the <code>drop</code> lowest dice will be dropped
@@ -9840,49 +9841,50 @@ always rolls this value.</li>
 
     </div>
     <a class="headerlink" href="#highest"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="highest-153"><a href="#highest-153"><span class="linenos">153</span></a><span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span>
-</span><span id="highest-154"><a href="#highest-154"><span class="linenos">154</span></a>            <span class="o">/</span><span class="p">,</span>
-</span><span id="highest-155"><a href="#highest-155"><span class="linenos">155</span></a>            <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
-</span><span id="highest-156"><a href="#highest-156"><span class="linenos">156</span></a>            <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="highest-157"><a href="#highest-157"><span class="linenos">157</span></a>            <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="highest-158"><a href="#highest-158"><span class="linenos">158</span></a>            <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
-</span><span id="highest-159"><a href="#highest-159"><span class="linenos">159</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The highest outcome among the rolls, or the sum of some of the highest.</span>
-</span><span id="highest-160"><a href="#highest-160"><span class="linenos">160</span></a>
-</span><span id="highest-161"><a href="#highest-161"><span class="linenos">161</span></a><span class="sd">    The outcomes should support addition and multiplication if `keep != 1`.</span>
-</span><span id="highest-162"><a href="#highest-162"><span class="linenos">162</span></a>
-</span><span id="highest-163"><a href="#highest-163"><span class="linenos">163</span></a><span class="sd">    Args:</span>
-</span><span id="highest-164"><a href="#highest-164"><span class="linenos">164</span></a><span class="sd">        args: Dice or individual outcomes in a single iterable, or as two or</span>
-</span><span id="highest-165"><a href="#highest-165"><span class="linenos">165</span></a><span class="sd">            more separate arguments. Similar to the built-in `max()`.</span>
-</span><span id="highest-166"><a href="#highest-166"><span class="linenos">166</span></a><span class="sd">        keep, drop:</span>
-</span><span id="highest-167"><a href="#highest-167"><span class="linenos">167</span></a><span class="sd">            * If neither are provided, the single highest die will be taken.</span>
-</span><span id="highest-168"><a href="#highest-168"><span class="linenos">168</span></a><span class="sd">            * If only `keep` is provided, the `keep` highest dice will be summed.</span>
-</span><span id="highest-169"><a href="#highest-169"><span class="linenos">169</span></a><span class="sd">            * If only `drop` is provided, the `drop` highest dice will be dropped</span>
-</span><span id="highest-170"><a href="#highest-170"><span class="linenos">170</span></a><span class="sd">                and the rest will be summed.</span>
-</span><span id="highest-171"><a href="#highest-171"><span class="linenos">171</span></a><span class="sd">            * If both are provided, `drop` highest dice will be dropped, then</span>
-</span><span id="highest-172"><a href="#highest-172"><span class="linenos">172</span></a><span class="sd">                the next `keep` highest dice will be summed.</span>
-</span><span id="highest-173"><a href="#highest-173"><span class="linenos">173</span></a><span class="sd">        drop: This number of highest dice will be dropped before keeping dice</span>
-</span><span id="highest-174"><a href="#highest-174"><span class="linenos">174</span></a><span class="sd">            to be summed.</span>
-</span><span id="highest-175"><a href="#highest-175"><span class="linenos">175</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
-</span><span id="highest-176"><a href="#highest-176"><span class="linenos">176</span></a><span class="sd">            always rolls this value.</span>
-</span><span id="highest-177"><a href="#highest-177"><span class="linenos">177</span></a>
-</span><span id="highest-178"><a href="#highest-178"><span class="linenos">178</span></a><span class="sd">    Raises:</span>
-</span><span id="highest-179"><a href="#highest-179"><span class="linenos">179</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
-</span><span id="highest-180"><a href="#highest-180"><span class="linenos">180</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="highest-181"><a href="#highest-181"><span class="linenos">181</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="highest-182"><a href="#highest-182"><span class="linenos">182</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
-</span><span id="highest-183"><a href="#highest-183"><span class="linenos">183</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="highest-184"><a href="#highest-184"><span class="linenos">184</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
-</span><span id="highest-185"><a href="#highest-185"><span class="linenos">185</span></a>
-</span><span id="highest-186"><a href="#highest-186"><span class="linenos">186</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="highest-187"><a href="#highest-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="highest-188"><a href="#highest-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="highest-189"><a href="#highest-189"><span class="linenos">189</span></a>                <span class="s2">&quot;highest() arg is an empty sequence and no default was provided.&quot;</span>
-</span><span id="highest-190"><a href="#highest-190"><span class="linenos">190</span></a>            <span class="p">)</span>
-</span><span id="highest-191"><a href="#highest-191"><span class="linenos">191</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="highest-192"><a href="#highest-192"><span class="linenos">192</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
-</span><span id="highest-193"><a href="#highest-193"><span class="linenos">193</span></a>
-</span><span id="highest-194"><a href="#highest-194"><span class="linenos">194</span></a>    <span class="n">index_slice</span> <span class="o">=</span> <span class="n">highest_slice</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">drop</span><span class="p">)</span>
-</span><span id="highest-195"><a href="#highest-195"><span class="linenos">195</span></a>    <span class="k">return</span> <span class="n">_sum_slice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">index_slice</span><span class="o">=</span><span class="n">index_slice</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="highest-154"><a href="#highest-154"><span class="linenos">154</span></a><span class="k">def</span> <span class="nf">highest</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span>
+</span><span id="highest-155"><a href="#highest-155"><span class="linenos">155</span></a>            <span class="o">/</span><span class="p">,</span>
+</span><span id="highest-156"><a href="#highest-156"><span class="linenos">156</span></a>            <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
+</span><span id="highest-157"><a href="#highest-157"><span class="linenos">157</span></a>            <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="highest-158"><a href="#highest-158"><span class="linenos">158</span></a>            <span class="n">drop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="highest-159"><a href="#highest-159"><span class="linenos">159</span></a>            <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+</span><span id="highest-160"><a href="#highest-160"><span class="linenos">160</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The highest outcome among the rolls, or the sum of some of the highest.</span>
+</span><span id="highest-161"><a href="#highest-161"><span class="linenos">161</span></a>
+</span><span id="highest-162"><a href="#highest-162"><span class="linenos">162</span></a><span class="sd">    The outcomes should support addition and multiplication if `keep != 1`.</span>
+</span><span id="highest-163"><a href="#highest-163"><span class="linenos">163</span></a>
+</span><span id="highest-164"><a href="#highest-164"><span class="linenos">164</span></a><span class="sd">    Args:</span>
+</span><span id="highest-165"><a href="#highest-165"><span class="linenos">165</span></a><span class="sd">        args: Dice or individual outcomes in a single iterable, or as two or</span>
+</span><span id="highest-166"><a href="#highest-166"><span class="linenos">166</span></a><span class="sd">            more separate arguments. Similar to the built-in `max()`.</span>
+</span><span id="highest-167"><a href="#highest-167"><span class="linenos">167</span></a><span class="sd">        keep, drop:</span>
+</span><span id="highest-168"><a href="#highest-168"><span class="linenos">168</span></a><span class="sd">        </span>
+</span><span id="highest-169"><a href="#highest-169"><span class="linenos">169</span></a><span class="sd">            * If neither are provided, the single highest die will be taken.</span>
+</span><span id="highest-170"><a href="#highest-170"><span class="linenos">170</span></a><span class="sd">            * If only `keep` is provided, the `keep` highest dice will be summed.</span>
+</span><span id="highest-171"><a href="#highest-171"><span class="linenos">171</span></a><span class="sd">            * If only `drop` is provided, the `drop` highest dice will be dropped</span>
+</span><span id="highest-172"><a href="#highest-172"><span class="linenos">172</span></a><span class="sd">                and the rest will be summed.</span>
+</span><span id="highest-173"><a href="#highest-173"><span class="linenos">173</span></a><span class="sd">            * If both are provided, `drop` highest dice will be dropped, then</span>
+</span><span id="highest-174"><a href="#highest-174"><span class="linenos">174</span></a><span class="sd">                the next `keep` highest dice will be summed.</span>
+</span><span id="highest-175"><a href="#highest-175"><span class="linenos">175</span></a><span class="sd">        drop: This number of highest dice will be dropped before keeping dice</span>
+</span><span id="highest-176"><a href="#highest-176"><span class="linenos">176</span></a><span class="sd">            to be summed.</span>
+</span><span id="highest-177"><a href="#highest-177"><span class="linenos">177</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
+</span><span id="highest-178"><a href="#highest-178"><span class="linenos">178</span></a><span class="sd">            always rolls this value.</span>
+</span><span id="highest-179"><a href="#highest-179"><span class="linenos">179</span></a>
+</span><span id="highest-180"><a href="#highest-180"><span class="linenos">180</span></a><span class="sd">    Raises:</span>
+</span><span id="highest-181"><a href="#highest-181"><span class="linenos">181</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
+</span><span id="highest-182"><a href="#highest-182"><span class="linenos">182</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="highest-183"><a href="#highest-183"><span class="linenos">183</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="highest-184"><a href="#highest-184"><span class="linenos">184</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
+</span><span id="highest-185"><a href="#highest-185"><span class="linenos">185</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="highest-186"><a href="#highest-186"><span class="linenos">186</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
+</span><span id="highest-187"><a href="#highest-187"><span class="linenos">187</span></a>
+</span><span id="highest-188"><a href="#highest-188"><span class="linenos">188</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="highest-189"><a href="#highest-189"><span class="linenos">189</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="highest-190"><a href="#highest-190"><span class="linenos">190</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="highest-191"><a href="#highest-191"><span class="linenos">191</span></a>                <span class="s2">&quot;highest() arg is an empty sequence and no default was provided.&quot;</span>
+</span><span id="highest-192"><a href="#highest-192"><span class="linenos">192</span></a>            <span class="p">)</span>
+</span><span id="highest-193"><a href="#highest-193"><span class="linenos">193</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="highest-194"><a href="#highest-194"><span class="linenos">194</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
+</span><span id="highest-195"><a href="#highest-195"><span class="linenos">195</span></a>
+</span><span id="highest-196"><a href="#highest-196"><span class="linenos">196</span></a>    <span class="n">index_slice</span> <span class="o">=</span> <span class="n">highest_slice</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">drop</span><span class="p">)</span>
+</span><span id="highest-197"><a href="#highest-197"><span class="linenos">197</span></a>    <span class="k">return</span> <span class="n">_sum_slice</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">index_slice</span><span class="o">=</span><span class="n">index_slice</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -9895,7 +9897,7 @@ always rolls this value.</li>
 <ul>
 <li><strong>args:</strong>  Dice or individual outcomes in a single iterable, or as two or
 more separate arguments. Similar to the built-in <code>max()</code>.</li>
-<li><strong>keep, drop:</strong>  * If neither are provided, the single highest die will be taken.
+<li><strong>keep, drop:</strong>   * If neither are provided, the single highest die will be taken.
 <ul>
 <li>If only <code>keep</code> is provided, the <code>keep</code> highest dice will be summed.</li>
 <li>If only <code>drop</code> is provided, the <code>drop</code> highest dice will be dropped
@@ -9929,46 +9931,46 @@ always rolls this value.</li>
 
     </div>
     <a class="headerlink" href="#middle"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="middle-209"><a href="#middle-209"><span class="linenos">209</span></a><span class="k">def</span> <span class="nf">middle</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span>
-</span><span id="middle-210"><a href="#middle-210"><span class="linenos">210</span></a>           <span class="o">/</span><span class="p">,</span>
-</span><span id="middle-211"><a href="#middle-211"><span class="linenos">211</span></a>           <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
-</span><span id="middle-212"><a href="#middle-212"><span class="linenos">212</span></a>           <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="middle-213"><a href="#middle-213"><span class="linenos">213</span></a>           <span class="n">tie</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-</span><span id="middle-214"><a href="#middle-214"><span class="linenos">214</span></a>           <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
-</span><span id="middle-215"><a href="#middle-215"><span class="linenos">215</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The middle of the outcomes among the rolls, or the sum of some of the middle.</span>
-</span><span id="middle-216"><a href="#middle-216"><span class="linenos">216</span></a>
-</span><span id="middle-217"><a href="#middle-217"><span class="linenos">217</span></a><span class="sd">    The outcomes should support addition and multiplication if `keep != 1`.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="middle-211"><a href="#middle-211"><span class="linenos">211</span></a><span class="k">def</span> <span class="nf">middle</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span>
+</span><span id="middle-212"><a href="#middle-212"><span class="linenos">212</span></a>           <span class="o">/</span><span class="p">,</span>
+</span><span id="middle-213"><a href="#middle-213"><span class="linenos">213</span></a>           <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
+</span><span id="middle-214"><a href="#middle-214"><span class="linenos">214</span></a>           <span class="n">keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span id="middle-215"><a href="#middle-215"><span class="linenos">215</span></a>           <span class="n">tie</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
+</span><span id="middle-216"><a href="#middle-216"><span class="linenos">216</span></a>           <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+</span><span id="middle-217"><a href="#middle-217"><span class="linenos">217</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The middle of the outcomes among the rolls, or the sum of some of the middle.</span>
 </span><span id="middle-218"><a href="#middle-218"><span class="linenos">218</span></a>
-</span><span id="middle-219"><a href="#middle-219"><span class="linenos">219</span></a><span class="sd">    Args:</span>
-</span><span id="middle-220"><a href="#middle-220"><span class="linenos">220</span></a><span class="sd">        args: Dice or individual outcomes in a single iterable, or as two or</span>
-</span><span id="middle-221"><a href="#middle-221"><span class="linenos">221</span></a><span class="sd">            more separate arguments.</span>
-</span><span id="middle-222"><a href="#middle-222"><span class="linenos">222</span></a><span class="sd">        keep: The number of outcomes to sum.</span>
-</span><span id="middle-223"><a href="#middle-223"><span class="linenos">223</span></a><span class="sd">        tie: What to do if `keep` is odd but the the number of args is even, or</span>
-</span><span id="middle-224"><a href="#middle-224"><span class="linenos">224</span></a><span class="sd">            vice versa.</span>
-</span><span id="middle-225"><a href="#middle-225"><span class="linenos">225</span></a><span class="sd">            * &#39;error&#39; (default): Raises `IndexError`.</span>
-</span><span id="middle-226"><a href="#middle-226"><span class="linenos">226</span></a><span class="sd">            * &#39;high&#39;: The higher outcome is taken.</span>
-</span><span id="middle-227"><a href="#middle-227"><span class="linenos">227</span></a><span class="sd">            * &#39;low&#39;: The lower outcome is taken.</span>
-</span><span id="middle-228"><a href="#middle-228"><span class="linenos">228</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
-</span><span id="middle-229"><a href="#middle-229"><span class="linenos">229</span></a><span class="sd">            always rolls this value.</span>
-</span><span id="middle-230"><a href="#middle-230"><span class="linenos">230</span></a>
-</span><span id="middle-231"><a href="#middle-231"><span class="linenos">231</span></a><span class="sd">    Raises:</span>
-</span><span id="middle-232"><a href="#middle-232"><span class="linenos">232</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
-</span><span id="middle-233"><a href="#middle-233"><span class="linenos">233</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="middle-234"><a href="#middle-234"><span class="linenos">234</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="middle-235"><a href="#middle-235"><span class="linenos">235</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
-</span><span id="middle-236"><a href="#middle-236"><span class="linenos">236</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="middle-237"><a href="#middle-237"><span class="linenos">237</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
-</span><span id="middle-238"><a href="#middle-238"><span class="linenos">238</span></a>
-</span><span id="middle-239"><a href="#middle-239"><span class="linenos">239</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="middle-240"><a href="#middle-240"><span class="linenos">240</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="middle-241"><a href="#middle-241"><span class="linenos">241</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="middle-242"><a href="#middle-242"><span class="linenos">242</span></a>                <span class="s2">&quot;middle() arg is an empty sequence and no default was provided.&quot;</span>
-</span><span id="middle-243"><a href="#middle-243"><span class="linenos">243</span></a>            <span class="p">)</span>
-</span><span id="middle-244"><a href="#middle-244"><span class="linenos">244</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="middle-245"><a href="#middle-245"><span class="linenos">245</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
-</span><span id="middle-246"><a href="#middle-246"><span class="linenos">246</span></a>
-</span><span id="middle-247"><a href="#middle-247"><span class="linenos">247</span></a>    <span class="c1"># Expression evaluators are difficult to type.</span>
-</span><span id="middle-248"><a href="#middle-248"><span class="linenos">248</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">middle</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+</span><span id="middle-219"><a href="#middle-219"><span class="linenos">219</span></a><span class="sd">    The outcomes should support addition and multiplication if `keep != 1`.</span>
+</span><span id="middle-220"><a href="#middle-220"><span class="linenos">220</span></a>
+</span><span id="middle-221"><a href="#middle-221"><span class="linenos">221</span></a><span class="sd">    Args:</span>
+</span><span id="middle-222"><a href="#middle-222"><span class="linenos">222</span></a><span class="sd">        args: Dice or individual outcomes in a single iterable, or as two or</span>
+</span><span id="middle-223"><a href="#middle-223"><span class="linenos">223</span></a><span class="sd">            more separate arguments.</span>
+</span><span id="middle-224"><a href="#middle-224"><span class="linenos">224</span></a><span class="sd">        keep: The number of outcomes to sum.</span>
+</span><span id="middle-225"><a href="#middle-225"><span class="linenos">225</span></a><span class="sd">        tie: What to do if `keep` is odd but the the number of args is even, or</span>
+</span><span id="middle-226"><a href="#middle-226"><span class="linenos">226</span></a><span class="sd">            vice versa.</span>
+</span><span id="middle-227"><a href="#middle-227"><span class="linenos">227</span></a><span class="sd">            * &#39;error&#39; (default): Raises `IndexError`.</span>
+</span><span id="middle-228"><a href="#middle-228"><span class="linenos">228</span></a><span class="sd">            * &#39;high&#39;: The higher outcome is taken.</span>
+</span><span id="middle-229"><a href="#middle-229"><span class="linenos">229</span></a><span class="sd">            * &#39;low&#39;: The lower outcome is taken.</span>
+</span><span id="middle-230"><a href="#middle-230"><span class="linenos">230</span></a><span class="sd">        default: If an empty iterable is provided, the result will be a die that</span>
+</span><span id="middle-231"><a href="#middle-231"><span class="linenos">231</span></a><span class="sd">            always rolls this value.</span>
+</span><span id="middle-232"><a href="#middle-232"><span class="linenos">232</span></a>
+</span><span id="middle-233"><a href="#middle-233"><span class="linenos">233</span></a><span class="sd">    Raises:</span>
+</span><span id="middle-234"><a href="#middle-234"><span class="linenos">234</span></a><span class="sd">        ValueError if an empty iterable is provided with no `default`.</span>
+</span><span id="middle-235"><a href="#middle-235"><span class="linenos">235</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="middle-236"><a href="#middle-236"><span class="linenos">236</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">more_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="middle-237"><a href="#middle-237"><span class="linenos">237</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="n">arg0</span>
+</span><span id="middle-238"><a href="#middle-238"><span class="linenos">238</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="middle-239"><a href="#middle-239"><span class="linenos">239</span></a>        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">more_args</span>
+</span><span id="middle-240"><a href="#middle-240"><span class="linenos">240</span></a>
+</span><span id="middle-241"><a href="#middle-241"><span class="linenos">241</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="middle-242"><a href="#middle-242"><span class="linenos">242</span></a>        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="middle-243"><a href="#middle-243"><span class="linenos">243</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="middle-244"><a href="#middle-244"><span class="linenos">244</span></a>                <span class="s2">&quot;middle() arg is an empty sequence and no default was provided.&quot;</span>
+</span><span id="middle-245"><a href="#middle-245"><span class="linenos">245</span></a>            <span class="p">)</span>
+</span><span id="middle-246"><a href="#middle-246"><span class="linenos">246</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="middle-247"><a href="#middle-247"><span class="linenos">247</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="n">default</span><span class="p">])</span>
+</span><span id="middle-248"><a href="#middle-248"><span class="linenos">248</span></a>
+</span><span id="middle-249"><a href="#middle-249"><span class="linenos">249</span></a>    <span class="c1"># Expression evaluators are difficult to type.</span>
+</span><span id="middle-250"><a href="#middle-250"><span class="linenos">250</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">middle</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
