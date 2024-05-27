@@ -63,9 +63,7 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
         return all(sub_pool._is_resolvable() for sub_pool in self._sub_pools)
 
     def _generate_initial(self) -> InitialMultisetGenerator:
-        for sub_pool, weight in self._sub_pools.items():
-            for sub_sub_pool, sub_weight in sub_pool._generate_initial():
-                yield sub_sub_pool, weight * sub_weight
+        yield from self._sub_pools.items()
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         raise RuntimeError(
