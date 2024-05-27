@@ -171,69 +171,72 @@
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="k">return</span> <span class="n">result</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>                    <span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>                    <span class="s1">&#39;Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.&#39;</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>                <span class="p">)</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="o">...</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="k">class</span> <span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="o">...</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="k">def</span> <span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="k">class</span> <span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">    Returns:</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>                <span class="k">break</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="k">def</span> <span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">    Returns:</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>                <span class="k">break</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">    Args:</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function.</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="s1">&#39;You may need to specify `star` explicitly.&#39;</span><span class="p">)</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    Args:</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function.</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="s1">&#39;You may need to specify `star` explicitly.&#39;</span><span class="p">)</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
@@ -368,10 +371,13 @@
 </span><span id="Order-52"><a href="#Order-52"><span class="linenos">52</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="Order-53"><a href="#Order-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
 </span><span id="Order-54"><a href="#Order-54"><span class="linenos">54</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order-55"><a href="#Order-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order-56"><a href="#Order-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order-57"><a href="#Order-57"><span class="linenos">57</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order-58"><a href="#Order-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="Order-55"><a href="#Order-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Order-56"><a href="#Order-56"><span class="linenos">56</span></a>                    <span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+</span><span id="Order-57"><a href="#Order-57"><span class="linenos">57</span></a>                    <span class="s1">&#39;Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.&#39;</span>
+</span><span id="Order-58"><a href="#Order-58"><span class="linenos">58</span></a>                <span class="p">)</span>
+</span><span id="Order-59"><a href="#Order-59"><span class="linenos">59</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order-60"><a href="#Order-60"><span class="linenos">60</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order-61"><a href="#Order-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -441,10 +447,13 @@
 </span><span id="Order.merge-52"><a href="#Order.merge-52"><span class="linenos">52</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="Order.merge-53"><a href="#Order.merge-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
 </span><span id="Order.merge-54"><a href="#Order.merge-54"><span class="linenos">54</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order.merge-55"><a href="#Order.merge-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order.merge-56"><a href="#Order.merge-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order.merge-57"><a href="#Order.merge-57"><span class="linenos">57</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order.merge-58"><a href="#Order.merge-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="Order.merge-55"><a href="#Order.merge-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Order.merge-56"><a href="#Order.merge-56"><span class="linenos">56</span></a>                    <span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+</span><span id="Order.merge-57"><a href="#Order.merge-57"><span class="linenos">57</span></a>                    <span class="s1">&#39;Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.&#39;</span>
+</span><span id="Order.merge-58"><a href="#Order.merge-58"><span class="linenos">58</span></a>                <span class="p">)</span>
+</span><span id="Order.merge-59"><a href="#Order.merge-59"><span class="linenos">59</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order.merge-60"><a href="#Order.merge-60"><span class="linenos">60</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order.merge-61"><a href="#Order.merge-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -504,10 +513,10 @@
 
     </div>
     <a class="headerlink" href="#RerollType"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-61"><a href="#RerollType-61"><span class="linenos">61</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="RerollType-62"><a href="#RerollType-62"><span class="linenos">62</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
-</span><span id="RerollType-63"><a href="#RerollType-63"><span class="linenos">63</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="RerollType-64"><a href="#RerollType-64"><span class="linenos">64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-64"><a href="#RerollType-64"><span class="linenos">64</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="RerollType-65"><a href="#RerollType-65"><span class="linenos">65</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="RerollType-66"><a href="#RerollType-66"><span class="linenos">66</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="RerollType-67"><a href="#RerollType-67"><span class="linenos">67</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -551,14 +560,14 @@
 
     </div>
     <a class="headerlink" href="#Outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-67"><a href="#Outcome-67"><span class="linenos">67</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
-</span><span id="Outcome-68"><a href="#Outcome-68"><span class="linenos">68</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
-</span><span id="Outcome-69"><a href="#Outcome-69"><span class="linenos">69</span></a>
-</span><span id="Outcome-70"><a href="#Outcome-70"><span class="linenos">70</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
-</span><span id="Outcome-71"><a href="#Outcome-71"><span class="linenos">71</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-70"><a href="#Outcome-70"><span class="linenos">70</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
+</span><span id="Outcome-71"><a href="#Outcome-71"><span class="linenos">71</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
 </span><span id="Outcome-72"><a href="#Outcome-72"><span class="linenos">72</span></a>
-</span><span id="Outcome-73"><a href="#Outcome-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Outcome-74"><a href="#Outcome-74"><span class="linenos">74</span></a>        <span class="o">...</span>
+</span><span id="Outcome-73"><a href="#Outcome-73"><span class="linenos">73</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
+</span><span id="Outcome-74"><a href="#Outcome-74"><span class="linenos">74</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Outcome-75"><a href="#Outcome-75"><span class="linenos">75</span></a>
+</span><span id="Outcome-76"><a href="#Outcome-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Outcome-77"><a href="#Outcome-77"><span class="linenos">77</span></a>        <span class="o">...</span>
 </span></pre></div>
 
 
@@ -580,8 +589,8 @@
 
     </div>
     <a class="headerlink" href="#ImplicitConversionError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitConversionError-77"><a href="#ImplicitConversionError-77"><span class="linenos">77</span></a><span class="k">class</span> <span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-</span><span id="ImplicitConversionError-78"><a href="#ImplicitConversionError-78"><span class="linenos">78</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitConversionError-80"><a href="#ImplicitConversionError-80"><span class="linenos">80</span></a><span class="k">class</span> <span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+</span><span id="ImplicitConversionError-81"><a href="#ImplicitConversionError-81"><span class="linenos">81</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -616,28 +625,28 @@
 
     </div>
     <a class="headerlink" href="#count_positional_parameters"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-81"><a href="#count_positional_parameters-81"><span class="linenos"> 81</span></a><span class="k">def</span> <span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="count_positional_parameters-82"><a href="#count_positional_parameters-82"><span class="linenos"> 82</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
-</span><span id="count_positional_parameters-83"><a href="#count_positional_parameters-83"><span class="linenos"> 83</span></a>
-</span><span id="count_positional_parameters-84"><a href="#count_positional_parameters-84"><span class="linenos"> 84</span></a><span class="sd">    Returns:</span>
-</span><span id="count_positional_parameters-85"><a href="#count_positional_parameters-85"><span class="linenos"> 85</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="count_positional_parameters-86"><a href="#count_positional_parameters-86"><span class="linenos"> 86</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="count_positional_parameters-87"><a href="#count_positional_parameters-87"><span class="linenos"> 87</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="count_positional_parameters-88"><a href="#count_positional_parameters-88"><span class="linenos"> 88</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="count_positional_parameters-89"><a href="#count_positional_parameters-89"><span class="linenos"> 89</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-90"><a href="#count_positional_parameters-90"><span class="linenos"> 90</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-91"><a href="#count_positional_parameters-91"><span class="linenos"> 91</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="count_positional_parameters-92"><a href="#count_positional_parameters-92"><span class="linenos"> 92</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="count_positional_parameters-93"><a href="#count_positional_parameters-93"><span class="linenos"> 93</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="count_positional_parameters-94"><a href="#count_positional_parameters-94"><span class="linenos"> 94</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="count_positional_parameters-95"><a href="#count_positional_parameters-95"><span class="linenos"> 95</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-96"><a href="#count_positional_parameters-96"><span class="linenos"> 96</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="count_positional_parameters-97"><a href="#count_positional_parameters-97"><span class="linenos"> 97</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-98"><a href="#count_positional_parameters-98"><span class="linenos"> 98</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a>                <span class="k">break</span>
-</span><span id="count_positional_parameters-102"><a href="#count_positional_parameters-102"><span class="linenos">102</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-84"><a href="#count_positional_parameters-84"><span class="linenos"> 84</span></a><span class="k">def</span> <span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="count_positional_parameters-85"><a href="#count_positional_parameters-85"><span class="linenos"> 85</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="count_positional_parameters-86"><a href="#count_positional_parameters-86"><span class="linenos"> 86</span></a>
+</span><span id="count_positional_parameters-87"><a href="#count_positional_parameters-87"><span class="linenos"> 87</span></a><span class="sd">    Returns:</span>
+</span><span id="count_positional_parameters-88"><a href="#count_positional_parameters-88"><span class="linenos"> 88</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="count_positional_parameters-89"><a href="#count_positional_parameters-89"><span class="linenos"> 89</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="count_positional_parameters-90"><a href="#count_positional_parameters-90"><span class="linenos"> 90</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="count_positional_parameters-91"><a href="#count_positional_parameters-91"><span class="linenos"> 91</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="count_positional_parameters-92"><a href="#count_positional_parameters-92"><span class="linenos"> 92</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-93"><a href="#count_positional_parameters-93"><span class="linenos"> 93</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-94"><a href="#count_positional_parameters-94"><span class="linenos"> 94</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="count_positional_parameters-95"><a href="#count_positional_parameters-95"><span class="linenos"> 95</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="count_positional_parameters-96"><a href="#count_positional_parameters-96"><span class="linenos"> 96</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="count_positional_parameters-97"><a href="#count_positional_parameters-97"><span class="linenos"> 97</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="count_positional_parameters-98"><a href="#count_positional_parameters-98"><span class="linenos"> 98</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="count_positional_parameters-102"><a href="#count_positional_parameters-102"><span class="linenos">102</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="count_positional_parameters-103"><a href="#count_positional_parameters-103"><span class="linenos">103</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="count_positional_parameters-104"><a href="#count_positional_parameters-104"><span class="linenos">104</span></a>                <span class="k">break</span>
+</span><span id="count_positional_parameters-105"><a href="#count_positional_parameters-105"><span class="linenos">105</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span></pre></div>
 
 
@@ -665,19 +674,19 @@
 
     </div>
     <a class="headerlink" href="#guess_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="guess_star-105"><a href="#guess_star-105"><span class="linenos">105</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="guess_star-106"><a href="#guess_star-106"><span class="linenos">106</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
-</span><span id="guess_star-107"><a href="#guess_star-107"><span class="linenos">107</span></a>
-</span><span id="guess_star-108"><a href="#guess_star-108"><span class="linenos">108</span></a><span class="sd">    Args:</span>
-</span><span id="guess_star-109"><a href="#guess_star-109"><span class="linenos">109</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="guess_star-110"><a href="#guess_star-110"><span class="linenos">110</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="guess_star-111"><a href="#guess_star-111"><span class="linenos">111</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="guess_star-112"><a href="#guess_star-112"><span class="linenos">112</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="guess_star-113"><a href="#guess_star-113"><span class="linenos">113</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="guess_star-114"><a href="#guess_star-114"><span class="linenos">114</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="guess_star-115"><a href="#guess_star-115"><span class="linenos">115</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function.</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="guess_star-116"><a href="#guess_star-116"><span class="linenos">116</span></a>            <span class="s1">&#39;You may need to specify `star` explicitly.&#39;</span><span class="p">)</span>
-</span><span id="guess_star-117"><a href="#guess_star-117"><span class="linenos">117</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="guess_star-108"><a href="#guess_star-108"><span class="linenos">108</span></a><span class="k">def</span> <span class="nf">guess_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="guess_star-109"><a href="#guess_star-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Guesses whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="guess_star-110"><a href="#guess_star-110"><span class="linenos">110</span></a>
+</span><span id="guess_star-111"><a href="#guess_star-111"><span class="linenos">111</span></a><span class="sd">    Args:</span>
+</span><span id="guess_star-112"><a href="#guess_star-112"><span class="linenos">112</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="guess_star-113"><a href="#guess_star-113"><span class="linenos">113</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="guess_star-114"><a href="#guess_star-114"><span class="linenos">114</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="guess_star-115"><a href="#guess_star-115"><span class="linenos">115</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="guess_star-116"><a href="#guess_star-116"><span class="linenos">116</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="guess_star-117"><a href="#guess_star-117"><span class="linenos">117</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="guess_star-118"><a href="#guess_star-118"><span class="linenos">118</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not guess whether to unpack the first argument to the function.</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="guess_star-119"><a href="#guess_star-119"><span class="linenos">119</span></a>            <span class="s1">&#39;You may need to specify `star` explicitly.&#39;</span><span class="p">)</span>
+</span><span id="guess_star-120"><a href="#guess_star-120"><span class="linenos">120</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 

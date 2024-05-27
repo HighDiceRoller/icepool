@@ -1323,14 +1323,14 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 
     </div>
     <a class="headerlink" href="#Outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-67"><a href="#Outcome-67"><span class="linenos">67</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
-</span><span id="Outcome-68"><a href="#Outcome-68"><span class="linenos">68</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
-</span><span id="Outcome-69"><a href="#Outcome-69"><span class="linenos">69</span></a>
-</span><span id="Outcome-70"><a href="#Outcome-70"><span class="linenos">70</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
-</span><span id="Outcome-71"><a href="#Outcome-71"><span class="linenos">71</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Outcome-70"><a href="#Outcome-70"><span class="linenos">70</span></a><span class="k">class</span> <span class="nc">Outcome</span><span class="p">(</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]):</span>
+</span><span id="Outcome-71"><a href="#Outcome-71"><span class="linenos">71</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to attempt to verify that outcome types are hashable and sortable.</span>
 </span><span id="Outcome-72"><a href="#Outcome-72"><span class="linenos">72</span></a>
-</span><span id="Outcome-73"><a href="#Outcome-73"><span class="linenos">73</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Outcome-74"><a href="#Outcome-74"><span class="linenos">74</span></a>        <span class="o">...</span>
+</span><span id="Outcome-73"><a href="#Outcome-73"><span class="linenos">73</span></a><span class="sd">    Far from foolproof, e.g. it cannot enforce total ordering.</span>
+</span><span id="Outcome-74"><a href="#Outcome-74"><span class="linenos">74</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Outcome-75"><a href="#Outcome-75"><span class="linenos">75</span></a>
+</span><span id="Outcome-76"><a href="#Outcome-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">T_contra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="Outcome-77"><a href="#Outcome-77"><span class="linenos">77</span></a>        <span class="o">...</span>
 </span></pre></div>
 
 
@@ -10857,10 +10857,10 @@ modification.</li>
 
     </div>
     <a class="headerlink" href="#RerollType"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-61"><a href="#RerollType-61"><span class="linenos">61</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="RerollType-62"><a href="#RerollType-62"><span class="linenos">62</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
-</span><span id="RerollType-63"><a href="#RerollType-63"><span class="linenos">63</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="RerollType-64"><a href="#RerollType-64"><span class="linenos">64</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-64"><a href="#RerollType-64"><span class="linenos">64</span></a><span class="k">class</span> <span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+</span><span id="RerollType-65"><a href="#RerollType-65"><span class="linenos">65</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="RerollType-66"><a href="#RerollType-66"><span class="linenos">66</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
+</span><span id="RerollType-67"><a href="#RerollType-67"><span class="linenos">67</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -17668,10 +17668,13 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </span><span id="Order-52"><a href="#Order-52"><span class="linenos">52</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="Order-53"><a href="#Order-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
 </span><span id="Order-54"><a href="#Order-54"><span class="linenos">54</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order-55"><a href="#Order-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order-56"><a href="#Order-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order-57"><a href="#Order-57"><span class="linenos">57</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order-58"><a href="#Order-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="Order-55"><a href="#Order-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Order-56"><a href="#Order-56"><span class="linenos">56</span></a>                    <span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+</span><span id="Order-57"><a href="#Order-57"><span class="linenos">57</span></a>                    <span class="s1">&#39;Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.&#39;</span>
+</span><span id="Order-58"><a href="#Order-58"><span class="linenos">58</span></a>                <span class="p">)</span>
+</span><span id="Order-59"><a href="#Order-59"><span class="linenos">59</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order-60"><a href="#Order-60"><span class="linenos">60</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order-61"><a href="#Order-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -17741,10 +17744,13 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </span><span id="Order.merge-52"><a href="#Order.merge-52"><span class="linenos">52</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="Order.merge-53"><a href="#Order.merge-53"><span class="linenos">53</span></a>        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
 </span><span id="Order.merge-54"><a href="#Order.merge-54"><span class="linenos">54</span></a>            <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="Order.merge-55"><a href="#Order.merge-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="Order.merge-56"><a href="#Order.merge-56"><span class="linenos">56</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-</span><span id="Order.merge-57"><a href="#Order.merge-57"><span class="linenos">57</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="Order.merge-58"><a href="#Order.merge-58"><span class="linenos">58</span></a>        <span class="k">return</span> <span class="n">result</span>
+</span><span id="Order.merge-55"><a href="#Order.merge-55"><span class="linenos">55</span></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Order.merge-56"><a href="#Order.merge-56"><span class="linenos">56</span></a>                    <span class="sa">f</span><span class="s1">&#39;Conflicting orders </span><span class="si">{</span><span class="n">orders</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+</span><span id="Order.merge-57"><a href="#Order.merge-57"><span class="linenos">57</span></a>                    <span class="s1">&#39;Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.&#39;</span>
+</span><span id="Order.merge-58"><a href="#Order.merge-58"><span class="linenos">58</span></a>                <span class="p">)</span>
+</span><span id="Order.merge-59"><a href="#Order.merge-59"><span class="linenos">59</span></a>            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+</span><span id="Order.merge-60"><a href="#Order.merge-60"><span class="linenos">60</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="Order.merge-61"><a href="#Order.merge-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
