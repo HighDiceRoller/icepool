@@ -680,7 +680,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         This requires the outcomes to be evaluated in ascending order.
 
         Args:
-            keep, drop:
+            keep, drop: These arguments work together:
                 * If neither are provided, the single lowest element
                     will be kept.
                 * If only `keep` is provided, the `keep` lowest elements
@@ -705,7 +705,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         This requires the outcomes to be evaluated in descending order.
 
         Args:
-            keep, drop:
+            keep, drop: These arguments work together:
                 * If neither are provided, the single highest element
                     will be kept.
                 * If only `keep` is provided, the `keep` highest elements

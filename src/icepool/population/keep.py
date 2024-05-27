@@ -108,8 +108,7 @@ def lowest(arg0,
     Args:
         args: Dice or individual outcomes in a single iterable, or as two or
             more separate arguments. Similar to the built-in `min()`.
-        keep, drop:
-
+        keep, drop: These arguments work together:
             * If neither are provided, the single lowest die will be taken.
             * If only `keep` is provided, the `keep` lowest dice will be summed.
             * If only `drop` is provided, the `drop` lowest dice will be dropped
@@ -163,8 +162,7 @@ def highest(arg0,
     Args:
         args: Dice or individual outcomes in a single iterable, or as two or
             more separate arguments. Similar to the built-in `max()`.
-        keep, drop:
-        
+        keep, drop: These arguments work together:
             * If neither are provided, the single highest die will be taken.
             * If only `keep` is provided, the `keep` highest dice will be summed.
             * If only `drop` is provided, the `drop` highest dice will be dropped
