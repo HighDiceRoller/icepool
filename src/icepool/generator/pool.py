@@ -7,6 +7,7 @@ import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collection.counts import Counts
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.population.keep import lowest_slice, highest_slice
 
 import itertools
 import math
@@ -421,25 +422,17 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     ) -> 'Pool[T] | icepool.Die[T]':
         return self.keep(index)
 
-    def lowest(self, keep: int = 1, drop: int = 0) -> 'Pool[T]':
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-        if drop < 0:
-            raise ValueError(f'drop={drop} cannot be negative.')
+    def lowest(self,
+               keep: int | None = None,
+               drop: int | None = None) -> 'Pool[T]':
+        index = lowest_slice(keep, drop)
+        return self[index]
 
-        start = min(drop, self.keep_size())
-        stop = min(keep + drop, self.keep_size())
-        return self[start:stop]
-
-    def highest(self, keep: int = 1, drop: int = 0) -> 'Pool[T]':
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-        if drop < 0:
-            raise ValueError(f'drop={drop} cannot be negative.')
-
-        start = self.keep_size() - min(keep + drop, self.keep_size())
-        stop = self.keep_size() - min(drop, self.keep_size())
-        return self[start:stop]
+    def highest(self,
+                keep: int | None = None,
+                drop: int | None = None) -> 'Pool[T]':
+        index = highest_slice(keep, drop)
+        return self[index]
 
     def middle(self,
                keep: int = 1,
