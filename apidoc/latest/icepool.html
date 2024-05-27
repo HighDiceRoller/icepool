@@ -2136,7 +2136,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-824"><a href="#Die-824"><span class="linenos"> 824</span></a><span class="sd">        Args:</span>
 </span><span id="Die-825"><a href="#Die-825"><span class="linenos"> 825</span></a><span class="sd">            rolls: The number of dice to roll. All dice will have the same</span>
 </span><span id="Die-826"><a href="#Die-826"><span class="linenos"> 826</span></a><span class="sd">                outcomes as `self`.</span>
-</span><span id="Die-827"><a href="#Die-827"><span class="linenos"> 827</span></a><span class="sd">            keep, drop:</span>
+</span><span id="Die-827"><a href="#Die-827"><span class="linenos"> 827</span></a><span class="sd">            keep, drop: These arguments work together:</span>
 </span><span id="Die-828"><a href="#Die-828"><span class="linenos"> 828</span></a><span class="sd">                * If neither are provided, the single lowest die will be taken.</span>
 </span><span id="Die-829"><a href="#Die-829"><span class="linenos"> 829</span></a><span class="sd">                * If only `keep` is provided, the `keep` lowest dice will be summed.</span>
 </span><span id="Die-830"><a href="#Die-830"><span class="linenos"> 830</span></a><span class="sd">                * If only `drop` is provided, the `drop` lowest dice will be dropped</span>
@@ -2173,7 +2173,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-861"><a href="#Die-861"><span class="linenos"> 861</span></a>
 </span><span id="Die-862"><a href="#Die-862"><span class="linenos"> 862</span></a><span class="sd">        Args:</span>
 </span><span id="Die-863"><a href="#Die-863"><span class="linenos"> 863</span></a><span class="sd">            rolls: The number of dice to roll.</span>
-</span><span id="Die-864"><a href="#Die-864"><span class="linenos"> 864</span></a><span class="sd">            keep, drop:</span>
+</span><span id="Die-864"><a href="#Die-864"><span class="linenos"> 864</span></a><span class="sd">            keep, drop: These arguments work together:</span>
 </span><span id="Die-865"><a href="#Die-865"><span class="linenos"> 865</span></a><span class="sd">                * If neither are provided, the single highest die will be taken.</span>
 </span><span id="Die-866"><a href="#Die-866"><span class="linenos"> 866</span></a><span class="sd">                * If only `keep` is provided, the `keep` highest dice will be summed.</span>
 </span><span id="Die-867"><a href="#Die-867"><span class="linenos"> 867</span></a><span class="sd">                * If only `drop` is provided, the `drop` highest dice will be dropped</span>
@@ -4100,7 +4100,7 @@ the pool.</li>
 </span><span id="Die.lowest-824"><a href="#Die.lowest-824"><span class="linenos">824</span></a><span class="sd">        Args:</span>
 </span><span id="Die.lowest-825"><a href="#Die.lowest-825"><span class="linenos">825</span></a><span class="sd">            rolls: The number of dice to roll. All dice will have the same</span>
 </span><span id="Die.lowest-826"><a href="#Die.lowest-826"><span class="linenos">826</span></a><span class="sd">                outcomes as `self`.</span>
-</span><span id="Die.lowest-827"><a href="#Die.lowest-827"><span class="linenos">827</span></a><span class="sd">            keep, drop:</span>
+</span><span id="Die.lowest-827"><a href="#Die.lowest-827"><span class="linenos">827</span></a><span class="sd">            keep, drop: These arguments work together:</span>
 </span><span id="Die.lowest-828"><a href="#Die.lowest-828"><span class="linenos">828</span></a><span class="sd">                * If neither are provided, the single lowest die will be taken.</span>
 </span><span id="Die.lowest-829"><a href="#Die.lowest-829"><span class="linenos">829</span></a><span class="sd">                * If only `keep` is provided, the `keep` lowest dice will be summed.</span>
 </span><span id="Die.lowest-830"><a href="#Die.lowest-830"><span class="linenos">830</span></a><span class="sd">                * If only `drop` is provided, the `drop` lowest dice will be dropped</span>
@@ -4129,8 +4129,9 @@ the pool.</li>
 <ul>
 <li><strong>rolls:</strong>  The number of dice to roll. All dice will have the same
 outcomes as <code>self</code>.</li>
-<li><strong>keep, drop:</strong>  * If neither are provided, the single lowest die will be taken.
+<li><strong>keep, drop:</strong>  These arguments work together:
 <ul>
+<li>If neither are provided, the single lowest die will be taken.</li>
 <li>If only <code>keep</code> is provided, the <code>keep</code> lowest dice will be summed.</li>
 <li>If only <code>drop</code> is provided, the <code>drop</code> lowest dice will be dropped
 and the rest will be summed.</li>
@@ -4170,7 +4171,7 @@ the next <code>keep</code> lowest dice will be summed.</li>
 </span><span id="Die.highest-861"><a href="#Die.highest-861"><span class="linenos">861</span></a>
 </span><span id="Die.highest-862"><a href="#Die.highest-862"><span class="linenos">862</span></a><span class="sd">        Args:</span>
 </span><span id="Die.highest-863"><a href="#Die.highest-863"><span class="linenos">863</span></a><span class="sd">            rolls: The number of dice to roll.</span>
-</span><span id="Die.highest-864"><a href="#Die.highest-864"><span class="linenos">864</span></a><span class="sd">            keep, drop:</span>
+</span><span id="Die.highest-864"><a href="#Die.highest-864"><span class="linenos">864</span></a><span class="sd">            keep, drop: These arguments work together:</span>
 </span><span id="Die.highest-865"><a href="#Die.highest-865"><span class="linenos">865</span></a><span class="sd">                * If neither are provided, the single highest die will be taken.</span>
 </span><span id="Die.highest-866"><a href="#Die.highest-866"><span class="linenos">866</span></a><span class="sd">                * If only `keep` is provided, the `keep` highest dice will be summed.</span>
 </span><span id="Die.highest-867"><a href="#Die.highest-867"><span class="linenos">867</span></a><span class="sd">                * If only `drop` is provided, the `drop` highest dice will be dropped</span>
@@ -4198,8 +4199,9 @@ the next <code>keep</code> lowest dice will be summed.</li>
 
 <ul>
 <li><strong>rolls:</strong>  The number of dice to roll.</li>
-<li><strong>keep, drop:</strong>  * If neither are provided, the single highest die will be taken.
+<li><strong>keep, drop:</strong>  These arguments work together:
 <ul>
+<li>If neither are provided, the single highest die will be taken.</li>
 <li>If only <code>keep</code> is provided, the <code>keep</code> highest dice will be summed.</li>
 <li>If only <code>drop</code> is provided, the <code>drop</code> highest dice will be dropped
 and the rest will be summed.</li>
