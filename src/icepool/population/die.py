@@ -823,7 +823,7 @@ class Die(Population[T_co]):
         Args:
             rolls: The number of dice to roll. All dice will have the same
                 outcomes as `self`.
-            keep, drop:
+            keep, drop: These arguments work together:
                 * If neither are provided, the single lowest die will be taken.
                 * If only `keep` is provided, the `keep` lowest dice will be summed.
                 * If only `drop` is provided, the `drop` lowest dice will be dropped
@@ -860,7 +860,7 @@ class Die(Population[T_co]):
 
         Args:
             rolls: The number of dice to roll.
-            keep, drop:
+            keep, drop: These arguments work together:
                 * If neither are provided, the single highest die will be taken.
                 * If only `keep` is provided, the `keep` highest dice will be summed.
                 * If only `drop` is provided, the `drop` highest dice will be dropped
