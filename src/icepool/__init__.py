@@ -84,7 +84,7 @@ from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsIt
 from icepool.population.keep import lowest, highest, middle
 
 from icepool.generator.pool import Pool, standard_pool
-from icepool.generator.mixture import MixtureMultisetGenerator
+from icepool.generator.pool_mixture import PoolMixture
 
 from icepool.generator.multiset_generator import MultisetGenerator, InitialMultisetGenerator, NextMultisetGenerator
 from icepool.generator.alignment import Alignment

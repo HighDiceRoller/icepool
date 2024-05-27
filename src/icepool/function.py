@@ -714,4 +714,4 @@ def map_to_pool(
         if pool is not icepool.Reroll:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
-    return icepool.MixtureMultisetGenerator(data)  # type: ignore
+    return icepool.PoolMixture(data)  # type: ignore
