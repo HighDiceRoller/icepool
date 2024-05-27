@@ -344,7 +344,6 @@ class Die(Population[T_co]):
 
         Args:
             which: Selects which outcomes to reroll. Options:
-                * A single outcome to reroll.
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
@@ -965,6 +964,50 @@ class Die(Population[T_co]):
 
         return count_die.map_to_pool(
             lambda x, nx: [explode] * x + [not_explode] * nx)
+
+    def reroll_to_pool(
+        self,
+        rolls: int,
+        which: Callable[..., bool] | Collection[T_co],
+        /,
+        max_rerolls: int,
+        *,
+        star: bool | None = None
+    ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
+        """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
+
+        Each die can only be rerolled once, and no more than `max_rerolls` dice 
+        may be rerolled. If more dice are eligible to be rerolled than this, the
+        rerolls are chosen uniformly at random among them.
+
+        Known issue: The denominator is not as expected.
+        
+        Args:
+            rolls: How many dice in the pool.
+            which: Selects which outcomes to reroll. Options:
+                * A collection of outcomes to reroll.
+                * A callable that takes an outcome and returns `True` if it
+                    should be rerolled.
+            max_rerolls: The maximum number of dice to reroll.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature.
+        """
+        outcome_set = self._select_outcomes(which, star)
+        rerollable, not_rerollable = self.split(outcome_set)
+        rerollable_count = rolls @ icepool.coin(rerollable.denominator(),
+                                                self.denominator())
+
+        def make_pool(rerollable_count):
+            not_rerollable_count = rolls - rerollable_count
+            rerolled_count = min(rerollable_count, max_rerolls)
+            not_rerolled_count = rerollable_count - rerolled_count
+            return ([not_rerollable] * not_rerollable_count +
+                    [self] * rerolled_count +
+                    [rerollable] * not_rerolled_count)
+
+        return rerollable_count.map_to_pool(make_pool)
 
     # Unary operators.
 
