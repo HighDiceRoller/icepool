@@ -51,7 +51,10 @@ class Order(enum.IntEnum):
         result = Order.Any
         for order in orders:
             if (result > 0 and order < 0) or (result < 0 and order > 0):
-                raise ValueError(f'Conflicting orders {orders}.')
+                raise ValueError(
+                    f'Conflicting orders {orders}.\n' +
+                    'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
+                )
             if result == Order.Any:
                 result = order
         return result
