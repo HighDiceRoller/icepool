@@ -87,12 +87,12 @@
 </div>
 
 <script id="icecupWorker" type="javascript/worker">
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js");
+importScripts("https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js");
 
 async function initPyodide(){
     self.postMessage({ cmd: 'setLoadingText', text: 'Loading pyodide' });
     let pyodide = await loadPyodide({
-        indexURL : "https://cdn.jsdelivr.net/pyodide/v0.23.0/full/",
+        indexURL : "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/",
         stdout: (s) => {self.postMessage({ cmd: 'appendOutput', text: s + '\n'});},
         stderr: (s) => {self.postMessage({ cmd: 'appendError', text: s + '\n'});}
     });
