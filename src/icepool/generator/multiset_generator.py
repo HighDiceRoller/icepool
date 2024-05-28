@@ -22,7 +22,10 @@ InitialMultisetGenerator: TypeAlias = Iterator[tuple[
     'icepool.MultisetGenerator', int]]
 NextMultisetGenerator: TypeAlias = Iterator[tuple['icepool.MultisetGenerator',
                                                   Sequence, int]]
-"""The generator type returned by `_generate_min` and `_generate_max`."""
+"""The generator type returned by `_generate_min` and `_generate_max`.
+
+Each element is a tuple of generator, counts, weight.
+"""
 
 
 class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):

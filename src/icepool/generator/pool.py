@@ -6,6 +6,7 @@ import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collection.counts import Counts
+from icepool.generator.keep_tuple import compose_keep_tuples, pop_max_from_keep_tuple, pop_min_from_keep_tuple, make_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.population.keep import lowest_slice, highest_slice
 
@@ -245,12 +246,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                     next_dice_counts[popped_die] += misses
                 total_hits += hits
                 result_weight *= weight
-            if total_hits == 0:
-                result_count = 0
-                popped_keep_tuple = self.keep_tuple()
-            else:
-                result_count = sum(self.keep_tuple()[:total_hits])
-                popped_keep_tuple = self.keep_tuple()[total_hits:]
+            popped_keep_tuple, result_count = pop_min_from_keep_tuple(
+                self.keep_tuple(), total_hits)
             popped_pool = Pool._new_from_mapping(next_dice_counts,
                                                  popped_keep_tuple)
             if not any(popped_keep_tuple):
@@ -290,12 +287,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                     next_dice_counts[popped_die] += misses
                 total_hits += hits
                 result_weight *= weight
-            if total_hits == 0:
-                result_count = 0
-                popped_keep_tuple = self.keep_tuple()
-            else:
-                result_count = sum(self.keep_tuple()[-total_hits:])
-                popped_keep_tuple = self.keep_tuple()[:-total_hits]
+            popped_keep_tuple, result_count = pop_max_from_keep_tuple(
+                self.keep_tuple(), total_hits)
             popped_pool = Pool._new_from_mapping(next_dice_counts,
                                                  popped_keep_tuple)
             if not any(popped_keep_tuple):
@@ -394,11 +387,8 @@ class Pool(MultisetGenerator[T, tuple[int]]):
 
         relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
 
-        # Merge keep tuples.
-        keep_tuple: list[int] = []
-        for x in self.keep_tuple():
-            keep_tuple.append(sum(relative_keep_tuple[:x]))
-            relative_keep_tuple = relative_keep_tuple[x:]
+        keep_tuple = compose_keep_tuples(self.keep_tuple(),
+                                         relative_keep_tuple)
 
         result = Pool._new_raw(self._dice, tuple(keep_tuple))
 
@@ -547,83 +537,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     @cached_property
     def _hash_key(self) -> tuple:
         return Pool, self._dice, self._keep_tuple
-
-
-def make_keep_tuple(
-        pool_size: int,
-        index: int | slice | Sequence[int | EllipsisType]) -> tuple[int, ...]:
-    """Expresses `index` as a keep_tuple.
-
-    See `Pool.set_keep_tuple()` for details.
-
-    Args:
-        `pool_size`: An `int` specifying the size of the pool.
-        `keep_tuple`: Raw specification for how the dice are to be counted.
-    Raises:
-        IndexError: If:
-            * More than one `Ellipsis` is used.
-            * An `Ellipsis` is used in the center with too few `pool_size`.
-    """
-    if isinstance(index, int):
-        result = [0] * pool_size
-        result[index] = 1
-        return tuple(result)
-    elif isinstance(index, slice):
-        if index.step is not None:
-            raise IndexError('step is not supported for pool subscripting')
-        result = [0] * pool_size
-        result[index] = [1] * len(result[index])
-        return tuple(result)
-    else:
-        split = None
-        for i, x in enumerate(index):
-            if x is Ellipsis:
-                if split is None:
-                    split = i
-                else:
-                    raise IndexError(
-                        'Cannot use more than one Ellipsis (...) for keep_tuple.'
-                    )
-
-        # The following code is designed to replace Ellipsis with actual zeros.
-        index = cast('Sequence[int]', index)
-
-        if split is None:
-            if len(index) != pool_size:
-                raise IndexError(
-                    f'Length of {index} does not match pool size of {pool_size}'
-                )
-            return tuple(index)
-
-        extra_dice = pool_size - len(index) + 1
-
-        if split == 0:
-            # Ellipsis on left.
-            index = index[1:]
-            if extra_dice < 0:
-                return tuple(index[-extra_dice:])
-            else:
-                return (0, ) * extra_dice + tuple(index)
-        elif split == len(index) - 1:
-            # Ellipsis on right.
-            index = index[:-1]
-            if extra_dice < 0:
-                return tuple(index[:extra_dice])
-            else:
-                return tuple(index) + (0, ) * extra_dice
-        else:
-            # Ellipsis in center.
-            if extra_dice < 0:
-                result = [0] * pool_size
-                for i in range(min(split, pool_size)):
-                    result[i] += index[i]
-                reverse_split = split - len(index)
-                for i in range(-1, max(reverse_split - 1, -pool_size - 1), -1):
-                    result[i] += index[i]
-                return tuple(result)
-            else:
-                return tuple(index[:split]) + (0, ) * extra_dice + tuple(
-                    index[split + 1:])
 
 
 def standard_pool(
