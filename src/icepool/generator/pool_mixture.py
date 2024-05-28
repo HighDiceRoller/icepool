@@ -20,34 +20,33 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
 
     # Note that the total weight of a subpool is the product of the factor here
     # and the denominator of the subpool.
-    _sub_pools: Mapping[Pool[T], int]
+    _inners: Mapping[Pool[T], int]
 
     def __init__(self,
-                 sub_pools: Sequence[Pool[T]] | Mapping[Pool[T], int],
+                 inners: Sequence[Pool[T]] | Mapping[Pool[T], int],
                  *,
                  denominator: int | None = None):
         data: Mapping[Pool[T], int]
 
-        if isinstance(sub_pools, Mapping):
-            data = {sub_pool: weight for sub_pool, weight in sub_pools.items()}
+        if isinstance(inners, Mapping):
+            data = {inner: weight for inner, weight in inners.items()}
         else:
             data = defaultdict(int)
-            for sub_pool in sub_pools:
-                data[sub_pool] += 1
+            for inner in inners:
+                data[inner] += 1
 
         denominator_lcm = math.lcm(
-            *(sub_pool.denominator() //
-              math.gcd(sub_pool.denominator(), weight)
-              for sub_pool, weight in data.items()
-              if sub_pool.denominator() > 0 and weight > 0))
+            *(inner.denominator() // math.gcd(inner.denominator(), weight)
+              for inner, weight in data.items()
+              if inner.denominator() > 0 and weight > 0))
 
-        self._sub_pools = defaultdict(int)
+        self._inners = defaultdict(int)
         min_denominator = 0
-        for sub_pool, weight in data.items():
-            factor = denominator_lcm * weight // sub_pool.denominator(
-            ) if sub_pool.denominator() else 0
-            self._sub_pools[sub_pool] += factor
-            min_denominator += factor * sub_pool.denominator()
+        for inner, weight in data.items():
+            factor = denominator_lcm * weight // inner.denominator(
+            ) if inner.denominator() else 0
+            self._inners[inner] += factor
+            min_denominator += factor * inner.denominator()
 
         if denominator is not None:
             scale, mod = divmod(denominator, min_denominator)
@@ -55,29 +54,28 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
                 raise ValueError(
                     f'Specified denominator of {denominator} is not consistent with the minimum possible denominator {min_denominator}.'
                 )
-            for sub_pool in self._sub_pools:
-                self._sub_pools[sub_pool] *= scale
+            for inner in self._inners:
+                self._inners[inner] *= scale
 
     def outcomes(self) -> Sequence[T]:
-        return sorted_union(*(sub_pool.outcomes()
-                              for sub_pool in self._sub_pools))
+        return sorted_union(*(inner.outcomes() for inner in self._inners))
 
     def output_arity(self) -> int:
         result = None
-        for sub_pool in self._sub_pools:
+        for inner in self._inners:
             if result is None:
-                result = sub_pool.output_arity()
-            elif result != sub_pool.output_arity():
+                result = inner.output_arity()
+            elif result != inner.output_arity():
                 raise ValueError('Inconsistent output_arity.')
         if result is None:
             raise ValueError('Empty MixtureMultisetGenerator.')
         return result
 
     def _is_resolvable(self) -> bool:
-        return all(sub_pool._is_resolvable() for sub_pool in self._sub_pools)
+        return all(inner._is_resolvable() for inner in self._inners)
 
     def _generate_initial(self) -> InitialMultisetGenerator:
-        yield from self._sub_pools.items()
+        yield from self._inners.items()
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         raise RuntimeError(
@@ -92,8 +90,8 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     def _estimate_order_costs(self) -> tuple[int, int]:
         total_pop_min_cost = 0
         total_pop_max_cost = 0
-        for sub_pool in self._sub_pools:
-            pop_min_cost, pop_max_cost = sub_pool._estimate_order_costs()
+        for inner in self._inners:
+            pop_min_cost, pop_max_cost = inner._estimate_order_costs()
             total_pop_min_cost += pop_min_cost
             total_pop_max_cost += pop_max_cost
         return total_pop_min_cost, total_pop_max_cost
@@ -101,8 +99,8 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     @cached_property
     def _denominator(self) -> int:
         result = 0
-        for sub_pool, weight in self._sub_pools.items():
-            result += weight * sub_pool.denominator()
+        for inner, weight in self._inners.items():
+            result += weight * inner.denominator()
         return result
 
     def denominator(self) -> int:
@@ -111,13 +109,13 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     @property
     def _hash_key(self) -> Hashable:
         # This is not intended to be cached directly, so we are a little loose here.
-        return PoolMixture, tuple(self._sub_pools.items())
+        return PoolMixture, tuple(self._inners.items())
 
     # Mapping pool specializations.
     def unary_operator(self, op: Callable[..., Pool[U]]) -> 'PoolMixture[U]':
         data: MutableMapping = defaultdict(int)
-        for sub_pool, factor in self._sub_pools.items():
-            data[op(sub_pool)] += sub_pool.denominator() * factor
+        for inner, factor in self._inners.items():
+            data[op(inner)] += inner.denominator() * factor
         return PoolMixture(data, denominator=self.denominator())
 
     @overload
@@ -133,8 +131,8 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'PoolMixture[T] | icepool.Die[T]':
         data: MutableMapping = defaultdict(int)
-        for sub_pool, factor in self._sub_pools.items():
-            data[sub_pool.keep(index)] += sub_pool.denominator() * factor
+        for inner, factor in self._inners.items():
+            data[inner.keep(index)] += inner.denominator() * factor
         if isinstance(index, int):
             return icepool.Die(data)
         else:
