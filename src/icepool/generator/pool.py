@@ -6,7 +6,7 @@ import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
 from icepool.collection.counts import Counts
-from icepool.generator.keep_tuple import compose_keep_tuples, pop_max_from_keep_tuple, pop_min_from_keep_tuple, make_keep_tuple
+from icepool.generator.keep import KeepGenerator, compose_keep_tuples, pop_max_from_keep_tuple, pop_min_from_keep_tuple, make_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.population.keep import lowest_slice, highest_slice
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from icepool.expression import MultisetExpression
 
 
-class Pool(MultisetGenerator[T, tuple[int]]):
+class Pool(KeepGenerator[T]):
     """Represents a multiset of outcomes resulting from the roll of several dice.
 
     This should be used in conjunction with `MultisetEvaluator` to generate a
@@ -37,7 +37,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     first pool one-for-one".
     """
 
-    _keep_tuple: tuple[int, ...]
     _dice: tuple[tuple['icepool.Die[T]', int]]
 
     def __new__(
@@ -139,14 +138,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
         """The number of dice in this pool before the keep_tuple is applied."""
         return self._raw_size
 
-    @cached_property
-    def _keep_size(self) -> int:
-        return sum(self.keep_tuple())
-
-    def keep_size(self) -> int:
-        """The total count produced by this pool after the keep_tuple is applied."""
-        return self._keep_size
-
     def _is_resolvable(self) -> bool:
         return all(not die.is_empty() for die, _ in self._dice)
 
@@ -191,15 +182,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
             pop_max_cost
         """
         return icepool.generator.pool_cost.estimate_costs(self)
-
-    def keep_tuple(self) -> tuple[int, ...]:
-        """The tuple indicating which dice in the pool will be counted.
-
-        The tuple has one element per `Die` in the pool, from lowest roll to
-        highest roll. The `Die` in the corresponding sorted position will be
-        counted that many times.
-        """
-        return self._keep_tuple
 
     @cached_property
     def _min_outcome(self) -> T:
@@ -315,70 +297,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'Pool[T] | icepool.Die[T]':
-        """A `Pool` with the selected dice counted after rolling and sorting.
-
-        Use `pool[index]` for the same effect as this method.
-
-        The rolls are sorted in ascending order for this purpose,
-        regardless of which order the outcomes are evaluated in.
-
-        For example, here are some ways of selecting the two highest rolls out
-        of five:
-
-        * `pool[3:5]`
-        * `pool[3:]`
-        * `pool[-2:]`
-        * `pool[..., 1, 1]`
-        * `pool[0, 0, 0, 1, 1]`
-
-        These will count the highest as a positive and the lowest as a negative:
-
-        * `pool[-1, 0, 0, 0, 1]`
-        * `pool[-1, ..., 1]`
-
-        The valid types of argument are:
-
-        * An `int`. This will count only the roll at the specified index.
-            In this case, the result is a `Die` rather than a `Pool`.
-        * A `slice`. The selected dice are counted once each.
-        * A sequence of one `int` for each `Die`.
-            Each roll is counted that many times, which could be multiple or
-            negative times.
-
-            Up to one `...` (`Ellipsis`) may be used.
-            `...` will be replaced with a number of zero
-            counts depending on the size of the pool.
-            This number may be "negative" if more `int`s are provided than
-            the size of the `Pool`. Specifically:
-
-            * If `index` is shorter than `size`, `...`
-                acts as enough zero counts to make up the difference.
-                E.g. `pool[1, ..., 1]` on five dice would act as
-                `pool[1, 0, 0, 0, 1]`.
-            * If `index` has length equal to `size`, `...` has no effect.
-                E.g. `pool[1, ..., 1]` on two dice would act as `pool[1, 1]`.
-            * If `index` is longer than `size` and `...` is on one side,
-                elements will be dropped from `index` on the side with `...`.
-                E.g. `pool[..., 1, 2, 3]` on two dice would act as `pool[2, 3]`.
-            * If `index` is longer than `size` and `...`
-                is in the middle, the counts will be as the sum of two
-                one-sided `...`.
-                E.g. `pool[-1, ..., 1]` acts like `[-1, ...]` plus `[..., 1]`.
-                On a `Pool` consisting of a single `Die` this would have
-                the -1 and 1 cancel each other out.
-
-        If this is called more than once, the selection is applied relative
-        to the previous keep_tuple. For example, applying `[:2][-1]` would
-        produce the second-lowest roll.
-
-        Raises:
-            IndexError: If:
-                * More than one `...` is used.
-                * The current keep_tuple has negative counts.
-                * The provided index specifies a fixed length that is
-                    different than the total of the counts in the current
-                    keep_tuple.
-        """
         convert_to_die = isinstance(index, int)
 
         if any(x < 0 for x in self.keep_tuple()):
@@ -397,76 +315,6 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                         icepool.evaluator.KeepEvaluator().evaluate(result))
         else:
             return result
-
-    @overload
-    def __getitem__(self,
-                    index: slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
-        ...
-
-    @overload
-    def __getitem__(self, index: int) -> 'icepool.Die[T]':
-        ...
-
-    def __getitem__(
-        self, index: int | slice | Sequence[int | EllipsisType]
-    ) -> 'Pool[T] | icepool.Die[T]':
-        return self.keep(index)
-
-    def lowest(self,
-               keep: int | None = None,
-               drop: int | None = None) -> 'Pool[T]':
-        index = lowest_slice(keep, drop)
-        return self[index]
-
-    def highest(self,
-                keep: int | None = None,
-                drop: int | None = None) -> 'Pool[T]':
-        index = highest_slice(keep, drop)
-        return self[index]
-
-    def middle(self,
-               keep: int = 1,
-               *,
-               tie: Literal['error', 'high', 'low'] = 'error') -> 'Pool[T]':
-        """Keep some of the middle elements from this multiset and drop the rest.
-
-        In contrast to the die and free function versions, this does not
-        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
-        Alternatively, you can perform some other evaluation.
-
-        Args:
-            keep: The number of elements to keep. If this is greater than the
-                current keep_size, all are kept.
-            tie: What to do if `keep` is odd but the current keep_size
-                is even, or vice versa.
-                * 'error' (default): Raises `IndexError`.
-                * 'low': The lower of the two possible elements is taken.
-                * 'high': The higher of the two possible elements is taken.
-        """
-        if keep < 0:
-            raise ValueError(f'keep={keep} cannot be negative.')
-
-        if keep % 2 == self.keep_size() % 2:
-            # The "good" case.
-            start = (self.keep_size() - keep) // 2
-        else:
-            # Need to consult the tiebreaker.
-            match tie:
-                case 'error':
-                    raise IndexError(
-                        f'The middle {keep} of {self.keep_size()} elements is ambiguous.\n'
-                        "Specify tie='low' or tie='high' to determine what to pick."
-                    )
-                case 'high':
-                    start = (self.keep_size() + 1 - keep) // 2
-                case 'low':
-                    start = (self.keep_size() - 1 - keep) // 2
-                case _:
-                    raise ValueError(
-                        f"Invalid value for tie {tie}. Expected 'error', 'low', or 'high'."
-                    )
-        stop = start + keep
-        return self[start:stop]
 
     def __add__(
         self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
@@ -512,18 +360,7 @@ class Pool(MultisetGenerator[T, tuple[int]]):
                     for die, die_count in pool._dice:
                         dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
-        return icepool.expression.MultisetExpression.additive_union(*args)
-
-    def __mul__(self, other: int) -> 'Pool[T]':
-        if not isinstance(other, int):
-            return NotImplemented
-        return self.multiply_counts(other)
-
-    # Commutable in this case.
-    def __rmul__(self, other: int) -> 'Pool[T]':
-        if not isinstance(other, int):
-            return NotImplemented
-        return self.multiply_counts(other)
+        return KeepGenerator.additive_union(*args)
 
     def multiply_counts(self, constant: int, /) -> 'Pool[T]':
         return Pool._new_raw(self._dice,
