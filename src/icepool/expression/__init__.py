@@ -4,7 +4,7 @@ from icepool.expression.multiset_expression import MultisetExpression, implicit_
 from icepool.expression.variable import MultisetVariable
 from icepool.expression.binary_operator import (
     BinaryOperatorExpression, IntersectionExpression, DifferenceExpression,
-    UnionExpression, DisjointUnionExpression, SymmetricDifferenceExpression)
+    UnionExpression, AdditiveUnionExpression, SymmetricDifferenceExpression)
 from icepool.expression.adjust_counts import (
     MapCountsExpression, AdjustCountsExpression, MultiplyCountsExpression,
     FloorDivCountsExpression, ModuloCountsExpression, KeepCountsExpression,
@@ -17,7 +17,7 @@ from icepool.expression.multiset_function import multiset_function
 __all__ = [
     'multiset_function', 'MultisetExpression', 'MultisetVariable',
     'BinaryOperatorExpression', 'IntersectionExpression',
-    'DifferenceExpression', 'UnionExpression', 'DisjointUnionExpression',
+    'DifferenceExpression', 'UnionExpression', 'AdditiveUnionExpression',
     'SymmetricDifferenceExpression', 'MapCountsExpression',
     'AdjustCountsExpression', 'MultiplyCountsExpression',
     'FloorDivCountsExpression', 'ModuloCountsExpression',

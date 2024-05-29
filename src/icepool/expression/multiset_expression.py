@@ -196,7 +196,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.expression.DisjointUnionExpression(*expressions)
+        return icepool.expression.AdditiveUnionExpression(*expressions)
 
     def __sub__(
             self, other:

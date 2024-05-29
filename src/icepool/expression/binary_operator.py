@@ -118,7 +118,7 @@ class UnionExpression(BinaryOperatorExpression):
         return '|'
 
 
-class DisjointUnionExpression(BinaryOperatorExpression):
+class AdditiveUnionExpression(BinaryOperatorExpression):
 
     @staticmethod
     def merge_counts(left: int, right: int) -> int:
