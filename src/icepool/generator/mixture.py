@@ -11,7 +11,10 @@ import math
 from collections import defaultdict
 from functools import cached_property
 from types import EllipsisType
-from typing import Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
+from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
+
+if TYPE_CHECKING:
+    from icepool.expression import MultisetExpression
 
 
 class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
@@ -111,10 +114,14 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
         # This is not intended to be cached directly, so we are a little loose here.
         return MixtureGenerator, tuple(self._inners.items())
 
-    # Mapping pool specializations.
-    def unary_operator(
-        self, op: Callable[..., MultisetGenerator[U, tuple[int]]]
-    ) -> 'MixtureGenerator[U]':
+    # Forwarding if inners are all KeepGenerators.
+
+    @cached_property
+    def _all_keep_generators(self) -> bool:
+        return all(
+            isinstance(inner, icepool.KeepGenerator) for inner in self._inners)
+
+    def _unary_operation(self, op: Callable) -> 'MixtureGenerator[T]':
         data: MutableMapping = defaultdict(int)
         for inner, factor in self._inners.items():
             data[op(inner)] += inner.denominator() * factor
@@ -132,53 +139,19 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
 
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
-    ) -> 'MixtureGenerator[T] | icepool.Die[T]':
-        data: MutableMapping = defaultdict(int)
-        for inner, factor in self._inners.items():
-            data[inner.keep(index)] += inner.denominator() * factor
-        if isinstance(index, int):
-            return icepool.Die(data)
+    ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+        if self._all_keep_generators:
+            result = self._unary_operation(lambda inner: inner.keep(index))
+            if isinstance(index, int):
+                return icepool.evaluator.KeepEvaluator().evaluate(result)
+            else:
+                return result
         else:
-            return MixtureGenerator(data, denominator=self.denominator())
+            return super().keep(index)
 
-    @overload
-    def __getitem__(
-            self, index: slice | Sequence[int | EllipsisType]
-    ) -> 'MixtureGenerator[T]':
-        ...
-
-    @overload
-    def __getitem__(self, index: int) -> 'icepool.Die[T]':
-        ...
-
-    def __getitem__(
-        self, index: int | slice | Sequence[int | EllipsisType]
-    ) -> 'MixtureGenerator[T] | icepool.Die[T]':
-        return self.keep(index)
-
-    def lowest(self,
-               keep: int | None = None,
-               drop: int | None = None) -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.lowest(keep, drop))
-
-    def highest(self,
-                keep: int | None = None,
-                drop: int | None = None) -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.highest(keep, drop))
-
-    def middle(self,
-               keep: int = 1,
-               *,
-               tie: Literal['error', 'high',
-                            'low'] = 'error') -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.middle(keep, tie=tie))
-
-    def __mul__(self, other: int) -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.multiply_counts(other))
-
-    # Commutable in this case.
-    def __rmul__(self, other: int) -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.multiply_counts(other))
-
-    def multiply_counts(self, constant: int, /) -> 'MixtureGenerator[T]':
-        return self.unary_operator(lambda p: p.multiply_counts(constant))
+    def multiply_counts(self, constant: int, /) -> 'MultisetExpression[T]':
+        if self._all_keep_generators:
+            return self._unary_operation(
+                lambda inner: inner.multiply_counts(constant))
+        else:
+            return super().multiply_counts(constant)
