@@ -5,10 +5,8 @@ import icepool.expression
 import icepool.math
 import icepool.generator.pool_cost
 import icepool.creation_args
-from icepool.collection.counts import Counts
-from icepool.generator.keep import KeepGenerator, compose_keep_tuples, pop_max_from_keep_tuple, pop_min_from_keep_tuple, make_keep_tuple
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
-from icepool.population.keep import lowest_slice, highest_slice
+from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
+from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
 
 import itertools
 import math
@@ -16,9 +14,8 @@ import operator
 from collections import defaultdict
 from functools import cache, cached_property, reduce
 
-from icepool.typing import ImplicitConversionError, Outcome, T
-from types import EllipsisType
-from typing import Any, Collection, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
+from icepool.typing import T
+from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
     from icepool.expression import MultisetExpression
@@ -284,63 +281,17 @@ class Pool(KeepGenerator[T]):
         if skip_weight is not None:
             yield Pool._new_empty(), (sum(self.keep_tuple()), ), skip_weight
 
-    # Overrides to MultisetExpression.
+    def _set_keep_tuple(self, keep_tuple: tuple[int,
+                                                ...]) -> 'KeepGenerator[T]':
+        return Pool._new_raw(self._dice, keep_tuple)
 
-    @overload
-    def keep(self, index: slice | Sequence[int | EllipsisType]) -> 'Pool[T]':
-        ...
-
-    @overload
-    def keep(self, index: int) -> 'icepool.Die[T]':
-        ...
-
-    def keep(
-        self, index: slice | Sequence[int | EllipsisType] | int
-    ) -> 'Pool[T] | icepool.Die[T]':
-        convert_to_die = isinstance(index, int)
-
-        if any(x < 0 for x in self.keep_tuple()):
-            raise IndexError(
-                'A pool with negative counts cannot be further indexed.')
-
-        relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
-
-        keep_tuple = compose_keep_tuples(self.keep_tuple(),
-                                         relative_keep_tuple)
-
-        result = Pool._new_raw(self._dice, tuple(keep_tuple))
-
-        if convert_to_die:
-            return cast(icepool.Die[T],
-                        icepool.evaluator.KeepEvaluator().evaluate(result))
-        else:
-            return result
-
-    def __add__(
-        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
-    ) -> 'MultisetExpression[T]':
-        try:
-            return self.additive_union(other)
-        except ImplicitConversionError:
-            return NotImplemented
-
-    def __radd__(
-        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
-    ) -> 'MultisetExpression[T]':
-        try:
-            return self.additive_union(other)
-        except ImplicitConversionError:
-            return NotImplemented
+    def multiply_counts(self, constant: int, /) -> 'Pool[T]':
+        return Pool._new_raw(self._dice,
+                             tuple(x * constant for x in self.keep_tuple()))
 
     def additive_union(
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
-        """The combined elements from all the multisets.
-
-        We have an optimization here if all arguments are pools with all sorted
-        positions counted the same. In this case we can merge the pools directly
-        instead of merging the rolls after the fact.
-        """
         args = tuple(
             icepool.expression.implicit_convert_to_expression(arg)
             for arg in args)
@@ -361,10 +312,6 @@ class Pool(KeepGenerator[T]):
                         dice[die] += die_count
                 return Pool._new_from_mapping(dice, keep_tuple)
         return KeepGenerator.additive_union(*args)
-
-    def multiply_counts(self, constant: int, /) -> 'Pool[T]':
-        return Pool._new_raw(self._dice,
-                             tuple(x * constant for x in self.keep_tuple()))
 
     def __str__(self) -> str:
         return (

@@ -32,6 +32,27 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
     """
     _keep_tuple: tuple[int, ...]
 
+    @abstractmethod
+    def _set_keep_tuple(self, keep_tuple: tuple[int,
+                                                ...]) -> 'KeepGenerator[T]':
+        """Produces a copy with a modified keep_tuple."""
+
+    @abstractmethod
+    def multiply_counts(self, constant: int, /) -> 'KeepGenerator[T]':
+        raise NotImplementedError()
+
+    @cached_property
+    def _keep_size(self) -> int:
+        return sum(self._keep_tuple)
+
+    def keep_size(self) -> int:
+        """The total count produced by this generator."""
+        return self._keep_size
+
+    def keep_tuple(self) -> tuple[int, ...]:
+        """The tuple indicating which elements will be counted."""
+        return self._keep_tuple
+
     @overload
     def keep(
             self,
@@ -42,7 +63,6 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
     def keep(self, index: int) -> 'icepool.Die[T]':
         ...
 
-    @abstractmethod
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'KeepGenerator[T] | icepool.Die[T]':
@@ -110,22 +130,25 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
                     different than the total of the counts in the current
                     `keep_tuple`.
         """
+        convert_to_die = isinstance(index, int)
 
-    @abstractmethod
-    def multiply_counts(self, constant: int, /) -> 'KeepGenerator[T]':
-        raise NotImplementedError()
+        if any(x < 0 for x in self.keep_tuple()):
+            raise IndexError(
+                'A KeepGenerator with negative counts cannot be further indexed.'
+            )
 
-    @cached_property
-    def _keep_size(self) -> int:
-        return sum(self._keep_tuple)
+        relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
 
-    def keep_size(self) -> int:
-        """The total count produced by this generator."""
-        return self._keep_size
+        keep_tuple = compose_keep_tuples(self.keep_tuple(),
+                                         relative_keep_tuple)
 
-    def keep_tuple(self) -> tuple[int, ...]:
-        """The tuple indicating which elements will be counted."""
-        return self._keep_tuple
+        result = self._set_keep_tuple(keep_tuple)
+
+        if convert_to_die:
+            return cast(icepool.Die[T],
+                        icepool.evaluator.KeepEvaluator().evaluate(result))
+        else:
+            return result
 
     @overload
     def __getitem__(
@@ -206,8 +229,22 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
     def additive_union(
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
-        # TODO: Return a CompoundGenerator.
-        return icepool.expression.MultisetExpression.additive_union(*args)
+        args = tuple(
+            icepool.expression.implicit_convert_to_expression(arg)
+            for arg in args)
+        if all(isinstance(arg, KeepGenerator) for arg in args):
+            generators = cast(tuple[KeepGenerator, ...], args)
+            keep_tuple: tuple[int, ...] = tuple(
+                reduce(operator.add, (generator.keep_tuple()
+                                      for generator in generators), ()))
+            if len(keep_tuple) == 0:
+                # All empty.
+                return icepool.CompoundKeepGenerator([], [])
+            if all(x == keep_tuple[0] for x in keep_tuple):
+                # All sorted positions count the same, so we can merge the
+                # generators.
+                return icepool.CompoundKeepGenerator(generators, keep_tuple)
+        return icepool.MultisetExpression.additive_union(*args)
 
     def __mul__(self, other: int) -> 'KeepGenerator[T]':
         if not isinstance(other, int):
