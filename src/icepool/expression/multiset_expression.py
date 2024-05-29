@@ -166,20 +166,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.additive_union(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.DisjointUnionExpression(self, other)
 
     def __radd__(
             self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.additive_union(other, self)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.DisjointUnionExpression(other, self)
 
     def additive_union(
         *args:
@@ -205,20 +203,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.difference(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.DifferenceExpression(self, other)
 
     def __rsub__(
             self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.difference(other, self)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.DifferenceExpression(other, self)
 
     def difference(
         *args:
@@ -252,20 +248,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.intersection(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.IntersectionExpression(self, other)
 
     def __rand__(
             self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.intersection(other, self)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.IntersectionExpression(other, self)
 
     def intersection(
         *args:
@@ -297,20 +291,18 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.union(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.UnionExpression(self, other)
 
     def __ror__(
             self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.union(other, self)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.UnionExpression(other, self)
 
     def union(
         *args:
@@ -336,20 +328,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            return MultisetExpression.symmetric_difference(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.SymmetricDifferenceExpression(self, other)
 
     def __rxor__(
             self, other:
         'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]',
             /) -> 'MultisetExpression[T_contra]':
         try:
-            other = implicit_convert_to_expression(other)
+            # Symmetric.
+            return MultisetExpression.symmetric_difference(self, other)
         except ImplicitConversionError:
             return NotImplemented
-        return icepool.expression.SymmetricDifferenceExpression(other, self)
 
     def symmetric_difference(
             self, other:
@@ -431,13 +422,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def __mul__(self, n: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.MultiplyCountsExpression(self, n)
+        return self.multiply_counts(n)
 
     # Commutable in this case.
     def __rmul__(self, n: int) -> 'MultisetExpression[T_contra]':
         if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.MultiplyCountsExpression(self, n)
+        return self.multiply_counts(n)
 
     def multiply_counts(self, n: int, /) -> 'MultisetExpression[T_contra]':
         """Multiplies all counts by n.
@@ -449,7 +440,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
         ```
         """
-        return self * n
+        return icepool.expression.MultiplyCountsExpression(self, n)
 
     @overload
     def __floordiv__(self, other: int) -> 'MultisetExpression[T_contra]':
@@ -511,7 +502,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return icepool.expression.KeepCountsExpression(self, 0, operator.ge)
 
     def __neg__(self) -> 'MultisetExpression[T_contra]':
-        return icepool.expression.MultiplyCountsExpression(self, -1)
+        """As -1 * self."""
+        return -1 * self
 
     def keep_counts_le(self, n: int, /) -> 'MultisetExpression[T_contra]':
         """Keeps counts that are <= n, treating the rest as zero.
