@@ -1011,7 +1011,7 @@ class Die(Population[T_co]):
         max_rerolls: int,
         *,
         star: bool | None = None,
-        priority: Literal['random', 'lowest', 'highest'] = 'random'
+        reroll_priority: Literal['random', 'lowest', 'highest'] = 'random'
     ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
@@ -1029,7 +1029,7 @@ class Die(Population[T_co]):
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
-            priority: Which values will be prioritized for rerolling. Options:
+            reroll_priority: Which values will be prioritized for rerolling. Options:
                 * `'random'`: Eligible dice will be chosen uniformly at random.
                 * `'lowest'`: The lowest eligible dice will be rerolled.
                 * `'highest'`: The highest eligible dice will be rerolled.
@@ -1045,17 +1045,17 @@ class Die(Population[T_co]):
             not_rerolled_count = rerollable_count - rerolled_count
             common = not_rerollable.pool(not_rerollable_count) + self.pool(
                 rerolled_count)
-            if priority == 'random':
+            if reroll_priority == 'random':
                 return common + rerollable.pool(not_rerolled_count)
-            elif priority == 'lowest':
+            elif reroll_priority == 'lowest':
                 return common + rerollable.pool(rerollable_count).highest(
                     not_rerolled_count)
-            elif priority == 'highest':
+            elif reroll_priority == 'highest':
                 return common + rerollable.pool(rerollable_count).lowest(
                     not_rerolled_count)
             else:
                 raise ValueError(
-                    f"Invalid priority '{priority}'. Allowed values are 'random', 'lowest', and 'highest'."
+                    f"Invalid reroll_priority '{reroll_priority}'. Allowed values are 'random', 'lowest', and 'highest'."
                 )
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
