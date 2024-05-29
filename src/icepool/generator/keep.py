@@ -26,7 +26,8 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
         (`keep`, `[]`, `lowest`, `highest`, `middle`).
         Note that these operations can only be applied if the current
         `keep_tuple` has only non-negative elements.
-    * Also closed under `+`, `*`, unary `-`.
+    * Also closed under `+` (if `keep_tuple` has only non-negative elements),
+        `*`, unary `-`.
     * `keep`-like operations can be performed regardless of multiset evaluation
         order.
     """
@@ -52,6 +53,10 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
     def keep_tuple(self) -> tuple[int, ...]:
         """The tuple indicating which elements will be counted."""
         return self._keep_tuple
+
+    def has_negative_keeps(self) -> bool:
+        """Whether any element of the keep tuple is negative."""
+        return any(x < 0 for x in self._keep_tuple)
 
     @overload
     def keep(
@@ -234,9 +239,11 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
             for arg in args)
         if all(isinstance(arg, KeepGenerator) for arg in args):
             generators = cast(tuple[KeepGenerator, ...], args)
-            keep_tuple = (1, ) * sum(generator.keep_size()
-                                     for generator in generators)
-            return icepool.CompoundKeepGenerator(generators, keep_tuple)
+            if not any(generator.has_negative_keeps()
+                       for generator in generators):
+                keep_tuple = (1, ) * sum(generator.keep_size()
+                                         for generator in generators)
+                return icepool.CompoundKeepGenerator(generators, keep_tuple)
         return icepool.MultisetExpression.additive_union(*args)
 
     def __mul__(self, other: int) -> 'KeepGenerator[T]':

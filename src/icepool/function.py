@@ -382,11 +382,9 @@ def iter_cartesian_product(
         yield outcomes, final_quantity
 
 
-def _canonicalize_transition_function(
-    repl:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
-    arg_count: int, star: bool | None
-) -> 'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]':
+def _canonicalize_transition_function(repl: 'Callable | Mapping',
+                                      arg_count: int,
+                                      star: bool | None) -> 'Callable':
     """Expresses repl as a function that takes arg_count variables."""
     if callable(repl):
         if star is None:
@@ -684,7 +682,7 @@ def map_and_time(
 
 def map_to_pool(
     repl:
-    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
+    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
     /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
@@ -696,8 +694,8 @@ def map_to_pool(
         repl: One of the following:
             * A callable that takes in one outcome per element of args and
                 produces a `MultisetGenerator` or something convertible to a `Pool`.
-            * A mapping from old outcomes to `Pool` 
-                (or something convertible to such).
+            * A mapping from old outcomes to `MultisetGenerator` 
+                or something convertible to a `Pool`.
                 In this case args must have exactly one element.
             The new outcomes may be dice rather than just single outcomes.
             The special value `icepool.Reroll` will reroll that old outcome.
@@ -713,12 +711,8 @@ def map_to_pool(
         ValueError: If `denominator` cannot be made consistent with the 
             resulting mixture of pools.
     """
-    if star is None:
-        star = guess_star(repl, len(args))
-    if star:
-        transition_function = lambda o, *extra_args: repl(*o, *extra_args)
-    else:
-        transition_function = repl
+    transition_function = _canonicalize_transition_function(
+        repl, len(args), star)
 
     data: 'MutableMapping[icepool.MultisetGenerator[T, tuple[int]], int]' = defaultdict(
         int)
