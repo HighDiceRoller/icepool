@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.generator.pool import Pool
 from icepool.collection.counts import sorted_union
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.typing import Outcome, Qs, T, U
@@ -15,18 +14,19 @@ from types import EllipsisType
 from typing import Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
 
 
-class PoolMixture(MultisetGenerator[T, tuple[int]]):
-    """EXPERIMENTAL: Represents a mixture of pools."""
+class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
+    """EXPERIMENTAL: Represents a mixture of single-output generators."""
 
-    # Note that the total weight of a subpool is the product of the factor here
-    # and the denominator of the subpool.
-    _inners: Mapping[Pool[T], int]
+    # Note that the total weight of an inner is the product of the factor here
+    # and the denominator of the inner.
+    _inners: Mapping[MultisetGenerator[T, tuple[int]], int]
 
     def __init__(self,
-                 inners: Sequence[Pool[T]] | Mapping[Pool[T], int],
+                 inners: Sequence[MultisetGenerator[T, tuple[int]]]
+                 | Mapping[MultisetGenerator[T, tuple[int]], int],
                  *,
                  denominator: int | None = None):
-        data: Mapping[Pool[T], int]
+        data: Mapping[MultisetGenerator[T, tuple[int]], int]
 
         if isinstance(inners, Mapping):
             data = {inner: weight for inner, weight in inners.items()}
@@ -109,18 +109,21 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
     @property
     def _hash_key(self) -> Hashable:
         # This is not intended to be cached directly, so we are a little loose here.
-        return PoolMixture, tuple(self._inners.items())
+        return MixtureGenerator, tuple(self._inners.items())
 
     # Mapping pool specializations.
-    def unary_operator(self, op: Callable[..., Pool[U]]) -> 'PoolMixture[U]':
+    def unary_operator(
+        self, op: Callable[..., MultisetGenerator[U, tuple[int]]]
+    ) -> 'MixtureGenerator[U]':
         data: MutableMapping = defaultdict(int)
         for inner, factor in self._inners.items():
             data[op(inner)] += inner.denominator() * factor
-        return PoolMixture(data, denominator=self.denominator())
+        return MixtureGenerator(data, denominator=self.denominator())
 
     @overload
-    def keep(self,
-             index: slice | Sequence[int | EllipsisType]) -> 'PoolMixture[T]':
+    def keep(
+            self, index: slice | Sequence[int | EllipsisType]
+    ) -> 'MixtureGenerator[T]':
         ...
 
     @overload
@@ -129,19 +132,19 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
 
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
-    ) -> 'PoolMixture[T] | icepool.Die[T]':
+    ) -> 'MixtureGenerator[T] | icepool.Die[T]':
         data: MutableMapping = defaultdict(int)
         for inner, factor in self._inners.items():
             data[inner.keep(index)] += inner.denominator() * factor
         if isinstance(index, int):
             return icepool.Die(data)
         else:
-            return PoolMixture(data, denominator=self.denominator())
+            return MixtureGenerator(data, denominator=self.denominator())
 
     @overload
     def __getitem__(
-            self,
-            index: slice | Sequence[int | EllipsisType]) -> 'PoolMixture[T]':
+            self, index: slice | Sequence[int | EllipsisType]
+    ) -> 'MixtureGenerator[T]':
         ...
 
     @overload
@@ -150,32 +153,32 @@ class PoolMixture(MultisetGenerator[T, tuple[int]]):
 
     def __getitem__(
         self, index: int | slice | Sequence[int | EllipsisType]
-    ) -> 'PoolMixture[T] | icepool.Die[T]':
+    ) -> 'MixtureGenerator[T] | icepool.Die[T]':
         return self.keep(index)
 
     def lowest(self,
                keep: int | None = None,
-               drop: int | None = None) -> 'PoolMixture[T]':
+               drop: int | None = None) -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.lowest(keep, drop))
 
     def highest(self,
                 keep: int | None = None,
-                drop: int | None = None) -> 'PoolMixture[T]':
+                drop: int | None = None) -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.highest(keep, drop))
 
     def middle(self,
                keep: int = 1,
                *,
                tie: Literal['error', 'high',
-                            'low'] = 'error') -> 'PoolMixture[T]':
+                            'low'] = 'error') -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.middle(keep, tie=tie))
 
-    def __mul__(self, other: int) -> 'PoolMixture[T]':
+    def __mul__(self, other: int) -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.multiply_counts(other))
 
     # Commutable in this case.
-    def __rmul__(self, other: int) -> 'PoolMixture[T]':
+    def __rmul__(self, other: int) -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.multiply_counts(other))
 
-    def multiply_counts(self, constant: int, /) -> 'PoolMixture[T]':
+    def multiply_counts(self, constant: int, /) -> 'MixtureGenerator[T]':
         return self.unary_operator(lambda p: p.multiply_counts(constant))

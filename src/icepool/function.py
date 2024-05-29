@@ -726,4 +726,5 @@ def map_to_pool(
         if pool is not icepool.Reroll:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
-    return icepool.PoolMixture(data, denominator=denominator)  # type: ignore
+    return icepool.MixtureGenerator(data,
+                                    denominator=denominator)  # type: ignore

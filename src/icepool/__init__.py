@@ -85,7 +85,7 @@ from icepool.population.keep import lowest, highest, middle
 
 from icepool.generator.pool import Pool, standard_pool
 from icepool.generator.compound_keep import CompoundKeepGenerator
-from icepool.generator.pool_mixture import PoolMixture
+from icepool.generator.mixture import MixtureGenerator
 
 from icepool.generator.multiset_generator import MultisetGenerator, InitialMultisetGenerator, NextMultisetGenerator
 from icepool.generator.alignment import Alignment
