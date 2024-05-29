@@ -33,8 +33,8 @@ class CompoundKeepGenerator(KeepGenerator[T]):
         yield self, 1
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
-        for t in itertools.product(
-                inner._generate_min(min_outcome) for inner in self._inners):
+        for t in itertools.product(*(inner._generate_min(min_outcome)
+                                     for inner in self._inners)):
             generators, counts, weights = zip(*t)
             total_count = sum(count[0] for count in counts)
             total_weight = math.prod(weights)
@@ -44,8 +44,8 @@ class CompoundKeepGenerator(KeepGenerator[T]):
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
-        for t in itertools.product(
-                inner._generate_max(max_outcome) for inner in self._inners):
+        for t in itertools.product(*(inner._generate_max(max_outcome)
+                                     for inner in self._inners)):
             generators, counts, weights = zip(*t)
             total_count = sum(count[0] for count in counts)
             total_weight = math.prod(weights)
@@ -78,3 +78,8 @@ class CompoundKeepGenerator(KeepGenerator[T]):
     def _hash_key(self) -> Hashable:
         return CompoundKeepGenerator, tuple(
             inner._hash_key for inner in self._inners), self._keep_tuple
+
+    def __str__(self) -> str:
+        return ('CompoundKeep([' +
+                ', '.join(str(inner) for inner in self._inners) +
+                '], keep_tuple=' + str(self.keep_tuple()) + ')')

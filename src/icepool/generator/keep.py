@@ -234,16 +234,9 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
             for arg in args)
         if all(isinstance(arg, KeepGenerator) for arg in args):
             generators = cast(tuple[KeepGenerator, ...], args)
-            keep_tuple: tuple[int, ...] = tuple(
-                reduce(operator.add, (generator.keep_tuple()
-                                      for generator in generators), ()))
-            if len(keep_tuple) == 0:
-                # All empty.
-                return icepool.CompoundKeepGenerator([], [])
-            if all(x == keep_tuple[0] for x in keep_tuple):
-                # All sorted positions count the same, so we can merge the
-                # generators.
-                return icepool.CompoundKeepGenerator(generators, keep_tuple)
+            keep_tuple = (1, ) * sum(generator.keep_size()
+                                     for generator in generators)
+            return icepool.CompoundKeepGenerator(generators, keep_tuple)
         return icepool.MultisetExpression.additive_union(*args)
 
     def __mul__(self, other: int) -> 'KeepGenerator[T]':

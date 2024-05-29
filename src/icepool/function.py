@@ -684,7 +684,7 @@ def map_and_time(
 
 def map_to_pool(
     repl:
-    'Callable[..., Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
+    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
     /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
@@ -695,7 +695,7 @@ def map_to_pool(
     Args:
         repl: One of the following:
             * A callable that takes in one outcome per element of args and
-                produces a `Pool` (or something convertible to such).
+                produces a `MultisetGenerator` or something convertible to a `Pool`.
             * A mapping from old outcomes to `Pool` 
                 (or something convertible to such).
                 In this case args must have exactly one element.
@@ -720,10 +720,15 @@ def map_to_pool(
     else:
         transition_function = repl
 
-    data: 'MutableMapping[icepool.Pool[T], int]' = defaultdict(int)
+    data: 'MutableMapping[icepool.MultisetGenerator[T, tuple[int]], int]' = defaultdict(
+        int)
     for outcomes, quantity in iter_cartesian_product(*args):
         pool = transition_function(*outcomes)
-        if pool is not icepool.Reroll:
+        if pool is icepool.Reroll:
+            continue
+        elif isinstance(pool, icepool.MultisetGenerator):
+            data[pool] += quantity
+        else:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
     return icepool.MixtureGenerator(data,

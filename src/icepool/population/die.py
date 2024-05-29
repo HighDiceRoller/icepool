@@ -810,7 +810,8 @@ class Die(Population[T_co]):
             return icepool.Pool({self: rolls})
         else:
             pool_size = len(rolls)
-            return icepool.Pool({self: pool_size})[rolls]
+            # Haven't dealt with narrowing return type.
+            return icepool.Pool({self: pool_size})[rolls]  # type: ignore
 
     def lowest(self,
                rolls: int,
@@ -1009,15 +1010,13 @@ class Die(Population[T_co]):
         /,
         max_rerolls: int,
         *,
-        star: bool | None = None
+        star: bool | None = None,
+        priority: Literal['random', 'lowest', 'highest'] = 'random'
     ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
         Each die can only be rerolled once, and no more than `max_rerolls` dice 
-        may be rerolled. If more dice are eligible to be rerolled than this, the
-        rerolls are chosen uniformly at random among them.
-
-        Known issue: The denominator is not as expected.
+        may be rerolled.
         
         Args:
             rolls: How many dice in the pool.
@@ -1030,6 +1029,10 @@ class Die(Population[T_co]):
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
+            priority: Which values will be prioritized for rerolling. Options:
+                * `'random'`: Eligible dice will be chosen uniformly at random.
+                * `'lowest'`: The lowest eligible dice will be rerolled.
+                * `'highest'`: The highest eligible dice will be rerolled.
         """
         outcome_set = self._select_outcomes(which, star)
         rerollable, not_rerollable = self.split(outcome_set)
@@ -1040,9 +1043,20 @@ class Die(Population[T_co]):
             not_rerollable_count = rolls - rerollable_count
             rerolled_count = min(rerollable_count, max_rerolls)
             not_rerolled_count = rerollable_count - rerolled_count
-            return ([not_rerollable] * not_rerollable_count +
-                    [self] * rerolled_count +
-                    [rerollable] * not_rerolled_count)
+            common = not_rerollable.pool(not_rerollable_count) + self.pool(
+                rerolled_count)
+            if priority == 'random':
+                return common + rerollable.pool(not_rerolled_count)
+            elif priority == 'lowest':
+                return common + rerollable.pool(rerollable_count).highest(
+                    not_rerolled_count)
+            elif priority == 'highest':
+                return common + rerollable.pool(rerollable_count).lowest(
+                    not_rerolled_count)
+            else:
+                raise ValueError(
+                    f"Invalid priority '{priority}'. Allowed values are 'random', 'lowest', and 'highest'."
+                )
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
 
