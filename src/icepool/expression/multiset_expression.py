@@ -44,26 +44,26 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     Operations include:
 
-    | Operation                   | Count / notes                      |
-    |:----------------------------|:-----------------------------------|
-    | `additive_union`, `+`       | `l + r`                            |
-    | `difference`, `-`           | `l - r`                            |
-    | `intersection`, `&`         | `min(l, r)`                        |
-    | `union`, `\\|`               | `max(l, r)`                        |
-    | `symmetric_difference`, `^` | `abs(l - r)`                       |
-    | `multiply_counts`, `*`      | `count * n`                        |
-    | `divide_counts`, `//`       | `count // n`                       |
-    | `modulo_counts`, `%`        | `count % n`                        |
-    | `keep_counts_ge` etc.       | `count if count >= n else 0` etc.  |
-    | unary `+`                   | same as `keep_counts_ge(0)`        |
-    | unary `-`                   | reverses the sign of all counts    |
-    | `unique`                    | `min(count, n)`                    |
-    | `keep_outcomes`             | `count if outcome in t else 0`     |
-    | `drop_outcomes`             | `count if outcome not in t else 0` |
-    | `map_counts`                | `f(outcome, *counts)`              |
-    | `keep`, `[]`                | less capable than `Pool` version   |
-    | `highest`                   | less capable than `Pool` version   |
-    | `lowest`                    | less capable than `Pool` version   |
+    | Operation                   | Count / notes                               |
+    |:----------------------------|:--------------------------------------------|
+    | `additive_union`, `+`       | `l + r`                                     |
+    | `difference`, `-`           | `l - r`                                     |
+    | `intersection`, `&`         | `min(l, r)`                                 |
+    | `union`, `\\|`               | `max(l, r)`                                 |
+    | `symmetric_difference`, `^` | `abs(l - r)`                                |
+    | `multiply_counts`, `*`      | `count * n`                                 |
+    | `divide_counts`, `//`       | `count // n`                                |
+    | `modulo_counts`, `%`        | `count % n`                                 |
+    | `keep_counts_ge` etc.       | `count if count >= n else 0` etc.           |
+    | unary `+`                   | same as `keep_counts_ge(0)`                 |
+    | unary `-`                   | reverses the sign of all counts             |
+    | `unique`                    | `min(count, n)`                             |
+    | `keep_outcomes`             | `count if outcome in t else 0`              |
+    | `drop_outcomes`             | `count if outcome not in t else 0`          |
+    | `map_counts`                | `f(outcome, *counts)`                       |
+    | `keep`, `[]`                | less capable than `KeepGenerator` version   |
+    | `highest`                   | less capable than `KeepGenerator` version   |
+    | `lowest`                    | less capable than `KeepGenerator` version   |
 
     | Evaluator                      | Summary                                                                    |
     |:-------------------------------|:---------------------------------------------------------------------------|
@@ -618,7 +618,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'MultisetExpression[T_contra] | icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
         """Selects pulls after drawing and sorting.
 
-        This is less capable and less efficient than the `Pool` version.
+        This is less capable than the `KeepGenerator` version.
         In particular, it does not know how many elements it is selecting from,
         so it must be anchored at the starting end. The advantage is that it
         can be applied to any expression.
