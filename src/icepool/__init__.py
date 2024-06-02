@@ -72,9 +72,37 @@ This is designed to be used with the `Die()` constructor.
 * `Again + Again`: Roll again twice and sum.
 
 The `again_count`, `again_depth`, and `again_end` arguments to `Die()`
-affect how these arguments are processed.
+affect how these arguments are processed. At most one of `again_count` or
+`again_depth` may be provided; if neither are provided, the behavior is as
+`again_depth=1.
 
-If you want something more complex, use e.g. `Die.map()` instead.
+For finer control over rolling processes, use e.g. `Die.map()` instead.
+
+### `again_count` mode
+
+Effectively, we start with one roll queued and execute one roll at a time.
+For every `Again` we roll, we queue another roll. If we run out of rolls,
+we sum the rolls to find the result.
+
+If we execute `again_count` rolls without running out, the result is the sum of 
+the rolls plus the number of leftover rolls @ `again_end`.
+
+This mode only allows "additive" expressions to be used with `Again`, which
+means that only the following operators are allowed:
+
+* Binary `+`
+* `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.
+
+### `again_depth` mode
+
+When `again_depth=0`, `again_end` is directly substituted
+for each occurence of `Again`. Otherwise, the result for `again_depth-1` is
+substituted for each occurence of `Again`.
+
+### `Reroll`
+
+If `again_end=icepool.Reroll`, then `again_end` rolls one final time for each
+instance of `Again`, rerolling until a non-`AgainExpression` is reached.
 """
 
 from icepool.population.die_with_truth import DieWithTruth

@@ -110,25 +110,7 @@ class Die(Population[T_co]):
         will be done with the default keyword arguments.
 
         EXPERIMENTAL: Use `icepool.Again` to roll the dice again, usually with
-        some modification. For example,
-
-        ```python
-        Die([1, 2, 3, 4, 5, 6 + Again])
-        ```
-
-        would be an exploding d6. 
-        Use either the `again_count` parameter to control the maximum additional
-        dice to reroll, or `again_depth` parameter.
-
-        If the roll reaches the maximum depth, the `again_end` is used instead
-        of rolling again. Options for `again_end` include:
-
-        * No value (`None`), which will attempt to determine a zero value from
-            the outcomes that don't involve `Again`.
-        * A single outcome, or a `Die`.
-        * `Reroll`, which will reroll any end roll involving `Again`.
-        * You could also consider some sort of placeholder value such as
-            `math.inf`.
+        some modification. See the `Again` documentation for details.
 
         Denominator: For a flat set of outcomes, the denominator is just the
         sum of the corresponding quantities. If the outcomes themselves have
@@ -149,12 +131,15 @@ class Die(Population[T_co]):
                     outcomes. The total denominator will be scaled up if
                     necessary.
                 * `icepool.Reroll`, which will drop itself from consideration.
-                * EXPERIMENTAL: `icepool.Again`. See the main text for
-                    explanation.
+                * EXPERIMENTAL: `icepool.Again`. See the documentation for
+                    `Again` for details.
             times: Multiplies the quantity of each element of `outcomes`.
                 `times` can either be a sequence of the same length as
                 `outcomes` or a single `int` to apply to all elements of
                 `outcomes`.
+            again_count, again_depth, again_end: These affect how `Again`
+                expressions are handled. See the `Again` documentation for
+                details.
         Raises:
             ValueError: `None` is not a valid outcome for a `Die`.
         """
@@ -668,10 +653,13 @@ class Die(Population[T_co]):
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
-            depth: The maximum number of additional dice to roll.
+            depth: The maximum number of additional dice to roll, not counting
+                the initial roll.
                 If not supplied, a default value will be used.
-            end: Once depth is reached, further explosions will be treated
+            end: Once `depth` is reached, further explosions will be treated
                 as this value. By default, a zero value will be used.
+                `icepool.Reroll` will make one extra final roll, rerolling until
+                a non-exploding outcome is reached.
         """
 
         if which is None:
