@@ -61,7 +61,7 @@ from icepool.collection.vector import tupleize, vectorize, Vector
 from icepool.collection.symbols import Symbols
 from icepool.population.again import AgainExpression
 
-Again: Final = AgainExpression()
+Again: Final = AgainExpression(is_additive=True)
 """A symbol indicating that the die should be rolled again, usually with some operation applied.
 
 This is designed to be used with the `Die()` constructor.

@@ -28,7 +28,8 @@ class AgainExpression():
                  function: Callable | None = None,
                  /,
                  *args,
-                 truth_value: bool | None = None):
+                 truth_value: bool | None = None,
+                 is_additive: bool = False):
         """Constructor.
 
         Any of the args may themselves be instances of `Again`. These are
@@ -42,10 +43,15 @@ class AgainExpression():
                 from rolling again. Only applicable if `function` is provided.
             truth_value: The truth value of the resulting object, if applicable.
                 You probably don't need to use this externally.
+            is_additive: Whether the only operators applied to
+                sub-`AgainExpression`s containing `Again` are:
+                * Binary `+`
+                * `n @ AgainExpression`, where `n` is non-negative.
         """
         self._func = function
         self._args = args
         self._truth_value = truth_value
+        self.is_additive = is_additive
 
     def _evaluate_arg(self, arg, die: 'icepool.Die'):
         if isinstance(arg, AgainExpression):
@@ -78,10 +84,22 @@ class AgainExpression():
     # Binary operators.
 
     def __add__(self, other) -> 'AgainExpression':
-        return AgainExpression(operator.add, self, other)
+        is_additive = self.is_additive
+        if isinstance(other, AgainExpression):
+            is_additive &= other.is_additive
+        return AgainExpression(operator.add,
+                               self,
+                               other,
+                               is_additive=is_additive)
 
     def __radd__(self, other) -> 'AgainExpression':
-        return AgainExpression(operator.add, other, self)
+        is_additive = self.is_additive
+        if isinstance(other, AgainExpression):
+            is_additive &= other.is_additive
+        return AgainExpression(operator.add,
+                               other,
+                               self,
+                               is_additive=is_additive)
 
     def __sub__(self, other) -> 'AgainExpression':
         return AgainExpression(operator.sub, self, other)
@@ -153,7 +171,13 @@ class AgainExpression():
         return AgainExpression(operator.matmul, self, other)
 
     def __rmatmul__(self, other) -> 'AgainExpression':
-        return AgainExpression(operator.matmul, other, self)
+        is_additive = self.is_additive
+        if isinstance(other, icepool.Population):
+            is_additive &= (other.min_outcome() >= 0)
+        return AgainExpression(operator.matmul,
+                               other,
+                               self,
+                               is_additive=is_additive)
 
     def __lt__(self, other) -> 'AgainExpression':
         return AgainExpression(operator.lt, self, other)

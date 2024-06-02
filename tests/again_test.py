@@ -82,3 +82,12 @@ def test_owod():
     expected = expected.map({3: 3 + icepool.lowest(sub_expected, 0)})
     expected = expected + 1
     assert result == expected
+
+
+def test_is_additive():
+    assert Again.is_additive
+    assert (Again + Again).is_additive
+    assert (2 @ Again).is_additive
+    assert not (2 * Again).is_additive
+    assert (d6 @ Again).is_additive
+    assert not ((d6 - 2) @ Again).is_additive
