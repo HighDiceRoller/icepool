@@ -18,8 +18,8 @@ class AgainExpression():
     * `Again` + 6: Roll again and add 6.
     * `Again` + `Again`: Roll again twice and sum.
 
-    The `again_depth` and `again_end` arguments to `Die()` affect how these
-    arguments are processed.
+    The `again_count`, `again_depth`, and `again_end` arguments to `Die()`
+    affect how these arguments are processed.
 
     If you want something more complex, use e.g. `Die.map()` instead.
     """
@@ -239,8 +239,33 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     return any(isinstance(x, icepool.AgainExpression) for x in outcomes)
 
 
-def evaluate_agains(outcomes: Sequence, times: Sequence[int], again_depth: int,
-                    again_end) -> 'icepool.Die':
+def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
+                                again_count: int, again_end) -> 'icepool.Die':
+    raise NotImplementedError()
+
+
+def split_agains(
+    outcomes: Sequence, times: Sequence[int]
+) -> tuple[Sequence, Sequence[int], Sequence, Sequence[int]]:
+    """Splits the inputs into a set containing all AgainExpressions and another containing the remaining expressions."""
+    agains = []
+    again_times = []
+    not_agains = []
+    not_again_times = []
+    for outcome, quantity in zip(outcomes, times):
+        if isinstance(outcome, AgainExpression):
+            agains.append(outcome)
+            again_times.append(quantity)
+        else:
+            not_agains.append(outcome)
+            not_again_times.append(quantity)
+    return agains, again_times, not_agains, not_again_times
+
+
+def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
+                                again_depth: int, again_end) -> 'icepool.Die':
+    if again_depth < 0:
+        raise ValueError('again_depth cannot be negative.')
     if again_end is None:
         # Create a test die with `Again`s removed,
         # then find the zero.

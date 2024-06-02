@@ -300,8 +300,7 @@ def reduce(
         dice: A sequence of dice to map the function to, from left to right.
         initial: If provided, this will be placed at the front of the sequence
             of dice.
-        again_depth: Forwarded to the final die constructor.
-        again_end: Forwarded to the final die constructor.
+        again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
     # Conversion to dice is not necessary since map() takes care of that.
     iter_dice = iter(dice)
@@ -411,7 +410,8 @@ def map(
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
     repeat: int | None = 1,
-    again_depth: int = 1,
+    again_count: int | None = None,
+    again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, returning a Die.
@@ -455,8 +455,7 @@ def map(
             EXPERIMENTAL: If set to `None`, the result will be as if this
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
-        again_depth: Forwarded to the final die constructor.
-        again_end: Forwarded to the final die constructor.
+        again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
     transition_function = _canonicalize_transition_function(
         repl, len(args), star)
@@ -465,6 +464,7 @@ def map(
         if repeat != 1:
             raise ValueError('If no arguments are given, repeat must be 1.')
         return icepool.Die([transition_function()],
+                           again_count=again_count,
                            again_depth=again_depth,
                            again_end=again_end)
 
@@ -488,6 +488,7 @@ def map(
                     final_quantities.append(final_quantity)
             return icepool.Die(final_outcomes,
                                final_quantities,
+                               again_count=again_count,
                                again_depth=again_depth,
                                again_end=again_end)
         else:
@@ -497,6 +498,7 @@ def map(
                                      result,
                                      *extra_args,
                                      star=False,
+                                     again_count=again_count,
                                      again_depth=again_depth,
                                      again_end=again_end)
             return result
@@ -508,6 +510,7 @@ def map(
                        state,
                        *extra_args,
                        star=False,
+                       again_count=again_count,
                        again_depth=again_depth,
                        again_end=again_end)
 
@@ -530,7 +533,8 @@ def map_function(
     *,
     star: bool | None = None,
     repeat: int | None = 1,
-    again_depth: int = 1,
+    again_count: int | None = None,
+    again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
     ...
@@ -544,7 +548,8 @@ def map_function(
     *,
     star: bool | None = None,
     repeat: int | None = 1,
-    again_depth: int = 1,
+    again_count: int | None = None,
+    again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     ...
@@ -557,7 +562,8 @@ def map_function(
     *,
     star: bool | None = None,
     repeat: int | None = 1,
-    again_depth: int = 1,
+    again_count: int | None = None,
+    again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     """Decorator that turns a function that takes outcomes into a function that takes dice.
@@ -595,8 +601,7 @@ def map_function(
     ```
 
     Args:
-        again_depth: Forwarded to the final die constructor.
-        again_end: Forwarded to the final die constructor.
+        again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
 
     if function is not None:
@@ -613,6 +618,7 @@ def map_function(
                         function,
                         star=star,
                         repeat=repeat,
+                        again_count=again_count,
                         again_depth=again_depth,
                         again_end=again_end), function)
 

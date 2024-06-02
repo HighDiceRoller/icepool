@@ -71,8 +71,8 @@ This is designed to be used with the `Die()` constructor.
 * `Again + 6`: Roll again and add 6.
 * `Again + Again`: Roll again twice and sum.
 
-The `again_depth` and `again_end` arguments to `Die()` affect how these
-arguments are processed.
+The `again_count`, `again_depth`, and `again_end` arguments to `Die()`
+affect how these arguments are processed.
 
 If you want something more complex, use e.g. `Die.map()` instead.
 """

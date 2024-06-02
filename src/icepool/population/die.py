@@ -76,7 +76,8 @@ class Die(Population[T_co]):
         outcomes: Sequence | Mapping[Any, int],
         times: Sequence[int] | int = 1,
         *,
-        again_depth: int = 1,
+        again_count: int | None = None,
+        again_depth: int | None = None,
         again_end: 'Outcome | Die | icepool.RerollType | None' = None
     ) -> 'Die[T_co]':
         """Constructor for a `Die`.
@@ -115,8 +116,9 @@ class Die(Population[T_co]):
         Die([1, 2, 3, 4, 5, 6 + Again])
         ```
 
-        would be an exploding d6. Use the `again_depth` parameter to control
-        the maximum depth. `again_depth` does not apply to `Reroll`.
+        would be an exploding d6. 
+        Use either the `again_count` parameter to control the maximum additional
+        dice to reroll, or `again_depth` parameter.
 
         If the roll reaches the maximum depth, the `again_end` is used instead
         of rolling again. Options for `again_end` include:
@@ -156,15 +158,22 @@ class Die(Population[T_co]):
         Raises:
             ValueError: `None` is not a valid outcome for a `Die`.
         """
-        if again_depth < 0:
-            raise ValueError('again_depth cannot be negative.')
-
         outcomes, times = icepool.creation_args.itemize(outcomes, times)
 
         # Check for Again.
         if icepool.population.again.contains_again(outcomes):
-            return icepool.population.again.evaluate_agains(
-                outcomes, times, again_depth, again_end)
+            if again_count is not None and again_depth is not None:
+                raise ValueError(
+                    'At most one of again_count and again_depth may be used.')
+            if again_count is None and again_depth is None:
+                again_depth = 1
+            if again_depth is None:
+                again_count = cast(int, again_count)
+                return icepool.population.again.evaluate_agains_using_count(
+                    outcomes, times, again_count, again_end)
+            else:
+                return icepool.population.again.evaluate_agains_using_depth(
+                    outcomes, times, again_depth, again_end)
 
         # Agains have been replaced by this point.
         outcomes = cast(Sequence[T_co | Die[T_co] | icepool.RerollType],
@@ -567,7 +576,8 @@ class Die(Population[T_co]):
         *extra_args,
         star: bool | None = None,
         repeat: int | None = 1,
-        again_depth: int = 1,
+        again_count: int | None = None,
+        again_depth: int | None = None,
         again_end: 'U | Die[U] | icepool.RerollType | None' = None
     ) -> 'Die[U]':
         """Maps outcomes of the `Die` to other outcomes.
@@ -581,6 +591,7 @@ class Die(Population[T_co]):
                            *extra_args,
                            star=star,
                            repeat=repeat,
+                           again_count=again_count,
                            again_depth=again_depth,
                            again_end=again_end)
 
@@ -686,7 +697,8 @@ class Die(Population[T_co]):
         outcome_if_true: U | 'Die[U]',
         outcome_if_false: U | 'Die[U]',
         *,
-        again_depth: int = 1,
+        again_count: int | None = None,
+        again_depth: int | None = None,
         again_end: 'U | Die[U] | icepool.RerollType | None' = None
     ) -> 'Die[U]':
         """Ternary conditional operator.
@@ -695,14 +707,14 @@ class Die(Population[T_co]):
         with the second argument.
 
         Args:
-            again_depth: Forwarded to the final die constructor.
-            again_end: Forwarded to the final die constructor.
+            again_count, again_depth, again_end: Forwarded to the final die constructor.
         """
         return self.map(lambda x: bool(x)).map(
             {
                 True: outcome_if_true,
                 False: outcome_if_false
             },
+            again_count=again_count,
             again_depth=again_depth,
             again_end=again_end)
 
