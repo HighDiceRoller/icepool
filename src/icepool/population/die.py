@@ -159,38 +159,13 @@ class Die(Population[T_co]):
         if again_depth < 0:
             raise ValueError('again_depth cannot be negative.')
 
+        outcomes, times = icepool.creation_args.itemize(outcomes, times)
+
         # Check for Again.
         if icepool.population.again.contains_again(outcomes):
-            if again_end is None:
-                # Create a test die with `Again`s removed,
-                # then find the zero.
-                test: Die[T_co] = Die(outcomes,
-                                      again_depth=0,
-                                      again_end=icepool.Reroll)
-                if len(test) == 0:
-                    raise ValueError(
-                        'If all outcomes contain Again, an explicit again_end must be provided.'
-                    )
-                again_end = test.zero().simplify()
-            else:
-                again_end = implicit_convert_to_die(again_end)
-                if icepool.population.again.contains_again(again_end):
-                    raise ValueError('again_end cannot itself contain Again.')
+            return icepool.population.again.evaluate_agains(
+                outcomes, times, again_depth, again_end)
 
-            if again_depth == 0:
-                # Base case.
-                outcomes = icepool.population.again.replace_agains(
-                    outcomes, again_end)
-            else:
-                tail: Die[T_co] = Die(outcomes,
-                                      times,
-                                      again_depth=0,
-                                      again_end=again_end)
-                for _ in range(again_depth):
-                    tail = Die(outcomes, times, again_depth=0, again_end=tail)
-                return tail
-
-        outcomes, times = icepool.creation_args.itemize(outcomes, times)
         # Agains have been replaced by this point.
         outcomes = cast(Sequence[T_co | Die[T_co] | icepool.RerollType],
                         outcomes)

@@ -46,7 +46,8 @@ class AgainExpression():
             is_additive: Whether the only operators applied to
                 sub-`AgainExpression`s containing `Again` are:
                 * Binary `+`
-                * `n @ AgainExpression`, where `n` is non-negative.
+                * `n @ AgainExpression`, where `n` is a non-negative `int` or
+                    `Population`.
         """
         self._func = function
         self._args = args
@@ -238,22 +239,39 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     return any(isinstance(x, icepool.AgainExpression) for x in outcomes)
 
 
-def replace_agains(outcomes: Mapping[Any, int] | Sequence,
-                   die: 'icepool.Die') -> Mapping[Any, int] | Sequence:
-    """Recursively replaces all occurences of `Again` with the given Die.
-
-    This is not applied to tuples.
-    """
-    if isinstance(outcomes, icepool.Die):
-        # Dice should already have flattened out any Agains.
-        return outcomes
-    elif isinstance(outcomes, Mapping):
-        return {_replace_agains_inner(k, die): v for k, v in outcomes.items()}
+def evaluate_agains(outcomes: Sequence, times: Sequence[int], again_depth: int,
+                    again_end) -> 'icepool.Die':
+    if again_end is None:
+        # Create a test die with `Again`s removed,
+        # then find the zero.
+        test: icepool.Die = icepool.Die(outcomes,
+                                        again_depth=0,
+                                        again_end=icepool.Reroll)
+        if len(test) == 0:
+            raise ValueError(
+                'If all outcomes contain Again, an explicit again_end must be provided.'
+            )
+        again_end = test.zero().simplify()
     else:
-        return [_replace_agains_inner(k, die) for k in outcomes]
+        again_end = icepool.implicit_convert_to_die(again_end)
+        if contains_again(again_end):
+            raise ValueError('again_end cannot itself contain Again.')
+
+    if again_depth == 0:
+        # Base case.
+        outcomes = [replace_again(k, again_end) for k in outcomes]
+        return icepool.Die(outcomes, times)
+    else:
+        tail: icepool.Die = icepool.Die(outcomes,
+                                        times,
+                                        again_depth=0,
+                                        again_end=again_end)
+        for _ in range(again_depth):
+            tail = icepool.Die(outcomes, times, again_depth=0, again_end=tail)
+        return tail
 
 
-def _replace_agains_inner(outcome, die: 'icepool.Die'):
+def replace_again(outcome, die: 'icepool.Die'):
     if isinstance(outcome, AgainExpression):
         return outcome._evaluate(die)
     else:
