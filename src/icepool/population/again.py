@@ -174,6 +174,8 @@ class AgainExpression():
         is_additive = self.is_additive
         if isinstance(other, icepool.Population):
             is_additive &= (other.min_outcome() >= 0)
+        elif isinstance(other, AgainExpression):
+            is_additive = False
         return AgainExpression(operator.matmul,
                                other,
                                self,
