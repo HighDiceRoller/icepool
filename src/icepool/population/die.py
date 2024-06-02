@@ -29,7 +29,7 @@ def implicit_convert_to_die(
     multiple outcomes).
 
     Raises:
-        `TypeError` if `Again` is given.
+        `ImplicitConversionError` if `Again` is given.
     """
     if isinstance(outcome, Die):
         return outcome
@@ -772,6 +772,8 @@ class Die(Population[T_co]):
 
     def __matmul__(self: 'Die[int]', other) -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
 
         data: MutableMapping[int, Any] = defaultdict(int)
@@ -789,6 +791,8 @@ class Die(Population[T_co]):
 
     def __rmatmul__(self, other: 'int | Die[int]') -> 'Die':
         """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
@@ -1290,18 +1294,26 @@ class Die(Population[T_co]):
     # Comparators.
 
     def __lt__(self, other) -> 'Die[bool]':
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.lt)
 
     def __le__(self, other) -> 'Die[bool]':
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.le)
 
     def __ge__(self, other) -> 'Die[bool]':
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.ge)
 
     def __gt__(self, other) -> 'Die[bool]':
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other = implicit_convert_to_die(other)
         return self.binary_operator(other, operator.gt)
 
@@ -1309,6 +1321,8 @@ class Die(Population[T_co]):
 
     # The result has a truth value, but is not a bool.
     def __eq__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
@@ -1321,6 +1335,8 @@ class Die(Population[T_co]):
 
     # The result has a truth value, but is not a bool.
     def __ne__(self, other) -> 'icepool.DieWithTruth[bool]':  # type: ignore
+        if isinstance(other, icepool.AgainExpression):
+            return NotImplemented
         other_die: Die = implicit_convert_to_die(other)
 
         def data_callback() -> Counts[bool]:
