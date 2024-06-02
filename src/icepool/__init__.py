@@ -78,7 +78,7 @@ affect how these arguments are processed. At most one of `again_count` or
 
 For finer control over rolling processes, use e.g. `Die.map()` instead.
 
-### `again_count` mode
+#### `again_count` mode
 
 Effectively, we start with one roll queued and execute one roll at a time.
 For every `Again` we roll, we queue another roll. If we run out of rolls,
@@ -93,7 +93,7 @@ means that only the following operators are allowed:
 * Binary `+`
 * `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.
 
-### `again_depth` mode
+#### `again_depth` mode
 
 When `again_depth=0`, `again_end` is directly substituted
 for each occurence of `Again`. Otherwise, the result for `again_depth-1` is
