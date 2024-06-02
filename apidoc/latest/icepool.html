@@ -1029,7 +1029,7 @@ are considered.</li>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">For finer control over rolling processes, use e.g. `Die.map()` instead.</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">### `again_count` mode</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">#### `again_count` mode</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">Effectively, we start with one roll queued and execute one roll at a time.</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">For every `Again` we roll, we queue another roll. If we run out of rolls,</span>
@@ -1044,7 +1044,7 @@ are considered.</li>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">* Binary `+`</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">* `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">### `again_depth` mode</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">#### `again_depth` mode</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">When `again_depth=0`, `again_end` is directly substituted</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">for each occurence of `Again`. Otherwise, the result for `again_depth-1` is</span>
@@ -9512,7 +9512,7 @@ affect how these arguments are processed. At most one of <code>again_count</code
 
 <p>For finer control over rolling processes, use e.g. <code><a href="#Die.map">Die.map()</a></code> instead.</p>
 
-<h3 id="again_count-mode"><code>again_count</code> mode</h3>
+<h4 id="again_count-mode"><code>again_count</code> mode</h4>
 
 <p>Effectively, we start with one roll queued and execute one roll at a time.
 For every <code><a href="#Again">Again</a></code> we roll, we queue another roll. If we run out of rolls,
@@ -9529,7 +9529,7 @@ means that only the following operators are allowed:</p>
 <li><code>n @ AgainExpression</code>, where <code>n</code> is a non-negative <code>int</code> or <code><a href="#Population">Population</a></code>.</li>
 </ul>
 
-<h3 id="again_depth-mode"><code>again_depth</code> mode</h3>
+<h4 id="again_depth-mode"><code>again_depth</code> mode</h4>
 
 <p>When <code>again_depth=0</code>, <code>again_end</code> is directly substituted
 for each occurence of <code><a href="#Again">Again</a></code>. Otherwise, the result for <code>again_depth-1</code> is
