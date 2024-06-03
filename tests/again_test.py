@@ -65,13 +65,12 @@ def test_again_plus_again_depth_1():
 
 def test_again_reroll_depth_0():
     die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=0, again_end=Reroll)
-    assert die == icepool.d6.map({6: 6 + d(5)})
+    assert die == d(5)
 
 
 def test_again_reroll_depth_1():
     die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=1, again_end=Reroll)
-    second = icepool.d6.map({6: 6 + d(5)})
-    assert die == icepool.d6.map({6: 6 + second})
+    assert die == d6.map({6: 6 + d(5)})
 
 
 def test_again_infinity():
@@ -97,3 +96,13 @@ def test_is_additive():
     assert not (2 * Again).is_additive
     assert (d6 @ Again).is_additive
     assert not ((d6 - 2) @ Again).is_additive
+
+
+def test_again_count_0():
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_count=0, again_end=Reroll)
+    assert die == d(5)
+
+
+def test_again_count_1():
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_count=1, again_end=Reroll)
+    assert die == d6.map({6: 6 + d(5)})

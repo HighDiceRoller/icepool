@@ -78,11 +78,11 @@ affect how these arguments are processed. At most one of `again_count` or
 
 For finer control over rolling processes, use e.g. `Die.map()` instead.
 
-#### `again_count` mode
+#### Count mode
 
-Effectively, we start with one roll queued and execute one roll at a time.
-For every `Again` we roll, we queue another roll. If we run out of rolls,
-we sum the rolls to find the result.
+When `again_count` is provided, we start with one roll queued and execute one 
+roll at a time. For every `Again` we roll, we queue another roll.
+If we run out of rolls, we sum the rolls to find the result.
 
 If we execute `again_count` rolls without running out, the result is the sum of 
 the rolls plus the number of leftover rolls @ `again_end`.
@@ -93,16 +93,26 @@ means that only the following operators are allowed:
 * Binary `+`
 * `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.
 
-#### `again_depth` mode
+Furthermore, the `+` operator is assumed to be associative and commutative.
+
+#### Depth mode
 
 When `again_depth=0`, `again_end` is directly substituted
-for each occurence of `Again`. Otherwise, the result for `again_depth-1` is
-substituted for each occurence of `Again`.
+for each occurence of `Again`. For other values of `again_depth`, the result for
+`again_depth-1` is substituted for each occurence of `Again`.
 
-### `Reroll`
+If `again_end=icepool.Reroll`, then any `AgainExpression`s in the final depth
+are rerolled.
 
-If `again_end=icepool.Reroll`, then `again_end` rolls one final time for each
-instance of `Again`, rerolling until a non-`AgainExpression` is reached.
+#### Rerolls
+
+`Reroll` only rerolls that particular die, not the entire process. Any such
+rerolls do not count against the `again_count` or `again_depth` limit.
+
+If `again_end=icepool.Reroll`:
+* Count mode: Any result that would cause the number of rolls to exceed
+    `again_count` is rerolled.
+* Depth mode: Any `AgainExpression`s in the final depth level are rerolled.
 """
 
 from icepool.population.die_with_truth import DieWithTruth

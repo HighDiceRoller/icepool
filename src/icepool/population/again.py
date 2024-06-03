@@ -33,11 +33,7 @@ class AgainExpression():
                 from rolling again. Only applicable if `function` is provided.
             truth_value: The truth value of the resulting object, if applicable.
                 You probably don't need to use this externally.
-            is_additive: Whether the only operators applied to
-                sub-`AgainExpression`s containing `Again` are:
-                * Binary `+`
-                * `n @ AgainExpression`, where `n` is a non-negative `int` or
-                    `Population`.
+            is_additive: Whether the expression is compatible with `again_count`.
         """
         self._func = function
         self._args = args
@@ -261,7 +257,7 @@ def compute_terminal(outcomes: Sequence, times: Sequence[int],
         return not_again_die, not_again_die.zero_outcome(
         ), not_again_die.zero_outcome()
     elif again_end is icepool.Reroll:
-        return not_again_die, not_again_die, not_again_die.zero_outcome()
+        return not_again_die, icepool.Reroll, not_again_die.zero_outcome()
     else:
         return not_again_die, again_end, again_end * 0
 
@@ -280,10 +276,10 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
                 raise ValueError(
                     'again_count mode cannot be used with a non-additive AgainExpression.'
                 )
-            return icepool.vectorize(outcome._evaluate(zero), 0,
-                                     outcome._again_count())
+            return icepool.tupleize(outcome._evaluate(zero), False,
+                                    outcome._again_count())
         else:
-            return icepool.vectorize(zero, 1, 0)
+            return icepool.tupleize(zero, True, 0)
 
     # Flat total, added again count.
     again_count_die: icepool.Die[tuple[Any, int]] = icepool.Die(
@@ -292,25 +288,34 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
 
     # State: flat total, number of terminal dice, remaining number of agains
     initial_state: icepool.Die[tuple[Any, int,
-                                     int]] = icepool.Die([(zero, 0, 1)])
+                                     int]] = icepool.Die([(0, zero, 0, 1)])
 
-    def next_again_count_state(flat, terminal: int, remaining_again: int,
+    def next_again_count_state(step, flat, terminal: int, again: int,
                                roll_result: tuple[Any, int, int]):
-        if remaining_again == 0:
-            return flat, terminal, remaining_again
-        add_flat, add_terminal, add_again = roll_result
-        return (flat + add_flat, terminal + add_terminal,
-                remaining_again - 1 + add_again)
-
-    if again_end is icepool.Reroll:
-        again_end = not_again_die
-    else:
-        again_end = icepool.implicit_convert_to_die(again_end)
+        if step == -1:
+            return step, flat, terminal, again
+        add_flat, is_terminal, add_again = roll_result
+        step += 1
+        flat += add_flat
+        terminal += is_terminal
+        again += add_again - 1
+        if step + again > again_count + 1:
+            return icepool.Reroll
+        if again == 0:
+            return -1, flat, terminal, again
+        return (step, flat, terminal, again)
 
     final_state: icepool.Die[tuple[Any, int, int]] = initial_state.map(
-        next_again_count_state, again_count_die, star=True, repeat=again_count)
+        next_again_count_state,
+        again_count_die,
+        star=True,
+        repeat=again_count + 1)
 
-    def finalize(flat, terminal: int, remaining_again: int):
+    if again_end is icepool.Reroll:
+        again_end = zero
+    again_end = icepool.implicit_convert_to_die(again_end)
+
+    def finalize(step, flat, terminal: int, remaining_again: int):
         return flat + terminal @ not_again_die + remaining_again @ again_end
 
     return final_state.map(finalize, star=True)
@@ -331,9 +336,12 @@ def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
     return tail
 
 
-def replace_again(outcome, die: 'icepool.Die'):
+def replace_again(outcome, repl):
     if isinstance(outcome, AgainExpression):
-        return outcome._evaluate(die)
+        if repl is icepool.Reroll:
+            return icepool.Reroll
+        else:
+            return outcome._evaluate(repl)
     else:
         # tuple or simple arg that is not Again.
         return outcome
