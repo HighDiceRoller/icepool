@@ -1035,74 +1035,77 @@ are considered.</li>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">roll at a time. For every `Again` we roll, we queue another roll.</span>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">If we run out of rolls, we sum the rolls to find the result. If the total number</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">of rolls (not including the initial roll) would exceed `again_count`, we reroll</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">the last die.</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">This mode only allows &quot;additive&quot; expressions to be used with `Again`, which</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">means that only the following operators are allowed:</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">* Binary `+`</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">* `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">Furthermore, the `+` operator is assumed to be associative and commutative.</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">#### Depth mode</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">When `again_depth=0`, `again_end` is directly substituted</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">for each occurence of `Again`. For other values of `again_depth`, the result for</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">`again_depth-1` is substituted for each occurence of `Again`.</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">If `again_end=icepool.Reroll`, then any `AgainExpression`s in the final depth</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">are rerolled.</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">the entire process, effectively conditioning the process on not rolling more</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">than `again_count` extra dice.</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">This mode only allows &quot;additive&quot; expressions to be used with `Again`, which</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">means that only the following operators are allowed:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">* Binary `+`</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">* `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">Furthermore, the `+` operator is assumed to be associative and commutative.</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">For example, `str` or `tuple` outcomes will not produce elements with a definite</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">order.</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">#### Depth mode</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">When `again_depth=0`, `again_end` is directly substituted</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">for each occurence of `Again`. For other values of `again_depth`, the result for</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">`again_depth-1` is substituted for each occurence of `Again`.</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">#### Rerolls</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">`Reroll` only rerolls that particular die, not the entire process. Any such</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">rerolls do not count against the `again_count` or `again_depth` limit.</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">If `again_end=icepool.Reroll`, then any `AgainExpression`s in the final depth</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">are rerolled.</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">#### Rerolls</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">If `again_end=icepool.Reroll`:</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">* Count mode: Any result that would cause the number of rolls to exceed</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">    `again_count` is rerolled.</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">* Depth mode: Any `AgainExpression`s in the final depth level are rerolled.</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="kn">from</span> <span class="nn">icepool.population.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="kn">from</span> <span class="nn">icepool.collection.counts</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="kn">from</span> <span class="nn">icepool.generator.keep</span> <span class="kn">import</span> <span class="n">KeepGenerator</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="kn">from</span> <span class="nn">icepool.generator.compound_keep</span> <span class="kn">import</span> <span class="n">CompoundKeepGenerator</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="kn">from</span> <span class="nn">icepool.generator.mixture</span> <span class="kn">import</span> <span class="n">MixtureGenerator</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="kn">from</span> <span class="nn">icepool.generator.multiset_generator</span> <span class="kn">import</span> <span class="n">MultisetGenerator</span><span class="p">,</span> <span class="n">InitialMultisetGenerator</span><span class="p">,</span> <span class="n">NextMultisetGenerator</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="kn">from</span> <span class="nn">icepool.generator.alignment</span> <span class="kn">import</span> <span class="n">Alignment</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.multiset_evaluator</span> <span class="kn">import</span> <span class="n">MultisetEvaluator</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="kn">from</span> <span class="nn">icepool.population.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="kn">from</span> <span class="nn">icepool.generator.deal</span> <span class="kn">import</span> <span class="n">Deal</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">`Reroll` only rerolls that particular die, not the entire process. Any such</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">rerolls do not count against the `again_count` or `again_depth` limit.</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">If `again_end=icepool.Reroll`:</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">* Count mode: Any result that would cause the number of rolls to exceed</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">    `again_count` is rerolled.</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">* Depth mode: Any `AgainExpression`s in the final depth level are rerolled.</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="kn">from</span> <span class="nn">icepool.population.die_with_truth</span> <span class="kn">import</span> <span class="n">DieWithTruth</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="kn">from</span> <span class="nn">icepool.collection.counts</span> <span class="kn">import</span> <span class="n">CountsKeysView</span><span class="p">,</span> <span class="n">CountsValuesView</span><span class="p">,</span> <span class="n">CountsItemsView</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="kn">from</span> <span class="nn">icepool.population.keep</span> <span class="kn">import</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">highest</span><span class="p">,</span> <span class="n">middle</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="kn">from</span> <span class="nn">icepool.generator.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">standard_pool</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="kn">from</span> <span class="nn">icepool.generator.keep</span> <span class="kn">import</span> <span class="n">KeepGenerator</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="kn">from</span> <span class="nn">icepool.generator.compound_keep</span> <span class="kn">import</span> <span class="n">CompoundKeepGenerator</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="kn">from</span> <span class="nn">icepool.generator.mixture</span> <span class="kn">import</span> <span class="n">MixtureGenerator</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="kn">from</span> <span class="nn">icepool.generator.multiset_generator</span> <span class="kn">import</span> <span class="n">MultisetGenerator</span><span class="p">,</span> <span class="n">InitialMultisetGenerator</span><span class="p">,</span> <span class="n">NextMultisetGenerator</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="kn">from</span> <span class="nn">icepool.generator.alignment</span> <span class="kn">import</span> <span class="n">Alignment</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="kn">from</span> <span class="nn">icepool.evaluator.multiset_evaluator</span> <span class="kn">import</span> <span class="n">MultisetEvaluator</span>
 </span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_function</span> <span class="kn">import</span> <span class="n">multiset_function</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="kn">from</span> <span class="nn">icepool.population.deck</span> <span class="kn">import</span> <span class="n">Deck</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="kn">from</span> <span class="nn">icepool.generator.deal</span> <span class="kn">import</span> <span class="n">Deal</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="kn">import</span> <span class="nn">icepool.expression</span> <span class="k">as</span> <span class="nn">expression</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="kn">import</span> <span class="nn">icepool.generator</span> <span class="k">as</span> <span class="nn">generator</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="kn">import</span> <span class="nn">icepool.evaluator</span> <span class="k">as</span> <span class="nn">evaluator</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="kn">import</span> <span class="nn">icepool.typing</span> <span class="k">as</span> <span class="nn">typing</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;stochastic_round&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;tupleize&#39;</span><span class="p">,</span> <span class="s1">&#39;vectorize&#39;</span><span class="p">,</span> <span class="s1">&#39;Vector&#39;</span><span class="p">,</span> <span class="s1">&#39;Symbols&#39;</span><span class="p">,</span> <span class="s1">&#39;Again&#39;</span><span class="p">,</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>    <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;map_function&#39;</span><span class="p">,</span> <span class="s1">&#39;map_and_time&#39;</span><span class="p">,</span> <span class="s1">&#39;map_to_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Alignment&#39;</span><span class="p">,</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a><span class="p">]</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_expression</span> <span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="kn">from</span> <span class="nn">icepool.expression.multiset_function</span> <span class="kn">import</span> <span class="n">multiset_function</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="kn">import</span> <span class="nn">icepool.expression</span> <span class="k">as</span> <span class="nn">expression</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="kn">import</span> <span class="nn">icepool.generator</span> <span class="k">as</span> <span class="nn">generator</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="kn">import</span> <span class="nn">icepool.evaluator</span> <span class="k">as</span> <span class="nn">evaluator</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="kn">import</span> <span class="nn">icepool.typing</span> <span class="k">as</span> <span class="nn">typing</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;coin&#39;</span><span class="p">,</span> <span class="s1">&#39;stochastic_round&#39;</span><span class="p">,</span> <span class="s1">&#39;one_hot&#39;</span><span class="p">,</span> <span class="s1">&#39;Outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;Die&#39;</span><span class="p">,</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;tupleize&#39;</span><span class="p">,</span> <span class="s1">&#39;vectorize&#39;</span><span class="p">,</span> <span class="s1">&#39;Vector&#39;</span><span class="p">,</span> <span class="s1">&#39;Symbols&#39;</span><span class="p">,</span> <span class="s1">&#39;Again&#39;</span><span class="p">,</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;align_range&#39;</span><span class="p">,</span> <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;map_function&#39;</span><span class="p">,</span> <span class="s1">&#39;map_and_time&#39;</span><span class="p">,</span> <span class="s1">&#39;map_to_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;Alignment&#39;</span><span class="p">,</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -9533,7 +9536,8 @@ affect how these arguments are processed. At most one of <code>again_count</code
 roll at a time. For every <code><a href="#Again">Again</a></code> we roll, we queue another roll.
 If we run out of rolls, we sum the rolls to find the result. If the total number
 of rolls (not including the initial roll) would exceed <code>again_count</code>, we reroll
-the last die.</p>
+the entire process, effectively conditioning the process on not rolling more
+than <code>again_count</code> extra dice.</p>
 
 <p>This mode only allows "additive" expressions to be used with <code><a href="#Again">Again</a></code>, which
 means that only the following operators are allowed:</p>
@@ -9543,7 +9547,9 @@ means that only the following operators are allowed:</p>
 <li><code>n @ AgainExpression</code>, where <code>n</code> is a non-negative <code>int</code> or <code><a href="#Population">Population</a></code>.</li>
 </ul>
 
-<p>Furthermore, the <code>+</code> operator is assumed to be associative and commutative.</p>
+<p>Furthermore, the <code>+</code> operator is assumed to be associative and commutative.
+For example, <code>str</code> or <code>tuple</code> outcomes will not produce elements with a definite
+order.</p>
 
 <h4 id="depth-mode">Depth mode</h4>
 
