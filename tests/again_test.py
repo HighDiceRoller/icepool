@@ -98,11 +98,20 @@ def test_is_additive():
     assert not ((d6 - 2) @ Again).is_additive
 
 
-def test_again_count_0():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_count=0, again_end=Reroll)
-    assert die == d(5)
+@pytest.mark.parametrize('n', [0, 1, 2])
+def test_again_count(n):
+    count = Die([1, 2, 3, 4, 5, 6 + Again], again_count=n)
+    depth = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=n, again_end=Reroll)
+    assert count == depth
 
 
-def test_again_count_1():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_count=1, again_end=Reroll)
-    assert die == d6.map({6: 6 + d(5)})
+def test_again_count_double_blocked():
+    result = Die([1, 2, 3, 4, 5, 6 + Again + Again], again_count=1)
+    expected = d(5)
+    assert result == expected
+
+
+def test_again_count_double():
+    result = Die([1, 2, 3, 4, 5, 6 + Again + Again], again_count=2)
+    expected = d6.map({6: 6 + 2 @ d(5)})
+    assert result == expected

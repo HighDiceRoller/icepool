@@ -147,16 +147,19 @@ class Die(Population[T_co]):
 
         # Check for Again.
         if icepool.population.again.contains_again(outcomes):
-            if again_count is not None and again_depth is not None:
-                raise ValueError(
-                    'At most one of again_count and again_depth may be used.')
-            if again_count is None and again_depth is None:
-                again_depth = 1
-            if again_depth is None:
-                again_count = cast(int, again_count)
+            if again_count is not None:
+                if again_depth is not None:
+                    raise ValueError(
+                        'At most one of again_count and again_depth may be used.'
+                    )
+                if again_end is not None:
+                    raise ValueError(
+                        'again_end cannot be used with again_count.')
                 return icepool.population.again.evaluate_agains_using_count(
-                    outcomes, times, again_count, again_end)
+                    outcomes, times, again_count)
             else:
+                if again_depth is None:
+                    again_depth = 1
                 return icepool.population.again.evaluate_agains_using_depth(
                     outcomes, times, again_depth, again_end)
 

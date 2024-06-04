@@ -82,10 +82,9 @@ For finer control over rolling processes, use e.g. `Die.map()` instead.
 
 When `again_count` is provided, we start with one roll queued and execute one 
 roll at a time. For every `Again` we roll, we queue another roll.
-If we run out of rolls, we sum the rolls to find the result.
-
-If we execute `again_count` rolls without running out, the result is the sum of 
-the rolls plus the number of leftover rolls @ `again_end`.
+If we run out of rolls, we sum the rolls to find the result. If the total number
+of rolls (not including the initial roll) would exceed `again_count`, we reroll
+the last die.
 
 This mode only allows "additive" expressions to be used with `Again`, which
 means that only the following operators are allowed:
