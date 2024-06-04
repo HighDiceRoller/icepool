@@ -84,7 +84,8 @@ When `again_count` is provided, we start with one roll queued and execute one
 roll at a time. For every `Again` we roll, we queue another roll.
 If we run out of rolls, we sum the rolls to find the result. If the total number
 of rolls (not including the initial roll) would exceed `again_count`, we reroll
-the last die.
+the entire process, effectively conditioning the process on not rolling more
+than `again_count` extra dice.
 
 This mode only allows "additive" expressions to be used with `Again`, which
 means that only the following operators are allowed:
@@ -93,6 +94,8 @@ means that only the following operators are allowed:
 * `n @ AgainExpression`, where `n` is a non-negative `int` or `Population`.
 
 Furthermore, the `+` operator is assumed to be associative and commutative.
+For example, `str` or `tuple` outcomes will not produce elements with a definite
+order.
 
 #### Depth mode
 

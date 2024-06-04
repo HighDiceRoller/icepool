@@ -270,30 +270,33 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
                     'again_count mode cannot be used with a non-additive AgainExpression.'
                 )
             return icepool.vectorize(outcome._evaluate(zero), 0,
-                                     outcome._again_count() - 1, -1)
+                                     outcome._again_count() - 1)
         else:
-            return icepool.vectorize(zero, 1, -1, -1)
+            return icepool.vectorize(zero, 1, -1)
 
     # Flat total, added again count.
     step_die: icepool.Die = icepool.Die(
         [make_step_outcome(outcome, zero) for outcome in outcomes], times)
 
-    @cache
-    def evaluate(state):
-        flat, terminal, again, count = state
+    def step(state, roll):
+        flat, terminal, again = state
         if again == 0:
             return state
-        if count < 0:
-            return icepool.Reroll
         if terminal + again > again_count + 1:
             return icepool.Reroll
-        return (step_die + state).map(evaluate, star=False)
+        state += roll
+        return state
 
-    initial_state = icepool.Vector([zero, 0, 1, again_count])
+    initial_state: icepool.Die = icepool.Die([icepool.Vector([zero, 0, 1])])
 
-    final_state = evaluate(initial_state)
+    final_state: icepool.Die = initial_state.map(step,
+                                                 step_die,
+                                                 star=False,
+                                                 repeat=again_count + 1)
 
-    def finalize(flat, terminal, again, count):
+    def finalize(flat, terminal, again):
+        if again > 0:
+            return icepool.Reroll
         return flat + terminal @ not_again_die
 
     return final_state.map(finalize, star=True)
