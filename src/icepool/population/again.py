@@ -264,39 +264,40 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
     zero = not_again_die.zero_outcome()
 
     def make_step_outcome(outcome, zero):
+        """add_flat, add_terminal, add_again"""
         if isinstance(outcome, AgainExpression):
             if not outcome.is_additive:
                 raise ValueError(
                     'again_count mode cannot be used with a non-additive AgainExpression.'
                 )
-            return icepool.vectorize(outcome._evaluate(zero), 0,
-                                     outcome._again_count() - 1)
+            return icepool.tupleize(outcome._evaluate(zero), 0,
+                                    outcome._again_count() - 1)
         else:
-            return icepool.vectorize(zero, 1, -1)
+            return icepool.tupleize(zero, 1, -1)
 
-    # Flat total, added again count.
     step_die: icepool.Die = icepool.Die(
         [make_step_outcome(outcome, zero) for outcome in outcomes], times)
 
-    def step(state, roll):
-        flat, terminal, again = state
+    def step(flat, terminal, again, index, roll):
         if again == 0:
-            return state
-        if terminal + again > again_count + 1:
+            return flat, terminal, again, index
+        add_flat, add_terminal, add_again = roll
+        flat += add_flat
+        terminal += add_terminal
+        again += add_again
+        index += 1
+        if index + again > again_count + 1:
             return icepool.Reroll
-        state += roll
-        return state
+        return flat, terminal, again, index
 
-    initial_state: icepool.Die = icepool.Die([icepool.Vector([zero, 0, 1])])
+    initial_state: icepool.Die = icepool.Die([(zero, 0, 1, 0)])
 
     final_state: icepool.Die = initial_state.map(step,
                                                  step_die,
-                                                 star=False,
+                                                 star=True,
                                                  repeat=again_count + 1)
 
-    def finalize(flat, terminal, again):
-        if again > 0:
-            return icepool.Reroll
+    def finalize(flat, terminal, again, index):
         return flat + terminal @ not_again_die
 
     return final_state.map(finalize, star=True)
