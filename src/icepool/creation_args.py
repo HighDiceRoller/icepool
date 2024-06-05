@@ -9,7 +9,7 @@ import math
 from collections import defaultdict
 
 from icepool.typing import T
-from typing import Any, Iterable, Mapping, MutableMapping, Sequence, Type, overload
+from typing import Any, Iterable, Mapping, MutableMapping, Sequence, Type, cast, overload
 
 from icepool.collection.vector import Vector
 
@@ -75,6 +75,12 @@ def expand_arg(
         return arg
     elif arg is icepool.Reroll:
         return {}
+    elif type(arg) == tuple:
+        arg = cast('T | icepool.Population[T]', icepool.tupleize(*arg))
+        if isinstance(arg, icepool.Population):
+            return arg
+        else:
+            return {arg: 1}
     else:
         return {arg: 1}
 

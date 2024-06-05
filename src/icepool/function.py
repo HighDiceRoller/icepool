@@ -435,8 +435,13 @@ def map(
             * A mapping from old outcomes to new outcomes.
                 Unmapped old outcomes stay the same.
                 In this case args must have exactly one element.
-            The new outcomes may be dice rather than just single outcomes.
-            The special value `icepool.Reroll` will reroll that old outcome.
+            As with the `Die` constructor, the new outcomes:
+            * May be dice rather than just single outcomes.
+            * The special value `icepool.Reroll` will reroll that old outcome.
+            * `tuples` containing `Population`s will be `tupleize`d into
+                `Population`s of `tuple`s.
+                This does not apply to subclasses of `tuple`s such as `namedtuple`
+                or other classes such as `Vector`.
         *args: `func` will be called with all joint outcomes of these.
             Allowed arg types are:
             * Single outcome.

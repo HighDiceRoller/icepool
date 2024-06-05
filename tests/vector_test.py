@@ -146,3 +146,7 @@ def test_named_tuple():
     a = Point(0, 1)
     b = Point(1, 2)
     assert Die([a, b]).marginals.y == d(2)
+
+
+def test_auto_tupleize():
+    assert Die([(d6, d6, 6)]).map(sum) == 2 @ d6 + 6

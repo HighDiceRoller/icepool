@@ -126,6 +126,10 @@ class Die(Population[T_co]):
                 Individual outcomes can each be one of the following:
 
                 * An outcome, which must be hashable and totally orderable.
+                    * For convenience, `tuple`s containing `Population`s will be
+                        `tupleize`d into a `Population` of `tuple`s.
+                        This does not apply to subclasses of `tuple`s such as `namedtuple`
+                        or other classes such as `Vector`.
                 * A `Die`, which will be flattened into the result.
                     The quantity assigned to a `Die` is shared among its
                     outcomes. The total denominator will be scaled up if
