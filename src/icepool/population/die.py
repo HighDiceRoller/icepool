@@ -1016,7 +1016,7 @@ class Die(Population[T_co]):
                 If not provided, this will be guessed based on the function
                 signature.
             reroll_priority: Which values will be prioritized for rerolling. Options:
-                * `'random'`: Eligible dice will be chosen uniformly at random.
+                * `'random'` (default): Eligible dice will be chosen uniformly at random.
                 * `'lowest'`: The lowest eligible dice will be rerolled.
                 * `'highest'`: The highest eligible dice will be rerolled.
         """

@@ -46,3 +46,8 @@ def test_reroll_pool_vs_map():
         expected_function,
         d6.pool(3)).map(lambda rolls: tuple(sorted(rolls))).simplify()
     assert result.denominator() == 6**4
+
+
+def test_reroll_pool_empowered_spell():
+    result = d6.reroll_to_pool(8, [1, 2, 3], 4, reroll_priority='lowest').sum()
+    assert result.mean() == pytest.approx(33.61, abs=0.01)
