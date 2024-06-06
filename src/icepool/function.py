@@ -426,7 +426,6 @@ def map(
     efficient than using `map` on the dice in order.
 
     `Again` can be used but is not recommended with `repeat` other than 1.
-    It will re-roll the current stage, not the entire series.
 
     Args:
         repl: One of the following:
@@ -454,8 +453,13 @@ def map(
             If not provided, it will be guessed based on the signature of `func`
             and the number of arguments.
         repeat: This will be repeated with the same arguments on the
-            result this many times, except the first of args will be replaced
+            result this many times, except the first of `args` will be replaced
             by the result of the previous iteration.
+
+            Note that returning `Reroll` from `repl` will effectively reroll all
+            arguments, including the first argument which represents the result
+            of the process up to this point. If you only want to reroll the
+            current stage, you can nest another `map` inside `repl`.
 
             EXPERIMENTAL: If set to `None`, the result will be as if this
             were repeated an infinite number of times. In this case, the
