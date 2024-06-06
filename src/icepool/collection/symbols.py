@@ -9,7 +9,7 @@ import re
 
 from collections import Counter, defaultdict
 from functools import cached_property
-from typing import Iterable, Iterator, Mapping, overload
+from typing import Iterable, Iterator, Mapping, MutableMapping, overload
 
 
 class Symbols(Mapping[str, int]):
@@ -36,6 +36,12 @@ class Symbols(Mapping[str, int]):
     | unary `-`                   | reverses the sign of all counts    |
 
     `<` and `>` are lexicographic orderings rather than subset relations.
+    Specifically, they compare the count of each character in alphabetical
+    order. For example:
+    * `'a' > ''` since one `'a'` is more than zero `'a'`s.
+    * `'a' > 'bb'` since `'a'` is compared first.
+    * `'-a' < 'bb'` since the left side has -1 `'a'`s.
+    * `'a' < 'ab'` since the `'a'`s are equal but the right side has more `'b'`s.
     
     Binary operators other than `*` and `//` implicitly convert the other
     argument to `Symbols` using the constructor.
@@ -62,7 +68,7 @@ class Symbols(Mapping[str, int]):
     Note that attribute access only works with valid identifiers,
     so e.g. emojis would need to use the subscript method.
     """
-    _data: defaultdict[str, int]
+    _data: Mapping[str, int]
 
     def __new__(cls,
                 symbols: str | Iterable[str] | Mapping[str, int]) -> 'Symbols':
@@ -77,28 +83,33 @@ class Symbols(Mapping[str, int]):
         """
         self = super(Symbols, cls).__new__(cls)
         if isinstance(symbols, str):
-            self._data = defaultdict(int)
+            data: MutableMapping[str, int] = defaultdict(int)
             positive, *negative = re.split(r'\s*-\s*', symbols)
             for s in positive:
-                self._data[s] += 1
+                data[s] += 1
             if len(negative) > 1:
                 raise ValueError('Multiple dashes not allowed.')
             if len(negative) == 1:
                 for s in negative[0]:
-                    self._data[s] -= 1
+                    data[s] -= 1
         elif isinstance(symbols, Mapping):
-            self._data = defaultdict(int, symbols)
+            data = defaultdict(int, symbols)
         else:
-            self._data = defaultdict(int)
+            data = defaultdict(int)
             for s in symbols:
-                self._data[s] += 1
+                data[s] += 1
 
-        for s in self._data:
+        for s in data:
             if len(s) != 1:
                 raise ValueError(f'Symbol {s} is not a single character.')
             if re.match(r'[\s_-]', s):
                 raise ValueError(
                     f'{s} (U+{ord(s):04X}) is not a legal symbol.')
+
+        self._data = defaultdict(int,
+                                 {k: data[k]
+                                  for k in sorted(data.keys())})
+
         return self
 
     @classmethod
@@ -295,12 +306,24 @@ class Symbols(Mapping[str, int]):
     def __lt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
             return NotImplemented
-        return str(self) < str(other)
+        keys = sorted(set(self.keys()) | set(other.keys()))
+        for k in keys:
+            if self[k] < other[k]:  # type: ignore
+                return True
+            if self[k] > other[k]:  # type: ignore
+                return False
+        return False
 
     def __gt__(self, other: 'Symbols') -> bool:
         if not isinstance(other, Symbols):
             return NotImplemented
-        return str(self) > str(other)
+        keys = sorted(set(self.keys()) | set(other.keys()))
+        for k in keys:
+            if self[k] > other[k]:  # type: ignore
+                return True
+            if self[k] < other[k]:  # type: ignore
+                return False
+        return False
 
     def issubset(self, other: Iterable[str] | Mapping[str, int]) -> bool:
         """Whether `self` is a subset of the other.

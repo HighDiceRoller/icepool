@@ -51,3 +51,10 @@ def test_issubset():
 def test_issuperset():
     assert Symbols('ab').issuperset('a')
     assert not Symbols('ab').issuperset('ac')
+
+
+def test_ordering():
+    assert Symbols('a') > Symbols('')
+    assert Symbols('a') > Symbols('bb')
+    assert Symbols('-a') < Symbols('bb')
+    assert Symbols('a') < Symbols('ab')
