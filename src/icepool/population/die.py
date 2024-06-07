@@ -1021,24 +1021,55 @@ class Die(Population[T_co]):
                 * `'highest'`: The highest eligible dice will be rerolled.
         """
         outcome_set = self._select_outcomes(which, star)
-        rerollable, not_rerollable = self.split(outcome_set)
-        rerollable_count = rolls @ icepool.coin(rerollable.denominator(),
-                                                self.denominator())
+        rerollable_die, not_rerollable_die = self.split(outcome_set)
+        single_is_rerollable = icepool.coin(rerollable_die.denominator(),
+                                            self.denominator())
+        rerollable = rolls @ single_is_rerollable
 
-        def make_pool(rerollable_count):
-            not_rerollable_count = rolls - rerollable_count
-            rerolled_count = min(rerollable_count, max_rerolls)
-            not_rerolled_count = rerollable_count - rerolled_count
-            common = not_rerollable.pool(not_rerollable_count) + self.pool(
-                rerolled_count)
+        def split(initial_rerollable: int) -> Die[tuple[int, int, int]]:
+            """Computes the composition of the pool.
+
+            Returns:
+                initial_rerollable: The number of dice that initially fell into
+                    the rerollable set.
+                rerolled_to_rerollable: The number of dice that were rerolled,
+                    but fell into the rerollable set again.
+                not_rerollable: The number of dice that ended up outside the
+                    rerollable set, including both initial and rerolled dice.
+                not_rerolled: The number of dice that were eligible for
+                    rerolling but were not rerolled.
+            """
+            initial_not_rerollable = rolls - initial_rerollable
+            rerolled = min(initial_rerollable, max_rerolls)
+            not_rerolled = initial_rerollable - rerolled
+
+            def second_split(rerolled_to_rerollable):
+                """Splits the rerolled dice into those that fell into the rerollable and not-rerollable sets."""
+                rerolled_to_not_rerollable = rerolled - rerolled_to_rerollable
+                return icepool.tupleize(
+                    initial_rerollable, rerolled_to_rerollable,
+                    initial_not_rerollable + rerolled_to_not_rerollable,
+                    not_rerolled)
+
+            return icepool.map(second_split,
+                               rerolled @ single_is_rerollable,
+                               star=False)
+
+        pool_composition = rerollable.map(split, star=False)
+
+        def make_pool(initial_rerollable, rerolled_to_rerollable,
+                      not_rerollable, not_rerolled):
+            common = rerollable_die.pool(
+                rerolled_to_rerollable) + not_rerollable_die.pool(
+                    not_rerollable)
             if reroll_priority == 'random':
-                return common + rerollable.pool(not_rerolled_count)
+                return common + rerollable_die.pool(not_rerolled)
             elif reroll_priority == 'lowest':
-                return common + rerollable.pool(rerollable_count).highest(
-                    not_rerolled_count)
+                return common + rerollable_die.pool(
+                    initial_rerollable).highest(not_rerolled)
             elif reroll_priority == 'highest':
-                return common + rerollable.pool(rerollable_count).lowest(
-                    not_rerolled_count)
+                return common + rerollable_die.pool(initial_rerollable).lowest(
+                    not_rerolled)
             else:
                 raise ValueError(
                     f"Invalid reroll_priority '{reroll_priority}'. Allowed values are 'random', 'lowest', and 'highest'."
@@ -1046,7 +1077,9 @@ class Die(Population[T_co]):
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
 
-        return rerollable_count.map_to_pool(make_pool, denominator=denominator)
+        return pool_composition.map_to_pool(make_pool,
+                                            star=True,
+                                            denominator=denominator)
 
     # Unary operators.
 
