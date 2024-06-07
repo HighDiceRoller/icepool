@@ -155,3 +155,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
                 lambda inner: inner.multiply_counts(constant))
         else:
             return super().multiply_counts(constant)
+
+    def __str__(self) -> str:
+        return 'MixtureGenerator({\n' + ',\n'.join(
+            f'{k}: {v}' for k, v in self._inners.items()) + '})'
