@@ -932,6 +932,11 @@ class Die(Population[T_co]):
                 value. Otherwise it will be the minimum to correctly weight the
                 pools.
 
+        Returns:
+            A `MultisetGenerator` representing the mixture of `Pool`s. Note  
+            that this is not technically a `Pool`, though it supports most of 
+            the same operations.
+
         Raises:
             ValueError: If `denominator` cannot be made consistent with the 
                 resulting mixture of pools.
@@ -967,6 +972,11 @@ class Die(Population[T_co]):
                 If not provided, this will be guessed based on the function
                 signature.
             depth: The maximum depth of explosions for an individual dice.
+
+        Returns:
+            A `MultisetGenerator` representing the mixture of `Pool`s. Note  
+            that this is not technically a `Pool`, though it supports most of 
+            the same operations.
         """
         if which is None:
             explode_set = {self.max_outcome()}
@@ -1019,6 +1029,11 @@ class Die(Population[T_co]):
                 * `'random'` (default): Eligible dice will be chosen uniformly at random.
                 * `'lowest'`: The lowest eligible dice will be rerolled.
                 * `'highest'`: The highest eligible dice will be rerolled.
+
+        Returns:
+            A `MultisetGenerator` representing the mixture of `Pool`s. Note  
+            that this is not technically a `Pool`, though it supports most of 
+            the same operations.
         """
         outcome_set = self._select_outcomes(which, star)
         rerollable_die, not_rerollable_die = self.split(outcome_set)

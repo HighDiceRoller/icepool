@@ -722,6 +722,11 @@ def map_to_pool(
             value. Otherwise it will be the minimum to correctly weight the
             pools.
 
+    Returns:
+        A `MultisetGenerator` representing the mixture of `Pool`s. Note  
+        that this is not technically a `Pool`, though it supports most of 
+        the same operations.
+
     Raises:
         ValueError: If `denominator` cannot be made consistent with the 
             resulting mixture of pools.
