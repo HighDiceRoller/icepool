@@ -308,10 +308,8 @@ def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
     if again_depth < 0:
         raise ValueError('again_depth cannot be negative.')
 
-    not_again_die = compute_not_again_die(outcomes, times)
-
     if again_end is None:
-        again_end = not_again_die.zero_outcome()
+        again_end = compute_not_again_die(outcomes, times).zero_outcome()
 
     def replace_again(outcome):
         if isinstance(outcome, AgainExpression):
