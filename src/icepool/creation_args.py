@@ -77,10 +77,10 @@ def expand_arg(
         return {}
     elif type(arg) == tuple:
         arg = cast('T | icepool.Population[T]', icepool.tupleize(*arg))
-        if isinstance(arg, icepool.Population):
-            return arg
-        else:
-            return {arg: 1}
+        if type(arg) == tuple:
+            return {arg: 1}  # type: ignore
+        else:  # converted to Population
+            return arg  # type: ignore
     else:
         return {arg: 1}
 
