@@ -4,6 +4,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.population.markov_chain
+from icepool.collection.vector import iter_cartesian_product
 from icepool.typing import Outcome, T, U, guess_star
 
 from fractions import Fraction
@@ -349,36 +350,6 @@ def accumulate(
     for die in iter_dice:
         result = map(function, result, die)
         yield result
-
-
-def iter_cartesian_product(
-    *args: 'Outcome | icepool.Population | icepool.MultisetExpression'
-) -> Iterator[tuple[tuple, int]]:
-    """Yields the independent joint distribution of the arguments.
-
-    Args:
-        *args: These may be dice, which will be expanded into their joint
-            outcomes. Non-dice are left as-is.
-
-    Yields:
-        Tuples containing one outcome per arg and the joint quantity.
-    """
-
-    def arg_items(arg) -> Sequence[tuple[Any, int]]:
-        if isinstance(arg, icepool.Population):
-            return arg.items()
-        elif isinstance(arg, icepool.MultisetExpression):
-            if arg._free_arity() > 0:
-                raise ValueError('Expression must be fully bound.')
-            # Expression evaluators are difficult to type.
-            return arg.expand().items()  # type: ignore
-        else:
-            return [(arg, 1)]
-
-    for t in itertools.product(*(arg_items(arg) for arg in args)):
-        outcomes, quantities = zip(*t)
-        final_quantity = math.prod(quantities)
-        yield outcomes, final_quantity
 
 
 def _canonicalize_transition_function(repl: 'Callable | Mapping',

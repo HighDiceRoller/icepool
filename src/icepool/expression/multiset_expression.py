@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from functools import cached_property
 from types import EllipsisType
 import icepool
 import icepool.evaluator
@@ -158,6 +159,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
             raise ValueError(
                 'Only generators with output arity of 1 may be bound to expressions.\nUse a multiset_function to select individual outputs.'
             )
+
+    @cached_property
+    def _items_for_cartesian_product(self) -> Sequence[tuple[T_contra, int]]:
+        if self._free_arity() > 0:
+            raise ValueError('Expression must be fully bound.')
+        return self.expand().items()  # type: ignore
 
     # Binary operators.
 

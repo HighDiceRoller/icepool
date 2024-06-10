@@ -51,6 +51,10 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def items(self) -> CountsItemsView[T_co]:
         """The (outcome, quantity)s of the population in sorted order."""
 
+    @property
+    def _items_for_cartesian_product(self) -> Sequence[tuple[T_co, int]]:
+        return self.items()
+
     def _unary_operator(self, op: Callable, *args, **kwargs):
         data: MutableMapping[Any, int] = defaultdict(int)
         for outcome, quantity in self.items():

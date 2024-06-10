@@ -5,9 +5,35 @@ import icepool
 import itertools
 import math
 import operator
-from typing import Callable, Hashable, Iterable, Iterator, Sequence, Type, cast, overload
+from typing import Any, Callable, Hashable, Iterable, Iterator, Sequence, Type, cast, overload
 
 from icepool.typing import Outcome, S, T, T_co, U
+
+
+def iter_cartesian_product(
+    *args: 'Outcome | icepool.Population | icepool.MultisetExpression'
+) -> Iterator[tuple[tuple, int]]:
+    """Yields the independent joint distribution of the arguments.
+
+    Args:
+        *args: These may be dice, which will be expanded into their joint
+            outcomes. Non-dice are left as-is.
+
+    Yields:
+        Tuples containing one outcome per arg and the joint quantity.
+    """
+
+    def arg_items(arg) -> Sequence[tuple[Any, int]]:
+        items = getattr(arg, '_items_for_cartesian_product', None)
+        if items is not None:
+            return items
+        else:
+            return [(arg, 1)]
+
+    for t in itertools.product(*(arg_items(arg) for arg in args)):
+        outcomes, quantities = zip(*t)
+        final_quantity = math.prod(quantities)
+        yield outcomes, final_quantity
 
 
 # Typing: there is currently no way to intersect a type bound, and Protocol
@@ -26,12 +52,13 @@ def cartesian_product(
         of the same type as the input `Population`, and the outcomes are
         sequences with one element per argument.
     """
-    population_type = None
+    population_type: Type | None = None
     for arg in args:
-        if isinstance(arg, icepool.Population):
+        new_type = getattr(arg, '_new_type', None)
+        if new_type is not None:
             if population_type is None:
-                population_type = arg._new_type
-            elif population_type != arg._new_type:
+                population_type = new_type
+            elif population_type != new_type:
                 raise TypeError(
                     'Arguments to vector() of type Population must all be Die or all be Deck, not a mixture of the two.'
                 )
@@ -40,7 +67,7 @@ def cartesian_product(
         return outcome_type(args)  # type: ignore
     else:
         data = {}
-        for outcomes, final_quantity in icepool.iter_cartesian_product(*args):
+        for outcomes, final_quantity in iter_cartesian_product(*args):
             data[outcome_type(outcomes)] = final_quantity  # type: ignore
         return population_type(data)
 
