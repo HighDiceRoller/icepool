@@ -55,7 +55,8 @@ def cartesian_product(
     population_type: Type | None = None
     for arg in args:
         new_type = getattr(arg, '_new_type', None)
-        if new_type is not None:
+        if new_type is not None and hasattr(arg,
+                                            '_items_for_cartesian_product'):
             if population_type is None:
                 population_type = new_type
             elif population_type != new_type:
