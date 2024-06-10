@@ -76,7 +76,8 @@ def expand_arg(
     elif arg is icepool.Reroll:
         return {}
     elif type(arg) == tuple:
-        arg = cast('T | icepool.Population[T]', icepool.tupleize(*arg))
+        arg = cast('T | icepool.Population[T]',
+                   icepool.cartesian_product(*arg, outcome_type=tuple))
         if type(arg) == tuple:
             return {arg: 1}  # type: ignore
         else:  # converted to Population
