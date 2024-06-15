@@ -38,7 +38,7 @@ See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/not
 
 [JupyterLite REPL.](https://highdiceroller.github.io/icepool/notebooks/repl/index.html?kernel=python&toolbar=1&code=%25pip%20install%20icepool%0Aimport%20icepool)
 
-As a backup, you can 
+As a backup, you can [open the notebooks in Google Colab.](https://colab.research.google.com/github/HighDiceRoller/icepool)
 
 ### Tutorial notebooks
 
