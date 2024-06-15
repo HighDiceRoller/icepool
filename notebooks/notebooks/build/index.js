@@ -421,6 +421,16 @@ export async function main() {
       console.error(e);
     }
   }
+  if (!federatedExtensionNames.has('@jupyterlab/theme-dark-high-contrast-extension')) {
+    try {
+      let ext = require('@jupyterlab/theme-dark-high-contrast-extension');
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
   if (!federatedExtensionNames.has('@jupyterlab/theme-light-extension')) {
     try {
       let ext = require('@jupyterlab/theme-light-extension');
