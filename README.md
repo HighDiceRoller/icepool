@@ -36,7 +36,9 @@ Feel free to open a [discussion](https://github.com/HighDiceRoller/icepool/discu
 
 See this [JupyterLite distribution](https://highdiceroller.github.io/icepool/notebooks/lab/index.html) for a collection of interactive, editable examples. These include mechanics from published games, StackExchange, Reddit, and academic papers. 
 
-[JupyterLite REPL.](https://highdiceroller.github.io/icepool/notebooks/repl/index.html?kernel=python&toolbar=1&code=import%20piplite%0Aawait%20piplite.install(%22icepool%22)%0Aimport%20icepool)
+[JupyterLite REPL.](https://highdiceroller.github.io/icepool/notebooks/repl/index.html?kernel=python&toolbar=1&code=%25pip%20install%20icepool%0Aimport%20icepool)
+
+As a backup, you can 
 
 ### Tutorial notebooks
 
