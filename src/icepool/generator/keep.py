@@ -38,10 +38,6 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
                                                 ...]) -> 'KeepGenerator[T]':
         """Produces a copy with a modified keep_tuple."""
 
-    @abstractmethod
-    def multiply_counts(self, constant: int, /) -> 'KeepGenerator[T]':
-        raise NotImplementedError()
-
     @cached_property
     def _keep_size(self) -> int:
         return sum(self._keep_tuple)
@@ -250,6 +246,10 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
         if not isinstance(other, int):
             return NotImplemented
         return self.multiply_counts(other)
+
+    def multiply_counts(self, constant: int, /) -> 'KeepGenerator[T]':
+        return self._set_keep_tuple(
+            tuple(n * constant for n in self._keep_tuple))
 
     # Commutable in this case.
     def __rmul__(self, other: int) -> 'KeepGenerator[T]':

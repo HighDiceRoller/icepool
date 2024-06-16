@@ -285,10 +285,6 @@ class Pool(KeepGenerator[T]):
                                                 ...]) -> 'KeepGenerator[T]':
         return Pool._new_raw(self._dice, keep_tuple)
 
-    def multiply_counts(self, constant: int, /) -> 'Pool[T]':
-        return Pool._new_raw(self._dice,
-                             tuple(x * constant for x in self.keep_tuple()))
-
     def additive_union(
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':

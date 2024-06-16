@@ -70,10 +70,6 @@ class CompoundKeepGenerator(KeepGenerator[T]):
                                                 ...]) -> 'KeepGenerator[T]':
         return CompoundKeepGenerator(self._inners, keep_tuple)
 
-    def multiply_counts(self, constant: int, /) -> 'CompoundKeepGenerator[T]':
-        return CompoundKeepGenerator(
-            self._inners, tuple(x * constant for x in self.keep_tuple()))
-
     @property
     def _hash_key(self) -> Hashable:
         return CompoundKeepGenerator, tuple(
