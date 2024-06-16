@@ -133,6 +133,7 @@ from icepool.generator.alignment import Alignment
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.population.deck import Deck
+from icepool.generator.deal import Deal
 from icepool.generator.multi_deal import MultiDeal
 
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
@@ -152,6 +153,6 @@ __all__ = [
     'align', 'align_range', 'commonize_denominator', 'reduce', 'accumulate',
     'map', 'map_function', 'map_and_time', 'map_to_pool', 'Reroll',
     'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator', 'Alignment',
-    'MultisetExpression', 'MultisetEvaluator', 'Order', 'Deck', 'MultiDeal',
-    'multiset_function', 'function', 'typing', 'evaluator'
+    'MultisetExpression', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
+    'MultiDeal', 'multiset_function', 'function', 'typing', 'evaluator'
 ]

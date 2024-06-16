@@ -13,7 +13,7 @@ import operator
 
 from collections import Counter, defaultdict
 from functools import cached_property
-from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence, Type
+from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence, Type, overload
 
 
 class Deck(Population[T_co]):
@@ -113,13 +113,33 @@ class Deck(Population[T_co]):
         """A `Deck` with the max outcome removed."""
         return self._popped_max
 
-    def deal(self, *hand_sizes:
-             int) -> 'icepool.MultiDeal[T_co, tuple[int, ...]]':
+    @overload
+    def deal(self, hand_size: int, /) -> 'icepool.Deal[T_co]':
+        ...
+
+    @overload
+    def deal(
+            self, hand_size: int, hand_size_2: int, /, *more_hand_sizes:
+        int) -> 'icepool.MultiDeal[T_co, tuple[int, ...]]':
+        ...
+
+    @overload
+    def deal(
+        self, *hand_sizes: int
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
+        ...
+
+    def deal(
+        self, *hand_sizes: int
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
         """Creates a `Deal` object from this deck.
 
         See `Deal()` for details.
         """
-        return icepool.MultiDeal(self, *hand_sizes)
+        if len(hand_sizes) == 1:
+            return icepool.Deal(self, *hand_sizes)
+        else:
+            return icepool.MultiDeal(self, *hand_sizes)
 
     # Binary operators.
 

@@ -24,7 +24,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
         For algorithmic reasons, you must pre-commit to the number of cards to
         deal for each hand.
 
-        It is permissible to `Deal` zero cards from an empty deck, but not all
+        It is permissible to deal zero cards from an empty deck, but not all
         evaluators will handle this case, especially if they depend on the
         outcome type. Dealing zero cards from a non-empty deck does not have
         this issue.
@@ -143,5 +143,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
         ).__qualname__ + f'({repr(self.deck())}, hand_sizes={self.hand_sizes()})'
 
     def __str__(self) -> str:
-        return f'Deal of hand_sizes={self.hand_sizes()} from deck:\n' + str(
+        return type(
+            self
+        ).__qualname__ + f' of hand_sizes={self.hand_sizes()} from deck:\n' + str(
             self.deck())
