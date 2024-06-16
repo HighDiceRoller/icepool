@@ -12,8 +12,8 @@ from functools import cached_property
 import math
 
 
-class Deal(MultisetGenerator[T, Qs]):
-    """Represents an sorted/unordered deal of cards from a `Deck`."""
+class MultiDeal(MultisetGenerator[T, Qs]):
+    """Represents an unordered deal of multiple hands from a `Deck`."""
 
     _deck: 'icepool.Deck[T]'
     _hand_sizes: Qs
@@ -47,8 +47,8 @@ class Deal(MultisetGenerator[T, Qs]):
 
     @classmethod
     def _new_raw(cls, deck: 'icepool.Deck[T]',
-                 hand_sizes: Qs) -> 'Deal[T, Qs]':
-        self = super(Deal, cls).__new__(cls)
+                 hand_sizes: Qs) -> 'MultiDeal[T, Qs]':
+        self = super(MultiDeal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes
         return self
@@ -105,7 +105,7 @@ class Deal(MultisetGenerator[T, Qs]):
             # The "deck" is the hand sizes.
             for counts, weight_split in iter_hypergeom(self.hand_sizes(),
                                                        count_total):
-                popped_deal = Deal._new_raw(
+                popped_deal = MultiDeal._new_raw(
                     popped_deck,
                     tuple(h - c for h, c in zip(self.hand_sizes(), counts)))
                 weight = weight_total * weight_split
@@ -135,7 +135,7 @@ class Deal(MultisetGenerator[T, Qs]):
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        return Deal, self.deck(), self.hand_sizes()
+        return MultiDeal, self.deck(), self.hand_sizes()
 
     def __repr__(self) -> str:
         return type(

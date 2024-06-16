@@ -76,7 +76,7 @@ class Pool(KeepGenerator[T]):
             else:
                 dice = {die: quantity for die, quantity in dice._dice}
 
-        if isinstance(dice, (icepool.Die, icepool.Deck, icepool.Deal)):
+        if isinstance(dice, (icepool.Die, icepool.Deck, icepool.MultiDeal)):
             raise ValueError(
                 f'A Pool cannot be constructed with a {type(dice).__name__} argument.'
             )
