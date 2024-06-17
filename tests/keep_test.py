@@ -250,3 +250,15 @@ def test_keep_expression_both_negative():
     result = Deck([0, 10, 20, 30, 40]).deal(5)[-4:-1].sum()
     expected = Die([60])
     assert result == expected
+
+
+def test_keep_expression_positive_negative():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[1:-1].sum()
+    expected = Die([60])
+    assert result == expected
+
+
+def test_keep_expression_negative_positive():
+    result = Deck([0, 10, 20, 30, 40]).deal(5)[-4:4].sum()
+    expected = Die([60])
+    assert result == expected
