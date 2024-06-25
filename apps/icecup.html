@@ -104,7 +104,7 @@ async function initPyodide(){
     self.postMessage({ cmd: 'setLoadingText', text: 'Loading icepool' });
     let icepoolVersion = await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool')
+await micropip.install('icepool', pre=True)
 import icepool
 icepool.__version__
 `)
