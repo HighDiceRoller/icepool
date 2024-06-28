@@ -86,7 +86,8 @@ class Pool(KeepGenerator[T]):
 
         dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
-            dice_counts[die] += qty
+            if qty > 0:
+                dice_counts[die] += qty
         keep_tuple = (1, ) * sum(times)
         return cls._new_from_mapping(dice_counts, keep_tuple)
 
