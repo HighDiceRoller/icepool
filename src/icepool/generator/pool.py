@@ -332,7 +332,7 @@ def standard_pool(
             If empty, the pool will be considered to consist of 0d1.
     """
     if not die_sizes:
-        return Pool({1: 0})
+        return Pool({0: 1})
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable([k] * v
