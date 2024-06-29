@@ -292,6 +292,7 @@ class Die(Population[T_co]):
 
     def _select_outcomes(self, which: Callable[..., bool] | Collection[T_co],
                          star: bool | None) -> Set[T_co]:
+        """Returns a set of outcomes of self that fit the given condition."""
         if callable(which):
             if star is None:
                 star = guess_star(which)
@@ -309,7 +310,7 @@ class Die(Population[T_co]):
                 }
         else:
             # Collection.
-            return set(which)
+            return set(outcome for outcome in self.outcomes() if outcome in which)
 
     def reroll(self,
                which: Callable[..., bool] | Collection[T_co] | None = None,
@@ -978,10 +979,14 @@ class Die(Population[T_co]):
             that this is not technically a `Pool`, though it supports most of 
             the same operations.
         """
+        if depth == 0:
+            return self.pool(rolls)
         if which is None:
             explode_set = {self.max_outcome()}
         else:
             explode_set = self._select_outcomes(which, star)
+        if not explode_set:
+            return self.pool(rolls)
         explode, not_explode = self.split(explode_set)
 
         single_data: 'MutableMapping[icepool.Vector[int], int]' = defaultdict(
@@ -1035,8 +1040,13 @@ class Die(Population[T_co]):
             that this is not technically a `Pool`, though it supports most of 
             the same operations.
         """
-        outcome_set = self._select_outcomes(which, star)
-        rerollable_die, not_rerollable_die = self.split(outcome_set)
+        if max_rerolls == 0:
+            return self.pool(rolls)
+        rerollable_set = self._select_outcomes(which, star)
+        if not rerollable_set:
+            return self.pool(rolls)
+
+        rerollable_die, not_rerollable_die = self.split(rerollable_set)
         single_is_rerollable = icepool.coin(rerollable_die.denominator(),
                                             self.denominator())
         rerollable = rolls @ single_is_rerollable

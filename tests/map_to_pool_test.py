@@ -51,3 +51,13 @@ def test_reroll_pool_vs_map():
 def test_reroll_pool_empowered_spell():
     result = d6.reroll_to_pool(8, [1, 2, 3], 4, reroll_priority='lowest').sum()
     assert result.mean() == pytest.approx(33.61, abs=0.01)
+
+
+def test_explode_empty():
+    result = d6.explode_to_pool(3, [])
+    assert result.sum().simplify() == 3 @ d6
+
+
+def test_reroll_empty():
+    result = d6.reroll_to_pool(3, [], 2)
+    assert result.sum().simplify() == 3 @ d6
