@@ -86,8 +86,10 @@ class Pool(KeepGenerator[T]):
 
         dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
-            if qty > 0:
-                dice_counts[die] += qty
+            if die.is_empty() and qty == 0:
+                # zero empty dice is considered to have no effect
+                continue
+            dice_counts[die] += qty
         keep_tuple = (1, ) * sum(times)
         return cls._new_from_mapping(dice_counts, keep_tuple)
 
@@ -313,7 +315,7 @@ class Pool(KeepGenerator[T]):
     def __str__(self) -> str:
         return (
             f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'
-            + ''.join(f'  {repr(die)}\n' for die in self._dice_tuple))
+            + ''.join(f'  {repr(die)} : {count},\n' for die, count in self._dice))
 
     @cached_property
     def _hash_key(self) -> tuple:
@@ -329,10 +331,10 @@ def standard_pool(
             sizes in the pool for each element.
             Or, a mapping of die sizes to how many dice of that size to put
             into the pool.
-            If empty, the pool will be considered to consist of 0d1.
+            If empty, the pool will be considered to consist of zero zeros.
     """
     if not die_sizes:
-        return Pool({0: 1})
+        return Pool({icepool.Die([0]): 0})
     if isinstance(die_sizes, Mapping):
         die_sizes = list(
             itertools.chain.from_iterable([k] * v
