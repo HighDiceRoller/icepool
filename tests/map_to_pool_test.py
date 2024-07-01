@@ -61,3 +61,12 @@ def test_explode_empty():
 def test_reroll_empty():
     result = d6.reroll_to_pool(3, [], 2)
     assert result.sum().simplify() == 3 @ d6
+
+def test_reroll_drop():
+    pool = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='drop')
+    assert pool.keep_outcomes([0]).count().mean() == 0
+
+def test_reroll_drop_sum():
+    a = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='drop').sum()
+    b = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='random').sum()
+    assert a == b

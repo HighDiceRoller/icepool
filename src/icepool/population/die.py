@@ -1012,7 +1012,7 @@ class Die(Population[T_co]):
         max_rerolls: int,
         *,
         star: bool | None = None,
-        reroll_priority: Literal['random', 'lowest', 'highest'] = 'random'
+        reroll_priority: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
     ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
@@ -1034,14 +1034,16 @@ class Die(Population[T_co]):
                 * `'random'` (default): Eligible dice will be chosen uniformly at random.
                 * `'lowest'`: The lowest eligible dice will be rerolled.
                 * `'highest'`: The highest eligible dice will be rerolled.
+                * `'drop'`: All dice that ended up on an outcome selected by 
+                    `which` will be dropped. This includes both dice that rolled
+                    into `which` initially and were not rerolled, and dice that
+                    were rerolled but rolled into `which` again.
 
         Returns:
             A `MultisetGenerator` representing the mixture of `Pool`s. Note  
             that this is not technically a `Pool`, though it supports most of 
             the same operations.
         """
-        if max_rerolls == 0:
-            return self.pool(rolls)
         rerollable_set = self._select_outcomes(which, star)
         if not rerollable_set:
             return self.pool(rolls)
@@ -1095,6 +1097,8 @@ class Die(Population[T_co]):
             elif reroll_priority == 'highest':
                 return common + rerollable_die.pool(initial_rerollable).lowest(
                     not_rerolled)
+            elif reroll_priority == 'drop':
+                return not_rerollable_die.pool(not_rerollable)
             else:
                 raise ValueError(
                     f"Invalid reroll_priority '{reroll_priority}'. Allowed values are 'random', 'lowest', and 'highest'."
