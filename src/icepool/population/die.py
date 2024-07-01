@@ -643,7 +643,8 @@ class Die(Population[T_co]):
         return result
 
     def explode(self,
-                which: Collection[T_co] | Callable[..., bool] | None = None,
+                which: Collection[T_co] | Callable[..., bool] | None = None, 
+                /,
                 *,
                 star: bool | None = None,
                 depth: int = 9,
@@ -953,8 +954,8 @@ class Die(Population[T_co]):
     def explode_to_pool(
             self,
             rolls: int,
-            /,
             which: Collection[T_co] | Callable[..., bool] | None = None,
+            /,
             *,
             star: bool | None = None,
             depth: int = 9) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
