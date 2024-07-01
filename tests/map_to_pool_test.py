@@ -10,8 +10,7 @@ def test_explode_to_pool():
 
 def test_explode_to_pool_multi():
     assert d6.explode_to_pool(
-        3, which=[5,
-                  6], depth=4).sum() == 3 @ d6.explode(which=[5, 6], depth=4)
+        3, [5, 6], depth=4).sum() == 3 @ d6.explode([5, 6], depth=4)
 
 
 def test_map_to_pool():
@@ -49,7 +48,7 @@ def test_reroll_pool_vs_map():
 
 
 def test_reroll_pool_empowered_spell():
-    result = d6.reroll_to_pool(8, [1, 2, 3], 4, reroll_priority='lowest').sum()
+    result = d6.reroll_to_pool(8, [1, 2, 3], 4, mode='lowest').sum()
     assert result.mean() == pytest.approx(33.61, abs=0.01)
 
 
@@ -63,10 +62,10 @@ def test_reroll_empty():
     assert result.sum().simplify() == 3 @ d6
 
 def test_reroll_drop():
-    pool = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='drop')
+    pool = (d6 - 3).reroll_to_pool(3, [0], 3, mode='drop')
     assert pool.keep_outcomes([0]).count().mean() == 0
 
 def test_reroll_drop_sum():
-    a = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='drop').sum()
-    b = (d6 - 3).reroll_to_pool(3, [0], 3, reroll_priority='random').sum()
+    a = (d6 - 3).reroll_to_pool(3, [0], 3, mode='drop').sum()
+    b = (d6 - 3).reroll_to_pool(3, [0], 3, mode='random').sum()
     assert a == b

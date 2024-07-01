@@ -1013,7 +1013,7 @@ class Die(Population[T_co]):
         max_rerolls: int,
         *,
         star: bool | None = None,
-        reroll_priority: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
+        mode: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
     ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
@@ -1022,17 +1022,19 @@ class Die(Population[T_co]):
         
         Args:
             rolls: How many dice in the pool.
-            which: Selects which outcomes to reroll. Options:
+            which: Selects which outcomes are eligible to be rerolled. Options:
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
-                    should be rerolled.
+                    could be rerolled.
             max_rerolls: The maximum number of dice to reroll.
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
-            reroll_priority: Which values will be prioritized for rerolling. Options:
-                * `'random'` (default): Eligible dice will be chosen uniformly at random.
+            mode: How dice are selected for rerolling if there are more eligible
+                dice than `max_rerolls`. Options:
+                * `'random'` (default): Eligible dice will be chosen uniformly
+                    at random.
                 * `'lowest'`: The lowest eligible dice will be rerolled.
                 * `'highest'`: The highest eligible dice will be rerolled.
                 * `'drop'`: All dice that ended up on an outcome selected by 
@@ -1090,19 +1092,19 @@ class Die(Population[T_co]):
             common = rerollable_die.pool(
                 rerolled_to_rerollable) + not_rerollable_die.pool(
                     not_rerollable)
-            if reroll_priority == 'random':
+            if mode == 'random':
                 return common + rerollable_die.pool(not_rerolled)
-            elif reroll_priority == 'lowest':
+            elif mode == 'lowest':
                 return common + rerollable_die.pool(
                     initial_rerollable).highest(not_rerolled)
-            elif reroll_priority == 'highest':
+            elif mode == 'highest':
                 return common + rerollable_die.pool(initial_rerollable).lowest(
                     not_rerolled)
-            elif reroll_priority == 'drop':
+            elif mode == 'drop':
                 return not_rerollable_die.pool(not_rerollable)
             else:
                 raise ValueError(
-                    f"Invalid reroll_priority '{reroll_priority}'. Allowed values are 'random', 'lowest', and 'highest'."
+                    f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', and 'highest'."
                 )
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
