@@ -1017,8 +1017,8 @@ class Die(Population[T_co]):
     ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
-        Each die can only be rerolled once, and no more than `max_rerolls` dice 
-        may be rerolled.
+        Each die can only be rerolled once (effectively `depth=1`), and no more
+        than `max_rerolls` dice may be rerolled.
         
         Args:
             rolls: How many dice in the pool.
@@ -1026,7 +1026,10 @@ class Die(Population[T_co]):
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     could be rerolled.
-            max_rerolls: The maximum number of dice to reroll.
+            max_rerolls: The maximum number of dice to reroll. 
+                Note that each die can only be rerolled once, so if the number 
+                of eligible dice is less than this, the excess rerolls have no
+                effect.
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
@@ -1104,7 +1107,7 @@ class Die(Population[T_co]):
                 return not_rerollable_die.pool(not_rerollable)
             else:
                 raise ValueError(
-                    f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', and 'highest'."
+                    f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', 'highest', 'drop'."
                 )
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
