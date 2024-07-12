@@ -121,6 +121,11 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         """The total weight of all paths through this generator."""
 
     @property
+    def _can_keep(self) -> bool:
+        """Whether the generator supports enhanced keep operations."""
+        return False
+
+    @property
     @abstractmethod
     def _hash_key(self) -> Hashable:
         """A hash key that logically identifies this object among MultisetGenerators.
