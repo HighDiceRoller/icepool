@@ -4,12 +4,12 @@
 * `depth` argument to `Die.reroll()` is now mandatory.
 * `tuple` outcomes are now auto-`tupleize`d again during `Die` construction.
 * Add `Die.stochastic_round()` method.
+* Add `Die.reroll_to_pool()` method.
 * Add `percent` option to `Population.probability` methods.
 * Add new `again_count` mode for handling `Again`, which limits the total number of dice.
 * Improved ability to `keep` from both ends for certain types of multiset expressions.
 * Rename `func` parameters to `function`.
 * Improved sorting for `Symbols`; now compares counts in alphabetical order.
-* Experimental `Die.reroll_to_pool()` method.
 * Experimental `all_straights_reduce_counts` and `argsort` multiset evaluations.
 
 ## v1.4.0

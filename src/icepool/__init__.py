@@ -19,7 +19,7 @@ General conventions:
 
 __docformat__ = 'google'
 
-__version__ = '1.5.0a3'
+__version__ = '1.5.0a4'
 
 from typing import Final
 
