@@ -310,7 +310,8 @@ class Die(Population[T_co]):
                 }
         else:
             # Collection.
-            return set(outcome for outcome in self.outcomes() if outcome in which)
+            return set(outcome for outcome in self.outcomes()
+                       if outcome in which)
 
     def reroll(self,
                which: Callable[..., bool] | Collection[T_co] | None = None,
@@ -643,7 +644,7 @@ class Die(Population[T_co]):
         return result
 
     def explode(self,
-                which: Collection[T_co] | Callable[..., bool] | None = None, 
+                which: Collection[T_co] | Callable[..., bool] | None = None,
                 /,
                 *,
                 star: bool | None = None,
@@ -1043,7 +1044,8 @@ class Die(Population[T_co]):
                 * `'drop'`: All dice that ended up on an outcome selected by 
                     `which` will be dropped. This includes both dice that rolled
                     into `which` initially and were not rerolled, and dice that
-                    were rerolled but rolled into `which` again.
+                    were rerolled but rolled into `which` again. This can be
+                    considerably more efficient than the other modes.
 
         Returns:
             A `MultisetGenerator` representing the mixture of `Pool`s. Note  

@@ -315,7 +315,8 @@ class Pool(KeepGenerator[T]):
     def __str__(self) -> str:
         return (
             f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'
-            + ''.join(f'  {repr(die)} : {count},\n' for die, count in self._dice))
+            + ''.join(f'  {repr(die)} : {count},\n'
+                      for die, count in self._dice))
 
     @cached_property
     def _hash_key(self) -> tuple:
