@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from types import EllipsisType
 import icepool
 import icepool.population.again
 import icepool.population.format
@@ -18,7 +19,7 @@ import itertools
 import math
 import operator
 
-from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, cast
+from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, cast, overload
 
 
 def implicit_convert_to_die(
@@ -801,6 +802,71 @@ class Die(Population[T_co]):
             pool_size = len(rolls)
             # Haven't dealt with narrowing return type.
             return icepool.Pool({self: pool_size})[rolls]  # type: ignore
+
+    @overload
+    def keep(self, rolls: Sequence[int], /) -> 'Die':
+        """Selects elements after drawing and sorting and sums them.
+
+        Args:
+            rolls: A sequence of `int` specifying how many times to count each
+                element in ascending order.
+        """
+
+    @overload
+    def keep(self, rolls: int,
+             index: slice | Sequence[int | EllipsisType] | int, /):
+        """Selects elements after drawing and sorting and sums them.
+
+        Args:
+            rolls: The number of dice to roll.
+            index: One of the following:
+            * An `int`. This will count only the roll at the specified index.
+            In this case, the result is a `Die` rather than a generator.
+            * A `slice`. The selected dice are counted once each.
+            * A sequence of one `int` for each `Die`.
+                Each roll is counted that many times, which could be multiple or
+                negative times.
+
+                Up to one `...` (`Ellipsis`) may be used.
+                `...` will be replaced with a number of zero
+                counts depending on the `rolls`.
+                This number may be "negative" if more `int`s are provided than
+                `rolls`. Specifically:
+
+                * If `index` is shorter than `rolls`, `...`
+                    acts as enough zero counts to make up the difference.
+                    E.g. `(1, ..., 1)` on five dice would act as
+                    `(1, 0, 0, 0, 1)`.
+                * If `index` has length equal to `rolls`, `...` has no effect.
+                    E.g. `(1, ..., 1)` on two dice would act as `(1, 1)`.
+                * If `index` is longer than `rolls` and `...` is on one side,
+                    elements will be dropped from `index` on the side with `...`.
+                    E.g. `(..., 1, 2, 3)` on two dice would act as `(2, 3)`.
+                * If `index` is longer than `rolls` and `...`
+                    is in the middle, the counts will be as the sum of two
+                    one-sided `...`.
+                    E.g. `(-1, ..., 1)` acts like `(-1, ...)` plus `(..., 1)`.
+                    If `rolls` was 1 this would have the -1 and 1 cancel each other out.
+        """
+
+    def keep(self,
+             rolls: int | Sequence[int],
+             index: slice | Sequence[int | EllipsisType] | int | None = None,
+             /) -> 'Die':
+        """Selects elements after drawing and sorting."""
+        if isinstance(rolls, int):
+            if index is None:
+                raise ValueError(
+                    'If the number of rolls is an integer, an index argument must be provided.'
+                )
+            if isinstance(index, int):
+                return self.pool(rolls).keep(index)
+            else:
+                return self.pool(rolls).keep(index).sum()  # type: ignore
+        else:
+            if index is not None:
+                raise ValueError('Only one index sequence can be given.')
+            return self.pool(len(rolls)).keep(rolls).sum()  # type: ignore
 
     def lowest(self,
                rolls: int,

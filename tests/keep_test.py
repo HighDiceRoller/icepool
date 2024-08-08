@@ -262,3 +262,9 @@ def test_keep_expression_negative_positive():
     result = Deck([0, 10, 20, 30, 40]).deal(5)[-4:4].sum()
     expected = Die([60])
     assert result == expected
+
+
+def test_keep_die_method():
+    assert d6.keep((0, 1, 0)) == d6.pool(3).keep(1)
+    assert d6.keep(3, 1) == d6.pool(3).keep(1)
+    assert d6.keep(5, (1, ...)) == d6.lowest(5, 1)

@@ -623,7 +623,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'MultisetExpression[T_contra] | icepool.Die[T_contra] | icepool.MultisetEvaluator[T_contra, T_contra]':
-        """Selects pulls after drawing and sorting.
+        """Selects elements after drawing and sorting.
 
         This is less capable than the `KeepGenerator` version.
         In particular, it does not know how many elements it is selecting from,
