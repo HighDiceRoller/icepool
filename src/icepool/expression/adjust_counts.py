@@ -43,8 +43,8 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         count = self._function(outcome, *inner_counts)
         return state, count
 
-    def _order(self) -> Order:
-        return Order.merge(*(inner._order() for inner in self._inners))
+    def order(self) -> Order:
+        return Order.merge(*(inner.order() for inner in self._inners))
 
     @cached_property
     def _cached_arity(self) -> int:
@@ -92,8 +92,8 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
         count = self.adjust_count(count, self._constant)
         return state, count
 
-    def _order(self) -> Order:
-        return self._inner._order()
+    def order(self) -> Order:
+        return self._inner.order()
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._inner._bound_generators()

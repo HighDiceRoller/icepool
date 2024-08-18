@@ -52,8 +52,8 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         else:
             return state, 0
 
-    def _order(self) -> Order:
-        return self._inner._order()
+    def order(self) -> Order:
+        return self._inner.order()
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._inner._bound_generators()
@@ -119,8 +119,8 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
         else:
             return (inner_state, target_state), 0
 
-    def _order(self) -> Order:
-        return Order.merge(self._inner._order(), self._target._order())
+    def order(self) -> Order:
+        return Order.merge(self._inner.order(), self._target.order())
 
     @cached_property
     def _cached_arity(self) -> int:

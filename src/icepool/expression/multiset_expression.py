@@ -109,7 +109,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
 
     @abstractmethod
-    def _order(self) -> Order:
+    def order(self) -> Order:
         """Any ordering that is required by this expression.
 
         This should check any previous expressions for their order, and

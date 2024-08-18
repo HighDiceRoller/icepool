@@ -68,7 +68,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
 
     def order(self) -> Order:
         """Forwards to inner."""
-        expression_order = Order.merge(*(expression._order()
+        expression_order = Order.merge(*(expression.order()
                                          for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 

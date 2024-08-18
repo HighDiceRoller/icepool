@@ -191,7 +191,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         raise RuntimeError(
             'Internal error: Expressions should be unbound before evaluation.')
 
-    def _order(self) -> Order:
+    def order(self) -> Order:
         return Order.Any
 
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

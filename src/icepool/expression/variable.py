@@ -27,7 +27,7 @@ class MultisetVariable(MultisetExpression[Any]):
         # We don't need any state.
         return None, counts[self._index]
 
-    def _order(self):
+    def order(self):
         return Order.Any
 
     def _free_arity(self) -> int:

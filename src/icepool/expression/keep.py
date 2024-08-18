@@ -140,8 +140,8 @@ class KeepExpression(MultisetExpression[T_contra]):
             remaining -= dropped
             return (remaining, inner_state), count
 
-    def _order(self) -> Order:
-        return Order.merge(self._keep_order, self._inner._order())
+    def order(self) -> Order:
+        return Order.merge(self._keep_order, self._inner.order())
 
     @cached_property
     def _cached_bound_generators(
@@ -166,13 +166,13 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     def __str__(self) -> str:
         if self._drop:
-            if self._order == Order.Ascending:
+            if self.order == Order.Ascending:
                 return f'{self._inner}[{self._drop}:]'
             else:
                 return f'{self._inner}[:-{self._drop}]'
         else:
             index_string = ', '.join(str(x) for x in self._keep_tuple)
-            if self._order == Order.Ascending:
+            if self.order == Order.Ascending:
                 index_string = index_string + ', ...'
             else:
                 index_string = '..., ' + index_string

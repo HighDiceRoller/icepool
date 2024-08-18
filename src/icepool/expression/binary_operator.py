@@ -51,8 +51,8 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
         count = reduce(self.merge_counts, inner_counts)
         return inner_states, count
 
-    def _order(self) -> Order:
-        return Order.merge(*(inner._order() for inner in self._inners))
+    def order(self) -> Order:
+        return Order.merge(*(inner.order() for inner in self._inners))
 
     @cached_property
     def _cached_arity(self) -> int:
