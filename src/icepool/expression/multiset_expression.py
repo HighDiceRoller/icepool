@@ -717,6 +717,32 @@ class MultisetExpression(ABC, Generic[T_contra]):
         index = highest_slice(keep, drop)
         return self.keep(index)
 
+    # Pairing.
+
+    def pair_le(self,
+                other: 'MultisetExpression[T_contra]',
+                *,
+                keep: bool = True):
+        """EXPERIMENTAL: Make pairs of elements such that `self <= other`, then keep or drop the paired elements from `self`.
+        
+        First, make as many pairs of one element of `self` and one element of
+        `other` such that:
+        * In each pair, the element from `self` <= the element from `other`.
+        * The element from `self` is as great as possible otherwise.
+        Keep the elements from `self` that were paired and drop the rest.
+
+        Args:
+            other: The other multiset to pair elements with.
+            keep: If `True` (default), the paired elements from `self` will be
+                kept. Otherwise, the unpaired elements will be kept.
+        """
+        other = implicit_convert_to_expression(other)
+        return icepool.expression.PairKeepExpression(self,
+                                                     other,
+                                                     order=Order.Descending,
+                                                     allow_equal=True,
+                                                     keep=keep)
+
     # Evaluations.
 
     def evaluate(
