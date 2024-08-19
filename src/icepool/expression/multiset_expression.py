@@ -55,7 +55,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `multiply_counts`, `*`      | `count * n`                                 |
     | `divide_counts`, `//`       | `count // n`                                |
     | `modulo_counts`, `%`        | `count % n`                                 |
-    | `keep_counts_ge` etc.       | `count if count >= n else 0` etc.           |
+    | `keep_counts`               | `count if count >= n else 0` etc.           |
     | unary `+`                   | same as `keep_counts_ge(0)`                 |
     | unary `-`                   | reverses the sign of all counts             |
     | `unique`                    | `min(count, n)`                             |
@@ -359,7 +359,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Specifically, this produces the absolute difference between counts.
         If you don't want negative counts to be used from the inputs, you can
-        do `left.keep_counts_ge(0) ^ right.keep_counts_ge(0)`.
+        do `left.keep_counts('>=', 0) ^ right.keep_counts('>=', 0)`.
 
         Example:
         ```python
@@ -506,92 +506,29 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return self % n
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
-        return icepool.expression.KeepCountsExpression(self, 0, operator.ge)
+        return icepool.expression.KeepCountsExpression(self, '>=', 0)
 
     def __neg__(self) -> 'MultisetExpression[T_contra]':
         """As -1 * self."""
         return -1 * self
 
-    def keep_counts_le(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are <= n, treating the rest as zero.
+    def keep_counts(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                              '>'], n: int,
+                    /) -> 'MultisetExpression[T_contra]':
+        """Keeps counts fitting the comparison, treating the rest as zero.
 
-        For example, `expression.keep_counts_le(2)` would remove triplets and
-        better.
+        For example, `expression.keep_counts('>=', 2)` would keep pairs,
+        triplets, etc. and drop singles.
 
-        Example:
         ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [1, 2, 2]
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts('>=', 2) -> [2, 2, 3, 3, 3]
         ```
-        """
-        return icepool.expression.KeepCountsExpression(self, n, operator.le)
-
-    def keep_counts_lt(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are < n, treating the rest as zero.
-
-        For example, `expression.keep_counts_lt(2)` would remove doubles,
-        triplets...
-
-        Example:
-        ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_lt(2) -> [1]
-        ```
-        """
-        return icepool.expression.KeepCountsExpression(self, n, operator.lt)
-
-    def keep_counts_ge(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are >= n, treating the rest as zero.
-
-        For example, `expression.keep_counts_ge(2)` would only produce
-        pairs and better.
         
-        `expression.keep_countss_ge(0)` is useful for removing negative counts. 
-        You can use the unary operator `+expression` for the same effect.
-
-        Example:
-        ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ge(2) -> [2, 2, 3, 3, 3]
-        ```
+        Args:
+            comparison: The comparison to use.
+            n: The number to compare counts against.
         """
-        return icepool.expression.KeepCountsExpression(self, n, operator.ge)
-
-    def keep_counts_gt(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are < n, treating the rest as zero.
-
-        For example, `expression.keep_counts_gt(2)` would remove singles and
-        doubles.
-
-        Example:
-        ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_gt(2) -> [3, 3, 3]
-        ```
-        """
-        return icepool.expression.KeepCountsExpression(self, n, operator.gt)
-
-    def keep_counts_eq(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are == n, treating the rest as zero.
-
-        For example, `expression.keep_counts_eq(2)` would keep pairs but not
-        singles or triplets.
-
-        Example:
-        ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_le(2) -> [2, 2]
-        ```
-        """
-        return icepool.expression.KeepCountsExpression(self, n, operator.eq)
-
-    def keep_counts_ne(self, n: int, /) -> 'MultisetExpression[T_contra]':
-        """Keeps counts that are != n, treating the rest as zero.
-
-        For example, `expression.keep_counts_eq(2)` would drop pairs but keep
-        singles and triplets.
-
-        Example:
-        ```python
-        Pool([1, 2, 2, 3, 3, 3]).keep_counts_ne(2) -> [1, 3, 3, 3]
-        ```
-        """
-        return icepool.expression.KeepCountsExpression(self, n, operator.ne)
+        return icepool.expression.KeepCountsExpression(self, comparison, n)
 
     def unique(self, n: int = 1, /) -> 'MultisetExpression[T_contra]':
         """Counts each outcome at most `n` times.

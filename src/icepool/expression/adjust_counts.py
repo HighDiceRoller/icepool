@@ -10,7 +10,7 @@ from abc import abstractmethod
 from functools import cached_property, reduce
 
 from icepool.typing import Order, Outcome, T_contra
-from typing import Callable, Hashable, Sequence, cast, overload
+from typing import Callable, Hashable, Literal, Sequence, cast, overload
 
 
 class MapCountsExpression(MultisetExpression[T_contra]):
@@ -141,10 +141,22 @@ class ModuloCountsExpression(AdjustCountsExpression):
 
 class KeepCountsExpression(AdjustCountsExpression):
 
-    def __init__(self, inner: MultisetExpression[T_contra], constant: int,
-                 op: Callable[[int, int], bool]):
+    def __init__(self, inner: MultisetExpression[T_contra],
+                 comparison: Literal['==', '!=', '<=', '<', '>=',
+                                     '>'], constant: int):
         super().__init__(inner, constant)
-        self._op = op
+        operators = {
+            '==': operator.eq,
+            '!=': operator.ne,
+            '<=': operator.le,
+            '<': operator.lt,
+            '>=': operator.ge,
+            '>': operator.gt,
+        }
+        if comparison not in operators:
+            raise ValueError(f'Invalid comparison {comparison}')
+        self._comparison = comparison
+        self._op = operators[comparison]
 
     def adjust_count(self, count: int, constant: int) -> int:
         if self._op(count, constant):
@@ -156,12 +168,12 @@ class KeepCountsExpression(AdjustCountsExpression):
                 free_start: int) -> 'tuple[MultisetExpression, int]':
         unbound_inner, prefix_start = self._inner._unbind(
             prefix_start, free_start)
-        unbound_expression = type(self)(unbound_inner, self._constant,
-                                        self._op)
+        unbound_expression = type(self)(unbound_inner, self._comparison,
+                                        self._constant)
         return unbound_expression, prefix_start
 
     def __str__(self) -> str:
-        return f'{self._inner}.keep_counts_{self._op.__name__}({self._constant})'
+        return f"{self._inner}.keep_counts('{self._comparison}', {self._constant})"
 
 
 class UniqueExpression(AdjustCountsExpression):
