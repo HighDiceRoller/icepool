@@ -506,6 +506,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         return self % n
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
+        """Sets all negative counts to zero."""
         return icepool.expression.KeepCountsExpression(self, '>=', 0)
 
     def __neg__(self) -> 'MultisetExpression[T_contra]':
