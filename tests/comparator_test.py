@@ -110,142 +110,142 @@ def test_cmp_len():
 
 
 def test_quantity_le():
-    assert icepool.d6.quantity_le(3) == 3
+    assert icepool.d6.quantity('<=', 3) == 3
 
 
 def test_quantity_lt():
-    assert icepool.d6.quantity_lt(3) == 2
+    assert icepool.d6.quantity('<', 3) == 2
 
 
 def test_quantity_le_min():
-    assert icepool.d6.quantity_le(1) == 1
+    assert icepool.d6.quantity('<=', 1) == 1
 
 
 def test_quantity_lt_min():
-    assert icepool.d6.quantity_lt(1) == 0
+    assert icepool.d6.quantity('<', 1) == 0
 
 
 def test_quantity_ge():
-    assert icepool.d6.quantity_ge(3) == 4
+    assert icepool.d6.quantity('>=', 3) == 4
 
 
 def test_quantity_gt():
-    assert icepool.d6.quantity_gt(3) == 3
+    assert icepool.d6.quantity('>', 3) == 3
 
 
 def test_quantity_ge_max():
-    assert icepool.d6.quantity_ge(6) == 1
+    assert icepool.d6.quantity('>=', 6) == 1
 
 
 def test_quantity_gt_max():
-    assert icepool.d6.quantity_gt(6) == 0
+    assert icepool.d6.quantity('>', 6) == 0
 
 
 die_spaced = icepool.Die(range(-3, 4), times=[1, 0, 0, 1, 0, 0, 1])
 
 
 def test_quantity_le_zero_weight():
-    assert die_spaced.quantity_le(-1) == 1
-    assert die_spaced.quantity_le(0) == 2
-    assert die_spaced.quantity_le(1) == 2
+    assert die_spaced.quantity('<=', -1) == 1
+    assert die_spaced.quantity('<=', 0) == 2
+    assert die_spaced.quantity('<=', 1) == 2
 
 
 def test_quantity_lt_zero_weight():
-    assert die_spaced.quantity_lt(-1) == 1
-    assert die_spaced.quantity_lt(0) == 1
-    assert die_spaced.quantity_lt(1) == 2
+    assert die_spaced.quantity('<', -1) == 1
+    assert die_spaced.quantity('<', 0) == 1
+    assert die_spaced.quantity('<', 1) == 2
 
 
 def test_quantity_ge_zero_weight():
-    assert die_spaced.quantity_ge(-1) == 2
-    assert die_spaced.quantity_ge(0) == 2
-    assert die_spaced.quantity_ge(1) == 1
+    assert die_spaced.quantity('>=', -1) == 2
+    assert die_spaced.quantity('>=', 0) == 2
+    assert die_spaced.quantity('>=', 1) == 1
 
 
 def test_quantity_gt_zero_weight():
-    assert die_spaced.quantity_gt(-1) == 2
-    assert die_spaced.quantity_gt(0) == 1
-    assert die_spaced.quantity_gt(1) == 1
+    assert die_spaced.quantity('>', -1) == 2
+    assert die_spaced.quantity('>', 0) == 1
+    assert die_spaced.quantity('>', 1) == 1
 
 
 def test_nearest_le():
-    assert icepool.d6.nearest_le(0) == None
-    assert icepool.d6.nearest_le(1) == 1
-    assert icepool.d6.nearest_le(6) == 6
-    assert icepool.d6.nearest_le(7) == 6
+    assert icepool.d6.nearest('<=', 0) == None
+    assert icepool.d6.nearest('<=', 1) == 1
+    assert icepool.d6.nearest('<=', 6) == 6
+    assert icepool.d6.nearest('<=', 7) == 6
 
 
 def test_nearest_le_gap():
     die = icepool.Die([-3, 0, 3])
-    assert die.nearest_le(-4) == None
-    assert die.nearest_le(-3) == -3
-    assert die.nearest_le(-2) == -3
-    assert die.nearest_le(-1) == -3
-    assert die.nearest_le(0) == 0
-    assert die.nearest_le(1) == 0
-    assert die.nearest_le(2) == 0
-    assert die.nearest_le(3) == 3
-    assert die.nearest_le(4) == 3
+    assert die.nearest('<=', -4) == None
+    assert die.nearest('<=', -3) == -3
+    assert die.nearest('<=', -2) == -3
+    assert die.nearest('<=', -1) == -3
+    assert die.nearest('<=', 0) == 0
+    assert die.nearest('<=', 1) == 0
+    assert die.nearest('<=', 2) == 0
+    assert die.nearest('<=', 3) == 3
+    assert die.nearest('<=', 4) == 3
 
 
 def test_nearest_lt():
-    assert icepool.d6.nearest_lt(0) == None
-    assert icepool.d6.nearest_lt(1) == None
-    assert icepool.d6.nearest_lt(6) == 5
-    assert icepool.d6.nearest_lt(7) == 6
+    assert icepool.d6.nearest('<', 0) == None
+    assert icepool.d6.nearest('<', 1) == None
+    assert icepool.d6.nearest('<', 6) == 5
+    assert icepool.d6.nearest('<', 7) == 6
 
 
 def test_nearest_lt_gap():
     die = icepool.Die([-3, 0, 3])
-    assert die.nearest_lt(-4) == None
-    assert die.nearest_lt(-3) == None
-    assert die.nearest_lt(-2) == -3
-    assert die.nearest_lt(-1) == -3
-    assert die.nearest_lt(0) == -3
-    assert die.nearest_lt(1) == 0
-    assert die.nearest_lt(2) == 0
-    assert die.nearest_lt(3) == 0
-    assert die.nearest_lt(4) == 3
+    assert die.nearest('<', -4) == None
+    assert die.nearest('<', -3) == None
+    assert die.nearest('<', -2) == -3
+    assert die.nearest('<', -1) == -3
+    assert die.nearest('<', 0) == -3
+    assert die.nearest('<', 1) == 0
+    assert die.nearest('<', 2) == 0
+    assert die.nearest('<', 3) == 0
+    assert die.nearest('<', 4) == 3
 
 
 def test_nearest_ge():
-    assert icepool.d6.nearest_ge(0) == 1
-    assert icepool.d6.nearest_ge(1) == 1
-    assert icepool.d6.nearest_ge(6) == 6
-    assert icepool.d6.nearest_ge(7) == None
+    assert icepool.d6.nearest('>=', 0) == 1
+    assert icepool.d6.nearest('>=', 1) == 1
+    assert icepool.d6.nearest('>=', 6) == 6
+    assert icepool.d6.nearest('>=', 7) == None
 
 
 def test_nearest_ge_gap():
     die = icepool.Die([-3, 0, 3])
-    assert die.nearest_ge(-4) == -3
-    assert die.nearest_ge(-3) == -3
-    assert die.nearest_ge(-2) == 0
-    assert die.nearest_ge(-1) == 0
-    assert die.nearest_ge(0) == 0
-    assert die.nearest_ge(1) == 3
-    assert die.nearest_ge(2) == 3
-    assert die.nearest_ge(3) == 3
-    assert die.nearest_ge(4) == None
+    assert die.nearest('>=', -4) == -3
+    assert die.nearest('>=', -3) == -3
+    assert die.nearest('>=', -2) == 0
+    assert die.nearest('>=', -1) == 0
+    assert die.nearest('>=', 0) == 0
+    assert die.nearest('>=', 1) == 3
+    assert die.nearest('>=', 2) == 3
+    assert die.nearest('>=', 3) == 3
+    assert die.nearest('>=', 4) == None
 
 
 def test_nearest_gt():
-    assert icepool.d6.nearest_gt(0) == 1
-    assert icepool.d6.nearest_gt(1) == 2
-    assert icepool.d6.nearest_gt(6) == None
-    assert icepool.d6.nearest_gt(7) == None
+    assert icepool.d6.nearest('>', 0) == 1
+    assert icepool.d6.nearest('>', 1) == 2
+    assert icepool.d6.nearest('>', 6) == None
+    assert icepool.d6.nearest('>', 7) == None
 
 
 def test_nearest_gt_gap():
     die = icepool.Die([-3, 0, 3])
-    assert die.nearest_gt(-4) == -3
-    assert die.nearest_gt(-3) == 0
-    assert die.nearest_gt(-2) == 0
-    assert die.nearest_gt(-1) == 0
-    assert die.nearest_gt(0) == 3
-    assert die.nearest_gt(1) == 3
-    assert die.nearest_gt(2) == 3
-    assert die.nearest_gt(3) == None
-    assert die.nearest_gt(4) == None
+    assert die.nearest('>', -4) == -3
+    assert die.nearest('>', -3) == 0
+    assert die.nearest('>', -2) == 0
+    assert die.nearest('>', -1) == 0
+    assert die.nearest('>', 0) == 3
+    assert die.nearest('>', 1) == 3
+    assert die.nearest('>', 2) == 3
+    assert die.nearest('>', 3) == None
+    assert die.nearest('>', 4) == None
 
 
 def test_highest():
@@ -262,22 +262,23 @@ def test_lowest():
 
 def test_probabilities():
     assert list(d4.probabilities()) == [0.25, 0.25, 0.25, 0.25]
-    assert list(d4.probabilities_le()) == [0.25, 0.5, 0.75, 1.0]
-    assert list(d4.probabilities_lt()) == [0.0, 0.25, 0.5, 0.75]
-    assert list(d4.probabilities_ge()) == [1.0, 0.75, 0.5, 0.25]
-    assert list(d4.probabilities_gt()) == [0.75, 0.5, 0.25, 0.0]
+    assert list(d4.probabilities('<=', )) == [0.25, 0.5, 0.75, 1.0]
+    assert list(d4.probabilities('<', )) == [0.0, 0.25, 0.5, 0.75]
+    assert list(d4.probabilities('>=', )) == [1.0, 0.75, 0.5, 0.25]
+    assert list(d4.probabilities('>', )) == [0.75, 0.5, 0.25, 0.0]
 
     assert list(d4.probabilities(percent=True)) == [25, 25, 25, 25]
-    assert list(d4.probabilities_le(percent=True)) == [25, 50, 75, 100]
-    assert list(d4.probabilities_lt(percent=True)) == [0, 25, 50, 75]
-    assert list(d4.probabilities_ge(percent=True)) == [100, 75, 50, 25]
-    assert list(d4.probabilities_gt(percent=True)) == [75, 50, 25, 0]
+    assert list(d4.probabilities('<=', percent=True)) == [25, 50, 75, 100]
+    assert list(d4.probabilities('<', percent=True)) == [0, 25, 50, 75]
+    assert list(d4.probabilities('>=', percent=True)) == [100, 75, 50, 25]
+    assert list(d4.probabilities('>', percent=True)) == [75, 50, 25, 0]
 
 
 def test_probabilities_with_target():
+    pytest.skip('target is no longer supported')
     target = [1, 4, 5]
     assert list(d4.probabilities(target)) == [0.25, 0.25, 0.0]
-    assert list(d4.probabilities_le(target)) == [0.25, 1.0, 1.0]
-    assert list(d4.probabilities_lt(target)) == [0.0, 0.75, 1.0]
-    assert list(d4.probabilities_ge(target)) == [1.0, 0.25, 0.0]
-    assert list(d4.probabilities_gt(target)) == [0.75, 0.0, 0.0]
+    assert list(d4.probabilities('<=', target)) == [0.25, 1.0, 1.0]
+    assert list(d4.probabilities('<', target)) == [0.0, 0.75, 1.0]
+    assert list(d4.probabilities('>=', target)) == [1.0, 0.25, 0.0]
+    assert list(d4.probabilities('>', target)) == [0.75, 0.0, 0.0]

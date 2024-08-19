@@ -937,7 +937,7 @@ class Die(Population[T_co]):
         if rolls == 0:
             return self.zero().simplify()
         return icepool.from_cumulative(
-            self.outcomes(), [x**rolls for x in self.quantities_ge()],
+            self.outcomes(), [x**rolls for x in self.quantities('>=')],
             reverse=True)
 
     def highest(self,
@@ -974,7 +974,7 @@ class Die(Population[T_co]):
         if rolls == 0:
             return self.zero().simplify()
         return icepool.from_cumulative(
-            self.outcomes(), [x**rolls for x in self.quantities_le()])
+            self.outcomes(), [x**rolls for x in self.quantities('<=')])
 
     def middle(
             self,

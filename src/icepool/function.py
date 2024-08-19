@@ -169,8 +169,8 @@ def from_cumulative(outcomes: Sequence[T],
     if isinstance(cumulative[0], icepool.Die):
         cumulative = commonize_denominator(*cumulative)
         for outcome, die in zip(outcomes, cumulative):
-            d[outcome] = die.quantity_ne(False) - prev
-            prev = die.quantity_ne(False)
+            d[outcome] = die.quantity('!=', False) - prev
+            prev = die.quantity('!=', False)
     elif isinstance(cumulative[0], int):
         cumulative = cast(Sequence[int], cumulative)
         for outcome, quantity in zip(outcomes, cumulative):

@@ -29,5 +29,5 @@ def test_from_rv_norm():
                                scale=die.standard_deviation())
     die, norm_die = icepool.align(die, norm_die)
     print(die.kolmogorov_smirnov(norm_die))
-    assert die.probabilities_le() == pytest.approx(norm_die.probabilities_le(),
-                                                   abs=1e-3)
+    assert die.probabilities('<=') == pytest.approx(
+        norm_die.probabilities('<='), abs=1e-3)

@@ -17,7 +17,7 @@ import numbers
 import operator
 import random
 
-from typing import Any, Callable, Generic, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, overload
+from typing import Any, Callable, Generic, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, cast, overload
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
@@ -104,81 +104,148 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The greatest outcome."""
         return self.outcomes()[-1]
 
-    def nearest_le(self, outcome) -> T_co | None:
-        """The nearest outcome that is <= the argument.
+    def nearest(self, comparison: Literal['<=', '<', '>=', '>'], outcome,
+                /) -> T_co | None:
+        """The nearest outcome in this population fitting the comparison.
 
-        Returns `None` if there is no such outcome.
+        Args:
+            comparison: The comparison which the result must fit. For example,
+                '<=' would find the greatest outcome that is not greater than
+                the argument.
+            outcome: The outcome to compare against.
+        
+        Returns:
+            The nearest outcome fitting the comparison, or `None` if there is
+            no such outcome.
         """
-        if outcome in self:
-            return outcome
-        index = bisect.bisect_right(self.outcomes(), outcome) - 1
-        if index < 0:
-            return None
-        return self.outcomes()[index]
-
-    def nearest_lt(self, outcome) -> T_co | None:
-        """The nearest outcome that is < the argument.
-
-        Returns `None` if there is no such outcome.
-        """
-        index = bisect.bisect_left(self.outcomes(), outcome) - 1
-        if index < 0:
-            return None
-        return self.outcomes()[index]
-
-    def nearest_ge(self, outcome) -> T_co | None:
-        """The nearest outcome that is >= the argument.
-
-        Returns `None` if there is no such outcome.
-        """
-        if outcome in self:
-            return outcome
-        index = bisect.bisect_left(self.outcomes(), outcome)
-        if index >= len(self):
-            return None
-        return self.outcomes()[index]
-
-    def nearest_gt(self, outcome) -> T_co | None:
-        """The nearest outcome that is > the argument.
-
-        Returns `None` if there is no such outcome.
-        """
-        index = bisect.bisect_right(self.outcomes(), outcome)
-        if index >= len(self):
-            return None
-        return self.outcomes()[index]
+        if comparison == '<=':
+            if outcome in self:
+                return outcome
+            index = bisect.bisect_right(self.outcomes(), outcome) - 1
+            if index < 0:
+                return None
+            return self.outcomes()[index]
+        elif comparison == '<':
+            index = bisect.bisect_left(self.outcomes(), outcome) - 1
+            if index < 0:
+                return None
+            return self.outcomes()[index]
+        elif comparison == '>=':
+            if outcome in self:
+                return outcome
+            index = bisect.bisect_left(self.outcomes(), outcome)
+            if index >= len(self):
+                return None
+            return self.outcomes()[index]
+        elif comparison == '>':
+            index = bisect.bisect_right(self.outcomes(), outcome)
+            if index >= len(self):
+                return None
+            return self.outcomes()[index]
+        else:
+            raise ValueError(f'Invalid comparison {comparison}')
 
     # Quantities.
 
-    def quantity(self, outcome: Hashable) -> int:
-        """The quantity of a single outcome, or 0 if not present."""
-        return self.get(outcome, 0)
+    @overload
+    def quantity(self, outcome: Hashable, /) -> int:
+        """The quantity of a single outcome."""
 
     @overload
-    def quantities(self) -> CountsValuesView:
-        ...
+    def quantity(self, comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                 outcome: Hashable, /) -> int:
+        """The total quantity fitting a comparison to a single outcome."""
+
+    def quantity(self,
+                 comparison: Literal['==', '!=', '<=', '<', '>=', '>']
+                 | Hashable,
+                 outcome: Hashable | None = None,
+                 /) -> int:
+        """The quantity of a single outcome.
+
+        A comparison can be provided, in which case this returns the total
+        quantity fitting the comparison.
+        
+        Args:
+            comparison: The comparison to use. This can be omitted, in which
+                case it is treated as '=='.
+            outcome: The outcome to query.
+        """
+        if outcome is None:
+            outcome = comparison
+            comparison = '=='
+        else:
+            comparison = cast(Literal['==', '!=', '<=', '<', '>=', '>'],
+                              comparison)
+
+        if comparison == '==':
+            return self.get(outcome, 0)
+        elif comparison == '!=':
+            return self.denominator() - self.get(outcome, 0)
+        elif comparison in ['<=', '<']:
+            threshold = self.nearest(comparison, outcome)
+            if threshold is None:
+                return 0
+            else:
+                return self._cumulative_quantities[threshold]
+        elif comparison == '>=':
+            return self.denominator() - self.quantity('<', outcome)
+        elif comparison == '>':
+            return self.denominator() - self.quantity('<=', outcome)
+        else:
+            raise ValueError(f'Invalid comparison {comparison}')
 
     @overload
-    def quantities(self, outcomes: Sequence) -> Sequence[int]:
-        ...
+    def quantities(self, /) -> CountsValuesView:
+        """All quantities in sorted order."""
 
-    def quantities(
-            self,
-            outcomes: Sequence | None = None
-    ) -> CountsValuesView | Sequence[int]:
+    @overload
+    def quantities(self, comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                   /) -> Sequence[int]:
+        """The total quantities fitting the comparison for each outcome in sorted order.
+        
+        For example, '<=' gives the CDF.
+        """
+
+    def quantities(self,
+                   comparison: Literal['==', '!=', '<=', '<', '>=', '>']
+                   | None = None,
+                   /) -> CountsValuesView | Sequence[int]:
         """The quantities of the mapping in sorted order.
 
-        These are also the `values` of the mapping.
-        Prefer to use the name `quantities`.
+        For example, '<=' gives the CDF.
 
         Args:
-            outcomes: If provided, the quantities corresponding to these
-                outcomes will be returned (or 0 if not present).
+            comparison: Optional. If omitted, this defaults to '=='.
         """
-        if outcomes is None:
+        if comparison is None:
+            comparison = '=='
+        if comparison == '==':
             return self.values()
+        elif comparison == '<=':
+            return tuple(itertools.accumulate(self.values()))
+        elif comparison == '>=':
+            return tuple(
+                itertools.accumulate(self.values()[:-1],
+                                     operator.sub,
+                                     initial=self.denominator()))
+        elif comparison == '!=':
+            return tuple(self.denominator() - q for q in self.values())
+        elif comparison == '<':
+            return tuple(self.denominator() - q for q in self.quantities('>='))
+        elif comparison == '>':
+            return tuple(self.denominator() - q for q in self.quantities('<='))
         else:
-            return tuple(self.quantity(outcome) for outcome in outcomes)
+            raise ValueError(f'Invalid comparison {comparison}')
+
+    @cached_property
+    def _cumulative_quantities(self) -> Mapping[T_co, int]:
+        result = {}
+        cdf = 0
+        for outcome, quantity in self.items():
+            cdf += quantity
+            result[outcome] = cdf
+        return result
 
     @cached_property
     def _denominator(self) -> int:
@@ -206,448 +273,117 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
 
-    def quantity_ne(self, outcome) -> int:
-        """The quantity != a single outcome. """
-        return self.denominator() - self.quantity(outcome)
-
-    @cached_property
-    def _cumulative_quantities(self) -> Mapping[T_co, int]:
-        result = {}
-        cdf = 0
-        for outcome, quantity in self.items():
-            cdf += quantity
-            result[outcome] = cdf
-        return result
-
-    def quantity_le(self, outcome) -> int:
-        """The quantity <= a single outcome."""
-        outcome = self.nearest_le(outcome)
-        if outcome is None:
-            return 0
-        else:
-            return self._cumulative_quantities[outcome]
-
-    def quantity_lt(self, outcome) -> int:
-        """The quantity < a single outcome."""
-        outcome = self.nearest_lt(outcome)
-        if outcome is None:
-            return 0
-        else:
-            return self._cumulative_quantities[outcome]
-
-    def quantity_ge(self, outcome) -> int:
-        """The quantity >= a single outcome."""
-        return self.denominator() - self.quantity_lt(outcome)
-
-    def quantity_gt(self, outcome) -> int:
-        """The quantity > a single outcome."""
-        return self.denominator() - self.quantity_le(outcome)
-
-    @cached_property
-    def _quantities_le(self) -> Sequence[int]:
-        return tuple(itertools.accumulate(self.values()))
-
-    def quantities_le(self, outcomes: Sequence | None = None) -> Sequence[int]:
-        """The quantity <= each outcome in order.
-
-        Args:
-            outcomes: If provided, the quantities corresponding to these
-                outcomes will be returned (or 0 if not present).
-        """
-        if outcomes is None:
-            return self._quantities_le
-        else:
-            return tuple(self.quantity_le(x) for x in outcomes)
-
-    @cached_property
-    def _quantities_ge(self) -> Sequence[int]:
-        return tuple(
-            itertools.accumulate(self.values()[:-1],
-                                 operator.sub,
-                                 initial=self.denominator()))
-
-    def quantities_ge(self, outcomes: Sequence | None = None) -> Sequence[int]:
-        """The quantity >= each outcome in order.
-
-        Args:
-            outcomes: If provided, the quantities corresponding to these
-                outcomes will be returned (or 0 if not present).
-        """
-        if outcomes is None:
-            return self._quantities_ge
-        else:
-            return tuple(self.quantity_ge(x) for x in outcomes)
-
-    def quantities_lt(self, outcomes: Sequence | None = None) -> Sequence[int]:
-        """The quantity < each outcome in order.
-
-        Args:
-            outcomes: If provided, the quantities corresponding to these
-                outcomes will be returned (or 0 if not present).
-        """
-        return tuple(self.denominator() - x
-                     for x in self.quantities_ge(outcomes))
-
-    def quantities_gt(self, outcomes: Sequence | None = None) -> Sequence[int]:
-        """The quantity > each outcome in order.
-
-        Args:
-            outcomes: If provided, the quantities corresponding to these
-                outcomes will be returned (or 0 if not present).
-        """
-        return tuple(self.denominator() - x
-                     for x in self.quantities_le(outcomes))
-
     # Probabilities.
 
     @overload
-    def probability(self, outcome: Hashable, *,
+    def probability(self, outcome: Hashable, /, *,
                     percent: Literal[False]) -> Fraction:
-        ...
+        """The probability of a single outcome, or 0.0 if not present."""
 
     @overload
-    def probability(self, outcome: Hashable, *,
+    def probability(self, outcome: Hashable, /, *,
                     percent: Literal[True]) -> float:
-        ...
+        """The probability of a single outcome, or 0.0 if not present."""
 
     @overload
-    def probability(self, outcome: Hashable) -> Fraction:
-        ...
+    def probability(self, outcome: Hashable, /) -> Fraction:
+        """The probability of a single outcome, or 0.0 if not present."""
+
+    @overload
+    def probability(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                              '>'], outcome: Hashable, /, *,
+                    percent: Literal[False]) -> Fraction:
+        """The total probability of outcomes fitting a comparison."""
+
+    @overload
+    def probability(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                              '>'], outcome: Hashable, /, *,
+                    percent: Literal[True]) -> float:
+        """The total probability of outcomes fitting a comparison."""
+
+    @overload
+    def probability(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                              '>'], outcome: Hashable,
+                    /) -> Fraction:
+        """The total probability of outcomes fitting a comparison."""
 
     def probability(self,
-                    outcome: Hashable,
+                    comparison: Literal['==', '!=', '<=', '<', '>=', '>']
+                    | Hashable,
+                    outcome: Hashable | None = None,
+                    /,
                     *,
                     percent: bool = False) -> Fraction | float:
-        """The probability of a single outcome, or 0.0 if not present. """
-        result = Fraction(self.quantity(outcome), self.denominator())
+        """The total probability of outcomes fitting a comparison."""
+        if outcome is None:
+            outcome = comparison
+            comparison = '=='
+        else:
+            comparison = cast(Literal['==', '!=', '<=', '<', '>=', '>'],
+                              comparison)
+        result = Fraction(self.quantity(comparison, outcome),
+                          self.denominator())
         return result * 100.0 if percent else result
 
     @overload
-    def probability_le(self, outcome: Hashable, *,
-                       percent: Literal[False]) -> Fraction:
-        ...
-
-    @overload
-    def probability_le(self, outcome: Hashable, *,
-                       percent: Literal[True]) -> float:
-        ...
-
-    @overload
-    def probability_le(self, outcome: Hashable) -> Fraction:
-        ...
-
-    def probability_le(self,
-                       outcome: Hashable,
-                       *,
-                       percent: bool = False) -> Fraction | float:
-        """The probability <= a single outcome. """
-        result = Fraction(self.quantity_le(outcome), self.denominator())
-        return result * 100.0 if percent else result
-
-    @overload
-    def probability_lt(self, outcome: Hashable, *,
-                       percent: Literal[False]) -> Fraction:
-        ...
-
-    @overload
-    def probability_lt(self, outcome: Hashable, *,
-                       percent: Literal[True]) -> float:
-        ...
-
-    @overload
-    def probability_lt(self, outcome: Hashable) -> Fraction:
-        ...
-
-    def probability_lt(self,
-                       outcome: Hashable,
-                       *,
-                       percent: bool = False) -> Fraction | float:
-        """The probability < a single outcome. """
-        result = Fraction(self.quantity_lt(outcome), self.denominator())
-        return result * 100.0 if percent else result
-
-    @overload
-    def probability_ge(self, outcome: Hashable, *,
-                       percent: Literal[False]) -> Fraction:
-        ...
-
-    @overload
-    def probability_ge(self, outcome: Hashable, *,
-                       percent: Literal[True]) -> float:
-        ...
-
-    @overload
-    def probability_ge(self, outcome: Hashable) -> Fraction:
-        ...
-
-    def probability_ge(self,
-                       outcome: Hashable,
-                       *,
-                       percent: bool = False) -> Fraction | float:
-        """The probability >= a single outcome. """
-        result = Fraction(self.quantity_ge(outcome), self.denominator())
-        return result * 100.0 if percent else result
-
-    @overload
-    def probability_gt(self, outcome: Hashable, *,
-                       percent: Literal[False]) -> Fraction:
-        ...
-
-    @overload
-    def probability_gt(self, outcome: Hashable, *,
-                       percent: Literal[True]) -> float:
-        ...
-
-    @overload
-    def probability_gt(self, outcome: Hashable) -> Fraction:
-        ...
-
-    def probability_gt(self,
-                       outcome: Hashable,
-                       *,
-                       percent: bool = False) -> Fraction | float:
-        """The probability > a single outcome. """
-        result = Fraction(self.quantity_gt(outcome), self.denominator())
-        return result * 100.0 if percent else result
-
-    @cached_property
-    def _probabilities(self) -> Sequence[Fraction]:
-        return tuple(Fraction(v, self.denominator()) for v in self.values())
-
-    @overload
-    def probabilities(self,
-                      outcomes: Sequence | None = None,
-                      *,
+    def probabilities(self, /, *,
                       percent: Literal[False]) -> Sequence[Fraction]:
-        ...
+        """All probabilities in sorted order."""
 
     @overload
-    def probabilities(self,
-                      outcomes: Sequence | None = None,
-                      *,
+    def probabilities(self, /, *, percent: Literal[True]) -> Sequence[float]:
+        """All probabilities in sorted order."""
+
+    @overload
+    def probabilities(self, /) -> Sequence[Fraction]:
+        """All probabilities in sorted order."""
+
+    @overload
+    def probabilities(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                                '>'], /, *,
+                      percent: Literal[False]) -> Sequence[Fraction]:
+        """The total probabilities fitting the comparison for each outcome in sorted order.
+        
+        For example, '<=' gives the CDF.
+        """
+
+    @overload
+    def probabilities(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                                '>'], /, *,
                       percent: Literal[True]) -> Sequence[float]:
-        ...
+        """The total probabilities fitting the comparison for each outcome in sorted order.
+        
+        For example, '<=' gives the CDF.
+        """
 
     @overload
-    def probabilities(self,
-                      outcomes: Sequence | None = None) -> Sequence[Fraction]:
-        ...
+    def probabilities(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                                '>'], /) -> Sequence[Fraction]:
+        """The total probabilities fitting the comparison for each outcome in sorted order.
+        
+        For example, '<=' gives the CDF.
+        """
 
     def probabilities(
             self,
-            outcomes: Sequence | None = None,
+            comparison: Literal['==', '!=', '<=', '<', '>=', '>']
+        | None = None,
+            /,
             *,
             percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
-        """The probability of each outcome in order.
-
-        Also known as the probability mass function (PMF).
-
-        Args:
-            outcomes: If provided, the probabilities corresponding to these
-                outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent 
-                (i.e. total of 100.0) and the values are `float`s.
-                Otherwise, the total will be 1 and the values are `Fraction`s.
-        """
-        if outcomes is None:
-            result = self._probabilities
-        else:
-            result = tuple(self.probability(x) for x in outcomes)
-
-        if percent:
-            return tuple(100.0 * x for x in result)
-        else:
-            return result
-
-    @cached_property
-    def _probabilities_le(self) -> Sequence[Fraction]:
-        return tuple(
-            Fraction(quantity, self.denominator())
-            for quantity in self.quantities_le())
-
-    @overload
-    def probabilities_le(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[False]) -> Sequence[Fraction]:
-        ...
-
-    @overload
-    def probabilities_le(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[True]) -> Sequence[float]:
-        ...
-
-    @overload
-    def probabilities_le(self,
-                         outcomes: Sequence | None = None
-                         ) -> Sequence[Fraction]:
-        ...
-
-    def probabilities_le(
-            self,
-            outcomes: Sequence | None = None,
-            *,
-            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
-        """The probability of rolling <= each outcome in order.
-
-        Also known as the cumulative distribution function (CDF),
-        though this term is ambigiuous whether it is < or <=.
+        """The total probabilities fitting the comparison for each outcome in sorted order.
+        
+        For example, '<=' gives the CDF.
 
         Args:
-            outcomes: If provided, the probabilities corresponding to these
-                outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent 
-                (i.e. total of 100.0) and the values are `float`s.
-                Otherwise, the total will be 1 and the values are `Fraction`s.
+            comparison: Optional. If omitted, this defaults to '=='.
         """
-        if outcomes is None:
-            result = self._probabilities_le
-        else:
-            result = tuple(self.probability_le(x) for x in outcomes)
+        if comparison is None:
+            comparison = '=='
 
-        if percent:
-            return tuple(100.0 * x for x in result)
-        else:
-            return result
-
-    @cached_property
-    def _probabilities_ge(self) -> Sequence[Fraction]:
-        return tuple(
-            Fraction(quantity, self.denominator())
-            for quantity in self.quantities_ge())
-
-    @overload
-    def probabilities_ge(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[False]) -> Sequence[Fraction]:
-        ...
-
-    @overload
-    def probabilities_ge(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[True]) -> Sequence[float]:
-        ...
-
-    @overload
-    def probabilities_ge(self,
-                         outcomes: Sequence | None = None
-                         ) -> Sequence[Fraction]:
-        ...
-
-    def probabilities_ge(
-            self,
-            outcomes: Sequence | None = None,
-            *,
-            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
-        """The probability of rolling >= each outcome in order.
-
-        Also known as the survival function (SF) or
-        complementary cumulative distribution function (CCDF),
-        though these term are ambigiuous whether they are is > or >=.
-
-        Args:
-            outcomes: If provided, the probabilities corresponding to these
-                outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent 
-                (i.e. total of 100.0) and the values are `float`s.
-                Otherwise, the total will be 1 and the values are `Fraction`s.
-        """
-        if outcomes is None:
-            result = self._probabilities_ge
-        else:
-            result = tuple(self.probability_ge(x) for x in outcomes)
-
-        if percent:
-            return tuple(100.0 * x for x in result)
-        else:
-            return result
-
-    @overload
-    def probabilities_lt(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[False]) -> Sequence[Fraction]:
-        ...
-
-    @overload
-    def probabilities_lt(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[True]) -> Sequence[float]:
-        ...
-
-    @overload
-    def probabilities_lt(self,
-                         outcomes: Sequence | None = None
-                         ) -> Sequence[Fraction]:
-        ...
-
-    def probabilities_lt(
-            self,
-            outcomes: Sequence | None = None,
-            *,
-            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
-        """The probability of rolling < each outcome in order.
-
-        Args:
-            outcomes: If provided, the probabilities corresponding to these
-                outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent 
-                (i.e. total of 100.0) and the values are `float`s.
-                Otherwise, the total will be 1 and the values are `Fraction`s.
-        """
-        if outcomes is None:
-            result = tuple(1 - x for x in self._probabilities_ge)
-        else:
-            result = tuple(1 - self.probability_ge(x) for x in outcomes)
-
-        if percent:
-            return tuple(100.0 * x for x in result)
-        else:
-            return result
-
-    @overload
-    def probabilities_gt(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[False]) -> Sequence[Fraction]:
-        ...
-
-    @overload
-    def probabilities_gt(self,
-                         outcomes: Sequence | None = None,
-                         *,
-                         percent: Literal[True]) -> Sequence[float]:
-        ...
-
-    @overload
-    def probabilities_gt(self,
-                         outcomes: Sequence | None = None
-                         ) -> Sequence[Fraction]:
-        ...
-
-    def probabilities_gt(
-            self,
-            outcomes: Sequence | None = None,
-            *,
-            percent: bool = False) -> Sequence[Fraction] | Sequence[float]:
-        """The probability of rolling > each outcome in order.
-
-        Args:
-            outcomes: If provided, the probabilities corresponding to these
-                outcomes will be returned (or 0 if not present).
-            percent: If set, the results will be in percent 
-                (i.e. total of 100.0) and the values are `float`s.
-                Otherwise, the total will be 1 and the values are `Fraction`s.
-        """
-        if outcomes is None:
-            result = tuple(1 - x for x in self._probabilities_le)
-        else:
-            result = tuple(1 - self.probability_le(x) for x in outcomes)
+        result = tuple(
+            Fraction(q, self.denominator())
+            for q in self.quantities(comparison))
 
         if percent:
             return tuple(100.0 * x for x in result)
@@ -673,14 +409,14 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         a, b = icepool.align(self, other)
         return max(
             abs(a - b)
-            for a, b in zip(a.probabilities_le(), b.probabilities_le()))
+            for a, b in zip(a.probabilities('<='), b.probabilities('<=')))
 
     def cramer_von_mises(self, other) -> Fraction:
         """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
         a, b = icepool.align(self, other)
         return sum(
             ((a - b)**2
-             for a, b in zip(a.probabilities_le(), b.probabilities_le())),
+             for a, b in zip(a.probabilities('<='), b.probabilities('<='))),
             start=Fraction(0, 1))
 
     def median(self):
@@ -711,7 +447,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     def quantile_low(self, n: int, d: int = 100) -> T_co:
         """The outcome `n / d` of the way through the CDF, taking the lesser in case of a tie."""
-        index = bisect.bisect_left(self.quantities_le(),
+        index = bisect.bisect_left(self.quantities('<='),
                                    (n * self.denominator() + d - 1) // d)
         if index >= len(self):
             return self.max_outcome()
@@ -719,7 +455,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     def quantile_high(self, n: int, d: int = 100) -> T_co:
         """The outcome `n / d` of the way through the CDF, taking the greater in case of a tie."""
-        index = bisect.bisect_right(self.quantities_le(),
+        index = bisect.bisect_right(self.quantities('<='),
                                     n * self.denominator() // d)
         if index >= len(self):
             return self.max_outcome()
@@ -893,7 +629,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(self.denominator())
-        index = bisect.bisect_right(self.quantities_le(), r)
+        index = bisect.bisect_right(self.quantities('<='), r)
         return self.outcomes()[index]
 
     def format(self, format_spec: str, /, **kwargs) -> str:
