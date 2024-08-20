@@ -684,15 +684,15 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Extra elements: If `self` has more elements than `other`, whether the
         extra elements are kept depends on the `order` and `comparison`:
-        * Descending: `>=`, `>`
-        * Ascending: `<=`, `<`
+        * Descending: kept for `'>='`, `'>'`
+        * Ascending: kept for `'<='`, `'<'`
         
         Args:
             comparison: The comparison to filter by. If you want to drop rather
                 than keep, use the complementary comparison:
-                * '==' vs. '!='
-                * '<=' vs. '>'
-                * '>=' vs. '<'
+                * `'=='` vs. `'!='`
+                * `'<='` vs. `'>'`
+                * `'>='` vs. `'<'`
             other: The other multiset to match elements with.
             order: The order in which to sort before forming matches.
                 Default is descending.
