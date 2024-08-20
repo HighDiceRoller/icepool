@@ -71,16 +71,16 @@ def test_sort_match_operators_ascending(op):
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_match_operators_sum(op):
-    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).sum()
+def test_sort_match_operators_expand(op):
+    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).expand()
 
     @map_function
     def compute_expected(left, right):
-        result = 0
+        result = []
         for l, r in zip(reversed(left), reversed(right)):
             if operators[op](l, r):
-                result += l
-        return result
+                result.append(l)
+        return tuple(sorted(result))
 
     expected = compute_expected(d6.pool(3), d6.pool(2))
     assert result == expected
@@ -124,8 +124,8 @@ def test_maximum_match(op):
 
 
 @pytest.mark.parametrize('op', maximum_ops)
-def test_maximum_match_sum(op):
-    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').sum()
+def test_maximum_match_expand(op):
+    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').expand()
 
     @map_function
     def compute_expected(left, right):
@@ -134,15 +134,15 @@ def test_maximum_match_sum(op):
             right = reversed(right)
         left = list(left)
         right = list(right)
-        result = 0
+        result = []
         while left and right:
             if operators[op](left[0], right[0]):
-                result += left[0]
+                result.append(left[0])
                 left.pop(0)
                 right.pop(0)
             else:
                 left.pop(0)
-        return result
+        return tuple(sorted(result))
 
     expected = compute_expected(d6.pool(3), d6.pool(2))
     assert result == expected
