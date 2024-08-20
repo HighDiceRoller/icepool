@@ -5,12 +5,16 @@
 * `tuple` outcomes are now auto-`tupleize`d again during `Die` construction.
 * Add `Die.stochastic_round()` method.
 * Add `Die.reroll_to_pool()` method.
-* Add `percent` option to `Population.probability` methods.
+* Add `Die.keep()` method. This works as `MultisetGenerator.keep()` with an implicit sum.
+* Add `percent` option to `Population.probability`.
 * Add new `again_count` mode for handling `Again`, which limits the total number of dice.
 * Improved ability to `keep` from both ends for certain types of multiset expressions.
 * Rename `func` parameters to `function`.
+* `MultisetExpression.order()` is now public. 
 * Improved sorting for `Symbols`; now compares counts in alphabetical order.
+* Experimental `sort_match`, `maximum_match` expressions. `sort_match` replaces the `compair` evaluations.
 * Experimental `all_straights_reduce_counts` and `argsort` multiset evaluations.
+* Breaking change: `nearest`, `quantity`, `quantities`, `probability`, `probabilities`, `keep_counts` no longer have separate variants for each comparison; instead, they now take a comparison argument. `quantities` and  `probabilities` now accept a comparison argument but no longer accept a list of outcomes.
 
 ## v1.4.0
 
