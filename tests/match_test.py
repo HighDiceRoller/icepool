@@ -19,8 +19,6 @@ def test_risk_ascending():
     assert result == expected
 
 
-ops = ['==', '!=', '<=', '<', '>=', '>']
-
 operators = {
     '==': operator.eq,
     '!=': operator.ne,
@@ -30,9 +28,11 @@ operators = {
     '>': operator.gt,
 }
 
+sort_ops = ['==', '!=', '<=', '<', '>=', '>']
 
-@pytest.mark.parametrize('op', ops)
-def test_operators(op):
+
+@pytest.mark.parametrize('op', sort_ops)
+def test_sort_match_operators(op):
     result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).count()
 
     @map_function
@@ -47,8 +47,8 @@ def test_operators(op):
     assert result == expected
 
 
-@pytest.mark.parametrize('op', ops)
-def test_operators_ascending(op):
+@pytest.mark.parametrize('op', sort_ops)
+def test_sort_match_operators_ascending(op):
     result = d6.pool(3).lowest(2).sort_match(op,
                                              d6.pool(2),
                                              order=Order.Ascending).count()
@@ -63,3 +63,34 @@ def test_operators_ascending(op):
 
     expected = compute_expected(d6.pool(3), d6.pool(2))
     assert result == expected
+
+
+maximum_ops = ['<=', '<', '>=', '>']
+
+
+@pytest.mark.parametrize('op', maximum_ops)
+def test_maximum_match(op):
+    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').count()
+    complement = d6.pool(3).maximum_match(op, d6.pool(2),
+                                          keep='unmatched').count()
+
+    @map_function
+    def compute_expected(left, right):
+        if op in ['>=', '>']:
+            left = reversed(left)
+            right = reversed(right)
+        left = list(left)
+        right = list(right)
+        result = 0
+        while left and right:
+            if operators[op](left[0], right[0]):
+                result += 1
+                left.pop(0)
+                right.pop(0)
+            else:
+                right.pop(0)
+        return result
+
+    expected = compute_expected(d6.pool(3), d6.pool(2))
+    assert result == expected
+    assert 3 - result == complement
