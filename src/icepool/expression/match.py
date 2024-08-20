@@ -97,7 +97,7 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
-        left_state, right_state, pairable = state or (None, None, 0)
+        left_state, right_state, prev_matchable = state or (None, None, 0)
         left_state, left_count = self._left._next_state(
             state, outcome, *counts)
         right_state, right_count = self._right._next_state(
@@ -108,15 +108,15 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
                 'MaximumMatchedExpression does not support negative counts.')
 
         if self._match_equal:
-            new_pairs = min(pairable + right_count, left_count)
+            new_matches = min(prev_matchable + right_count, left_count)
         else:
-            new_pairs = min(pairable, left_count)
-        pairable += right_count - new_pairs
+            new_matches = min(prev_matchable, left_count)
+        prev_matchable += right_count - new_matches
         if self._keep:
-            count = new_pairs
+            count = new_matches
         else:
-            count = left_count - new_pairs
-        return (left_state, right_state, pairable), count
+            count = left_count - new_matches
+        return (left_state, right_state, prev_matchable), count
 
     def order(self) -> Order:
         return Order.merge(self._order, self._left.order(),

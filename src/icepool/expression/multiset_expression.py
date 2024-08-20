@@ -740,14 +740,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
         `comparison`. Contrast `sort_matched()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
 
-        Example:
-
-        An attacker rolls a pool of 4d6 and a defender rolls a pool of 3d6.
-        Defender dice can be used to block attacker dice of equal or lesser
+        Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
+        3d6. Defender dice can be used to block attacker dice of equal or lesser
         value, and the defender prefers to block the highest attacker dice
-        possible. What is the sum of the attacker dice that were not blocked?
+        possible. Which attacker dice were not blocked?
         ```python
         d6.pool(4).maximum_match('<=', d6.pool(3), keep='unmatched').sum()
+        ```
+
+        Suppose the attacker rolls 6, 5, 3, 1 and the defender rolls 6, 4.
+        Then the result should be [5, 1].
+        ```python
+        d6.pool([6, 5, 3, 1]).maximum_match('<=', [6, 4], keep='unmatched')
+        -> [5, 1]
         ```
 
         Args:

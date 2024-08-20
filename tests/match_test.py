@@ -2,7 +2,12 @@ import icepool
 import operator
 import pytest
 
-from icepool import d6, Die, Order, map_function
+from icepool import d6, Die, Order, map_function, Pool
+
+
+def test_sort_match_example():
+    result = Pool([5, 3, 2]).highest(2).sort_match('>', [6, 1]).expand()
+    assert result.simplify() == Die([(3, )])
 
 
 def test_risk():
@@ -65,6 +70,28 @@ def test_sort_match_operators_ascending(op):
     assert result == expected
 
 
+@pytest.mark.parametrize('op', sort_ops)
+def test_sort_match_operators_sum(op):
+    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).sum()
+
+    @map_function
+    def compute_expected(left, right):
+        result = 0
+        for l, r in zip(reversed(left), reversed(right)):
+            if operators[op](l, r):
+                result += l
+        return result
+
+    expected = compute_expected(d6.pool(3), d6.pool(2))
+    assert result == expected
+
+
+def test_maximum_match_example():
+    result = Pool([6, 5, 3, 1]).maximum_match('<=', [6, 4],
+                                              keep='unmatched').expand()
+    assert result.simplify() == Die([(1, 5)])
+
+
 maximum_ops = ['<=', '<', '>=', '>']
 
 
@@ -76,7 +103,7 @@ def test_maximum_match(op):
 
     @map_function
     def compute_expected(left, right):
-        if op in ['>=', '>']:
+        if op in ['<=', '<']:
             left = reversed(left)
             right = reversed(right)
         left = list(left)
@@ -88,9 +115,34 @@ def test_maximum_match(op):
                 left.pop(0)
                 right.pop(0)
             else:
-                right.pop(0)
+                left.pop(0)
         return result
 
     expected = compute_expected(d6.pool(3), d6.pool(2))
     assert result == expected
     assert 3 - result == complement
+
+
+@pytest.mark.parametrize('op', maximum_ops)
+def test_maximum_match_sum(op):
+    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').sum()
+
+    @map_function
+    def compute_expected(left, right):
+        if op in ['<=', '<']:
+            left = reversed(left)
+            right = reversed(right)
+        left = list(left)
+        right = list(right)
+        result = 0
+        while left and right:
+            if operators[op](left[0], right[0]):
+                result += left[0]
+                left.pop(0)
+                right.pop(0)
+            else:
+                left.pop(0)
+        return result
+
+    expected = compute_expected(d6.pool(3), d6.pool(2))
+    assert result == expected
