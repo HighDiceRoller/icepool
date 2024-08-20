@@ -1197,20 +1197,21 @@ class Die(Population[T_co]):
             common = rerollable_die.pool(
                 rerolled_to_rerollable) + not_rerollable_die.pool(
                     not_rerollable)
-            if mode == 'random':
-                return common + rerollable_die.pool(not_rerolled)
-            elif mode == 'lowest':
-                return common + rerollable_die.pool(
-                    initial_rerollable).highest(not_rerolled)
-            elif mode == 'highest':
-                return common + rerollable_die.pool(initial_rerollable).lowest(
-                    not_rerolled)
-            elif mode == 'drop':
-                return not_rerollable_die.pool(not_rerollable)
-            else:
-                raise ValueError(
-                    f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', 'highest', 'drop'."
-                )
+            match mode:
+                case 'random':
+                    return common + rerollable_die.pool(not_rerolled)
+                case 'lowest':
+                    return common + rerollable_die.pool(
+                        initial_rerollable).highest(not_rerolled)
+                case 'highest':
+                    return common + rerollable_die.pool(
+                        initial_rerollable).lowest(not_rerolled)
+                case 'drop':
+                    return not_rerollable_die.pool(not_rerollable)
+                case _:
+                    raise ValueError(
+                        f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', 'highest', 'drop'."
+                    )
 
         denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
 

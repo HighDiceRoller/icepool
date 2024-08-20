@@ -699,20 +699,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
         """
         other = implicit_convert_to_expression(other)
 
-        if comparison == '==':
-            lesser, tie, greater = 0, 1, 0
-        elif comparison == '!=':
-            lesser, tie, greater = 1, 0, 1
-        elif comparison == '<=':
-            lesser, tie, greater = 1, 1, 0
-        elif comparison == '<':
-            lesser, tie, greater = 1, 0, 0
-        elif comparison == '>=':
-            lesser, tie, greater = 0, 1, 1
-        elif comparison == '>':
-            lesser, tie, greater = 0, 0, 1
-        else:
-            raise ValueError(f'Invalid comparison {comparison}')
+        match comparison:
+            case '==':
+                lesser, tie, greater = 0, 1, 0
+            case '!=':
+                lesser, tie, greater = 1, 0, 1
+            case '<=':
+                lesser, tie, greater = 1, 1, 0
+            case '<':
+                lesser, tie, greater = 1, 0, 0
+            case '>=':
+                lesser, tie, greater = 0, 1, 1
+            case '>':
+                lesser, tie, greater = 0, 0, 1
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
 
         if order > 0:
             left_first = lesser
@@ -790,20 +791,21 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 return self.difference(other)
 
         other = implicit_convert_to_expression(other)
-        if comparison == '<=':
-            order = Order.Descending
-            match_equal = True
-        elif comparison == '<':
-            order = Order.Descending
-            match_equal = False
-        elif comparison == '>=':
-            order = Order.Ascending
-            match_equal = True
-        elif comparison == '>':
-            order = Order.Ascending
-            match_equal = False
-        else:
-            raise ValueError(f'Invalid comparison {comparison}')
+        match comparison:
+            case '<=':
+                order = Order.Descending
+                match_equal = True
+            case '<':
+                order = Order.Descending
+                match_equal = False
+            case '>=':
+                order = Order.Ascending
+                match_equal = True
+            case '>':
+                order = Order.Ascending
+                match_equal = False
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
 
         return icepool.expression.MaximumMatchExpression(
             self,

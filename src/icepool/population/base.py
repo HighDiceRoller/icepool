@@ -118,32 +118,33 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             The nearest outcome fitting the comparison, or `None` if there is
             no such outcome.
         """
-        if comparison == '<=':
-            if outcome in self:
-                return outcome
-            index = bisect.bisect_right(self.outcomes(), outcome) - 1
-            if index < 0:
-                return None
-            return self.outcomes()[index]
-        elif comparison == '<':
-            index = bisect.bisect_left(self.outcomes(), outcome) - 1
-            if index < 0:
-                return None
-            return self.outcomes()[index]
-        elif comparison == '>=':
-            if outcome in self:
-                return outcome
-            index = bisect.bisect_left(self.outcomes(), outcome)
-            if index >= len(self):
-                return None
-            return self.outcomes()[index]
-        elif comparison == '>':
-            index = bisect.bisect_right(self.outcomes(), outcome)
-            if index >= len(self):
-                return None
-            return self.outcomes()[index]
-        else:
-            raise ValueError(f'Invalid comparison {comparison}')
+        match comparison:
+            case '<=':
+                if outcome in self:
+                    return outcome
+                index = bisect.bisect_right(self.outcomes(), outcome) - 1
+                if index < 0:
+                    return None
+                return self.outcomes()[index]
+            case '<':
+                index = bisect.bisect_left(self.outcomes(), outcome) - 1
+                if index < 0:
+                    return None
+                return self.outcomes()[index]
+            case '>=':
+                if outcome in self:
+                    return outcome
+                index = bisect.bisect_left(self.outcomes(), outcome)
+                if index >= len(self):
+                    return None
+                return self.outcomes()[index]
+            case '>':
+                index = bisect.bisect_right(self.outcomes(), outcome)
+                if index >= len(self):
+                    return None
+                return self.outcomes()[index]
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
 
     # Quantities.
 
@@ -178,22 +179,23 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             comparison = cast(Literal['==', '!=', '<=', '<', '>=', '>'],
                               comparison)
 
-        if comparison == '==':
-            return self.get(outcome, 0)
-        elif comparison == '!=':
-            return self.denominator() - self.get(outcome, 0)
-        elif comparison in ['<=', '<']:
-            threshold = self.nearest(comparison, outcome)
-            if threshold is None:
-                return 0
-            else:
-                return self._cumulative_quantities[threshold]
-        elif comparison == '>=':
-            return self.denominator() - self.quantity('<', outcome)
-        elif comparison == '>':
-            return self.denominator() - self.quantity('<=', outcome)
-        else:
-            raise ValueError(f'Invalid comparison {comparison}')
+        match comparison:
+            case '==':
+                return self.get(outcome, 0)
+            case '!=':
+                return self.denominator() - self.get(outcome, 0)
+            case '<=' | '<':
+                threshold = self.nearest(comparison, outcome)
+                if threshold is None:
+                    return 0
+                else:
+                    return self._cumulative_quantities[threshold]
+            case '>=':
+                return self.denominator() - self.quantity('<', outcome)
+            case '>':
+                return self.denominator() - self.quantity('<=', outcome)
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
 
     @overload
     def quantities(self, /) -> CountsValuesView:
@@ -220,23 +222,27 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         if comparison is None:
             comparison = '=='
-        if comparison == '==':
-            return self.values()
-        elif comparison == '<=':
-            return tuple(itertools.accumulate(self.values()))
-        elif comparison == '>=':
-            return tuple(
-                itertools.accumulate(self.values()[:-1],
-                                     operator.sub,
-                                     initial=self.denominator()))
-        elif comparison == '!=':
-            return tuple(self.denominator() - q for q in self.values())
-        elif comparison == '<':
-            return tuple(self.denominator() - q for q in self.quantities('>='))
-        elif comparison == '>':
-            return tuple(self.denominator() - q for q in self.quantities('<='))
-        else:
-            raise ValueError(f'Invalid comparison {comparison}')
+
+        match comparison:
+            case '==':
+                return self.values()
+            case '<=':
+                return tuple(itertools.accumulate(self.values()))
+            case '>=':
+                return tuple(
+                    itertools.accumulate(self.values()[:-1],
+                                         operator.sub,
+                                         initial=self.denominator()))
+            case '!=':
+                return tuple(self.denominator() - q for q in self.values())
+            case '<':
+                return tuple(self.denominator() - q
+                             for q in self.quantities('>='))
+            case '>':
+                return tuple(self.denominator() - q
+                             for q in self.quantities('<='))
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
 
     @cached_property
     def _cumulative_quantities(self) -> Mapping[T_co, int]:
@@ -677,16 +683,18 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         else:
             raise ValueError('format_spec has too many colons.')
 
-        if output_format == 'md':
-            return icepool.population.format.markdown(self, col_spec)
-        elif output_format == 'bbcode':
-            return icepool.population.format.bbcode(self, col_spec)
-        elif output_format == 'csv':
-            return icepool.population.format.csv(self, col_spec, **kwargs)
-        elif output_format == 'html':
-            return icepool.population.format.html(self, col_spec)
-        else:
-            raise ValueError(f"Unsupported output format '{output_format}'")
+        match output_format:
+            case 'md':
+                return icepool.population.format.markdown(self, col_spec)
+            case 'bbcode':
+                return icepool.population.format.bbcode(self, col_spec)
+            case 'csv':
+                return icepool.population.format.csv(self, col_spec, **kwargs)
+            case 'html':
+                return icepool.population.format.html(self, col_spec)
+            case _:
+                raise ValueError(
+                    f"Unsupported output format '{output_format}'")
 
     def __format__(self, format_spec: str, /) -> str:
         return self.format(format_spec)
