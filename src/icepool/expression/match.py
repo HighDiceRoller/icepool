@@ -38,15 +38,13 @@ class SortMatchExpression(MultisetExpression[T_contra]):
 
         count = 0
 
-        if left_lead > 0:
+        if left_lead >= 0:
             count += max(min(right_count - left_lead, left_count),
                          0) * self._tie
         elif left_lead < 0:
             count += max(min(left_count + left_lead, right_count),
                          0) * self._tie
             count += min(-left_lead, left_count) * self._right_first
-        else:
-            count += min(left_count, right_count) * self._tie
 
         left_lead += left_count - right_count
 

@@ -665,13 +665,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
             order: Order = Order.Descending) -> 'MultisetExpression[T_contra]':
         """EXPERIMENTAL: Matches elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
 
-        Contrast `maximum_matched()`, which first creates the maximum number of
+        Contrast `maximum_match()`, which first creates the maximum number of
         pairs that fit the comparison, not necessarily in sorted order.
 
         Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
         *RISK*. Which pairs did the attacker win?
         ```python
-        d6.pool(3).highest(2).sort_matched('>', d6.pool(2))
+        d6.pool(3).highest(2).sort_match('>', d6.pool(2))
         ```
         
         Suppose the attacker rolled 5, 3, 2 and the defender 6, 1.
@@ -679,7 +679,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         and then the 5 would be dropped since the attacker lost that pair,
         leaving the attacker's 3.
         ```python
-        Pool([5, 3, 2]).highest(2).sort_matched('>', [6, 1]) -> [3]
+        Pool([5, 3, 2]).highest(2).sort_match('>', [6, 1]) -> [3]
         ```
 
         Extra elements: If `self` has more elements than `other`, whether the
@@ -746,7 +746,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         value, and the defender prefers to block the highest attacker dice
         possible. What is the sum of the attacker dice that were not blocked?
         ```python
-        d6.pool(4).maximum_matched('<=', d6.pool(3), keep='unmatched').sum()
+        d6.pool(4).maximum_match('<=', d6.pool(3), keep='unmatched').sum()
         ```
 
         Args:
