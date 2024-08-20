@@ -12839,15 +12839,15 @@ affecting a multiset evaluation.</p>
 </span><span id="MultisetExpression-685"><a href="#MultisetExpression-685"><span class="linenos"> 685</span></a>
 </span><span id="MultisetExpression-686"><a href="#MultisetExpression-686"><span class="linenos"> 686</span></a><span class="sd">        Extra elements: If `self` has more elements than `other`, whether the</span>
 </span><span id="MultisetExpression-687"><a href="#MultisetExpression-687"><span class="linenos"> 687</span></a><span class="sd">        extra elements are kept depends on the `order` and `comparison`:</span>
-</span><span id="MultisetExpression-688"><a href="#MultisetExpression-688"><span class="linenos"> 688</span></a><span class="sd">        * Descending: `&gt;=`, `&gt;`</span>
-</span><span id="MultisetExpression-689"><a href="#MultisetExpression-689"><span class="linenos"> 689</span></a><span class="sd">        * Ascending: `&lt;=`, `&lt;`</span>
+</span><span id="MultisetExpression-688"><a href="#MultisetExpression-688"><span class="linenos"> 688</span></a><span class="sd">        * Descending: kept for `&#39;&gt;=&#39;`, `&#39;&gt;&#39;`</span>
+</span><span id="MultisetExpression-689"><a href="#MultisetExpression-689"><span class="linenos"> 689</span></a><span class="sd">        * Ascending: kept for `&#39;&lt;=&#39;`, `&#39;&lt;&#39;`</span>
 </span><span id="MultisetExpression-690"><a href="#MultisetExpression-690"><span class="linenos"> 690</span></a><span class="sd">        </span>
 </span><span id="MultisetExpression-691"><a href="#MultisetExpression-691"><span class="linenos"> 691</span></a><span class="sd">        Args:</span>
 </span><span id="MultisetExpression-692"><a href="#MultisetExpression-692"><span class="linenos"> 692</span></a><span class="sd">            comparison: The comparison to filter by. If you want to drop rather</span>
 </span><span id="MultisetExpression-693"><a href="#MultisetExpression-693"><span class="linenos"> 693</span></a><span class="sd">                than keep, use the complementary comparison:</span>
-</span><span id="MultisetExpression-694"><a href="#MultisetExpression-694"><span class="linenos"> 694</span></a><span class="sd">                * &#39;==&#39; vs. &#39;!=&#39;</span>
-</span><span id="MultisetExpression-695"><a href="#MultisetExpression-695"><span class="linenos"> 695</span></a><span class="sd">                * &#39;&lt;=&#39; vs. &#39;&gt;&#39;</span>
-</span><span id="MultisetExpression-696"><a href="#MultisetExpression-696"><span class="linenos"> 696</span></a><span class="sd">                * &#39;&gt;=&#39; vs. &#39;&lt;&#39;</span>
+</span><span id="MultisetExpression-694"><a href="#MultisetExpression-694"><span class="linenos"> 694</span></a><span class="sd">                * `&#39;==&#39;` vs. `&#39;!=&#39;`</span>
+</span><span id="MultisetExpression-695"><a href="#MultisetExpression-695"><span class="linenos"> 695</span></a><span class="sd">                * `&#39;&lt;=&#39;` vs. `&#39;&gt;&#39;`</span>
+</span><span id="MultisetExpression-696"><a href="#MultisetExpression-696"><span class="linenos"> 696</span></a><span class="sd">                * `&#39;&gt;=&#39;` vs. `&#39;&lt;&#39;`</span>
 </span><span id="MultisetExpression-697"><a href="#MultisetExpression-697"><span class="linenos"> 697</span></a><span class="sd">            other: The other multiset to match elements with.</span>
 </span><span id="MultisetExpression-698"><a href="#MultisetExpression-698"><span class="linenos"> 698</span></a><span class="sd">            order: The order in which to sort before forming matches.</span>
 </span><span id="MultisetExpression-699"><a href="#MultisetExpression-699"><span class="linenos"> 699</span></a><span class="sd">                Default is descending.</span>
@@ -14577,15 +14577,15 @@ then the next <code><a href="#MultisetExpression.keep">keep</a></code> highest e
 </span><span id="MultisetExpression.sort_match-685"><a href="#MultisetExpression.sort_match-685"><span class="linenos">685</span></a>
 </span><span id="MultisetExpression.sort_match-686"><a href="#MultisetExpression.sort_match-686"><span class="linenos">686</span></a><span class="sd">        Extra elements: If `self` has more elements than `other`, whether the</span>
 </span><span id="MultisetExpression.sort_match-687"><a href="#MultisetExpression.sort_match-687"><span class="linenos">687</span></a><span class="sd">        extra elements are kept depends on the `order` and `comparison`:</span>
-</span><span id="MultisetExpression.sort_match-688"><a href="#MultisetExpression.sort_match-688"><span class="linenos">688</span></a><span class="sd">        * Descending: `&gt;=`, `&gt;`</span>
-</span><span id="MultisetExpression.sort_match-689"><a href="#MultisetExpression.sort_match-689"><span class="linenos">689</span></a><span class="sd">        * Ascending: `&lt;=`, `&lt;`</span>
+</span><span id="MultisetExpression.sort_match-688"><a href="#MultisetExpression.sort_match-688"><span class="linenos">688</span></a><span class="sd">        * Descending: kept for `&#39;&gt;=&#39;`, `&#39;&gt;&#39;`</span>
+</span><span id="MultisetExpression.sort_match-689"><a href="#MultisetExpression.sort_match-689"><span class="linenos">689</span></a><span class="sd">        * Ascending: kept for `&#39;&lt;=&#39;`, `&#39;&lt;&#39;`</span>
 </span><span id="MultisetExpression.sort_match-690"><a href="#MultisetExpression.sort_match-690"><span class="linenos">690</span></a><span class="sd">        </span>
 </span><span id="MultisetExpression.sort_match-691"><a href="#MultisetExpression.sort_match-691"><span class="linenos">691</span></a><span class="sd">        Args:</span>
 </span><span id="MultisetExpression.sort_match-692"><a href="#MultisetExpression.sort_match-692"><span class="linenos">692</span></a><span class="sd">            comparison: The comparison to filter by. If you want to drop rather</span>
 </span><span id="MultisetExpression.sort_match-693"><a href="#MultisetExpression.sort_match-693"><span class="linenos">693</span></a><span class="sd">                than keep, use the complementary comparison:</span>
-</span><span id="MultisetExpression.sort_match-694"><a href="#MultisetExpression.sort_match-694"><span class="linenos">694</span></a><span class="sd">                * &#39;==&#39; vs. &#39;!=&#39;</span>
-</span><span id="MultisetExpression.sort_match-695"><a href="#MultisetExpression.sort_match-695"><span class="linenos">695</span></a><span class="sd">                * &#39;&lt;=&#39; vs. &#39;&gt;&#39;</span>
-</span><span id="MultisetExpression.sort_match-696"><a href="#MultisetExpression.sort_match-696"><span class="linenos">696</span></a><span class="sd">                * &#39;&gt;=&#39; vs. &#39;&lt;&#39;</span>
+</span><span id="MultisetExpression.sort_match-694"><a href="#MultisetExpression.sort_match-694"><span class="linenos">694</span></a><span class="sd">                * `&#39;==&#39;` vs. `&#39;!=&#39;`</span>
+</span><span id="MultisetExpression.sort_match-695"><a href="#MultisetExpression.sort_match-695"><span class="linenos">695</span></a><span class="sd">                * `&#39;&lt;=&#39;` vs. `&#39;&gt;&#39;`</span>
+</span><span id="MultisetExpression.sort_match-696"><a href="#MultisetExpression.sort_match-696"><span class="linenos">696</span></a><span class="sd">                * `&#39;&gt;=&#39;` vs. `&#39;&lt;&#39;`</span>
 </span><span id="MultisetExpression.sort_match-697"><a href="#MultisetExpression.sort_match-697"><span class="linenos">697</span></a><span class="sd">            other: The other multiset to match elements with.</span>
 </span><span id="MultisetExpression.sort_match-698"><a href="#MultisetExpression.sort_match-698"><span class="linenos">698</span></a><span class="sd">            order: The order in which to sort before forming matches.</span>
 </span><span id="MultisetExpression.sort_match-699"><a href="#MultisetExpression.sort_match-699"><span class="linenos">699</span></a><span class="sd">                Default is descending.</span>
@@ -14651,8 +14651,8 @@ leaving the attacker's 3.</p>
 extra elements are kept depends on the <code><a href="#MultisetExpression.order">order</a></code> and <code>comparison</code>:</p>
 
 <ul>
-<li>Descending: <code>&gt;=</code>, <code>&gt;</code></li>
-<li>Ascending: <code>&lt;=</code>, <code>&lt;</code></li>
+<li>Descending: kept for <code>'&gt;='</code>, <code>'&gt;'</code></li>
+<li>Ascending: kept for <code>'&lt;='</code>, <code>'&lt;'</code></li>
 </ul>
 
 <h6 id="arguments">Arguments:</h6>
@@ -14661,9 +14661,9 @@ extra elements are kept depends on the <code><a href="#MultisetExpression.order"
 <li><strong>comparison:</strong>  The comparison to filter by. If you want to drop rather
 than keep, use the complementary comparison:
 <ul>
-<li>'==' vs. '!='</li>
-<li>'&lt;=' vs. '>'</li>
-<li>'>=' vs. '&lt;'</li>
+<li><code>'=='</code> vs. <code>'!='</code></li>
+<li><code>'&lt;='</code> vs. <code>'&gt;'</code></li>
+<li><code>'&gt;='</code> vs. <code>'&lt;'</code></li>
 </ul></li>
 <li><strong>other:</strong>  The other multiset to match elements with.</li>
 <li><strong>order:</strong>  The order in which to sort before forming matches.
