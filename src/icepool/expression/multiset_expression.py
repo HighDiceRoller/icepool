@@ -655,31 +655,162 @@ class MultisetExpression(ABC, Generic[T_contra]):
         index = highest_slice(keep, drop)
         return self.keep(index)
 
-    # Pairing.
+    # Matching.
 
-    def pair_le(self,
-                other: 'MultisetExpression[T_contra]',
-                *,
-                keep: bool = True):
-        """EXPERIMENTAL: Make pairs of elements such that `self <= other`, then keep or drop the paired elements from `self`.
+    def sort_match(
+            self,
+            comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+            other: 'MultisetExpression[T_contra]',
+            /,
+            order: Order = Order.Descending) -> 'MultisetExpression[T_contra]':
+        """EXPERIMENTAL: Matches elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
+
+        Contrast `maximum_matched()`, which first creates the maximum number of
+        pairs that fit the comparison, not necessarily in sorted order.
+
+        Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
+        *RISK*. Which pairs did the attacker win?
+        ```python
+        d6.pool(3).highest(2).sort_matched('>', d6.pool(2))
+        ```
         
-        First, make as many pairs of one element of `self` and one element of
-        `other` such that:
-        * In each pair, the element from `self` <= the element from `other`.
-        * The element from `self` is as great as possible otherwise.
-        Keep the elements from `self` that were paired and drop the rest.
+        Suppose the attacker rolled 5, 3, 2 and the defender 6, 1.
+        In this case the attacker's 2 would be dropped by `highest`,
+        and then the 5 would be dropped since the attacker lost that pair,
+        leaving the attacker's 3.
+        ```python
+        Pool([5, 3, 2]).highest(2).sort_matched('>', [6, 1]) -> [3]
+        ```
 
+        Extra elements: If `self` has more elements than `other`, whether the
+        extra elements are kept depends on the `order` and `comparison`:
+        * Descending: `>=`, `>`
+        * Ascending: `<=`, `<`
+        
         Args:
-            other: The other multiset to pair elements with.
-            keep: If `True` (default), the paired elements from `self` will be
-                kept. Otherwise, the unpaired elements will be kept.
+            comparison: The comparison to filter by. If you want to drop rather
+                than keep, use the complementary comparison:
+                * '==' vs. '!='
+                * '<=' vs. '>'
+                * '>=' vs. '<'
+            other: The other multiset to match elements with.
+            order: The order in which to sort before forming matches.
+                Default is descending.
         """
         other = implicit_convert_to_expression(other)
-        return icepool.expression.PairKeepExpression(self,
-                                                     other,
-                                                     order=Order.Descending,
-                                                     allow_equal=True,
-                                                     keep=keep)
+
+        if comparison == '==':
+            lesser, tie, greater = 0, 1, 0
+        elif comparison == '!=':
+            lesser, tie, greater = 1, 0, 1
+        elif comparison == '<=':
+            lesser, tie, greater = 1, 1, 0
+        elif comparison == '<':
+            lesser, tie, greater = 1, 0, 0
+        elif comparison == '>=':
+            lesser, tie, greater = 0, 1, 1
+        elif comparison == '>':
+            lesser, tie, greater = 0, 0, 1
+        else:
+            raise ValueError(f'Invalid comparison {comparison}')
+
+        if order > 0:
+            left_first = lesser
+            right_first = greater
+        else:
+            left_first = greater
+            right_first = lesser
+
+        return icepool.expression.SortMatchExpression(self,
+                                                      other,
+                                                      order=order,
+                                                      tie=tie,
+                                                      left_first=left_first,
+                                                      right_first=right_first)
+
+    def maximum_match(
+        self, comparison: Literal['==', '<=', '<', '>=',
+                                  '>'], other: 'MultisetExpression[T_contra]',
+        /, *, keep: Literal['matched',
+                            'unmatched']) -> 'MultisetExpression[T_contra]':
+        """EXPERIMENTAL: Match elements of `self` with elements of `other` fitting the comparison, then keeps the matched or unmatched elements from `self`.
+
+        As many pairs of elements will be matched as possible that fit the
+        `comparison`. Contrast `sort_matched()`, which first creates pairs in
+        sorted order and then filters them by `comparison`.
+
+        Example:
+
+        An attacker rolls a pool of 4d6 and a defender rolls a pool of 3d6.
+        Defender dice can be used to block attacker dice of equal or lesser
+        value, and the defender prefers to block the highest attacker dice
+        possible. What is the sum of the attacker dice that were not blocked?
+        ```python
+        d6.pool(4).maximum_matched('<=', d6.pool(3), keep='unmatched').sum()
+        ```
+
+        Args:
+            comparison: One of the following:
+                * '==': The same as `intersection(other)` if `keep='matched'`,
+                    or `difference(other)` if `keep=unmatched`.
+                * '<=': Elements of `self` will be matched with elements of
+                    `other` such that the element from `self` is <= the element
+                    from `other`, but is otherwise as high as possible.
+                    This requires that outcomes be evaluated in descending
+                    order.
+                * `<`: Elements of `self` will be matched with elements of
+                    `other` such that the element from `self` is < the element
+                    from `other`, but is otherwise as high as possible.
+                    This requires that outcomes be evaluated in descending
+                    order.
+                * '>=': Elements of `self` will be matched with elements of
+                    `other` such that the element from `self` is >= the element
+                    from `other`, but is otherwise as low as possible.
+                    This requires that outcomes be evaluated in ascending
+                    order.
+                * `>`: Elements of `self` will be matched with elements of
+                    `other` such that the element from `self` is > the element
+                    from `other`, but is otherwise as low as possible.
+                    This requires that outcomes be evaluated in ascending
+                    order.
+            other: The other multiset to match elements with.
+            keep: Whether 'matched' or 'unmatched' elements are to be kept.
+        """
+        if keep == 'matched':
+            keep_boolean = True
+        elif keep == 'unmatched':
+            keep_boolean = False
+        else:
+            raise ValueError(f"keep must be either 'matched' or 'unmatched'")
+
+        if comparison == '==':
+            if keep_boolean:
+                return self.intersection(other)
+            else:
+                return self.difference(other)
+
+        other = implicit_convert_to_expression(other)
+        if comparison == '<=':
+            order = Order.Descending
+            match_equal = True
+        elif comparison == '<':
+            order = Order.Descending
+            match_equal = False
+        elif comparison == '>=':
+            order = Order.Ascending
+            match_equal = True
+        elif comparison == '>':
+            order = Order.Ascending
+            match_equal = False
+        else:
+            raise ValueError(f'Invalid comparison {comparison}')
+
+        return icepool.expression.MaximumMatchExpression(
+            self,
+            other,
+            order=order,
+            match_equal=match_equal,
+            keep=keep_boolean)
 
     # Evaluations.
 

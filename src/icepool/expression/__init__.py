@@ -11,7 +11,7 @@ from icepool.expression.adjust_counts import (
     UniqueExpression)
 from icepool.expression.filter_outcomes import FilterOutcomesExpression, FilterOutcomesBinaryExpression
 from icepool.expression.keep import KeepExpression
-from icepool.expression.pair import PairKeepExpression
+from icepool.expression.match import SortMatchExpression, MaximumMatchExpression
 
 from icepool.expression.multiset_function import multiset_function
 
@@ -23,5 +23,6 @@ __all__ = [
     'AdjustCountsExpression', 'MultiplyCountsExpression',
     'FloorDivCountsExpression', 'ModuloCountsExpression',
     'KeepCountsExpression', 'UniqueExpression', 'FilterOutcomesExpression',
-    'FilterOutcomesBinaryExpression', 'KeepExpression'
+    'FilterOutcomesBinaryExpression', 'KeepExpression', 'SortMatchExpression',
+    'MaximumMatchExpression'
 ]
