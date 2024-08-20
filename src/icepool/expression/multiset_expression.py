@@ -757,24 +757,24 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
         Args:
             comparison: One of the following:
-                * '==': The same as `intersection(other)` if `keep='matched'`,
+                * `'=='`: The same as `intersection(other)` if `keep='matched'`,
                     or `difference(other)` if `keep=unmatched`.
-                * '<=': Elements of `self` will be matched with elements of
+                * `'<='`: Elements of `self` will be matched with elements of
                     `other` such that the element from `self` is <= the element
                     from `other`, but is otherwise as high as possible.
                     This requires that outcomes be evaluated in descending
                     order.
-                * `<`: Elements of `self` will be matched with elements of
+                * `'<'`: Elements of `self` will be matched with elements of
                     `other` such that the element from `self` is < the element
                     from `other`, but is otherwise as high as possible.
                     This requires that outcomes be evaluated in descending
                     order.
-                * '>=': Elements of `self` will be matched with elements of
+                * `'>='`: Elements of `self` will be matched with elements of
                     `other` such that the element from `self` is >= the element
                     from `other`, but is otherwise as low as possible.
                     This requires that outcomes be evaluated in ascending
                     order.
-                * `>`: Elements of `self` will be matched with elements of
+                * `'>'`: Elements of `self` will be matched with elements of
                     `other` such that the element from `self` is > the element
                     from `other`, but is otherwise as low as possible.
                     This requires that outcomes be evaluated in ascending
