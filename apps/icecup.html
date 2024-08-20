@@ -170,20 +170,20 @@ class OutputManager():
     @staticmethod
     def probability(die, outcome, probability_type):
         if probability_type == 'ge':
-            return die.probability_ge(outcome)
+            return die.probability('>=', outcome)
         elif probability_type == 'le':
-            return die.probability_le(outcome)
+            return die.probability('<=', outcome)
         else:
             return die.probability(outcome)
         
     @staticmethod
     def probabilities(die, outcomes, probability_type):
         if probability_type == 'ge':
-            return die.probabilities_ge(outcomes)
+            return [die.probability('>=', x) for x in outcomes]
         elif probability_type == 'le':
-            return die.probabilities_le(outcomes)
+            return [die.probability('<=', x) for x in outcomes]
         else:
-            return die.probabilities(outcomes)
+            return [die.probability(x) for x in outcomes]
             
     @staticmethod
     def format_string(probability_type):
