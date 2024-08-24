@@ -16,7 +16,7 @@ from typing import Any, Callable, Collection, Generic, Hashable, Mapping, Mutabl
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
-    from icepool.expression import MultisetExpression
+    from icepool import MultisetExpression, MultisetGenerator
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
@@ -208,8 +208,16 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
 
     @cached_property
-    def _cache(self) -> MutableMapping[Any, Mapping[Any, int]]:
-        """A cache of (order, generators) -> weight distribution over states. """
+    def _cache(
+        self
+    ) -> 'MutableMapping[tuple[Order, Alignment, tuple[MultisetGenerator, ...], Hashable], Mapping[Any, int]]':
+        """Cached results.
+        
+        The key is `(order, alignment, generators, state)`.
+        The value is another mapping `final_state: quantity` representing the
+        state distribution produced by `order, alignment, generators` when
+        starting at state `state`.
+        """
         return {}
 
     @overload
@@ -359,14 +367,13 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             return self._eval_internal, eval_order
         else:
             # Use the less-preferred algorithm.
-            return self._eval_internal_iterative, eval_order
+            return self._eval_internal_forward, eval_order
 
     def _eval_internal(
         self, order: Order, alignment: 'Alignment[T_contra]',
         generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
     ) -> Mapping[Any, int]:
-        """Internal algorithm for iterating in the more-preferred order,
-        i.e. giving outcomes to `next_state()` from wide to narrow.
+        """Internal algorithm for iterating in the more-preferred order.
 
         All intermediate return values are cached in the instance.
 
@@ -381,7 +388,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (order, alignment, generators)
+        cache_key = (order, alignment, generators, None)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
@@ -407,42 +414,52 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         self._cache[cache_key] = result
         return result
 
-    def _eval_internal_iterative(
-        self, order: int, alignment: 'Alignment[T_contra]',
-        generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
-    ) -> Mapping[Any, int]:
-        """Internal algorithm for iterating in the less-preferred order,
-        i.e. giving outcomes to `next_state()` from narrow to wide.
+    def _eval_internal_forward(
+            self,
+            order: Order,
+            alignment: 'Alignment[T_contra]',
+            generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]',
+            state: Hashable = None) -> Mapping[Any, int]:
+        """Internal algorithm for iterating in the less-preferred order.
 
-        This algorithm does not perform persistent memoization.
+        All intermediate return values are cached in the instance.
+
+        Arguments:
+            order: The order in which to send outcomes to `next_state()`.
+            alignment: As `alignment()`. Elements will be popped off this
+                during recursion.
+            generators: One or more `MultisetGenerators`s to evaluate. Elements
+                will be popped off this during recursion.
+
+        Returns:
+            A dict `{ state : weight }` describing the probability distribution
+                over states.
         """
+        cache_key = (order, alignment, generators, state)
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
+        result: MutableMapping[Any, int] = defaultdict(int)
+
         if all(not generator.outcomes()
                for generator in generators) and not alignment.outcomes():
-            return {None: 1}
-        dist: MutableMapping[Any, int] = defaultdict(int)
-        dist[None, alignment, generators] = 1
-        final_dist: MutableMapping[Any, int] = defaultdict(int)
-        while dist:
-            next_dist: MutableMapping[Any, int] = defaultdict(int)
-            for (prev_state, prev_alignment,
-                 prev_generators), weight in dist.items():
-                # The order flip here is the only purpose of this algorithm.
-                outcome, alignment, iterators = MultisetEvaluator._pop_generators(
-                    -order, prev_alignment, prev_generators)
-                for p in itertools.product(*iterators):
-                    generators, counts, weights = zip(*p)
-                    counts = tuple(itertools.chain.from_iterable(counts))
-                    prod_weight = math.prod(weights)
-                    state = self.next_state(prev_state, outcome, *counts)
-                    if state is not icepool.Reroll:
-                        if all(not generator.outcomes()
-                               for generator in generators):
-                            final_dist[state] += weight * prod_weight
-                        else:
-                            next_dist[state, alignment,
-                                      generators] += weight * prod_weight
-            dist = next_dist
-        return final_dist
+            result = {state: 1}
+        else:
+            outcome, next_alignment, iterators = MultisetEvaluator._pop_generators(
+                -order, alignment, generators)
+            for p in itertools.product(*iterators):
+                next_generators, counts, weights = zip(*p)
+                counts = tuple(itertools.chain.from_iterable(counts))
+                prod_weight = math.prod(weights)
+                next_state = self.next_state(state, outcome, *counts)
+                if next_state is not icepool.Reroll:
+                    final_dist = self._eval_internal_forward(
+                        order, next_alignment, next_generators, next_state)
+                    for final_state, weight in final_dist.items():
+                        result[final_state] += weight * prod_weight
+
+        self._cache[cache_key] = result
+        return result
 
     @staticmethod
     def _initialize_generators(

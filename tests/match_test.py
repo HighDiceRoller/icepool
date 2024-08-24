@@ -2,7 +2,7 @@ import icepool
 import operator
 import pytest
 
-from icepool import d6, Die, Order, map_function, Pool
+from icepool import d4, d6, d8, Die, Order, map_function, Pool
 
 
 def test_sort_match_example():
@@ -75,8 +75,10 @@ def test_sort_match_operators_ascending(op):
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_match_operators_expand(op):
-    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).expand()
+@pytest.mark.parametrize('left', [d6.pool(3), Pool([d4, d6, d8])])
+@pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
+def test_sort_match_operators_expand(op, left, right):
+    result = left.highest(2).sort_match(op, right).expand()
 
     @map_function
     def compute_expected(left, right):
@@ -86,7 +88,7 @@ def test_sort_match_operators_expand(op):
                 result.append(l)
         return tuple(sorted(result))
 
-    expected = compute_expected(d6.pool(3), d6.pool(2))
+    expected = compute_expected(left, right)
     assert result == expected
 
 
@@ -139,15 +141,13 @@ def test_maximum_match(op):
 
 
 @pytest.mark.parametrize('op', maximum_ops)
-def test_maximum_match_expand(op):
+@pytest.mark.parametrize('left', [d6.pool(3), Pool([d4, d6, d8])])
+@pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
+def test_maximum_match_expand(op, left, right):
     if op in ['<=', '<']:
-        result = d6.pool(3).maximum_match_highest(op,
-                                                  d6.pool(2),
-                                                  keep='matched').expand()
+        result = left.maximum_match_highest(op, right, keep='matched').expand()
     else:
-        result = d6.pool(3).maximum_match_lowest(op,
-                                                 d6.pool(2),
-                                                 keep='matched').expand()
+        result = left.maximum_match_lowest(op, right, keep='matched').expand()
 
     @map_function
     def compute_expected(left, right):
@@ -166,5 +166,5 @@ def test_maximum_match_expand(op):
                 left.pop(0)
         return tuple(sorted(result))
 
-    expected = compute_expected(d6.pool(3), d6.pool(2))
+    expected = compute_expected(left, right)
     assert result == expected
