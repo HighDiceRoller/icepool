@@ -420,7 +420,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.0.0')
+await micropip.install('icepool==1.5.0')
 
 import js
 import pyodide
@@ -434,7 +434,7 @@ def set_rank_data(rank, die):
     if selected_dist == 'pmf':
         data = [100.0 * x for x in die.probabilities()]
     else:
-        data = [100.0 * x for x in die.probabilities_ge()]
+        data = [100.0 * x for x in die.probabilities('>=')]
     for i in range(1, min_ability):
         data[i - 1] = math.nan
     for i in range(max_ability + 1, 21):
@@ -649,7 +649,7 @@ js.maxProb = max_prob * 100.0
                 if selected_dist == 'pmf':
                     js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities()])
                 else:
-                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities_ge()])
+                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities('>=')])
             `);
             pricesChart.update();
         }
