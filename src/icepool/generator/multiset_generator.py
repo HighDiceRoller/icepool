@@ -186,6 +186,13 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     # Expression API.
 
+    _inners = ()
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        raise RuntimeError(
+            'Should not be reached; _unbind should have been overridden directly.'
+        )
+
     def _next_state(self, state, outcome: Outcome, *counts:
                     int) -> tuple[Hashable, int]:
         raise RuntimeError(
@@ -194,12 +201,16 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
     def order(self) -> Order:
         return Order.Any
 
+    # Overridden to switch bound generators with variables.
+
+    @property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self, )
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_expression = icepool.expression.MultisetVariable(prefix_start)
+        unbound_expression = icepool.expression.MultisetVariable(
+            index=prefix_start)
         return unbound_expression, prefix_start + 1
 
     def _free_arity(self) -> int:

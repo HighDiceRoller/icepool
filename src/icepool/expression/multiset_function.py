@@ -130,6 +130,7 @@ def multiset_function(
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
             )
-    tuple_or_evaluator = function(*(MV(i) for i in range(len(parameters))))
+    tuple_or_evaluator = function(*(MV(index=i)
+                                    for i in range(len(parameters))))
     evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
     return update_wrapper(evaluator, function)

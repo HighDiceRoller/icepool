@@ -20,8 +20,9 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
     def __init__(self,
                  inner: MultisetExpression[T_contra],
-                 target: Callable[[T_contra], bool] | Collection[T_contra],
+                 /,
                  *,
+                 target: Callable[[T_contra], bool] | Collection[T_contra],
                  invert: bool = False) -> None:
         """Constructor.
 
@@ -33,6 +34,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         """
 
         self._inner = inner
+        self._inners = (inner, )
         self._invert = invert
         if callable(target):
             self._func = target
@@ -44,6 +46,11 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
             self._func = function
 
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return FilterOutcomesExpression(*unbound_inners,
+                                        invert=self._invert,
+                                        target=self._func)
+
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
         state, count = self._inner._next_state(state, outcome, *counts)
@@ -54,19 +61,6 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
     def order(self) -> Order:
         return self._inner.order()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner._bound_generators()
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inner, prefix_start = self._inner._unbind(
-            prefix_start, free_start)
-        unbound_expression = FilterOutcomesExpression(unbound_inner,
-                                                      self._func,
-                                                      invert=self._invert)
-        unbound_expression._inner = unbound_inner
-        return unbound_expression, prefix_start
 
     def _free_arity(self) -> int:
         return self._inner._free_arity()
@@ -103,7 +97,12 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
         self._validate_output_arity(target)
         self._inner = inner
         self._target = target
+        self._inners = (inner, target)
         self._invert = invert
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return FilterOutcomesBinaryExpression(*unbound_inners,
+                                              invert=self._invert)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -128,26 +127,6 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
 
     def _free_arity(self) -> int:
         return self._cached_arity
-
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner._bound_generators(
-        ) + self._target._bound_generators()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inner, prefix_start = self._inner._unbind(
-            prefix_start, free_start)
-        unbound_target, prefix_start = self._target._unbind(
-            prefix_start, free_start)
-        unbound_expression = type(self)(unbound_inner,
-                                        unbound_target,
-                                        invert=self._invert)
-        return unbound_expression, prefix_start
 
     def __str__(self) -> str:
         if self._invert:

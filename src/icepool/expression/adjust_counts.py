@@ -32,6 +32,9 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         self._inners = inners
         self._function = function
 
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return MapCountsExpression(*unbound_inners, function=self._function)
+
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
 
@@ -53,34 +56,18 @@ class MapCountsExpression(MultisetExpression[T_contra]):
     def _free_arity(self) -> int:
         return self._cached_arity
 
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return reduce(operator.add,
-                      (inner._bound_generators() for inner in self._inners))
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inners = []
-        for inner in self._inners:
-            unbound_inner, prefix_start = inner._unbind(
-                prefix_start, free_start)
-            unbound_inners.append(unbound_inner)
-        unbound_expression = type(self)(*unbound_inners,
-                                        function=self._function)
-        return unbound_expression, prefix_start
-
 
 class AdjustCountsExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, inner: MultisetExpression[T_contra],
+    def __init__(self, inner: MultisetExpression[T_contra], /, *,
                  constant: int) -> None:
         self._validate_output_arity(inner)
         self._inner = inner
+        self._inners = (inner, )
         self._constant = constant
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return type(self)(*unbound_inners, constant=self._constant)
 
     @abstractmethod
     def adjust_count(self, count: int, constant: int) -> int:
@@ -94,16 +81,6 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
 
     def order(self) -> Order:
         return self._inner.order()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner._bound_generators()
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inner, prefix_start = self._inner._unbind(
-            prefix_start, free_start)
-        unbound_expression = type(self)(unbound_inner, self._constant)
-        return unbound_expression, prefix_start
 
     def _free_arity(self) -> int:
         return self._inner._free_arity()
@@ -141,10 +118,10 @@ class ModuloCountsExpression(AdjustCountsExpression):
 
 class KeepCountsExpression(AdjustCountsExpression):
 
-    def __init__(self, inner: MultisetExpression[T_contra],
+    def __init__(self, inner: MultisetExpression[T_contra], /, *,
                  comparison: Literal['==', '!=', '<=', '<', '>=',
                                      '>'], constant: int):
-        super().__init__(inner, constant)
+        super().__init__(inner, constant=constant)
         operators = {
             '==': operator.eq,
             '!=': operator.ne,
@@ -158,19 +135,16 @@ class KeepCountsExpression(AdjustCountsExpression):
         self._comparison = comparison
         self._op = operators[comparison]
 
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return KeepCountsExpression(*unbound_inners,
+                                    comparison=self._comparison,
+                                    constant=self._constant)
+
     def adjust_count(self, count: int, constant: int) -> int:
         if self._op(count, constant):
             return count
         else:
             return 0
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inner, prefix_start = self._inner._unbind(
-            prefix_start, free_start)
-        unbound_expression = type(self)(unbound_inner, self._comparison,
-                                        self._constant)
-        return unbound_expression, prefix_start
 
     def __str__(self) -> str:
         return f"{self._inner}.keep_counts('{self._comparison}', {self._constant})"

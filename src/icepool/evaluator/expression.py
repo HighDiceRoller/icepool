@@ -21,7 +21,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
                  truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
         self._bound_generators = tuple(
-            itertools.chain.from_iterable(expression._bound_generators()
+            itertools.chain.from_iterable(expression._bound_generators
                                           for expression in expressions))
         self._bound_arity = len(self._bound_generators)
         self._free_arity = max(

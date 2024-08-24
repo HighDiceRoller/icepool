@@ -28,6 +28,9 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
             self._validate_output_arity(inner)
         self._inners = inners
 
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return type(self)(*unbound_inners)
+
     @staticmethod
     @abstractmethod
     def merge_counts(left: int, right: int) -> int:
@@ -60,25 +63,6 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
 
     def _free_arity(self) -> int:
         return self._cached_arity
-
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return reduce(operator.add,
-                      (inner._bound_generators() for inner in self._inners))
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inners = []
-        for inner in self._inners:
-            unbound_inner, prefix_start = inner._unbind(
-                prefix_start, free_start)
-            unbound_inners.append(unbound_inner)
-        unbound_expression = type(self)(*unbound_inners)
-        return unbound_expression, prefix_start
 
     def __str__(self) -> str:
         return '(' + (' ' + self.symbol() + ' ').join(

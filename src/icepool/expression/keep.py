@@ -23,12 +23,13 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     # May return inner unmodified.
     def __new__(  # type: ignore
-        cls, inner: MultisetExpression[T_contra],
+        cls, inner: MultisetExpression[T_contra], /, *,
         index: slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
         cls._validate_output_arity(inner)
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
+        self._inners = (inner, )
         if isinstance(index, slice):
             if index.step is not None:
                 raise ValueError('step is not supported.')
@@ -103,14 +104,22 @@ class KeepExpression(MultisetExpression[T_contra]):
         return self
 
     @classmethod
-    def _new_raw(cls, inner: MultisetExpression[T_contra], keep_order: Order,
-                 keep_tuple: tuple[int, ...], drop: int | None):
+    def _new_raw(cls, inner: MultisetExpression[T_contra], /, *,
+                 keep_order: Order, keep_tuple: tuple[int,
+                                                      ...], drop: int | None):
         self = super(KeepExpression, cls).__new__(cls)
         self._inner = inner
+        self._inners = (inner, )
         self._keep_order = keep_order
         self._keep_tuple = keep_tuple
         self._drop = drop
         return self
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return KeepExpression._new_raw(*unbound_inners,
+                                       keep_order=self._keep_order,
+                                       keep_tuple=self._keep_tuple,
+                                       drop=self._drop)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -142,24 +151,6 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     def order(self) -> Order:
         return Order.merge(self._keep_order, self._inner.order())
-
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._inner._bound_generators()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_inner, prefix_start = self._inner._unbind(
-            prefix_start, free_start)
-        unbound_expression = KeepExpression._new_raw(unbound_inner,
-                                                     self._keep_order,
-                                                     self._keep_tuple,
-                                                     self._drop)
-        return unbound_expression, prefix_start
 
     def _free_arity(self) -> int:
         return self._inner._free_arity()

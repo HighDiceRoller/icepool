@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from functools import cached_property
+from functools import cached_property, reduce
 from types import EllipsisType
 import icepool
 import icepool.evaluator
@@ -89,6 +89,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
+    _inners: 'tuple[MultisetExpression, ...]'
+    """A tuple of inner generators. These are assumed to the positional arguments of the constructor."""
+
+    @abstractmethod
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        """Given a sequence of unbound inners, returns an unbound version of this expression."""
+
     @abstractmethod
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -128,11 +135,11 @@ class MultisetExpression(ABC, Generic[T_contra]):
         This does not include bound generators.
         """
 
-    @abstractmethod
+    @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        """Returns a sequence of bound generators."""
+        return reduce(operator.add,
+                      (inner._bound_generators for inner in self._inners), ())
 
-    @abstractmethod
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
         """Replaces bound generators within this expression with free variables.
@@ -150,6 +157,13 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Returns:
             The transformed expression and the new prefix_start.
         """
+        unbound_inners = []
+        for inner in self._inners:
+            unbound_inner, prefix_start = inner._unbind(
+                prefix_start, free_start)
+            unbound_inners.append(unbound_inner)
+        unbound_expression = self._make_unbound(*unbound_inners)
+        return unbound_expression, prefix_start
 
     @staticmethod
     def _validate_output_arity(inner: 'MultisetExpression') -> None:
@@ -386,7 +400,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
             return icepool.expression.FilterOutcomesBinaryExpression(
                 self, target)
         else:
-            return icepool.expression.FilterOutcomesExpression(self, target)
+            return icepool.expression.FilterOutcomesExpression(self,
+                                                               target=target)
 
     def drop_outcomes(
             self, target:
@@ -406,7 +421,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 self, target, invert=True)
         else:
             return icepool.expression.FilterOutcomesExpression(self,
-                                                               target,
+                                                               target=target,
                                                                invert=True)
 
     # Adjust counts.
@@ -447,7 +462,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
         ```
         """
-        return icepool.expression.MultiplyCountsExpression(self, n)
+        return icepool.expression.MultiplyCountsExpression(self, constant=n)
 
     @overload
     def __floordiv__(self, other: int) -> 'MultisetExpression[T_contra]':
@@ -486,12 +501,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]) // 2 -> [2]
         ```
         """
-        return icepool.expression.FloorDivCountsExpression(self, n)
+        return icepool.expression.FloorDivCountsExpression(self, constant=n)
 
     def __mod__(self, n: int, /) -> 'MultisetExpression[T_contra]':
         if not isinstance(n, int):
             return NotImplemented
-        return icepool.expression.ModuloCountsExpression(self, n)
+        return icepool.expression.ModuloCountsExpression(self, constant=n)
 
     def modulo_counts(self, n: int, /) -> 'MultisetExpression[T_contra]':
         """Moduos all counts by n.
@@ -507,7 +522,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     def __pos__(self) -> 'MultisetExpression[T_contra]':
         """Sets all negative counts to zero."""
-        return icepool.expression.KeepCountsExpression(self, '>=', 0)
+        return icepool.expression.KeepCountsExpression(self,
+                                                       comparison='>=',
+                                                       constant=0)
 
     def __neg__(self) -> 'MultisetExpression[T_contra]':
         """As -1 * self."""
@@ -529,7 +546,9 @@ class MultisetExpression(ABC, Generic[T_contra]):
             comparison: The comparison to use.
             n: The number to compare counts against.
         """
-        return icepool.expression.KeepCountsExpression(self, comparison, n)
+        return icepool.expression.KeepCountsExpression(self,
+                                                       comparison=comparison,
+                                                       constant=n)
 
     def unique(self, n: int = 1, /) -> 'MultisetExpression[T_contra]':
         """Counts each outcome at most `n` times.
@@ -542,7 +561,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
         ```
         """
-        return icepool.expression.UniqueExpression(self, n)
+        return icepool.expression.UniqueExpression(self, constant=n)
 
     # Keep highest / lowest.
 
@@ -586,7 +605,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
             return self.evaluate(
                 evaluator=icepool.evaluator.KeepEvaluator(index))
         else:
-            return icepool.expression.KeepExpression(self, index)
+            return icepool.expression.KeepExpression(self, index=index)
 
     @overload
     def __getitem__(

@@ -19,10 +19,18 @@ class SortMatchExpression(MultisetExpression[T_contra]):
             order = Order.Descending
         self._left = left
         self._right = right
+        self._inners = (left, right)
         self._order = order
         self._tie = tie
         self._left_first = left_first
         self._right_first = right_first
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return SortMatchExpression(*unbound_inners,
+                                   order=self._order,
+                                   tie=self._tie,
+                                   left_first=self._left_first,
+                                   right_first=self._right_first)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -57,29 +65,6 @@ class SortMatchExpression(MultisetExpression[T_contra]):
         return Order.merge(self._order, self._left.order(),
                            self._right.order())
 
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._left._bound_generators() + self._right._bound_generators()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_left, prefix_start = self._left._unbind(
-            prefix_start, free_start)
-        unbound_right, prefix_start = self._right._unbind(
-            prefix_start, free_start)
-        unbound_expression: MultisetExpression = SortMatchExpression(
-            unbound_left,
-            unbound_right,
-            order=self._order,
-            tie=self._tie,
-            left_first=self._left_first,
-            right_first=self._right_first)
-        return unbound_expression, prefix_start
-
     def _free_arity(self) -> int:
         return max(self._left._free_arity(), self._right._free_arity())
 
@@ -91,9 +76,16 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
                  match_equal: bool, keep: bool):
         self._left = left
         self._right = right
+        self._inners = (left, right)
         self._order = order
         self._match_equal = match_equal
         self._keep = keep
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return MaximumMatchExpression(*unbound_inners,
+                                      order=self._order,
+                                      match_equal=self._match_equal,
+                                      keep=self._keep)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
@@ -121,28 +113,6 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
     def order(self) -> Order:
         return Order.merge(self._order, self._left.order(),
                            self._right.order())
-
-    @cached_property
-    def _cached_bound_generators(
-            self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._left._bound_generators() + self._right._bound_generators()
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._cached_bound_generators
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        unbound_left, prefix_start = self._left._unbind(
-            prefix_start, free_start)
-        unbound_right, prefix_start = self._right._unbind(
-            prefix_start, free_start)
-        unbound_expression: MultisetExpression = MaximumMatchExpression(
-            unbound_left,
-            unbound_right,
-            order=self._order,
-            match_equal=self._match_equal,
-            keep=self._keep)
-        return unbound_expression, prefix_start
 
     def _free_arity(self) -> int:
         return max(self._left._free_arity(), self._right._free_arity())

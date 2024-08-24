@@ -14,13 +14,18 @@ class MultisetVariable(MultisetExpression[Any]):
     All expressions start from these.
     """
 
-    def __init__(self, index: int = 0) -> None:
+    _inners = ()
+
+    def __init__(self, /, *, index: int = 0) -> None:
         """
         Args:
             index: This corresponds to the index of the `*counts` passed
                 to an evaluation. Must be non-negative.
         """
         self._index = index
+
+    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+        return self
 
     def _next_state(self, state, outcome: Outcome, *counts:
                     int) -> tuple[Hashable, int]:
@@ -32,13 +37,6 @@ class MultisetVariable(MultisetExpression[Any]):
 
     def _free_arity(self) -> int:
         return self._index + 1
-
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return ()
-
-    def _unbind(self, prefix_start: int,
-                free_start: int) -> 'tuple[MultisetExpression, int]':
-        return MultisetVariable(self._index + free_start), prefix_start
 
     def __str__(self) -> str:
         return f'mv[{self._index}]'
