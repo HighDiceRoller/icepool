@@ -10827,7 +10827,7 @@ modification.</li>
 </span><span id="Pool-182"><a href="#Pool-182"><span class="linenos">182</span></a><span class="sd">            pop_min_cost</span>
 </span><span id="Pool-183"><a href="#Pool-183"><span class="linenos">183</span></a><span class="sd">            pop_max_cost</span>
 </span><span id="Pool-184"><a href="#Pool-184"><span class="linenos">184</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-185"><a href="#Pool-185"><span class="linenos">185</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">pool_cost</span><span class="o">.</span><span class="n">estimate_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Pool-185"><a href="#Pool-185"><span class="linenos">185</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">generator</span><span class="o">.</span><span class="n">pop_order</span><span class="o">.</span><span class="n">estimate_costs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Pool-186"><a href="#Pool-186"><span class="linenos">186</span></a>
 </span><span id="Pool-187"><a href="#Pool-187"><span class="linenos">187</span></a>    <span class="nd">@cached_property</span>
 </span><span id="Pool-188"><a href="#Pool-188"><span class="linenos">188</span></a>    <span class="k">def</span> <span class="nf">_min_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
