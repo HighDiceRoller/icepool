@@ -6,8 +6,12 @@ from icepool import d6, Die, Order, map_function, Pool
 
 
 def test_sort_match_example():
-    result = Pool([5, 3, 2]).highest(2).sort_match('>', [6, 1]).expand()
-    assert result.simplify() == Die([(3, )])
+    without_highest = Pool([6, 4, 3]).sort_match('>', [5, 5]).expand()
+    assert without_highest.simplify() == Die([(3, 6)])
+    with_highest = Pool([6, 4,
+                         3]).highest(2).sort_match('>',
+                                                   [5, 5]).expand().simplify()
+    assert with_highest == Die([(6, )])
 
 
 def test_risk():
@@ -87,9 +91,10 @@ def test_sort_match_operators_expand(op):
 
 
 def test_maximum_match_example():
-    result = Pool([6, 5, 3, 1]).maximum_match('<=', [6, 4],
-                                              keep='unmatched').expand()
-    assert result.simplify() == Die([(1, 5)])
+    result = Pool([6,
+                   4, 3, 1]).maximum_match_highest('<=', [5, 5],
+                                                   keep='unmatched').expand()
+    assert result.simplify() == Die([(1, 6)])
 
 
 maximum_ops = ['<=', '<', '>=', '>']
@@ -97,9 +102,19 @@ maximum_ops = ['<=', '<', '>=', '>']
 
 @pytest.mark.parametrize('op', maximum_ops)
 def test_maximum_match(op):
-    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').count()
-    complement = d6.pool(3).maximum_match(op, d6.pool(2),
-                                          keep='unmatched').count()
+    if op in ['<=', '<']:
+        result = d6.pool(3).maximum_match_highest(op,
+                                                  d6.pool(2),
+                                                  keep='matched').count()
+        complement = d6.pool(3).maximum_match_highest(
+            op, d6.pool(2), keep='unmatched').count()
+    else:
+        result = d6.pool(3).maximum_match_lowest(op,
+                                                 d6.pool(2),
+                                                 keep='matched').count()
+        complement = d6.pool(3).maximum_match_lowest(op,
+                                                     d6.pool(2),
+                                                     keep='unmatched').count()
 
     @map_function
     def compute_expected(left, right):
@@ -125,7 +140,14 @@ def test_maximum_match(op):
 
 @pytest.mark.parametrize('op', maximum_ops)
 def test_maximum_match_expand(op):
-    result = d6.pool(3).maximum_match(op, d6.pool(2), keep='matched').expand()
+    if op in ['<=', '<']:
+        result = d6.pool(3).maximum_match_highest(op,
+                                                  d6.pool(2),
+                                                  keep='matched').expand()
+    else:
+        result = d6.pool(3).maximum_match_lowest(op,
+                                                 d6.pool(2),
+                                                 keep='matched').expand()
 
     @map_function
     def compute_expected(left, right):
